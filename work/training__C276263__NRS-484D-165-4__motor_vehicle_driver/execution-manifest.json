@@ -1,0 +1,288 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_pending_original_parked_lamp_review",
+  "cases": [
+    {
+      "case_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "construction": "selected-probe_a-construction.json",
+      "construction_sha256": "f3c27fda9049d65bbd1a10dc6b09b46edf027aa6fc12a35b7e289869f7728afb",
+      "fixture_recipe": "work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/diagnostic/probe_a/fixture-recipe.json",
+      "measurement_contract": "selected-probe_a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_saved.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original parked activity and beam pixel review needed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-probe_a-fallback1-construction.json",
+          "construction_sha256": "319ef5518261354a0a228aeee7d51c233d99b22bc55ec5db8290fbf267d3886a",
+          "trigger": {
+            "source": "original Native camera coverage review",
+            "metric": "joined body and beam pixels visible in all 600 frames",
+            "failure_condition": "primary parked pose has occluded beam or incomplete parked body visibility"
+          },
+          "changed_knobs": [
+            "parked pose and waypoint x coordinate 4.85 m to 5.50 m on the same curb lane"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c276263-fallback-offline-a --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "319ef5518261354a0a228aeee7d51c233d99b22bc55ec5db8290fbf267d3886a",
+            "log": "selected-proofs/probe_a/fallback1-offline.log",
+            "log_sha256": "0d6ba43fe0649153f259508febaae60ff1e33770635185920886077b935c5e2d"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/probe_a/fallback1-compatibility.json",
+            "sha256": "1c074f1ba68cbd521d8e9dec464cd556e1c7f3ad47ea1c657b876a412eb0a119",
+            "log": "selected-proofs/probe_a/fallback1-compatibility-analysis.log",
+            "negative_log": "selected-proofs/probe_a/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --output .runtime-work/c276263-selected-offline-probe_a-v4 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-proofs/probe_a/offline.log",
+        "log_sha256": "df8a791ce3fa58ffb518b265d04015cb752eb4d56321fbc3598bc2af2622541f",
+        "construction_sha256": "f3c27fda9049d65bbd1a10dc6b09b46edf027aa6fc12a35b7e289869f7728afb"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_a/compatibility.json",
+        "sha256": "22569eced3d4c6e8251ab141d0a5b99678502757fc3a244fb8cb185686479a85",
+        "log": "selected-proofs/probe_a/public-analysis.log"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_a/negative-analysis.log"
+      },
+      "saved_cpu_diagnostic": {
+        "receipt": "selected-proofs/probe_a/saved-processing.json",
+        "sha256": "ce625925581270daa0dbc5cc2496f7c86a27ad6ee2371b310f924c9d3d8bd6af",
+        "scope": "synthetic source-shaped recorded-only processing; no physical or legal acceptance"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "ego.get_transform after each Native tick",
+          "evidence": "native-rows.jsonl original center, footprint and capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "ego.get_velocity after each Native tick",
+          "evidence": "native-rows.jsonl speed and trace.jsonl velocity"
+        },
+        "sig.headlamp": {
+          "entrypoint": "runner.py",
+          "method": "ego.get_light_state after each Native tick",
+          "evidence": "native-rows.jsonl original lamp bits plus source-hashed pixel review"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "handbrake control, original pose and separate activity review",
+          "evidence": "native-rows.jsonl and parking-activity-review.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "ego.bounding_box.get_world_vertices and parking waypoint",
+          "evidence": "native-rows.jsonl original footprint and curb lane"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "selected-proofs/probe_a/physical/proof.json",
+        "sha256": "5a490dde682d5c516ceae25d2c5f33a1c92d8c59462eac6ee905cc16cc3ecfb2"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_a/saved-processing.json",
+        "test_log_sha256": "ce625925581270daa0dbc5cc2496f7c86a27ad6ee2371b310f924c9d3d8bd6af"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "9ea1372d069d7d93ffdfa84407409ad57c735757615b323f1de566e3b4a54ed7",
+        "command": ".venv-cpu/bin/python -B work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/delivery_audit.py --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --attempt .runtime-work/c276263-saved-attempt-probe_a-v2 --saved work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-proofs/probe_a/saved-processing.json --fixture",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_a/delivery-positive.log",
+        "test_log_sha256": "8a24fb92938b2473584b2260718e8f06220b39a49796dce6b5bf40e417f9884a",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/delivery_audit.py --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --attempt .runtime-work/c276263-saved-attempt-probe_a-v2 --saved work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-proofs/probe_a/saved-processing.json --fixture --reject-frame-join",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join differs at 599",
+        "negative_log": "selected-proofs/probe_a/delivery-negative.log",
+        "negative_log_sha256": "6385dd10db8ca51f5c7dcaef32dbfae8a33e32a14fac60518e7d0bea32b5b88c",
+        "production_command": ".venv-cpu/bin/python -B work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/delivery_audit.py --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --attempt \"$ATTEMPT_DIR\" --saved \"$SAVED_RECEIPT\""
+      }
+    },
+    {
+      "case_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "construction": "selected-probe_b-construction.json",
+      "construction_sha256": "a75181d95cc1f661fe3249654d58e22664b947ddf0f08d3b49f06746431da64f",
+      "fixture_recipe": "work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/diagnostic/probe_b/fixture-recipe.json",
+      "measurement_contract": "selected-probe_b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_saved.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original parked activity and beam pixel review needed."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-probe_b-fallback1-construction.json",
+          "construction_sha256": "0ff91df9eae923def94f9f25bcaa264f4cf544c7e9d7669dc6a607850d65c406",
+          "trigger": {
+            "source": "original Native camera coverage review",
+            "metric": "joined body and beam pixels visible in all 600 frames",
+            "failure_condition": "primary parked pose has occluded beam or incomplete parked body visibility"
+          },
+          "changed_knobs": [
+            "parked pose and waypoint x coordinate 4.85 m to 5.50 m on the same curb lane"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c276263-fallback-offline-b --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0ff91df9eae923def94f9f25bcaa264f4cf544c7e9d7669dc6a607850d65c406",
+            "log": "selected-proofs/probe_b/fallback1-offline.log",
+            "log_sha256": "93436e7d31b1a93762e986c7b3c834498870f087e1ea7ab9bbaeb4013c6d61b3"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/probe_b/fallback1-compatibility.json",
+            "sha256": "9db6a81c24aebe1241141d77c7dc0d5db29dbae03f65ea1838582c17dbb38c64",
+            "log": "selected-proofs/probe_b/fallback1-compatibility-analysis.log",
+            "negative_log": "selected-proofs/probe_b/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b --output .runtime-work/c276263-selected-offline-probe_b-v4 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-proofs/probe_b/offline.log",
+        "log_sha256": "5f885aaa081396533af902088462488779d164403fc5f4f8feaeb2f267ee4d2d",
+        "construction_sha256": "a75181d95cc1f661fe3249654d58e22664b947ddf0f08d3b49f06746431da64f"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_b/compatibility.json",
+        "sha256": "6ea9401961413b050b6ffb6d6ce277e3b168c67e3f60203577e2506428a0919e",
+        "log": "selected-proofs/probe_b/public-analysis.log"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_b/negative-analysis.log"
+      },
+      "saved_cpu_diagnostic": {
+        "receipt": "selected-proofs/probe_b/saved-processing.json",
+        "sha256": "e1a8cc9483ba44d0680bbd4a07c2a751e22260105e18e2bc9a51f06ff84fe0f1",
+        "scope": "synthetic source-shaped recorded-only processing; no physical or legal acceptance"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "ego.get_transform after each Native tick",
+          "evidence": "native-rows.jsonl original center, footprint and capture/evidence.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "ego.get_velocity after each Native tick",
+          "evidence": "native-rows.jsonl speed and trace.jsonl velocity"
+        },
+        "sig.headlamp": {
+          "entrypoint": "runner.py",
+          "method": "ego.get_light_state after each Native tick",
+          "evidence": "native-rows.jsonl original lamp bits plus source-hashed pixel review"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "handbrake control, original pose and separate activity review",
+          "evidence": "native-rows.jsonl and parking-activity-review.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "ego.bounding_box.get_world_vertices and parking waypoint",
+          "evidence": "native-rows.jsonl original footprint and curb lane"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "selected-proofs/probe_b/physical/proof.json",
+        "sha256": "9134b0b6ac3523cb1ea9cfde73d9b726b9f3a0900c230392840e8b0a79ea31e5"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_b/saved-processing.json",
+        "test_log_sha256": "e1a8cc9483ba44d0680bbd4a07c2a751e22260105e18e2bc9a51f06ff84fe0f1"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "9ea1372d069d7d93ffdfa84407409ad57c735757615b323f1de566e3b4a54ed7",
+        "command": ".venv-cpu/bin/python -B work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/delivery_audit.py --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b --attempt .runtime-work/c276263-saved-attempt-probe_b-v1 --saved work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-proofs/probe_b/saved-processing.json --fixture",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_b/delivery-positive.log",
+        "test_log_sha256": "883d5f58a41699e564f04c358cee45a4c28accb6e7f7be2d7aed1364b6087ae6",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/delivery_audit.py --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b --attempt .runtime-work/c276263-saved-attempt-probe_b-v1 --saved work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-proofs/probe_b/saved-processing.json --fixture --reject-frame-join",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original frame join differs at 599",
+        "negative_log": "selected-proofs/probe_b/delivery-negative.log",
+        "negative_log_sha256": "6385dd10db8ca51f5c7dcaef32dbfae8a33e32a14fac60518e7d0bea32b5b88c",
+        "production_command": ".venv-cpu/bin/python -B work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/delivery_audit.py --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b --attempt \"$ATTEMPT_DIR\" --saved \"$SAVED_RECEIPT\""
+      }
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": true,
+  "comparison_audit": {
+    "comparison_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__comparison",
+    "script": "native/audit_saved_pair.py",
+    "script_sha256": "f2cae70f2d62c5510e77be56053535c6b998cd29aea59ed1ec5d3f06e70462c4",
+    "positive_log": "native/saved-pair-positive.log",
+    "positive_log_sha256": "2dd337778d8c098c446f8e73fdcece39ccc98471a2563167e85eb5879a27b3c1",
+    "negative_log": "native/saved-pair-negative.log",
+    "negative_log_sha256": "360cb8fd3b89d7b196f9f204654711e4d174ef444a7514bfa5345057ab6bc408",
+    "negative_expected_error": "Observed beam contrast missing",
+    "diagnostic_only": true
+  },
+  "source_branch": "Parked vehicle on sloped road"
+}

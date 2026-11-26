@@ -1,27 +1,39 @@
 {
   "assignment_id": "training__C190631__LVMC-11-30-090__pedestrian",
   "input_sha256": "54b0722cc4b0f15d616374aa0f074698003268870f8b103cf3200714e25f9f9c",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Both exact walking-surface constructions pass current-runtime offline with prescribed four-view camera profile, Core source acquisition, grade-separated Native survey, original footprint/trace joins and restore/seal. Saved-only finalizer has synthetic positive/negative CPU proofs for each case; source-meter comparison also passes. Selected manifests, full compatibility/saved processing, semantic and independent delivery audits remain CPU work; physical CARLA results unverified.",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
+  "reason": "CPU exact-case preparation passed; original Native physical execution, source review and acceptance remain for local delivery.",
   "planned_case_count": 2,
-  "candidate_count": 2,
-  "selected_delivery_case_count": 0,
+  "candidate_count": 4,
+  "selected_delivery_case_count": 2,
   "reuse_count": 0,
   "source_law_review": "Exact statute reviewed; no invented duration/distance cutoff, with provided sidewalk and adjacent roadway as independent source requirements.",
   "applied_update": 16,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C190631__LVMC-11-30-090__pedestrian/draft-roadway-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --output .runtime-work/c190631-offline-final2-01 --python $PWD/.venv-cpu/bin/python",
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C190631__LVMC-11-30-090__pedestrian/draft-roadway-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --output .runtime-work/c190631-offline-updated-probe_01 --python $PWD/.venv-cpu/bin/python",
       "exit_code": 0,
-      "log": "probe-01-offline.log",
-      "sha256": "4bf9dc4c66835b0a5fdb038f6d4d30487381059be07a355fdbf2d47ea176ae15"
+      "log": "probe-01-offline-current.log",
+      "sha256": "51386b4902fad306336cf24a951d8800c900d88895f2ed30eea37172e9ef6678"
     },
     {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C190631__LVMC-11-30-090__pedestrian/draft-roadway-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_02 --output .runtime-work/c190631-offline-final2-02 --python $PWD/.venv-cpu/bin/python",
+      "command": "PYTHONPATH=$PWD/work/training__C190631__LVMC-11-30-090__pedestrian .venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/delivery_audit.py --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --attempt .runtime-work/c190631-public-probe01-v3 --diagnostic",
       "exit_code": 0,
-      "log": "probe-02-offline.log",
-      "sha256": "4bf9dc4c66835b0a5fdb038f6d4d30487381059be07a355fdbf2d47ea176ae15"
+      "log": "selected-physical/probe_01/delivery-positive.log",
+      "sha256": "065e0c4a11b85688d432c86ea92e931717912d509901c83eeecdee4e1faf196c"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C190631__LVMC-11-30-090__pedestrian/draft-roadway-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_02 --output .runtime-work/c190631-offline-updated-probe_02 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "probe-02-offline-current.log",
+      "sha256": "f3d185aa94f1b733060760e707423f185e7eb709f15d0f36a5d69c5cf02c5a98"
+    },
+    {
+      "command": "PYTHONPATH=$PWD/work/training__C190631__LVMC-11-30-090__pedestrian .venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/delivery_audit.py --case training__C190631__LVMC-11-30-090__pedestrian__probe_02 --attempt .runtime-work/c190631-public-probe02-v1 --diagnostic",
+      "exit_code": 0,
+      "log": "selected-physical/probe_02/delivery-positive.log",
+      "sha256": "d1a2093ac49c3c49565e393d836c5721a0bca2e06805eecd0f0b67279a6451e5"
     },
     {
       "command": ".venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/prove-measure.py",
@@ -53,5 +65,6 @@
     "Pedestrian motion, original body footprints and continuous along-road occupancy",
     "Four-camera physical pixels, duration and seal",
     "Independent local review and canonical acceptance"
-  ]
+  ],
+  "first_gpu_delivery_command": ".venv-cpu/bin/python -B runtime.py execute-delivery --assignment training__C190631__LVMC-11-30-090__pedestrian --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT --job $JOB_ID --db $DB --run $RUN"
 }

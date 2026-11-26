@@ -10,13 +10,17 @@ SOURCE = Path(__file__).resolve().parent
 PREFIX = BASE.name
 CAMERAS = [
     {'name':'overview','width':1920,'height':1080,'fps':20,'fov_deg':90,
-     'location_xyz_m':[20,-12,35],'rotation_pyr_deg':[-45,0,135]},
+     'location_xyz_m':[20,-12,35],'rotation_pyr_deg':[-45,0,135],
+     'pose_strategy':'fixed scene overhead'},
     {'name':'approach','width':1280,'height':720,'fps':20,'fov_deg':85,
-     'location_xyz_m':[0,-20,8],'rotation_pyr_deg':[-15,0,90]},
-    {'name':'curb_reference','width':1280,'height':720,'fps':20,'fov_deg':80,
-     'location_xyz_m':[14,13,8],'rotation_pyr_deg':[-15,0,225]},
+     'location_xyz_m':[0,-20,8],'rotation_pyr_deg':[-15,0,90],
+     'pose_strategy':'fixed street approach'},
+    {'name':'reference_corner','width':1280,'height':720,'fps':20,'fov_deg':80,
+     'location_xyz_m':[14,13,8],'rotation_pyr_deg':[-15,0,225],
+     'pose_strategy':'fixed curb and door'},
     {'name':'driver_reference','width':1280,'height':720,'fps':20,'fov_deg':85,
-     'location_xyz_m':[1,0,1.5],'rotation_pyr_deg':[0,0,0]},
+     'location_xyz_m':[1,0,1.5],'rotation_pyr_deg':[0,0,0],
+     'pose_strategy':'taxi interior forward'},
 ]
 
 
@@ -108,7 +112,7 @@ def main():
                       'candidates':[{'id':'fallback1',
                         'construction':str(fallback_path.relative_to(BASE)),
                         'construction_sha256':sha(fallback_path),
-                        'trigger':{'source':'original curb_reference.mkv and participant review',
+                        'trigger':{'source':'original reference_corner.mkv and participant review',
                           'metric':'visible loading subject and taxi door during active window',
                           'failure_condition':'complete original capture has obscured loading subject or door'},
                         'changed_knobs':['taxi curb-stop x coordinate from 5.25 to 4.75 metres; cameras, actor type and timing fixed']}],

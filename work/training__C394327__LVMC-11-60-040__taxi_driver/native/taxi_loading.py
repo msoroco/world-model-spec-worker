@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 FRAMES = 600
 HZ = 20
-VIEWS = ('overview', 'approach', 'curb_reference', 'driver_reference')
+VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 PREFIX = 'training__C394327__LVMC-11-60-040__taxi_driver__'
 
 

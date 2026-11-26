@@ -1,29 +1,36 @@
 # training__C190631__LVMC-11-30-090__pedestrian
 
-Status: **partial**, current runtime. Both exact walking-surface drafts pass CPU offline construction. No CARLA recording or physical acceptance is claimed.
+Status: **ready / delivery_prepared**. Exact assignment-scoped strict CPU check passed on 2026-11-26. Original Native physical capture and independent local acceptance remain pending.
 
 ## Source and scope
 
-LVMC 11.30.090 states: “Where sidewalks are provided it shall be unlawful for any pedestrian to walk along and upon an adjacent roadway.” C190631 fixes the pedestrian overpass / travel / sidewalk cell. The accepted-recording membership is empty. The frozen witness is a conditional, low-confidence proposed match; it does not prove sidewalk provision, pedestrian-use purpose, or adjacency. State-law sidewalk-obstruction permission and its municipal interaction remain legal context for review. No numeric legal distance, duration, heading, or occupancy cutoff was invented. The two exact cases compare the same afoot route on the sidewalk (probe_01) and adjacent roadway (probe_02).
+LVMC 11.30.090: “Where sidewalks are provided it shall be unlawful for any pedestrian to walk along and upon an adjacent roadway.” C190631 fixes a pedestrian overpass and travel. Accepted recording membership is empty. Probe_01 targets sidewalk walking and probe_02 the adjacent roadway on the same upper road, pedestrian route, 20 Hz / 30 s timing, and four synchronized cameras. The lower crossing road is grade separated. No legal numeric threshold or verdict was invented.
 
-## Constructed CPU path
+## Selected package
 
-`native/geometry.py` authors a 100 m upper road at z=8 with a 3.5 m roadway, 0.5 m shoulder and 2 m sidewalk, plus a crossing lower 60 m road at z=0. `native/runner.py` surveys three Native waypoints on each of the upper roadway, upper sidewalk and lower road, requiring correct road and lane IDs and grade separation before capture. Probe_01 spawns the walker at y=-5; probe_02 at y=-1.75. Both apply the same 2 m/s along-road control for 600 ticks at 20 Hz and use the pinned four-view profile (1920×1080 overview, three 1280×720 details) as synchronized FFV1 cameras. Original frame IDs, timestamps, actor ID, pose, velocity, heading and four bounding-box footprint corners are retained alongside PipelineCapture Core evidence. The runner snapshots and restores the world, destroys owned actors, and seals only after all 600 frames and successful camera encodes. This is authored code; CARLA has not run.
+- `execution-manifest.json` SHA-256 `d35d3d0fc6be38519ef1aec1370dbd26dc832070c1351c942a23e54546b5232e`; runtime manifest `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`.
+- `proposals/semantic-index.json` SHA-256 `a66bd54598aad8cd906cbf7cf2c77f8d1bd61197423402c382f3ab9a19bf9a4c`; seven canonical semantic stages passed. The qualitative judgment sweep stays explicitly incomplete pending original provision and adjacency evidence.
+- `delivery_audit.py` SHA-256 `3e7a2005c5436e1eddf4dc4a530d2b79215344805b443da0e3a831415917264e`; each synthetic positive decodes all 600 frames of all four cameras and checks source joins; each ordinary-mode negative rejects the synthetic source. This proves audit software behavior, not original capture.
+- `comparison_audit.py` SHA-256 `1f9fdc89b93817a223fb5719309827a1c414438a362b74434781e64ed4c567b6`; synthetic pair passes fixed-road, identity, time and footprint contrast, while ordinary mode rejects absent original Native provenance.
 
-`native/measure.py` requires original 600-frame timing, Native source surveys, polygons and four footprint corners at each frame. It measures full-footprint surface occupancy intervals, longitudinal versus lateral travel and path length without a legal verdict. `comparison_meter.py` requires identical source geometry and comparable route length, then checks the deliberate walking-surface difference. The comparison is a synthetic source-meter proof, not yet an independent delivery comparison audit. `native/finalize.py` now joins the original pose, trace, frame map, Core evidence and geometry, writes six observation channels and a measured Native result without a legal verdict.
+### probe_01
 
-Current draft manifest SHA-256: `1016bec3de0bb44447fd77c2aa3ca4c60fb35e2a8163edcc09ec29f1f6990b86`. Probe_01 construction SHA-256: `ce74bee4b9d0fb478e8381fed9dc070f2d63fd7a11579e7c614c5200b9aad626`; probe_02: `e27c891d67af658ac60dfb8ea8c89371c4ee289bd6713b3f95ee672039d2d2fe`. Pinned runtime manifest: `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`.
+- Primary construction `b8be73d2929a088c0c66dc7f903887c06ad124fece1f1eb6ba7831d69c994b0c`; fallback construction `ff407389e97670cec55758ba0a45926f95bb3de36afda1da0ae3dd719007218f` (same surface, source-triggered x=-28 spawn).
+- Primary offline log `51386b4902fad306336cf24a951d8800c900d88895f2ed30eea37172e9ef6678`, public compatibility receipt `1e8378f46a081d1b8376cae1ef3a00746ac167a6858782975964ebe842086fec`, saved-only receipt `c1142172982062118ee4625f32446f5c4a96bb5dcd415de4216e92d24790a225`.
+- Fallback offline log `13f07ec64d5e3590be1cac59262832b8640e433ea1b0aea86cd3dbe527a3f88c` and public compatibility receipt `43ffefd55bdbe0ec35f13abd3c3cbb2352b40b4048de14f347508cc6c6b918f6`; positive and missing-source negative passed.
+- Physical CPU fixture and lifecycle receipt `5f90b49cbb5fb8728e857e955bc7b67642d8f62eb1ed5f58b386b74d5486aded`; outcomes met, not_met and unverified are source-labeled synthetic fixtures.
+- Delivery audit positive log `065e0c4a11b85688d432c86ea92e931717912d509901c83eeecdee4e1faf196c` and original-source rejection log `67acf715dded8dab777d9492287299eb19824926988d1723b7961b9a776d2809`.
 
-## Retained CPU proofs
+### probe_02
 
-- `runtime.py offline --manifest work/training__C190631__LVMC-11-30-090__pedestrian/draft-roadway-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --output .runtime-work/c190631-offline-final2-01 --python $PWD/.venv-cpu/bin/python`: exit 0; `probe-01-offline.log`.
-- Same command for `probe_02` and `.runtime-work/c190631-offline-final2-02`: exit 0; `probe-02-offline.log`.
-- `.venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/prove-measure.py`: exit 0; roadway and sidewalk positive source-shaped fixtures; missing frame, missing footprint, missing provided sidewalk, missing Native survey and wrong lower-road source all rejected. `roadway-measure-proof.log` SHA-256 `ec4d64f311fd65e800b3ed06bc9bf1f98c51982f4ff2bdebed4fde9bc59c4b85`.
-- `.venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/prove-comparison.py`: exit 0; positive controlled difference, mismatched geometry, absent surface difference and missing footprint rejected. `comparison-meter-proof.log` SHA-256 `8ed5879f6ec2772d42fb6d15994f1f4125fb7e5de87f04cb65916892d9839e97`.
-- `.venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/prove-finalize.py`: saved-only source-shaped positives for both exact cases and missing-geometry/wrong-frame negatives passed; `saved-finalizer-proof.log` SHA-256 `c7a1a1092502ec79a0555ecb29726190f376de6996135c7b5c1a260e6886dab3`. This does not run public compatibility or decode placeholder video.
-- `PYTHONPATH=$PWD/work/training__C190631__LVMC-11-30-090__pedestrian/native .venv-cpu/bin/python -B -m unittest discover -s work/training__C190631__LVMC-11-30-090__pedestrian/native/tests -v`: three tests pass, including wrong-lane rejection. `native-cpu-tests.log`.
-- `.venv-cpu/bin/python -B worker_check.py --assignment training__C190631__LVMC-11-30-090__pedestrian --complete`: static partial check passed after this construction update. All runtime imports were run with `SCENARIO_PIPELINE_OUTPUT_ROOT` under `.runtime-work/`.
+- Primary construction `bad86b07f93117325edc15aa7f9ea6eafd74b4603e6272ec91efb7a7dc7265c5`; fallback construction `1cfbf53052ad825fc0d9634d9e6eb500fe81aebd86fcb82ef6758c615da828f7` (same surface, source-triggered x=-28 spawn).
+- Primary offline log `f3d185aa94f1b733060760e707423f185e7eb709f15d0f36a5d69c5cf02c5a98`, public compatibility receipt `91e3a87153644900edec078ed3757a1b5cb45f06b05c3f87221da4ed42a4187f`, saved-only receipt `14194800d4aa58f5e30d473a5fc6bb5052d1d4683d36ac83b44290c9167f5155`.
+- Fallback offline log `b42ebb2db2f690667f46ae370d48ea4aed7b629883cfdf9c5180463190c4b888` and public compatibility receipt `75a1a947315bbbe6d54042d188e7b66bc88f3799a032c40b8b3603ecfe8b41db`; positive and missing-source negative passed.
+- Physical CPU fixture and lifecycle receipt `b306e433981a55e82ef3c7d0bef663d7e4b5370bdf683667bc118ccfd535a48b`; outcomes met, not_met and unverified are source-labeled synthetic fixtures.
+- Delivery audit positive log `d1a2093ac49c3c49565e393d836c5721a0bca2e06805eecd0f0b67279a6451e5` and original-source rejection log `67acf715dded8dab777d9492287299eb19824926988d1723b7961b9a776d2809`.
 
-## Exact next CPU work
+## Exact check and local handoff
 
-Bind both selected executable cases with measurement contracts and source-hashed fixture recipes. Run public positive and missing-source compatibility, recorded-only processing, semantic proposals, physical-completion and lifecycle tests, independent delivery acceptance and full comparison audits. Assess and test any justified physical fallback. The four-camera profile and actual sidewalk provision/purpose, map connectivity, body motion, pixels and Native seal need local CARLA and independent source review. Keep result partial until the exact strict assignment gate passes.
+`TMPDIR=$PWD/.runtime-work/c190631-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c190631-strict .venv-cpu/bin/python -B worker_check.py --assignment training__C190631__LVMC-11-30-090__pedestrian --complete --require-delivery-ready` exited 0. The test log is `.runtime-work/c190631-exact-strict.log` and is intentionally outside `work/`.
+
+Local delivery must run the original Native case with the current runtime, survey real sidewalk provision, pedestrian use, adjacency, grade separation, physical movement and original pixels, then process the saved attempt after Native exit and owner release. The physical result, qualitative law assessment and independent acceptance must be based on those original sources. The synthetic diagnostics are marked as such throughout.

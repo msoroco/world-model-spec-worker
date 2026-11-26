@@ -221,7 +221,7 @@ class CaptureLifecycle(unittest.TestCase):
             self.assertEqual({row['video_frame'] for row in rows}, set(range(600)))
             self.assertTrue(all(row['observed_activity'] is None for row in rows))
             self.assertTrue(all((attempt / (view + '.mkv')).is_file()
-                for view in ('overview', 'approach', 'curb_reference',
+                for view in ('overview', 'approach', 'reference_corner',
                              'driver_reference')))
 
     def test_tick_failure_restores_without_seal(self):

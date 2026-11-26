@@ -9,13 +9,22 @@
       "target_type": "baseline",
       "rationale": "Shared authored overpass and pedestrian route before walking surface varies.",
       "variable_assignments": {
+        "sidewalk_provision_context": {
+          "kind": "world_setup",
+          "value": "source-reviewed provided pedestrian sidewalk required"
+        },
+        "adjacent_roadway_context": {
+          "kind": "world_setup",
+          "value": "surveyed upper roadway next to sidewalk"
+        },
         "walking_surface": {
           "kind": "controller",
           "value": null
         }
       },
       "unresolved_judgment_calls": [
-        "Whether sidewalk is legally provided for pedestrian use and how state-law obstruction permission composes"
+        "Where sidewalks are provided",
+        "walk along and upon an adjacent roadway"
       ],
       "recording_description": {
         "channels": [
@@ -74,6 +83,7 @@
             "uncertainty": "Native provision/purpose and pixels need local review"
           }
         ],
+        "context_inputs": [],
         "limitations": [
           "Native survey and walker/camera execution require CARLA verification"
         ]
@@ -82,16 +92,25 @@
     {
       "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_01",
       "target_law_id": "LVMC-11-30-090",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Observe continuous afoot travel on the sidewalk along the provided adjacent sidewalk/roadway pair.",
       "variable_assignments": {
+        "sidewalk_provision_context": {
+          "kind": "world_setup",
+          "value": "source-reviewed provided pedestrian sidewalk required"
+        },
+        "adjacent_roadway_context": {
+          "kind": "world_setup",
+          "value": "surveyed upper roadway next to sidewalk"
+        },
         "walking_surface": {
           "kind": "controller",
           "value": "sidewalk"
         }
       },
       "unresolved_judgment_calls": [
-        "Sidewalk provision/purpose, adjacency and state-law obstruction interaction require original sources and legal review"
+        "Where sidewalks are provided",
+        "walk along and upon an adjacent roadway"
       ],
       "recording_description": {
         "channels": [
@@ -150,24 +169,43 @@
             "uncertainty": "Native provision/purpose and pixels need local review"
           }
         ],
+        "context_inputs": [],
         "limitations": [
           "Native survey and walker/camera execution require CARLA verification"
         ]
+      },
+      "paired_probe_id": "c190631-walking-surface-pair",
+      "deliberate_differences": [
+        "walking_surface"
+      ],
+      "probe": {
+        "primary_variable": "walking_surface",
+        "comparison_or_standard": "original measured sidewalk versus adjacent roadway travel",
+        "target_value_or_branch": "probe_01"
       }
     },
     {
       "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_02",
       "target_law_id": "LVMC-11-30-090",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Observe continuous afoot travel on the roadway along the provided adjacent sidewalk/roadway pair.",
       "variable_assignments": {
+        "sidewalk_provision_context": {
+          "kind": "world_setup",
+          "value": "source-reviewed provided pedestrian sidewalk required"
+        },
+        "adjacent_roadway_context": {
+          "kind": "world_setup",
+          "value": "surveyed upper roadway next to sidewalk"
+        },
         "walking_surface": {
           "kind": "controller",
           "value": "roadway"
         }
       },
       "unresolved_judgment_calls": [
-        "Sidewalk provision/purpose, adjacency and state-law obstruction interaction require original sources and legal review"
+        "Where sidewalks are provided",
+        "walk along and upon an adjacent roadway"
       ],
       "recording_description": {
         "channels": [
@@ -226,11 +264,43 @@
             "uncertainty": "Native provision/purpose and pixels need local review"
           }
         ],
+        "context_inputs": [],
         "limitations": [
           "Native survey and walker/camera execution require CARLA verification"
         ]
+      },
+      "paired_probe_id": "c190631-walking-surface-pair",
+      "deliberate_differences": [
+        "walking_surface"
+      ],
+      "probe": {
+        "primary_variable": "walking_surface",
+        "comparison_or_standard": "original measured sidewalk versus adjacent roadway travel",
+        "target_value_or_branch": "probe_02"
       }
     }
   ],
-  "sweep_specs": []
+  "sweep_specs": [
+    {
+      "sweep_id": "sidewalk_provision_and_adjacency",
+      "target_law_id": "LVMC-11-30-090",
+      "judgment_refs": [
+        {
+          "phrase": "Where sidewalks are provided",
+          "note": "Verify actual sidewalk provision and pedestrian use from Native geometry and original views; a cell label is insufficient."
+        },
+        {
+          "phrase": "walk along and upon an adjacent roadway",
+          "note": "Use original pedestrian footprints and route heading, surveyed sidewalk and roadway, and source review of adjacency; no legal distance cutoff is supplied."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Qualitative sidewalk provision and adjacency need original Native survey, pixels and source review before a judgment sweep can be finalized.",
+      "missing_inputs": [
+        "Original Native sidewalk provision and pedestrian-use evidence",
+        "Original adjacency and roadway-walking source observations"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

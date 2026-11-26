@@ -1,0 +1,388 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C190631__LVMC-11-30-090__pedestrian",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_proofs_passed",
+  "original_native_observed": false,
+  "delivery_ready": false,
+  "cases": [
+    {
+      "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_01",
+      "kind": "delivery",
+      "construction": "draft-roadway/probe_01/primary/construction.json",
+      "construction_sha256": "b8be73d2929a088c0c66dc7f903887c06ad124fece1f1eb6ba7831d69c994b0c",
+      "measurement_contract": "probe-01-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C190631__LVMC-11-30-090__pedestrian/diagnostic/probe_01/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker may fail to spawn at x=-30; source-measured spawn failure selects a same-surface x=-28 alternative."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-roadway/probe_01/fallback1/construction.json",
+          "construction_sha256": "ff407389e97670cec55758ba0a45926f95bb3de36afda1da0ae3dd719007218f",
+          "trigger": {
+            "source": "original native-run-status.json and pedestrian-poses.jsonl",
+            "metric": "walker spawn and first complete footprint",
+            "failure_condition": "Original walker fails to spawn or begins overlapping an occupied source object at x=-30"
+          },
+          "changed_knobs": [
+            "walker spawn x from -30 m to -28 m on the same surveyed walking surface"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C190631__LVMC-11-30-090__pedestrian/selected-draft-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --candidate fallback1 --output .runtime-work/c190631-offline-probe_01-fallback1-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "ff407389e97670cec55758ba0a45926f95bb3de36afda1da0ae3dd719007218f",
+            "exit_code": 0,
+            "log": "selected-physical/probe_01/fallback-offline.log",
+            "log_sha256": "13f07ec64d5e3590be1cac59262832b8640e433ea1b0aea86cd3dbe527a3f88c"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/probe_01-fallback1/compatibility.json",
+            "sha256": "43ffefd55bdbe0ec35f13abd3c3cbb2352b40b4048de14f347508cc6c6b918f6",
+            "log": "selected-proofs/probe_01-fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/probe_01-fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C190631__LVMC-11-30-090__pedestrian/draft-roadway-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --output .runtime-work/c190631-offline-updated-probe_01 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "b8be73d2929a088c0c66dc7f903887c06ad124fece1f1eb6ba7831d69c994b0c",
+        "exit_code": 0,
+        "log": "probe-01-offline-current.log",
+        "log_sha256": "51386b4902fad306336cf24a951d8800c900d88895f2ed30eea37172e9ef6678"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_01/compatibility.json",
+        "sha256": "1e8378f46a081d1b8376cae1ef3a00746ac167a6858782975964ebe842086fec",
+        "log": "selected-proofs/probe_01/public-analysis.log",
+        "negative_log": "selected-proofs/probe_01/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_01/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/probe_01/processing.json",
+        "sha256": "c1142172982062118ee4625f32446f5c4a96bb5dcd415de4216e92d24790a225",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/probe_01/saved.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C190631__LVMC-11-30-090__pedestrian/execution-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C190631__LVMC-11-30-090__pedestrian/execution-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_01/saved.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/probe_01/physical-preparation.json",
+        "sha256": "5f90b49cbb5fb8728e857e955bc7b67642d8f62eb1ed5f58b386b74d5486aded"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.sidewalk": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3e7a2005c5436e1eddf4dc4a530d2b79215344805b443da0e3a831415917264e",
+        "command": "PYTHONPATH=$PWD/work/training__C190631__LVMC-11-30-090__pedestrian .venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/delivery_audit.py --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --attempt $ATTEMPT --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "selected-physical/probe_01/delivery-positive.log",
+        "test_log_sha256": "065e0c4a11b85688d432c86ea92e931717912d509901c83eeecdee4e1faf196c",
+        "negative_command": "PYTHONPATH=$PWD/work/training__C190631__LVMC-11-30-090__pedestrian .venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/delivery_audit.py --case training__C190631__LVMC-11-30-090__pedestrian__probe_01 --attempt $ATTEMPT",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "selected-physical/probe_01/delivery-negative.log",
+        "negative_log_sha256": "67acf715dded8dab777d9492287299eb19824926988d1723b7961b9a776d2809"
+      }
+    },
+    {
+      "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_02",
+      "kind": "delivery",
+      "construction": "draft-roadway/probe_02/primary/construction.json",
+      "construction_sha256": "bad86b07f93117325edc15aa7f9ea6eafd74b4603e6272ec91efb7a7dc7265c5",
+      "measurement_contract": "probe-02-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C190631__LVMC-11-30-090__pedestrian/diagnostic/probe_02/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker may fail to spawn at x=-30; source-measured spawn failure selects a same-surface x=-28 alternative."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-roadway/probe_02/fallback1/construction.json",
+          "construction_sha256": "1cfbf53052ad825fc0d9634d9e6eb500fe81aebd86fcb82ef6758c615da828f7",
+          "trigger": {
+            "source": "original native-run-status.json and pedestrian-poses.jsonl",
+            "metric": "walker spawn and first complete footprint",
+            "failure_condition": "Original walker fails to spawn or begins overlapping an occupied source object at x=-30"
+          },
+          "changed_knobs": [
+            "walker spawn x from -30 m to -28 m on the same surveyed walking surface"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C190631__LVMC-11-30-090__pedestrian/selected-draft-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_02 --candidate fallback1 --output .runtime-work/c190631-offline-probe_02-fallback1-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "1cfbf53052ad825fc0d9634d9e6eb500fe81aebd86fcb82ef6758c615da828f7",
+            "exit_code": 0,
+            "log": "selected-physical/probe_02/fallback-offline.log",
+            "log_sha256": "b42ebb2db2f690667f46ae370d48ea4aed7b629883cfdf9c5180463190c4b888"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/probe_02-fallback1/compatibility.json",
+            "sha256": "75a1a947315bbbe6d54042d188e7b66bc88f3799a032c40b8b3603ecfe8b41db",
+            "log": "selected-proofs/probe_02-fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/probe_02-fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C190631__LVMC-11-30-090__pedestrian/draft-roadway-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_02 --output .runtime-work/c190631-offline-updated-probe_02 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "bad86b07f93117325edc15aa7f9ea6eafd74b4603e6272ec91efb7a7dc7265c5",
+        "exit_code": 0,
+        "log": "probe-02-offline-current.log",
+        "log_sha256": "f3d185aa94f1b733060760e707423f185e7eb709f15d0f36a5d69c5cf02c5a98"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_02/compatibility.json",
+        "sha256": "91e3a87153644900edec078ed3757a1b5cb45f06b05c3f87221da4ed42a4187f",
+        "log": "selected-proofs/probe_02/public-analysis.log",
+        "negative_log": "selected-proofs/probe_02/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_02/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/probe_02/processing.json",
+        "sha256": "14194800d4aa58f5e30d473a5fc6bb5052d1d4683d36ac83b44290c9167f5155",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/probe_02/saved.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C190631__LVMC-11-30-090__pedestrian/execution-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C190631__LVMC-11-30-090__pedestrian/execution-manifest.json --case training__C190631__LVMC-11-30-090__pedestrian__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_02/saved.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/probe_02/physical-preparation.json",
+        "sha256": "b306e433981a55e82ef3c7d0bef663d7e4b5370bdf683667bc118ccfd535a48b"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.sidewalk": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "original Native walker pose and footprint joined to surveyed sidewalk and roadway, frame map and four synchronized source cameras",
+          "evidence": [
+            "pedestrian-poses.jsonl",
+            "surface-geometry.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3e7a2005c5436e1eddf4dc4a530d2b79215344805b443da0e3a831415917264e",
+        "command": "PYTHONPATH=$PWD/work/training__C190631__LVMC-11-30-090__pedestrian .venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/delivery_audit.py --case training__C190631__LVMC-11-30-090__pedestrian__probe_02 --attempt $ATTEMPT --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "selected-physical/probe_02/delivery-positive.log",
+        "test_log_sha256": "d1a2093ac49c3c49565e393d836c5721a0bca2e06805eecd0f0b67279a6451e5",
+        "negative_command": "PYTHONPATH=$PWD/work/training__C190631__LVMC-11-30-090__pedestrian .venv-cpu/bin/python -B work/training__C190631__LVMC-11-30-090__pedestrian/delivery_audit.py --case training__C190631__LVMC-11-30-090__pedestrian__probe_02 --attempt $ATTEMPT",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "selected-physical/probe_02/delivery-negative.log",
+        "negative_log_sha256": "67acf715dded8dab777d9492287299eb19824926988d1723b7961b9a776d2809"
+      }
+    }
+  ]
+}

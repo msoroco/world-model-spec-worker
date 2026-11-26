@@ -60,7 +60,7 @@ class OriginalSourceGate(unittest.TestCase):
             frame = index + 1
             time_s = (index + 1) / 20
             camera_frames = {view: frame for view in (
-                'overview', 'approach', 'curb_reference', 'driver_reference')}
+                'overview', 'approach', 'reference_corner', 'driver_reference')}
             native.append({'video_frame': index, 'native_frame': frame,
                            'time_s': time_s, 'taxi_actor_id': 1,
                            'participant_actor_id': 2,

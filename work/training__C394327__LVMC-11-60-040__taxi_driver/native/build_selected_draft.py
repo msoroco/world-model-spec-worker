@@ -117,6 +117,8 @@ def main():
             'case_id': case, 'kind': 'delivery',
             'construction': primary_path.name,
             'construction_sha256': sha(primary_path),
+            'fixture_recipe': str((BASE / 'native' / 'diagnostic' / suffix /
+                                   'fixture-recipe.json').relative_to(Path.cwd())),
             'measurement_contract': contract_path.name,
             'measurement_procedure': {'entrypoint': 'selected_finalize.py'},
             'candidate_risk': original['candidate_risk'],
@@ -139,7 +141,7 @@ def main():
                 command = ('.venv-cpu/bin/python -B runtime.py offline --manifest work/' +
                            PREFIX + '/selected-draft-manifest.json --case ' + case +
                            ' --output .runtime-work/c394327-selected-' + suffix +
-                           '-' + candidate_id + '-v4 --python ' +
+                           '-' + candidate_id + '-camera-v2 --python ' +
                            str(Path.cwd() / '.venv-cpu/bin/python'))
                 if candidate_id != 'primary':
                     command += ' --candidate ' + candidate_id

@@ -14,14 +14,14 @@
         "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a",
         "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Two source-hashed selected constructions, each with a same-case position fallback, public and missing-source compatibility, and saved-only diagnostics; original parking and beam pixels remain unobserved."
     }
   ],
   "cases": [
     {
       "case_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484D-165-4",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "compliant_attempt",
       "physical_target": "use depressed or dimmed lighted headlamps",
       "comparison_variable": "parked_headlamp_beam",
@@ -31,12 +31,14 @@
       "physical_risk": {
         "status": "physical",
         "reason": "Actual curb parking, beam projection/exposure and original source-camera pixels remain unobserved on this CPU host."
-      }
+      },
+      "selected_construction": "selected-probe_a-construction.json",
+      "original_native_observed": false
     },
     {
       "case_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484D-165-4",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "violating_attempt",
       "physical_target": "use undimmed lighted headlamps",
       "comparison_variable": "parked_headlamp_beam",
@@ -46,7 +48,9 @@
       "physical_risk": {
         "status": "physical",
         "reason": "Actual curb parking, beam projection/exposure and original source-camera pixels remain unobserved on this CPU host."
-      }
+      },
+      "selected_construction": "selected-probe_b-construction.json",
+      "original_native_observed": false
     }
   ],
   "comparisons": [
@@ -73,7 +77,7 @@
     {
       "name": "sig.headlamp",
       "mandatory": true,
-      "reason": "state high_beam versus low_beam \u2014 lighted headlamps must be depressed or dimmed"
+      "reason": "state high_beam versus low_beam — lighted headlamps must be depressed or dimmed"
     },
     {
       "name": "kin.velocity",
@@ -94,8 +98,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Selected public/negative compatibility, recorded-only saved processing, semantic proposals, candidate proofs, physical/delivery/comparison audits and exact strict gate remain incomplete.",
-    "Original parking activity and beam aim/intensity require sealed local Native and pixel review; synthetic CPU fixtures establish only source-shape behavior."
+    "Original parked activity, beam aim/intensity and pixels require independent local review; CPU fixtures are synthetic software proof only.",
+    "The semantic judgment-sweep proposal records missing source-backed feasible beam setpoints, while the exact low/high controlled comparison is prepared; no numeric legal cutoff is supplied."
   ],
   "statutory_text": "Any lighted headlamps upon a parked vehicle shall be depressed or dimmed.",
   "activation_conditions_from_unreviewed_summary": [
@@ -168,7 +172,7 @@
     "manifest": "draft-native-manifest.json",
     "comparison_proof": "native/request-comparison-proof.json",
     "comparison_proof_sha256": "65bedb8c8e1dd3738f6d8ef2a16525e27bf7498821a7a73c9dc9888d98c62b4c",
-    "selected": false,
+    "selected": true,
     "original_native_observed": false,
     "native_capture_entrypoint": "native/runner.py",
     "native_capture_fake_world_proof": "native/capture-lifecycle-tests.log",
@@ -176,7 +180,12 @@
     "original_finalizer": "native/finalize_original.py",
     "original_finalizer_fixture_proof": "native/finalizer-tests.log",
     "independent_structural_comparison": "native/comparison_audit.py",
-    "independent_structural_comparison_test": "native/comparison-tests.log"
+    "independent_structural_comparison_test": "native/comparison-tests.log",
+    "selected_manifest": "execution-manifest.json",
+    "semantic_index": "proposals/semantic-index.json",
+    "fallbacks_per_case": 1,
+    "source_bound_saved_pair_audit": "native/audit_saved_pair.py",
+    "independent_delivery_audit": "native/delivery_audit.py"
   },
   "evidence_review": {
     "reviewer": "worker C276263 owner",

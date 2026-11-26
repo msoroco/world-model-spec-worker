@@ -103,7 +103,7 @@ def main():
              'rationale': 'Original parked activity, beam aim and beam intensity require physical source review; no legal cutoff is supplied.',
              'missing_inputs': ['A source-backed physical range and feasible controllable beam setpoints for systematic judgment coverage; existing low/high comparison is retained.']}
     cases = {'cell_id': cell, 'actor': actor, 'status': 'draft', 'sweep_specs': [sweep],
-             'cases': [baseline, *old_cases]}
+             'cases': [baseline, *old_cases], 'sweeps_expanded': True}
     stages = {'relevance_batch': write('relevance_batch', relevance),
               'relevance': write('relevance', relevance),
               'template': write('template', template),

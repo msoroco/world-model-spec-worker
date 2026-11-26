@@ -2,6 +2,38 @@
   "assignment_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "exception_authority_context": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "officer_candidate_trajectory": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "sidewalk_map_context": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "sidewalk_overlap": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "vehicle_body_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "vehicle_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        }
+      },
       "candidate_risk": {
         "reason": "Native steering or pedestrian placement may not realize controlled stop and officer-presence contrast",
         "status": "physical"
@@ -12,6 +44,12 @@
             "lateral_gain 0.18 to 0.24",
             "brake_start_x_m 31 to 27"
           ],
+          "compatibility": {
+            "log": "compatibility/officer_direction_absent-fallback1-analysis.log",
+            "negative_log": "compatibility/officer_direction_absent-fallback1-negative.log",
+            "receipt": "compatibility/officer_direction_absent-fallback1.json",
+            "sha256": "2a1c90a24b09009928bd455e7b09ed4331d64bf89fad82e86af814b5f5f44952"
+          },
           "construction": "selected-officer-direction-absent/fallback1.json",
           "construction_sha256": "8bf75441a974e804dc5bf32922f332e4b1ddaf822ed7b11a5fb49801dc896fef",
           "id": "fallback1",
@@ -30,8 +68,39 @@
         }
       ],
       "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_absent",
+      "compatibility": {
+        "log": "compatibility/officer_direction_absent-primary-analysis.log",
+        "negative_log": "compatibility/officer_direction_absent-primary-negative.log",
+        "receipt": "compatibility/officer_direction_absent-primary.json",
+        "sha256": "9dc87005f5d62368e92679087a225127243ae7810dc572a143a580568ee97ebd"
+      },
       "construction": "selected-officer-direction-absent/construction.json",
       "construction_sha256": "83deb23bb342862c1261ca58166bad92a8005fd678411961248749820b3599e1",
+      "delivery_acceptance": {
+        "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_absent",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python -B work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/officer_delivery_audit.py --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_absent --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/officer_delivery_audit.py --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_absent --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original sidewalk source",
+        "negative_log": "delivery-proofs/officer_direction_absent-negative.log",
+        "negative_log_sha256": "b251d2a158e680b7eb3de2e06188dd1a183496554db73b19d4fd4b07945e7a63",
+        "script": "officer_delivery_audit.py",
+        "script_sha256": "08c4468d725ed24ed1f44db88d98438d8267f169e5983cd6624768021049a15c",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/officer_direction_absent-positive.log",
+        "test_log_sha256": "312f6f284fa511b7b5ffb229c95020c4769c7c938d5f373be3fdb801e30dff6d"
+      },
       "fixture_recipe": "work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/diagnostic-recipe-officer_direction_absent.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract-officer.json",
@@ -43,6 +112,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/officer_direction_absent-primary-negative.log"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/officer-construction-manifest.json --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_absent --candidate primary --output .runtime-work/c229977-officer-officer_direction_absent-primary-v4",
         "construction_sha256": "83deb23bb342862c1261ca58166bad92a8005fd678411961248749820b3599e1",
@@ -52,6 +124,38 @@
       }
     },
     {
+      "acquisition": {
+        "exception_authority_context": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "officer_candidate_trajectory": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "sidewalk_map_context": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "sidewalk_overlap": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "vehicle_body_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "vehicle_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, officer-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        }
+      },
       "candidate_risk": {
         "reason": "Native steering or pedestrian placement may not realize controlled stop and officer-presence contrast",
         "status": "physical"
@@ -62,6 +166,12 @@
             "lateral_gain 0.18 to 0.24",
             "brake_start_x_m 31 to 27"
           ],
+          "compatibility": {
+            "log": "compatibility/officer_direction_present-fallback1-analysis.log",
+            "negative_log": "compatibility/officer_direction_present-fallback1-negative.log",
+            "receipt": "compatibility/officer_direction_present-fallback1.json",
+            "sha256": "3650d23d65db6a70dab477adacf5126d167748b10505f61ae362b066e3bd8aef"
+          },
           "construction": "selected-officer-direction-present/fallback1.json",
           "construction_sha256": "7bf1b32fee7d842975e835a21cd79bf0c742a66990943f7812e548166716a0c8",
           "id": "fallback1",
@@ -80,8 +190,39 @@
         }
       ],
       "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_present",
+      "compatibility": {
+        "log": "compatibility/officer_direction_present-primary-analysis.log",
+        "negative_log": "compatibility/officer_direction_present-primary-negative.log",
+        "receipt": "compatibility/officer_direction_present-primary.json",
+        "sha256": "f24a845bb7f36fc500bf360e98e1d7ad3ad1dadbd3c8679b94dadbd0b422bc9d"
+      },
       "construction": "selected-officer-direction-present/construction.json",
       "construction_sha256": "6055bea92f8ebf92833b11d5081c54171132238dfbddb13c73d80f51c7f66634",
+      "delivery_acceptance": {
+        "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_present",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python -B work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/officer_delivery_audit.py --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_present --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/officer_delivery_audit.py --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_present --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original sidewalk source",
+        "negative_log": "delivery-proofs/officer_direction_present-negative.log",
+        "negative_log_sha256": "b251d2a158e680b7eb3de2e06188dd1a183496554db73b19d4fd4b07945e7a63",
+        "script": "officer_delivery_audit.py",
+        "script_sha256": "08c4468d725ed24ed1f44db88d98438d8267f169e5983cd6624768021049a15c",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/officer_direction_present-positive.log",
+        "test_log_sha256": "4154a6f30d28fde2c150f6dccbbbda65b384d637800550df722dbf4d6b1126af"
+      },
       "fixture_recipe": "work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/diagnostic-recipe-officer_direction_present.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract-officer.json",
@@ -92,6 +233,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "compatibility/officer_direction_present-primary-negative.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/officer-construction-manifest.json --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_present --candidate primary --output .runtime-work/c229977-officer-officer_direction_present-primary-v4",

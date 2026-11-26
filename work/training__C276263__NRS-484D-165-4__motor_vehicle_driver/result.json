@@ -2,18 +2,23 @@
   "assignment_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver",
   "input_sha256": "ad352226bc94145906f84dcfeea368d5da7f2268335d3dfac4f6d910bdf1502e",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "Two exact sloped-curb parked-lamp drafts pass current-runtime offline and request comparison. Prospective 600-frame four-camera Native capture, source-bound original parking/beam finalizer, fake-world lifecycle, source-shape positive/negative, and independent structural comparison tests pass. Cases remain unselected; public/negative compatibility, recorded-only processing, semantic proposals, risk fallbacks and independent delivery audit remain unfinished CPU work. Actual parking, beam aim/intensity and legal outcome remain unverified.",
-  "readiness_kind": null,
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 2,
-  "candidate_count": 0,
+  "candidate_count": 4,
   "source_law_review": "Exact law text copied from frozen assignment; summary marked recovered_requires_source_review",
   "draft_cpu_proof": {
     "native_capture_fake_world_passed": true,
     "source_meter_tests_passed": true,
     "finalizer_fixture_tests_passed": true,
     "original_native_observed": false,
-    "independent_structural_comparison_tests_passed": true
+    "independent_structural_comparison_tests_passed": true,
+    "selected_primary_offline_compat_saved": true,
+    "selected_fallback_offline_compat": true,
+    "semantic_stages_validated": 7,
+    "physical_fixture_cases": 2,
+    "independent_delivery_positive_negative_cases": 2,
+    "source_bound_comparison_positive_negative": true
   },
   "tests": [
     {
@@ -39,6 +44,49 @@
       "exit_code": 0,
       "log": "native/comparison-tests.log",
       "sha256": "a6707d4eff38012da33ddc34bc6dc076a3b17151cfc9aef223c8790cbe64c3da"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --output .runtime-work/c276263-selected-offline-probe_a-v4 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_a/offline.log",
+      "sha256": "df8a791ce3fa58ffb518b265d04015cb752eb4d56321fbc3598bc2af2622541f"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c276263-fallback-offline-a --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_a/fallback1-offline.log",
+      "sha256": "0d6ba43fe0649153f259508febaae60ff1e33770635185920886077b935c5e2d"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/delivery_audit.py --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --attempt .runtime-work/c276263-saved-attempt-probe_a-v2 --saved work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-proofs/probe_a/saved-processing.json --fixture",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_a/delivery-positive.log",
+      "sha256": "8a24fb92938b2473584b2260718e8f06220b39a49796dce6b5bf40e417f9884a"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b --output .runtime-work/c276263-selected-offline-probe_b-v4 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_b/offline.log",
+      "sha256": "5f885aaa081396533af902088462488779d164403fc5f4f8feaeb2f267ee4d2d"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c276263-fallback-offline-b --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_b/fallback1-offline.log",
+      "sha256": "93436e7d31b1a93762e986c7b3c834498870f087e1ea7ab9bbaeb4013c6d61b3"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/delivery_audit.py --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b --attempt .runtime-work/c276263-saved-attempt-probe_b-v1 --saved work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-proofs/probe_b/saved-processing.json --fixture",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_b/delivery-positive.log",
+      "sha256": "883d5f58a41699e564f04c358cee45a4c28accb6e7f7be2d7aed1364b6087ae6"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/native/audit_saved_pair.py --attempt-a .runtime-work/c276263-saved-attempt-probe_a-v2 --saved-a work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-proofs/probe_a/saved-processing.json --attempt-b .runtime-work/c276263-saved-attempt-probe_b-v1 --saved-b work/training__C276263__NRS-484D-165-4__motor_vehicle_driver/selected-proofs/probe_b/saved-processing.json --fixture",
+      "exit_code": 0,
+      "log": "native/saved-pair-positive.log",
+      "sha256": "2dd337778d8c098c446f8e73fdcece39ccc98471a2563167e85eb5879a27b3c1"
     }
-  ]
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C276263__NRS-484D-165-4__motor_vehicle_driver --case training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }
