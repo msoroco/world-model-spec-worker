@@ -43,6 +43,32 @@ def _inside(p, polygon):
     return inside
 
 
+def _segments_touch(a, b, c, d):
+    def orientation(p, q, r):
+        value = (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
+        return 0 if abs(value) < 1e-9 else (1 if value > 0 else -1)
+
+    def on_segment(p, q, r):
+        return (min(p[0], r[0]) - 1e-9 <= q[0] <= max(p[0], r[0]) + 1e-9
+                and min(p[1], r[1]) - 1e-9 <= q[1] <= max(p[1], r[1]) + 1e-9)
+
+    turns = [orientation(a, b, c), orientation(a, b, d),
+             orientation(c, d, a), orientation(c, d, b)]
+    if turns[0] != turns[1] and turns[2] != turns[3]:
+        return True
+    return any(turn == 0 and on_segment(p, q, r) for turn, p, q, r in (
+        (turns[0], a, c, b), (turns[1], a, d, b),
+        (turns[2], c, a, d), (turns[3], c, b, d)))
+
+
+def _overlaps(body, zone):
+    if any(_inside(c, zone) for c in body) or any(_inside(c, body) for c in zone):
+        return True
+    return any(_segments_touch(body[i], body[(i + 1) % len(body)],
+                               zone[j], zone[(j + 1) % len(zone)])
+               for i in range(len(body)) for j in range(len(zone)))
+
+
 def _footprint(center, heading_deg, length, width):
     center = _point(center)
     if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) for v in (heading_deg, length, width)):
@@ -80,12 +106,16 @@ def construct(site_path: str | Path, candidate_id: str) -> dict:
     candidate = candidates[candidate_id]
     corners = _footprint(candidate.get("center"), candidate.get("heading_deg"), candidate.get("length_m"), candidate.get("width_m"))
     inside = all(_inside(c, zone) for c in corners)
-    if candidate.get("requested_wholly_within_place") is not inside:
+    requested_inside = candidate.get("requested_wholly_within_place")
+    if not isinstance(requested_inside, bool):
+        raise ValueError("requested designated-place occupation must be boolean")
+    if requested_inside is not inside or (not requested_inside and _overlaps(corners, zone)):
         raise ValueError("candidate footprint does not match requested designated-place occupation")
     return {"assignment_id": ASSIGNMENT, "source": {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()},
             "candidate_id": candidate_id, "map_id": site["map_id"],
             "device_id": site["device_id"], "designated_place_id": site["designated_place_id"],
             "footprint_corners": [list(c) for c in corners], "wholly_within_designated_place": inside,
+            "wholly_outside_designated_place": not _overlaps(corners, zone),
             "limit": "Static footprint intent only; original halt history and official designation require independent source review."}
 
 
@@ -113,7 +143,23 @@ def measure(trace_path: str | Path) -> dict:
         body = _polygon(frame.get("vehicle_footprint"))
         observations.append({"frame_index": i, "time_s": t, "speed_mps": speed,
                              "body_wholly_within_place": all(_inside(c, zone) for c in body),
-                             "body_any_vertex_within_place": any(_inside(c, zone) for c in body)})
+                             "body_any_vertex_within_place": any(_inside(c, zone) for c in body),
+                             "body_overlaps_place": _overlaps(body, zone),
+                             "body_wholly_outside_place": not _overlaps(body, zone)})
+    episodes = []
+    start = None
+    for i, observation in enumerate(observations):
+        stationary_inside = (observation["speed_mps"] <= 0.1
+                             and observation["body_wholly_within_place"])
+        if stationary_inside and start is None:
+            start = i
+        if start is not None and (not stationary_inside or i == len(observations) - 1):
+            end = i - 1 if not stationary_inside else i
+            episodes.append({"first_frame": start, "last_frame": end,
+                             "first_time_s": observations[start]["time_s"],
+                             "last_time_s": observations[end]["time_s"],
+                             "observed_span_s": observations[end]["time_s"] - observations[start]["time_s"]})
+            start = None
     return {"assignment_id": ASSIGNMENT, "original_trace_id": packet["original_trace_id"],
             "source": {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()},
             "vehicle_actor_id": packet["vehicle_actor_id"], "parker_actor_id": packet["parker_actor_id"],
@@ -124,4 +170,5 @@ def measure(trace_path: str | Path) -> dict:
             "officer_or_device_direction_source": packet["officer_or_device_direction_source"],
             "observations": observations,
             "stationary_wholly_inside_frames": [o["frame_index"] for o in observations if o["speed_mps"] <= 0.1 and o["body_wholly_within_place"]],
+            "stationary_wholly_inside_episodes": episodes,
             "review_limit": "Engineering stationary threshold is not a legal stopping, standing or parking definition; device authority and place character remain independent review facts."}

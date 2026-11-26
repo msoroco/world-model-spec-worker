@@ -97,3 +97,21 @@ class ReviewedAttentionIntakeTests(unittest.TestCase):
         self.write_packet()
         with self.assertRaisesRegex(ValueError, "axis differs"):
             intake.validate(self.packet_path, allow_diagnostic=True)
+
+    def test_rejects_duration_beyond_original_operation(self):
+        self.packet["axis"]["max"] = 60
+        self.packet["axis"]["spacing"] = 30
+        self.write_packet()
+        with self.assertRaisesRegex(ValueError, "physical axis needs"):
+            intake.validate(self.packet_path, allow_diagnostic=True)
+
+    def test_cli_preserves_existing_intake_receipt(self):
+        output = self.root / "intake.json"
+        output.write_text("retained\n")
+        import sys
+        from unittest.mock import patch
+        with patch.object(sys, "argv", ["reviewed_attention_intake.py", "--packet", str(self.packet_path),
+                                        "--output", str(output)]):
+            with self.assertRaisesRegex(ValueError, "output already exists"):
+                intake.main()
+        self.assertEqual(output.read_text(), "retained\n")

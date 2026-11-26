@@ -141,8 +141,19 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
     for item in specs['cases']:
         case_id = item['case_id']
         kind = case_id.removeprefix(HERE.name + '__')
+        contract_path = HERE / 'cases' / kind / 'measurement-contract.json'
+        contract_bytes = contract_path.read_bytes()
+        contract = json.loads(contract_bytes)
+        if contract.get('case_id') != case_id or contract.get('format') != 'worker-measurement-contract':
+            raise ValueError('exact selected measurement contract differs: ' + case_id)
+        if contract.get('negative', {}).get('remove') != ['reviewed-site/packet.json']:
+            raise ValueError('reviewed-site negative source contract differs: ' + case_id)
         runner = RUNNER.format(case_id=case_id, site_sha256=site_sha,
                                body_length_m=body_length_m)
+        planned_description = next(c['recording_description'] for c in PLAN['cases']
+                                   if c['case_id'] == case_id)
+        recording_description = {key: planned_description[key]
+                                 for key in ('channels', 'context_inputs', 'limitations')}
         scene = {'assignment_id': HERE.name, 'case_id': case_id,
                  'kind': kind, 'reviewed_site_packet_sha256': site_sha,
                  'capture_frames': 900, 'capture_rate_hz': 20,
@@ -153,8 +164,8 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
                   'supported_case_ids': [item['case_id'] for item in specs['cases']],
                   'rate_hz': 20, 'duration_s': 45,
                   'required_atoms': [], 'source_packets': [],
-                  'recording_description': next(c['recording_description'] for c in PLAN['cases'] if c['case_id'] == case_id),
-                  'case': {'recording_description': next(c['recording_description'] for c in PLAN['cases'] if c['case_id'] == case_id)},
+                  'recording_description': recording_description,
+                  'case': {'recording_description': recording_description},
                   'cameras': [
                       {'name': 'overview', 'width': 1920, 'height': 1080,
                        'pose_strategy': 'source-reviewed frontage overview', 'fov_deg': 90},
@@ -166,12 +177,13 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
                        'pose_strategy': 'source-reviewed driver and direction view', 'fov_deg': 90}]}
         files = {'runner.py': runner, 'scene.json': json.dumps(scene, indent=2) + '\n',
                  'config.json': json.dumps(config, indent=2) + '\n',
+                 'measurement-contract.json': contract_bytes.decode(),
                  'tests/test_bundle.py': TEST,
                  **module_files}
         construction = {'law_id': 'LVMC-11-52-130-A5', 'cell_id': 'C150153',
                         'actor': 'motor_vehicle_driver', 'case_id': case_id,
                         'entrypoint': 'runner.py', 'source_kind': 'original_reviewed_site',
-                        'recording_description': next(c['recording_description'] for c in PLAN['cases'] if c['case_id'] == case_id),
+                        'recording_description': recording_description,
                         'measurement_plan': {'method': 'saved_finalizer.finalize', 'source': 'sealed original Native history'},
                         'static_checks': ['reviewed site and exact case binding', '20 Hz and 900 frames'],
                         'termination_rules': {'frame_count': 900},
@@ -183,14 +195,37 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
             raise ValueError('source-bound bundle exceeds returned-file limit')
         target = output_dir / ('construction-' + kind + '.json')
         target.write_bytes(raw)
+        staged_contract = output_dir / ('measurement-' + kind + '.json')
+        staged_contract.write_bytes(contract_bytes)
+        description = config['recording_description']
+        acquisition = {}
+        for channel in description['channels']:
+            name = channel['name']
+            acquisition[name] = {'entrypoint': 'analysis.py',
+                                 'method': 'saved_original_channel',
+                                 'evidence': 'channels/' + name + '.jsonl'}
+        for context in description['context_inputs']:
+            name = context['name']
+            acquisition[name] = {'entrypoint': 'analysis.py',
+                                 'method': 'saved_original_context',
+                                 'evidence': 'channels/' + name + '.json'}
         entries.append({'case_id': case_id, 'construction': target.name,
                         'construction_sha256': _sha(raw),
+                        'kind': 'delivery',
+                        'measurement_contract': staged_contract.name,
+                        'measurement_contract_sha256': _sha(contract_bytes),
+                        'measurement_procedure': {'entrypoint': 'analysis.py'},
+                        'acquisition': acquisition,
                         'physical_risk': item['physical_risk']})
     index = {'format': 'sidewalk-elevator-source-bound-draft',
              'status': 'unselected_original_capture_pending',
              'assignment_id': HERE.name, 'reviewed_site_packet_sha256': site_sha,
              'cases': entries}
     (output_dir / 'index.json').write_text(json.dumps(index, indent=2) + '\n')
+    (output_dir / 'manifest.draft.json').write_text(json.dumps({
+        'assignment_id': HERE.name, 'cases': entries,
+        'status': 'unselected_original_capture_pending',
+    }, indent=2) + '\n')
     return index
 
 

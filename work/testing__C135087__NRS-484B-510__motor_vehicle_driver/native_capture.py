@@ -45,6 +45,8 @@ def capture(adapter, plan, site_path, output, frame_count=900, allow_diagnostic=
         output.mkdir(parents=True)
     original = output / "original-attempt"
     original.mkdir()
+    if hasattr(adapter, "set_output_dir"):
+        adapter.set_output_dir(output)
     source_dir = original / "source-review"
     source_dir.mkdir()
     copied = {}

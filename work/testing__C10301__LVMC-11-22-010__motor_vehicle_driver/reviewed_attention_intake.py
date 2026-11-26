@@ -57,7 +57,7 @@ def validate(packet_path: Path, *, allow_diagnostic: bool = False) -> dict:
     minimum = _finite(axis.get("min"), "axis minimum")
     maximum = _finite(axis.get("max"), "axis maximum")
     spacing = _finite(axis.get("spacing"), "axis spacing")
-    if minimum < 0 or maximum <= minimum or spacing <= 0 or maximum - minimum < 2 * spacing:
+    if minimum < 0 or maximum > 45 or maximum <= minimum or spacing <= 0 or maximum - minimum < 2 * spacing:
         raise ValueError("physical axis needs at least three feasible levels")
     if abs(round((maximum - minimum) / spacing) * spacing - (maximum - minimum)) > 1e-6:
         raise ValueError("physical axis endpoints must align with spacing")
@@ -90,6 +90,8 @@ def main() -> None:
     parser.add_argument("--packet", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if args.output.exists() or args.output.is_symlink():
+        raise ValueError("attention intake output already exists")
     result = validate(args.packet)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
 

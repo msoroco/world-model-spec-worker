@@ -21,7 +21,7 @@ class ParkingPlaceTests(unittest.TestCase):
                 "parking_candidates": {"inside": {"center": [5, 2.5], "heading_deg": 0,
                                                   "length_m": 4, "width_m": 2,
                                                   "requested_wholly_within_place": True},
-                                       "outside": {"center": [12, 2.5], "heading_deg": 0,
+                                       "outside": {"center": [13, 2.5], "heading_deg": 0,
                                                    "length_m": 4, "width_m": 2,
                                                    "requested_wholly_within_place": False}}}
 
@@ -43,7 +43,22 @@ class ParkingPlaceTests(unittest.TestCase):
 
     def test_inside_and_outside_candidates(self):
         self.assertTrue(self.run_json(self.site(), construct, "inside")["wholly_within_designated_place"])
-        self.assertFalse(self.run_json(self.site(), construct, "outside")["wholly_within_designated_place"])
+        self.assertTrue(self.run_json(self.site(), construct, "outside")["wholly_outside_designated_place"])
+
+    def test_straddling_and_touching_boundary_rejected_for_outside(self):
+        for x in (11, 12):
+            with self.subTest(x=x):
+                site = self.site()
+                site["parking_candidates"]["outside"]["center"] = [x, 2.5]
+                with self.assertRaisesRegex(ValueError, "footprint"):
+                    self.run_json(site, construct, "outside")
+
+    def test_zone_enclosed_by_vehicle_rejected_for_outside(self):
+        site = self.site()
+        site["parking_candidates"]["outside"].update({
+            "center": [5, 2.5], "length_m": 30, "width_m": 20})
+        with self.assertRaisesRegex(ValueError, "footprint"):
+            self.run_json(site, construct, "outside")
 
     def test_footprint_claim_mismatch_rejected(self):
         s = self.site()
@@ -60,12 +75,27 @@ class ParkingPlaceTests(unittest.TestCase):
     def test_original_stationary_inside_observed(self):
         r = self.run_json(self.packet(), measure)
         self.assertEqual(r["stationary_wholly_inside_frames"], [0, 1, 2])
+        self.assertEqual(r["stationary_wholly_inside_episodes"], [{
+            "first_frame": 0, "last_frame": 2, "first_time_s": 0.0,
+            "last_time_s": 0.1, "observed_span_s": 0.1}])
         self.assertEqual(r["hazard_or_congestion_status"], "unresolved")
 
     def test_moving_frame_not_stationary(self):
         packet = self.packet()
         packet["frames"][1]["speed_mps"] = 2
-        self.assertEqual(self.run_json(packet, measure)["stationary_wholly_inside_frames"], [0, 2])
+        result = self.run_json(packet, measure)
+        self.assertEqual(result["stationary_wholly_inside_frames"], [0, 2])
+        self.assertEqual([(x["first_frame"], x["last_frame"]) for x in result[
+            "stationary_wholly_inside_episodes"]], [(0, 0), (2, 2)])
+
+    def test_original_trace_distinguishes_overlap_from_outside(self):
+        packet = self.packet()
+        packet["frames"][0]["vehicle_footprint"] = [[9, 1.5], [13, 1.5], [13, 3.5], [9, 3.5]]
+        packet["frames"][1]["vehicle_footprint"] = [[11, 1.5], [15, 1.5], [15, 3.5], [11, 3.5]]
+        observations = self.run_json(packet, measure)["observations"]
+        self.assertTrue(observations[0]["body_overlaps_place"])
+        self.assertFalse(observations[0]["body_wholly_outside_place"])
+        self.assertTrue(observations[1]["body_wholly_outside_place"])
 
     def test_missing_loading_source_rejected(self):
         packet = self.packet()

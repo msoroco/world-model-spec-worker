@@ -177,6 +177,15 @@ class OriginalAdapter:
         self.sample_index = 0
         self.closed = False
         self.completed = False
+        self.output_dir = None
+
+    def set_output_dir(self, output):
+        output = Path(output).resolve()
+        if self.output_dir is not None and self.output_dir != output:
+            raise ValueError("Native attempt output changed")
+        if not output.is_dir():
+            raise ValueError("Native attempt output missing")
+        self.output_dir = output
 
     def provenance(self):
         return "original_native"
@@ -201,7 +210,9 @@ class OriginalAdapter:
         if set(views) != set(self.VIEWS) or set(actors) != {"subject", "entrant", "passenger"}:
             raise ValueError("Native participant or four-view construction incomplete")
         self.actors = actors
-        output = Path.cwd()
+        if self.output_dir is None:
+            raise ValueError("Native attempt output not bound")
+        output = self.output_dir
         for spec in self.config["cameras"]:
             view = spec["name"]
             blueprint = self.world.world.get_blueprint_library().find("sensor.camera.rgb")

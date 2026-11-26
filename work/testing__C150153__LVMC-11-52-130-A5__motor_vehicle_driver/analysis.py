@@ -137,7 +137,6 @@ def run(root: Path, output: Path) -> dict:
                 'realized_observables': {}})
     result['physical_checks']['maneuver'] = physical['physical_checks']['maneuver']
     result['maneuver_completed'] = physical['maneuver_completed']
-    result['realized_observables']['elevator'] = physical['realized_observables'] or {}
     result['physical_observations']['elevator'] = physical['realized_observables'] or {}
     validate_result(result)
     (root / 'result.json').write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')

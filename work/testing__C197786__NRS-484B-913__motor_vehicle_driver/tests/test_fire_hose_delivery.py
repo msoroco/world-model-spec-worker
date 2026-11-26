@@ -146,6 +146,10 @@ class HoseTests(unittest.TestCase):
         offset = type("Offset", (), {"x": 0.5, "y": -0.25})()
         self.assertEqual(adapter_module.body_corners(transform, extent, offset),
                          [[-0.5, 0.75], [3.5, 0.75], [3.5, 2.75], [-0.5, 2.75]])
+        transform.rotation.yaw = 90
+        self.assertEqual([[round(value, 5) for value in point]
+                          for point in adapter_module.body_corners(transform, extent, offset)],
+                         [[2.25, 0.5], [2.25, 4.5], [0.25, 4.5], [0.25, 0.5]])
 
     def test_diagnostic_native_capture_seal_and_cleanup(self):
         with tempfile.TemporaryDirectory(dir=os.environ["HOSE_SCRATCH_ROOT"]) as tmp:

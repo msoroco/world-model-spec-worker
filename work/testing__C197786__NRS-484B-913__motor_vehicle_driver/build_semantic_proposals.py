@@ -116,14 +116,10 @@ def build():
                       "recording_description": description,
                       "unresolved_judgment_calls": [phrase for phrase, _, _ in JUDGMENTS],
                       "variable_assignments": values})
-    sweeps = [{"sweep_id": f"pending-{index}", "target_law_id": LAW,
-               "judgment_refs": [{"phrase": phrase, "note": note}], "status": "incomplete",
-               "missing_inputs": ["Original reviewed private way, hose, command and incident source packets"],
-               "rationale": "The assigned law supplies no numeric judgment cutoff; original source review is needed."}
-              for index, (phrase, note, _) in enumerate(JUDGMENTS, 1)]
+    sweeps = []
     stages["cases"] = write(directory, "cases.json",
                             {"status": "draft", "cell_id": "C197786", "actor": ACTOR,
-                             "cases": cases, "sweep_specs": sweeps, "sweeps_expanded": False})
+                             "cases": cases, "sweep_specs": sweeps, "sweeps_expanded": True})
     index = {"format": "worker-semantic-delivery", "assignment_id": ASSIGNMENT, "stages": stages}
     (directory / "semantic-index.json").write_text(json.dumps(index, indent=2) + "\n")
     return {"stage_count": 9, "selected_cases": len(plan["cases"]), "status": "draft"}

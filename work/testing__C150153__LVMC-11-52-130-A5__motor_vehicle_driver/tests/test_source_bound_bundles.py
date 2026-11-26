@@ -26,6 +26,9 @@ class SourceBoundBundleTests(unittest.TestCase):
             self.assertEqual(index['status'], 'unselected_original_capture_pending')
             self.assertEqual(len(index['cases']), 12)
             self.assertEqual(len({entry['case_id'] for entry in index['cases']}), 12)
+            staged = json.loads((output / 'manifest.draft.json').read_text())
+            self.assertEqual(staged['status'], 'unselected_original_capture_pending')
+            self.assertEqual(staged['cases'], index['cases'])
             for entry in index['cases']:
                 raw = (output / entry['construction']).read_bytes()
                 self.assertEqual(hashlib.sha256(raw).hexdigest(), entry['construction_sha256'])
@@ -33,6 +36,18 @@ class SourceBoundBundleTests(unittest.TestCase):
                 self.assertIn('native_case_runner.py', files)
                 self.assertIn('seal_original_capture.py', files)
                 self.assertIn('physical_review.py', files)
+                self.assertIn('measurement-contract.json', files)
+                contract = json.loads(files['measurement-contract.json'])
+                self.assertEqual(contract['case_id'], entry['case_id'])
+                self.assertEqual(hashlib.sha256(files['measurement-contract.json'].encode()).hexdigest(),
+                                 entry['measurement_contract_sha256'])
+                self.assertEqual(contract['negative']['remove'], ['reviewed-site/packet.json'])
+                self.assertEqual(hashlib.sha256((output / entry['measurement_contract']).read_bytes()).hexdigest(),
+                                 entry['measurement_contract_sha256'])
+                self.assertEqual(entry['measurement_procedure']['entrypoint'], 'analysis.py')
+                description = json.loads(files['config.json'])['recording_description']
+                expected = {item['name'] for item in description['channels'] + description['context_inputs']}
+                self.assertEqual(set(entry['acquisition']), expected)
                 self.assertIn('original_native', files['runner.py'])
                 compile(files['runner.py'], 'runner.py', 'exec')
             with self.assertRaisesRegex(ValueError, 'already exists'):
@@ -80,8 +95,7 @@ class SourceBoundBundleTests(unittest.TestCase):
             packet, sources, _ = ReviewedSiteTests().make_packet(Path(temp))
             output = Path(temp) / 'bundles'
             index = generate(packet, sources, 4.0, output)
-            manifest = output / 'manifest.json'
-            manifest.write_text(json.dumps({'cases': index['cases']}) + '\n')
+            manifest = output / 'manifest.draft.json'
             for entry in index['cases']:
                 with self.subTest(case=entry['case_id']):
                     command = [str(HERE.parents[1] / '.venv-cpu/bin/python'), 'runtime.py', 'offline',

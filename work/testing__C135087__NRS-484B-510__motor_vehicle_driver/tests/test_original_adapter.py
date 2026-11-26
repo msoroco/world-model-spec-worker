@@ -3,6 +3,7 @@
 import io
 import queue
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -37,6 +38,41 @@ class Encoder:
 
 
 class NativeAdapterTests(unittest.TestCase):
+    def test_camera_media_bound_to_attempt_directory(self):
+        with tempfile.TemporaryDirectory(dir=".runtime-work") as folder:
+            adapter = OriginalAdapter.__new__(OriginalAdapter)
+            adapter.output_dir = None
+            adapter.set_output_dir(folder)
+            with self.assertRaisesRegex(ValueError, "output changed"):
+                adapter.set_output_dir(Path(folder).parent)
+            paths = []
+            adapter._encoder = lambda path, width, height: paths.append(path) or Encoder()
+            class Blueprint:
+                def set_attribute(self, key, value): pass
+            class Sensor:
+                type_id = "sensor.camera.rgb"
+                def listen(self, callback): pass
+            class World:
+                def get_blueprint_library(self):
+                    return type("Library", (), {"find": lambda _, name: Blueprint()})()
+                def try_spawn_actor(self, blueprint, transform): return Sensor()
+            adapter.world = type("Placement", (), {"world": World(),
+                "binding": {"camera_poses": {view: {"location_m": [0, 0, 2],
+                "rotation_deg": [0, 0, 0]} for view in adapter.VIEWS}}, "owned": []})()
+            adapter.carla = type("Carla", (), {"Location": staticmethod(lambda **kwargs: kwargs),
+                "Rotation": staticmethod(lambda **kwargs: kwargs),
+                "Transform": staticmethod(lambda location, rotation: (location, rotation))})()
+            adapter.config = {"cameras": [{"name": view, "width": 1, "height": 1,
+                "fov_deg": 90} for view in adapter.VIEWS]}
+            adapter.plan = type("Plan", (), {"case_id": "test"})()
+            adapter.client = object()
+            adapter.capture_factory = lambda *args, **kwargs: object()
+            adapter.sensors, adapter.camera_queues, adapter.encoders = {}, {}, {}
+            actors = {name: object() for name in ("subject", "entrant", "passenger")}
+            adapter.attach_cameras(actors, adapter.VIEWS)
+            self.assertEqual(len(paths), 5)
+            self.assertTrue(all(path.parent == Path(folder).resolve() for path in paths))
+
     def test_polygon_is_physical_geometry_only(self):
         box = [[10, -2], [30, -2], [30, 2], [10, 2]]
         self.assertTrue(_inside_polygon((16, 0, 0), box))
