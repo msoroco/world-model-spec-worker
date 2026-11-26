@@ -78,7 +78,7 @@ def main():
                                           "uncertainty": "physical realization unverified"}
                                          for name, unit, method in (
                                              ("subject_zone_dwell", "s", "original subject position and speed"),
-                                             ("passenger_exchange", "state", "original passenger boarding-state transition"),
+                                             ("passenger_exchange", "state", "original approach-to-door readback and independent pixel review"),
                                              ("entrant_access", "state", "original entrant parking task, approach, waiting and blockage"))],
                             "context_inputs": [{"name": "reviewed_restricted_zone", "unit": "source record",
                                                 "method": "ten independently reviewed site and actor source roles"}],
@@ -117,7 +117,7 @@ def main():
                                 "method": "original subject position and speed with reviewed zone boundaries",
                                 "evidence": ["original-attempt/history.jsonl", "original-attempt/context.json"]},
                             "passenger_exchange": {"entrypoint": "native_capture.py",
-                                "method": "original passenger boarding-state transition and pixel citations",
+                                "method": "original approach-to-door readback and independent pixel review of actual exchange",
                                 "evidence": ["original-attempt/history.jsonl", "original-attempt/overview.zip"]},
                             "entrant_access": {"entrypoint": "native_capture.py",
                                 "method": "original entrant parking task, approach, waiting and access readback",

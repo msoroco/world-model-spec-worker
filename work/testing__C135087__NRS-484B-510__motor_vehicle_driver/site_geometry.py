@@ -58,7 +58,8 @@ def validate_binding(packet_path, packet, plan):
         stations.append(station)
     _require(all(right > left for left, right in zip(stations, stations[1:])),
              "reviewed route stations not increasing")
-    _require(stations[0] <= plan.entrant_start_m and stations[-1] >= plan.zone_end_m,
+    _require(stations[0] <= min(-5, plan.entrant_start_m) and
+             stations[-1] >= plan.zone_end_m + 5,
              "reviewed route does not cover approach and zone")
     for left, right in zip(route, route[1:]):
         a = _vector(left["location_m"], 3, "route coordinate")

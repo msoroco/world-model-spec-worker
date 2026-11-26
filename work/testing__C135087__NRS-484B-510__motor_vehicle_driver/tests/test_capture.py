@@ -126,13 +126,30 @@ class CaptureTests(unittest.TestCase):
             path.write_text("reviewed " + role + "\n")
             sources[role] = {"path": path.name,
                              "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        geometry = root / "geometry.txt"
+        geometry.write_text("CPU test geometry; not original survey\n")
+        native = {
+            "geometry_source": {"path": geometry.name,
+                                "sha256": hashlib.sha256(geometry.read_bytes()).hexdigest()},
+            "map_name": plan.map_id,
+            "approach_route": [{"station_m": -5, "location_m": [-5, 0, 0]},
+                               {"station_m": 35, "location_m": [35, 0, 0]}],
+            "blueprints": {"subject": "vehicle.test.subject",
+                           "entrant": "vehicle.test.entrant", "passenger": "walker.test"},
+            "fixed_actors": {"zone_sign": {"actor_id": 11, "type_id": "static.sign"},
+                             "zone_curb": {"actor_id": 12, "type_id": "static.curb"}},
+            "camera_poses": {view: {"location_m": [0, 0, 2],
+                                    "rotation_deg": [0, 0, 0]} for view in capture.VIEWS},
+            "passenger_spawn_m": [16, 2, 0], "passenger_door_m": [16, 1, 0],
+            "entrant_access_polygon_m": [[10, -2], [30, -2], [30, 2], [10, 2]],
+            "observation_tolerances_m": {"station": 2, "door": 1, "access": 1}}
         path = root / "site.json"
         path.write_text(json.dumps(dict(case_id=plan.case_id, cell_id="C135087",
                                         map_id=plan.map_id, zone_start_m=plan.zone_start_m,
                                         zone_end_m=plan.zone_end_m,
                                         restricted_purpose=plan.restricted_purpose,
                                         reviewer="independent reviewer", reviewed_at="source date",
-                                        sources=sources)))
+                                        sources=sources, native_binding=native)))
         return path
 
     def test_original_capture_and_existing_source_audit(self):

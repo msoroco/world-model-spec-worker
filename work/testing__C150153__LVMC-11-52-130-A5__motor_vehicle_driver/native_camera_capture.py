@@ -50,10 +50,17 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
         shutil.copy2(Path(source_root) / relative, destination)
         copied_sources.append(str(destination.relative_to(attempt)))
     built = None
+    pipeline = None
     started = False
     completed = False
     try:
         built = build_case(adapter, site, case, body_length_m)
+        if getattr(adapter, 'provenance', lambda: None)() == 'original_native':
+            if not callable(getattr(adapter, 'pipeline_client', None)):
+                raise ValueError('original Native adapter must supply PipelineCapture client')
+            from pipeline_capture import PipelineCapture
+            pipeline = PipelineCapture(adapter.pipeline_client(), built['ego'], attempt, case_id,
+                                       required_observations=tuple(json.loads((attempt / 'config.json').read_text()).get('required_atoms', [])))
         adapter.start_cameras(attempt, site['camera_plan_sha256'], CAMERAS)
         started = True
         mapping = []
@@ -63,6 +70,12 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
             camera_frames = adapter.record_camera_frame(row)
             if camera_frames != {name: index for name in CAMERAS}:
                 raise ValueError('original camera frame index join differs')
+            if pipeline is not None:
+                captured = pipeline.capture(row['original_frame'], row['time_s'])
+                if (captured.get('frame') != row['original_frame'] or
+                        captured.get('time_s') != row['time_s'] or
+                        captured.get('position_m') != row['ego_position_m']):
+                    raise ValueError('original PipelineCapture/parking frame join differs')
             mapping.append({'original_frame': row['original_frame'],
                             'time_s': row['time_s'], 'camera_frames': camera_frames})
             position = row['ego_position_m']
@@ -87,6 +100,8 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
             path = Path(path).resolve()
             if path != (attempt / (name + '.mkv')).resolve() or not path.is_file() or not path.stat().st_size:
                 raise ValueError('original camera file missing: ' + name)
+        if pipeline is not None:
+            pipeline.close(confirmed=True)
         context = adapter.original_comparison_context()
         if not isinstance(context, dict):
             raise ValueError('original comparison context missing')
@@ -108,8 +123,9 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
         (attempt / 'camera-frame-map.jsonl').write_text(
             ''.join(json.dumps(item, sort_keys=True, allow_nan=False) + '\n' for item in mapping))
         (attempt / 'comparison-context.json').write_text(json.dumps(context, sort_keys=True, allow_nan=False) + '\n')
-        (attempt / 'trace.jsonl').write_text(
-            ''.join(json.dumps(item, sort_keys=True, allow_nan=False) + '\n' for item in trace))
+        if pipeline is None:
+            (attempt / 'trace.jsonl').write_text(
+                ''.join(json.dumps(item, sort_keys=True, allow_nan=False) + '\n' for item in trace))
         (attempt / 'video_frames.jsonl').write_text(
             ''.join(json.dumps({'video_frame': index, 'carla_frame': item['original_frame'],
                                 'native_frame': item['original_frame'], 'time_s': item['time_s']},
@@ -124,6 +140,8 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
                 'frame_count': 900, 'full_video_decode': False,
                 'physical_visibility_verified': False, 'legal_judgment': None}
     finally:
+        if pipeline is not None and not pipeline.closed:
+            pipeline.close(confirmed=False)
         if started and not completed:
             adapter.abort_cameras()
         if built is not None:
@@ -135,6 +153,9 @@ def capture(adapter, packet_path: Path, source_root: Path, case_id: str,
                     'trace.jsonl', 'video_frames.jsonl',
                     *(name + '.mkv' for name in CAMERAS),
                     'reviewed-site/packet.json', *copied_sources)
+    if pipeline is not None:
+        source_names += ('road.xodr', 'carla_recorder.log')
+        source_names += tuple(str(path.relative_to(attempt)) for path in sorted((attempt / 'capture').rglob('*')) if path.is_file())
     seal = {'format': 'sidewalk-elevator-native-acquisition-seal',
             'case_id': case_id, 'site_packet_sha256': site['site_sha256'],
             'provenance_kind': 'native', 'diagnostic_fixture': False, 'frames': 900,

@@ -26,7 +26,7 @@ def main():
     for comparison in data["comparisons"]:
         left_case, right_case = comparison["case_ids"]
         suffixes = [case.removeprefix(ROOT.name + "__") for case in (left_case, right_case)]
-        attempts = [REPO / ".runtime-work/c135087-saved-v3" / ("saved-" + suffix) / "v0001/analysis"
+        attempts = [REPO / ".runtime-work/c135087-saved-v6" / ("saved-" + suffix) / "v0001/analysis"
                     for suffix in suffixes]
         base = [PYTHON, str(ROOT / "selected_comparison.py"), "--left", str(attempts[0]),
                 "--right", str(attempts[1]), "--left-case", left_case,

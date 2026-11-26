@@ -12,6 +12,7 @@ from pathlib import Path
 
 from restricted_zone import construct
 from reviewed_site import ROLES, validate
+from site_geometry import validate_binding
 
 
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
@@ -34,6 +35,8 @@ def capture(adapter, plan, site_path, output, frame_count=900, allow_diagnostic=
         raise ValueError("original Native provenance required")
     plan.validate()
     packet = validate(site_path, plan.case_id, plan)
+    if provenance == "original_native":
+        validate_binding(site_path, packet, plan)
     output = Path(output)
     if output.exists():
         if not (output / "construction.json").is_file() or (output / "original-attempt").exists():
@@ -157,8 +160,14 @@ def capture(adapter, plan, site_path, output, frame_count=900, allow_diagnostic=
         raise ValueError("original acquisition incomplete or world restoration unverified")
     history = original / "history.jsonl"
     history.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows))
-    (output / "trace.jsonl").write_text("".join(json.dumps(row, sort_keys=True) + "\n"
-                                              for row in traces))
+    trace_path = output / "trace.jsonl"
+    if trace_path.exists():
+        existing = [json.loads(line) for line in trace_path.read_text().splitlines()]
+        if existing != traces:
+            raise ValueError("original Native graph trace differs from capture trace")
+    else:
+        trace_path.write_text("".join(json.dumps(row, sort_keys=True) + "\n"
+                                      for row in traces))
     (output / "video_frames.jsonl").write_text("".join(json.dumps(row, sort_keys=True) + "\n"
                                                      for row in video_frames))
     context = {"case_id": plan.case_id, "zone_start_m": plan.zone_start_m,

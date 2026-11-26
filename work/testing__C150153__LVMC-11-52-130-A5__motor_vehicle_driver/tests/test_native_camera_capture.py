@@ -2,14 +2,16 @@
 import json
 from pathlib import Path
 import sys
+import types
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 from independent_delivery_audit import CAMERAS
 from native_camera_capture import capture
-from parking import CASES
+from parking import CASES, target_body_interval
 from test_independent_delivery_audit import sha
 from test_native_case_runner import CombinedAdapter
 from test_reviewed_site import ReviewedSiteTests
@@ -59,6 +61,62 @@ class CameraAdapter(CombinedAdapter):
 
 
 class NativeCameraCaptureTests(unittest.TestCase):
+    def test_original_adapter_uses_same_tick_pipeline_capture(self):
+        scratch = Path('.runtime-work/c150153-native-camera-tests')
+        scratch.mkdir(parents=True, exist_ok=True)
+        with TemporaryDirectory(dir=scratch) as temp:
+            packet, sources, source_packet = ReviewedSiteTests().make_packet(Path(temp))
+            site = dict(source_packet['site'], site_sha256=sha(packet))
+            case = CASES[0]
+
+            class OriginalAdapter(CameraAdapter):
+                def provenance(self):
+                    return 'original_native'
+
+                def pipeline_client(self):
+                    return self
+
+            class FakePipelineCapture:
+                def __init__(self, client, ego, output, case_id, required_observations=()):
+                    self.client, self.output, self.closed = client, Path(output), False
+                    self.frames = []
+                    (self.output / 'capture/native').mkdir(parents=True)
+                    (self.output / 'road.xodr').write_text('synthetic map bytes\n')
+                    (self.output / 'carla_recorder.log').write_text('synthetic recorder bytes\n')
+
+                def capture(self, frame, time_s):
+                    west, east = target_body_interval(self.client.capture.site,
+                                                      self.client.capture.case, 4.0)
+                    item = {'frame': frame, 'time_s': time_s,
+                            'position_m': [(west + east) / 2, self.client.capture.site['curb_y_m'], 0.0]}
+                    self.frames.append(item)
+                    return item
+
+                def close(self, confirmed=True):
+                    self.closed = True
+                    (self.output / 'trace.jsonl').write_text(''.join(json.dumps(item) + '\n' for item in self.frames))
+                    (self.output / 'capture/evidence.jsonl').write_text('synthetic evidence stream\n')
+                    (self.output / 'capture/native/frames.jsonl').write_text('synthetic graph index\n')
+                    (self.output / 'capture/manifest.json').write_text(json.dumps({
+                        'frames': len(self.frames), 'extraction_confirmed': confirmed}) + '\n')
+
+            adapter = OriginalAdapter(site, case)
+            attempt = Path(temp) / 'attempt'
+            attempt.mkdir()
+            for name in ('construction.json', 'runner.py'):
+                (attempt / name).write_text('synthetic materialized source\n')
+            (attempt / 'config.json').write_text(json.dumps({'required_atoms': []}) + '\n')
+            module = types.ModuleType('pipeline_capture')
+            module.PipelineCapture = FakePipelineCapture
+            with patch.dict(sys.modules, {'pipeline_capture': module}):
+                proof = capture(adapter, packet, sources, HERE.name + '__' + case.id, 4.0, attempt)
+            self.assertEqual(proof['frame_count'], 900)
+            sources = json.loads((attempt / 'capture-seal.json').read_text())['sources']
+            self.assertIn('capture/evidence.jsonl', sources)
+            self.assertIn('capture/native/frames.jsonl', sources)
+            self.assertIn('capture/manifest.json', sources)
+            self.assertEqual(len((attempt / 'trace.jsonl').read_text().splitlines()), 900)
+
     def test_all_exact_cases_join_four_views_and_reject_bad_frame_map(self):
         scratch = Path('.runtime-work/c150153-native-camera-tests')
         scratch.mkdir(parents=True, exist_ok=True)

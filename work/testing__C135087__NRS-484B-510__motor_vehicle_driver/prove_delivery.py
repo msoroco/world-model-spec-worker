@@ -24,7 +24,7 @@ def main():
     for entry in data["cases"]:
         case = entry["case_id"]
         suffix = case.removeprefix(ROOT.name + "__")
-        attempt = REPO / ".runtime-work/c135087-saved-v3" / ("saved-" + suffix) / "v0001/analysis"
+        attempt = REPO / ".runtime-work/c135087-saved-v6" / ("saved-" + suffix) / "v0001/analysis"
         base = [PYTHON, str(ROOT / "selected_delivery.py"), "--attempt", str(attempt),
                 "--case", case]
         positive = base + ["--allow-diagnostic"]

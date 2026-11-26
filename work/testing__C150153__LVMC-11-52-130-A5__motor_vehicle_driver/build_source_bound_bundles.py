@@ -21,6 +21,7 @@ MODULES = ("parking.py", "reviewed_site.py", "native_case_runner.py",
            "physical_review.py", "saved_finalizer.py", "comparison_audit.py",
            "physical_outcomes.py", "physical_preparation.py")
 MODULES += ("native_camera_capture.py",)
+MODULES += ("analysis.py",)
 PLAN = json.loads((HERE / 'case-plan.json').read_text())
 
 RUNNER = '''"""Run one original source-reviewed sidewalk-elevator Native case."""
@@ -152,6 +153,8 @@ def generate(packet: Path, source_root: Path, body_length_m: float,
                   'supported_case_ids': [item['case_id'] for item in specs['cases']],
                   'rate_hz': 20, 'duration_s': 45,
                   'required_atoms': [], 'source_packets': [],
+                  'recording_description': next(c['recording_description'] for c in PLAN['cases'] if c['case_id'] == case_id),
+                  'case': {'recording_description': next(c['recording_description'] for c in PLAN['cases'] if c['case_id'] == case_id)},
                   'cameras': [
                       {'name': 'overview', 'width': 1920, 'height': 1080,
                        'pose_strategy': 'source-reviewed frontage overview', 'fov_deg': 90},

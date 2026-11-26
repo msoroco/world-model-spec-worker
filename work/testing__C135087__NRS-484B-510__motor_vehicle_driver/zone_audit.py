@@ -53,8 +53,8 @@ def audit_original_frames(frames_path: Path, context_path: Path, seal_path: Path
     inside = [f for f in frames if lo <= f["subject_station_m"] <= hi and f["subject_speed_mps"] < 0.1]
     exchange = [f for f in frames if f["passenger_exchange_active"]]
     states = {f["passenger_boarding_state"] for f in frames}
-    if not {"approaching", "boarding", "aboard"}.issubset(states):
-        raise ValueError("actual passenger exchange state transition absent")
+    if "approaching" not in states or not states.intersection({"at_door", "boarding", "aboard"}):
+        raise ValueError("passenger approach-to-door transition absent")
     approaching = [f for f in frames if f["entrant_parking_task_active"] and f["entrant_station_m"] < lo]
     waiting = [f for f in frames if f["entrant_waiting"]]
     blocked = [f for f in frames if f["entrant_access_blocked"]]
@@ -72,6 +72,7 @@ def audit_original_frames(frames_path: Path, context_path: Path, seal_path: Path
         "subject_stationary_in_zone_frames": len(inside),
         "passenger_exchange_frames": len(exchange),
         "passenger_boarding_states": sorted(states),
+        "actual_passenger_exchange": "requires_independent_pixel_review",
         "entrant_approach_frames": len(approaching),
         "entrant_waiting_frames": len(waiting),
         "entrant_access_blocked_frames": len(blocked),

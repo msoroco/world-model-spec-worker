@@ -105,15 +105,17 @@ class ZoneTests(unittest.TestCase):
         return frame_path, context_path, seal_path
 
     def test_source_bound_original_history_reports_physical_observations(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=".runtime-work") as tmp:
             paths = self.sources(Path(tmp), blocked=True)
             result = auditor.audit_original_frames(*paths, "case")
             self.assertEqual(result["frame_count"], 900)
             self.assertGreater(result["entrant_access_blocked_frames"], 0)
             self.assertEqual(result["legal_interference"], "unresolved_judgment")
+            self.assertEqual(result["actual_passenger_exchange"],
+                             "requires_independent_pixel_review")
 
     def test_rejects_tamper_or_missing_source(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=".runtime-work") as tmp:
             paths = self.sources(Path(tmp))
             paths[0].write_text(paths[0].read_text().replace('"frame": 0', '"frame": 9', 1))
             with self.assertRaisesRegex(ValueError, "hash mismatch"):
@@ -123,13 +125,13 @@ class ZoneTests(unittest.TestCase):
                 auditor.audit_original_frames(*paths, "case")
 
     def test_rejects_incomplete_original_history(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=".runtime-work") as tmp:
             paths = self.sources(Path(tmp))
             with self.assertRaisesRegex(ValueError, "incomplete"):
                 auditor.audit_original_frames(*paths, "case", expected_frames=901)
 
     def test_independent_comparison_checks_fixed_sources(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=".runtime-work") as tmp:
             paths = self.sources(Path(tmp), blocked=True)
             left = auditor.audit_original_frames(*paths, "case")
             right = dict(left, case_id="other", entrant_waiting_frames=0)

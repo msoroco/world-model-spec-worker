@@ -141,7 +141,7 @@ def build():
             ).hexdigest(),
             "required_atoms": [], "source_packets": [],
             "cameras": [{"name": view} for view in CAMERAS],
-            "case": {"case_id": case_id},
+            "case": {"case_id": case_id, "recording_description": RECORDING},
         }
         files = [{"path": "config.json", "content": json.dumps(config, sort_keys=True) + "\n"},
                  {"path": "runner.py", "content": RUNNER},

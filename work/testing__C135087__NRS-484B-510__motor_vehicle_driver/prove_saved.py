@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 PYTHON = str(REPO / ".venv-cpu/bin/python")
 MANIFEST = ROOT / "execution-manifest.json"
-SCRATCH = REPO / ".runtime-work/c135087-saved-v3"
+SCRATCH = REPO / ".runtime-work/c135087-saved-v6"
 VALIDATOR = REPO / ".runtime-work/c150099-decoder-v2/.lake/build/bin/adapterCheck"
 
 

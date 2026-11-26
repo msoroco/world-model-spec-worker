@@ -10,10 +10,38 @@
       "construction": "cases/fire_unprotected_no_consent/construction.json",
       "construction_sha256": "865fde702ae7e5eaf8d7dc60f263440f4a10f66c76ae3d1dac0af91898695534",
       "candidate_risk": {
-        "reason": "Hose-specific Native asset availability and actor collision may prevent verified crossing geometry",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Primary ego controller may overshoot the planned hose passage or cause unwanted contact; the slower controller is a predeclared motion fallback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/fire_unprotected_no_consent/fallback1-construction.json",
+          "construction_sha256": "f3741a22eb970b060ef54b6917e194bf5323aa494a4c8ceabd29a8cf17127dc9",
+          "trigger": {
+            "source": "sealed Native frames.jsonl and hose source",
+            "metric": "body contact relative to planned passage",
+            "failure_condition": "observed passage differs from the case plan after the primary attempt"
+          },
+          "changed_knobs": [
+            "ego controller throttle 0.28 to 0.18; retain route, source packet, cameras and timing"
+          ],
+          "offline": {
+            "command": "HOSE_SCRATCH_ROOT=\"$PWD/.runtime-work/hose-913-scratch\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_no_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_unprotected_no_consent-offline-v2",
+            "exit_code": 0,
+            "construction_sha256": "f3741a22eb970b060ef54b6917e194bf5323aa494a4c8ceabd29a8cf17127dc9",
+            "log": "cases/fire_unprotected_no_consent/fallback1-offline.log",
+            "log_sha256": "3a6ba2d195d824c1dc4eb2aee4fe71b188809d752cc8b08b1d78af46518e58f4"
+          },
+          "compatibility": {
+            "receipt": "cases/fire_unprotected_no_consent/fallback1-compatibility.json",
+            "sha256": "9c4f1014edab9ee1d695a4cc04acbed90d4fb8403a804b4436c45c99deff7cda",
+            "log": "cases/fire_unprotected_no_consent/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/fire_unprotected_no_consent/fallback1-negative-analysis.log",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_no_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_unprotected_no_consent-compat-v1 --library runtime/library --validator .runtime-work/c229439-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_no_consent --output .runtime-work/hose-913-selected-fire_unprotected_no_consent-v15",
         "construction_sha256": "865fde702ae7e5eaf8d7dc60f263440f4a10f66c76ae3d1dac0af91898695534",
@@ -83,7 +111,12 @@
         "receipt": "cases/fire_unprotected_no_consent/saved-processing.json",
         "receipt_sha256": "76ac7ac1f9f061ad9b5bf8aa182da1d959b26a250ea6977082ff2d5dfdf3bde5",
         "analysis_log": "cases/fire_unprotected_no_consent/saved-analysis.log",
-        "analysis_log_sha256": "83e8004e37493b8da2d53844c6b8fe4201dcd266f3f42615ed4f584bf0f81ba7"
+        "analysis_log_sha256": "83e8004e37493b8da2d53844c6b8fe4201dcd266f3f42615ed4f584bf0f81ba7",
+        "feedback_test_exit_code": 0,
+        "feedback_test_log": "cases/fire_unprotected_no_consent/saved-negative.log",
+        "feedback_test_log_sha256": "aa4a951d21762d90e5133ae1b993ce723a5a9ef08edf158d8ac0663381c3fea9",
+        "feedback_receipt": "cases/fire_unprotected_no_consent/saved-negative-processing.json",
+        "feedback_receipt_sha256": "aa4a951d21762d90e5133ae1b993ce723a5a9ef08edf158d8ac0663381c3fea9"
       },
       "delivery_acceptance": {
         "case_id": "testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_no_consent",
@@ -107,6 +140,10 @@
       },
       "negative": {
         "log": "cases/fire_unprotected_no_consent/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/fire_unprotected_no_consent/physical-preparation.json",
+        "sha256": "9011dbdb22e574e7c54c36f27bb8e83bc2cb390f797ee1c560258bc62dbcb479"
       }
     },
     {
@@ -115,10 +152,38 @@
       "construction": "cases/fire_unprotected_consent/construction.json",
       "construction_sha256": "dbaef47c59f3658373c6fd2d97249fba24aa02432e86d1fd5695812f6af58c70",
       "candidate_risk": {
-        "reason": "Hose-specific Native asset availability and actor collision may prevent verified crossing geometry",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Primary ego controller may overshoot the planned hose passage or cause unwanted contact; the slower controller is a predeclared motion fallback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/fire_unprotected_consent/fallback1-construction.json",
+          "construction_sha256": "b5289d435a9b82f909c31d4c965ec751dfed6aa6c9e0362eb93ac3ab1e2724bc",
+          "trigger": {
+            "source": "sealed Native frames.jsonl and hose source",
+            "metric": "body contact relative to planned passage",
+            "failure_condition": "observed passage differs from the case plan after the primary attempt"
+          },
+          "changed_knobs": [
+            "ego controller throttle 0.28 to 0.18; retain route, source packet, cameras and timing"
+          ],
+          "offline": {
+            "command": "HOSE_SCRATCH_ROOT=\"$PWD/.runtime-work/hose-913-scratch\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_unprotected_consent-offline-v2",
+            "exit_code": 0,
+            "construction_sha256": "b5289d435a9b82f909c31d4c965ec751dfed6aa6c9e0362eb93ac3ab1e2724bc",
+            "log": "cases/fire_unprotected_consent/fallback1-offline.log",
+            "log_sha256": "73c8d1b3b4d06869e4089f301a10875c4c2b37e59294a47623b0533cc06fb574"
+          },
+          "compatibility": {
+            "receipt": "cases/fire_unprotected_consent/fallback1-compatibility.json",
+            "sha256": "d2d651f0a2addd4c96d4dde3edf9afde1e87889de32d3459ddcc42910e6008f1",
+            "log": "cases/fire_unprotected_consent/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/fire_unprotected_consent/fallback1-negative-analysis.log",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_unprotected_consent-compat-v1 --library runtime/library --validator .runtime-work/c229439-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_consent --output .runtime-work/hose-913-selected-fire_unprotected_consent-v15",
         "construction_sha256": "dbaef47c59f3658373c6fd2d97249fba24aa02432e86d1fd5695812f6af58c70",
@@ -188,7 +253,12 @@
         "receipt": "cases/fire_unprotected_consent/saved-processing.json",
         "receipt_sha256": "79598342bb1fec111c0b2cfbbcced4588702cedb936b047ae9f337276f7f69ac",
         "analysis_log": "cases/fire_unprotected_consent/saved-analysis.log",
-        "analysis_log_sha256": "b228df8dcba47bd97fd23cb276e25969941f01c5eb402a170186fd7fe68a9151"
+        "analysis_log_sha256": "b228df8dcba47bd97fd23cb276e25969941f01c5eb402a170186fd7fe68a9151",
+        "feedback_test_exit_code": 0,
+        "feedback_test_log": "cases/fire_unprotected_consent/saved-negative.log",
+        "feedback_test_log_sha256": "374f46d20c3633648c32736e188a4a45b2ae7a480eb1a0b2767c49f65a411d1f",
+        "feedback_receipt": "cases/fire_unprotected_consent/saved-negative-processing.json",
+        "feedback_receipt_sha256": "374f46d20c3633648c32736e188a4a45b2ae7a480eb1a0b2767c49f65a411d1f"
       },
       "delivery_acceptance": {
         "case_id": "testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_consent",
@@ -212,6 +282,10 @@
       },
       "negative": {
         "log": "cases/fire_unprotected_consent/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/fire_unprotected_consent/physical-preparation.json",
+        "sha256": "907bd143f9a662f680d9fd6d5744332ed8bf02613dd361889348333e68776a5f"
       }
     },
     {
@@ -220,10 +294,38 @@
       "construction": "cases/fire_unprotected_withheld/construction.json",
       "construction_sha256": "2702df81a887330f24268bfc68eee162a4b55c34a956f982e6766391bd472571",
       "candidate_risk": {
-        "reason": "Hose-specific Native asset availability and actor collision may prevent verified crossing geometry",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Primary ego controller may overshoot the planned hose passage or cause unwanted contact; the slower controller is a predeclared motion fallback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/fire_unprotected_withheld/fallback1-construction.json",
+          "construction_sha256": "287c6fd354bdaa3501091c2404f8f0b1dc1c99035023032807d4a58bfedf6cbe",
+          "trigger": {
+            "source": "sealed Native frames.jsonl and hose source",
+            "metric": "body contact relative to planned passage",
+            "failure_condition": "observed passage differs from the case plan after the primary attempt"
+          },
+          "changed_knobs": [
+            "ego controller throttle 0.28 to 0.18; retain route, source packet, cameras and timing"
+          ],
+          "offline": {
+            "command": "HOSE_SCRATCH_ROOT=\"$PWD/.runtime-work/hose-913-scratch\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_withheld --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_unprotected_withheld-offline-v2",
+            "exit_code": 0,
+            "construction_sha256": "287c6fd354bdaa3501091c2404f8f0b1dc1c99035023032807d4a58bfedf6cbe",
+            "log": "cases/fire_unprotected_withheld/fallback1-offline.log",
+            "log_sha256": "d7913a42f72040919a769baee3f5acfbeeb90837be6bffba075fc490fcd252fc"
+          },
+          "compatibility": {
+            "receipt": "cases/fire_unprotected_withheld/fallback1-compatibility.json",
+            "sha256": "86229830896c6f60a915d7ff60d45e2ab0894c6930731a9fc6c83949f90d225c",
+            "log": "cases/fire_unprotected_withheld/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/fire_unprotected_withheld/fallback1-negative-analysis.log",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_withheld --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_unprotected_withheld-compat-v1 --library runtime/library --validator .runtime-work/c229439-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_withheld --output .runtime-work/hose-913-selected-fire_unprotected_withheld-v15",
         "construction_sha256": "2702df81a887330f24268bfc68eee162a4b55c34a956f982e6766391bd472571",
@@ -293,7 +395,12 @@
         "receipt": "cases/fire_unprotected_withheld/saved-processing.json",
         "receipt_sha256": "7a892ee0a06a5077860f9e9e2ea0644eeca96929b37c6c02db9bae5fedbaaa46",
         "analysis_log": "cases/fire_unprotected_withheld/saved-analysis.log",
-        "analysis_log_sha256": "bd9d54ad58291342f24f32942b7c58cc61d1358899d200e3c2b29dfce7e9014e"
+        "analysis_log_sha256": "bd9d54ad58291342f24f32942b7c58cc61d1358899d200e3c2b29dfce7e9014e",
+        "feedback_test_exit_code": 0,
+        "feedback_test_log": "cases/fire_unprotected_withheld/saved-negative.log",
+        "feedback_test_log_sha256": "56bad28dc269b6bebca6cd0f0b0ccbf94fbc74bc3ae01e907761a99c2d609638",
+        "feedback_receipt": "cases/fire_unprotected_withheld/saved-negative-processing.json",
+        "feedback_receipt_sha256": "56bad28dc269b6bebca6cd0f0b0ccbf94fbc74bc3ae01e907761a99c2d609638"
       },
       "delivery_acceptance": {
         "case_id": "testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_withheld",
@@ -317,6 +424,10 @@
       },
       "negative": {
         "log": "cases/fire_unprotected_withheld/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/fire_unprotected_withheld/physical-preparation.json",
+        "sha256": "f7e186857b0652d10a972c5537175fccbc097c2df8486811c0ab1562db1c7f8f"
       }
     },
     {
@@ -325,10 +436,38 @@
       "construction": "cases/fire_protected_no_consent/construction.json",
       "construction_sha256": "1b7663a33b3d555ce43812b13725a86673d876e6dadd0adb9cb82eb5c6fe7844",
       "candidate_risk": {
-        "reason": "Hose-specific Native asset availability and actor collision may prevent verified crossing geometry",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Primary ego controller may overshoot the planned hose passage or cause unwanted contact; the slower controller is a predeclared motion fallback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/fire_protected_no_consent/fallback1-construction.json",
+          "construction_sha256": "4412b6ccce6ce352b729305c03e8ff812b78bb9ce5722ac3d71943af2041ef4e",
+          "trigger": {
+            "source": "sealed Native frames.jsonl and hose source",
+            "metric": "body contact relative to planned passage",
+            "failure_condition": "observed passage differs from the case plan after the primary attempt"
+          },
+          "changed_knobs": [
+            "ego controller throttle 0.28 to 0.18; retain route, source packet, cameras and timing"
+          ],
+          "offline": {
+            "command": "HOSE_SCRATCH_ROOT=\"$PWD/.runtime-work/hose-913-scratch\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_protected_no_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_protected_no_consent-offline-v2",
+            "exit_code": 0,
+            "construction_sha256": "4412b6ccce6ce352b729305c03e8ff812b78bb9ce5722ac3d71943af2041ef4e",
+            "log": "cases/fire_protected_no_consent/fallback1-offline.log",
+            "log_sha256": "7d1d77b0e6aa96605b9fe76bbee3c3eefc031e144a99f64fc7f9ea2007a3d7ce"
+          },
+          "compatibility": {
+            "receipt": "cases/fire_protected_no_consent/fallback1-compatibility.json",
+            "sha256": "7ef282472830c58f225f5416308c752b1d2196a847e1f69749b4366eb5ab770f",
+            "log": "cases/fire_protected_no_consent/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/fire_protected_no_consent/fallback1-negative-analysis.log",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_protected_no_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_protected_no_consent-compat-v1 --library runtime/library --validator .runtime-work/c229439-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_protected_no_consent --output .runtime-work/hose-913-selected-fire_protected_no_consent-v15",
         "construction_sha256": "1b7663a33b3d555ce43812b13725a86673d876e6dadd0adb9cb82eb5c6fe7844",
@@ -398,7 +537,12 @@
         "receipt": "cases/fire_protected_no_consent/saved-processing.json",
         "receipt_sha256": "6760ce95f9dfbd3c41432c0d82dff1537032f0248e53afab59d64f76003fa877",
         "analysis_log": "cases/fire_protected_no_consent/saved-analysis.log",
-        "analysis_log_sha256": "25547750e03d330bcab81f6c00ee31da1dfafe31189429f3d448d2b66312e21e"
+        "analysis_log_sha256": "25547750e03d330bcab81f6c00ee31da1dfafe31189429f3d448d2b66312e21e",
+        "feedback_test_exit_code": 0,
+        "feedback_test_log": "cases/fire_protected_no_consent/saved-negative.log",
+        "feedback_test_log_sha256": "1f9827712d855494c5bfe8e32c392873f868705dc03dbe00524ad6f96f96d868",
+        "feedback_receipt": "cases/fire_protected_no_consent/saved-negative-processing.json",
+        "feedback_receipt_sha256": "1f9827712d855494c5bfe8e32c392873f868705dc03dbe00524ad6f96f96d868"
       },
       "delivery_acceptance": {
         "case_id": "testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_protected_no_consent",
@@ -422,6 +566,10 @@
       },
       "negative": {
         "log": "cases/fire_protected_no_consent/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/fire_protected_no_consent/physical-preparation.json",
+        "sha256": "e2c876062355ef6bb5c967657384234284349f2b5f9dd154300154b2bdc54777"
       }
     },
     {
@@ -430,10 +578,38 @@
       "construction": "cases/fire_unprotected_avoid/construction.json",
       "construction_sha256": "13c0df2ca9ebd081f2a3c8c0075f6e83b9011a42a2c6edc31560a4223e0df47c",
       "candidate_risk": {
-        "reason": "Hose asset availability and camera view may prevent a verified avoidance trace",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Primary ego controller may overshoot the planned hose passage or cause unwanted contact; the slower controller is a predeclared motion fallback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/fire_unprotected_avoid/fallback1-construction.json",
+          "construction_sha256": "1950ad60a549f4be7e05d1caa2817a9f5cb006d53250f4a1f21e621c97bd0a55",
+          "trigger": {
+            "source": "sealed Native frames.jsonl and hose source",
+            "metric": "body contact relative to planned passage",
+            "failure_condition": "observed passage differs from the case plan after the primary attempt"
+          },
+          "changed_knobs": [
+            "ego controller throttle 0.28 to 0.18; retain route, source packet, cameras and timing"
+          ],
+          "offline": {
+            "command": "HOSE_SCRATCH_ROOT=\"$PWD/.runtime-work/hose-913-scratch\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_avoid --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_unprotected_avoid-offline-v2",
+            "exit_code": 0,
+            "construction_sha256": "1950ad60a549f4be7e05d1caa2817a9f5cb006d53250f4a1f21e621c97bd0a55",
+            "log": "cases/fire_unprotected_avoid/fallback1-offline.log",
+            "log_sha256": "082a3efdad076fb34cd260de7b93ed03bb0139db3a542f093c073db89456adfa"
+          },
+          "compatibility": {
+            "receipt": "cases/fire_unprotected_avoid/fallback1-compatibility.json",
+            "sha256": "7400bddc3e22ebff7e405b7d981ae955e500d33c6e19b20a3288b47e97fd059c",
+            "log": "cases/fire_unprotected_avoid/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/fire_unprotected_avoid/fallback1-negative-analysis.log",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_avoid --candidate fallback1 --output .runtime-work/hose-913-fallback-fire_unprotected_avoid-compat-v1 --library runtime/library --validator .runtime-work/c229439-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_avoid --output .runtime-work/hose-913-selected-fire_unprotected_avoid-v15",
         "construction_sha256": "13c0df2ca9ebd081f2a3c8c0075f6e83b9011a42a2c6edc31560a4223e0df47c",
@@ -503,7 +679,12 @@
         "receipt": "cases/fire_unprotected_avoid/saved-processing.json",
         "receipt_sha256": "987367f30ecbac7a423f4337671d7155ee580dbd6ccc12811f6ac9a6984c8dda",
         "analysis_log": "cases/fire_unprotected_avoid/saved-analysis.log",
-        "analysis_log_sha256": "72367abe86674f1478ded31f8b74742854a299a67b20393ae3426284f8ec1ca7"
+        "analysis_log_sha256": "72367abe86674f1478ded31f8b74742854a299a67b20393ae3426284f8ec1ca7",
+        "feedback_test_exit_code": 0,
+        "feedback_test_log": "cases/fire_unprotected_avoid/saved-negative.log",
+        "feedback_test_log_sha256": "578b1a824337711c3aa7aa170077a22a17883448bcb0ebdf57340b2cf65c2f8d",
+        "feedback_receipt": "cases/fire_unprotected_avoid/saved-negative-processing.json",
+        "feedback_receipt_sha256": "578b1a824337711c3aa7aa170077a22a17883448bcb0ebdf57340b2cf65c2f8d"
       },
       "delivery_acceptance": {
         "case_id": "testing__C197786__NRS-484B-913__motor_vehicle_driver__fire_unprotected_avoid",
@@ -527,6 +708,10 @@
       },
       "negative": {
         "log": "cases/fire_unprotected_avoid/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/fire_unprotected_avoid/physical-preparation.json",
+        "sha256": "2adf2777859737e0700a5ddac7f29eca1cbc04f008d557b6b72f57282379c1db"
       }
     },
     {
@@ -535,10 +720,38 @@
       "construction": "cases/alarm_unprotected_no_consent/construction.json",
       "construction_sha256": "be49f5b8cef19c4eeadb90e1631e0518385c9eff97c446e3a95d55b0e9ab0365",
       "candidate_risk": {
-        "reason": "Hose-specific Native asset availability and actor collision may prevent verified crossing geometry",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Primary ego controller may overshoot the planned hose passage or cause unwanted contact; the slower controller is a predeclared motion fallback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/alarm_unprotected_no_consent/fallback1-construction.json",
+          "construction_sha256": "47bf124b34003c740c549f070c86008002b8eb3896b0b8d2c1a58d5491699e54",
+          "trigger": {
+            "source": "sealed Native frames.jsonl and hose source",
+            "metric": "body contact relative to planned passage",
+            "failure_condition": "observed passage differs from the case plan after the primary attempt"
+          },
+          "changed_knobs": [
+            "ego controller throttle 0.28 to 0.18; retain route, source packet, cameras and timing"
+          ],
+          "offline": {
+            "command": "HOSE_SCRATCH_ROOT=\"$PWD/.runtime-work/hose-913-scratch\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__alarm_unprotected_no_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-alarm_unprotected_no_consent-offline-v2",
+            "exit_code": 0,
+            "construction_sha256": "47bf124b34003c740c549f070c86008002b8eb3896b0b8d2c1a58d5491699e54",
+            "log": "cases/alarm_unprotected_no_consent/fallback1-offline.log",
+            "log_sha256": "00b76cf415cf5a3242aae5013593c9833d0f1bc7eb821241354b2857431c6973"
+          },
+          "compatibility": {
+            "receipt": "cases/alarm_unprotected_no_consent/fallback1-compatibility.json",
+            "sha256": "07c2662cc69411fe76114b4f758089a097b211fa03f033691c084c07114ede4e",
+            "log": "cases/alarm_unprotected_no_consent/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/alarm_unprotected_no_consent/fallback1-negative-analysis.log",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__alarm_unprotected_no_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-alarm_unprotected_no_consent-compat-v1 --library runtime/library --validator .runtime-work/c229439-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__alarm_unprotected_no_consent --output .runtime-work/hose-913-selected-alarm_unprotected_no_consent-v15",
         "construction_sha256": "be49f5b8cef19c4eeadb90e1631e0518385c9eff97c446e3a95d55b0e9ab0365",
@@ -608,7 +821,12 @@
         "receipt": "cases/alarm_unprotected_no_consent/saved-processing.json",
         "receipt_sha256": "2bbc3a07c8941dfc5ec2b8fd1250a5ed5885728d925445fe31fde4d789c1bb21",
         "analysis_log": "cases/alarm_unprotected_no_consent/saved-analysis.log",
-        "analysis_log_sha256": "f231c69cb0d72237e5252536500813fc236c632919f10397c99d509836bcef8f"
+        "analysis_log_sha256": "f231c69cb0d72237e5252536500813fc236c632919f10397c99d509836bcef8f",
+        "feedback_test_exit_code": 0,
+        "feedback_test_log": "cases/alarm_unprotected_no_consent/saved-negative.log",
+        "feedback_test_log_sha256": "4be11f667b1f4aff075dd150d983c2489aaba893f4c36df02248a0f1df63e813",
+        "feedback_receipt": "cases/alarm_unprotected_no_consent/saved-negative-processing.json",
+        "feedback_receipt_sha256": "4be11f667b1f4aff075dd150d983c2489aaba893f4c36df02248a0f1df63e813"
       },
       "delivery_acceptance": {
         "case_id": "testing__C197786__NRS-484B-913__motor_vehicle_driver__alarm_unprotected_no_consent",
@@ -632,6 +850,10 @@
       },
       "negative": {
         "log": "cases/alarm_unprotected_no_consent/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/alarm_unprotected_no_consent/physical-preparation.json",
+        "sha256": "557bf28f392effc5d7fe33832e1c6ec6fc835c3fcb25b39e6826f94201358eaa"
       }
     },
     {
@@ -640,10 +862,38 @@
       "construction": "cases/practice_unprotected_no_consent/construction.json",
       "construction_sha256": "474c6c8e302fa01b69e69d29f57c4fcd5ca6acaeaef466e317c9e53161e4c80e",
       "candidate_risk": {
-        "reason": "Hose-specific Native asset availability and actor collision may prevent verified crossing geometry",
-        "status": "physical"
+        "status": "physical",
+        "reason": "Primary ego controller may overshoot the planned hose passage or cause unwanted contact; the slower controller is a predeclared motion fallback."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/practice_unprotected_no_consent/fallback1-construction.json",
+          "construction_sha256": "81002569f7eba32a46befb79c7431509124f4293c8da5eef8afc42dbcfdad854",
+          "trigger": {
+            "source": "sealed Native frames.jsonl and hose source",
+            "metric": "body contact relative to planned passage",
+            "failure_condition": "observed passage differs from the case plan after the primary attempt"
+          },
+          "changed_knobs": [
+            "ego controller throttle 0.28 to 0.18; retain route, source packet, cameras and timing"
+          ],
+          "offline": {
+            "command": "HOSE_SCRATCH_ROOT=\"$PWD/.runtime-work/hose-913-scratch\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__practice_unprotected_no_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-practice_unprotected_no_consent-offline-v2",
+            "exit_code": 0,
+            "construction_sha256": "81002569f7eba32a46befb79c7431509124f4293c8da5eef8afc42dbcfdad854",
+            "log": "cases/practice_unprotected_no_consent/fallback1-offline.log",
+            "log_sha256": "89679b92e6a596431d5a7aee3e62b0960152e85bd5d2829859d54097debe9598"
+          },
+          "compatibility": {
+            "receipt": "cases/practice_unprotected_no_consent/fallback1-compatibility.json",
+            "sha256": "9fa6e7cde5848e2cf68bdea920ca711523730bfbaf866d9bf767ed3244815be7",
+            "log": "cases/practice_unprotected_no_consent/fallback1-compatibility-analysis.log",
+            "negative_log": "cases/practice_unprotected_no_consent/fallback1-negative-analysis.log",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__practice_unprotected_no_consent --candidate fallback1 --output .runtime-work/hose-913-fallback-practice_unprotected_no_consent-compat-v1 --library runtime/library --validator .runtime-work/c229439-validator/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C197786__NRS-484B-913__motor_vehicle_driver/execution-manifest.json --case testing__C197786__NRS-484B-913__motor_vehicle_driver__practice_unprotected_no_consent --output .runtime-work/hose-913-selected-practice_unprotected_no_consent-v15",
         "construction_sha256": "474c6c8e302fa01b69e69d29f57c4fcd5ca6acaeaef466e317c9e53161e4c80e",
@@ -713,7 +963,12 @@
         "receipt": "cases/practice_unprotected_no_consent/saved-processing.json",
         "receipt_sha256": "101bc0050ecce1f1f2a917841e67a72bc6487540c980cb4c8490597f7ca5101c",
         "analysis_log": "cases/practice_unprotected_no_consent/saved-analysis.log",
-        "analysis_log_sha256": "0ae5f8b8dc6e5e060e979c5c67fff0f40dfd0227e2a04f892afab9a7b95ee36b"
+        "analysis_log_sha256": "0ae5f8b8dc6e5e060e979c5c67fff0f40dfd0227e2a04f892afab9a7b95ee36b",
+        "feedback_test_exit_code": 0,
+        "feedback_test_log": "cases/practice_unprotected_no_consent/saved-negative.log",
+        "feedback_test_log_sha256": "4e6e538e2dda33d1188a9c5c41881489ae1c115e75e30d6c882f6833d4ab2ce2",
+        "feedback_receipt": "cases/practice_unprotected_no_consent/saved-negative-processing.json",
+        "feedback_receipt_sha256": "4e6e538e2dda33d1188a9c5c41881489ae1c115e75e30d6c882f6833d4ab2ce2"
       },
       "delivery_acceptance": {
         "case_id": "testing__C197786__NRS-484B-913__motor_vehicle_driver__practice_unprotected_no_consent",
@@ -737,6 +992,10 @@
       },
       "negative": {
         "log": "cases/practice_unprotected_no_consent/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/practice_unprotected_no_consent/physical-preparation.json",
+        "sha256": "099c9371a1a66c326ad6b586549ffed474754e187990fde1cde6bfb0a6382f43"
       }
     }
   ],

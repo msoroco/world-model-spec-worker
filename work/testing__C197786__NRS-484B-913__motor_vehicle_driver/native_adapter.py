@@ -18,13 +18,17 @@ def steering_to(current_xy, yaw_degrees, target_xy):
     return max(-1.0, min(1.0, error / 0.7))
 
 
-def body_corners(transform, extent):
+def body_corners(transform, extent, offset=None):
     yaw = math.radians(transform.rotation.yaw)
     c, s = math.cos(yaw), math.sin(yaw)
     x, y = transform.location.x, transform.location.y
+    ox = 0.0 if offset is None else offset.x
+    oy = 0.0 if offset is None else offset.y
     return [[x + dx * c - dy * s, y + dx * s + dy * c]
-            for dx, dy in ((-extent.x, -extent.y), (extent.x, -extent.y),
-                           (extent.x, extent.y), (-extent.x, extent.y))]
+            for dx, dy in ((ox - extent.x, oy - extent.y),
+                           (ox + extent.x, oy - extent.y),
+                           (ox + extent.x, oy + extent.y),
+                           (ox - extent.x, oy + extent.y))]
 
 
 class Adapter:
@@ -131,7 +135,8 @@ class Adapter:
             raise ValueError("original ego or hose actor disappeared")
         transform = actor.get_transform()
         return {"ego_xy": [transform.location.x, transform.location.y],
-                "ego_body_corners_xy": body_corners(transform, actor.bounding_box.extent),
+                "ego_body_corners_xy": body_corners(transform, actor.bounding_box.extent,
+                                                     actor.bounding_box.location),
                 "ego_actor_id": actor.id}
 
     def camera_packets(self, snapshot):

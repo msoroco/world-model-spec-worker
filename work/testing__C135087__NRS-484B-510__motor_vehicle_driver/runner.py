@@ -48,7 +48,8 @@ def main():
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
     parser.add_argument("--site-packet", default=os.environ.get("SCENARIO_RESTRICTED_ZONE_SITE"))
-    parser.add_argument("--adapter-module", default=os.environ.get("SCENARIO_RESTRICTED_ZONE_ADAPTER"))
+    parser.add_argument("--adapter-module", default=os.environ.get("SCENARIO_RESTRICTED_ZONE_ADAPTER")
+                        or str(Path(__file__).with_name("native_adapter.py")))
     parser.add_argument("--host")
     parser.add_argument("--port", type=int)
     args = parser.parse_args()
@@ -60,6 +61,7 @@ def main():
     if not all((args.output_dir, args.site_packet, args.adapter_module, args.host, args.port)):
         raise ValueError("Native source packet, adapter, host, port and output required")
     plan = plan_from_config(config, args.site_packet)
+    os.environ["SCENARIO_RESTRICTED_ZONE_SITE"] = str(Path(args.site_packet).resolve())
     spec = importlib.util.spec_from_file_location("local_native_adapter", args.adapter_module)
     if spec is None or spec.loader is None:
         raise ValueError("local Native adapter module unavailable")

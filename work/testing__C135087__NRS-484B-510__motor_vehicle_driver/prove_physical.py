@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SCRATCH = REPO / ".runtime-work/c135087-physical-v1"
+SCRATCH = REPO / ".runtime-work/c135087-physical-v2"
 PYTHON = str(REPO / ".venv-cpu/bin/python")
 
 
