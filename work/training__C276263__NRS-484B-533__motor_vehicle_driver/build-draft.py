@@ -56,6 +56,8 @@ def main():
                       'limitations': ['Capture requires an original same-frame instrument service; endpoint and physical calibration are local prerequisites',
                                       'No numeric legal definition of perceptible or effective']},
                   'status': 'partial_cpu_draft'}
+        config['case'] = {'case_id': case_id,
+                          'recording_description': config['recording_description']}
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
                  for name in ('runner.py', 'capture.py', 'instrumentation.py', 'grade.py', 'measure.py',
                               'finalize.py',

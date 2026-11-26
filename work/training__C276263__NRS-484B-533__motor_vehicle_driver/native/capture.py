@@ -198,7 +198,12 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
                 trace_rows.write(json.dumps({
                     'frame': native_frame, 'time_s': time_s,
                     'position': {'x': t.location.x, 'y': t.location.y, 'z': t.location.z},
-                    'heading_deg': t.rotation.yaw, 'speed_mps': math.hypot(v.x, v.y)}) + '\n')
+                    'position_m': [t.location.x, t.location.y, t.location.z],
+                    'heading_deg': t.rotation.yaw, 'speed_mps': math.hypot(v.x, v.y),
+                    'speed_mph': math.hypot(v.x, v.y) / .44704,
+                    'velocity_mps': [v.x, v.y, v.z],
+                    'control': {'throttle': c.throttle, 'brake': c.brake,
+                                'hand_brake': bool(c.hand_brake)}}) + '\n')
                 occupancy_rows.write(json.dumps(dict(common,
                     source_kind='occupancy_sensor',
                     occupant_count=instrument['occupant_count'],
@@ -212,7 +217,7 @@ def execute(case, output_dir, host='127.0.0.1', port=2000,
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed ' + name + ': ' + errors.decode()[-400:])
         from measure import SOURCES, sha
-        (output / 'source-hashes.json').write_text(json.dumps(
+        (output / 'acquisition-hashes.json').write_text(json.dumps(
             {name: sha(output / name) for name in SOURCES}, indent=2) + '\n')
         (output / 'instrument-review-required.json').write_text(json.dumps({
             'format': 'c276263-instrument-review-v2', 'case': case,

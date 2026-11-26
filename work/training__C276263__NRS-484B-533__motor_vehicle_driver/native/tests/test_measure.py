@@ -46,7 +46,11 @@ def sample(folder, *, engine=False, brake=True, wheel=-20):
                                        'driver_reference')}})
         trace.append({'frame': i + 900, 'time_s': i / 20,
                       'position': {'x': 0, 'y': -1.75, 'z': 4},
-                      'heading_deg': 0, 'speed_mps': 0})
+                      'position_m': [0, -1.75, 4],
+                      'heading_deg': 0, 'speed_mps': 0, 'speed_mph': 0,
+                      'velocity_mps': [0, 0, 0],
+                      'control': {'throttle': 0, 'brake': 0,
+                                  'hand_brake': brake}})
         instrument.append({'native_frame': i + 900, 'actor_id': 8,
                            'source_kind': 'synthetic_cpu',
                            'engine_running': engine,
@@ -76,7 +80,7 @@ class SavedThreeDutyTest(unittest.TestCase):
         self.assertEqual(len(result['unattended_frames']), 500)
         self.assertFalse(result['engine_running_any'])
         self.assertFalse(result['parking_brake_unset_any'])
-        self.assertIsNone(result['legal_verdict'])
+        self.assertNotIn('legal_verdict', result)
     def test_original_provenance_rejects_synthetic(self):
         with self.assertRaisesRegex(ValueError, 'source differs'):
             measure(self.folder, hashes(self.folder))
@@ -319,6 +323,10 @@ class SourceBoundComparisonTest(unittest.TestCase):
             for row in rows_in:
                 row['parking_brake_set'] = True
             rows(contrast / SOURCES[0], rows_in)
+            trace_rows = [json.loads(s) for s in (contrast / 'trace.jsonl').read_text().splitlines()]
+            for row in trace_rows:
+                row['control']['hand_brake'] = True
+            rows(contrast / 'trace.jsonl', trace_rows)
             with self.assertRaisesRegex(ValueError, 'contrast absent'):
                 compare(reference, contrast, hashes(reference), hashes(contrast),
                         diagnostic=True)

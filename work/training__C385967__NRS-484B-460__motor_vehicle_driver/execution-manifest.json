@@ -1,0 +1,980 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C385967__NRS-484B-460__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_prepared",
+  "cases": [
+    {
+      "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-a-construction.json",
+      "construction_sha256": "ca95d659c3a5448b9632143c6a2d5358065ef5fba61d937b1cf1e81526ed011d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest body and speed can fail with hand brake alone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-a-fallback1-construction.json",
+          "construction_sha256": "9d8c9fa23c8332d856af5ff85b56812e7101804056def9054aabd073d7f50df2",
+          "trigger": {
+            "source": "original Native native_samples.jsonl",
+            "metric": "maximum at-rest ego_speed_mps",
+            "failure_condition": "original at-rest speed exceeds engineering 0.1 m/s diagnostic"
+          },
+          "changed_knobs": [
+            "parking_brake_mode"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a --candidate fallback1 --output .runtime-work/c385967-a-fallback1-offline4",
+            "exit_code": 0,
+            "construction_sha256": "9d8c9fa23c8332d856af5ff85b56812e7101804056def9054aabd073d7f50df2",
+            "log": "native/selected-a-fallback1-offline.log",
+            "log_sha256": "ec3cfae2928aafaf0d0d421bb95f27941d690e1f3199a6cc8d03ffd0bd19f161"
+          },
+          "compatibility": {
+            "receipt": "native/selected-a-fallback1-compatibility.json",
+            "sha256": "2091027f488b5ceffdb9b60fff5042a27bc8d49a9e7e2e8ca6744ebb393dcf2d",
+            "log": "native/selected-a-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-a-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-a-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-a-receipt.json",
+        "sha256": "80bf5b4eb298e5f51b305d54fe03daa758dee84f7e6733a199a941dd7b730d04",
+        "scope": "synthetic CPU triad; original unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a --candidate primary --output .runtime-work/c385967-a-primary-offline4",
+        "exit_code": 0,
+        "construction_sha256": "ca95d659c3a5448b9632143c6a2d5358065ef5fba61d937b1cf1e81526ed011d",
+        "log": "native/selected-a-primary-offline.log",
+        "log_sha256": "f2ec2714803c3bca27db546c12a70935ca5c13a55ae9aa6d8ab95a34cf30edbc"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.speed.jsonl"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.road_edge.jsonl"
+        },
+        "native_body_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/native_body_pose.jsonl"
+        },
+        "st.parking_space": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.parking_space.jsonl"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.regulatory_sign.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.heading.jsonl"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.governs.jsonl"
+        }
+      },
+      "negative": {
+        "log": "native/selected-a-primary-negative.log"
+      },
+      "compatibility": {
+        "receipt": "native/selected-a-primary-compatibility.json",
+        "sha256": "6ef096d8ef83845be4e593e0a7d241923c0ae8b195a3f8acbc8d8ed06276c177",
+        "log": "native/selected-a-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-a-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "7501c2bb08c9a5dd3639fb97a2978cc89d6c6cca3f267b840b7605101bcb7d21",
+        "command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-a-positive.log",
+        "test_log_sha256": "df4a5c5b6212ea90b7c5cd716ece3f99c9e353946df5ac7520e14a656f0e1277",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-a-negative.log",
+        "negative_log_sha256": "a74a2eb1ed65d02801efb3a271a638b2e5739bb74c85c06cfca4ed697cc4415e",
+        "scope": "synthetic CPU mechanics; original Native pixels remain"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_a",
+        "test_exit_code": 0,
+        "test_log": "native/selected-a-saved-test.log",
+        "test_log_sha256": "17ef63760ec62d3fabb41b8bc7ecf69fb3a04d1cbfe0043c826037749b7d81bc",
+        "positive_processing_receipt": "native/selected-a-saved-processing.json",
+        "positive_processing_sha256": "5fed6c7309237f9083a839718d238731f066d3ec084916172cfed467dc397ba0",
+        "missing_source_feedback": "native/selected-a-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "e0731434f27e4c5fb6d645403fd921ce1b85fec5943e478ba53bac9c0b78a91b",
+        "scope": "synthetic saved positive and missing-device negative; original unverified"
+      }
+    },
+    {
+      "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-b-construction.json",
+      "construction_sha256": "53135a420ed69928f6cd19871e9050a347edd262f3e705d0510d9b56dab800fc",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest body and speed can fail with hand brake alone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-b-fallback1-construction.json",
+          "construction_sha256": "528134429264bff23c1c831afbf326368922c8adf910aec766048353b7fcba9b",
+          "trigger": {
+            "source": "original Native native_samples.jsonl",
+            "metric": "maximum at-rest ego_speed_mps",
+            "failure_condition": "original at-rest speed exceeds engineering 0.1 m/s diagnostic"
+          },
+          "changed_knobs": [
+            "parking_brake_mode"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b --candidate fallback1 --output .runtime-work/c385967-b-fallback1-offline4",
+            "exit_code": 0,
+            "construction_sha256": "528134429264bff23c1c831afbf326368922c8adf910aec766048353b7fcba9b",
+            "log": "native/selected-b-fallback1-offline.log",
+            "log_sha256": "daabdf5ab8f4d80121fd705508baed30de6a81129d090c2caa183444616fe643"
+          },
+          "compatibility": {
+            "receipt": "native/selected-b-fallback1-compatibility.json",
+            "sha256": "822215e4365f8653fc8159ee86d21fd209c28a27cdbfbe73c2889cb60a7e04cd",
+            "log": "native/selected-b-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-b-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-b-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-b-receipt.json",
+        "sha256": "e0ed5e5cf4fc344d3720f6044cbf381b74d9516ffa1d4b3ba2e138b0ec116ec6",
+        "scope": "synthetic CPU triad; original unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b --candidate primary --output .runtime-work/c385967-b-primary-offline4",
+        "exit_code": 0,
+        "construction_sha256": "53135a420ed69928f6cd19871e9050a347edd262f3e705d0510d9b56dab800fc",
+        "log": "native/selected-b-primary-offline.log",
+        "log_sha256": "962e9c0642c16dc6458a00d711d9eb942ac66cf6dc64dc3e4675f72294ea8f3a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.speed.jsonl"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.road_edge.jsonl"
+        },
+        "native_body_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/native_body_pose.jsonl"
+        },
+        "st.parking_space": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.parking_space.jsonl"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.regulatory_sign.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.heading.jsonl"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.governs.jsonl"
+        }
+      },
+      "negative": {
+        "log": "native/selected-b-primary-negative.log"
+      },
+      "compatibility": {
+        "receipt": "native/selected-b-primary-compatibility.json",
+        "sha256": "acc65fa4ec60176e8149fd7d534442ddac60b93db4241ed5ccd9f1488081f510",
+        "log": "native/selected-b-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-b-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "7501c2bb08c9a5dd3639fb97a2978cc89d6c6cca3f267b840b7605101bcb7d21",
+        "command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-b-positive.log",
+        "test_log_sha256": "62bc8c2049e968040e01f8ba359a48eb7d81665ff3e71c3111842c69dc3b00cd",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-b-negative.log",
+        "negative_log_sha256": "a74a2eb1ed65d02801efb3a271a638b2e5739bb74c85c06cfca4ed697cc4415e",
+        "scope": "synthetic CPU mechanics; original Native pixels remain"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__condition_b",
+        "test_exit_code": 0,
+        "test_log": "native/selected-b-saved-test.log",
+        "test_log_sha256": "8e953d9b636ca343a860c8685f06b34cbc1d71bdee8e2825da443b52c6078400",
+        "positive_processing_receipt": "native/selected-b-saved-processing.json",
+        "positive_processing_sha256": "d715f318a6ec708699f845c9307caef533ed952d533aab67725e4d51ca3758ad",
+        "missing_source_feedback": "native/selected-b-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "0ffd99bc99c36d3aeef149c68034194e9628f66f82dcb35cc783102f7792f034",
+        "scope": "synthetic saved positive and missing-device negative; original unverified"
+      }
+    },
+    {
+      "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_a",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-stop-a-construction.json",
+      "construction_sha256": "9126ded46800d5ffba1be69dea1eae07d597a1fd2fdb1046fef711426005840d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest body and speed can fail with hand brake alone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-stop-a-fallback1-construction.json",
+          "construction_sha256": "39e1fb1ae944a3d7bb85776a8a1a6a652f61a6221c556913b153e4db7125044e",
+          "trigger": {
+            "source": "original Native native_samples.jsonl",
+            "metric": "maximum at-rest ego_speed_mps",
+            "failure_condition": "original at-rest speed exceeds engineering 0.1 m/s diagnostic"
+          },
+          "changed_knobs": [
+            "parking_brake_mode"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_a --candidate fallback1 --output .runtime-work/c385967-stop-a-fallback1-offline2",
+            "exit_code": 0,
+            "construction_sha256": "39e1fb1ae944a3d7bb85776a8a1a6a652f61a6221c556913b153e4db7125044e",
+            "log": "native/selected-stop-a-fallback1-offline.log",
+            "log_sha256": "752e3a9baca984ba9e4f543c1813735f4a8b662436335cac46b70ed9859e30fd"
+          },
+          "compatibility": {
+            "receipt": "native/selected-stop-a-fallback1-compatibility.json",
+            "sha256": "92b750dfd929968ea27430f0019fc3db015caad8088ca9c2df801f20250419a6",
+            "log": "native/selected-stop-a-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-stop-a-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-stop-a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-stop-a-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-stop-a-receipt.json",
+        "sha256": "7847d2015fd3882783912b58f2bf7715c6db10f2de5b3790250ef32b60b501e0",
+        "scope": "synthetic CPU triad; original unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_a --candidate primary --output .runtime-work/c385967-stop-a-primary-offline2",
+        "exit_code": 0,
+        "construction_sha256": "9126ded46800d5ffba1be69dea1eae07d597a1fd2fdb1046fef711426005840d",
+        "log": "native/selected-stop-a-primary-offline.log",
+        "log_sha256": "1c925476610807832a53a08ec6cacab45bcb0b140d717768df89fcd5a5c4126f"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.speed.jsonl"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.road_edge.jsonl"
+        },
+        "native_body_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/native_body_pose.jsonl"
+        },
+        "st.parking_space": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.parking_space.jsonl"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.regulatory_sign.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.heading.jsonl"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.governs.jsonl"
+        }
+      },
+      "negative": {
+        "log": "native/selected-stop-a-primary-negative.log"
+      },
+      "compatibility": {
+        "receipt": "native/selected-stop-a-primary-compatibility.json",
+        "sha256": "64f4bb29c90e7a551853d73ebd3eb52ec004999df067c7bda7eea8776c83c5e9",
+        "log": "native/selected-stop-a-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-stop-a-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "7501c2bb08c9a5dd3639fb97a2978cc89d6c6cca3f267b840b7605101bcb7d21",
+        "command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_a --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-stop-a-positive.log",
+        "test_log_sha256": "7249f344a3d80b338ca39cf0d740da609fc75c929bee94bc07d7948215b6f233",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_a --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-stop-a-negative.log",
+        "negative_log_sha256": "a74a2eb1ed65d02801efb3a271a638b2e5739bb74c85c06cfca4ed697cc4415e",
+        "scope": "synthetic CPU mechanics; original Native pixels remain"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_a --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_a",
+        "test_exit_code": 0,
+        "test_log": "native/selected-stop-a-saved-test.log",
+        "test_log_sha256": "cc03e238369e0d5347ee474c8986bf0ac112b735bae5631cd70e4e2645c91445",
+        "positive_processing_receipt": "native/selected-stop-a-saved-processing.json",
+        "positive_processing_sha256": "cb3f404f3ab432ffc480b8f117db46f89aa0afbc71b4f5ee7af2f3138b0d10d8",
+        "missing_source_feedback": "native/selected-stop-a-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "0c4069a12a2fc79329e0aeb64c85c5cc16f3aad6653f98bc1ad62e7548b3f918",
+        "scope": "synthetic saved positive and missing-device negative; original unverified"
+      }
+    },
+    {
+      "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_b",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-stop-b-construction.json",
+      "construction_sha256": "5ba1f284ee74e9fabba65b47fd3df8cb77b92f537a60c68f536d292116fbdd24",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest body and speed can fail with hand brake alone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-stop-b-fallback1-construction.json",
+          "construction_sha256": "2fc4c46ebde5b96468bfad1605d6ac9958432792002338dfa3e0951e51306d98",
+          "trigger": {
+            "source": "original Native native_samples.jsonl",
+            "metric": "maximum at-rest ego_speed_mps",
+            "failure_condition": "original at-rest speed exceeds engineering 0.1 m/s diagnostic"
+          },
+          "changed_knobs": [
+            "parking_brake_mode"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_b --candidate fallback1 --output .runtime-work/c385967-stop-b-fallback1-offline2",
+            "exit_code": 0,
+            "construction_sha256": "2fc4c46ebde5b96468bfad1605d6ac9958432792002338dfa3e0951e51306d98",
+            "log": "native/selected-stop-b-fallback1-offline.log",
+            "log_sha256": "c8b2c16ca0b1806ac3fc1268abb88a138fe836efa096f23110716024e0685e7b"
+          },
+          "compatibility": {
+            "receipt": "native/selected-stop-b-fallback1-compatibility.json",
+            "sha256": "787beff0c5bc7dee6c7b144a1c5205a7e419a8546b3217d6ceec3f8da26cf922",
+            "log": "native/selected-stop-b-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-stop-b-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-stop-b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-stop-b-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-stop-b-receipt.json",
+        "sha256": "1d63b7a86c985b51399f5a33378c216a3fddf005a7ee5eec06e0f587becd5946",
+        "scope": "synthetic CPU triad; original unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_b --candidate primary --output .runtime-work/c385967-stop-b-primary-offline2",
+        "exit_code": 0,
+        "construction_sha256": "5ba1f284ee74e9fabba65b47fd3df8cb77b92f537a60c68f536d292116fbdd24",
+        "log": "native/selected-stop-b-primary-offline.log",
+        "log_sha256": "d6c344adee7e72bfac55a8ab4239f45d47ce6d2cd5cab07ede4a0c8a3aff4559"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.speed.jsonl"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.road_edge.jsonl"
+        },
+        "native_body_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/native_body_pose.jsonl"
+        },
+        "st.parking_space": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.parking_space.jsonl"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.regulatory_sign.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.heading.jsonl"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.governs.jsonl"
+        }
+      },
+      "negative": {
+        "log": "native/selected-stop-b-primary-negative.log"
+      },
+      "compatibility": {
+        "receipt": "native/selected-stop-b-primary-compatibility.json",
+        "sha256": "148df33cd03f53fedeeb774d1ccf0c1b0d6463cdde9078e50ac35f89376b95f4",
+        "log": "native/selected-stop-b-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-stop-b-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "7501c2bb08c9a5dd3639fb97a2978cc89d6c6cca3f267b840b7605101bcb7d21",
+        "command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_b --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-stop-b-positive.log",
+        "test_log_sha256": "717a3b7b18dae93c5bf68ace64a6a5fdfc4864b786c8872aa775162138af96f2",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_b --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-stop-b-negative.log",
+        "negative_log_sha256": "a74a2eb1ed65d02801efb3a271a638b2e5739bb74c85c06cfca4ed697cc4415e",
+        "scope": "synthetic CPU mechanics; original Native pixels remain"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_b --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stop_condition_b",
+        "test_exit_code": 0,
+        "test_log": "native/selected-stop-b-saved-test.log",
+        "test_log_sha256": "7eddce5bf008e8c38797d4273d8af0dfe21deed5934bb6c4da15fd43d545e855",
+        "positive_processing_receipt": "native/selected-stop-b-saved-processing.json",
+        "positive_processing_sha256": "74b1e537177e8829444a285112718eb35fe9a3f89662d8302387d54d5f8d91bc",
+        "missing_source_feedback": "native/selected-stop-b-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "0472d379eb05267c717b662cfe919f3034c7f135d6c20c72bd7644791b567d9d",
+        "scope": "synthetic saved positive and missing-device negative; original unverified"
+      }
+    },
+    {
+      "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_a",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-stand-a-construction.json",
+      "construction_sha256": "dc3997b61ffd5fba86ca404ff60264ed9746074398c2dd517f80503bc275ed72",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest body and speed can fail with hand brake alone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-stand-a-fallback1-construction.json",
+          "construction_sha256": "ce62cfa25d6eb3a467b4eda365312e886e874e7003e61cf006eec03beee00b22",
+          "trigger": {
+            "source": "original Native native_samples.jsonl",
+            "metric": "maximum at-rest ego_speed_mps",
+            "failure_condition": "original at-rest speed exceeds engineering 0.1 m/s diagnostic"
+          },
+          "changed_knobs": [
+            "parking_brake_mode"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_a --candidate fallback1 --output .runtime-work/c385967-stand-a-fallback1-offline2",
+            "exit_code": 0,
+            "construction_sha256": "ce62cfa25d6eb3a467b4eda365312e886e874e7003e61cf006eec03beee00b22",
+            "log": "native/selected-stand-a-fallback1-offline.log",
+            "log_sha256": "efc297b644a0a2c0b18d4141c3a434b25a975a03f6440f3a15b096f4ed679299"
+          },
+          "compatibility": {
+            "receipt": "native/selected-stand-a-fallback1-compatibility.json",
+            "sha256": "7f0301ee07368f0d973296c14195f7a200eef445b2223673a2e76a8d2475e40e",
+            "log": "native/selected-stand-a-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-stand-a-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-stand-a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-stand-a-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-stand-a-receipt.json",
+        "sha256": "0b222aa9e1516736db4c1b7472505bdd6fdc68bca747f7700e690d4022bcbfc3",
+        "scope": "synthetic CPU triad; original unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_a --candidate primary --output .runtime-work/c385967-stand-a-primary-offline2",
+        "exit_code": 0,
+        "construction_sha256": "dc3997b61ffd5fba86ca404ff60264ed9746074398c2dd517f80503bc275ed72",
+        "log": "native/selected-stand-a-primary-offline.log",
+        "log_sha256": "f0704fd4f9779cc1ce4fc83f4e4b233329cf0ecb73366338975fc6bd6a2c5a39"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.speed.jsonl"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.road_edge.jsonl"
+        },
+        "native_body_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/native_body_pose.jsonl"
+        },
+        "st.parking_space": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.parking_space.jsonl"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.regulatory_sign.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.heading.jsonl"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.governs.jsonl"
+        }
+      },
+      "negative": {
+        "log": "native/selected-stand-a-primary-negative.log"
+      },
+      "compatibility": {
+        "receipt": "native/selected-stand-a-primary-compatibility.json",
+        "sha256": "5101439f9f1d0197d68635b00c587d65bb7e05f11c74340d2725727a5d093252",
+        "log": "native/selected-stand-a-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-stand-a-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "7501c2bb08c9a5dd3639fb97a2978cc89d6c6cca3f267b840b7605101bcb7d21",
+        "command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_a --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-stand-a-positive.log",
+        "test_log_sha256": "902f453d718407242b0485ba74ab3820a03c0d90a9a4af999cb671c98443ecf5",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_a --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-stand-a-negative.log",
+        "negative_log_sha256": "a74a2eb1ed65d02801efb3a271a638b2e5739bb74c85c06cfca4ed697cc4415e",
+        "scope": "synthetic CPU mechanics; original Native pixels remain"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_a --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_a",
+        "test_exit_code": 0,
+        "test_log": "native/selected-stand-a-saved-test.log",
+        "test_log_sha256": "0fc1138ebbede17353f7cccafd550f94f83d5715a9e3cd52d0afe8af30805235",
+        "positive_processing_receipt": "native/selected-stand-a-saved-processing.json",
+        "positive_processing_sha256": "055a27cdd5608702d8f4e406096428ca7ace5ca8fc4996c7b1fe040b15b71e87",
+        "missing_source_feedback": "native/selected-stand-a-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "3d533ae06af800b5a7f116931623db49fcf3ffd1946fd546267838815cb03ea4",
+        "scope": "synthetic saved positive and missing-device negative; original unverified"
+      }
+    },
+    {
+      "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_b",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-stand-b-construction.json",
+      "construction_sha256": "3902302493eff145567b67a3f186c61240734b6592efb56af649c257f57a424b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest body and speed can fail with hand brake alone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-stand-b-fallback1-construction.json",
+          "construction_sha256": "3aa851c46a7c05fe12e2a608b391102b65ec4a6f464a95e78ce298a545836b0c",
+          "trigger": {
+            "source": "original Native native_samples.jsonl",
+            "metric": "maximum at-rest ego_speed_mps",
+            "failure_condition": "original at-rest speed exceeds engineering 0.1 m/s diagnostic"
+          },
+          "changed_knobs": [
+            "parking_brake_mode"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_b --candidate fallback1 --output .runtime-work/c385967-stand-b-fallback1-offline2",
+            "exit_code": 0,
+            "construction_sha256": "3aa851c46a7c05fe12e2a608b391102b65ec4a6f464a95e78ce298a545836b0c",
+            "log": "native/selected-stand-b-fallback1-offline.log",
+            "log_sha256": "07bc4a4512ed347a9679d8033e4a95dbd2463d58a82fa6ce96277d3ef9a39f9a"
+          },
+          "compatibility": {
+            "receipt": "native/selected-stand-b-fallback1-compatibility.json",
+            "sha256": "339db4d54a6dba10b86f91126a40c6560f792b720f11be44c8688efbb192778c",
+            "log": "native/selected-stand-b-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-stand-b-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-stand-b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-stand-b-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-stand-b-receipt.json",
+        "sha256": "c26c75d6c77bf4a5095a40bce5ea31180723cd3eef14e1e3800821ed968846fb",
+        "scope": "synthetic CPU triad; original unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_b --candidate primary --output .runtime-work/c385967-stand-b-primary-offline2",
+        "exit_code": 0,
+        "construction_sha256": "3902302493eff145567b67a3f186c61240734b6592efb56af649c257f57a424b",
+        "log": "native/selected-stand-b-primary-offline.log",
+        "log_sha256": "3610d99da8a7dad3965a1ef7884d1f542264efcf21ea94a41c6e1549f8276860"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/drv.standing_or_parked.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.speed.jsonl"
+        },
+        "st.road_edge": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.road_edge.jsonl"
+        },
+        "native_body_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/native_body_pose.jsonl"
+        },
+        "st.parking_space": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/st.parking_space.jsonl"
+        },
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/camera_frame_join.jsonl"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.regulatory_sign.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/rel.occupies.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/kin.heading.jsonl"
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "source-joined original Native sample, device, curb, body and camera frame",
+          "evidence": "native_samples.jsonl and channels/dev.governs.jsonl"
+        }
+      },
+      "negative": {
+        "log": "native/selected-stand-b-primary-negative.log"
+      },
+      "compatibility": {
+        "receipt": "native/selected-stand-b-primary-compatibility.json",
+        "sha256": "ccdb54e9fd743003b419fa1a49b22c66c02bac7d6b15330cb441089627c0dea9",
+        "log": "native/selected-stand-b-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-stand-b-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "7501c2bb08c9a5dd3639fb97a2978cc89d6c6cca3f267b840b7605101bcb7d21",
+        "command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_b --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-stand-b-positive.log",
+        "test_log_sha256": "3b4c451458b474231bb5e903d8d91a3724df2900d48b8ad1d36257c6c77cf8ba",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C385967__NRS-484B-460__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_b --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-stand-b-negative.log",
+        "negative_log_sha256": "a74a2eb1ed65d02801efb3a271a638b2e5739bb74c85c06cfca4ed697cc4415e",
+        "scope": "synthetic CPU mechanics; original Native pixels remain"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C385967__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_b --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C385967__NRS-484B-460__motor_vehicle_driver__selected_03f318de__stand_condition_b",
+        "test_exit_code": 0,
+        "test_log": "native/selected-stand-b-saved-test.log",
+        "test_log_sha256": "90edf1c59d31bc10bfe0a87c0e0ffeff0fcb6dca10340f065caf98bce299efce",
+        "positive_processing_receipt": "native/selected-stand-b-saved-processing.json",
+        "positive_processing_sha256": "afb8932900f3683a19f958fbaff94178a295cbb7521eff098c3de9235cd14b6e",
+        "missing_source_feedback": "native/selected-stand-b-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "d5ba97ff3b86f1ba3ff4ec16b4bf94935f05abd6be2283eb966b6aca7220ee50",
+        "scope": "synthetic saved positive and missing-device negative; original unverified"
+      }
+    }
+  ]
+}

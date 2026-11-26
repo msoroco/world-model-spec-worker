@@ -57,8 +57,21 @@ def measure(folder, expected_hashes, diagnostic=False):
                 t.get('frame') != v.get('native_frame') or
                 not isinstance(t.get('position'), dict) or
                 not all(number(t['position'].get(axis)) for axis in 'xyz') or
+                not isinstance(t.get('position_m'), list) or
+                len(t['position_m']) != 3 or
+                any(not number(t['position_m'][j]) or
+                    abs(t['position_m'][j] - t['position'][axis]) > 1e-4
+                    for j, axis in enumerate('xyz')) or
                 not number(t.get('heading_deg')) or
                 not number(t.get('speed_mps')) or
+                not number(t.get('speed_mph')) or
+                abs(t['speed_mph'] * .44704 - t['speed_mps']) > 1e-4 or
+                not isinstance(t.get('velocity_mps'), list) or
+                len(t['velocity_mps']) != 3 or
+                any(not number(x) for x in t['velocity_mps']) or
+                not isinstance(t.get('control'), dict) or
+                type(t['control'].get('hand_brake')) is not bool or
+                t['control']['hand_brake'] != v.get('parking_brake_set') or
                 not number(v.get('speed_mps')) or
                 not number(v.get('position_x_m')) or
                 abs(t['speed_mps'] - v['speed_mps']) > 1e-4 or
@@ -142,5 +155,4 @@ def measure(folder, expected_hashes, diagnostic=False):
             'grade_slope_fraction': grade['slope_fraction'],
             'right_curb_y_m': grade['right_curb_y_m'],
             'source_hashes': expected_hashes, 'perceptibility_reviewed': False,
-            'effective_brake_reviewed': False, 'wheel_direction_reviewed': False,
-            'legal_verdict': None}
+            'effective_brake_reviewed': False, 'wheel_direction_reviewed': False}

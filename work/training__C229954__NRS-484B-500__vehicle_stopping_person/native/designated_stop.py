@@ -82,6 +82,8 @@ def _source(ref):
     path = Path(ref["path"])
     if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != ref["sha256"]:
         raise ValueError("Missing or changed original source")
+    if path.suffix == '.jsonl':
+        return [json.loads(line) for line in path.read_text().splitlines() if line]
     return json.loads(path.read_text())
 
 
@@ -91,16 +93,26 @@ def measure(packet):
         raise ValueError("Unexpected Native source packet")
     sources = packet.get("sources", {})
     originals = {}
-    for key in ("designation", "device", "map", "native_trace", "video_frame_map"):
+    for key in ("designation", "device", "map", "person_activity",
+                "traffic_direction", "native_trace", "video_frame_map"):
         originals[key] = _source(sources.get(key))
     device = packet.get("device", {})
     if originals["device"] != {key: value for key, value in device.items() if key != "designated_polygon_map_m"}:
         raise ValueError("Device packet differs from original device source")
-    if originals["designation"] != {"designated_polygon_map_m": device.get("designated_polygon_map_m")}:
+    if originals["designation"].get("designated_polygon_map_m") != device.get("designated_polygon_map_m") or \
+            originals["designation"].get("device_id") != device.get("device_id"):
         raise ValueError("Designation packet differs from original extent source")
+    maps = {originals[name].get("map_name") for name in ("designation", "device", "map")}
+    if len(maps) != 1 or not next(iter(maps)):
+        raise ValueError("Original map identities differ")
+    if not originals["designation"].get("designation_source") or \
+            not originals["map"].get("hazard_context_source") or \
+            not originals["map"].get("physical_hazard_or_congestion_facts"):
+        raise ValueError("Designated extent or physical place context missing")
     if device.get("authority_status") != "source_reviewed_official" or not device.get("erected"):
         raise ValueError("Official erected device source review missing")
-    if not device.get("content") or not device.get("device_id"):
+    if not device.get("content") or not device.get("device_id") or \
+            not device.get("authority_source") or not device.get("content_source"):
         raise ValueError("Device content or identity missing")
     if device.get("hazard_context_status") != "physical_facts_retained_legal_unresolved":
         raise ValueError("Hazard or congestion physical context missing")
@@ -112,7 +124,9 @@ def measure(packet):
         raise ValueError("Native rows differ from original trace source")
     if not isinstance(rows, list) or len(rows) != FRAMES:
         raise ValueError("Incomplete 30-second Native trace")
-    if originals["video_frame_map"] != [{"video_frame": row.get("video_frame"), "time_s": row.get("time_s")}
+    if originals["video_frame_map"] != [{"video_frame": row.get("video_frame"),
+                                          "native_frame": row.get("native_frame"),
+                                          "time_s": row.get("time_s")}
                                          for row in rows]:
         raise ValueError("Video joins differ from original frame-map source")
     rest_frames, overlap_frames, rest_overlap_frames = 0, 0, 0
@@ -120,9 +134,12 @@ def measure(packet):
     previous_at_rest = False
     rest_runs = []
     run_start = None
+    previous_native = -1
     for index, row in enumerate(rows):
-        if row.get("video_frame") != index or row.get("native_frame") != index:
+        native_frame = row.get("native_frame")
+        if row.get("video_frame") != index or type(native_frame) is not int or native_frame <= previous_native:
             raise ValueError("Native/video frame join failed")
+        previous_native = native_frame
         if abs(row.get("time_s", -1) - index / RATE_HZ) > 1e-6:
             raise ValueError("Native/video time join failed")
         speed = row.get("observed_speed_mps")
@@ -150,9 +167,20 @@ def measure(packet):
         rest_runs.append([run_start, FRAMES - 1])
     if rest_frames == 0:
         raise ValueError("No observed vehicle rest interval")
-    if not packet.get("person_caused_stop_source"):
-        raise ValueError("Person-to-vehicle halt source missing")
-    if not packet.get("traffic_and_direction_source"):
+    activity = originals["person_activity"]
+    if activity != packet.get("person_activity") or \
+            activity.get("person_caused_stop") is not True or \
+            not activity.get("person_id") or \
+            not activity.get("purpose_source") or \
+            not activity.get("attendance_source") or \
+            not activity.get("passenger_activity_source") or \
+            not activity.get("merchandise_activity_source"):
+        raise ValueError("Person-to-vehicle halt and activity source missing")
+    context = originals["traffic_direction"]
+    if context != packet.get("traffic_direction") or \
+            not context.get("traffic_conflicts_source") or \
+            not context.get("officer_direction_source") or \
+            not context.get("device_direction_source"):
         raise ValueError("Traffic, police and device direction context missing")
     return {
         "format": "worker-designated-stop-measurement",
@@ -166,6 +194,8 @@ def measure(packet):
         "minimum_body_overlap_ratio": round(min_overlap, 6),
         "maximum_body_overlap_ratio": round(max_overlap, 6),
         "body_overlap_at_any_rest_frame": rest_overlap_frames > 0,
+        "person_activity_source_present": True,
+        "traffic_direction_source_present": True,
         "source_hashes": {k: v["sha256"] for k, v in sources.items()},
         "legal_characterization": "unassessed",
         "physical_completion": "requires_original_Native_sources",

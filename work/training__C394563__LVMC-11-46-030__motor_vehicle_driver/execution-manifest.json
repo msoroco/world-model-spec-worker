@@ -1,0 +1,2087 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1",
+      "construction": "draft-variant-exact/probe_1/primary/construction.json",
+      "construction_sha256": "a08e3d83396c5c2ebe04aec3e330691899e51888e91359a18614183d4f686ddd",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed Native stop station can miss the requested stop target under model acceleration"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-variant-exact/probe_1/fallback1/construction.json",
+          "construction_sha256": "084795f9622ca4412d395526ee68c4bae411eb4125a09eae1523fadd64f5cef8",
+          "trigger": {
+            "source": "sealed original native-rows.jsonl and result.json",
+            "metric": "observed centre stop distance versus unchanged request",
+            "failure_condition": "absolute difference exceeds 2 feet after source completeness review"
+          },
+          "changed_knobs": [
+            "approach and release throttle scale 1.0 to 0.8"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "084795f9622ca4412d395526ee68c4bae411eb4125a09eae1523fadd64f5cef8",
+            "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1 --candidate fallback1 --output .runtime-work/c394563-variant-offline-probe_1-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "log": "proofs/variant-probe_1-fallback1-offline.log",
+            "log_sha256": "9c545eceb5e51363ccc2c4f1d72e22be995641e6e182d21aefdc474930e0331b"
+          },
+          "compatibility": {
+            "receipt": "proofs/variant-probe_1-fallback1-compatibility.json",
+            "sha256": "db148d10a457006ee6acb466a4388e3d036acbec3213c2e98d425aa9f335db83",
+            "log": "proofs/variant-probe_1-fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/variant-probe_1-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "a08e3d83396c5c2ebe04aec3e330691899e51888e91359a18614183d4f686ddd",
+        "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1 --candidate primary --output .runtime-work/c394563-variant-offline-probe_1-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "proofs/variant-probe_1-primary-offline.log",
+        "log_sha256": "7673acf7d0d8f5a0e285a843b1f5d704654aa210b6577f5dca8bb24ce3c10320"
+      },
+      "measurement_contract": "diagnostic/probe_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/diagnostic/probe_1/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/variant-probe_1-primary-compatibility.json",
+        "sha256": "9aa37c43f7622ad0fd9c398577b1de52a0504182e1d2983245de0ad205dc267f",
+        "log": "proofs/variant-probe_1-primary-compatibility-analysis.log",
+        "negative_log": "proofs/variant-probe_1-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/variant-probe_1-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.crossing_warning_signal": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/variant-probe_1-physical-preparation.json",
+        "sha256": "2b1d20425875c4a07d70f40c805d783321f9a732ef9639ff283063c46023ab34"
+      },
+      "id": "probe_1",
+      "kind": "delivery",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-probe_1-saved.log",
+        "test_log_sha256": "90fe36f533e02d583ef5f576738c0b35e17dece075fbcb0e81c2ac04cabbbcc3"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ba1da789d8ff8a79db31f9d7038a5ae4d1f949ca9af225774f99e2e9249e041d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-probe1-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-probe1-v2/v0003/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-probe_1-selection-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-probe_1-delivery-positive.log",
+        "test_log_sha256": "66f7e745ab4151d7ba934f35dde1992598259853fb61c9c4cbf27b558891828a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-probe1-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-probe1-v2/v0003/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-probe_1-selection-negative.json --omit-source original-school-lane-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: original-school-lane-review.json",
+        "negative_log": "proofs/variant-probe_1-delivery-negative.log",
+        "negative_log_sha256": "7215ce2c0fc580918a32e2a5caaa0a51cd3dfd1fb168c523e6f0d1757387efb8"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_2",
+      "construction": "draft-variant-exact/probe_2/primary/construction.json",
+      "construction_sha256": "59df073087a20597e328bd36a961ab8fa08c345fbaffdef17dc5a5b61ee6a46f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed Native stop station can miss the requested stop target under model acceleration"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-variant-exact/probe_2/fallback1/construction.json",
+          "construction_sha256": "fa5e534207593762fa024e55487138b803e22b076666a2ada587597c588cab8e",
+          "trigger": {
+            "source": "sealed original native-rows.jsonl and result.json",
+            "metric": "observed centre stop distance versus unchanged request",
+            "failure_condition": "absolute difference exceeds 2 feet after source completeness review"
+          },
+          "changed_knobs": [
+            "approach and release throttle scale 1.0 to 0.8"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "fa5e534207593762fa024e55487138b803e22b076666a2ada587597c588cab8e",
+            "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_2 --candidate fallback1 --output .runtime-work/c394563-variant-offline-probe_2-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "log": "proofs/variant-probe_2-fallback1-offline.log",
+            "log_sha256": "114d79728c5ab9d841ea9da713395d64701e9b89d51406f4e542a4a54321e47c"
+          },
+          "compatibility": {
+            "receipt": "proofs/variant-probe_2-fallback1-compatibility.json",
+            "sha256": "19f4361ea9aa5a5f359c6326436effdcd63d7fdfb636205ee337205ef2388cc7",
+            "log": "proofs/variant-probe_2-fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/variant-probe_2-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "59df073087a20597e328bd36a961ab8fa08c345fbaffdef17dc5a5b61ee6a46f",
+        "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_2 --candidate primary --output .runtime-work/c394563-variant-offline-probe_2-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "proofs/variant-probe_2-primary-offline.log",
+        "log_sha256": "49b659d12525f98791eae609cf13ea5348c58748c41a3b9fdcf51573e4f07b2b"
+      },
+      "measurement_contract": "diagnostic/probe_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/diagnostic/probe_2/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/variant-probe_2-primary-compatibility.json",
+        "sha256": "6aee48aed87d6a7d0981a64f68bc4770a8e62445942611bc22792c24e93dbaca",
+        "log": "proofs/variant-probe_2-primary-compatibility-analysis.log",
+        "negative_log": "proofs/variant-probe_2-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/variant-probe_2-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.crossing_warning_signal": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/variant-probe_2-physical-preparation.json",
+        "sha256": "5ffbb1d982d6e2136177b2d7ce5396c62b45e7bce03cdb9b45ca594e2f6d3d8a"
+      },
+      "id": "probe_2",
+      "kind": "delivery",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_2",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-probe_2-saved.log",
+        "test_log_sha256": "076fd734226e753069c999158f5b883dcd760ce8ba4fdc9adf6cd32d583f6e15"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ba1da789d8ff8a79db31f9d7038a5ae4d1f949ca9af225774f99e2e9249e041d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-probe_2-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-probe_2-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-probe_2-selection-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-probe_2-delivery-positive.log",
+        "test_log_sha256": "fce82cba9f48b38329f763ab9cea3ff51a62d38f5ddd63303f8226a538626696",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__probe_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-probe_2-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-probe_2-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-probe_2-selection-negative.json --omit-source original-school-lane-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: original-school-lane-review.json",
+        "negative_log": "proofs/variant-probe_2-delivery-negative.log",
+        "negative_log_sha256": "7215ce2c0fc580918a32e2a5caaa0a51cd3dfd1fb168c523e6f0d1757387efb8"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_stopped",
+      "construction": "draft-variant-exact/signal_stopped/primary/construction.json",
+      "construction_sha256": "31811d17f346b8d79a2a989d5737d1ca6818889aacaec5cf79fa3115d4a3a131",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed Native stop station can miss the requested stop target under model acceleration"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-variant-exact/signal_stopped/fallback1/construction.json",
+          "construction_sha256": "caacfe13b5ec317f39eb7ff8557b3ca2db7a99c5d6a2dbb138f140841eb5b4e0",
+          "trigger": {
+            "source": "sealed original native-rows.jsonl and result.json",
+            "metric": "observed centre stop distance versus unchanged request",
+            "failure_condition": "absolute difference exceeds 2 feet after source completeness review"
+          },
+          "changed_knobs": [
+            "approach and release throttle scale 1.0 to 0.8"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "caacfe13b5ec317f39eb7ff8557b3ca2db7a99c5d6a2dbb138f140841eb5b4e0",
+            "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_stopped --candidate fallback1 --output .runtime-work/c394563-variant-offline-signal_stopped-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "log": "proofs/variant-signal_stopped-fallback1-offline.log",
+            "log_sha256": "4125660ef6ecc62a30668ebd3afcf399cf2203a85cdd3537375690887f8ba390"
+          },
+          "compatibility": {
+            "receipt": "proofs/variant-signal_stopped-fallback1-compatibility.json",
+            "sha256": "801a8fa8b000278682a82f234e6d4d3a090a4fdcfbeca8a9c3fd7d37224b2378",
+            "log": "proofs/variant-signal_stopped-fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/variant-signal_stopped-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "31811d17f346b8d79a2a989d5737d1ca6818889aacaec5cf79fa3115d4a3a131",
+        "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_stopped --candidate primary --output .runtime-work/c394563-variant-offline-signal_stopped-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "proofs/variant-signal_stopped-primary-offline.log",
+        "log_sha256": "9d49b151fd5adc9313ece4593087c94d289aeaa7ef68038ab23d155df647bc9d"
+      },
+      "measurement_contract": "diagnostic/signal_stopped/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/diagnostic/signal_stopped/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/variant-signal_stopped-primary-compatibility.json",
+        "sha256": "d164f083f9f649722b758376575ad922ab86959f590087a8457ca7ea93545f0c",
+        "log": "proofs/variant-signal_stopped-primary-compatibility-analysis.log",
+        "negative_log": "proofs/variant-signal_stopped-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/variant-signal_stopped-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.crossing_warning_signal": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/variant-signal_stopped-physical-preparation.json",
+        "sha256": "66d00aed119094c3f0a30f22027e25a42a1f048d8247665b58d70fbbb2de203f"
+      },
+      "id": "signal_stopped",
+      "kind": "delivery",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_stopped --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_stopped",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-signal_stopped-saved.log",
+        "test_log_sha256": "3a061581021dd85099e16718a2b9fa5c7f483e1112e6728619225d1afe624e97"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_stopped",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ba1da789d8ff8a79db31f9d7038a5ae4d1f949ca9af225774f99e2e9249e041d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_stopped --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-signal_stopped-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-signal_stopped-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-signal_stopped-selection-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-signal_stopped-delivery-positive.log",
+        "test_log_sha256": "8a1f92147119d664a5b740ec1c5ad68558bf06b9a121dcd612071edbe7536427",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_stopped --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-signal_stopped-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-signal_stopped-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-signal_stopped-selection-negative.json --omit-source original-school-lane-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: original-school-lane-review.json",
+        "negative_log": "proofs/variant-signal_stopped-delivery-negative.log",
+        "negative_log_sha256": "7215ce2c0fc580918a32e2a5caaa0a51cd3dfd1fb168c523e6f0d1757387efb8"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised",
+      "construction": "draft-variant-exact/signal_raised/primary/construction.json",
+      "construction_sha256": "0bd9dca116390c66e5ea529f83f475b47efaab9030150728baf1fe2ba338efe8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed Native stop station can miss the requested stop target under model acceleration"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-variant-exact/signal_raised/fallback1/construction.json",
+          "construction_sha256": "0d5725367b4139260dd5af1fcf023eab85fa9d8996d91232528aceabd81e605f",
+          "trigger": {
+            "source": "sealed original native-rows.jsonl and result.json",
+            "metric": "observed centre stop distance versus unchanged request",
+            "failure_condition": "absolute difference exceeds 2 feet after source completeness review"
+          },
+          "changed_knobs": [
+            "approach and release throttle scale 1.0 to 0.8"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "0d5725367b4139260dd5af1fcf023eab85fa9d8996d91232528aceabd81e605f",
+            "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised --candidate fallback1 --output .runtime-work/c394563-variant-offline-signal_raised-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "log": "proofs/variant-signal_raised-fallback1-offline.log",
+            "log_sha256": "ee2ec3f7138c68d952bc16f26c88f18ec0a1ec2036298c65cc01dc40795204cb"
+          },
+          "compatibility": {
+            "receipt": "proofs/variant-signal_raised-fallback1-compatibility.json",
+            "sha256": "11a121d5f3d16d9ac055076bf5c775c7b664e6621daa5b1f1f576cb484116691",
+            "log": "proofs/variant-signal_raised-fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/variant-signal_raised-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "0bd9dca116390c66e5ea529f83f475b47efaab9030150728baf1fe2ba338efe8",
+        "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised --candidate primary --output .runtime-work/c394563-variant-offline-signal_raised-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "proofs/variant-signal_raised-primary-offline.log",
+        "log_sha256": "03ac648ac8d238d12096d2d154b918eab94dfa007ef89c37bc0b8280afb81cbb"
+      },
+      "measurement_contract": "diagnostic/signal_raised/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/diagnostic/signal_raised/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/variant-signal_raised-primary-compatibility.json",
+        "sha256": "cdc619362fea6784f646b09bf5f9ea8e1fd0daa8407a5c8dfb180f4258225e24",
+        "log": "proofs/variant-signal_raised-primary-compatibility-analysis.log",
+        "negative_log": "proofs/variant-signal_raised-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/variant-signal_raised-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.crossing_warning_signal": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/variant-signal_raised-physical-preparation.json",
+        "sha256": "7f5cc75054d105d6cb85a1c5a9d10d402ee0edfe37b077815b30f18e3b248834"
+      },
+      "id": "signal_raised",
+      "kind": "delivery",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-signal_raised-saved.log",
+        "test_log_sha256": "6c4da7e01ff82fc4fe52828511f39665c1e77c9d795bce17c836096e20882a69"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ba1da789d8ff8a79db31f9d7038a5ae4d1f949ca9af225774f99e2e9249e041d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-signal_raised-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-signal_raised-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-signal_raised-selection-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-signal_raised-delivery-positive.log",
+        "test_log_sha256": "3dfe0fb99a0307fc688698f3ac8c88486cf858bf6f8f9ce8df4afe018a09e55e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__signal_raised --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-signal_raised-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-signal_raised-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-signal_raised-selection-negative.json --omit-source original-school-lane-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: original-school-lane-review.json",
+        "negative_log": "proofs/variant-signal_raised-delivery-negative.log",
+        "negative_log_sha256": "7215ce2c0fc580918a32e2a5caaa0a51cd3dfd1fb168c523e6f0d1757387efb8"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_go",
+      "construction": "draft-variant-exact/flagman_go/primary/construction.json",
+      "construction_sha256": "ff95dd26006a13224b7d9b1dfb269421881150f62e264165a3e250f23bbd2a3d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed Native stop station can miss the requested stop target under model acceleration"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-variant-exact/flagman_go/fallback1/construction.json",
+          "construction_sha256": "11e032403f8b8d4640e2273f269612562734558c54f9d498d9d853d59ea83986",
+          "trigger": {
+            "source": "sealed original native-rows.jsonl and result.json",
+            "metric": "observed centre stop distance versus unchanged request",
+            "failure_condition": "absolute difference exceeds 2 feet after source completeness review"
+          },
+          "changed_knobs": [
+            "approach and release throttle scale 1.0 to 0.8"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "11e032403f8b8d4640e2273f269612562734558c54f9d498d9d853d59ea83986",
+            "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_go --candidate fallback1 --output .runtime-work/c394563-variant-offline-flagman_go-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "log": "proofs/variant-flagman_go-fallback1-offline.log",
+            "log_sha256": "c4c4f5ac9baaec812c7c21e2f5e32cfd9e8dec05383390ecbbcfcbb4845dde0d"
+          },
+          "compatibility": {
+            "receipt": "proofs/variant-flagman_go-fallback1-compatibility.json",
+            "sha256": "c7448cbed307684b3701d8a40958dd9710ad0b544fbf659b1cf980ae9d0f431d",
+            "log": "proofs/variant-flagman_go-fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/variant-flagman_go-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "ff95dd26006a13224b7d9b1dfb269421881150f62e264165a3e250f23bbd2a3d",
+        "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_go --candidate primary --output .runtime-work/c394563-variant-offline-flagman_go-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "proofs/variant-flagman_go-primary-offline.log",
+        "log_sha256": "1496a27dea793af24a542a7ff6d6e33fc5512aba18da434e842f61a2d2cf5dea"
+      },
+      "measurement_contract": "diagnostic/flagman_go/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/diagnostic/flagman_go/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/variant-flagman_go-primary-compatibility.json",
+        "sha256": "188c78161bf367f740dce5b5fa0e6cfb5ff68ef226f40aef7e390be528ca04b2",
+        "log": "proofs/variant-flagman_go-primary-compatibility-analysis.log",
+        "negative_log": "proofs/variant-flagman_go-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/variant-flagman_go-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.crossing_warning_signal": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/variant-flagman_go-physical-preparation.json",
+        "sha256": "e1fca838db77f9e81a491650e3b43c68326efdb33676888b79ba754eec69e0d6"
+      },
+      "id": "flagman_go",
+      "kind": "delivery",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_go --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_go",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-flagman_go-saved.log",
+        "test_log_sha256": "6a96aee0149ce1d6267ee46547cbeb0bcdaa20a996cd594256ee1ae566270526"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_go",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ba1da789d8ff8a79db31f9d7038a5ae4d1f949ca9af225774f99e2e9249e041d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_go --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-flagman_go-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-flagman_go-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-flagman_go-selection-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-flagman_go-delivery-positive.log",
+        "test_log_sha256": "dc156914692c2c19b867c74359dff1a89c08b06e996214d1855fdf7df41ec30c",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_go --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-flagman_go-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-flagman_go-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-flagman_go-selection-negative.json --omit-source original-school-lane-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: original-school-lane-review.json",
+        "negative_log": "proofs/variant-flagman_go-delivery-negative.log",
+        "negative_log_sha256": "7215ce2c0fc580918a32e2a5caaa0a51cd3dfd1fb168c523e6f0d1757387efb8"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_left",
+      "construction": "draft-variant-exact/flagman_left/primary/construction.json",
+      "construction_sha256": "2caa156b3e4023c33fc1562428b7ebd96e435d488b530c39761cc3c93df0df5b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed Native stop station can miss the requested stop target under model acceleration"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-variant-exact/flagman_left/fallback1/construction.json",
+          "construction_sha256": "93d6bed35a7a665be7e3b0af5d89a3d7caedff27db9d37c92c3d7daff3694af7",
+          "trigger": {
+            "source": "sealed original native-rows.jsonl and result.json",
+            "metric": "observed centre stop distance versus unchanged request",
+            "failure_condition": "absolute difference exceeds 2 feet after source completeness review"
+          },
+          "changed_knobs": [
+            "approach and release throttle scale 1.0 to 0.8"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "93d6bed35a7a665be7e3b0af5d89a3d7caedff27db9d37c92c3d7daff3694af7",
+            "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_left --candidate fallback1 --output .runtime-work/c394563-variant-offline-flagman_left-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "log": "proofs/variant-flagman_left-fallback1-offline.log",
+            "log_sha256": "1dd9cdf143dde683052d9c7da954965cb0a46e5f027c62396a19b2fb1cc00b5d"
+          },
+          "compatibility": {
+            "receipt": "proofs/variant-flagman_left-fallback1-compatibility.json",
+            "sha256": "ff5b2ca6814d0d982c754f2b86dabb81b2ab8e1126da1001536498d86d49ea9c",
+            "log": "proofs/variant-flagman_left-fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/variant-flagman_left-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "2caa156b3e4023c33fc1562428b7ebd96e435d488b530c39761cc3c93df0df5b",
+        "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_left --candidate primary --output .runtime-work/c394563-variant-offline-flagman_left-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "proofs/variant-flagman_left-primary-offline.log",
+        "log_sha256": "da24c2717d6242732de8d05846ac1495d3799e09726f7832cfc7b86d989beecc"
+      },
+      "measurement_contract": "diagnostic/flagman_left/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/diagnostic/flagman_left/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/variant-flagman_left-primary-compatibility.json",
+        "sha256": "2743579aeaee49c28e30746863c096e2d6a2f21e31bd8e980d198ac3a6b71cdb",
+        "log": "proofs/variant-flagman_left-primary-compatibility-analysis.log",
+        "negative_log": "proofs/variant-flagman_left-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/variant-flagman_left-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.crossing_warning_signal": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/variant-flagman_left-physical-preparation.json",
+        "sha256": "d75ec2f49a700230952e2fbcc117fe93d0d28d17bde47d71bf766ac42c655aee"
+      },
+      "id": "flagman_left",
+      "kind": "delivery",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_left --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_left",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-flagman_left-saved.log",
+        "test_log_sha256": "6cc26d885194a8e529bcbab74dae0f6a68ad237379465c1a23b5b50f9e229abd"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_left",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ba1da789d8ff8a79db31f9d7038a5ae4d1f949ca9af225774f99e2e9249e041d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_left --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-flagman_left-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-flagman_left-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-flagman_left-selection-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-flagman_left-delivery-positive.log",
+        "test_log_sha256": "222e2aa80400984fbd87ea66acb99fe47777b17ff68ca275c019bfa8a4fd9550",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__flagman_left --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-flagman_left-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-flagman_left-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-flagman_left-selection-negative.json --omit-source original-school-lane-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: original-school-lane-review.json",
+        "negative_log": "proofs/variant-flagman_left-delivery-negative.log",
+        "negative_log_sha256": "7215ce2c0fc580918a32e2a5caaa0a51cd3dfd1fb168c523e6f0d1757387efb8"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_go",
+      "construction": "draft-variant-exact/person_go/primary/construction.json",
+      "construction_sha256": "4c5d3a954a6dd557997de7e69032015b7495647805ef876186058019d7564038",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed Native stop station can miss the requested stop target under model acceleration"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-variant-exact/person_go/fallback1/construction.json",
+          "construction_sha256": "fbd8c74d8c7309d9f51698493ef41d8b5622173e71c174b33c1bfd717bd76fa1",
+          "trigger": {
+            "source": "sealed original native-rows.jsonl and result.json",
+            "metric": "observed centre stop distance versus unchanged request",
+            "failure_condition": "absolute difference exceeds 2 feet after source completeness review"
+          },
+          "changed_knobs": [
+            "approach and release throttle scale 1.0 to 0.8"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "fbd8c74d8c7309d9f51698493ef41d8b5622173e71c174b33c1bfd717bd76fa1",
+            "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_go --candidate fallback1 --output .runtime-work/c394563-variant-offline-person_go-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "log": "proofs/variant-person_go-fallback1-offline.log",
+            "log_sha256": "e5f6e449bb530d2193f07915a8281956f08a656f1290442a3cb005b5baa28013"
+          },
+          "compatibility": {
+            "receipt": "proofs/variant-person_go-fallback1-compatibility.json",
+            "sha256": "7f3695f615eab97e2e4de485d1e46d09a6a52fb99e6ddf642a63ee88fa2a7d97",
+            "log": "proofs/variant-person_go-fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/variant-person_go-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "4c5d3a954a6dd557997de7e69032015b7495647805ef876186058019d7564038",
+        "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_go --candidate primary --output .runtime-work/c394563-variant-offline-person_go-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "proofs/variant-person_go-primary-offline.log",
+        "log_sha256": "e960236759c82af058e06bbbc17f8024a04f81f92f468e0a7a0fccd1114bac56"
+      },
+      "measurement_contract": "diagnostic/person_go/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/diagnostic/person_go/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/variant-person_go-primary-compatibility.json",
+        "sha256": "97d260b68f09d408177c7608c98caee6461dcc753936f0fb4e3c9a482dac81ea",
+        "log": "proofs/variant-person_go-primary-compatibility-analysis.log",
+        "negative_log": "proofs/variant-person_go-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/variant-person_go-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.crossing_warning_signal": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/variant-person_go-physical-preparation.json",
+        "sha256": "3a446774d722990c7f27cf6a2b144c7cbf0a17ea9415d84893564023dd0d2110"
+      },
+      "id": "person_go",
+      "kind": "delivery",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_go --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_go",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-person_go-saved.log",
+        "test_log_sha256": "2a55965628361d13fd1f1f913bdefc8b2f98d06053ad7228bbdb14ffd63b3d3d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_go",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ba1da789d8ff8a79db31f9d7038a5ae4d1f949ca9af225774f99e2e9249e041d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_go --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-person_go-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-person_go-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-person_go-selection-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-person_go-delivery-positive.log",
+        "test_log_sha256": "623d90286f6a006c876579dda792e4cda7d111e1cf109ec46c7ca5e5a6937a20",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_go --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-person_go-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-person_go-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-person_go-selection-negative.json --omit-source original-school-lane-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: original-school-lane-review.json",
+        "negative_log": "proofs/variant-person_go-delivery-negative.log",
+        "negative_log_sha256": "7215ce2c0fc580918a32e2a5caaa0a51cd3dfd1fb168c523e6f0d1757387efb8"
+      }
+    },
+    {
+      "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_left",
+      "construction": "draft-variant-exact/person_left/primary/construction.json",
+      "construction_sha256": "96479a6a19a449e3e91b9731dfb8e5ae4d94fb5d3869395cd628949cf564e7d7",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Observed Native stop station can miss the requested stop target under model acceleration"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-variant-exact/person_left/fallback1/construction.json",
+          "construction_sha256": "ca2c85887c79504e3850a75413c0f9128ab995a4da63985c52d5fa12f6507e50",
+          "trigger": {
+            "source": "sealed original native-rows.jsonl and result.json",
+            "metric": "observed centre stop distance versus unchanged request",
+            "failure_condition": "absolute difference exceeds 2 feet after source completeness review"
+          },
+          "changed_knobs": [
+            "approach and release throttle scale 1.0 to 0.8"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "ca2c85887c79504e3850a75413c0f9128ab995a4da63985c52d5fa12f6507e50",
+            "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_left --candidate fallback1 --output .runtime-work/c394563-variant-offline-person_left-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "log": "proofs/variant-person_left-fallback1-offline.log",
+            "log_sha256": "6e0e74e631e150c5632332dc5395e10551492e06e1a678d228cf6a5b19bf021e"
+          },
+          "compatibility": {
+            "receipt": "proofs/variant-person_left-fallback1-compatibility.json",
+            "sha256": "6b3e7d0a40dba305037f465509281723407a75ea399e726f3e448e2dc804b60c",
+            "log": "proofs/variant-person_left-fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/variant-person_left-fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "96479a6a19a449e3e91b9731dfb8e5ae4d94fb5d3869395cd628949cf564e7d7",
+        "command": "runtime.py offline --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/draft-variant-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_left --candidate primary --output .runtime-work/c394563-variant-offline-person_left-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "proofs/variant-person_left-primary-offline.log",
+        "log_sha256": "1befaed8394144c1174ba5fc1ec25079c41768f6d7f8660cc42ccb35eb4c51dc"
+      },
+      "measurement_contract": "diagnostic/person_left/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/diagnostic/person_left/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "proofs/variant-person_left-primary-compatibility.json",
+        "sha256": "f53a259b33362e8684a6a51548653b136c5fcff50ab3fe14ca6612a2741a2b9c",
+        "log": "proofs/variant-person_left-primary-compatibility-analysis.log",
+        "negative_log": "proofs/variant-person_left-primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/variant-person_left-primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.crossing_warning_signal": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "ru.child": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "method": "original 20 Hz Native actor/camera source readback",
+          "evidence": "native-rows.jsonl and video_frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/variant-person_left-physical-preparation.json",
+        "sha256": "1541caf4f3fc295d9bab12aa96155a5a5079c56487c7c2afde6960676118ebbb"
+      },
+      "id": "person_left",
+      "kind": "delivery",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.crossing_warning_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "ru.child",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          },
+          {
+            "name": "dev.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame original school warning Native and camera source join",
+            "time_window": "600 frames over 30 seconds",
+            "reference_frame": "original Native frame and school lane near side",
+            "uncertainty": "original source and pixel review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_lane_child_warning_review",
+            "unit": "structured",
+            "method": "sealed original review sources"
+          }
+        ],
+        "limitations": [
+          "Original school lane, child identity and warning pixels require review",
+          "Requested stop station does not prove actual stop or legal outcome"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/execution-manifest.json --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_left --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_left",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-person_left-saved.log",
+        "test_log_sha256": "fc95a773d78374cf6c9710c135a9a523a48aac1d9ec1bea9165f58f0817bcd92"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_left",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "ba1da789d8ff8a79db31f9d7038a5ae4d1f949ca9af225774f99e2e9249e041d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_left --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-person_left-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-person_left-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-person_left-selection-positive.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/variant-person_left-delivery-positive.log",
+        "test_log_sha256": "6a4018364e5555d0d72c92f1bada9f03f881ffed7cdf5ec5c57b0ab71530dee3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C394563__LVMC-11-46-030__motor_vehicle_driver/delivery_audit.py --variant --case training__C394563__LVMC-11-46-030__motor_vehicle_driver__person_left --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-attempt-person_left-v2 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-saved-person_left-v2/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c394563-variant-delivery-person_left-selection-negative.json --omit-source original-school-lane-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: original-school-lane-review.json",
+        "negative_log": "proofs/variant-person_left-delivery-negative.log",
+        "negative_log_sha256": "7215ce2c0fc580918a32e2a5caaa0a51cd3dfd1fb168c523e6f0d1757387efb8"
+      }
+    }
+  ]
+}
