@@ -1,0 +1,80 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C135709__NRS-484B-450-1o__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_preparation",
+  "cases": [
+    {
+      "case_id": "training__C135709__NRS-484B-450-1o__motor_vehicle_driver__false",
+      "kind": "delivery",
+      "construction": "draft-exact/false/primary/construction.json",
+      "construction_sha256": "4b5bd949c495c90f6ebfb6930fe052288c62d96bdc192a18c2694fb07890d687",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native stopping gain may place the vehicle short of the requested device-zone station; original rest and body footprint need inspection."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/false/fallback1/construction.json",
+          "construction_sha256": "75798735c7af84b453eaa659850941e0d48eb88808221697ceceab00683804bc",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "stationary footprint relative to requested device-zone station",
+            "failure_condition": "five-second rest interval missing or measured zone occupancy disagrees with requested outside/inside target after source completeness checks"
+          },
+          "changed_knobs": [
+            "initial vehicle spawn x -80 m to -78 m in both linked cases; controller and comparison variable fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "draft-exact/false/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/diagnostic-false-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation"
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-450-1o__motor_vehicle_driver__true",
+      "kind": "delivery",
+      "construction": "draft-exact/true/primary/construction.json",
+      "construction_sha256": "39d31f7dad9a903b471d42bc62da9f93d201ae0e3b682e6faa704ae0c46976e9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native stopping gain may place the vehicle short of the requested device-zone station; original rest and body footprint need inspection."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/true/fallback1/construction.json",
+          "construction_sha256": "e232aad37cd13fefd19e179fd9c6c04099ede5a230c595cc46352c57c6c32040",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "stationary footprint relative to requested device-zone station",
+            "failure_condition": "five-second rest interval missing or measured zone occupancy disagrees with requested outside/inside target after source completeness checks"
+          },
+          "changed_knobs": [
+            "initial vehicle spawn x -80 m to -78 m in both linked cases; controller and comparison variable fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "draft-exact/true/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-450-1o__motor_vehicle_driver/diagnostic-true-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation"
+    }
+  ]
+}

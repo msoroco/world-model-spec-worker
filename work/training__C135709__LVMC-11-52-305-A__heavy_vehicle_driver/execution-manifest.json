@@ -8,7 +8,7 @@
       "case_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1",
       "kind": "delivery",
       "construction": "draft-exact/probe_1/primary/construction.json",
-      "construction_sha256": "9967c41f0cf8beba4a3c7c14543d99430dc54c6497b2d6e9a6719895ca03a847",
+      "construction_sha256": "ceb654a216576b7f5eab289d77c3f98f0eaf68c1d4256a3a6333b80bb7cbaef3",
       "candidate_risk": {
         "status": "physical",
         "reason": "Controller stopping gain may place the heavy vehicle short of the requested park frontage; original rest interval and footprint need inspection"
@@ -17,7 +17,7 @@
         {
           "id": "fallback1",
           "construction": "draft-exact/probe_1/fallback1/construction.json",
-          "construction_sha256": "98ca8fb0c3f4f8b59949881ed8ef111a11855daee9587aa97082e358f1482013",
+          "construction_sha256": "6ac369a76bae3f5fc9abdf6145f084506e8cc2b1389879a6d3d9a139b0f9deb5",
           "trigger": {
             "source": "original Native vehicle-poses.jsonl and result.json",
             "metric": "stationary footprint at requested frontage station",
@@ -28,14 +28,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "98ca8fb0c3f4f8b59949881ed8ef111a11855daee9587aa97082e358f1482013",
+            "construction_sha256": "6ac369a76bae3f5fc9abdf6145f084506e8cc2b1389879a6d3d9a139b0f9deb5",
             "command": "runtime.py offline --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1 --candidate fallback1",
             "log": "proofs/probe_1/fallback1-offline.log",
             "log_sha256": "b32227fffb9d9efb0f96e8a402f14498fafd587ba227eb10041f22cbd48326d9"
           },
           "compatibility": {
             "receipt": "proofs/probe_1/fallback1-compatibility.json",
-            "sha256": "53cf412348a7add71d87307f35041d35a2f67de0678505343830dc09d3cb4e31",
+            "sha256": "7b71e3e66568ca65f7f38e4c5c8303334b772e5c63abd19df106b781a11a8283",
             "log": "proofs/probe_1/fallback1-compatibility-analysis.log",
             "negative_log": "proofs/probe_1/fallback1-negative-analysis.log"
           }
@@ -54,24 +54,24 @@
       },
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "9967c41f0cf8beba4a3c7c14543d99430dc54c6497b2d6e9a6719895ca03a847",
+        "construction_sha256": "ceb654a216576b7f5eab289d77c3f98f0eaf68c1d4256a3a6333b80bb7cbaef3",
         "command": "runtime.py offline --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1 --candidate primary",
         "log": "proofs/probe_1/primary-offline.log",
         "log_sha256": "b32227fffb9d9efb0f96e8a402f14498fafd587ba227eb10041f22cbd48326d9"
       },
       "compatibility": {
         "receipt": "proofs/probe_1/primary-compatibility.json",
-        "sha256": "72b8e28239b12fdbbba6fb01401db9ca0cd91d58969fb375ddd0a100fa316a9d",
+        "sha256": "17a53b53d3ca8cef26fa8aaecee6677fa07814539077ec5dfd80bf453e81b208",
         "log": "proofs/probe_1/primary-compatibility-analysis.log",
         "negative_log": "proofs/probe_1/primary-negative-analysis.log"
       },
       "negative": {
         "log": "proofs/probe_1/primary-negative-analysis.log",
-        "log_sha256": "df1c22043b374069a09cbe961d4bc26b4655b229e3fb9aa74f8889ac0cdcd371"
+        "log_sha256": "12aae5e2f370a3254e150d1310ff6b458548122a00bccecbedfd4ca27b59157e"
       },
       "physical_preparation": {
         "receipt": "proofs/probe_1/physical-preparation.json",
-        "sha256": "faa59c4928884df8712f37a5370acf8acec303bf1177675b87235152f064cf26"
+        "sha256": "1a564e173d599616910961247cba430a33a175647d598f2cc80e61f0f530e20a"
       },
       "acquisition": {
         "vehicle_pose_and_speed": {
@@ -145,6 +145,46 @@
             "vehicle-poses.jsonl",
             "video_frames.jsonl"
           ]
+        },
+        "ru.trailer_or_combination": {
+          "entrypoint": "runner.py",
+          "method": "independent vehicle and trailer classification joined to original actor",
+          "evidence": [
+            "vehicle-spec-review.json",
+            "vehicle-poses.jsonl"
+          ]
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "method": "property-frontage review for loading or delivery exception",
+          "evidence": [
+            "exception-review.json",
+            "road.xodr"
+          ]
+        },
+        "sig.door_open": {
+          "entrypoint": "runner.py",
+          "method": "original overview and actual transfer activity review",
+          "evidence": [
+            "overview.mkv",
+            "exception-review.json"
+          ]
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "independent occupant and passenger activity source",
+          "evidence": [
+            "vehicle-spec-review.json",
+            "exception-review.json"
+          ]
+        },
+        "dev.temporary_traffic_control": {
+          "entrypoint": "runner.py",
+          "method": "service or construction activity and temporary control review",
+          "evidence": [
+            "exception-review.json",
+            "overview.mkv"
+          ]
         }
       },
       "post_capture": {
@@ -152,15 +192,41 @@
         "command": "runtime.py process-saved --manifest work/training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver/execution-manifest.json --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1",
         "test_log": "proofs/probe_1/saved.log",
-        "test_log_sha256": "69c3cf80b29e2376c628a050728292c07aa9c871128e15845b92da6504030fe8",
+        "test_log_sha256": "5079d0434e29436d76292baee173d28b1b23ef47bc7d6211ae157877d020806c",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_park_vehicle_and_exception_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c59753ba39ae85e84dbe2f484cc9678ed3a000e0d70e2d2e52ba2433be825325",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver/delivery_audit.py --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v5-compat-probe_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v5-saved-probe_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v6-delivery-audit-probe_1-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_1/delivery-positive.log",
+        "test_log_sha256": "afde241ebc73d80fa7f2dea0078089c40c053e9408b8aa7ba734fad9eaeab2b3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver/delivery_audit.py --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v5-compat-probe_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v5-saved-probe_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v6-delivery-audit-probe_1-positive.json --diagnostic --omit-source park-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: park-review.json",
+        "negative_log": "proofs/probe_1/delivery-negative.log",
+        "negative_log_sha256": "35840b698ecb25709045891a0d10ed7c297ad35ad6c2d757367d823a8d039311"
       }
     },
     {
       "case_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2",
       "kind": "delivery",
       "construction": "draft-exact/probe_2/primary/construction.json",
-      "construction_sha256": "5cf53b801e99d83364767a65ae35dc90a340efb7694d5c6e731fe0f8969a1448",
+      "construction_sha256": "ccbd398fc105677d770e9549cbd608e592d389c0976c2f53e233960e4738c03b",
       "candidate_risk": {
         "status": "physical",
         "reason": "Controller stopping gain may place the heavy vehicle short of the requested park frontage; original rest interval and footprint need inspection"
@@ -169,7 +235,7 @@
         {
           "id": "fallback1",
           "construction": "draft-exact/probe_2/fallback1/construction.json",
-          "construction_sha256": "87b9a9bd9285b2482261b3c85080ccc319e240fead5c79c50ee41f1e6bd69880",
+          "construction_sha256": "2266b0e318a69be926653585aebd1737b233728552a7656e2854b92cfd7804e2",
           "trigger": {
             "source": "original Native vehicle-poses.jsonl and result.json",
             "metric": "stationary footprint at requested frontage station",
@@ -180,14 +246,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "87b9a9bd9285b2482261b3c85080ccc319e240fead5c79c50ee41f1e6bd69880",
+            "construction_sha256": "2266b0e318a69be926653585aebd1737b233728552a7656e2854b92cfd7804e2",
             "command": "runtime.py offline --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2 --candidate fallback1",
             "log": "proofs/probe_2/fallback1-offline.log",
-            "log_sha256": "b32227fffb9d9efb0f96e8a402f14498fafd587ba227eb10041f22cbd48326d9"
+            "log_sha256": "12ab9598bc41d9e45bd02151cb31ba22f1452631f6322425c097cdbbbee9ebb9"
           },
           "compatibility": {
             "receipt": "proofs/probe_2/fallback1-compatibility.json",
-            "sha256": "2d74838023dccc085d1c5756789dd0802d5a9ce88f491b61576713c44339470a",
+            "sha256": "4d989e470d128866105795d7f2e01eb29046a3aa6f03464a4bf3320b273cb3b4",
             "log": "proofs/probe_2/fallback1-compatibility-analysis.log",
             "negative_log": "proofs/probe_2/fallback1-negative-analysis.log"
           }
@@ -206,24 +272,24 @@
       },
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "5cf53b801e99d83364767a65ae35dc90a340efb7694d5c6e731fe0f8969a1448",
+        "construction_sha256": "ccbd398fc105677d770e9549cbd608e592d389c0976c2f53e233960e4738c03b",
         "command": "runtime.py offline --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2 --candidate primary",
         "log": "proofs/probe_2/primary-offline.log",
         "log_sha256": "b32227fffb9d9efb0f96e8a402f14498fafd587ba227eb10041f22cbd48326d9"
       },
       "compatibility": {
         "receipt": "proofs/probe_2/primary-compatibility.json",
-        "sha256": "a8b945c05321e80e84146c0fd1833219712688d1db21265a77e6532267ebca45",
+        "sha256": "f1f3c9b0e74296e001a87df8192ba4820b1a20f66d34034e4564c16e640e21a2",
         "log": "proofs/probe_2/primary-compatibility-analysis.log",
         "negative_log": "proofs/probe_2/primary-negative-analysis.log"
       },
       "negative": {
         "log": "proofs/probe_2/primary-negative-analysis.log",
-        "log_sha256": "3915d1bf68fe0ac888cb4bf0b51a47be47e6079c25d00379d54f3937232def98"
+        "log_sha256": "5bdc46c821e3bc0f96cbddb6918521db9d66b9c9943f4d6cc428a6555fc94b96"
       },
       "physical_preparation": {
         "receipt": "proofs/probe_2/physical-preparation.json",
-        "sha256": "31d0b862b98be115aec84dfe4b046a5729b98fc6b5dde8b81623df7ec25669a7"
+        "sha256": "9797d53dbf4c0b3a8b1181bdb34c722dbde87a12709a343e60ee4f3c983b54b3"
       },
       "acquisition": {
         "vehicle_pose_and_speed": {
@@ -297,6 +363,46 @@
             "vehicle-poses.jsonl",
             "video_frames.jsonl"
           ]
+        },
+        "ru.trailer_or_combination": {
+          "entrypoint": "runner.py",
+          "method": "independent vehicle and trailer classification joined to original actor",
+          "evidence": [
+            "vehicle-spec-review.json",
+            "vehicle-poses.jsonl"
+          ]
+        },
+        "st.driveway_or_alley_entrance": {
+          "entrypoint": "runner.py",
+          "method": "property-frontage review for loading or delivery exception",
+          "evidence": [
+            "exception-review.json",
+            "road.xodr"
+          ]
+        },
+        "sig.door_open": {
+          "entrypoint": "runner.py",
+          "method": "original overview and actual transfer activity review",
+          "evidence": [
+            "overview.mkv",
+            "exception-review.json"
+          ]
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "independent occupant and passenger activity source",
+          "evidence": [
+            "vehicle-spec-review.json",
+            "exception-review.json"
+          ]
+        },
+        "dev.temporary_traffic_control": {
+          "entrypoint": "runner.py",
+          "method": "service or construction activity and temporary control review",
+          "evidence": [
+            "exception-review.json",
+            "overview.mkv"
+          ]
         }
       },
       "post_capture": {
@@ -304,8 +410,34 @@
         "command": "runtime.py process-saved --manifest work/training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver/execution-manifest.json --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2",
         "test_log": "proofs/probe_2/saved.log",
-        "test_log_sha256": "5fb26145fe4cbfc0957369d03b44730bcdac736929c04601ec5de640fb14261f",
+        "test_log_sha256": "65b3081c758c8c7b84e0fe3f1b4100265d5d76906507f48416424105e65a94f2",
         "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_park_vehicle_and_exception_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c59753ba39ae85e84dbe2f484cc9678ed3a000e0d70e2d2e52ba2433be825325",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver/delivery_audit.py --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v5-compat-probe_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v5-saved-probe_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v6-delivery-audit-probe_2-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_2/delivery-positive.log",
+        "test_log_sha256": "47dfb61d4747bf5a128c91daa5df8b6e1c3b307833b7b0ebd63af1e077d2ced8",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver/delivery_audit.py --case training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v5-compat-probe_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v5-saved-probe_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c135709-v6-delivery-audit-probe_2-positive.json --diagnostic --omit-source park-review.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: park-review.json",
+        "negative_log": "proofs/probe_2/delivery-negative.log",
+        "negative_log_sha256": "35840b698ecb25709045891a0d10ed7c297ad35ad6c2d757367d823a8d039311"
       }
     }
   ]

@@ -9,7 +9,11 @@ from measure_parking import CAMERAS, FRAMES, measure
 SOURCES = ('road.xodr', 'frontage-inventory.json', 'park-review.json',
            'vehicle-spec-review.json', 'exception-review.json',
            'vehicle-poses.jsonl', 'video_frames.jsonl', 'overview.mkv')
-CHANNELS = ('vehicle_pose_and_speed', 'park_frontage_geometry', 'source_camera_frame_join')
+CHANNELS = ('vehicle_pose_and_speed', 'park_frontage_geometry', 'source_camera_frame_join',
+            'ru.commercial_motor_vehicle', 'ru.trailer_or_combination', 'kin.extent',
+            'drv.standing_or_parked', 'st.roadway', 'dev.regulatory_sign',
+            'st.driveway_or_alley_entrance', 'sig.door_open', 'ru.occupant_count',
+            'kin.time', 'dev.temporary_traffic_control')
 
 
 def required(root, name):
@@ -50,17 +54,32 @@ def measured(root):
         raise ValueError('Park status source does not bind original road and pixels')
     if any(type(park.get(key)) is not bool for key in ('residence_district_300ft', 'public_school')):
         raise ValueError('Alternative frontage classification source absent')
+    if park.get('public_access') is not True or park.get('jurisdiction_reviewed') is not True or not park.get('designation_source'):
+        raise ValueError('Public park access, designation or jurisdiction source absent')
     if park.get('park_status') != 'public_park' or park.get('park_bounds_m') != inventory.get('park_bounds_m'):
         raise ValueError('Public park designation or bounds absent')
     if exception.get('road_sha256') != road_hash or (exception.get('pixel_sha256') != sha(paths['overview.mkv']) and not (diagnostic and exception.get('pixel_sha256') == 'synthetic_rgb_source')):
         raise ValueError('Posted permission and exception review does not bind original sources')
     if vehicle.get('pose_sha256') != sha(paths['vehicle-poses.jsonl']):
         raise ValueError('Vehicle specification source does not bind observed vehicle')
+    if type(vehicle.get('trailer_present')) is not bool or type(vehicle.get('occupant_count')) is not int:
+        raise ValueError('Vehicle trailer and occupancy source absent')
+    if not vehicle.get('commercial_enterprise_basis') or not vehicle.get('design_maintenance_or_use'):
+        raise ValueError('Commercial enterprise design, maintenance or use source absent')
     if vehicle.get('vehicle_class') != 'commercial_motor_vehicle':
         raise ValueError('Commercial vehicle classification source absent')
-    for key in ('posted_permission', 'expeditious_loading', 'essential_local_service'):
+    for key in ('posted_permission', 'expeditious_loading', 'essential_local_service',
+                'door_open_observed', 'service_ttc_observed'):
         if type(exception.get(key)) is not bool:
             raise ValueError('Exception source absent: ' + key)
+    for key in ('device_wording', 'device_authority', 'governed_area',
+                'parking_purpose', 'actual_transfer_activity',
+                'section_wide_exceptions_review', 'storage_meaning_review',
+                'modifier_scope_review'):
+        if not isinstance(exception.get(key), str) or not exception[key]:
+            raise ValueError('Device, parking activity or legal review source absent: ' + key)
+    if not isinstance(exception.get('property_frontage'), str) or not exception['property_frontage']:
+        raise ValueError('Loading property frontage source absent')
     if not isinstance(exception.get('loading_activity_source'), str) or not exception['loading_activity_source']:
         raise ValueError('Loading activity source absent')
     if not isinstance(exception.get('service_activity_source'), str) or not exception['service_activity_source']:
@@ -99,7 +118,18 @@ def measured(root):
                              'vehicle_footprint_m': footprint})
         values = {'vehicle_pose_and_speed': {'xyz_m': xyz, 'speed_mps': pose['observed_speed_mps']},
                   'park_frontage_geometry': {'footprint_m': footprint, 'park_bounds_m': park['park_bounds_m']},
-                  'source_camera_frame_join': cameras}
+                  'source_camera_frame_join': cameras,
+                  'ru.commercial_motor_vehicle': {'vehicle_class': vehicle['vehicle_class']},
+                  'ru.trailer_or_combination': {'trailer_present': vehicle['trailer_present']},
+                  'kin.extent': {'overall_length_m': vehicle['vehicle_overall_length_m'], 'body_extent_m': [half_length * 2, half_width * 2]},
+                  'drv.standing_or_parked': {'speed_mps': pose['observed_speed_mps'], 'stationary': pose['observed_speed_mps'] <= 0.10},
+                  'st.roadway': {'road_sha256': road_hash},
+                  'dev.regulatory_sign': {'posted_permission': exception['posted_permission']},
+                  'st.driveway_or_alley_entrance': {'property_frontage': exception['property_frontage']},
+                  'sig.door_open': {'door_open_observed': exception['door_open_observed']},
+                  'ru.occupant_count': {'count': vehicle['occupant_count']},
+                  'kin.time': {'original_time_s': i / 20},
+                  'dev.temporary_traffic_control': {'service_ttc_observed': exception['service_ttc_observed']}}
         for name, value in values.items():
             channels[name].append({'time_s': i / 20, 'value': value})
     context = {'source_kind': 'native_map_and_external_status_readback',
@@ -116,6 +146,18 @@ def measured(root):
     outcome['expeditious_loading_review'] = exception['expeditious_loading']
     outcome['essential_local_service_review'] = exception['essential_local_service']
     outcome['public_park_review'] = park['park_status']
+    outcome['public_access_review'] = park['public_access']
+    outcome['jurisdiction_review'] = park['jurisdiction_reviewed']
+    outcome['commercial_enterprise_basis'] = vehicle['commercial_enterprise_basis']
+    outcome['design_maintenance_or_use'] = vehicle['design_maintenance_or_use']
+    outcome['device_wording'] = exception['device_wording']
+    outcome['device_authority'] = exception['device_authority']
+    outcome['governed_area'] = exception['governed_area']
+    outcome['parking_purpose'] = exception['parking_purpose']
+    outcome['actual_transfer_activity'] = exception['actual_transfer_activity']
+    outcome['section_wide_exceptions_review'] = exception['section_wide_exceptions_review']
+    outcome['storage_meaning_review'] = exception['storage_meaning_review']
+    outcome['modifier_scope_review'] = exception['modifier_scope_review']
     outcome['residence_district_300ft_review'] = park['residence_district_300ft']
     outcome['public_school_review'] = park['public_school']
     outcome['legal_verdict_claimed'] = False
@@ -163,6 +205,38 @@ def exception_observation(root):
             'expeditious_loading_review', 'essential_local_service_review')}
 
 
+def park_context_observation(root):
+    value, _ = measured(root)
+    return {'public_park': value['public_park_review'],
+            'public_access': value['public_access_review'],
+            'jurisdiction_reviewed': value['jurisdiction_review']}
+
+
+def commercial_basis_observation(root):
+    value, _ = measured(root)
+    return {'basis': value['commercial_enterprise_basis'],
+            'design_maintenance_or_use': value['design_maintenance_or_use']}
+
+
+def parking_purpose_observation(root):
+    value, _ = measured(root)
+    return {'purpose': value['parking_purpose'],
+            'actual_transfer_activity': value['actual_transfer_activity'],
+            'storage_meaning_review': value['storage_meaning_review']}
+
+
+def device_observation(root):
+    value, _ = measured(root)
+    return {'wording': value['device_wording'], 'authority': value['device_authority'],
+            'governed_area': value['governed_area'],
+            'posted_permission': value['posted_permission_review']}
+
+
+def interpretive_reservations_observation(root):
+    value, _ = measured(root)
+    return {'modifier_scope': value['modifier_scope_review'],
+            'section_wide_exceptions': value['section_wide_exceptions_review']}
+
 def report(root):
     root = Path(root)
     config = json.loads(required(root, 'config.json').read_text())
@@ -174,7 +248,12 @@ def report(root):
              'public_school': ('alternative_place_observation', alternative_place_observation(root)),
              'loading_delivery_exception': ('loading_observation', loading_observation(root)),
              'essential_local_service_exception': ('service_observation', service_observation(root)),
-             'size_weight_scope': ('vehicle_observation', vehicle_observation(root))}
+             'size_weight_scope': ('vehicle_observation', vehicle_observation(root)),
+             'public_park_access_jurisdiction': ('park_context_observation', park_context_observation(root)),
+             'commercial_enterprise_basis': ('commercial_basis_observation', commercial_basis_observation(root)),
+             'parking_purpose_storage': ('parking_purpose_observation', parking_purpose_observation(root)),
+             'device_authority_area': ('device_observation', device_observation(root)),
+             'modifier_scope_exceptions': ('interpretive_reservations_observation', interpretive_reservations_observation(root))}
     measurements = {key: {'method': method, 'value': observed, 'sources': sources}
                     for key, (method, observed) in items.items()}
     return {'format': 'worker-analysis-report-v1', 'case_id': config['case_id'],

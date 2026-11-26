@@ -13,7 +13,7 @@ for suffix, target_speed in (("reference", 6.2), ("at_15", 6.7056), ("contrast",
     config = json.loads((root / "config.json").read_text())
     config["case_id"] = case
     config["selected_case_id"] = case
-    config["supported_case_ids"] = [case]
+    config["supported_case_ids"] = [assignment + "__" + name for name in ("reference", "at_15", "contrast")]
     config["case"] = {"case_id": case}
     config["target_speed_mps"] = target_speed
     config["requested_speed_mps"] = target_speed

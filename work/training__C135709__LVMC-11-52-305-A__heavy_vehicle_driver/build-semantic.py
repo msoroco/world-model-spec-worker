@@ -1,4 +1,4 @@
-"""Write source-quoted access-park frontage semantic stages for local review."""
+"""Write source-quoted public-park parking semantic stages for local review."""
 import hashlib
 import json
 from pathlib import Path
@@ -25,24 +25,24 @@ def main():
     relevance = {'cell_id': 'C135709', 'actor': ACTOR, 'status': 'draft',
         'relevant_laws': [{'law_id': LAW, 'quote': TEXT, 'applies_to': [ACTOR],
             'relevance_type': 'specific_match', 'confidence': 'high',
-            'notes': 'Frozen public-access premises and park maneuver; official park frontage designation and activity require independent source review.'}],
+            'notes': 'Frozen narrow-road parking cell; public-park designation, vehicle specifications, device authority and activity require independent source review.'}],
         'borderline_excluded': []}
     refs['relevance_batch'] = write(HERE / 'proposals/relevance-batch.json', relevance)
     refs['relevance'] = write(HERE / 'proposals/relevance.json', relevance)
     judgments = [
-        {'phrase': 'public park', 'note': 'Official park frontage designation, contrasting marking or paving, adjacent designated accessible space, ingress/egress and route connectivity require independent sources; conditional 11.52.135(A) sign route requires sign details.'},
-        {'phrase': 'stand, park or store', 'note': 'Vehicle, responsible person, occupancy, loading purpose and actual activity require independent review; no invented duration cutoff.'},
-        {'phrase': 'permitted by posted sign', 'note': 'Public-access jurisdiction and premises context require independent original review.'}]
+        {'phrase': 'public park', 'note': 'Public-park designation, public access, jurisdiction and street adjacency require independent status and original geometry sources; residence-district and school alternatives remain separate.'},
+        {'phrase': 'stand, park or store', 'note': 'Vehicle and responsible person, commercial-enterprise basis, length and unladen mass, parking purpose and actual transfer or service activity need independent review; no invented loading duration cutoff.'},
+        {'phrase': 'permitted by posted sign', 'note': 'Posted device wording, authority, governed area and permission require independent source review; section-wide exceptions and modifier scope remain reserved.'}]
     template = {'template_id': TEMPLATE, 'law_id': LAW, 'actor': ACTOR,
         'status': 'draft', 'quote': TEXT,
-        'structure': {'activation': {'description': 'Vehicle and responsible person at a source-reviewed qualifying public park frontage on public-access premises.',
-            'source_clause': 'a vehicle in an public park frontage'},
-            'obligation': {'description': 'Observe parked activity and original body footprint relative to qualifying park frontage; reserve legal conclusion.',
-                'type': 'must_not', 'source_clause': 'No person shall park', 'numeric_conditions': []},
-            'exceptions': [], 'timing': {'description': 'Original stationary/body observations over 600 frames; no statutory duration or overlap cutoff inferred.'},
+        'structure': {'activation': {'description': 'Commercial vehicle and responsible person stand, park or store upon a street adjacent to a source-reviewed public park, with exact length and unladen-mass predicates.',
+            'source_clause': 'upon any street adjacent to a residence district, public school or public park'},
+            'obligation': {'description': 'Observe original stationary body footprint, parking purpose and separate permission, loading and service facts; reserve legal conclusion.',
+                'type': 'must_not', 'source_clause': 'it is unlawful for a person to stand, park or store', 'numeric_conditions': []},
+            'exceptions': [{'description': 'Independently reviewed posted sign permission at the governed parking area.', 'source_clause': 'as permitted by posted sign'}, {'description': 'Commercial vehicle loading or delivery only during actual expeditious goods or passenger transfer in front of relevant property.', 'source_clause': 'only for that period of time during which goods or passengers are being expeditiously loaded or unloaded'}, {'description': 'Commercial vehicle used with service, repair, construction or similar essential use in the immediate neighborhood.', 'source_clause': 'Being used in conjunction with the performance of service, repair, construction or similar essential use within the immediate neighborhood'}], 'timing': {'description': 'Original 600-frame parking interval and source-reviewed activity duration; no invented statutory duration or adjacency cutoff.'},
             'judgment_calls_needed': judgments},
         'parameter_refs': [{'name': 'park_frontage_overlap', 'kind': 'subject_behavior', 'range_or_domain': 'original Native body corners against reviewed park frontage'},
-            {'name': 'access_park frontage_designation', 'kind': 'world_setup', 'range_or_domain': 'independent designation and pixels'},
+            {'name': 'public_park_designation', 'kind': 'world_setup', 'range_or_domain': 'independent designation and pixels'},
             {'name': 'parked_classification', 'kind': 'subject_behavior', 'range_or_domain': 'independent source review'}]}
     refs['template'] = write(HERE / 'proposals/template.json', template)
     terms = [('park_frontage_geometry',),
@@ -63,8 +63,8 @@ def main():
     binding = {'cell_id': 'C135709', 'actor': ACTOR, 'status': 'draft',
         'established_contexts': [], 'law_refs': [{'template_id': TEMPLATE, 'binding_kind': 'direct'}],
         'context_refs': [], 'fixed_parameters': [{'name': 'premises_context', 'value': 'public-access premises with public park frontage', 'rationale': 'Frozen catalog cell, subject to original review.'}],
-        'variable_parameters': [{'name': 'park_frontage_overlap', 'kind': 'subject_behavior', 'range_or_domain': 'outside or inside reviewed park frontage', 'used_by_laws': [LAW]},
-            {'name': 'target_station_beside_park', 'kind': 'controller', 'range_or_domain': 'outside or inside request', 'used_by_laws': [LAW]}]}
+        'variable_parameters': [{'name': 'park_frontage_overlap', 'kind': 'subject_behavior', 'range_or_domain': 'away from or beside source-reviewed public park frontage', 'used_by_laws': [LAW]},
+            {'name': 'target_station_beside_park', 'kind': 'controller', 'range_or_domain': 'away or beside station request', 'used_by_laws': [LAW]}]}
     refs['bindings'] = write(HERE / 'proposals/bindings.json', binding)
     cases = [{'case_id': AID + '__baseline', 'target_law_id': None, 'target_type': 'baseline',
         'rationale': 'Observe premises context without targeting parking activity.',
@@ -73,7 +73,7 @@ def main():
         'unresolved_judgment_calls': [j['phrase'] for j in judgments], 'recording_description': desc}]
     for suffix, inside in (('probe_1', False), ('probe_2', True)):
         cases.append({'case_id': AID + '__' + suffix, 'target_law_id': LAW,
-            'target_type': 'boundary_probe', 'paired_probe_id': 'access_park frontage_footprint',
+            'target_type': 'boundary_probe', 'paired_probe_id': 'park_frontage_station',
             'rationale': 'Request ' + ('inside' if inside else 'outside') + ' park frontage parking and measure original stationary full-body overlap without a legal label.',
             'deliberate_differences': ['target_station_beside_park'],
             'variable_assignments': {'park_frontage_overlap': {'kind': 'subject_behavior', 'value': None},
@@ -81,13 +81,13 @@ def main():
             'unresolved_judgment_calls': [j['phrase'] for j in judgments],
             'recording_description': desc,
             'probe': {'primary_variable': 'park_frontage_overlap',
-                'comparison_or_standard': 'source-reviewed qualifying access-park frontage extent',
+                'comparison_or_standard': 'source-reviewed street and public park frontage',
                 'target_value_or_branch': 'inside' if inside else 'outside'}})
     refs['cases'] = write(HERE / 'proposals/cases.json', {'cell_id': 'C135709', 'actor': ACTOR,
         'status': 'draft', 'sweep_specs': [{'sweep_id': 'public-park-parking-review',
             'target_law_id': LAW, 'judgment_refs': judgments, 'status': 'incomplete',
             'rationale': 'Synthetic diagnostics preserve source joins while official designation, public-access jurisdiction and parked classification remain open.',
-            'missing_inputs': ['Independent original premises, designation and parking sources.']}],
+            'missing_inputs': ['Independent original park, commercial vehicle, sign and activity sources.']}],
         'sweeps_expanded': True, 'cases': cases})
     write(HERE / 'proposals/semantic-index.json', {'format': 'worker-semantic-delivery',
         'assignment_id': AID, 'stages': refs})

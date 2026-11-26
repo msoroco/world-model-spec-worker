@@ -1,0 +1,206 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C24758__LVMC-11-16-040__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "draft_current_runtime_public_pilot",
+  "cases": [
+    {
+      "case_id": "training__C24758__LVMC-11-16-040__motor_vehicle_driver__reference",
+      "kind": "delivery",
+      "construction": "native/primary-construction.json",
+      "construction_sha256": "4937b8424cd2d8c7554463dc91d7c58565c5311fc2f829e5202c59ceee9f40db",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Blind-corner occlusion and driver-view framing require original Native tuning"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/reference-fallback1-construction.json",
+          "construction_sha256": "4fe15264cce7b8fe801342d4d3339ccafdc536f34627a6e41d3bb4893a483ee2",
+          "trigger": {
+            "source": "original Native ego velocity and controller readback",
+            "metric": "observed speed tracking after first 100 frames",
+            "failure_condition": "fewer than 400 of the next 500 frames within 1 mph of the unchanged requested speed, after source integrity review"
+          },
+          "changed_knobs": [
+            "throttle proportional gain 0.12 to 0.16",
+            "brake proportional gain 0.18 to 0.22"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "4fe15264cce7b8fe801342d4d3339ccafdc536f34627a6e41d3bb4893a483ee2",
+            "command": "runtime.py offline --case training__C24758__LVMC-11-16-040__motor_vehicle_driver__reference --candidate fallback1",
+            "log": "native/reference-fallback1-selected-prep-offline.log",
+            "log_sha256": "b0e95e6c94f08b9ff7fd0044d916cef3b80319e5a900bafb3ccb25a1464e84c9"
+          },
+          "compatibility": {
+            "receipt": "proofs/reference/fallback1/compatibility.json",
+            "sha256": "7314d7c61f85aeee20aa240a6866fcffcdf336bbb577611f1f6a7f06b8405b90",
+            "log": "proofs/reference/fallback1/compatibility-analysis.log",
+            "negative_log": "proofs/reference/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "4937b8424cd2d8c7554463dc91d7c58565c5311fc2f829e5202c59ceee9f40db",
+        "command": "runtime.py offline --case training__C24758__LVMC-11-16-040__motor_vehicle_driver__reference --candidate primary",
+        "log": "native/reference-primary-selected-prep-offline.log",
+        "log_sha256": "6d9623b53ab7113055926492fe55d8acaa3211ceb41b91e67ed5e8920dc98b56"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/training__C24758__LVMC-11-16-040__motor_vehicle_driver/diagnostic-recipe-reference.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/reference/primary/compatibility.json",
+        "sha256": "d22fca72526805a0037d5821b42f26ce35099cda9e9bcf9d6fe049b2b9e7e89e",
+        "log": "proofs/reference/primary/compatibility-analysis.log",
+        "negative_log": "proofs/reference/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/reference/primary/negative-analysis.log",
+        "log_sha256": "9ec1ed6a4ed34c2999368d9251a5868e935d6639a4750184de15d191e630226b"
+      }
+    },
+    {
+      "case_id": "training__C24758__LVMC-11-16-040__motor_vehicle_driver__at_15",
+      "kind": "delivery",
+      "construction": "native/at_15-construction.json",
+      "construction_sha256": "5556e26a8019a65c3c526bc320ecf1f17561a388a165aa2c978415bd3d2c2833",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Blind-corner occlusion and driver-view framing require original Native tuning"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/at_15-fallback1-construction.json",
+          "construction_sha256": "57154ef341b83801d7a20e5afff7579f3270434ac4f5ddeaeaef2773d53794c2",
+          "trigger": {
+            "source": "original Native ego velocity and controller readback",
+            "metric": "observed speed tracking after first 100 frames",
+            "failure_condition": "fewer than 400 of the next 500 frames within 1 mph of the unchanged requested speed, after source integrity review"
+          },
+          "changed_knobs": [
+            "throttle proportional gain 0.12 to 0.16",
+            "brake proportional gain 0.18 to 0.22"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "57154ef341b83801d7a20e5afff7579f3270434ac4f5ddeaeaef2773d53794c2",
+            "command": "runtime.py offline --case training__C24758__LVMC-11-16-040__motor_vehicle_driver__at_15 --candidate fallback1",
+            "log": "native/at_15-fallback1-selected-prep-offline.log",
+            "log_sha256": "2c14aa99a9b0eb013272bcb885e12f88aa51d044a2694447a82da5c2b3f71900"
+          },
+          "compatibility": {
+            "receipt": "proofs/at_15/fallback1/compatibility.json",
+            "sha256": "2de5f19e8dc0dfc457b6d66f238b1679ecc3e08150748d82b6f462bfc7ef8c20",
+            "log": "proofs/at_15/fallback1/compatibility-analysis.log",
+            "negative_log": "proofs/at_15/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "5556e26a8019a65c3c526bc320ecf1f17561a388a165aa2c978415bd3d2c2833",
+        "command": "runtime.py offline --case training__C24758__LVMC-11-16-040__motor_vehicle_driver__at_15 --candidate primary",
+        "log": "native/at_15-primary-selected-prep-offline.log",
+        "log_sha256": "fd972c118d406478990908a46887f3a7b0f3efcea02345f1b505ed0a83ae805b"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/training__C24758__LVMC-11-16-040__motor_vehicle_driver/diagnostic-recipe-at_15.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/at_15/primary/compatibility.json",
+        "sha256": "2e778b8002e20f8389d658787fbb0d3ba1b9cee8989894d8c2ed35e2dabdf011",
+        "log": "proofs/at_15/primary/compatibility-analysis.log",
+        "negative_log": "proofs/at_15/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/at_15/primary/negative-analysis.log",
+        "log_sha256": "bee1109794172590372711f28ac79b2fc70ed7ef5fc28aa6a457138993b2fc3c"
+      }
+    },
+    {
+      "case_id": "training__C24758__LVMC-11-16-040__motor_vehicle_driver__contrast",
+      "kind": "delivery",
+      "construction": "native/contrast-construction.json",
+      "construction_sha256": "110fde45f1b7fa0b61df0f538aa093d95056514d6b5a156d279e728cdaab07e8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Blind-corner occlusion and driver-view framing require original Native tuning"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/contrast-fallback1-construction.json",
+          "construction_sha256": "c987f6154a16ee7b7f4ac745a5220463850a1a77226f935d8bf3eb8a23b6ee29",
+          "trigger": {
+            "source": "original Native ego velocity and controller readback",
+            "metric": "observed speed tracking after first 100 frames",
+            "failure_condition": "fewer than 400 of the next 500 frames within 1 mph of the unchanged requested speed, after source integrity review"
+          },
+          "changed_knobs": [
+            "throttle proportional gain 0.12 to 0.16",
+            "brake proportional gain 0.18 to 0.22"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "c987f6154a16ee7b7f4ac745a5220463850a1a77226f935d8bf3eb8a23b6ee29",
+            "command": "runtime.py offline --case training__C24758__LVMC-11-16-040__motor_vehicle_driver__contrast --candidate fallback1",
+            "log": "native/contrast-fallback1-selected-prep-offline.log",
+            "log_sha256": "ab23fa892bc95851d77ba37e9aff20dcbb77c4802eaa5e9ba889e15fcfe4a804"
+          },
+          "compatibility": {
+            "receipt": "proofs/contrast/fallback1/compatibility.json",
+            "sha256": "9164916fac6acd58a9f3bcc1b277f12747417360728bb5b268859f6a510fc59e",
+            "log": "proofs/contrast/fallback1/compatibility-analysis.log",
+            "negative_log": "proofs/contrast/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "110fde45f1b7fa0b61df0f538aa093d95056514d6b5a156d279e728cdaab07e8",
+        "command": "runtime.py offline --case training__C24758__LVMC-11-16-040__motor_vehicle_driver__contrast --candidate primary",
+        "log": "native/contrast-primary-selected-prep-offline.log",
+        "log_sha256": "e9f5b9556df1992f20c1c2843f6b9bb48b06f0ba961fd69be89ad5672ab81286"
+      },
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/training__C24758__LVMC-11-16-040__motor_vehicle_driver/diagnostic-recipe-contrast.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/contrast/primary/compatibility.json",
+        "sha256": "315a55ecc733528fba673859bf3fda24b33d4091bbebfb87dd02259111753704",
+        "log": "proofs/contrast/primary/compatibility-analysis.log",
+        "negative_log": "proofs/contrast/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/contrast/primary/negative-analysis.log",
+        "log_sha256": "9e57a89af42caaf4389fee0c493e868f5c1bb1f635e87b0a3792521973e59348"
+      }
+    }
+  ]
+}

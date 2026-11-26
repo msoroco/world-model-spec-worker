@@ -108,107 +108,134 @@
       "name": "ego_pose",
       "unit": "m,deg",
       "mandatory": true,
-      "purpose": "Measured position, heading and footprint over time"
+      "purpose": "Original Native position and heading for every frame"
     },
     {
       "name": "ego_speed",
       "unit": "m/s",
       "mandatory": true,
-      "purpose": "Observed movement and stop intervals"
+      "purpose": "Original Native velocity-derived speed"
     },
     {
-      "name": "observed_speed_in_sight_limited_intersection",
-      "unit": "mph",
+      "name": "distance_to_boundary",
+      "unit": "m",
       "mandatory": true,
-      "purpose": "speed around 15 mph after verifying both 100 ft sight segments"
+      "purpose": "Source-derived signed distance to intersection entry"
+    },
+    {
+      "name": "intersection_sight",
+      "unit": "source-bound review",
+      "mandatory": true,
+      "purpose": "Last 100 ft intersection view against original rays and pixels"
+    },
+    {
+      "name": "entering_approach_visibility",
+      "unit": "source-bound review",
+      "mandatory": true,
+      "purpose": "All entering road visibility to 100 ft"
+    },
+    {
+      "name": "intersection_traversal",
+      "unit": "frame interval",
+      "mandatory": true,
+      "purpose": "Source-joined interval of ego intersection traversal"
     }
   ],
   "source_observation_mapping": {
     "st.intersection": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "intersection_sight",
+        "entering_approach_visibility"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane_enters": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "intersection_sight",
+        "entering_approach_visibility"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.approaching": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "intersection_sight",
+        "entering_approach_visibility"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.sight_distance": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "intersection_sight",
+        "entering_approach_visibility"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.visible": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "intersection_sight",
+        "entering_approach_visibility"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.speed": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "ego_speed"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.priority_roadway": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "intersection_sight",
+        "entering_approach_visibility"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
       ]
     },
     "dev.traffic_signal": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "intersection_sight",
+        "entering_approach_visibility"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
       ]
     },
     "dev.stop_sign": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "intersection_sight",
+        "entering_approach_visibility"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.centre_distance": {
-      "evidence": "Requires calibrated native context and synchronized recorded channel; presently unverified",
+      "evidence": "Original Native map, ray, pixel and speed sources with independent context review; physical and legal acceptance pending",
       "channels": [
-        "observed_speed_in_sight_limited_intersection"
+        "intersection_sight",
+        "entering_approach_visibility"
       ],
       "source_refs": [
         "inputs/training__C24758__LVMC-11-16-040__motor_vehicle_driver/assignment.json"
@@ -245,5 +272,32 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego, intersection, and entering roads",
+        "interval": "all 600 frames",
+        "view": "overview"
+      },
+      {
+        "subject": "last 100 ft of ego approach",
+        "interval": "all 600 frames",
+        "view": "approach"
+      },
+      {
+        "subject": "entering approach and occluder",
+        "interval": "all 600 frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver eye view and intersection sight",
+        "interval": "all 600 frames",
+        "view": "driver_reference"
+      }
+    ]
+  }
 }

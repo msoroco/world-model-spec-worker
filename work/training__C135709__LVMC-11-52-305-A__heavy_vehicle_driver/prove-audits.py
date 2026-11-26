@@ -32,7 +32,7 @@ def main():
         processing = ROOT / ".runtime-work" / ("c135709-v5-saved-" + suffix) / "v0001/processing.json"
         base = [PYTHON, str(script), "--case", case, "--candidate", "primary",
                 "--attempt", str(attempt), "--processing", str(processing),
-                "--output", str(ROOT / ".runtime-work" / ("c135709-delivery-audit-" + suffix + "-positive.json")),
+                "--output", str(ROOT / ".runtime-work" / ("c135709-v6-delivery-audit-" + suffix + "-positive.json")),
                 "--diagnostic"]
         positive = proof / "delivery-positive.log"
         negative = proof / "delivery-negative.log"
@@ -61,7 +61,7 @@ def main():
             suffix = case.split("__")[-1]
             processing = ROOT / ".runtime-work" / ("c135709-v5-saved-" + suffix) / "v0001/processing.json"
             command += ["--processing", case + "=" + str(processing)]
-        command += ["--output", str(ROOT / ".runtime-work" / ("c135709-comparison-" + token + ".json"))]
+        command += ["--output", str(ROOT / ".runtime-work" / ("c135709-v6-comparison-" + token + ".json"))]
         positive = HERE / "proofs" / ("comparison-" + token + "-positive.log")
         negative = HERE / "proofs" / ("comparison-" + token + "-negative.log")
         positive_exit = run(command, positive)

@@ -30,7 +30,12 @@ def main():
             'kin.extent': {'entrypoint': 'runner.py', 'method': 'original body extent and separately sourced overall length', 'evidence': ['vehicle-poses.jsonl', 'vehicle-spec-review.json']},
             'drv.standing_or_parked': {'entrypoint': 'runner.py', 'method': 'original 600-frame speed and rest interval', 'evidence': ['vehicle-poses.jsonl', 'video_frames.jsonl']},
             'dev.regulatory_sign': {'entrypoint': 'runner.py', 'method': 'original overview pixels with independent sign authority and permission review', 'evidence': ['overview.mkv', 'exception-review.json']},
-            'kin.time': {'entrypoint': 'runner.py', 'method': 'original Native frame/time join', 'evidence': ['vehicle-poses.jsonl', 'video_frames.jsonl']}}
+            'kin.time': {'entrypoint': 'runner.py', 'method': 'original Native frame/time join', 'evidence': ['vehicle-poses.jsonl', 'video_frames.jsonl']},
+            'ru.trailer_or_combination': {'entrypoint': 'runner.py', 'method': 'independent vehicle and trailer classification joined to original actor', 'evidence': ['vehicle-spec-review.json', 'vehicle-poses.jsonl']},
+            'st.driveway_or_alley_entrance': {'entrypoint': 'runner.py', 'method': 'property-frontage review for loading or delivery exception', 'evidence': ['exception-review.json', 'road.xodr']},
+            'sig.door_open': {'entrypoint': 'runner.py', 'method': 'original overview and actual transfer activity review', 'evidence': ['overview.mkv', 'exception-review.json']},
+            'ru.occupant_count': {'entrypoint': 'runner.py', 'method': 'independent occupant and passenger activity source', 'evidence': ['vehicle-spec-review.json', 'exception-review.json']},
+            'dev.temporary_traffic_control': {'entrypoint': 'runner.py', 'method': 'service or construction activity and temporary control review', 'evidence': ['exception-review.json', 'overview.mkv']}}
         entry['post_capture'] = {'recorded_only': True,
             'command': 'runtime.py process-saved --manifest work/' + AID + '/execution-manifest.json --case ' + entry['case_id'] +
                 ' --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER',
