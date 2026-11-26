@@ -18,7 +18,8 @@ CAMERAS = [
         ("driver_reference", 1280, 720, "vehicle mounted forward view"))]
 CHANNEL_NAMES = ("vehicle_body_history", "vehicle_speed_and_control_history",
                  "designated_place_geometry", "device_identity_history",
-                 "place_context_history", "camera_frame_map")
+                 "place_context_history", "curb_person_history",
+                 "conduct_phase_history", "camera_frame_map")
 RECORDING = {
     "channels": [{"name": name, "unit": "structured record", "sampling_rate_hz": 20,
                   "method": "Original CARLA frame acquisition and saved-only extraction",

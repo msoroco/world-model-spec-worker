@@ -166,8 +166,6 @@ def capture(adapter, packet_path, source_root, output_dir, case, *, diagnostic=F
                 "reviewed_source_index_sha256": _sha((out / "reviewed-source-index.json").read_bytes()),
                 "physical_completion": "unverified",
                 "legal_judgment": None}
-        _write_json(out / "seal.json", seal)
-        return seal
     finally:
         try:
             if cameras_started:
@@ -178,3 +176,5 @@ def capture(adapter, packet_path, source_root, output_dir, case, *, diagnostic=F
                     adapter.destroy(actor)
             finally:
                 adapter.restore_settings(settings)
+    _write_json(out / "seal.json", seal)
+    return seal

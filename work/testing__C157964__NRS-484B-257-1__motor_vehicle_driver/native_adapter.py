@@ -25,6 +25,14 @@ def station(xy, origin, axis):
     return (xy[0] - origin[0]) * axis[0] + (xy[1] - origin[1]) * axis[1]
 
 
+def through_phase(stations, entry, exit_station):
+    require(stations and all(number(value) for value in stations) and
+            number(entry) and number(exit_station) and entry < exit_station,
+            "original through body phase inputs missing")
+    return ("approaching" if max(stations) < entry else
+            "occupied" if min(stations) <= exit_station else "departed")
+
+
 def corners(actor):
     transform = actor.get_transform()
     box = actor.bounding_box
@@ -250,8 +258,7 @@ class Adapter:
                               self.site["through_station_axis_xy"]) for v in t_vertices]
         entry = self.site["through_intersection_entry_station_m"]
         exit_station = self.site["through_intersection_exit_station_m"]
-        observed_phase = ("approaching" if max(t_stations) < entry else
-                          "occupied" if min(t_stations) <= exit_station else "departed")
+        observed_phase = through_phase(t_stations, entry, exit_station)
         t_pose = through.get_transform().location
         ego_leading = max(e_stations)
         at_reference = not self.reference_seen and ego_leading >= self.site["nearest_view_station_m"]

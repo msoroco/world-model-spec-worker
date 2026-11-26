@@ -139,6 +139,26 @@ class CaptureTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
 
+    def test_restore_failure_cannot_leave_sealed_attempt(self):
+        case = CASES[0]
+        source = self.root / "restore-source"
+        source.mkdir()
+        packet = fixture(source, case)
+        adapter = FakeAdapter(case)
+
+        def failed_restore(settings):
+            adapter.events.append("restore-failed")
+            raise RuntimeError("world restoration failed")
+
+        adapter.restore_settings = failed_restore
+        out = self.root / "restore-attempt"
+        with self.assertRaisesRegex(RuntimeError, "world restoration failed"):
+            capture(adapter, packet, source, out, case, diagnostic=True)
+        self.assertFalse((out / "seal.json").exists())
+        self.assertEqual(adapter.events[-4:],
+                         ["cameras-stop", ("destroy", "through"),
+                          ("destroy", "ego"), "restore-failed"])
+
     def test_all_four_exact_diagnostic_attempts(self):
         attempts = {}
         for case in CASES:

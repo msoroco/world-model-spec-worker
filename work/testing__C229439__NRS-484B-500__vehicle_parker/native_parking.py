@@ -36,11 +36,71 @@ def control(distance_m, speed_mps, phase, conduct):
     """Finite engineering controller; it does not classify legal conduct."""
     if phase == "hold":
         return {"throttle": 0.0, "brake": 1.0, "hand_brake": conduct == "park"}
+    if phase == "depart":
+        return {"throttle": 0.22 if speed_mps < 4.0 else 0.0,
+                "brake": 0.0, "hand_brake": False}
     stopping_distance = speed_mps * speed_mps / 5.0 + 1.0
     if distance_m <= stopping_distance:
         return {"throttle": 0.0, "brake": 0.65, "hand_brake": False}
     return {"throttle": 0.28 if speed_mps < 5.0 else 0.0,
             "brake": 0.0, "hand_brake": False}
+
+
+def phase_for(conduct, reached, hold_frames, duration_frames):
+    """Engineering episode schedule; frame counts are not statutory definitions."""
+    if conduct not in ("stop", "stand", "park"):
+        raise ValueError("unknown conduct construction")
+    if not reached:
+        return "approach"
+    planned_hold = {"stop": 60, "stand": 160, "park": duration_frames}[conduct]
+    return "depart" if conduct != "park" and hold_frames >= planned_hold else "hold"
+
+
+def verify_road_feature(mapping, carla, place_record):
+    """Compare reviewed physical road samples with the loaded Native map."""
+    feature = place_record.get("feature")
+    if feature not in ("curve", "restricted_width"):
+        raise ValueError("unsupported reviewed road feature")
+    measurement = place_record.get("feature_measurement")
+    if not isinstance(measurement, dict) or not isinstance(measurement.get("samples"), list):
+        raise ValueError("reviewed road feature samples required")
+    samples = measurement["samples"]
+    if len(samples) < 2:
+        raise ValueError("two reviewed road feature samples required")
+    headings = []
+    widths = []
+    for sample in samples:
+        if not isinstance(sample, dict) or not all(k in sample for k in
+            ("x", "y", "road_id", "lane_width_m", "heading_deg")):
+            raise ValueError("reviewed road feature sample incomplete")
+        waypoint = mapping.get_waypoint(carla.Location(x=sample["x"], y=sample["y"], z=0))
+        if waypoint is None or waypoint.road_id != sample["road_id"]:
+            raise ValueError("reviewed road feature road identity differs")
+        yaw = waypoint.transform.rotation.yaw
+        width = waypoint.lane_width
+        if (abs(((yaw - sample["heading_deg"] + 180) % 360) - 180) > 3 or
+                abs(width - sample["lane_width_m"]) > 0.15):
+            raise ValueError("reviewed road feature geometry differs from Native map")
+        headings.append(yaw)
+        widths.append(width)
+    if feature == "curve":
+        turn = abs(((headings[-1] - headings[0] + 180) % 360) - 180)
+        if turn < 15:
+            raise ValueError("reviewed curve not physically present")
+    elif max(widths) > 3.0:
+        raise ValueError("reviewed restricted width not physically present")
+    return {"feature": feature, "sample_count": len(samples),
+            "readback_lane_widths_m": widths, "readback_headings_deg": headings}
+
+
+def verify_traffic_actor(actor, reviewed_pose):
+    actual = actor.get_transform()
+    expected = (reviewed_pose["x"], reviewed_pose["y"], reviewed_pose["z"])
+    observed = (actual.location.x, actual.location.y, actual.location.z)
+    if math.dist(expected, observed) > 0.5:
+        raise ValueError("reviewed traffic actor pose differs from Native readback")
+    if abs(((actual.rotation.yaw - reviewed_pose["yaw_deg"] + 180) % 360) - 180) > 3:
+        raise ValueError("reviewed traffic actor heading differs from Native readback")
 
 
 class Cameras:
@@ -190,15 +250,33 @@ def run_native(cfg, site, site_path, placement, output, host, port):
         actors.append(ego)
         if ego.type_id != vehicle_id:
             raise ValueError("Native vehicle blueprint readback differs")
+        curb_start = site.get("curb_person_start")
+        curb_end = site.get("curb_person_end")
+        if (not isinstance(curb_start, list) or not isinstance(curb_end, list)
+                or len(curb_start) != 2 or len(curb_end) != 2
+                or math.dist(curb_start, curb_end) < 2):
+            raise ValueError("source-bound curb person path required for conduct contrast")
+        walkers = list(library.filter("walker.pedestrian.*"))
+        if not walkers:
+            raise ValueError("Native curb person blueprint unavailable")
+        person_initial = curb_end if site["requested_conduct"] == "stop" else curb_start
+        person = world.spawn_actor(walkers[0], carla.Transform(
+            carla.Location(x=person_initial[0], y=person_initial[1], z=0.5)))
+        actors.append(person)
+        feature_readback = None
         if place_record.get("feature") == "traffic_queue":
-            for queue_pose in place_record.get("traffic_vehicle_poses", []):
+            traffic_poses = place_record.get("traffic_vehicle_poses", [])
+            if len(traffic_poses) < 2:
+                raise ValueError("congested scene requires two source-bound traffic actors")
+            traffic_ids = []
+            for queue_pose in traffic_poses:
                 traffic = world.spawn_actor(vehicle_bp, pose(queue_pose))
                 actors.append(traffic)
-            if len(place_record.get("traffic_vehicle_poses", [])) < 2:
-                raise ValueError("congested scene requires two source-bound traffic actors")
+                verify_traffic_actor(traffic, queue_pose)
+                traffic_ids.append(traffic.id)
+            feature_readback = {"feature": "traffic_queue", "traffic_actor_ids": traffic_ids}
         elif place_record.get("feature") in ("curve", "restricted_width"):
-            if not place_record.get("feature_measurement"):
-                raise ValueError("hazard feature measurement source required")
+            feature_readback = verify_road_feature(mapping, carla, place_record)
         else:
             raise ValueError("hazard or congestion physical feature unconstructed")
         context = {"assignment_id": cfg["assignment_id"], "case_id": cfg["selected_case_id"],
@@ -211,7 +289,10 @@ def run_native(cfg, site, site_path, placement, output, host, port):
                    "hazard_or_congestion_status": site["place_context_for_review"],
                    "device_erected": True, "device_actor_id": prop.id,
                    "vehicle_actor_id": ego.id, "parker_actor_id": ego.id,
+                   "curb_person_actor_id": person.id,
+                   "curb_person_blueprint": walkers[0].id,
                    "site_sha256": sha(site_path), "place_feature": place_record["feature"],
+                   "place_feature_readback": feature_readback,
                    "approach_road_id": start_wp.road_id, "target_road_id": target_wp.road_id,
                    "loading_activity_source": "original four-camera plus control history",
                    "officer_or_device_direction_source": site["sources"]["device"]["sha256"]}
@@ -234,9 +315,19 @@ def run_native(cfg, site, site_path, placement, output, host, port):
                 wanted_inside = candidate["requested_wholly_within_place"]
                 if distance <= 1.5 and (wholly_inside if wanted_inside else wholly_outside):
                     reached = True
-                phase_name = "hold" if reached else "approach"
+                conduct = site["requested_conduct"]
+                phase_name = phase_for(conduct, reached, hold_frames,
+                                       round(cfg["duration_s"] * cfg["rate_hz"]))
                 command = control(distance, speed(ego), phase_name, site["requested_conduct"])
                 ego.apply_control(carla.VehicleControl(**command))
+                if phase_name == "hold" and conduct in ("stop", "park"):
+                    fraction = min(1.0, hold_frames / (60 if conduct == "stop" else 160))
+                    if conduct == "stop":
+                        fraction = 1.0 - fraction
+                    position = [curb_start[j] + fraction * (curb_end[j] - curb_start[j])
+                                for j in range(2)]
+                    person.set_transform(carla.Transform(carla.Location(
+                        x=position[0], y=position[1], z=0.5)))
                 frame = world.tick()
                 snap = world.get_snapshot()
                 if snap.frame != frame:
@@ -247,12 +338,16 @@ def run_native(cfg, site, site_path, placement, output, host, port):
                 frame_map.append(frame, time_s)
                 body = xy_body(ego)
                 stationary = speed(ego) <= 0.1
-                if reached and stationary:
+                if phase_name == "hold" and stationary:
                     hold_frames += 1
                 row = {"frame": frame, "time_s": time_s,
                        "vehicle_footprint": body, "speed_mps": speed(ego),
                        "position_m": [ego.get_transform().location.x, ego.get_transform().location.y],
                        "vehicle_actor_id": ego.id, "device_actor_id": prop.id,
+                       "curb_person_actor_id": person.id,
+                       "curb_person_position_m": [person.get_transform().location.x,
+                                                  person.get_transform().location.y],
+                       "curb_person_body_m": xy_body(person),
                        "control_command": command, "phase": phase_name,
                        "requested_conduct": site["requested_conduct"],
                        "loading_activity_observed": None,

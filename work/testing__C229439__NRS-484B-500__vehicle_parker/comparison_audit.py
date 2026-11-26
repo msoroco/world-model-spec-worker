@@ -9,9 +9,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import tempfile
 from pathlib import Path
 
-from parking_place import ASSIGNMENT
+from parking_place import ASSIGNMENT, measure
 
 
 CASES = {
@@ -108,6 +109,89 @@ def audit(comparison_id: str, source_paths: dict[str, str | Path]) -> dict:
             "comparison_id": comparison_id, "passed": True,
             "inputs": {name: rows[name]["source"] for name in names},
             "limit": "Measured isolation only; official status, place character, conduct and actual pixels require independent review."}
+
+
+def audit_saved(comparison_id: str, analysis_roots: dict[str, str | Path], scratch: str | Path) -> dict:
+    """Reconstruct comparison packets from saved reports and verified Native sources."""
+    if comparison_id not in COMPARISONS or set(analysis_roots) != set(COMPARISONS[comparison_id]):
+        raise ValueError("missing or extra exact saved comparison evidence")
+    packets = {}
+    source_bindings = {}
+    fixture_only = False
+    with tempfile.TemporaryDirectory(dir=scratch) as directory:
+        for name, root in analysis_roots.items():
+            root = Path(root)
+            report, report_source = _load(root / "analysis-report.json")
+            config, config_source = _load(root / "config.json")
+            context, context_source = _load(root / "parking-context.json")
+            acquisition, acquisition_source = _load(root / "acquisition.json")
+            provenance_path = root / "acquisition-provenance.json"
+            if not provenance_path.is_file():
+                provenance_path = root / "fixture-provenance.json"
+            provenance, provenance_source = _load(provenance_path)
+            value = report["measurements"]["designated_parking_measurement"]["value"]
+            measurement_input, measurement_input_source = _load(root / "parking-measurement-input.json")
+            if (config.get("selected_case_id") != ASSIGNMENT + "__" + name or
+                    value.get("case_id") != config["selected_case_id"] or
+                    context.get("case_id") != config["selected_case_id"]):
+                raise ValueError("saved report exact case identity differs")
+            for filename, digest in value["sources"].items():
+                source = root / filename
+                if (not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != digest or
+                        acquisition.get(filename, {}).get("sha256") != digest or
+                        acquisition.get(filename, {}).get("kind") != "original_native"):
+                    raise ValueError("saved comparison original source hash differs: " + filename)
+            if value["source_context"] != context:
+                raise ValueError("saved report context differs from original source")
+            if (measurement_input.get("original_trace_id") != value["sources"]["parking-history.jsonl"] or
+                    measure(root / "parking-measurement-input.json")["observations"] !=
+                    value["body_observations"]):
+                raise ValueError("saved comparison measurements differ from original body source")
+            if provenance.get("provenance_kind") != "native" or provenance.get("diagnostic_fixture"):
+                fixture_only = True
+            case = config["case"]
+            construction, construction_source = _load(root / "construction.json")
+            camera_plan = json.dumps(config["cameras"], sort_keys=True).encode()
+            pose = json.dumps(context["designated_place_polygon"], sort_keys=True).encode()
+            context_source_key = (context["hazard_or_congestion_status"] + ":" +
+                                  context["place_feature"]).encode()
+            conduct_source_key = case["requested_conduct"].encode()
+            packet = {"assignment_id": ASSIGNMENT, "case_id": config["selected_case_id"],
+                "requested_conduct": case["requested_conduct"],
+                "requested_footprint": case["requested_footprint"],
+                "place_context_for_review": case["place_context_for_review"],
+                "vehicle_blueprint": config.get("vehicle_blueprint_id", "vehicle.tesla.model3"),
+                "device_id": context["device_id"],
+                "designated_place_id": context["designated_place_id"],
+                "camera_plan_sha256": hashlib.sha256(camera_plan).hexdigest(),
+                "duration_s": config["duration_s"], "rate_hz": config["rate_hz"],
+                "conduct_source_sha256": hashlib.sha256(conduct_source_key).hexdigest(),
+                "place_context_source_sha256": hashlib.sha256(context_source_key).hexdigest(),
+                "parking_pose_sha256": hashlib.sha256(pose).hexdigest(),
+                "construction": {"assignment_id": ASSIGNMENT,
+                                 "device_id": context["device_id"],
+                                 "designated_place_id": context["designated_place_id"]},
+                "measurement": {"assignment_id": ASSIGNMENT,
+                                "device_id": context["device_id"],
+                                "designated_place_id": context["designated_place_id"],
+                                "observations": value["body_observations"],
+                                "official_authority_source": context["official_authority_source"],
+                                "loading_activity_source": context["loading_activity_source"],
+                                "officer_or_device_direction_source": context["officer_or_device_direction_source"],
+                                "original_trace_id": value["sources"]["parking-history.jsonl"]}}
+            packet_path = Path(directory) / (name + ".json")
+            packet_path.write_text(json.dumps(packet, allow_nan=False) + "\n", encoding="utf-8")
+            packets[name] = packet_path
+            source_bindings[name] = {"report": report_source, "config": config_source,
+                "context": context_source, "acquisition": acquisition_source,
+                "provenance": provenance_source, "construction": construction_source,
+                "original_sources": value["sources"],
+                "measurement_input": measurement_input_source}
+        result = audit(comparison_id, packets)
+    result["inputs"] = source_bindings
+    result["fixture_only"] = fixture_only
+    result["physical_acceptance_claimed"] = False
+    return result
 
 
 def main(argv=None):

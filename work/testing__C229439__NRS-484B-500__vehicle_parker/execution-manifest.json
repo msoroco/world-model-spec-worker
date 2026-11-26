@@ -7,18 +7,46 @@
       "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "599c8245ab85334354c257447832f5178474351c35c631728a891d4897620be3",
+      "construction_sha256": "99c6feb6d84976056dd270c8e28d4a8858a36612e2d3220ca126df55954dc643",
       "candidate_risk": {
-        "status": "none",
-        "reason": "No fallback selected before first Native physical risk assessment."
+        "status": "physical",
+        "reason": "Observed braking may overshoot or straddle the source-designated boundary before stationary frames; alternate lower approach throttle and stronger brake preserve the exact footprint and conduct target."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-park_inside_hazard-construction.json",
+          "construction_sha256": "58f212f5e263a8f73bcee09fb945558728fecfbdd01e3ac419d6173994492a72",
+          "trigger": {
+            "source": "parking-history.jsonl",
+            "metric": "stationary_requested_footprint_frames and last body footprint",
+            "failure_condition": "No stationary body wholly in the requested place relation after the primary approach, or boundary straddling at halt"
+          },
+          "changed_knobs": [
+            "approach throttle 0.28 to 0.20",
+            "approach braking command 0.65 to 0.85"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "58f212f5e263a8f73bcee09fb945558728fecfbdd01e3ac419d6173994492a72",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard --output .runtime-work/c229439-fallback-offline-park_inside_hazard-v5 --candidate fallback1",
+            "log": "proof-offline-fallback1-park_inside_hazard.log",
+            "log_sha256": "ef190ecf1a57bf8747a8c04c85c4f581751a4b758ce20de0547e8b5fa17dcc8d"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-park_inside_hazard-receipt.json",
+            "sha256": "9a2278a5ffafd4482be15ea4383e24ef82326b976dc6734c23101a56cee364a6",
+            "log": "compat-fallback1-park_inside_hazard-analysis.log",
+            "negative_log": "compat-fallback1-park_inside_hazard-negative.log"
+          }
+        }
+      ],
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "599c8245ab85334354c257447832f5178474351c35c631728a891d4897620be3",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard --output .runtime-work/c229439-offline-park_inside_hazard-v2",
+        "construction_sha256": "99c6feb6d84976056dd270c8e28d4a8858a36612e2d3220ca126df55954dc643",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard --output .runtime-work/c229439-offline-park_inside_hazard-v5",
         "log": "proof-offline-park_inside_hazard.log",
-        "log_sha256": "7babbddb6458cd94c75d72b6a1954540846eb1cce72ca4bec20fec06c6fcc131"
+        "log_sha256": "492f2a3c21e676a13e25c35cfcaea3f959d6c7260d0bbe0623c8a599f5860e20"
       },
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -32,7 +60,7 @@
       },
       "compatibility": {
         "receipt": "compat-park_inside_hazard-receipt.json",
-        "sha256": "6d81f7a771537997e796de0fe5b0871d11afbc74239d749771af910491962efe",
+        "sha256": "f1c6033c441e1ab326176a67e3f21f62c03951d9ffd70c1286d29622af376da9",
         "log": "compat-park_inside_hazard-analysis.log",
         "negative_log": "compat-park_inside_hazard-negative.log"
       },
@@ -65,6 +93,16 @@
           "method": "run_native plus analysis.saved_result",
           "evidence": "original CARLA frame and saved-only channel"
         },
+        "curb_person_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
+        "conduct_phase_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
         "camera_frame_map": {
           "entrypoint": "native_parking.py",
           "method": "run_native plus analysis.saved_result",
@@ -73,25 +111,86 @@
       },
       "physical_preparation": {
         "receipt": "physical-park_inside_hazard-proof.json",
-        "sha256": "ea8739765ffbba9417ce83e70b6ae3e99d169c3b81255117476827765dd7dcfd"
+        "sha256": "8899bd7c56b9b191bf2d189a9594c442b12aa22e93347d2463f6a97c20bee8f9"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard",
+        "test_exit_code": 0,
+        "test_log": "saved-park_inside_hazard.log",
+        "test_log_sha256": "79142fb8393bb67fbbb37fcd798a5eee975e21e2750dd3b4e352b5c477e69491"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "00745764acc0e8cafa76b3f50ccf6ee7735409986c1f194f0fc09d8c835efb77",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard --saved-root .runtime-work/c229439-saved-park_inside_hazard-v5 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-park_inside_hazard-positive.log",
+        "test_log_sha256": "d9d45ff4572143ac3e3574bb7e43c4e2a8f22ea87af66c6b0ee138fe8fe3a404",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard --saved-root .runtime-work/c229439-saved-park_inside_hazard-v5 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: parking-context.json",
+        "negative_log": "delivery-park_inside_hazard-negative.log",
+        "negative_log_sha256": "8d7a15b44af2b37bab161afb66cc8de8a5ff390e6396887d6242884ebc52bd5e"
       }
     },
     {
       "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard",
       "kind": "delivery",
       "construction": "cases/park_outside_hazard/construction.json",
-      "construction_sha256": "a8d3483a2ddc6a9a1e81fd7a025b0b0c76b87d60a42d90997b2c1b875812b9e9",
+      "construction_sha256": "6fc64e2d0f48ab9bf80a9719a6c4d74163f5dcc3e18cb8a3d49fcb5cbe74a05f",
       "candidate_risk": {
-        "status": "none",
-        "reason": "No fallback selected before first Native physical risk assessment."
+        "status": "physical",
+        "reason": "Observed braking may overshoot or straddle the source-designated boundary before stationary frames; alternate lower approach throttle and stronger brake preserve the exact footprint and conduct target."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-park_outside_hazard-construction.json",
+          "construction_sha256": "79db2a78bfefb9cf6e901476daf4c3138386b50192eed9a759f1a9d581c4e419",
+          "trigger": {
+            "source": "parking-history.jsonl",
+            "metric": "stationary_requested_footprint_frames and last body footprint",
+            "failure_condition": "No stationary body wholly in the requested place relation after the primary approach, or boundary straddling at halt"
+          },
+          "changed_knobs": [
+            "approach throttle 0.28 to 0.20",
+            "approach braking command 0.65 to 0.85"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "79db2a78bfefb9cf6e901476daf4c3138386b50192eed9a759f1a9d581c4e419",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard --output .runtime-work/c229439-fallback-offline-park_outside_hazard-v5 --candidate fallback1",
+            "log": "proof-offline-fallback1-park_outside_hazard.log",
+            "log_sha256": "a9e2ec94430ece0f804ebe7aa4f2648bcf8d242e6a369b6c99a486215b704891"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-park_outside_hazard-receipt.json",
+            "sha256": "31d6eeb6bbc208b254c635eafd89558642a2d08dc30db9c808aefa5cc8ef4809",
+            "log": "compat-fallback1-park_outside_hazard-analysis.log",
+            "negative_log": "compat-fallback1-park_outside_hazard-negative.log"
+          }
+        }
+      ],
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "a8d3483a2ddc6a9a1e81fd7a025b0b0c76b87d60a42d90997b2c1b875812b9e9",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard --output .runtime-work/c229439-offline-park_outside_hazard-v2",
+        "construction_sha256": "6fc64e2d0f48ab9bf80a9719a6c4d74163f5dcc3e18cb8a3d49fcb5cbe74a05f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard --output .runtime-work/c229439-offline-park_outside_hazard-v5",
         "log": "proof-offline-park_outside_hazard.log",
-        "log_sha256": "2a73c08df1469edb96f9e115f4798a2abb2cfbc4a8a283a75e67e281a87d951d"
+        "log_sha256": "e889a95177682a3bae1cd1870d40122bf1fd198b97f975abfd7cd739c00e7ae6"
       },
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -105,7 +204,7 @@
       },
       "compatibility": {
         "receipt": "compat-park_outside_hazard-receipt.json",
-        "sha256": "3beb26659d7c6cedebdfa002a8ddab1c043786df8a11044ef7ffc99f24de6068",
+        "sha256": "c16860e215e3d474618b7c1177e8bfe61ba2eaf24f31614f911afe80614b97eb",
         "log": "compat-park_outside_hazard-analysis.log",
         "negative_log": "compat-park_outside_hazard-negative.log"
       },
@@ -138,6 +237,16 @@
           "method": "run_native plus analysis.saved_result",
           "evidence": "original CARLA frame and saved-only channel"
         },
+        "curb_person_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
+        "conduct_phase_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
         "camera_frame_map": {
           "entrypoint": "native_parking.py",
           "method": "run_native plus analysis.saved_result",
@@ -146,25 +255,86 @@
       },
       "physical_preparation": {
         "receipt": "physical-park_outside_hazard-proof.json",
-        "sha256": "2e685cbde2a9e0af10b500167e78f019375058b7ccafed6cb114eb803a44949e"
+        "sha256": "15e80bc2ebdd0885d75c21b6f9d24adf66eee97d963039fd8b9c16ea82abc683"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard",
+        "test_exit_code": 0,
+        "test_log": "saved-park_outside_hazard.log",
+        "test_log_sha256": "739fe57ff5e79a62a9f713731c32617291ef30333e5694076af780e27aa5ff73"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "00745764acc0e8cafa76b3f50ccf6ee7735409986c1f194f0fc09d8c835efb77",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard --saved-root .runtime-work/c229439-saved-park_outside_hazard-v5 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-park_outside_hazard-positive.log",
+        "test_log_sha256": "08542567fdd8a27aa00b63e9aeee1509dfea9e1543caf0a58a8f4a7f07b5d576",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__park_outside_hazard --saved-root .runtime-work/c229439-saved-park_outside_hazard-v5 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: parking-context.json",
+        "negative_log": "delivery-park_outside_hazard-negative.log",
+        "negative_log_sha256": "8d7a15b44af2b37bab161afb66cc8de8a5ff390e6396887d6242884ebc52bd5e"
       }
     },
     {
       "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard",
       "kind": "delivery",
       "construction": "cases/stand_inside_hazard/construction.json",
-      "construction_sha256": "2378dbf2a9448c0ae6369f1f7976c8f32d9bf14d1cece51ddfe1679faa61f648",
+      "construction_sha256": "e7014b3fd494e0c1375a947984b93df3ffe63af0d56d249e55869cd78917d79a",
       "candidate_risk": {
-        "status": "none",
-        "reason": "No fallback selected before first Native physical risk assessment."
+        "status": "physical",
+        "reason": "Observed braking may overshoot or straddle the source-designated boundary before stationary frames; alternate lower approach throttle and stronger brake preserve the exact footprint and conduct target."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-stand_inside_hazard-construction.json",
+          "construction_sha256": "c74f424046275077767b868db5d565adcd2bcd9ca998859991371acc9524da5c",
+          "trigger": {
+            "source": "parking-history.jsonl",
+            "metric": "stationary_requested_footprint_frames and last body footprint",
+            "failure_condition": "No stationary body wholly in the requested place relation after the primary approach, or boundary straddling at halt"
+          },
+          "changed_knobs": [
+            "approach throttle 0.28 to 0.20",
+            "approach braking command 0.65 to 0.85"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "c74f424046275077767b868db5d565adcd2bcd9ca998859991371acc9524da5c",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard --output .runtime-work/c229439-fallback-offline-stand_inside_hazard-v5 --candidate fallback1",
+            "log": "proof-offline-fallback1-stand_inside_hazard.log",
+            "log_sha256": "88b40b274f33d60d77b0ba6543ede172d582d694a4a04a34196886aeada16822"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-stand_inside_hazard-receipt.json",
+            "sha256": "cd8ee9ddc32099d7a5109d73567db0e87a8831f6286973962b10e8af4fa35e09",
+            "log": "compat-fallback1-stand_inside_hazard-analysis.log",
+            "negative_log": "compat-fallback1-stand_inside_hazard-negative.log"
+          }
+        }
+      ],
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "2378dbf2a9448c0ae6369f1f7976c8f32d9bf14d1cece51ddfe1679faa61f648",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard --output .runtime-work/c229439-offline-stand_inside_hazard-v2",
+        "construction_sha256": "e7014b3fd494e0c1375a947984b93df3ffe63af0d56d249e55869cd78917d79a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard --output .runtime-work/c229439-offline-stand_inside_hazard-v5",
         "log": "proof-offline-stand_inside_hazard.log",
-        "log_sha256": "a5495c2f723ee555d0845c0cc23f82ef65bab78bf2858b86cdc4de00749abd7e"
+        "log_sha256": "09e8280e487d02c92460bdfeb59b974b7bfe1a08ae21e60b1042ce18a398d0f0"
       },
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -178,7 +348,7 @@
       },
       "compatibility": {
         "receipt": "compat-stand_inside_hazard-receipt.json",
-        "sha256": "483927838a3ad07482caaac3c72eaf4e54f968061993bbbadc57855f0f539827",
+        "sha256": "14aa23cf8eb6af962ec834c1b9e19186962728716a070a334efb2153f9b85649",
         "log": "compat-stand_inside_hazard-analysis.log",
         "negative_log": "compat-stand_inside_hazard-negative.log"
       },
@@ -211,6 +381,16 @@
           "method": "run_native plus analysis.saved_result",
           "evidence": "original CARLA frame and saved-only channel"
         },
+        "curb_person_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
+        "conduct_phase_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
         "camera_frame_map": {
           "entrypoint": "native_parking.py",
           "method": "run_native plus analysis.saved_result",
@@ -219,25 +399,86 @@
       },
       "physical_preparation": {
         "receipt": "physical-stand_inside_hazard-proof.json",
-        "sha256": "769be9870467f8d21621cc1639a821b8f785c8edc7c1f162650f9a9926cb2dfa"
+        "sha256": "435ce84f9ebb646681f20032454e1515824fbc27198bf6494b2e0f9d7d802380"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard",
+        "test_exit_code": 0,
+        "test_log": "saved-stand_inside_hazard.log",
+        "test_log_sha256": "12042a6f493e4e5d7261d52b236a3179ee484e31661628c308bb62a4809006d3"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "00745764acc0e8cafa76b3f50ccf6ee7735409986c1f194f0fc09d8c835efb77",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard --saved-root .runtime-work/c229439-saved-stand_inside_hazard-v5 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-stand_inside_hazard-positive.log",
+        "test_log_sha256": "1f5f4329dc20e01574e5d88d80fc5ea082315ab844747f01220763f16e98d7d7",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__stand_inside_hazard --saved-root .runtime-work/c229439-saved-stand_inside_hazard-v5 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: parking-context.json",
+        "negative_log": "delivery-stand_inside_hazard-negative.log",
+        "negative_log_sha256": "8d7a15b44af2b37bab161afb66cc8de8a5ff390e6396887d6242884ebc52bd5e"
       }
     },
     {
       "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard",
       "kind": "delivery",
       "construction": "cases/stop_inside_hazard/construction.json",
-      "construction_sha256": "c4d13651e00dc9b3f6f1d219f4b0e9f256b2ce02155284fe5c6e501ed2808cb6",
+      "construction_sha256": "e857c4e32dba0c5408d5fcb282d54984b1b9096558145b761562810f99f9dca4",
       "candidate_risk": {
-        "status": "none",
-        "reason": "No fallback selected before first Native physical risk assessment."
+        "status": "physical",
+        "reason": "Observed braking may overshoot or straddle the source-designated boundary before stationary frames; alternate lower approach throttle and stronger brake preserve the exact footprint and conduct target."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-stop_inside_hazard-construction.json",
+          "construction_sha256": "5ac08af0760b89a6a1517c3da08bf4a0513fe7aae4c434f59fa76f0561e3888d",
+          "trigger": {
+            "source": "parking-history.jsonl",
+            "metric": "stationary_requested_footprint_frames and last body footprint",
+            "failure_condition": "No stationary body wholly in the requested place relation after the primary approach, or boundary straddling at halt"
+          },
+          "changed_knobs": [
+            "approach throttle 0.28 to 0.20",
+            "approach braking command 0.65 to 0.85"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "5ac08af0760b89a6a1517c3da08bf4a0513fe7aae4c434f59fa76f0561e3888d",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard --output .runtime-work/c229439-fallback-offline-stop_inside_hazard-v5 --candidate fallback1",
+            "log": "proof-offline-fallback1-stop_inside_hazard.log",
+            "log_sha256": "668e00f0421b55fc31f6eb0b724f296cb9096d1a590134a168d96e8cbbdd0f72"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-stop_inside_hazard-receipt.json",
+            "sha256": "84cc6ace08dc97c5c9001fe073725a80cb63bd8d2139cfab94a4f229bd78b2f7",
+            "log": "compat-fallback1-stop_inside_hazard-analysis.log",
+            "negative_log": "compat-fallback1-stop_inside_hazard-negative.log"
+          }
+        }
+      ],
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "c4d13651e00dc9b3f6f1d219f4b0e9f256b2ce02155284fe5c6e501ed2808cb6",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard --output .runtime-work/c229439-offline-stop_inside_hazard-v2",
+        "construction_sha256": "e857c4e32dba0c5408d5fcb282d54984b1b9096558145b761562810f99f9dca4",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard --output .runtime-work/c229439-offline-stop_inside_hazard-v5",
         "log": "proof-offline-stop_inside_hazard.log",
-        "log_sha256": "80e0819a53e76ecfe8ce391a655bb38de2fc861f93edb5f248061c2e4ec95974"
+        "log_sha256": "b5ef271a6a7d1bd6ee05887fc695a5cd96fded73867afc11a0f483fade291f30"
       },
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -251,7 +492,7 @@
       },
       "compatibility": {
         "receipt": "compat-stop_inside_hazard-receipt.json",
-        "sha256": "d898ebfcfcf069fb10193a711dbaa97ddb036a2f8ad892c8ab6a146f866f7bfa",
+        "sha256": "b5059245f8c2bc6663ebe69770fd5861512a78f3297eb9788d46b1f3f774fe98",
         "log": "compat-stop_inside_hazard-analysis.log",
         "negative_log": "compat-stop_inside_hazard-negative.log"
       },
@@ -284,6 +525,16 @@
           "method": "run_native plus analysis.saved_result",
           "evidence": "original CARLA frame and saved-only channel"
         },
+        "curb_person_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
+        "conduct_phase_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
         "camera_frame_map": {
           "entrypoint": "native_parking.py",
           "method": "run_native plus analysis.saved_result",
@@ -292,25 +543,86 @@
       },
       "physical_preparation": {
         "receipt": "physical-stop_inside_hazard-proof.json",
-        "sha256": "6f88637193f0ea2d1b766e792bd1cec624074a1d4a380714921b6d0ec24a0e3e"
+        "sha256": "361cd9933b64b9faa9cbd4a74f6a60eb4ca715e685dc389f98198c112664e5ba"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard",
+        "test_exit_code": 0,
+        "test_log": "saved-stop_inside_hazard.log",
+        "test_log_sha256": "c412b9d7379ad3bd95b1f31ca874c346a5c6d0f2a6ff81143f197c044dce4557"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "00745764acc0e8cafa76b3f50ccf6ee7735409986c1f194f0fc09d8c835efb77",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard --saved-root .runtime-work/c229439-saved-stop_inside_hazard-v5 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-stop_inside_hazard-positive.log",
+        "test_log_sha256": "d02b2f76a461cf17dc2a57ed508bf2920fbfbe6be26b72d573bc46c7ab9933ae",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__stop_inside_hazard --saved-root .runtime-work/c229439-saved-stop_inside_hazard-v5 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: parking-context.json",
+        "negative_log": "delivery-stop_inside_hazard-negative.log",
+        "negative_log_sha256": "8d7a15b44af2b37bab161afb66cc8de8a5ff390e6396887d6242884ebc52bd5e"
       }
     },
     {
       "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested",
       "kind": "delivery",
       "construction": "cases/park_inside_congested/construction.json",
-      "construction_sha256": "76168514ac9332d001a91bb4d5cc377c50c5187c8360d715205cf8a16d995111",
+      "construction_sha256": "f9ac1c5eaaf4df54da32197ee8f4b91b4b4794fa35c615cb93f6bc3043110d20",
       "candidate_risk": {
-        "status": "none",
-        "reason": "No fallback selected before first Native physical risk assessment."
+        "status": "physical",
+        "reason": "Observed braking may overshoot or straddle the source-designated boundary before stationary frames; alternate lower approach throttle and stronger brake preserve the exact footprint and conduct target."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-park_inside_congested-construction.json",
+          "construction_sha256": "598f39cefa595f71b6aff1aebf1a3923f12334f74ea7b0f1f846e268b4350380",
+          "trigger": {
+            "source": "parking-history.jsonl",
+            "metric": "stationary_requested_footprint_frames and last body footprint",
+            "failure_condition": "No stationary body wholly in the requested place relation after the primary approach, or boundary straddling at halt"
+          },
+          "changed_knobs": [
+            "approach throttle 0.28 to 0.20",
+            "approach braking command 0.65 to 0.85"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "598f39cefa595f71b6aff1aebf1a3923f12334f74ea7b0f1f846e268b4350380",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested --output .runtime-work/c229439-fallback-offline-park_inside_congested-v5 --candidate fallback1",
+            "log": "proof-offline-fallback1-park_inside_congested.log",
+            "log_sha256": "13bf9376b214a78580967456002510039a57ec77c5c9662d9a1c42b0b7df187f"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-park_inside_congested-receipt.json",
+            "sha256": "98f0a00f8517b9950db40f91992a448a6931dfd69a7a7bdefa2e29d20249d9b2",
+            "log": "compat-fallback1-park_inside_congested-analysis.log",
+            "negative_log": "compat-fallback1-park_inside_congested-negative.log"
+          }
+        }
+      ],
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "76168514ac9332d001a91bb4d5cc377c50c5187c8360d715205cf8a16d995111",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested --output .runtime-work/c229439-offline-park_inside_congested-v2",
+        "construction_sha256": "f9ac1c5eaaf4df54da32197ee8f4b91b4b4794fa35c615cb93f6bc3043110d20",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested --output .runtime-work/c229439-offline-park_inside_congested-v5",
         "log": "proof-offline-park_inside_congested.log",
-        "log_sha256": "a15b0f4ebb4561f5d31c3c6b462e7771b67fc397d96f7096b8c08e6c80b72a23"
+        "log_sha256": "5008425a1737f084300d5696d1d3750e3f5051f514b59894f79dda94d277585f"
       },
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -324,7 +636,7 @@
       },
       "compatibility": {
         "receipt": "compat-park_inside_congested-receipt.json",
-        "sha256": "549abebb4cac0151a68b9eaa0a50ce189bdc7b3b8bdbaa02b54afd464ca4e74b",
+        "sha256": "87dffa400a05ab6b63bb20dff41f48e8dd2f800a9be267dce44612485677e72b",
         "log": "compat-park_inside_congested-analysis.log",
         "negative_log": "compat-park_inside_congested-negative.log"
       },
@@ -357,6 +669,16 @@
           "method": "run_native plus analysis.saved_result",
           "evidence": "original CARLA frame and saved-only channel"
         },
+        "curb_person_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
+        "conduct_phase_history": {
+          "entrypoint": "native_parking.py",
+          "method": "run_native plus analysis.saved_result",
+          "evidence": "original CARLA frame and saved-only channel"
+        },
         "camera_frame_map": {
           "entrypoint": "native_parking.py",
           "method": "run_native plus analysis.saved_result",
@@ -365,7 +687,40 @@
       },
       "physical_preparation": {
         "receipt": "physical-park_inside_congested-proof.json",
-        "sha256": "27691b29040c75e9cb67b103ab3d11425c495c4f746d3359672da8f5f7a00a75"
+        "sha256": "ff149290d7c6fd9107beab5ec64424a6ea361d8824cf6343242d82ba427cee86"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-500__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested",
+        "test_exit_code": 0,
+        "test_log": "saved-park_inside_congested.log",
+        "test_log_sha256": "67bd4e532b26e3ed44a06a92e26b3aa5495a2956003d04db49c24bfa58cb22d1"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "00745764acc0e8cafa76b3f50ccf6ee7735409986c1f194f0fc09d8c835efb77",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested --saved-root .runtime-work/c229439-saved-park_inside_congested-v5 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-park_inside_congested-positive.log",
+        "test_log_sha256": "29dc06fc62f2cc8cf824ac52d2dda511f8bd078825530433e5e8daf70239a441",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229439__NRS-484B-500__vehicle_parker/delivery_probe.py --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_congested --saved-root .runtime-work/c229439-saved-park_inside_congested-v5 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: parking-context.json",
+        "negative_log": "delivery-park_inside_congested-negative.log",
+        "negative_log_sha256": "8d7a15b44af2b37bab161afb66cc8de8a5ff390e6396887d6242884ebc52bd5e"
       }
     }
   ]

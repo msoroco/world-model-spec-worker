@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 from native_capture import capture
+from preflight_native_site import preflight
 from yield_view import CASES, require
 
 
@@ -43,6 +44,7 @@ def main():
     require(args.output_dir and args.host and args.port and args.site and
             args.source_root and args.adapter_module,
             "reviewed original site, Native adapter, CARLA host/port and output are required")
+    preflight(args.site, args.source_root, case.case_id)
     module = importlib.import_module(args.adapter_module)
     adapter = module.create_adapter(config, args.host, int(args.port))
     print(json.dumps(capture(adapter, args.site, args.source_root,

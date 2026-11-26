@@ -144,3 +144,23 @@ Next: bind reviewed site fields to an actual original source packet, run and ind
 Full assignment CPU suite: 26 tests passed in 149.747 seconds; `cpu-native-adapter-full-tests.log` is SHA-bound in result.json.
 
 Additional Native cleanup check passes: a camera started before a later sensor failure is stopped/destroyed and world settings are restored. Current focused adapter log contains five passing tests.
+
+Native spawn readback failure now destroys the unverified actor, and partial camera setup is cleaned before restoring the world. Six focused adapter tests pass after these changes.
+
+Observed through-body bounds now classify approaching, occupied and departed phases; seven focused adapter tests pass, including the changed-phase and missing-body negative.
+
+Canonical plan observations now use the nine named recorded channels from the construction description, so the ready-mode mandatory channel contract can be checked directly.
+
+Direct pinned identity preflight and accepted-evidence review returned successfully after the named-channel plan update; `SCENARIO_PIPELINE_OUTPUT_ROOT` was set under `.runtime-work` for the direct import.
+
+`preflight_native_site.py` checks reviewed packet/source hashes and all adapter-specific original geometry on CPU before CARLA connection. Its synthetic packet negative (missing Native geometry) and structurally complete synthetic positive pass; neither is original physical evidence. Eight focused adapter tests now pass. Root canonical construction includes this preflight as its twelfth file.
+
+Root Native runner now calls `preflight_native_site.preflight` before importing/connecting the CARLA adapter. A focused test forces a rejected reviewed-site packet and proves that adapter import was never attempted. The 9 focused Native adapter tests and scoped complete check pass after this change; full assignment tests are running. Original roadway evidence remains absent, so status is partial.
+
+The local `seal.json` write now occurs after camera stop, actor destruction and world restoration return successfully. A restoration failure leaves the attempt unsealed; the full capture tests include that negative path. A failed physical review or cleanup is therefore not an accepted original attempt. Current full assignment tests are being rerun against this revision.
+
+Current full assignment suite after the source-first runner and post-restoration seal changes passed 33 tests in 170.365 seconds. `cpu-native-adapter-full-tests.log` and the nine-test focused adapter log are SHA-bound in `result.json`. `.venv-cpu/bin/python worker_check.py --assignment testing__C157964__NRS-484B-257-1__motor_vehicle_driver --complete` exits 0. Exact strict readiness remains unavailable while the package is truthfully partial and original reviewed physical evidence is absent.
+
+The original through-vehicle phase check now binds the selected approach/occupied phase to the observed all-at-reference frame, while accepting later measured occupied/departed transitions. Every row still requires a valid observed phase and sealed through-motion source hash. A CPU positive with phase transition and negative with wrong phase at reference pass. This repairs a production capture mismatch: a moving through vehicle cannot remain in one phase for the entire 45-second capture. Root canonical construction was refreshed; the selected diagnostic bundle proofs still bind their previous embedded source revision and will require deliberate refresh before production selection.
+
+Current full assignment suite after the original through-phase transition fix passed 34 tests in 159.207 seconds (`cpu-native-adapter-full-tests.log`, SHA-256 `7e605eb0a471513cd27b0fc944538cde4145f4f37db7c2baa287521444d80ed0`). `result.json` now binds that log and the current `yield_view.py`, focused phase test and canonical construction hashes. `.venv-cpu/bin/python worker_check.py --assignment testing__C157964__NRS-484B-257-1__motor_vehicle_driver --complete` exits 0 with static checks passed. The selected diagnostic bundle proofs still bind the previous embedded revision; refresh those proofs after binding the production original site packet and before any ready claim. Original CARLA outcome and independent hazard/right-of-way review remain unverified; status remains partial.

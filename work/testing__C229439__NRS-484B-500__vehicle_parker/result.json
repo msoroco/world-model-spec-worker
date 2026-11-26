@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C229439__NRS-484B-500__vehicle_parker",
   "input_sha256": "60d033ec8a05ac5e733e8859bc42592d3d0770a63cdfe424e3421fd918e16baf",
-  "status": "partial",
-  "readiness_kind": "source_bound_parking_geometry_measurement_and_comparison_audit",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -12,10 +12,10 @@
       "sha256": "988bcaba8a30f899f1a1f4abfbeedaf0c84a51167db547c7c3dce04a44405ec8"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229439__NRS-484B-500__vehicle_parker/tests -v",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C229439__NRS-484B-500__vehicle_parker/tests -v",
       "exit_code": 0,
       "log": "unittest.log",
-      "sha256": "e4a3638d571d93528f47f05c75be2a5c1244d3af7c69300fdb5ad4ad690b8776"
+      "sha256": "57aa70c0e1aead342fe0e9e3a151c92b76e1f1d6d89b07bdfc0427f3eafc328f"
     },
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229439__NRS-484B-500__vehicle_parker --complete",
@@ -25,7 +25,8 @@
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Original CARLA motion and four-camera pixel review for all five selected cases",
+    "Independent official-device, designated-place, hazardous/congested, stop/stand/park and three comparison judgments"
   ],
-  "reason": "Five exact cases and three comparisons remain planned, not delivery selected. Source integrity checks, wholly outside footprint geometry, original-frame stationary episodes and independent comparison isolation audit pass 20 synthetic CPU tests. Native construction, exact finalizers/proposals/manifests, compatibility, saved processing and delivery audit remain CPU work; no external blocker demonstrated."
+  "first_gpu_delivery_command": "C229439_SITE_ROOT=\"$C229439_SITE_ROOT\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229439__NRS-484B-500__vehicle_parker --case testing__C229439__NRS-484B-500__vehicle_parker__park_inside_hazard --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

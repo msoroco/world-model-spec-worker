@@ -1,13 +1,19 @@
 import sys
+import json
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from native_adapter import Adapter, VIEWS, corners, station, steering_to
+from native_adapter import Adapter, VIEWS, corners, station, steering_to, through_phase
+from preflight_native_site import preflight
+from test_native_capture import fixture
 from yield_view import CASES
+import runner
 
 
 def reviewed_site():
@@ -113,6 +119,41 @@ class AdapterContract(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "readback failed"):
             adapter.spawn_checked("blueprint", "pose", "camera")
         self.assertEqual(events, ["destroy"])
+
+    def test_through_phase_uses_observed_body_bounds(self):
+        self.assertEqual(through_phase([-8, -5], -2, 2), "approaching")
+        self.assertEqual(through_phase([-3, 1], -2, 2), "occupied")
+        self.assertEqual(through_phase([3, 5], -2, 2), "departed")
+        with self.assertRaises(ValueError):
+            through_phase([], -2, 2)
+
+    def test_packet_preflight_rejects_missing_native_geometry(self):
+        scratch = ROOT.parents[1] / ".runtime-work"
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temp:
+            source = Path(temp)
+            packet = fixture(source, CASES[0])
+            with self.assertRaisesRegex(ValueError, "blueprints"):
+                preflight(packet, source, CASES[0].case_id)
+            value = json.loads(packet.read_text())
+            value["site"].update(reviewed_site())
+            packet.write_text(json.dumps(value, sort_keys=True) + "\n")
+            proof = preflight(packet, source, CASES[0].case_id)
+            self.assertTrue(proof["reviewed_site_source_gate_passed"])
+            self.assertFalse(proof["native_capture_executed"])
+
+    def test_runner_checks_site_before_adapter_connection(self):
+        case_id = runner.ASSIGNMENT + "__" + CASES[0].case_id
+        args = ["runner.py", "--case", case_id, "--output-dir", "/tmp/c157964-attempt",
+                "--host", "127.0.0.1", "--port", "2000", "--site", "/tmp/site.json",
+                "--source-root", "/tmp", "--adapter-module", "native_adapter"]
+        with patch.object(sys, "argv", args), \
+                patch.object(runner, "preflight", side_effect=ValueError("unreviewed site")) as source_gate, \
+                patch.object(runner.importlib, "import_module") as import_module:
+            with self.assertRaisesRegex(ValueError, "unreviewed site"):
+                runner.main()
+            source_gate.assert_called_once()
+            import_module.assert_not_called()
 
 
 if __name__ == "__main__":

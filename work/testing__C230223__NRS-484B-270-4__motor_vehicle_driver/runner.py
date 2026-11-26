@@ -20,7 +20,7 @@ def check_config(config: dict) -> bool:
             config.get("cell_id") != "C230223" or
             config.get("actor") != "motor_vehicle_driver" or
             config.get("rate_hz") != 20 or config.get("duration_s") != 45 or
-            tuple(config.get("cameras", [])) != VIEWS or
+            tuple(view.get("name") if isinstance(view, dict) else view for view in config.get("cameras", [])) != VIEWS or
             config.get("diagnostic_only") is not True):
         raise ValueError("exact cycle-lane Native case/config mismatch")
     selected = cases[case_id]

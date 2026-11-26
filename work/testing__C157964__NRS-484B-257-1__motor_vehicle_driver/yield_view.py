@@ -146,8 +146,8 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case):
         for key in ('ego_speed_mps', 'through_center_station_m',
                     'through_min_vertex_station_m', 'ego_leading_station_m'):
             require(number(row.get(key)), 'original numeric stream missing: ' + key)
-        require(row.get('through_phase') == case.through_state,
-                'through vehicle phase differs from case')
+        require(row.get('through_phase') in ('approaching', 'occupied', 'departed'),
+                'through vehicle phase readback missing or invalid')
         require(type(row.get('ego_across_or_within')) is bool,
                 'intersection crossing history missing')
         require(type(row.get('all_at_reference_observed')) is bool,
@@ -163,6 +163,8 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case):
     require(len(reference_events) == 1 and reference_events[0] <= first_cross,
             'one observed all-at-reference event before crossing required')
     reference_index = reference_events[0]
+    require(rows[reference_index]['through_phase'] == case.through_state,
+            'through vehicle phase differs at yield reference')
     require(first_cross > 0 and rows[first_cross - 1]['ego_leading_station_m'] <
             site['physical_reference_station_m'], 'first physical crossing invalid')
     approach_min = min(speeds[:first_cross + 1])

@@ -135,6 +135,22 @@ class YieldViewTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'governing-control readback'):
             measure_original(a, x, case)
 
+    def test_observed_through_phase_may_change_after_yield_reference(self):
+        case = CASES[0]
+        x = site(case)
+        a = rows(x, case)
+        for i in range(120, 300):
+            a[i]['through_phase'] = 'occupied'
+            reseal(a[i], 'through_motion')
+        for i in range(300, 900):
+            a[i]['through_phase'] = 'departed'
+            reseal(a[i], 'through_motion')
+        self.assertEqual(measure_original(a, x, case)['all_at_reference_original_frame'], 400)
+        a[100]['through_phase'] = 'occupied'
+        reseal(a[100], 'through_motion')
+        with self.assertRaisesRegex(ValueError, 'phase differs at yield reference'):
+            measure_original(a, x, case)
+
     def test_owned_cleanup(self):
         adapter = Adapter(fail=True)
         with self.assertRaisesRegex(RuntimeError, 'approach failed'):

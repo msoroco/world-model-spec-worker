@@ -51,8 +51,11 @@ def measure_saved(attempt):
     if context.get("case_id") != config.get("selected_case_id") or context.get("assignment_id") != ASSIGNMENT:
         raise ValueError("original parking context differs from exact case")
     if any(row.get("vehicle_actor_id") != context.get("vehicle_actor_id") or
-           row.get("device_actor_id") != context.get("device_actor_id") for row in history):
-        raise ValueError("original vehicle or erected device identity differs")
+           row.get("device_actor_id") != context.get("device_actor_id") or
+           row.get("curb_person_actor_id") != context.get("curb_person_actor_id") or
+           not isinstance(row.get("curb_person_body_m"), list) or
+           not isinstance(row.get("curb_person_position_m"), list) for row in history):
+        raise ValueError("original vehicle, curb person or erected device identity differs")
     packet = dict(context)
     packet.update(original_trace_id=sha(paths["parking-history.jsonl"]),
                   frames=[{"time_s": row["time_s"], "speed_mps": row["speed_mps"],
@@ -98,6 +101,13 @@ def saved_result(attempt, value):
         "device_identity_history": [{"device_actor_id": r["device_actor_id"],
              "device_id": context["device_id"]} for r in history],
         "place_context_history": [context] * len(history),
+        "curb_person_history": [{"actor_id": r["curb_person_actor_id"],
+                                 "body_m": r["curb_person_body_m"],
+                                 "position_m": r["curb_person_position_m"]} for r in history],
+        "conduct_phase_history": [{"requested_conduct": r["requested_conduct"],
+                                   "phase": r["phase"],
+                                   "loading_activity_observed": r["loading_activity_observed"]}
+                                  for r in history],
         "camera_frame_map": mapping,
     }
     evidence = []

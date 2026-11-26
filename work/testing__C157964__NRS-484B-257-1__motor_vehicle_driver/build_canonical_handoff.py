@@ -46,7 +46,8 @@ def main():
     proposal = json.loads((ROOT / "proposals/cases.json").read_text())
     recording = proposal["cases"][0]["recording_description"]
     paths = ("runner.py", "config.json", "yield_view.py", "reviewed_site.py",
-             "native_capture.py", "native_adapter.py", "saved_audit.py", "saved_finalizer.py",
+             "native_capture.py", "native_adapter.py", "preflight_native_site.py",
+             "saved_audit.py", "saved_finalizer.py",
              "comparison_audit.py", "delivery_audit.py", "analysis.py")
     files = [{"path": path, "source": "work/" + ASSIGNMENT + "/" + path,
               "content": (ROOT / path).read_text()} for path in paths]
