@@ -188,6 +188,10 @@ def execute(config, output_dir, host, port):
             'traffic_conflict_requested': config['case_id'].endswith('_present'),
             'traffic_conflict_source': 'traffic-trace.jsonl',
             'traffic_conflict_independently_verified': False,
+            'other_traffic_trajectory': {
+                'source': 'traffic-trace.jsonl',
+                'participant_present_requested': config['case_id'].endswith('_present'),
+                'independently_verified': False},
             'other_law_authority': None,
             'officer_direction': None,
             'official_device_direction': None,

@@ -36,8 +36,11 @@ def main():
         ('in compliance with law or the directions of a police officer or official traffic-control device', 'Identify governing authority and observe its direction and compliance from original sources.'),
         ('does not impede the normal and reasonable movement of pedestrians', 'Subsection 3 applies to a bicycle, electric bicycle or electric scooter, outside this motor-vehicle actor; do not infer a width cutoff.'),
     ]
-    parameters = [{'name': 'sidewalk_vehicle_occupancy', 'kind': 'world_setup',
-                   'range_or_domain': 'requested off-sidewalk or on-sidewalk stop; physical overlap measured from original body and map sources'}]
+    parameters = [
+        {'name': 'sidewalk_vehicle_occupancy', 'kind': 'world_setup',
+         'range_or_domain': 'requested off-sidewalk or on-sidewalk stop; physical overlap measured from original body and map sources'},
+        {'name': 'other_traffic_actor_present', 'kind': 'world_setup',
+         'range_or_domain': 'absent or stationary same-lane vehicle request; actual conflict and necessity require original evidence review'}]
     template = {
         'template_id': TEMPLATE_ID, 'law_id': LAW_ID, 'actor': ACTOR,
         'status': 'draft', 'quote': LAW['text'],
@@ -100,6 +103,22 @@ def main():
                                 'comparison_or_standard': 'Original body and surface source comparison without a legal cutoff',
                                 'target_value_or_branch': 'requested sidewalk occupancy' if occupied else 'requested off-sidewalk stop'},
                       'recording_description': description})
+    for present in (False, True):
+        suffix = 'traffic_conflict_present' if present else 'traffic_conflict_absent'
+        traffic_description = json.loads((HERE / ('selected-' + suffix.replace('_', '-') + '/construction.json')).read_text())['recording_description']
+        cases.append({'case_id': HERE.name + '__' + suffix,
+                      'target_law_id': LAW_ID, 'target_type': 'boundary_probe',
+                      'rationale': 'Controlled other-traffic actor source contrast; necessity and legal exception remain unverified.',
+                      'variable_assignments': {
+                          'sidewalk_vehicle_occupancy': {'kind': 'world_setup', 'value': True},
+                          'other_traffic_actor_present': {'kind': 'world_setup', 'value': present}},
+                      'unresolved_judgment_calls': [phrase for phrase, _ in judgments],
+                      'paired_probe_id': 'traffic-conflict-context',
+                      'deliberate_differences': ['other_traffic_actor_present'],
+                      'probe': {'primary_variable': 'other_traffic_actor_present',
+                                'comparison_or_standard': 'Original other-traffic trajectory and subject-stop evidence, without a legal necessity verdict',
+                                'target_value_or_branch': suffix},
+                      'recording_description': traffic_description})
     cases_ref = write('cases.json', {
         'status': 'draft', 'assignment_id': HERE.name, 'law_id': LAW_ID,
         'cell_id': SOURCE['cell_id'], 'actor': ACTOR,

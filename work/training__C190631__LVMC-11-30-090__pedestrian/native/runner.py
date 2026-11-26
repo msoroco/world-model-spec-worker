@@ -10,10 +10,10 @@ from geometry import check as geometry_check, geometry, open_drive
 FRAMES = 600
 RATE = 20
 CAMERAS = (
-    ('overview', 1280, 720, 0, -14, 24, -55),
-    ('along_roadway', 1280, 720, -38, -11, 13, -18),
-    ('sidewalk', 1280, 720, 0, -13, 14, -40),
-    ('pedestrian_close', 1280, 720, 28, -10, 12, -30),
+    ('overview', 1920, 1080, 0, -14, 24, -55),
+    ('approach', 1280, 720, -38, -11, 13, -18),
+    ('reference_corner', 1280, 720, 0, -13, 14, -40),
+    ('driver_reference', 1280, 720, 28, -10, 12, -30),
 )
 
 
@@ -46,14 +46,29 @@ def survey(world, carla):
         output[name] = samples
     if {r['road_id'] for samples in output.values() for r in samples} != {1}:
         raise RuntimeError('Native sidewalk is not attached to the sampled roadway')
+    lower = []
+    for y in (-20, 0, 20):
+        wp = mapping.get_waypoint(carla.Location(x=1.75, y=y, z=.4),
+                                  project_to_road=True, lane_type=carla.LaneType.Driving)
+        if wp is None or wp.road_id != 2 or wp.lane_id != -1:
+            raise RuntimeError(f'Native lower road readback failed at y={y}')
+        read = wp.transform.location
+        if abs(read.x - 1.75) > 1 or abs(read.y - y) > 1 or abs(read.z) > 1:
+            raise RuntimeError(f'Native lower road position/elevation failed at y={y}')
+        lower.append({'requested_y_m': y, 'native_xyz_m': [read.x, read.y, read.z],
+                      'road_id': wp.road_id, 'lane_id': wp.lane_id})
+    output['lower_road'] = lower
     return output
 
 
-def execute(output_dir, host, port):
+def execute(output_dir, host, port, walking_surface='roadway', case_id=None):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
+    from pipeline_capture import PipelineCapture
     check()
+    if walking_surface not in ('roadway', 'sidewalk') or not case_id:
+        raise ValueError('Unknown walking surface')
     output = Path(output_dir).resolve()
     if output.exists():
         raise ValueError('choose a fresh original Native attempt directory')
@@ -68,6 +83,8 @@ def execute(output_dir, host, port):
     encoders = {}
     queues = {}
     changed = False
+    complete = False
+    capture = None
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
             vertex_distance=.5, max_road_length=25, wall_height=0, additional_width=0,
@@ -83,6 +100,9 @@ def execute(output_dir, host, port):
         world.apply_settings(settings)
         readback = survey(world, carla)
         output.mkdir(parents=True)
+        (output / 'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'walking_surface': walking_surface}, indent=2) + '\n')
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         surface = geometry()
         surface['native_readback'] = readback
@@ -91,9 +111,12 @@ def execute(output_dir, host, port):
         blueprints = world.get_blueprint_library()
         walker_bp = sorted(blueprints.filter('walker.pedestrian.*'), key=lambda b: b.id)[0]
         walker_bp.set_attribute('role_name', 'c190631_pedestrian_subject')
+        walker_y = -1.75 if walking_surface == 'roadway' else -5
         walker = world.spawn_actor(walker_bp, carla.Transform(
-            carla.Location(x=-30, y=-1.75, z=8.6), carla.Rotation(yaw=0)))
+            carla.Location(x=-30, y=walker_y, z=8.6), carla.Rotation(yaw=0)))
         owned.append(walker)
+        capture = PipelineCapture(client, walker, output, case_id,
+                                  visibility=False, required_observations=[])
         for name, width, height, x, y, z, pitch in CAMERAS:
             bp = blueprints.find('sensor.camera.rgb')
             bp.set_attribute('image_size_x', str(width))
@@ -113,7 +136,7 @@ def execute(output_dir, host, port):
                 '-r', str(RATE), '-i', '-', '-frames:v', str(FRAMES),
                 '-c:v', 'ffv1', '-level', '1', str(video)],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-        with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'pedestrian-poses.jsonl').open('x') as poses:
+        with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'pedestrian-poses.jsonl').open('x') as poses, (output / 'trace.jsonl').open('x') as trace:
             first_elapsed = None
             for index in range(FRAMES):
                 walker.apply_control(carla.WalkerControl(direction=carla.Vector3D(x=1, y=0, z=0), speed=2))
@@ -125,8 +148,13 @@ def execute(output_dir, host, port):
                 if first_elapsed is None:
                     first_elapsed = ts
                 elapsed = ts - first_elapsed
+                capture.capture(native_frame, elapsed)
                 transform = walker.get_transform()
                 velocity = walker.get_velocity()
+                footprint = sorted({(round(vertex.x, 5), round(vertex.y, 5))
+                                    for vertex in walker.bounding_box.get_world_vertices(transform)})
+                if len(footprint) != 4:
+                    raise RuntimeError('Original pedestrian footprint source missing')
                 mapped = {}
                 for name in queues:
                     image = queues[name].get(timeout=30)
@@ -141,18 +169,31 @@ def execute(output_dir, host, port):
                     'time_s': elapsed,
                     'native_elapsed_seconds': ts,
                     'pedestrian_xy_m': [transform.location.x, transform.location.y],
+                    'pedestrian_footprint_xy_m': [list(point) for point in footprint],
                     'pedestrian_z_m': transform.location.z,
                     'velocity_xy_mps': [velocity.x, velocity.y],
                     'walker_actor_id': walker.id,
                     'walker_blueprint_id': walker.type_id}) + '\n')
+                trace.write(json.dumps({'frame': native_frame, 'time_s': elapsed,
+                    'position': {'x': transform.location.x, 'y': transform.location.y,
+                                 'z': transform.location.z},
+                    'position_m': [transform.location.x, transform.location.y,
+                                   transform.location.z],
+                    'heading_deg': transform.rotation.yaw,
+                    'speed_mps': (velocity.x**2 + velocity.y**2 + velocity.z**2)**.5,
+                    'velocity_mps': [velocity.x, velocity.y, velocity.z],
+                    'control': {'walker_target_speed_mps': 2}}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError(f'Original camera encoding failed: {name}: {stderr.decode()[-400:]}')
+        complete = True
         return {'frames': FRAMES, 'camera_names': list(queues),
                 'native_survey': readback, 'physical_acceptance_claimed': False}
     finally:
+        if capture is not None:
+            capture.close(confirmed=complete)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -164,8 +205,13 @@ def execute(output_dir, host, port):
                 actor.destroy()
             except Exception:
                 pass
-        if changed:
-            restore(client, saved)
+        restoration = restore(client, saved) if changed else {'restored': True}
+        if complete:
+            seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                         encoder_exit_codes={name: process.returncode for name, process in encoders.items()},
+                         context={'case_id': case_id,
+                                  'walking_surface': walking_surface,
+                                  'physical_review': 'pending_original_source'})
 
 
 if __name__ == '__main__':
@@ -180,4 +226,6 @@ if __name__ == '__main__':
         raise SystemExit('choose exactly one of --check or --execute')
     if args.execute and not args.output_dir:
         raise SystemExit('--output-dir required for Native execution')
-    print(json.dumps(check() if args.check else execute(args.output_dir, args.host, args.port)))
+    config = json.loads((Path(__file__).resolve().parent / 'config.json').read_text())
+    print(json.dumps(check() if args.check else execute(args.output_dir, args.host, args.port,
+        config['walking_surface'], config['case_id'])))

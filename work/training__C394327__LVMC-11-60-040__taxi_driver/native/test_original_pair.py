@@ -14,6 +14,7 @@ class OriginalPairAudit(unittest.TestCase):
         for index in range(600):
             time_s = (index + 1) / 20
             row = {'video_frame': index, 'time_s': time_s,
+                   'taxi_blueprint_id': 'vehicle.fixture.taxi',
                    'taxi_xyz_m': [5.25, 10, 0],
                    'taxi_velocity_xyz_mps': [0, 0, 0]}
             common = {'video_frame': index, 'time_s': time_s,
@@ -59,6 +60,10 @@ class OriginalPairAudit(unittest.TestCase):
         changed = copy.deepcopy(self.native)
         changed[300]['taxi_xyz_m'][0] += 1
         with self.assertRaisesRegex(ValueError, 'taxi pose'):
+            self.run_pair(right_native=changed)
+        changed = copy.deepcopy(self.native)
+        changed[300]['taxi_blueprint_id'] = 'vehicle.fixture.other'
+        with self.assertRaisesRegex(ValueError, 'actor type'):
             self.run_pair(right_native=changed)
 
     def test_changed_stand_door_and_time_rejected(self):

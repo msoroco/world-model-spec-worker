@@ -22,6 +22,9 @@ def check_config(config, road_text):
         raise ValueError('C394327 exact scope or timing differs')
     if tuple(c.get('name') for c in config.get('cameras', ())) != VIEWS:
         raise ValueError('Four named source cameras required')
+    stop_x = config.get('taxi_stop_x_m')
+    if type(stop_x) not in (int, float) or not math.isfinite(stop_x) or not 4 <= stop_x <= 6:
+        raise ValueError('Taxi curb stop x coordinate missing or outside the authored segment')
     if any(c.get('fps') != HZ or not all(c.get(k) for k in
                ('width', 'height', 'fov_deg', 'location_xyz_m', 'rotation_pyr_deg'))
            for c in config['cameras']):

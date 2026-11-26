@@ -55,6 +55,7 @@ def main():
             raise ValueError('Activity contrast differs')
         config = {'case_id':case,'law_id':'LVMC-11-60-040','cell_id':'C394327',
                   'actor':'taxi_driver','duration_s':30,'rate_hz':20,'frames':600,
+                  'taxi_stop_x_m':5.25,
                   'road_sha256':sha(SOURCE/'taxi-road.xodr'),
                   'requested_activity':activity,'requested_activity_window_frames':[160,400],
                   'designation_source_required':True,
@@ -85,26 +86,32 @@ def main():
         path = BASE/'draft-native'/suffix/'construction.json'
         write(path, construction)
         fallback_config = copy.deepcopy(config)
-        fallback_config['candidate_id'] = 'curb_visibility_fallback'
-        fallback_config['cameras'][2]['location_xyz_m'] = [8, 11, 5]
+        fallback_config['candidate_id'] = 'fallback1'
+        fallback_config['taxi_stop_x_m'] = 4.75
         check_config(fallback_config, road)
         fallback = copy.deepcopy(construction)
         for item in fallback['files']:
             if item['path'] == 'config.json':
                 item['content'] = json.dumps(fallback_config, indent=2) + '\n'
-        fallback['candidate_id'] = 'curb_visibility_fallback'
+            elif item['path'] == 'requested-track.jsonl':
+                moved = copy.deepcopy(rows)
+                for row in moved:
+                    row['requested_center_xy_m'] = [4.75, 10]
+                item['content'] = ''.join(json.dumps(row,separators=(',',':'),allow_nan=False)+'\n'
+                                        for row in moved)
+        fallback['candidate_id'] = 'fallback1'
         fallback['status'] = 'draft_cpu_offline_only'
-        fallback_path = BASE/'draft-native'/suffix/'curb_visibility_fallback-construction.json'
+        fallback_path = BASE/'draft-native'/suffix/'fallback1-construction.json'
         write(fallback_path, fallback)
         cases.append({'case_id':case,'construction':str(path.relative_to(BASE)),
                       'construction_sha256':sha(path),
-                      'candidates':[{'id':'curb_visibility_fallback',
+                      'candidates':[{'id':'fallback1',
                         'construction':str(fallback_path.relative_to(BASE)),
                         'construction_sha256':sha(fallback_path),
                         'trigger':{'source':'original curb_reference.mkv and participant review',
                           'metric':'visible loading subject and taxi door during active window',
                           'failure_condition':'complete original capture has obscured loading subject or door'},
-                        'changed_knobs':['curb_reference camera location from [14,13,8] to [8,11,5] metres; actor control and timing fixed']}],
+                        'changed_knobs':['taxi curb-stop x coordinate from 5.25 to 4.75 metres; cameras, actor type and timing fixed']}],
                       'candidate_risk':{'status':'physical',
                         'reason':'Original taxi identity, stand designation and participant loading activity need Native review.'}})
         fallback_log = SOURCE/('proof-'+suffix.replace('_','-')+'-fallback.log')

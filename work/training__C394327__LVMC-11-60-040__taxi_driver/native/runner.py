@@ -24,6 +24,7 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
 
     root = Path(__file__).resolve().parent
     check_config(config, (root / 'taxi-road.xodr').read_text())
+    stop_x = config['taxi_stop_x_m']
     output = Path(output_dir).resolve()
     if not output.is_dir() or (output / 'native-rows.jsonl').exists():
         raise ValueError('New empty attempt directory required')
@@ -55,7 +56,7 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
         settings.max_substeps = 10
         world.apply_settings(settings)
         waypoint = world.get_map().get_waypoint(
-            carla.Location(x=5.25, y=10, z=1), project_to_road=True,
+            carla.Location(x=stop_x, y=10, z=1), project_to_road=True,
             lane_type=carla.LaneType.Parking)
         if waypoint is None or abs(waypoint.transform.location.y - 10) > 2:
             raise RuntimeError('Requested outside-stand parking location unavailable')
@@ -67,7 +68,7 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
         taxi_blueprint = taxi_blueprints[0]
         taxi_blueprint.set_attribute('role_name', 'c394327_taxi_subject_unverified')
         taxi = world.spawn_actor(taxi_blueprint, carla.Transform(
-            carla.Location(x=5.25, y=10, z=2), carla.Rotation(yaw=90)))
+            carla.Location(x=stop_x, y=10, z=2), carla.Rotation(yaw=90)))
         owned.append(taxi)
         participant = world.spawn_actor(walkers[0], carla.Transform(
             carla.Location(x=8.2, y=10, z=2), carla.Rotation(yaw=270)))

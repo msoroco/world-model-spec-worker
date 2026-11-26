@@ -14,11 +14,11 @@ class FakeCarla:
 
 
 class FakeWaypoint:
-    def __init__(self, x, y, lane_id):
+    def __init__(self, x, y, lane_id, road_id=1, z=8):
         self.lane_id = lane_id
-        self.road_id = 1
+        self.road_id = road_id
         self.lane_type = 'driving' if lane_id == -1 else 'sidewalk'
-        self.transform = type('T', (), {'location': FakeCarla.Location(x, y, 8)})()
+        self.transform = type('T', (), {'location': FakeCarla.Location(x, y, z)})()
 
 
 class FakeMap:
@@ -27,7 +27,9 @@ class FakeMap:
 
     def get_waypoint(self, location, project_to_road, lane_type):
         lane_id = -1 if lane_type == FakeCarla.LaneType.Driving else -3
-        return FakeWaypoint(location.x, location.y, -2 if self.wrong else lane_id)
+        lower = location.z < 2
+        return FakeWaypoint(location.x, location.y, -2 if self.wrong else lane_id,
+                            road_id=2 if lower else 1, z=0 if lower else 8)
 
 
 class FakeWorld:
@@ -54,5 +56,6 @@ class NativeDraft(unittest.TestCase):
         result = survey(FakeWorld(), FakeCarla)
         self.assertEqual(len(result['roadway']), 3)
         self.assertEqual(len(result['sidewalk']), 3)
+        self.assertEqual(len(result['lower_road']), 3)
         with self.assertRaisesRegex(RuntimeError, 'readback failed'):
             survey(FakeWorld(wrong=True), FakeCarla)

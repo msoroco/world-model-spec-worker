@@ -30,8 +30,11 @@ def measure(poses_path, geometry_path):
     if geometry.get('sidewalk_provided') is not True or geometry.get('adjacent') is not True:
         raise ValueError('provided adjacent sidewalk source missing')
     survey = geometry.get('native_readback')
-    if not isinstance(survey, dict) or not all(len(survey.get(name, [])) == 3 for name in ('roadway', 'sidewalk')):
+    if not isinstance(survey, dict) or not all(len(survey.get(name, [])) == 3 for name in ('roadway', 'sidewalk', 'lower_road')):
         raise ValueError('Native roadway/sidewalk survey source missing')
+    if any(row.get('road_id') != 2 or abs(row['native_xyz_m'][2]) > 1
+           for row in survey['lower_road']):
+        raise ValueError('Native lower overpass road source differs')
     road = geometry['roadway_xy_m']
     walk = geometry['sidewalk_xy_m']
     if len(road) < 3 or len(walk) < 3:
@@ -39,8 +42,13 @@ def measure(poses_path, geometry_path):
     centers = [r['pedestrian_xy_m'] for r in rows]
     if any(len(p) != 2 or not all(math.isfinite(v) for v in p) for p in centers):
         raise ValueError('invalid original pedestrian position')
-    road_occupied = [inside(p, road) for p in centers]
-    walk_occupied = [inside(p, walk) for p in centers]
+    footprints = [r.get('pedestrian_footprint_xy_m') for r in rows]
+    if any(not isinstance(points, list) or len(points) != 4 or
+           any(len(point) != 2 or not all(math.isfinite(v) for v in point)
+               for point in points) for points in footprints):
+        raise ValueError('original pedestrian footprint source missing')
+    road_occupied = [all(inside(point, road) for point in points) for points in footprints]
+    walk_occupied = [all(inside(point, walk) for point in points) for points in footprints]
     path_m = sum(math.dist(a, b) for a, b in zip(centers, centers[1:]))
     long_m = centers[-1][0] - centers[0][0]
     lateral_m = centers[-1][1] - centers[0][1]
@@ -49,6 +57,7 @@ def measure(poses_path, geometry_path):
             'sidewalk_occupied_frames': sum(walk_occupied), 'path_length_m': path_m,
             'longitudinal_displacement_m': long_m, 'lateral_displacement_m': lateral_m,
             'along_to_lateral_ratio': abs(long_m) / max(abs(lateral_m), 1e-9),
+            'occupancy_method': 'all four original bounding-box footprint vertices inside source polygon',
             'roadway_intervals': intervals(road_occupied),
             'sidewalk_intervals': intervals(walk_occupied),
             'legal_conclusion': None,

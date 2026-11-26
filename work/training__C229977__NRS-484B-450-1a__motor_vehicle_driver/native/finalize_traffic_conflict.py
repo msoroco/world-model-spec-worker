@@ -173,7 +173,7 @@ def finalize(attempt, output):
              {'name': 'exception_authority_context', 'unit': 'structured',
               'reference': 'authority-context.json'},
              {'name': 'other_traffic_trajectory', 'unit': 'structured',
-              'reference': 'traffic-trace.jsonl'}],
+              'reference': 'authority-context.json'}],
         'realized_observables': {'rest_and_overlap_frames': {
             'value': observed['rest_and_overlap_frames'], 'unit': 'frames',
             'method': 'source-joined original post-tick vehicle footprint and map geometry',

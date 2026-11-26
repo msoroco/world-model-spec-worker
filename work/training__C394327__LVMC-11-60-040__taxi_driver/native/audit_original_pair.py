@@ -54,6 +54,9 @@ def compare(left_measure, right_measure, left_native, right_native,
                 la.get('observed_stand_location') ==
                 ra.get('observed_stand_location') == 'outside_designated_stand',
                 'Original taxi or outside-stand condition differs')
+        require(ln.get('taxi_blueprint_id') and
+                ln.get('taxi_blueprint_id') == rn.get('taxi_blueprint_id'),
+                'Original taxi actor type differs')
         for key in ('taxi_xyz_m', 'taxi_velocity_xyz_mps'):
             lv, rv = ln.get(key), rn.get(key)
             require(isinstance(lv, list) and isinstance(rv, list) and
@@ -74,8 +77,13 @@ def compare(left_measure, right_measure, left_native, right_native,
 
 def audit(left_attempt, right_attempt, output):
     attempts = [Path(left_attempt).resolve(), Path(right_attempt).resolve()]
-    for attempt in attempts:
+    for case, attempt in zip(CASES, attempts):
         require(attempt.is_dir(), 'Original attempt directory missing')
+        review_manifest = json.loads((attempt / 'review-manifest.json').read_text())
+        require(review_manifest.get('case_id') == case,
+                'Original review manifest binds another exact case')
+    require(sha(attempts[0] / 'road.xodr') == sha(attempts[1] / 'road.xodr'),
+            'Original road and stand geometry differs')
     measurements = [finalize(attempt, attempt / 'review-manifest.json')
                     for attempt in attempts]
     require(all(measurement.get('original_native_observed') is True and

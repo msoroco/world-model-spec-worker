@@ -1,0 +1,664 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C190398__LVMC-11-30-060-B__pedestrian",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_proofs_passed",
+  "original_native_observed": false,
+  "delivery_ready": false,
+  "cases": [
+    {
+      "case_id": "training__C190398__LVMC-11-30-060-B__pedestrian__yield",
+      "kind": "delivery",
+      "construction": "selected-yield-construction.json",
+      "construction_sha256": "581330ef7f4410a11ca062610e4ac056379e9c8ef19bf5c388f90f12c7809856",
+      "measurement_contract": "selected-yield-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker spawn, elevated crossing mesh or roadway vehicle timing may fail; use source-measured failure before changing spawn or timing."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-yield-fallback1-construction.json",
+          "construction_sha256": "4fbd977ed5bad0b0eb9f0bf2706c241483f8d7867fba6b97b7614377369f434a",
+          "trigger": {
+            "source": "original post-tick.jsonl",
+            "metric": "pedestrian roadway entry frame and vehicle conflict frame",
+            "failure_condition": "Original walker enters before a safe vehicle passage is source-confirmed or fails roadway occupancy"
+          },
+          "changed_knobs": [
+            "pedestrian_departure_frame +10 frames"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C190398__LVMC-11-30-060-B__pedestrian/selected-draft-manifest.json --case training__C190398__LVMC-11-30-060-B__pedestrian__yield --candidate fallback1 --output .runtime-work/c190398-selected-offline-yield-fallback-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "4fbd977ed5bad0b0eb9f0bf2706c241483f8d7867fba6b97b7614377369f434a",
+            "exit_code": 0,
+            "log": "selected-proofs/yield-fallback1/offline.log",
+            "log_sha256": "70f75fd1617d3da23641b99a1d11db46363abae70ae6124299b7b0245e294d85"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/yield-fallback1/compatibility.json",
+            "sha256": "5b80c06a0287c6fb29de718d2513b7e19a93723c6e0951215c13e9cecbe0fa15",
+            "log": "selected-proofs/yield-fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/yield-fallback1/negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "selected-proofs/yield-fallback1/processing.json",
+            "sha256": "176684bc0e8de725cd849938da0d0f673131cd52c2ce1eba76f381efc316a8de",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "log": "selected-proofs/yield-fallback1/saved.log",
+            "log_sha256": "199ddc8b3ef914b18261673500c37a8b5b5e2ba96609c1092039c6457b8fb673"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C190398__LVMC-11-30-060-B__pedestrian/native/diagnostic/yield/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C190398__LVMC-11-30-060-B__pedestrian/selected-draft-manifest.json --case training__C190398__LVMC-11-30-060-B__pedestrian__yield --candidate primary --output .runtime-work/c190398-selected-offline-yield-v2 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "581330ef7f4410a11ca062610e4ac056379e9c8ef19bf5c388f90f12c7809856",
+        "exit_code": 0,
+        "log": "selected-proofs/yield-primary/offline.log",
+        "log_sha256": "70f75fd1617d3da23641b99a1d11db46363abae70ae6124299b7b0245e294d85"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/yield-primary/compatibility.json",
+        "sha256": "4c481edaac77fad665e26869d2dc58ecea11fc82d7700d6d0387ce2ee7765ecc",
+        "log": "selected-proofs/yield-primary/public-analysis.log",
+        "negative_log": "selected-proofs/yield-primary/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/yield-primary/processing.json",
+        "sha256": "f65584e624826e5a8bf3030bba2602e970fdbb66f2c518bc4403c10a1f2c70e7",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/yield-primary/saved.log",
+        "log_sha256": "dee8f5a6534264c9f0be9d5c2451ccbb45f37ee4d71dd2c295a8251d26ce5bd5"
+      },
+      "negative": {
+        "log": "selected-proofs/yield-primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C190398__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case training__C190398__LVMC-11-30-060-B__pedestrian__yield --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C190398__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case training__C190398__LVMC-11-30-060-B__pedestrian__yield --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/yield-primary/saved.log",
+        "test_log_sha256": "dee8f5a6534264c9f0be9d5c2451ccbb45f37ee4d71dd2c295a8251d26ce5bd5"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/yield/physical-preparation.json",
+        "sha256": "62fd50b4b7c1d8617dbcd98436a725d0ca772b4724640de35c0b3c35485e45ea"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.pedestrian_grade_separation": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.yields_to": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "pedestrian_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "scene_cameras": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "pedestrian_roadway_occupancy": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "crossing_point": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "pedestrian_and_vehicle_poses": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "source_camera_views": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "vehicle_pedestrian_interaction": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "crossing_route_and_signs": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C190398__LVMC-11-30-060-B__pedestrian__yield",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "abfc9785fd74ec5ec624b09d670d9b1ece804ae3820e8b0a4e291acf95a0ab45",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c190398-delivery-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C190398__LVMC-11-30-060-B__pedestrian/delivery_audit.py --case training__C190398__LVMC-11-30-060-B__pedestrian__yield --selftest",
+        "test_exit_code": 0,
+        "test_log": "selected-physical/yield/delivery-positive.log",
+        "test_log_sha256": "813b96805f5ef5fddce5bb8177e1c1d179714d07a2e6b62cebc2fbd1eeb758ed",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c190398-delivery-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C190398__LVMC-11-30-060-B__pedestrian/delivery_audit.py --case training__C190398__LVMC-11-30-060-B__pedestrian__yield --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "selected-physical/yield/delivery-negative.log",
+        "negative_log_sha256": "f97f290444086a9f4d53c70ad42b50c6863716b79cd0877a4c16be03ae34b317"
+      }
+    },
+    {
+      "case_id": "training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead",
+      "kind": "delivery",
+      "construction": "selected-enter_ahead-construction.json",
+      "construction_sha256": "defc9a34ac36202e63b226ff45484f2f4e43b395d560086154556853d8ab1738",
+      "measurement_contract": "selected-enter_ahead-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker spawn, elevated crossing mesh or roadway vehicle timing may fail; use source-measured failure before changing spawn or timing."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-enter_ahead-fallback1-construction.json",
+          "construction_sha256": "c6b0e479edf8b6882eab117f4e756413c622f2ce95ae8b2948aa4f5fbb7af664",
+          "trigger": {
+            "source": "original post-tick.jsonl",
+            "metric": "pedestrian roadway entry frame and vehicle conflict frame",
+            "failure_condition": "Original walker enters before a safe vehicle passage is source-confirmed or fails roadway occupancy"
+          },
+          "changed_knobs": [
+            "pedestrian_departure_frame +10 frames"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C190398__LVMC-11-30-060-B__pedestrian/selected-draft-manifest.json --case training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead --candidate fallback1 --output .runtime-work/c190398-selected-offline-enter-fallback-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "c6b0e479edf8b6882eab117f4e756413c622f2ce95ae8b2948aa4f5fbb7af664",
+            "exit_code": 0,
+            "log": "selected-proofs/enter_ahead-fallback1/offline.log",
+            "log_sha256": "6b881022423ec574bbc2045f5b75c08baf2a82f6315b448c7dc58ee5e8bf6dc4"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/enter_ahead-fallback1/compatibility.json",
+            "sha256": "712783a9b853ad0efdbe6e8c5b3beefb7cf3b1c4875e4631e137eabba87ffb14",
+            "log": "selected-proofs/enter_ahead-fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/enter_ahead-fallback1/negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "selected-proofs/enter_ahead-fallback1/processing.json",
+            "sha256": "b49926f79f2d58ed27a7de617ac3906ebdd920c86e2dc70af4bbd929619ce445",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "log": "selected-proofs/enter_ahead-fallback1/saved.log",
+            "log_sha256": "7d1d991e505f5d1521a1f907db7d686b0d7272aed3ad4eceb38bab6c2643fbb4"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C190398__LVMC-11-30-060-B__pedestrian/native/diagnostic/enter_ahead/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C190398__LVMC-11-30-060-B__pedestrian/selected-draft-manifest.json --case training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead --candidate primary --output .runtime-work/c190398-selected-offline-enter-v2 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "defc9a34ac36202e63b226ff45484f2f4e43b395d560086154556853d8ab1738",
+        "exit_code": 0,
+        "log": "selected-proofs/enter_ahead-primary/offline.log",
+        "log_sha256": "6b881022423ec574bbc2045f5b75c08baf2a82f6315b448c7dc58ee5e8bf6dc4"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/enter_ahead-primary/compatibility.json",
+        "sha256": "fb4b9bc723d646540efd0e027dfd43e6514d93436ad215a14213c344da3d8912",
+        "log": "selected-proofs/enter_ahead-primary/public-analysis.log",
+        "negative_log": "selected-proofs/enter_ahead-primary/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/enter_ahead-primary/processing.json",
+        "sha256": "0863e1a8546e07e1538d0e26cc20fb43bb28890918ccc99b9f54e9f858d57e2f",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/enter_ahead-primary/saved.log",
+        "log_sha256": "b2881ca60f461b8b974ff3e15b75da906488a28d1d7367164a6c8d73b67518b6"
+      },
+      "negative": {
+        "log": "selected-proofs/enter_ahead-primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C190398__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C190398__LVMC-11-30-060-B__pedestrian/execution-manifest.json --case training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/enter_ahead-primary/saved.log",
+        "test_log_sha256": "b2881ca60f461b8b974ff3e15b75da906488a28d1d7367164a6c8d73b67518b6"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/enter_ahead/physical-preparation.json",
+        "sha256": "d66ad720085e9995bed4e2ff5126730820f576b892eb227f29e2eeeb53a86158"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.pedestrian_grade_separation": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.yields_to": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "pedestrian_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "scene_cameras": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "pedestrian_roadway_occupancy": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "crossing_point": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "pedestrian_and_vehicle_poses": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "source_camera_views": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "vehicle_pedestrian_interaction": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "crossing_route_and_signs": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed roadway, overhead crossing, frame and four source cameras; Section 11.30.070 applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "abfc9785fd74ec5ec624b09d670d9b1ece804ae3820e8b0a4e291acf95a0ab45",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c190398-delivery-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C190398__LVMC-11-30-060-B__pedestrian/delivery_audit.py --case training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead --selftest",
+        "test_exit_code": 0,
+        "test_log": "selected-physical/enter_ahead/delivery-positive.log",
+        "test_log_sha256": "813b96805f5ef5fddce5bb8177e1c1d179714d07a2e6b62cebc2fbd1eeb758ed",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c190398-delivery-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C190398__LVMC-11-30-060-B__pedestrian/delivery_audit.py --case training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "selected-physical/enter_ahead/delivery-negative.log",
+        "negative_log_sha256": "f97f290444086a9f4d53c70ad42b50c6863716b79cd0877a4c16be03ae34b317"
+      }
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 """Authored elevated roadway, shoulder, adjacent sidewalk for C190631."""
 import json
+import math
 import xml.etree.ElementTree as ET
 
 
@@ -7,7 +8,8 @@ def geometry():
     return {'sidewalk_provided': True, 'adjacent': True,
             'sidewalk_xy_m': [[-40, -6], [40, -6], [40, -4], [-40, -4]],
             'roadway_xy_m': [[-40, -3.5], [40, -3.5], [40, 0], [-40, 0]],
-            'overpass_deck_z_m': 8,
+            'overpass_deck_z_m': 8, 'lower_road_z_m': 0,
+            'grade_separation_m': 8,
             'source_status': 'authored_requires_native_readback',
             'boundary_gap_m': .5}
 
@@ -37,13 +39,35 @@ def open_drive():
         ET.SubElement(lane, 'roadMark', sOffset='0', type='solid', color='white', width='0.1')
     ET.SubElement(road, 'objects')
     ET.SubElement(road, 'signals')
+    lower = ET.SubElement(root, 'road', id='2', name='crossing-lower-road', length='60', junction='-1')
+    ET.SubElement(lower, 'link')
+    lower_segment = ET.SubElement(ET.SubElement(lower, 'planView'), 'geometry',
+                                  s='0', x='0', y='-30', hdg=str(math.pi / 2), length='60')
+    ET.SubElement(lower_segment, 'line')
+    ET.SubElement(ET.SubElement(lower, 'elevationProfile'), 'elevation',
+                  s='0', a='0', b='0', c='0', d='0')
+    lower_lanes = ET.SubElement(lower, 'lanes')
+    ET.SubElement(lower_lanes, 'laneOffset', s='0', a='0', b='0', c='0', d='0')
+    lower_section = ET.SubElement(lower_lanes, 'laneSection', s='0')
+    ET.SubElement(lower_section, 'left')
+    lower_center = ET.SubElement(lower_section, 'center')
+    ET.SubElement(lower_center, 'lane', id='0', type='none', level='false')
+    lower_right = ET.SubElement(lower_section, 'right')
+    lower_lane = ET.SubElement(lower_right, 'lane', id='-1', type='driving', level='false')
+    ET.SubElement(lower_lane, 'width', sOffset='0', a='3.5', b='0', c='0', d='0')
+    ET.SubElement(lower_lane, 'roadMark', sOffset='0', type='solid', color='white', width='0.1')
+    ET.SubElement(lower, 'objects')
+    ET.SubElement(lower, 'signals')
     return ET.tostring(root, encoding='unicode')
 
 
 def check():
     g = geometry()
     root = ET.fromstring(open_drive())
-    road = root.find('road')
+    roads = root.findall('road')
+    if len(roads) != 2 or [r.attrib['id'] for r in roads] != ['1', '2']:
+        raise ValueError('two vertically separated roads required')
+    road, lower = roads
     lanes = road.findall('lanes/laneSection/right/lane')
     ids = [int(l.attrib['id']) for l in lanes]
     kinds = [l.attrib['type'] for l in lanes]
@@ -52,11 +76,16 @@ def check():
         raise ValueError('authored roadway/sidewalk lane inventory differs')
     if float(road.find('elevationProfile/elevation').attrib['a']) != 8:
         raise ValueError('overpass elevation differs')
+    if float(lower.find('elevationProfile/elevation').attrib['a']) != 0:
+        raise ValueError('lower road elevation differs')
+    if lower.find('planView/geometry').attrib['hdg'] != str(math.pi / 2):
+        raise ValueError('lower road crossing heading differs')
     if g['roadway_xy_m'][0][1] != -3.5 or g['sidewalk_xy_m'][0][1] != -6:
         raise ValueError('surface polygon inventory differs')
     return {'passed': True, 'road_length_m': 100, 'lane_ids': ids,
             'lane_types': kinds, 'lane_widths_m': widths,
-            'overpass_deck_z_m': 8, 'boundary_gap_m': .5,
+            'overpass_deck_z_m': 8, 'lower_road_z_m': 0,
+            'grade_separation_m': 8, 'boundary_gap_m': .5,
             'native_map_readback_observed': False}
 
 

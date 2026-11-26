@@ -40,13 +40,15 @@
     {
       "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_01",
       "target_law_id": "LVMC-11-30-090",
-      "kind": "planned_only",
+      "kind": "delivery_draft",
       "target_type": "controlled_attempt",
       "physical_target": "pedestrian walks along sidewalk",
       "comparison_variable": "walking surface",
-      "selection_status": "not_selected",
+      "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "two_road_overpass_native_capture_and_restore_seal_cpu_offline_passed_physical_unverified",
+      "construction": "draft-roadway/probe_01/primary/construction.json",
+      "construction_sha256": "78bd2f17bd1f17c218d3234637be113801075a393bc551742d671d361ef49f57"
     },
     {
       "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_02",
@@ -57,9 +59,9 @@
       "comparison_variable": "walking surface",
       "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
       "expected_label": null,
-      "construction_status": "survey_gated_native_capture_cpu_offline_passed_physical_unverified",
-      "construction": "draft-roadway/roadway_walking/primary/construction.json",
-      "construction_sha256": "3cda3decccea9e71bf4d9ea19eccd826cff7623f649c2ef45f2be9b9bcd2894a"
+      "construction_status": "two_road_overpass_native_capture_and_restore_seal_cpu_offline_passed_physical_unverified",
+      "construction": "draft-roadway/probe_02/primary/construction.json",
+      "construction_sha256": "896822bddc3689af8ff814ffab931f04ce9f638772c34015211ddd791e243baf"
     }
   ],
   "comparisons": [
@@ -79,7 +81,8 @@
         "camera policy",
         "recording rate and duration",
         "nonvariable context"
-      ]
+      ],
+      "proof_status": "source_bound_synthetic_meter_positive_and_three_negatives_passed_not_delivery_comparison"
     }
   ],
   "mandatory_observation_targets": [
@@ -106,7 +109,7 @@
     },
     {
       "term": "kin.heading",
-      "note": "'along' \u2014 walking with the road rather than across it"
+      "note": "'along' — walking with the road rather than across it"
     },
     {
       "term": "kin.path_length",
@@ -124,13 +127,11 @@
     }
   ],
   "unverified_physical_assumptions": [
-    "Generated OpenDRIVE is expected to place a 3.5 m roadway, 0.5 m shoulder and 2 m sidewalk at z=8. Survey gate requires three native readbacks per surface; CARLA has not run."
+    "Authored grade-separated OpenDRIVE roads place upper roadway/sidewalk at z8 and crossing lower road at z0; Native survey checks both roads but CARLA has not run."
   ],
   "runtime_gaps": [
-    "Native OpenDRIVE sidewalk and roadway readback, walker trajectory, camera pixels and four FFV1 streams have not been physically verified in CARLA.",
-    "Sidewalk counterpart and full controlled comparison remain planned only.",
-    "Current-runtime positive/negative compatibility through saved processing, finalizer/Core mapping, semantic proposals, independent acceptance and comparison audits remain unfinished.",
-    "Risk candidates and exact ready gate remain unfinished; no accepted recording exists."
+    "CARLA Native two-road readback, walker motion, body footprints, sidewalk purpose, camera pixels and capture seal not physically verified.",
+    "Selected execution/measurement manifests, source-bound positive/negative compatibility, recorded-only saved processing, Core finalization, semantic proposals, independent acceptance and delivery comparison audits and risk fallback pending."
   ],
   "observations": [
     {
@@ -156,7 +157,7 @@
     {
       "name": "kin.heading",
       "mandatory": true,
-      "reason": "'along' \u2014 walking with the road rather than across it"
+      "reason": "'along' — walking with the road rather than across it"
     },
     {
       "name": "kin.path_length",
@@ -193,8 +194,80 @@
         "training__C190631__LVMC-11-30-090__pedestrian__probe_01",
         "training__C190631__LVMC-11-30-090__pedestrian__probe_02"
       ],
-      "evidence_or_gap": "Roadway probe has a CPU-tested, survey-gated Native implementation and source-shaped positive/missing-source negatives. CARLA and saved processing remain unverified."
+      "evidence_or_gap": "Both walking-surface probes have CPU-tested, survey-gated Native draft constructions; saved processing and physical validation remain unfinished."
     }
   ],
-  "source_law_review": "Exact LVMC 11.30.090 reviewed: prohibition requires provided sidewalk and pedestrian walking along and upon adjacent roadway. The text states no duration or distance cutoff. Frozen overpass cell remains physically unverified. No accepted membership."
+  "source_law_review": "Exact LVMC 11.30.090 reviewed: prohibition requires a provided sidewalk and pedestrian walking along and upon an adjacent roadway; no statutory duration/distance cutoff. Frozen overpass has two authored grade-separated roads, with upper sidewalk adjacency subject to Native/pixel verification. No accepted membership. State-law sidewalk-obstruction interaction remains unresolved legal context.",
+  "source_observation_mapping": [
+    {
+      "term": "ru.subject",
+      "measurement": "walker_actor_id and walker_blueprint_id",
+      "evidence": "pedestrian-poses.jsonl",
+      "channels": [
+        "original actor pose"
+      ],
+      "source_refs": [
+        "LVMC 11.30.090"
+      ]
+    },
+    {
+      "term": "st.sidewalk",
+      "measurement": "Native sidewalk lane survey, source polygon and sidewalk occupancy intervals",
+      "evidence": "surface-geometry.json and pedestrian-poses.jsonl",
+      "channels": [
+        "source geometry",
+        "original footprint"
+      ],
+      "source_refs": [
+        "LVMC 11.30.090"
+      ]
+    },
+    {
+      "term": "st.roadway",
+      "measurement": "Native roadway lane survey, source polygon and roadway occupancy intervals",
+      "evidence": "surface-geometry.json and pedestrian-poses.jsonl",
+      "channels": [
+        "source geometry",
+        "original footprint"
+      ],
+      "source_refs": [
+        "LVMC 11.30.090"
+      ]
+    },
+    {
+      "term": "rel.occupies",
+      "measurement": "all four original pedestrian footprint vertices within source surface polygon per frame",
+      "evidence": "pedestrian-poses.jsonl and surface-geometry.json",
+      "channels": [
+        "original footprint",
+        "source geometry"
+      ],
+      "source_refs": [
+        "LVMC 11.30.090"
+      ]
+    },
+    {
+      "term": "kin.heading",
+      "measurement": "longitudinal versus lateral displacement and original heading",
+      "evidence": "pedestrian-poses.jsonl and trace.jsonl",
+      "channels": [
+        "original pose",
+        "original heading"
+      ],
+      "source_refs": [
+        "LVMC 11.30.090"
+      ]
+    },
+    {
+      "term": "kin.path_length",
+      "measurement": "sum of inter-frame original pedestrian center displacement",
+      "evidence": "pedestrian-poses.jsonl",
+      "channels": [
+        "original pose"
+      ],
+      "source_refs": [
+        "LVMC 11.30.090"
+      ]
+    }
+  ]
 }
