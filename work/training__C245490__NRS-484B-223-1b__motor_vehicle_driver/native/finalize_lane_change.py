@@ -37,6 +37,28 @@ def finalize(attempt, output):
     rows = read_trace(required(attempt, 'native-ego-frames.jsonl'))
     checks = read_trace(required(attempt, 'native-driver-checks.jsonl'))
     observed = measure(rows, context['source_kind'], checks)
+    channel_values = {
+        'ego_lane': lambda row: {'occupied_lane_id': row['occupied_lane_id'],
+                                 'current_lane_id': row['current_lane_id'],
+                                 'lateral_offset_m': row['ego_lateral_offset_from_occupied_lane_center_m']},
+        'front_actor': lambda row: {'position_m': row['target_front_position_m'],
+                                    'surface_gap_m': row['target_front_surface_gap_m']},
+        'rear_actor': lambda row: {'position_m': row['target_rear_position_m'],
+                                   'surface_gap_m': row['target_rear_surface_gap_m']},
+        'observed_indicator': lambda row: {'requested_on': row['target_direction_indicator_requested_on'],
+                                          'observed_on': row['target_direction_indicator_observed_on']},
+        'controller_check': lambda row: {'action': checks[0]['action'],
+                                         'check_frame': checks[0]['video_frame']},
+    }
+    channel_evidence = []
+    (attempt / 'channels').mkdir(exist_ok=True)
+    for name, project in channel_values.items():
+        reference = 'channels/' + name + '.jsonl'
+        with (attempt / reference).open('w') as stream:
+            for row in rows:
+                stream.write(json.dumps({'time_s': row['time_s'], 'value': project(row)},
+                                        allow_nan=False) + '\n')
+        channel_evidence.append({'name': name, 'unit': 'structured', 'reference': reference})
     if config['case_id'] != config['selected_case_id']:
         raise ValueError('Selected exact case identity mismatch')
     suffix = config['case_id'].split('__')[-1]
@@ -79,13 +101,8 @@ def finalize(attempt, output):
         'trace_reference': 'trace.jsonl', 'video_references': list(VIDEOS),
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': config['recording_description'],
-        'recording_evidence': [{'name': 'lane_change_source_context', 'unit': 'structured',
-                                'reference': 'driving-context.json'}],
+        'recording_evidence': channel_evidence,
         'realized_observables': {
-            'signal_lead_s': {'value': observed['signal_lead_s'], 'unit': 's',
-                              'method': 'observed indicator onset to body departure',
-                              'time_window': '600 frames', 'statistic': 'first-event difference',
-                              'reference': 'native-ego-frames.jsonl'},
             'target_lane_gap_m': {'value': observed['gap_at_departure_m'], 'unit': 'm',
                                    'method': 'front/rear longitudinal body clearance',
                                    'time_window': 'body departure frame', 'statistic': 'minimum',
@@ -94,26 +111,32 @@ def finalize(attempt, output):
         'diagnostic_fixture': provenance['diagnostic_fixture'],
         'accepted': False, 'legal_verdict_claimed': False,
     }
+    if observed['signal_lead_s'] is not None:
+        result['realized_observables']['signal_lead_s'] = {
+            'value': observed['signal_lead_s'], 'unit': 's',
+            'method': 'observed indicator onset to body departure',
+            'time_window': '600 frames', 'statistic': 'first-event difference',
+            'reference': 'native-ego-frames.jsonl'}
     write_result(attempt, result)
     report = {'format': 'c245490-lane-change-analysis-v1',
               'case_id': config['case_id'], 'analysis_complete': True,
               'measured_values': observed,
               'measurements': {
-                  'lane_activation': {'method': 'measure_lane_change',
+                  'lane_activation': {'method': 'finalize',
                                       'value': {'same_direction_marked_lane_count': observed['same_direction_marked_lane_count'],
                                                 'first_body_departure_frame': observed['first_body_departure_frame']},
                                       'sources': dict(hashes)},
-                  'signal_order': {'method': 'measure_lane_change',
+                  'signal_order': {'method': 'finalize',
                                    'value': {'observed_onset': observed['signal_start_frame'],
                                              'requested_onset': observed['signal_request_start_frame'],
                                              'precedes_departure': observed['signal_precedes_departure']},
                                    'sources': dict(hashes)},
-                  'independent_check': {'method': 'measure_lane_change',
+                  'independent_check': {'method': 'finalize',
                                         'value': {'action': observed['controller_check_action'],
                                                   'decision': observed['controller_decision_to_depart'],
                                                   'frame': observed['controller_check_frame']},
                                         'sources': dict(hashes)},
-                  'target_lane_gap': {'method': 'measure_lane_change',
+                  'target_lane_gap': {'method': 'finalize',
                                       'value': {'gap_at_departure_m': observed['gap_at_departure_m'],
                                                 'ttc_at_departure_s': observed['ttc_at_departure_s']},
                                       'sources': dict(hashes)}},

@@ -176,6 +176,7 @@ def execute(config, output_dir, host, port):
         (output / 'trail-inventory.json').write_text(json.dumps(inventory, indent=2) + '\n')
         (output / 'trail-authority-context.json').write_text(json.dumps({
             'source_kind': 'original_native', 'request': source_request,
+            'trail_source_context': source_request,
             'official_record_reviewed': False, 'official_plan_source': None,
             'city_record_reviewed': False, 'city_dedication_source': None,
             'sign_wording_and_authority_reviewed': False,
@@ -247,6 +248,9 @@ def execute(config, output_dir, host, port):
                     'vehicle_blueprint_id': vehicle.type_id,
                     'vehicle_xyz_m': [vt.location.x, vt.location.y, vt.location.z],
                     'vehicle_yaw_deg': vt.rotation.yaw,
+                    'value': {'vehicle_xyz_m': [vt.location.x, vt.location.y, vt.location.z],
+                              'bbox_half_length_m': extent.x,
+                              'bbox_half_width_m': extent.y},
                     'bbox_half_length_m': extent.x, 'bbox_half_width_m': extent.y,
                     'observed_speed_mps': math.hypot(vv.x, vv.y),
                     'requested_control': request, 'camera_native_frames': camera_frames,

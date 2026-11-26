@@ -104,7 +104,6 @@ def measure(rows, source_kind, check_rows=None):
         'controller_check_frame': check_frame,
         'controller_decision_to_depart': check.get('decision_to_depart'),
         'driver_safety_ascertainment': 'unobserved',
-        'legal_verdict': None,
     }
 
 

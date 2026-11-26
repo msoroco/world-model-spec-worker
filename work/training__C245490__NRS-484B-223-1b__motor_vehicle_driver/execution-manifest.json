@@ -8,7 +8,7 @@
       "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe",
       "kind": "delivery",
       "construction": "native/selected/signal_before_safe/construction.json",
-      "construction_sha256": "cf887f5b1ed214de5e87f0d3a1ca134fa17afca89f1200ecd20092dcfb2a244b",
+      "construction_sha256": "72a16b2826fa276301fd60152fd0cd3dd1cba97ec2e785b2dc9124c55e62bfe5",
       "candidate_risk": {
         "status": "none",
         "reason": "No original Native motion/camera failure measured; primary capture first."
@@ -27,18 +27,99 @@
       },
       "fixture_recipe": "work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/selected-recipe-signal_before_safe.json",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe --output .runtime-work/c245490-owner/offline-v3-signal_before_safe",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe --output .runtime-work/c245490-owner/offline-v6-signal_before_safe",
         "exit_code": 0,
-        "construction_sha256": "cf887f5b1ed214de5e87f0d3a1ca134fa17afca89f1200ecd20092dcfb2a244b",
+        "construction_sha256": "72a16b2826fa276301fd60152fd0cd3dd1cba97ec2e785b2dc9124c55e62bfe5",
         "log": "offline/signal_before_safe-primary.log",
         "log_sha256": "5f6c05a50ab17a9eb1e736491a60413d5dd3c133c3eea0daf77da15b677bfb91"
+      },
+      "compatibility": {
+        "receipt": "proofs/signal_before_safe/compatibility.json",
+        "sha256": "6fa5b04778d161cbafc3fb7f19dcb072ff3d4055d469786fc14236b13fbb507d",
+        "log": "proofs/signal_before_safe/compatibility-analysis.log",
+        "negative_log": "proofs/signal_before_safe/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/signal_before_safe/negative-analysis.log"
+      },
+      "acquisition": {
+        "ego_lane": {
+          "entrypoint": "runner.py",
+          "method": "original waypoint and body lateral offset at every Native frame",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl"
+        },
+        "front_actor": {
+          "entrypoint": "runner.py",
+          "method": "independent target-lane front actor pose and surface gap",
+          "evidence": "native-ego-frames.jsonl, driving-context.json"
+        },
+        "rear_actor": {
+          "entrypoint": "runner.py",
+          "method": "independent target-lane rear actor pose and surface gap",
+          "evidence": "native-ego-frames.jsonl, driving-context.json"
+        },
+        "observed_indicator": {
+          "entrypoint": "runner.py",
+          "method": "Native vehicle light readback distinct from controller request",
+          "evidence": "native-ego-frames.jsonl, four camera views"
+        },
+        "controller_check": {
+          "entrypoint": "runner.py",
+          "method": "separate original predeparture check action and sampled actor gap",
+          "evidence": "native-driver-checks.jsonl, native-ego-frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/signal_before_safe/proof.json",
+        "sha256": "47aa421c34c5da8c4be6dca4c3ebc742950637396d18ba2d40f59559b3be877d"
+      },
+      "saved_processing": {
+        "receipt": "saved/signal_before_safe/processing.json",
+        "sha256": "f6bff1479cea95b278149afa11f11bf0dd98c1af51e50ef828961b57312a7e61",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe --attempt .runtime-work/c245490-owner/compat-signal_before_safe-v5 --output .runtime-work/c245490-owner/saved-signal_before_safe-v2 --library runtime/library --validator .runtime-work/c245490-owner/decoder/.lake/build/bin/adapterCheck",
+        "test_log": "saved/signal_before_safe/process-saved.log",
+        "test_log_sha256": "f6bff1479cea95b278149afa11f11bf0dd98c1af51e50ef828961b57312a7e61",
+        "test_exit_code": 0,
+        "scope": "labelled synthetic saved-only proof; original Native physical and pixel acceptance pending",
+        "missing_source_negative": {
+          "log": "saved/signal_before_safe/missing-source-negative.log",
+          "log_sha256": "59525ce75fb5fa8a6bb5077e1c3b9c50c382d95f6760accedc3d4da3666d3d88",
+          "exit_code": 1,
+          "expected_error": "Missing required source: native-driver-checks.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py",
+        "script_sha256": "4a96302442618b1c8014a114975898dcecd8e66c1c858d5c3d905d14d09e7ba0",
+        "command": ".venv-cpu/bin/python work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/signal_before_safe-positive.log",
+        "test_log_sha256": "88bfe748897c6a4a54ad69a2999cd821cab36d83cb972736db5ce0300fc5cd4c",
+        "negative_command": ".venv-cpu/bin/python work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Delivery construction differs from selected manifest",
+        "negative_log": "delivery-audit/signal_before_safe-negative.log",
+        "negative_log_sha256": "30c27d72d4e3a6c7a833d6c20fbde79b926ae16620bb8c889649210166a8b88f",
+        "scope": "CPU synthetic source chain; original Native pixels and physical completion require local acceptance"
       }
     },
     {
       "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe",
       "kind": "delivery",
       "construction": "native/selected/signal_after_safe/construction.json",
-      "construction_sha256": "40e01bcb2ed15e523195017a26fcbf0cb84aceeba56934b1506d124e74ed44c6",
+      "construction_sha256": "99216415e8f351902f4be8126aa0a4d2af336671ec1e4b7fc56995a5ea878c37",
       "candidate_risk": {
         "status": "none",
         "reason": "No original Native motion/camera failure measured; primary capture first."
@@ -57,18 +138,93 @@
       },
       "fixture_recipe": "work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/selected-recipe-signal_after_safe.json",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe --output .runtime-work/c245490-owner/offline-v3-signal_after_safe",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe --output .runtime-work/c245490-owner/offline-v6-signal_after_safe",
         "exit_code": 0,
-        "construction_sha256": "40e01bcb2ed15e523195017a26fcbf0cb84aceeba56934b1506d124e74ed44c6",
+        "construction_sha256": "99216415e8f351902f4be8126aa0a4d2af336671ec1e4b7fc56995a5ea878c37",
         "log": "offline/signal_after_safe-primary.log",
         "log_sha256": "a5b3e2440167b6d294403510f7c4b5ad4de119585febff1187f917d769def661"
+      },
+      "compatibility": {
+        "receipt": "proofs/signal_after_safe/compatibility.json",
+        "sha256": "4ecac7212280d801e69bbfb7b632e3834eabfb5b866f309a7e215598d2dbc9db",
+        "log": "proofs/signal_after_safe/compatibility-analysis.log",
+        "negative_log": "proofs/signal_after_safe/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/signal_after_safe/negative-analysis.log"
+      },
+      "acquisition": {
+        "ego_lane": {
+          "entrypoint": "runner.py",
+          "method": "original waypoint and body lateral offset at every Native frame",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl"
+        },
+        "front_actor": {
+          "entrypoint": "runner.py",
+          "method": "independent target-lane front actor pose and surface gap",
+          "evidence": "native-ego-frames.jsonl, driving-context.json"
+        },
+        "rear_actor": {
+          "entrypoint": "runner.py",
+          "method": "independent target-lane rear actor pose and surface gap",
+          "evidence": "native-ego-frames.jsonl, driving-context.json"
+        },
+        "observed_indicator": {
+          "entrypoint": "runner.py",
+          "method": "Native vehicle light readback distinct from controller request",
+          "evidence": "native-ego-frames.jsonl, four camera views"
+        },
+        "controller_check": {
+          "entrypoint": "runner.py",
+          "method": "separate original predeparture check action and sampled actor gap",
+          "evidence": "native-driver-checks.jsonl, native-ego-frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/signal_after_safe/proof.json",
+        "sha256": "46ed6d0f1d966927f58143624fb8c77be67fe4c7ff81a0d8125916e6957e6f52"
+      },
+      "saved_processing": {
+        "receipt": "saved/signal_after_safe/processing.json",
+        "sha256": "76164ecc0992924fcfbad5e2a92ea2bb6cac7d935b7fb780db0df82f13063074",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe --attempt .runtime-work/c245490-owner/compat-signal_after_safe-v5 --output .runtime-work/c245490-owner/saved-signal_after_safe-v2 --library runtime/library --validator .runtime-work/c245490-owner/decoder/.lake/build/bin/adapterCheck",
+        "test_log": "saved/signal_after_safe/process-saved.log",
+        "test_log_sha256": "76164ecc0992924fcfbad5e2a92ea2bb6cac7d935b7fb780db0df82f13063074",
+        "test_exit_code": 0,
+        "scope": "labelled synthetic saved-only proof; original Native physical and pixel acceptance pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py",
+        "script_sha256": "4a96302442618b1c8014a114975898dcecd8e66c1c858d5c3d905d14d09e7ba0",
+        "command": ".venv-cpu/bin/python work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/signal_after_safe-positive.log",
+        "test_log_sha256": "d2ea5a9daa0f69922799236e27eadd5b3471e23efbfe17d1d3ac2ef0447cce84",
+        "negative_command": ".venv-cpu/bin/python work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Delivery construction differs from selected manifest",
+        "negative_log": "delivery-audit/signal_after_safe-negative.log",
+        "negative_log_sha256": "30c27d72d4e3a6c7a833d6c20fbde79b926ae16620bb8c889649210166a8b88f",
+        "scope": "CPU synthetic source chain; original Native pixels and physical completion require local acceptance"
       }
     },
     {
       "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe",
       "kind": "delivery",
       "construction": "native/selected/signal_before_unsafe/construction.json",
-      "construction_sha256": "f9253bf1ef03f5ee9907d41f9cb7abab9c8d6f0e29e7caa689293fe4eebd3c31",
+      "construction_sha256": "6d5fcf77c608dd2b20414458fd7bce8da5b22b1e8d47ea185bfbddc4e5bcf14a",
       "candidate_risk": {
         "status": "none",
         "reason": "No original Native motion/camera failure measured; primary capture first."
@@ -87,18 +243,93 @@
       },
       "fixture_recipe": "work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/selected-recipe-signal_before_unsafe.json",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe --output .runtime-work/c245490-owner/offline-v3-signal_before_unsafe",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe --output .runtime-work/c245490-owner/offline-v6-signal_before_unsafe",
         "exit_code": 0,
-        "construction_sha256": "f9253bf1ef03f5ee9907d41f9cb7abab9c8d6f0e29e7caa689293fe4eebd3c31",
+        "construction_sha256": "6d5fcf77c608dd2b20414458fd7bce8da5b22b1e8d47ea185bfbddc4e5bcf14a",
         "log": "offline/signal_before_unsafe-primary.log",
         "log_sha256": "898c06588b602af9ddeb907c867bde06bbf6306fe44d73003a023ec9325615e8"
+      },
+      "compatibility": {
+        "receipt": "proofs/signal_before_unsafe/compatibility.json",
+        "sha256": "62640bea46184f0a9a4410972ca7b0b866c01506f184a554c8bfefdcff1b0c4b",
+        "log": "proofs/signal_before_unsafe/compatibility-analysis.log",
+        "negative_log": "proofs/signal_before_unsafe/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/signal_before_unsafe/negative-analysis.log"
+      },
+      "acquisition": {
+        "ego_lane": {
+          "entrypoint": "runner.py",
+          "method": "original waypoint and body lateral offset at every Native frame",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl"
+        },
+        "front_actor": {
+          "entrypoint": "runner.py",
+          "method": "independent target-lane front actor pose and surface gap",
+          "evidence": "native-ego-frames.jsonl, driving-context.json"
+        },
+        "rear_actor": {
+          "entrypoint": "runner.py",
+          "method": "independent target-lane rear actor pose and surface gap",
+          "evidence": "native-ego-frames.jsonl, driving-context.json"
+        },
+        "observed_indicator": {
+          "entrypoint": "runner.py",
+          "method": "Native vehicle light readback distinct from controller request",
+          "evidence": "native-ego-frames.jsonl, four camera views"
+        },
+        "controller_check": {
+          "entrypoint": "runner.py",
+          "method": "separate original predeparture check action and sampled actor gap",
+          "evidence": "native-driver-checks.jsonl, native-ego-frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/signal_before_unsafe/proof.json",
+        "sha256": "c351069744a65b714534949a9f9159c7522ed11deaff86210e3f18967044783b"
+      },
+      "saved_processing": {
+        "receipt": "saved/signal_before_unsafe/processing.json",
+        "sha256": "01907b86888d8e9ef5f855a26611de633a209c04665ea33e57a8bd0a292b9eaf",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe --attempt .runtime-work/c245490-owner/compat-signal_before_unsafe-v5 --output .runtime-work/c245490-owner/saved-signal_before_unsafe-v2 --library runtime/library --validator .runtime-work/c245490-owner/decoder/.lake/build/bin/adapterCheck",
+        "test_log": "saved/signal_before_unsafe/process-saved.log",
+        "test_log_sha256": "01907b86888d8e9ef5f855a26611de633a209c04665ea33e57a8bd0a292b9eaf",
+        "test_exit_code": 0,
+        "scope": "labelled synthetic saved-only proof; original Native physical and pixel acceptance pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py",
+        "script_sha256": "4a96302442618b1c8014a114975898dcecd8e66c1c858d5c3d905d14d09e7ba0",
+        "command": ".venv-cpu/bin/python work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/signal_before_unsafe-positive.log",
+        "test_log_sha256": "84f8d9f922c8affb340b8fba2e7e2761df5a072f77b0a8d2f1b3e3f18e830e84",
+        "negative_command": ".venv-cpu/bin/python work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Delivery construction differs from selected manifest",
+        "negative_log": "delivery-audit/signal_before_unsafe-negative.log",
+        "negative_log_sha256": "30c27d72d4e3a6c7a833d6c20fbde79b926ae16620bb8c889649210166a8b88f",
+        "scope": "CPU synthetic source chain; original Native pixels and physical completion require local acceptance"
       }
     },
     {
       "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check",
       "kind": "delivery",
       "construction": "native/selected/signal_before_no_check/construction.json",
-      "construction_sha256": "02bdbd7544c249e04db65438ceb0734968861c5e9dd8e5d0c8855a218bf9cf11",
+      "construction_sha256": "68196942d65651bbb7c36d4d93ae6321680843d615a200aba38d018fe4bf0a7f",
       "candidate_risk": {
         "status": "none",
         "reason": "No original Native motion/camera failure measured; primary capture first."
@@ -117,11 +348,86 @@
       },
       "fixture_recipe": "work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/selected-recipe-signal_before_no_check.json",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check --output .runtime-work/c245490-owner/offline-v3-signal_before_no_check",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check --output .runtime-work/c245490-owner/offline-v6-signal_before_no_check",
         "exit_code": 0,
-        "construction_sha256": "02bdbd7544c249e04db65438ceb0734968861c5e9dd8e5d0c8855a218bf9cf11",
+        "construction_sha256": "68196942d65651bbb7c36d4d93ae6321680843d615a200aba38d018fe4bf0a7f",
         "log": "offline/signal_before_no_check-primary.log",
         "log_sha256": "7061640bcbb43339018fa1b708ec646648160ef00fd1110c4c5c88ac0e69ee65"
+      },
+      "compatibility": {
+        "receipt": "proofs/signal_before_no_check/compatibility.json",
+        "sha256": "fff12cfa5fc54dbbb245ab97e3a94415ca1fc63df6305e4c63e47c981d6de12f",
+        "log": "proofs/signal_before_no_check/compatibility-analysis.log",
+        "negative_log": "proofs/signal_before_no_check/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/signal_before_no_check/negative-analysis.log"
+      },
+      "acquisition": {
+        "ego_lane": {
+          "entrypoint": "runner.py",
+          "method": "original waypoint and body lateral offset at every Native frame",
+          "evidence": "native-ego-frames.jsonl, video_frames.jsonl"
+        },
+        "front_actor": {
+          "entrypoint": "runner.py",
+          "method": "independent target-lane front actor pose and surface gap",
+          "evidence": "native-ego-frames.jsonl, driving-context.json"
+        },
+        "rear_actor": {
+          "entrypoint": "runner.py",
+          "method": "independent target-lane rear actor pose and surface gap",
+          "evidence": "native-ego-frames.jsonl, driving-context.json"
+        },
+        "observed_indicator": {
+          "entrypoint": "runner.py",
+          "method": "Native vehicle light readback distinct from controller request",
+          "evidence": "native-ego-frames.jsonl, four camera views"
+        },
+        "controller_check": {
+          "entrypoint": "runner.py",
+          "method": "separate original predeparture check action and sampled actor gap",
+          "evidence": "native-driver-checks.jsonl, native-ego-frames.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/signal_before_no_check/proof.json",
+        "sha256": "5ec98e914b6bc3d2899ff5c791f6f920c86e18ec26d60237e1615e7cacbde82e"
+      },
+      "saved_processing": {
+        "receipt": "saved/signal_before_no_check/processing.json",
+        "sha256": "67a8de745438fdafc6f946aec133a177c2e4a1a7f891bc1b30be61a68a1a8142",
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check --attempt .runtime-work/c245490-owner/compat-signal_before_no_check-v5 --output .runtime-work/c245490-owner/saved-signal_before_no_check-v2 --library runtime/library --validator .runtime-work/c245490-owner/decoder/.lake/build/bin/adapterCheck",
+        "test_log": "saved/signal_before_no_check/process-saved.log",
+        "test_log_sha256": "67a8de745438fdafc6f946aec133a177c2e4a1a7f891bc1b30be61a68a1a8142",
+        "test_exit_code": 0,
+        "scope": "labelled synthetic saved-only proof; original Native physical and pixel acceptance pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py",
+        "script_sha256": "4a96302442618b1c8014a114975898dcecd8e66c1c858d5c3d905d14d09e7ba0",
+        "command": ".venv-cpu/bin/python work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/signal_before_no_check-positive.log",
+        "test_log_sha256": "022fb54399bd53b75143bebeae85fe4b33d9bea05c6fff07b9aea266df096646",
+        "negative_command": ".venv-cpu/bin/python work/training__C245490__NRS-484B-223-1b__motor_vehicle_driver/native/audit_delivery.py --case training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Delivery construction differs from selected manifest",
+        "negative_log": "delivery-audit/signal_before_no_check-negative.log",
+        "negative_log_sha256": "30c27d72d4e3a6c7a833d6c20fbde79b926ae16620bb8c889649210166a8b88f",
+        "scope": "CPU synthetic source chain; original Native pixels and physical completion require local acceptance"
       }
     }
   ]

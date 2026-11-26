@@ -37,15 +37,14 @@ def main():
         planned = next(c for c in plan['cases'] if c['case_id'] == case_id)
         source_request = planned['source_context_request']
         description = {'channels': [
-            {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
-             'method': method, 'time_window': '600 original frames',
+            {'name': 'trail_occupancy', 'unit': 'structured', 'sampling_rate_hz': 20,
+             'method': 'original Native actor pose and bounding box joined to surveyed corridor',
+             'time_window': '600 original frames',
              'reference_frame': 'surveyed road/trail lanes and original Native frame',
-             'uncertainty': '50 ms sampling; official designation and dedication unverified'}
-            for name, method in (
-                ('vehicle_footprint', 'original Native actor pose and bounding box'),
-                ('trail_right_of_way', 'authored bounds and Native lane survey'),
-                ('barrier_clearance', 'original Native barrier and vehicle body readback'),
-                ('camera_frame_join', 'four original RGB streams joined to Native frames'))],
+             'uncertainty': '50 ms sampling; official designation and dedication unverified'}],
+            'context_inputs': [
+                {'name': 'trail_source_context', 'unit': 'structured',
+                 'method': 'retained original plan, dedication, posting and exception context with review flags'}],
             'limitations': ['Official plan, City dedication, appropriate sign, exception identity and physical clearance require independent source review']}
         config = {'case_id': case_id, 'selected_case_id': case_id,
                   'supported_case_ids': [ASSIGNMENT + '__' + s for s, _ in CASES],

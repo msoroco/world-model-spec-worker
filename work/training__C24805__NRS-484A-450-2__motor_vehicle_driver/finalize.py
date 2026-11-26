@@ -1,0 +1,147 @@
+"""Saved source measurement for the synthetic crosswalk-stop diagnostic."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+from measure_sight_point import measure
+
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def measure_sight_point(observed):
+    return {'value': {key: value for key, value in observed.items() if key != 'legal_verdict'},
+            'method': 'measure_sight_point',
+            'sources': observed['source_hashes']}
+
+
+def frames(path):
+    if not path.is_file():
+        raise ValueError('Missing original source camera: ' + path.name)
+    run = subprocess.run(['ffprobe', '-v', 'error', '-count_frames',
+                          '-select_streams', 'v:0', '-show_entries',
+                          'stream=nb_read_frames', '-of',
+                          'default=noprint_wrappers=1:nokey=1', str(path)],
+                         capture_output=True, text=True, check=True, timeout=120)
+    if not run.stdout.strip().isdigit():
+        raise ValueError('Original camera decode failed: ' + path.name)
+    return int(run.stdout.strip())
+
+
+def finalize(attempt, output):
+    attempt = Path(attempt).resolve()
+    output = Path(output).resolve()
+    if output.exists() or (attempt / 'result.json').exists():
+        raise ValueError('Retain previous finalization; use fresh attempt')
+    config = json.loads((attempt / 'config.json').read_text())
+    case = config['case_id']
+    if case not in ('training__C24805__NRS-484A-450-2__motor_vehicle_driver__probe_a', 'training__C24805__NRS-484A-450-2__motor_vehicle_driver__sight_pass'):
+        raise ValueError('Exact case differs')
+    observed = measure(attempt, case)
+    native = [json.loads(line) for line in (attempt / 'native_samples.jsonl').read_text().splitlines()]
+    mapping = [json.loads(line) for line in (attempt / 'video_frames.jsonl').read_text().splitlines()]
+    sight = [json.loads(line) for line in (attempt / 'sight_samples.jsonl').read_text().splitlines()]
+    if len(sight) != len(native):
+        raise ValueError('Sight source frame count differs')
+    for row, view in zip(native, sight):
+        row['sight'] = view
+    if len(mapping) != 600 or any(m.get('native_frame') != n['native_frame'] or
+                                  m.get('time_s') != n['time_s'] or
+                                  m.get('video_frame') != i
+                                  for i, (m, n) in enumerate(zip(mapping, native))):
+        raise ValueError('Original frame mapping differs')
+    channels = attempt / 'channels'
+    if channels.exists():
+        raise ValueError('Derived channel directory preexists')
+    channels.mkdir()
+    values = {'vehicle_body_pose': lambda n, m: n['body_vertices_m'],
+              'vehicle_speed': lambda n, m: n['speed_mps'],
+              'frame_join': lambda n, m: m,
+              'dev.stop_sign': lambda n, m: {'road_signal_id': 901, 'source': 'road.xodr',
+                                             'physical_visibility': 'unverified'},
+              'dev.governs': lambda n, m: {'approach_road_id': 1, 'lane_id': -1,
+                                          'physical_governing_status': 'unverified'},
+              'st.lane_enters': lambda n, m: {'road_id': n['road_id'],
+                                              'lane_id': n['lane_id']},
+              'drv.approaching': lambda n, m: max(v[1] for v in n['body_vertices_m']) < -7,
+              'st.crosswalk': lambda n, m: {'applicable': False, 'source': 'road.xodr'},
+              'st.stop_line': lambda n, m: {'applicable': False, 'source': 'road.xodr'},
+              'st.intersection': lambda n, m: {'entry_y_m': -7,
+                                               'source': 'crosswalk_geometry.json'},
+              'st.sight_distance': lambda n, m: {'view_open': n['sight']['view_open'],
+                                                 'source': 'sight_samples.jsonl', 'physical_review': 'pending'},
+              'rel.visible': lambda n, m: {'view_open': n['sight']['view_open'],
+                                         'approaching_traffic': n['sight']['approaching_traffic'],
+                                         'source': 'sight_samples.jsonl', 'pixel_review': 'pending'},
+              'drv.stopped': lambda n, m: n['speed_mps'] <= .15,
+              'drv.crossing_line': lambda n, m: n['sight']['view_open'],
+              'drv.entering_intersection': lambda n, m:
+                  max(v[1] for v in n['body_vertices_m']) >= -7}
+    if set(values) != {c['name'] for c in config['recording_description']['channels']}:
+        raise ValueError('Recording channel declaration differs')
+    for name, value in values.items():
+        (channels / (name + '.jsonl')).write_text(
+            ''.join(json.dumps({'time_s': m['time_s'], 'native_frame': m['native_frame'],
+                                'value': value(n, m)}, allow_nan=False) + '\n'
+                    for n, m in zip(native, mapping)))
+    camera_counts = {name + '.mkv': frames(attempt / (name + '.mkv')) for name in CAMERAS}
+    if set(camera_counts.values()) != {600}:
+        raise ValueError('Four original source cameras need exactly 600 frames')
+    expected = case.endswith('probe_a')
+    matched = observed['halt_at_view_point_observed'] == expected
+    result = {
+        'case_id': case,
+        'measured_values': {'sight_point_halt': {
+            key: value for key, value in observed.items() if key != 'legal_verdict'}},
+        'target_checks': [{'target': 'full body halt at the first observed view point before intersection entry',
+                           'requested': expected, 'measured': observed['halt_at_view_point_observed'],
+                           'method': 'joined original 600-frame body and speed measurements',
+                           'tolerance': 0, 'matched': matched,
+                           'physical_cause_confirmed': False,
+                           'cause_evidence': ['native_samples.jsonl', 'road.xodr']}],
+        'setup_confirmed': False, 'behavior_attempted': True, 'maneuver_completed': False,
+        'termination_reason': 'Saved source stop measured; physical review pending',
+        'physical_failure_flags': ['physical_stop_sign_sightline_and_pixels_unverified'],
+        'trace_reference': 'trace.jsonl',
+        'video_references': [name + '.mkv' for name in CAMERAS],
+        'video_frame_map_reference': 'video_frames.jsonl',
+        'recording_description': config['recording_description'],
+        'recording_evidence': [{'name': c['name'], 'unit': c['unit'],
+                                'reference': 'channels/' + c['name'] + '.jsonl'}
+                               for c in config['recording_description']['channels']],
+        'realized_observables': {
+            'pre_sight_point_stop_frames': {'value': observed['longest_halt_after_view_open_frames'],
+                                          'unit': 'count', 'method': 'source-joined stopped-frame count',
+                                          'time_window': 'after first source view opening and before intersection entry',
+                                          'statistic': 'longest consecutive run',
+                                          'reference': 'native_samples.jsonl'}},
+        'provenance_kind': observed['source_kind'], 'accepted': False,
+        'legal_verdict_claimed': False}
+    from worker_exchange.native_output import physical_result, validate_result
+    result = physical_result(attempt, result)
+    validate_result(result)
+    report = {'format': 'c24805-saved-analysis-v1', 'case_id': case,
+              'measurements': {'sight_point_stop': measure_sight_point(observed)},
+              'observed': observed, 'video_frame_counts': camera_counts,
+              'derived_channel_sha256': {name: sha(channels / (name + '.jsonl')) for name in values},
+              'original_source_sha256': {name: sha(attempt / name) for name in
+                                         ('native_samples.jsonl', 'diagnostic-source-manifest.json',
+                                          'road.xodr', 'sight_samples.jsonl', 'video_frames.jsonl', 'trace.jsonl')},
+              'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
+    (attempt / 'result.json').write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')
+    return report
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--attempt', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    print(json.dumps(finalize(args.attempt, args.output), sort_keys=True))

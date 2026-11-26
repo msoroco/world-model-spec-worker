@@ -1,18 +1,27 @@
 {
-  "status": "draft",
-  "assignment_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver",
-  "law_id": "NRS-484B-223-1b",
   "cell_id": "C245490",
   "actor": "motor_vehicle_driver",
-  "sweep_specs": [],
-  "sweeps_expanded": true,
+  "status": "draft",
   "cases": [
     {
       "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__baseline",
       "target_law_id": null,
       "target_type": "baseline",
-      "rationale": "Unselected marked-lane context; no delivery recording.",
-      "variable_assignments": {},
+      "rationale": "Unselected common two-lane map, actor and capture context.",
+      "variable_assignments": {
+        "signal_command_frame": {
+          "kind": "controller",
+          "value": null
+        },
+        "rear_actor_spawn_distance_m": {
+          "kind": "world_setup",
+          "value": null
+        },
+        "predeparture_check_action": {
+          "kind": "controller",
+          "value": null
+        }
+      },
       "recording_description": {
         "channels": [
           {
@@ -20,49 +29,73 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "front_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "rear_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "observed_indicator",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "controller_check",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           }
         ],
+        "context_inputs": [],
         "limitations": [
           "Controller gap rule is engineering, not statutory.",
           "A controller check is not proof of a human mental state.",
           "Pixels and physical completion require later local review."
         ]
-      }
+      },
+      "unresolved_judgment_calls": [
+        "the appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
     },
     {
       "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_safe",
       "target_law_id": "NRS-484B-223-1b",
-      "target_type": "controlled_comparison",
-      "rationale": "observed indicator before body departure, front/rear gap checked and controller decision recorded",
+      "target_type": "boundary_probe",
+      "rationale": "Retain original signal, departure, front/rear gap and separate check sources for controlled comparison.",
+      "paired_probe_id": "c245490-selected-source-comparisons",
+      "deliberate_differences": [
+        "signal_command_frame"
+      ],
+      "probe": {
+        "primary_variable": "signal_command_frame",
+        "comparison_or_standard": "observed source order and controller gap/check behavior without a legal numeric cutoff",
+        "target_value_or_branch": 100
+      },
       "variable_assignments": {
         "signal_command_frame": {
           "kind": "controller",
@@ -77,10 +110,6 @@
           "value": "evaluated"
         }
       },
-      "unresolved_judgment_calls": [
-        "appropriate signal",
-        "ascertained that movement can be made with safety"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -88,53 +117,73 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "front_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "rear_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "observed_indicator",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "controller_check",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           }
         ],
+        "context_inputs": [],
         "limitations": [
           "Controller gap rule is engineering, not statutory.",
           "A controller check is not proof of a human mental state.",
           "Pixels and physical completion require later local review."
         ]
       },
-      "paired_probe_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_order",
-      "deliberate_differences": [
-        "indicator command/observed onset before versus after occupied-lane body departure"
+      "unresolved_judgment_calls": [
+        "the appropriate turn signal",
+        "ascertained that such movement can be made with safety"
       ]
     },
     {
       "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_after_safe",
       "target_law_id": "NRS-484B-223-1b",
-      "target_type": "controlled_comparison",
-      "rationale": "indicator observed only after body departure with same gap and check",
+      "target_type": "boundary_probe",
+      "rationale": "Retain original signal, departure, front/rear gap and separate check sources for controlled comparison.",
+      "paired_probe_id": "c245490-selected-source-comparisons",
+      "deliberate_differences": [
+        "signal_command_frame"
+      ],
+      "probe": {
+        "primary_variable": "signal_command_frame",
+        "comparison_or_standard": "observed source order and controller gap/check behavior without a legal numeric cutoff",
+        "target_value_or_branch": 260
+      },
       "variable_assignments": {
         "signal_command_frame": {
           "kind": "controller",
@@ -149,10 +198,6 @@
           "value": "evaluated"
         }
       },
-      "unresolved_judgment_calls": [
-        "appropriate signal",
-        "ascertained that movement can be made with safety"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -160,53 +205,73 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "front_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "rear_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "observed_indicator",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "controller_check",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           }
         ],
+        "context_inputs": [],
         "limitations": [
           "Controller gap rule is engineering, not statutory.",
           "A controller check is not proof of a human mental state.",
           "Pixels and physical completion require later local review."
         ]
       },
-      "paired_probe_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_order",
-      "deliberate_differences": [
-        "indicator command/observed onset before versus after occupied-lane body departure"
+      "unresolved_judgment_calls": [
+        "the appropriate turn signal",
+        "ascertained that such movement can be made with safety"
       ]
     },
     {
       "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_unsafe",
       "target_law_id": "NRS-484B-223-1b",
-      "target_type": "controlled_comparison",
-      "rationale": "indicator before departure but close target-lane rear actor and negative engineering check decision",
+      "target_type": "boundary_probe",
+      "rationale": "Retain original signal, departure, front/rear gap and separate check sources for controlled comparison.",
+      "paired_probe_id": "c245490-selected-source-comparisons",
+      "deliberate_differences": [
+        "rear_actor_spawn_distance_m"
+      ],
+      "probe": {
+        "primary_variable": "rear_actor_spawn_distance_m",
+        "comparison_or_standard": "observed source order and controller gap/check behavior without a legal numeric cutoff",
+        "target_value_or_branch": 8
+      },
       "variable_assignments": {
         "signal_command_frame": {
           "kind": "controller",
@@ -221,10 +286,6 @@
           "value": "evaluated"
         }
       },
-      "unresolved_judgment_calls": [
-        "appropriate signal",
-        "ascertained that movement can be made with safety"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -232,53 +293,73 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "front_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "rear_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "observed_indicator",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "controller_check",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           }
         ],
+        "context_inputs": [],
         "limitations": [
           "Controller gap rule is engineering, not statutory.",
           "A controller check is not proof of a human mental state.",
           "Pixels and physical completion require later local review."
         ]
       },
-      "paired_probe_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__target_lane_gap",
-      "deliberate_differences": [
-        "rear target-lane actor spawn gap and resulting source-observed gap and engineering check decision"
+      "unresolved_judgment_calls": [
+        "the appropriate turn signal",
+        "ascertained that such movement can be made with safety"
       ]
     },
     {
       "case_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__signal_before_no_check",
       "target_law_id": "NRS-484B-223-1b",
-      "target_type": "controlled_comparison",
-      "rationale": "indicator before departure and same gap, but controller deliberately skips independent check",
+      "target_type": "boundary_probe",
+      "rationale": "Retain original signal, departure, front/rear gap and separate check sources for controlled comparison.",
+      "paired_probe_id": "c245490-selected-source-comparisons",
+      "deliberate_differences": [
+        "predeparture_check_action"
+      ],
+      "probe": {
+        "primary_variable": "predeparture_check_action",
+        "comparison_or_standard": "observed source order and controller gap/check behavior without a legal numeric cutoff",
+        "target_value_or_branch": "skipped"
+      },
       "variable_assignments": {
         "signal_command_frame": {
           "kind": "controller",
@@ -293,10 +374,6 @@
           "value": "skipped"
         }
       },
-      "unresolved_judgment_calls": [
-        "appropriate signal",
-        "ascertained that movement can be made with safety"
-      ],
       "recording_description": {
         "channels": [
           {
@@ -304,46 +381,80 @@
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "front_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "rear_actor",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "observed_indicator",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           },
           {
             "name": "controller_check",
             "unit": "structured",
             "sampling_rate_hz": 20,
             "time_window": "600 frames",
-            "method": "original Native source and four camera frames"
+            "method": "original Native source and four camera frames",
+            "reference_frame": "same-tick simulator world and target lane",
+            "uncertainty": "simulator coordinate and sampled-frame resolution"
           }
         ],
+        "context_inputs": [],
         "limitations": [
           "Controller gap rule is engineering, not statutory.",
           "A controller check is not proof of a human mental state.",
           "Pixels and physical completion require later local review."
         ]
       },
-      "paired_probe_id": "training__C245490__NRS-484B-223-1b__motor_vehicle_driver__independent_check",
-      "deliberate_differences": [
-        "separate predeparture controller check evaluated versus skipped"
+      "unresolved_judgment_calls": [
+        "the appropriate turn signal",
+        "ascertained that such movement can be made with safety"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c245490-judgment-source-review",
+      "target_law_id": "NRS-484B-223-1b",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "the appropriate turn signal",
+          "note": "Original indicator readback and its direction are retained; appropriateness remains unresolved."
+        },
+        {
+          "phrase": "ascertained that such movement can be made with safety",
+          "note": "Separate controller check and target-lane actor gaps are retained; human ascertainment and legal safety remain unresolved."
+        }
+      ],
+      "rationale": "Selected source comparisons test separate facts; legal appropriateness and human safety ascertainment remain unresolved.",
+      "missing_inputs": [
+        "Original Native signal pixels and actor interactions",
+        "Independent human ascertainment evidence and legal judgment review"
       ]
     }
   ]

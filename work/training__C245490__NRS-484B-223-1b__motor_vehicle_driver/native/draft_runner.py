@@ -182,8 +182,14 @@ def execute(config, output, host, port):
                 (output / 'native-driver-checks.jsonl').open('x', buffering=1) as checks:
             for index in range(FRAMES):
                 phase = phase_at(config, index)
-                target_vehicle.apply_control(carla.VehicleControl(throttle=0, brake=1))
-                rear_vehicle.apply_control(carla.VehicleControl(throttle=0, brake=1))
+                # Retain both original source actors at approximately the ego's
+                # longitudinal speed through the full 30-second source window.
+                # This preserves the selected predeparture front/rear ordering.
+                source_velocity = ego.get_velocity()
+                target_vehicle.set_target_velocity(source_velocity)
+                rear_vehicle.set_target_velocity(source_velocity)
+                target_vehicle.apply_control(carla.VehicleControl(throttle=0, brake=0))
+                rear_vehicle.apply_control(carla.VehicleControl(throttle=0, brake=0))
                 signal_on = index >= config['signal_start_frame']
                 ego.set_light_state(carla.VehicleLightState.LeftBlinker if signal_on
                                     else carla.VehicleLightState.NONE)

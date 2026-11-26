@@ -14,33 +14,31 @@
         "training__C24805__NRS-484A-450-2__motor_vehicle_driver__probe_a",
         "training__C24805__NRS-484A-450-2__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
-    },
-    {
-      "requirement": "NRS-484A-450-2",
-      "source": "NRS 484A.450(2)",
-      "branch": "Accepted membership requires exact source review",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "C24805 source-bound no-reference stop versus rolling pair: primary/fallback offline and public positive/missing-source proofs; synthetic fixtures cannot establish original driver view or physical completion."
     }
   ],
   "cases": [
     {
       "case_id": "training__C24805__NRS-484A-450-2__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484A-450-2",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "compliant_attempt",
       "physical_target": "Request a full pre-entry halt at a candidate point with source visibility and nearest point still to be measured",
-      "comparison_variable": "requested_stop_behavior"
+      "comparison_variable": "requested_stop_behavior",
+      "construction": "selected-probe_a-primary-construction.json",
+      "measurement_contract": "selected-probe_a-measurement-contract.json",
+      "gap_ids": []
     },
     {
       "case_id": "training__C24805__NRS-484A-450-2__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484A-450-2",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "violating_attempt",
       "physical_target": "Request rolling pre-entry motion on the identical approach",
-      "comparison_variable": "requested_stop_behavior"
+      "comparison_variable": "requested_stop_behavior",
+      "construction": "selected-probe_b-primary-construction.json",
+      "measurement_contract": "selected-probe_b-measurement-contract.json",
+      "gap_ids": []
     }
   ],
   "comparisons": [
@@ -132,8 +130,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Original Native signed approach, absence of unmarked crosswalk, approaching traffic and first actual driver view require local source/pixel review; synthetic CPU fixtures establish software behavior only.",
+    "Actual CARLA stop timing, body geometry, camera visibility and physical completion remain unverified."
   ],
   "statutory_text": "Every driver of a vehicle approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection or, if there is no crosswalk, shall stop at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection.",
   "activation_conditions_from_unreviewed_summary": [
@@ -163,149 +161,175 @@
     {
       "reference": "near-side crosswalk, marked or unmarked",
       "priority": 1,
-      "status": "pending_source_and_construction",
-      "note": "Would govern before the stop line or view-point alternative; no accepted evidence or executable case in this package."
+      "status": "covered_in_separate_current_runtime_package",
+      "note": "The C111325 current-runtime package selects the crosswalk and marked-line alternatives; this C24805 frozen witness is the neither-reference alternative. No accepted recording reuse is claimed here."
     },
     {
       "reference": "clearly marked stop line when there is no crosswalk",
       "priority": 2,
-      "status": "pending_source_and_construction",
-      "note": "Requires both marked and unmarked crosswalk absence and source-backed line marking."
+      "status": "covered_in_separate_current_runtime_package",
+      "note": "The C111325 current-runtime package selects the crosswalk and marked-line alternatives; this C24805 frozen witness is the neither-reference alternative. No accepted recording reuse is claimed here."
     },
     {
       "reference": "point nearest intersecting highway where driver has a view of approaching traffic when neither reference exists",
       "priority": 3,
-      "status": "authored_draft_unselected",
-      "note": "This authored road removes a marked crosswalk and contains no marked stop line. Unmarked crosswalk absence, driver view and nearest point are unverified; no numerical visibility cutoff is imposed."
+      "status": "selected_cpu_proofs_in_progress",
+      "note": "Source-bound no-reference construction, four offline, four public positive/missing-source, comparison and physical fixture proofs pass; original Native view and unmarked-crosswalk absence require later local review."
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "dev.stop_sign",
-      "measurement": "authored OpenDRIVE STOP signal plus actual Native map/sign readback",
+  "source_observation_mapping": {
+    "dev.stop_sign": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "authored OpenDRIVE STOP signal plus actual Native map/sign readback"
+        "dev.stop_sign"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "road.xodr",
+        "crosswalk_geometry.json"
       ]
     },
-    {
-      "term": "dev.governs",
-      "measurement": "orientation and approach-lane Native readback",
+    "dev.governs": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "orientation and approach-lane Native readback"
+        "dev.governs"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "road.xodr",
+        "native_samples.jsonl"
       ]
     },
-    {
-      "term": "st.lane_enters",
-      "measurement": "Native approach lane/intersection topology",
+    "st.lane_enters": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "Native approach lane/intersection topology"
+        "st.lane_enters"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "road.xodr"
       ]
     },
-    {
-      "term": "drv.approaching",
-      "measurement": "original ego pose and velocity timeline",
+    "drv.approaching": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "original ego pose and velocity timeline"
+        "drv.approaching"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl"
       ]
     },
-    {
-      "term": "st.crosswalk",
-      "measurement": "Native roadway and sidewalk connection readback; marked and unmarked",
+    "st.crosswalk": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "Native roadway and sidewalk connection readback; marked and unmarked"
+        "st.crosswalk"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "road.xodr",
+        "crosswalk_geometry.json"
       ]
     },
-    {
-      "term": "st.stop_line",
-      "measurement": "Native road marking and camera pixels",
+    "st.stop_line": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "Native road marking and camera pixels"
+        "st.stop_line"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "road.xodr"
       ]
     },
-    {
-      "term": "st.intersection",
-      "measurement": "Native junction bounds and original ego body vertices",
+    "st.intersection": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "Native junction bounds and original ego body vertices"
+        "st.intersection"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "crosswalk_geometry.json",
+        "native_samples.jsonl"
       ]
     },
-    {
-      "term": "st.sight_distance",
-      "measurement": "shared incoming-lane virtual observer rays and original target/occluder source",
+    "st.sight_distance": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "shared incoming-lane virtual observer rays and original target/occluder source"
+        "st.sight_distance"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "road.xodr",
+        "sight_samples.jsonl"
       ]
     },
-    {
-      "term": "rel.visible",
-      "measurement": "actual driver-reference pixels and source-bound ray/projection audit",
+    "rel.visible": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "actual driver-reference pixels and source-bound ray/projection audit"
+        "rel.visible"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "driver_reference.mkv",
+        "sight_samples.jsonl"
       ]
     },
-    {
-      "term": "drv.stopped",
-      "measurement": "original velocity and continuous zero-speed window",
+    "drv.stopped": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "original velocity and continuous zero-speed window"
+        "drv.stopped"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl"
       ]
     },
-    {
-      "term": "drv.crossing_line",
-      "measurement": "original full body vertices joined to governing boundary",
+    "drv.crossing_line": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "original full body vertices joined to governing boundary"
+        "drv.crossing_line"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "crosswalk_geometry.json"
       ]
     },
-    {
-      "term": "drv.entering_intersection",
-      "measurement": "original full body vertices joined to junction boundary",
+    "drv.entering_intersection": {
+      "evidence": "Per-frame source-derived measurement or explicit conditional unverified state; physical sign, sight and pixel interpretation require local review.",
       "channels": [
-        "original full body vertices joined to junction boundary"
+        "drv.entering_intersection"
       ],
       "source_refs": [
-        "inputs/training__C24805__NRS-484A-450-2__motor_vehicle_driver/assignment.json"
+        "native_samples.jsonl",
+        "crosswalk_geometry.json"
       ]
     }
-  ],
+  },
   "construction_checkpoint": {
-    "manifest": "draft-native-manifest.json",
+    "manifest": "selected-construction-manifest.json",
     "comparison_proof": "native/request-comparison-proof.json",
     "comparison_proof_sha256": "c3a62f9194f486985d7f9987e6555946886210cffcae1a324023b1a766438cae",
-    "selected": false,
-    "original_native_observed": false
+    "selected": true,
+    "original_native_observed": false,
+    "offline_proofs_sha256": "81a5b8e8d2951663ed398080d7f0251c1f5537e070ceb7454537254efb70bbc2",
+    "compatibility_proofs_sha256": "66ef4e0b281e7ee4a68837ad51b178a7bf1e9628448ee892904dfb0ba924f2b3"
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject vehicle, governing stop sign, no-reference approach, intersecting traffic and view occluder",
+        "interval": "entire 30 s source window"
+      },
+      {
+        "view": "approach",
+        "subject": "subject vehicle, governing stop sign, no-reference approach, intersecting traffic and view occluder",
+        "interval": "entire 30 s source window"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "subject vehicle, governing stop sign, no-reference approach, intersecting traffic and view occluder",
+        "interval": "entire 30 s source window"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject vehicle, governing stop sign, no-reference approach, intersecting traffic and view occluder",
+        "interval": "entire 30 s source window"
+      }
+    ]
   }
 }

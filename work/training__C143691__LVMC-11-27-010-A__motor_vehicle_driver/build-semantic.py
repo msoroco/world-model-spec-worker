@@ -56,8 +56,13 @@ def main():
                            'numeric_conditions': []},
             'obligation': {'description': 'Do not operate the motorized vehicle there when subsection A applies.',
                            'type': 'must_not', 'numeric_conditions': []},
-            'exceptions': ['emergency vehicle', 'vehicle used in maintenance of this right-of-way',
-                           'motorized wheelchair or device designed for and used by a mobility-impaired person'],
+            'exceptions': [
+                {'source_clause': 'An emergency vehicle',
+                 'description': 'Emergency vehicle identity requires original review.'},
+                {'source_clause': 'Any vehicle that is being used in connection with maintenance of the right-of-way',
+                 'description': 'Use in maintenance of this right-of-way requires original review.'},
+                {'source_clause': 'Any motorized wheelchair or other device that is designed for and used by a mobility-impaired person',
+                 'description': 'Eligible device and operator binding is pending in the frozen motor_vehicle_driver cell.'}],
             'timing': {'description': 'Occupancy assessed throughout the original recorded interval.',
                        'numeric_conditions': []},
             'judgment_calls_needed': [{'phrase': phrase, 'note': note} for phrase, note in judgment],
@@ -65,14 +70,7 @@ def main():
         'parameter_refs': parameters,
     }
     template_ref = write('template.json', template)
-    terms = {
-        'official trails plan designation': ['st.bicycle_lane_or_path'],
-        'dedicated to the City': ['st.bicycle_lane_or_path'],
-        'appropriate signs': ['dev.zone_sign', 'dev.regulatory_sign'],
-        'emergency vehicle': ['ru.emergency_vehicle'],
-        'maintenance of the right-of-way': ['ru.official_vehicle'],
-        'designed for and used by a mobility-impaired person': ['ru.pedestrian'],
-    }
+    terms = {phrase: ['trail_source_context'] for phrase, _ in judgment}
     judgment_refs = []
     for index, (phrase, note) in enumerate(judgment, 1):
         names = terms[phrase]
@@ -107,6 +105,12 @@ def main():
     }]
     for case in PLAN['cases']:
         suffix = case['case_id'].rsplit('__', 1)[-1]
+        controlled = {'outside': 'route_case', 'all_present': 'route_case',
+                      'no_designation': 'official_designation',
+                      'no_dedication': 'city_dedication',
+                      'no_posting': 'appropriate_posting',
+                      'emergency': 'exception_kind',
+                      'maintenance': 'exception_kind'}[suffix]
         construction = json.loads((HERE / 'draft-exact' / suffix / 'primary' /
                                    'construction.json').read_text())
         request = case['source_context_request']
@@ -121,8 +125,8 @@ def main():
             'variable_assignments': assignments,
             'unresolved_judgment_calls': [phrase for phrase, _ in judgment],
             'paired_probe_id': 'trail-' + suffix,
-            'deliberate_differences': [case['comparison_variable']],
-            'probe': {'primary_variable': case['comparison_variable'],
+            'deliberate_differences': [controlled],
+            'probe': {'primary_variable': controlled,
                       'comparison_or_standard': 'source-joined occupancy and source-context contrast; no legal verdict',
                       'target_value_or_branch': suffix},
             'recording_description': construction['recording_description'],
@@ -130,7 +134,15 @@ def main():
     cases_ref = write('cases.json', {
         'status': 'draft', 'assignment_id': HERE.name, 'law_id': LAW_ID,
         'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR,
-        'cases': proposal_cases, 'sweep_specs': [], 'sweeps_expanded': True})
+        'cases': proposal_cases,
+        'sweep_specs': [
+            {'sweep_id': 'c143691-' + str(index), 'target_law_id': LAW_ID,
+             'judgment_refs': [{'phrase': phrase, 'note': note}],
+             'status': 'incomplete',
+             'rationale': 'Original official or Native source and a verified physical range are unavailable; retain qualitative review.',
+             'missing_inputs': ['Source-verified original context and feasible range for ' + phrase]}
+            for index, (phrase, note) in enumerate(judgment, 1)],
+        'sweeps_expanded': True})
     write('semantic-index.json', {'format': 'worker-semantic-delivery',
         'assignment_id': HERE.name,
         'stages': {'relevance_batch': relevance_ref, 'relevance': relevance_ref,

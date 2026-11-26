@@ -18,7 +18,7 @@ def main():
     path = PACKAGE / 'execution-manifest.json'
     manifest = json.loads(path.read_text())
     for suffix, entry in zip(CASES, manifest['cases']):
-        source = ROOT / '.runtime-work' / 'c245490-owner' / ('offline-v3-' + suffix) / 'offline.log'
+        source = ROOT / '.runtime-work' / 'c245490-owner' / ('offline-v6-' + suffix) / 'offline.log'
         if not source.is_file() or 'OK' not in source.read_text():
             raise ValueError('Current exact offline check missing: ' + suffix)
         log = PACKAGE / 'offline' / (suffix + '-primary.log')
@@ -27,7 +27,7 @@ def main():
         entry['offline'] = {
             'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + PACKAGE.name +
                        '/execution-manifest.json --case ' + entry['case_id'] +
-                       ' --output .runtime-work/c245490-owner/offline-v3-' + suffix,
+                       ' --output .runtime-work/c245490-owner/offline-v6-' + suffix,
             'exit_code': 0,
             'construction_sha256': entry['construction_sha256'],
             'log': str(log.relative_to(PACKAGE)),

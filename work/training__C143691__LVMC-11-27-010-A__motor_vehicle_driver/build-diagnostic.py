@@ -54,6 +54,7 @@ def build(suffix):
         'city_dedication_document_original': False})
     write(source / 'trail-authority-context.json', {
         'source_kind': 'synthetic_cpu', 'request': request,
+        'trail_source_context': request,
         'official_record_reviewed': False, 'official_plan_source': None,
         'city_record_reviewed': False, 'city_dedication_source': None,
         'sign_wording_and_authority_reviewed': False,
@@ -78,6 +79,8 @@ def build(suffix):
                       'time_s': time, 'vehicle_id': 107,
                       'vehicle_blueprint_id': 'vehicle.synthetic.' + suffix,
                       'vehicle_xyz_m': [x, y, 1], 'vehicle_yaw_deg': 0,
+                      'value': {'vehicle_xyz_m': [x, y, 1],
+                                'bbox_half_length_m': 2, 'bbox_half_width_m': 1},
                       'bbox_half_length_m': 2, 'bbox_half_width_m': 1,
                       'observed_speed_mps': 4,
                       'camera_native_frames': {name: native for name in CAMERAS},

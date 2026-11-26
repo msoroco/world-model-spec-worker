@@ -73,9 +73,12 @@ class SelectedConstruction(unittest.TestCase):
         description = {
             'channels': [{'name': name, 'unit': 'structured',
                           'sampling_rate_hz': 20, 'time_window': '600 frames',
-                          'method': 'original Native source and four camera frames'}
+                          'method': 'original Native source and four camera frames',
+                          'reference_frame': 'same-tick simulator world and target lane',
+                          'uncertainty': 'simulator coordinate and sampled-frame resolution'}
                          for name in ('ego_lane', 'front_actor', 'rear_actor',
                                       'observed_indicator', 'controller_check')],
+            'context_inputs': [],
             'limitations': ['Controller gap rule is engineering, not statutory.',
                             'A controller check is not proof of a human mental state.',
                             'Pixels and physical completion require later local review.'],
