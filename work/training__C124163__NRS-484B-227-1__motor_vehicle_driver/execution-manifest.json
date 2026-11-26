@@ -1,0 +1,409 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C124163__NRS-484B-227-1__motor_vehicle_driver",
+  "status": "delivery_prepared",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "physical_acceptance_claimed": false,
+  "cases": [
+    {
+      "case_id": "training__C124163__NRS-484B-227-1__motor_vehicle_driver__through_opening",
+      "kind": "delivery",
+      "construction": "native/bundles/through_opening/construction.json",
+      "construction_sha256": "8ceb2c385f8441655bafc6c1d14199551a2d5bf65c6bf02022e9cdf321130a5f",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "native/through_opening-measurement-contract.json",
+      "fixture_recipe": "work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/native/diagnostic-through_opening-fixture-recipe.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and full-body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_geometry",
+            "unit": "structured",
+            "method": "original map and divider readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "roadway_occupancy",
+            "unit": "structured",
+            "method": "full-body footprint on each roadway",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "turn_history",
+            "unit": "structured",
+            "method": "original heading, speed and route source history",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "administrative_context",
+            "unit": "structured",
+            "method": "independent public-authority source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_crossing_measurement",
+            "unit": "structured",
+            "method": "saved full-body polygon overlap",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored opening or divider geometry is not original Native physical proof.",
+          "Public-authority establishment is an independent administrative fact.",
+          "Original motion and every camera frame require source review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Median-route vehicle spawn may intersect authored road surface"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/through_opening/fallback1.json",
+          "construction_sha256": "b9a4428df14f06dec9d93e971995087947a955c9626c8ca5e0981690f6cd14d6",
+          "trigger": {
+            "source": "Native try_spawn_actor",
+            "metric": "actor spawn result",
+            "failure_condition": "spawn returns None"
+          },
+          "changed_knobs": [
+            "spawn height from 1.5m to 1.8m"
+          ],
+          "compatibility": {
+            "receipt": "native/proofs/through_opening-fallback1-compatibility.json",
+            "sha256": "8f1fdbcf9844075f2d017f2fc8c80e498775a610f33d82a4f66105ac1482ea52",
+            "log": "native/proofs/through_opening-fallback1-analysis.log",
+            "negative_log": "native/proofs/through_opening-fallback1-negative.log"
+          },
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "b9a4428df14f06dec9d93e971995087947a955c9626c8ca5e0981690f6cd14d6",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/draft-native-manifest.json --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__through_opening --output .runtime-work/c124163-median/offline-through_opening-fallback1-v4 --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "native/proofs/through_opening-fallback1-offline.log",
+            "log_sha256": "6e34e1cc32b22427ed2469569be7f811afda2d802ed7b9e2044c2c34e5b36f50"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "native/proofs/through_opening-primary-compatibility.json",
+        "sha256": "b4f34ef708daa8fc368ea04e94b97227d0671fc91103c57d48db203d9c68ac10",
+        "log": "native/proofs/through_opening-primary-analysis.log",
+        "negative_log": "native/proofs/through_opening-primary-negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "8ceb2c385f8441655bafc6c1d14199551a2d5bf65c6bf02022e9cdf321130a5f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/draft-native-manifest.json --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__through_opening --output .runtime-work/c124163-median/offline-through_opening-primary-v4 --python $PWD/.venv-cpu/bin/python",
+        "log": "native/proofs/through_opening-primary-offline.log",
+        "log_sha256": "6e34e1cc32b22427ed2469569be7f811afda2d802ed7b9e2044c2c34e5b36f50"
+      },
+      "negative": {
+        "log": "native/proofs/through_opening-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C124163__NRS-484B-227-1__motor_vehicle_driver__through_opening-physical-preparation.json",
+        "sha256": "e6daa20abec587b47a449048b8a0a91a0db56ea2e157d40dced844341f05163e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/draft-native-manifest.json --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__through_opening --attempt $CAPTURE_OUTPUT --output $POSTPROCESS_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/v0001/processing.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/through_opening-saved-processing.json",
+        "test_log_sha256": "b69ec2d916ef57f26d1169c6159070ff6c7abb7d2745d8660e4f8c77fe4d85cd",
+        "diagnostic_fixture": true
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C124163__NRS-484B-227-1__motor_vehicle_driver__through_opening",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5390f7ed03c5a43306294d5da0e30f301f52d72011279158dba62cc884e3f11a",
+        "command": ".venv-cpu/bin/python work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__through_opening --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/through_opening-delivery-positive.log",
+        "test_log_sha256": "cf233a95f1e2900994b7ece1fa603d1f8b5ce08c8b818756b7b4bc267ff7e8c5",
+        "negative_command": ".venv-cpu/bin/python work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__through_opening --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "native/proofs/through_opening-delivery-negative.log",
+        "negative_log_sha256": "ecf325a43d58764ad2d285d1236ab85ea54add18ec5d360d6acce7b2941584c0"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native transform and full-body vertices",
+          "evidence": "native-median.jsonl and body_history.jsonl"
+        },
+        "median_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original roadway and median object readback",
+          "evidence": "median-context.json"
+        },
+        "turn_history": {
+          "entrypoint": "runner.py",
+          "method": "original body, heading, speed and route history",
+          "evidence": "native-median.jsonl and body_history.jsonl"
+        },
+        "administrative_context": {
+          "entrypoint": "runner.py",
+          "method": "pending original public-authority source review",
+          "evidence": "median-context.json and source-review.json"
+        },
+        "median_crossing_measurement": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound full-body overlap with median sections",
+          "evidence": "native-median.jsonl and channels/median_crossing_measurement.jsonl"
+        },
+        "roadway_occupancy": {
+          "entrypoint": "finalize.py",
+          "method": "saved full-body overlap with both original roadway polygons",
+          "evidence": "native-median.jsonl and channels/roadway_occupancy.jsonl"
+        }
+      },
+      "delivery_readiness": "selected_cpu_prepared_original_review_pending"
+    },
+    {
+      "case_id": "training__C124163__NRS-484B-227-1__motor_vehicle_driver__across_divider",
+      "kind": "delivery",
+      "construction": "native/bundles/across_divider/construction.json",
+      "construction_sha256": "d5c70079c6aa09092ccd2a793baba1c534b4d7aedaece4b5f60d318733047230",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "native/across_divider-measurement-contract.json",
+      "fixture_recipe": "work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/native/diagnostic-across_divider-fixture-recipe.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and full-body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_geometry",
+            "unit": "structured",
+            "method": "original map and divider readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "roadway_occupancy",
+            "unit": "structured",
+            "method": "full-body footprint on each roadway",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "turn_history",
+            "unit": "structured",
+            "method": "original heading, speed and route source history",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "administrative_context",
+            "unit": "structured",
+            "method": "independent public-authority source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_crossing_measurement",
+            "unit": "structured",
+            "method": "saved full-body polygon overlap",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native roadways 1241631 and 1241632",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored opening or divider geometry is not original Native physical proof.",
+          "Public-authority establishment is an independent administrative fact.",
+          "Original motion and every camera frame require source review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Median-route vehicle spawn may intersect authored road surface"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/across_divider/fallback1.json",
+          "construction_sha256": "b0883867d051b5a237c2afb5c814313106f89dcbeeaeb8dd8929072d6de2ae06",
+          "trigger": {
+            "source": "Native try_spawn_actor",
+            "metric": "actor spawn result",
+            "failure_condition": "spawn returns None"
+          },
+          "changed_knobs": [
+            "spawn height from 1.5m to 1.8m"
+          ],
+          "compatibility": {
+            "receipt": "native/proofs/across_divider-fallback1-compatibility.json",
+            "sha256": "5fcfa88f63947030c786bd8d0aa35237b951245cc4f9ac39067d1b4e9a9966d0",
+            "log": "native/proofs/across_divider-fallback1-analysis.log",
+            "negative_log": "native/proofs/across_divider-fallback1-negative.log"
+          },
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "b0883867d051b5a237c2afb5c814313106f89dcbeeaeb8dd8929072d6de2ae06",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/draft-native-manifest.json --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__across_divider --output .runtime-work/c124163-median/offline-across_divider-fallback1-v4 --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "native/proofs/across_divider-fallback1-offline.log",
+            "log_sha256": "6a36fb6fdcd38b80e19411afefaa8758e7eae7167e9cff3f13de9da93e7b4f12"
+          }
+        }
+      ],
+      "compatibility": {
+        "receipt": "native/proofs/across_divider-primary-compatibility.json",
+        "sha256": "d67c5d3e39c2ddfab006cc0314d23f9e612b02d4e33bfab5d6681afaa8e6b2bd",
+        "log": "native/proofs/across_divider-primary-analysis.log",
+        "negative_log": "native/proofs/across_divider-primary-negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "d5c70079c6aa09092ccd2a793baba1c534b4d7aedaece4b5f60d318733047230",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/draft-native-manifest.json --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__across_divider --output .runtime-work/c124163-median/offline-across_divider-primary-v4 --python $PWD/.venv-cpu/bin/python",
+        "log": "native/proofs/across_divider-primary-offline.log",
+        "log_sha256": "6a36fb6fdcd38b80e19411afefaa8758e7eae7167e9cff3f13de9da93e7b4f12"
+      },
+      "negative": {
+        "log": "native/proofs/across_divider-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C124163__NRS-484B-227-1__motor_vehicle_driver__across_divider-physical-preparation.json",
+        "sha256": "5ce807fadbba505de72146d581a189e2542e95cb26e6253aa9a653800a2ef159"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/draft-native-manifest.json --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__across_divider --attempt $CAPTURE_OUTPUT --output $POSTPROCESS_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/v0001/processing.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/across_divider-saved-processing.json",
+        "test_log_sha256": "e797c422634a91e57ef792f4dafce5f86c91996791974d1e3caa8f9ecb12c968",
+        "diagnostic_fixture": true
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C124163__NRS-484B-227-1__motor_vehicle_driver__across_divider",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5390f7ed03c5a43306294d5da0e30f301f52d72011279158dba62cc884e3f11a",
+        "command": ".venv-cpu/bin/python work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__across_divider --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/across_divider-delivery-positive.log",
+        "test_log_sha256": "40a85f2283627c45b36e888000a141223d0acef887b5b73ece024463910d482f",
+        "negative_command": ".venv-cpu/bin/python work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/delivery_audit.py --case training__C124163__NRS-484B-227-1__motor_vehicle_driver__across_divider --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "native/proofs/across_divider-delivery-negative.log",
+        "negative_log_sha256": "ecf325a43d58764ad2d285d1236ab85ea54add18ec5d360d6acce7b2941584c0"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native transform and full-body vertices",
+          "evidence": "native-median.jsonl and body_history.jsonl"
+        },
+        "median_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original roadway and median object readback",
+          "evidence": "median-context.json"
+        },
+        "turn_history": {
+          "entrypoint": "runner.py",
+          "method": "original body, heading, speed and route history",
+          "evidence": "native-median.jsonl and body_history.jsonl"
+        },
+        "administrative_context": {
+          "entrypoint": "runner.py",
+          "method": "pending original public-authority source review",
+          "evidence": "median-context.json and source-review.json"
+        },
+        "median_crossing_measurement": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound full-body overlap with median sections",
+          "evidence": "native-median.jsonl and channels/median_crossing_measurement.jsonl"
+        },
+        "roadway_occupancy": {
+          "entrypoint": "finalize.py",
+          "method": "saved full-body overlap with both original roadway polygons",
+          "evidence": "native-median.jsonl and channels/roadway_occupancy.jsonl"
+        }
+      },
+      "delivery_readiness": "selected_cpu_prepared_original_review_pending"
+    }
+  ]
+}

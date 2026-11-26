@@ -140,45 +140,51 @@
   },
   "cases": [
     {
-      "case_id": "training__C111294__NRS-484B-250-1__motor_vehicle_driver__probe_01",
+      "case_id": "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_yield",
       "target_law_id": "NRS-484B-250-1",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "other-highway vehicle enters first and ego yields",
-      "comparison_variable": "entry order and yielding",
-      "selection_status": "not_selected",
+      "kind": "delivery",
+      "target_type": "compliant_attempt",
+      "physical_target": "other vehicle enters first and clears before ego enters",
+      "comparison_variable": "ego yielding and priority occupancy at ego entry",
+      "selection_status": "selected_cpu_preparation",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "selected_source_shaped_request",
+      "gap_ids": [
+        "missing_original_priority_source"
+      ]
     },
     {
-      "case_id": "training__C111294__NRS-484B-250-1__motor_vehicle_driver__probe_02",
+      "case_id": "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_intrusion",
       "target_law_id": "NRS-484B-250-1",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "same entry order and ego enters conflict area before yielding",
-      "comparison_variable": "entry order and yielding",
-      "selection_status": "not_selected",
+      "kind": "delivery",
+      "target_type": "violating_attempt",
+      "physical_target": "other vehicle enters first and remains while ego enters",
+      "comparison_variable": "ego yielding and priority occupancy at ego entry",
+      "selection_status": "selected_cpu_preparation",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "selected_source_shaped_request",
+      "gap_ids": [
+        "missing_original_priority_source"
+      ]
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C111294__NRS-484B-250-1__motor_vehicle_driver__planned_comparison",
+      "comparison_id": "training__C111294__NRS-484B-250-1__motor_vehicle_driver__yield_vs_intrusion",
       "case_ids": [
-        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__probe_01",
-        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__probe_02"
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_yield",
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_intrusion"
       ],
       "deliberate_differences": [
-        "entry order and yielding"
+        "ego requested hold before entry",
+        "priority occupancy at ego requested entry"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "physical route topology",
-        "participant identities",
-        "camera policy",
-        "recording rate and duration",
-        "nonvariable context"
+        "frozen intersection/travel/other_vehicle cell",
+        "two highway OpenDRIVE topology",
+        "same other vehicle request",
+        "same official-device-free authored map",
+        "same cameras and 600-frame duration"
       ]
     }
   ],
@@ -351,12 +357,9 @@
     }
   ],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "Controlled-device and opposite-direction-left-turn exclusions need separate context checks. Accepted membership cannot be reused without current source-hashed equivalence.",
-    "No CARLA execution or accepted recording is claimed."
+    "Authored 600-frame two-highway entry requests and exact source check pass; original Native actor timing, body occupancy, official devices, signal operability, opposite-direction left-turn context and pixel visibility require review.",
+    "Accepted membership IDs have no source-hashed recording inventory or equivalence receipt; no reuse claimed.",
+    "A source-shaped compliant or violating attempt is not a legal outcome."
   ],
   "requirement_dispositions": [
     {
@@ -365,34 +368,43 @@
       "branch": "Other vehicle enters first; ego approaches and grants precedence.",
       "status": "selected_required",
       "case_ids": [
-        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__probe_01",
-        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__probe_02"
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_yield",
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_intrusion"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Selected source-shaped entry-order contrast; original Native entry, yielding, official-device governance, subsection-4 operability, opposite-direction left-turn exclusion, and accepted membership equivalence require original source review."
     },
     {
       "requirement": "demo:NRS-484B-250-1:5a07f8a0c4ae",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "branch": "Other vehicle enters first; ego approaches and grants precedence.",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_yield",
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_intrusion"
+      ],
+      "evidence_or_gap": "Selected source-shaped entry-order contrast; original Native entry, yielding, official-device governance, subsection-4 operability, opposite-direction left-turn exclusion, and accepted membership equivalence require original source review."
     },
     {
       "requirement": "demo:NRS-484B-250-1:d9fae52c0248",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "branch": "Other vehicle enters first; ego approaches and grants precedence.",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_yield",
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_intrusion"
+      ],
+      "evidence_or_gap": "Selected source-shaped entry-order contrast; original Native entry, yielding, official-device governance, subsection-4 operability, opposite-direction left-turn exclusion, and accepted membership equivalence require original source review."
     },
     {
       "requirement": "NRS-484B-250-1",
       "source": "inputs/planning/focused-coverage-20261016-v1/demo-continuation-20261017-v32/coverage-worklist.json",
       "branch": "priority of vehicle already in intersection",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_yield",
+        "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_intrusion"
+      ],
+      "evidence_or_gap": "Selected source-shaped entry-order contrast; original Native entry, yielding, official-device governance, subsection-4 operability, opposite-direction left-turn exclusion, and accepted membership equivalence require original source review."
     }
   ],
   "priority_source_capture_checkpoint": {
@@ -408,5 +420,131 @@
     "synthetic_only": true,
     "positive_context_scenarios": 4,
     "negative_rejections": 7
+  },
+  "source_observation_mapping": {
+    "st.intersection": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "st.intersection"
+      ],
+      "source_refs": []
+    },
+    "st.lane_enters": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "st.lane_enters"
+      ],
+      "source_refs": []
+    },
+    "drv.approaching": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "drv.approaching"
+      ],
+      "source_refs": []
+    },
+    "drv.entering_intersection": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "drv.entering_intersection"
+      ],
+      "source_refs": []
+    },
+    "drv.arrival_order": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "drv.arrival_order"
+      ],
+      "source_refs": []
+    },
+    "drv.yields_to": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "drv.yields_to"
+      ],
+      "source_refs": []
+    },
+    "drv.in_intersection": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "drv.in_intersection"
+      ],
+      "source_refs": []
+    },
+    "dev.traffic_signal": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "dev.traffic_signal"
+      ],
+      "source_refs": []
+    },
+    "dev.stop_sign": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "dev.stop_sign"
+      ],
+      "source_refs": []
+    },
+    "dev.yield_sign": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "dev.yield_sign"
+      ],
+      "source_refs": []
+    },
+    "drv.turning": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "drv.turning"
+      ],
+      "source_refs": []
+    },
+    "rel.oncoming": {
+      "evidence": "original source-joined actor body, map/device context and four-camera review",
+      "channels": [
+        "rel.oncoming"
+      ],
+      "source_refs": []
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both highways and intersection",
+        "interval": "all 600 frames from approach through exit"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach and entry",
+        "interval": "all 600 frames from approach through exit"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "other vehicle entry and conflict area",
+        "interval": "all 600 frames from approach through exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego yielding and official-device context",
+        "interval": "all 600 frames from approach through exit"
+      }
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "worker source inventory review",
+    "method": "Four frozen accepted membership IDs were checked for exported source inventory; only membership labels are available, so no replay or equivalence is asserted.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "missing_original_priority_source",
+        "requirement": "Original two-vehicle entry order, yielding and exclusion context",
+        "source": "inputs/training__C111294__NRS-484B-250-1__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No exported source-hashed recording inventory or original event/pixel review is supplied."
+      }
+    ]
   }
 }

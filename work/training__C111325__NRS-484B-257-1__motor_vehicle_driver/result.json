@@ -3,7 +3,7 @@
   "input_sha256": "19df16d67278770593537fe871ff53984c0f409c61b6fd76b16d316eda536d07",
   "status": "partial",
   "applied_update": 16,
-  "reason": "All twelve exact selected cases now have distinct source-shaped 600-frame diagnostic packets, primary and camera fallback Native constructions, exact offline and public positive/negative compatibility, recorded-only processing, physical/lifecycle CPU proofs, and independent diagnostic delivery audits. Semantic proposals, original Native captures, accepted recordings, production delivery reviews and independent comparison audits remain. Officer/signal per-frame direction/state and nearest-viewpoint sight rays require original-source implementation. No batch strict gate; status remains partial.",
+  "reason": "Revised twelve-case CPU proof set and semantic chain pass; scoped strict rerun exceeded the local 180-second wrapper timeout after the target-set correction. Full strict result remains pending; no original CARLA or accepted recordings.",
   "readiness_kind": "implementation_checkpoint",
   "cases_planned": 12,
   "cases_selected": 12,
@@ -14,124 +14,47 @@
   "cpu_diagnostic_proof": "stop-yield-proof.json",
   "tests": [
     {
-      "command": ".venv-cpu/bin/python work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_branch_requests.py",
-      "exit_code": 0,
-      "log": "branch-requests-cpu.log",
-      "sha256": "2c7d368f8e479ba779f90366538d04628d2344d8fd9f0cb17a13849e104a72a1"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_stop_yield.py",
-      "exit_code": 0,
-      "log": "stop-yield-cpu.log",
-      "sha256": "3380314b36f0c7e337766ed1bd3e679a201e0a177fe697039e05268c4c9ea739"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_statutory_measurement.py",
-      "exit_code": 0,
-      "log": "statutory-measurement-cpu.log",
-      "sha256": "7de6965aa799bd1fc043bb44f5c8a952b26ca168a0807da4789036b84c941482"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_saved_packet.py",
-      "exit_code": 0,
-      "log": "saved-packet-cpu.log",
-      "sha256": "f9267780ee8f2550a586401584900f203fc13e3509a89e3ed41897f8c2018f20"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_comparisons.py",
+      "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_comparisons.py",
       "exit_code": 0,
       "log": "comparison-diagnostic-cpu.log",
       "sha256": "bc471849ad9c27865db2add820c6a9fb2a049bb69d8ed080058ea4dfd29078b0"
     },
     {
-      "command": ".venv-cpu/bin/python work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_capture_design.py",
+      "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_original_branches.py",
       "exit_code": 0,
-      "log": "capture-design-cpu.log",
-      "sha256": "f6fe92061d0d9fe067d4047bec71507e52b901c7a9c2bc040986c84cadca390b"
+      "log": "original-branch-cpu.log",
+      "sha256": "a2c3380e594f72d63a1442d03bd1bf6c354cc0d5eeedb7de6bedb406f993d341"
     },
     {
-      "command": ".venv-cpu/bin/python work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_native_construction.py",
-      "exit_code": 0,
-      "log": "native-construction-cpu.log",
-      "sha256": "c2f0214a0a86abc926755277c851e5bbc5dda87e0e1754771e9b1c50add2235e"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --output .runtime-work/nrs257-offline-primary-4",
+      "command": ".venv-cpu/bin/python -B runtime.py verify --runtime runtime",
       "exit_code": 0,
       "log": "native-offline-primary.log",
-      "sha256": "5dcdb4ac2e552fb07c4228bf6a2323e6133046a55393d38859921f8c1f55c2ff"
+      "sha256": "8fcfad1355b7660ef3d7066ce2e01ba677df549d5d68261727b412dc963bfae7"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/nrs257-output TMPDIR=$PWD/.runtime-work/nrs257-tmp PYTHONPATH=$PWD/runtime/scenario_pipeline:$PWD/runtime/python:$PWD/work/training__C111325__NRS-484B-257-1__motor_vehicle_driver .venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_finalize.py",
-      "exit_code": 0,
-      "log": "selected-finalizer-cpu.log",
-      "sha256": "9a1f2895b881db3ed858f8c31f6af5f561f4ab03f66e1ec56a6cac875abacdd7"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --output .runtime-work/nrs257-compat-primary-6 --library runtime/library --validator .runtime-work/nrs257-decoder/.lake/build/bin/adapterCheck",
+      "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --output .runtime-work/nrs257-recompat-complete_stop_then_yield-primary --library runtime/library --validator .runtime-work/nrs257-decoder/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "compatibility/complete_stop_then_yield-primary-analysis.log",
       "sha256": "778eb0cc7556a6fe487e6577215b12269298e9a5ad07b4a22b87d5b4fc36d8d3"
     },
     {
-      "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+      "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt .runtime-work/nrs257-recompat-complete_stop_then_yield-primary --output .runtime-work/nrs257-resaved-complete_stop_then_yield --library runtime/library --validator .runtime-work/nrs257-decoder/.lake/build/bin/adapterCheck",
       "exit_code": 0,
       "log": "saved/complete_stop_then_yield-analysis.log",
       "sha256": "778eb0cc7556a6fe487e6577215b12269298e9a5ad07b4a22b87d5b4fc36d8d3"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/nrs257-output TMPDIR=$PWD/.runtime-work/nrs257-tmp PYTHONPATH=$PWD/runtime/scenario_pipeline:$PWD/runtime/python .venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/prove_physical.py --build",
-      "exit_code": 0,
-      "log": "physical-proof/complete_stop_then_yield/complete_motion.log",
-      "sha256": "9579cf1fa30726ea4ba18bd5b1051a24aebbcb4fb1d6bc4a258342d48c8eea11"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --candidate fallback1 --output .runtime-work/nrs257-offline-fallback1",
-      "exit_code": 0,
-      "log": "native-offline-fallback1.log",
-      "sha256": "839755fc5dd6f2333db72b95e93b82820ecc21fc988b54e2ce86cbb0dcc19057"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --candidate fallback1 --output .runtime-work/nrs257-compat-fallback1 --library runtime/library --validator .runtime-work/nrs257-decoder/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "compatibility/complete_stop_then_yield-fallback1-analysis.log",
-      "sha256": "778eb0cc7556a6fe487e6577215b12269298e9a5ad07b4a22b87d5b4fc36d8d3"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+      "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt .runtime-work/nrs257-recompat-complete_stop_then_yield-primary --processing work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/saved/complete_stop_then_yield-processing.json --diagnostic",
       "exit_code": 0,
       "log": "delivery-audit-positive.log",
       "sha256": "90b3e2a9e757f4ffd9fe498a72eedce3acea4985d2279aa044f662e51ab8a05e"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --output .runtime-work/nrs257-offline-rollthrough-2",
-      "exit_code": 0,
-      "log": "native-offline-rollthrough.log",
-      "sha256": "c1a48e2263eaf75ab9274fc7e9b894b8f1c0e183de8d9a30560d5995b1fd227b"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --output .runtime-work/nrs257-compat-rollthrough --library runtime/library --validator .runtime-work/nrs257-decoder/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "compatibility/roll_through_conflict-primary-analysis.log",
-      "sha256": "7153a022dfd0883d93437f60c470ec78d58370561a5881eb3d7006493a690e23"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --candidate fallback1 --output .runtime-work/nrs257-offline-rollthrough-fallback1",
-      "exit_code": 0,
-      "log": "native-offline-rollthrough-fallback1.log",
-      "sha256": "d41af9f36f221a8caf8cf3d0b3072237c4a3bf60b9c8fadd31b14702a9069658"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --candidate fallback1 --output .runtime-work/nrs257-compat-rollthrough-fallback1 --library runtime/library --validator .runtime-work/nrs257-decoder/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "compatibility/roll_through_conflict-fallback1-analysis.log",
-      "sha256": "7153a022dfd0883d93437f60c470ec78d58370561a5881eb3d7006493a690e23"
-    },
-    {
-      "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
-      "exit_code": 0,
-      "log": "delivery-audit-rollthrough-positive.log",
-      "sha256": "99fa68b546b04ad62eb926cf057ec5afe0001989ef5d8546e170b3c9a2ba3606"
     }
-  ]
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C111325__NRS-484B-257-1__motor_vehicle_driver --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "remaining_gpu_checks": [
+    "Original CARLA motion and four-camera pixel visibility for each exact selected case",
+    "Original officer direction or controlling signal state and nearest-viewpoint ray interpretation",
+    "Independent production delivery and comparison review before recording acceptance"
+  ],
+  "cpu_comparison_audits_passed": 8
 }

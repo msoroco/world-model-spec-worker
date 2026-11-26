@@ -92,6 +92,23 @@ def audit(case, attempt, receipt, diagnostic, missing_source=None):
         require(provenance.get("diagnostic_fixture") is False
                 and provenance.get("native_executed") is True,
                 "Original Native acquisition required")
+        context = read(attempt / "stop_yield_context.json")
+        for source_key, hash_key, required in (
+                ("sight_ray_source", "sight_ray_sha256", context.get("reference_kind") == "nearest_viewpoint"),
+                ("controlling_direction_source", "controlling_direction_sha256",
+                 context.get("police_controlling") or context.get("signal_controlling"))):
+            if required:
+                name = context.get(source_key)
+                require(isinstance(name, str) and name and "/" not in name,
+                        "Original per-frame branch source missing: " + source_key)
+                path = attempt / name
+                require(path.is_file() and digest(path) == context.get(hash_key),
+                        "Original per-frame branch source hash differs: " + name)
+                history = rows(path)
+                require(len(history) == 600 and all(
+                    item.get("native_frame") == trace.get("native_frame", trace.get("frame"))
+                    for item, trace in zip(history, traces)),
+                    "Original per-frame branch join differs: " + name)
         review = read(attempt / "independent-original-review.json")
         require(review.get("case_id") == case and review.get("source_kind") ==
                 "independent_original_capture_review", "Independent original review missing")

@@ -13,7 +13,8 @@ def static_facts(context, source_root=None):
     if source_root is None:
         return {"sign_kind": context["sign_kind"],
                 "through_road": context["through_road_sha256"],
-                "road_geometry": context["map_sha256"]}
+                "road_geometry": context["map_sha256"],
+                "capture_profile": "source-shaped-600-frame-four-view"}
     root = Path(source_root)
     sources = context["source_files"]
     sign = json.loads((root / sources["sign"]).read_text())
@@ -24,8 +25,11 @@ def static_facts(context, source_root=None):
             if child.tag in {"signals", "objects"}:
                 road_element.remove(child)
     geometry = hashlib.sha256(ET.tostring(map_root, encoding="utf-8")).hexdigest()
+    config = json.loads((root / "config.json").read_text())
+    profile = {key: config[key] for key in ("frames", "rate_hz", "duration_s", "cameras")}
     return {"sign_kind": sign["id"], "through_road": road["road_id"],
-            "road_geometry": geometry}
+            "road_geometry": geometry,
+            "capture_profile": hashlib.sha256(json.dumps(profile, sort_keys=True).encode()).hexdigest()}
 
 
 def motion_hash(rows, fields):
@@ -62,7 +66,7 @@ def audit(comparison, records, require_original=True):
             raise ValueError("Comparison observation case identity differs")
         if value["observation"].get("legal_verdict") is not None or value["observation"].get("sample_count") != 600:
             raise ValueError("Comparison source history or legal separation differs")
-    for name in ("sign_kind", "through_road", "road_geometry"):
+    for name in ("sign_kind", "through_road", "road_geometry", "capture_profile"):
         if len({value["static_facts"][name] for value in values}) != 1:
             raise ValueError("Fixed source changed: " + name)
     for name in ("ego_body_size_sha256", "through_body_size_sha256"):

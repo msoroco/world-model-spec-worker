@@ -1,0 +1,643 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "construction": "cases/probe_a/construction.json",
+      "construction_sha256": "ac12ec9b7f50c5bbd1ed4919f3c3df374026df5e630afff92c49e4b65cacd6fc",
+      "fixture_recipe": "work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-recipe-probe_a.json",
+      "measurement_contract": "measurement-probe_a.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c111271-flashing-red-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Original signal governance or stopping reference must be source-reviewed; no fallback can substitute for missing original authority while preserving this exact comparison."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a",
+        "construction_sha256": "ac12ec9b7f50c5bbd1ed4919f3c3df374026df5e630afff92c49e4b65cacd6fc",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-preflight-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111271-offline/probe_a-current2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/probe_a.log",
+        "log_sha256": "99521ad59975aeaada95dbfbdaf89fe2a58b2e81f56266c0f9a5a1adadbf383a"
+      },
+      "compatibility": {
+        "receipt": "compatibility/probe_a-compatibility.json",
+        "sha256": "f9dce011795f4dbcc10a34f94f7c82ee32689549b57b14736eed5abe183cba63",
+        "log": "compatibility/probe_a-analysis.log",
+        "negative_log": "compatibility/probe_a-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/probe_a-negative.log",
+        "log_sha256": "9b99c71a1049bd765768e59196f54cf14a65110d03319f7bbc437cd3fb5a8877"
+      },
+      "physical_preparation": {
+        "receipt": "physical/probe_a/receipt.json",
+        "sha256": "eb5b488119ec53c7f2d6b8eff38f2da3db76fc65a931f99271e45615ed10761b"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a/context-survey.json"
+      },
+      "acquisition": {
+        "native_signal_reference_body_and_conflict": {
+          "entrypoint": "capture.py",
+          "method": "original Native signal, body, reference and conflict joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/execution-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/probe_a-test.log",
+        "test_log_sha256": "2a17097b9414ea09d7300831fb9be266bbbbef66d36b8b5721a2007829c8450a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bdde7204946b6375e6f8e1715d451c43f98061a3464f1632171876b8bfdc330d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/probe_a-positive.log",
+        "test_log_sha256": "cd982778eb8a131c68cd08413f34e2d10ee7b121d2e67357d4bed8bda453e4c2",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_a --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original flashing-red reference source unverified",
+        "negative_log": "delivery-audit/probe_a-negative.log",
+        "negative_log_sha256": "ba2d9a310482a55848d9bd9850b7ddfb51de003b5440438f0b9ff07dccfc7986"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    },
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "construction": "cases/probe_b/construction.json",
+      "construction_sha256": "e17228d4049ec1f3e5e547a22dd87722d4cddd039ffdb45046ba7d69d643292d",
+      "fixture_recipe": "work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-recipe-probe_b.json",
+      "measurement_contract": "measurement-probe_b.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c111271-flashing-red-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Original signal governance or stopping reference must be source-reviewed; no fallback can substitute for missing original authority while preserving this exact comparison."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b",
+        "construction_sha256": "e17228d4049ec1f3e5e547a22dd87722d4cddd039ffdb45046ba7d69d643292d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-preflight-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111271-offline/probe_b-current2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/probe_b.log",
+        "log_sha256": "7239473613028e1d3a0c0a08f93fab36551c1425075681b65c704b15e1b1299a"
+      },
+      "compatibility": {
+        "receipt": "compatibility/probe_b-compatibility.json",
+        "sha256": "753770bdd08294b02f183ee61430b60b79d9f06a51cbe032d19e54b129823759",
+        "log": "compatibility/probe_b-analysis.log",
+        "negative_log": "compatibility/probe_b-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/probe_b-negative.log",
+        "log_sha256": "416fa9a065b69685248effe458aa4df023704846d672fc21722599c670784a87"
+      },
+      "physical_preparation": {
+        "receipt": "physical/probe_b/receipt.json",
+        "sha256": "b592b9ff1c090a453f85749166a5b626f0b6a2b804ab66ae3f01a537191c50f7"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b/context-survey.json"
+      },
+      "acquisition": {
+        "native_signal_reference_body_and_conflict": {
+          "entrypoint": "capture.py",
+          "method": "original Native signal, body, reference and conflict joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/execution-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/probe_b-test.log",
+        "test_log_sha256": "65f57d2738716fb0b855f8b3dcca19b6bd3a24759de1338dd2392fe00cc1bfb3"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bdde7204946b6375e6f8e1715d451c43f98061a3464f1632171876b8bfdc330d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/probe_b-positive.log",
+        "test_log_sha256": "9418adba8d9cc2baee03dbed9bd90a05d88d37caf37dffe02d7ad1e7c319fcff",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__probe_b --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original flashing-red reference source unverified",
+        "negative_log": "delivery-audit/probe_b-negative.log",
+        "negative_log_sha256": "ba2d9a310482a55848d9bd9850b7ddfb51de003b5440438f0b9ff07dccfc7986"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    },
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop",
+      "kind": "delivery",
+      "construction": "cases/crosswalk_stop/construction.json",
+      "construction_sha256": "809a93c1ec79c9c26abad0c843170163a58384eccafa95a2b9532549970c9a9a",
+      "fixture_recipe": "work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-recipe-crosswalk_stop.json",
+      "measurement_contract": "measurement-crosswalk_stop.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c111271-flashing-red-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Original signal governance or stopping reference must be source-reviewed; no fallback can substitute for missing original authority while preserving this exact comparison."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop",
+        "construction_sha256": "809a93c1ec79c9c26abad0c843170163a58384eccafa95a2b9532549970c9a9a",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-preflight-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111271-offline/crosswalk_stop-current2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/crosswalk_stop.log",
+        "log_sha256": "95d5eab68ad23d0d5ea56cd2a17dc18c5575d0e8d88551d37d771ea9af845aff"
+      },
+      "compatibility": {
+        "receipt": "compatibility/crosswalk_stop-compatibility.json",
+        "sha256": "e9ba456617052d0bb50a210b56230565845d741a66a75e89d5b2fd3dc8116434",
+        "log": "compatibility/crosswalk_stop-analysis.log",
+        "negative_log": "compatibility/crosswalk_stop-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/crosswalk_stop-negative.log",
+        "log_sha256": "b80614fc9423f97a4a5f2690123b6d1b668510274fd3dfa092c8af246c987deb"
+      },
+      "physical_preparation": {
+        "receipt": "physical/crosswalk_stop/receipt.json",
+        "sha256": "77b9408acb7be2286443463d82da813d719c5a36c5553d15358783e05926de78"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop/context-survey.json"
+      },
+      "acquisition": {
+        "native_signal_reference_body_and_conflict": {
+          "entrypoint": "capture.py",
+          "method": "original Native signal, body, reference and conflict joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/execution-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/crosswalk_stop-test.log",
+        "test_log_sha256": "fff881b364a9bd39053b358010ee8b17b877da339bd028e740c5e4a796ca1839"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bdde7204946b6375e6f8e1715d451c43f98061a3464f1632171876b8bfdc330d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/crosswalk_stop-positive.log",
+        "test_log_sha256": "cb91dad7e5d22697b1078e738c5d7ab0cb705f79af51194d6c0c297876c5f20e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_stop --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original flashing-red reference source unverified",
+        "negative_log": "delivery-audit/crosswalk_stop-negative.log",
+        "negative_log_sha256": "ba2d9a310482a55848d9bd9850b7ddfb51de003b5440438f0b9ff07dccfc7986"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    },
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop",
+      "kind": "delivery",
+      "construction": "cases/crosswalk_no_stop/construction.json",
+      "construction_sha256": "29c55bc84d78e3486b606befe493f933c9b0b8fd5a3887e99659c2bf833a24f3",
+      "fixture_recipe": "work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-recipe-crosswalk_no_stop.json",
+      "measurement_contract": "measurement-crosswalk_no_stop.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c111271-flashing-red-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Original signal governance or stopping reference must be source-reviewed; no fallback can substitute for missing original authority while preserving this exact comparison."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop",
+        "construction_sha256": "29c55bc84d78e3486b606befe493f933c9b0b8fd5a3887e99659c2bf833a24f3",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-preflight-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111271-offline/crosswalk_no_stop-current2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/crosswalk_no_stop.log",
+        "log_sha256": "2288a748f1fbcc08b998a0a297f58dee318c5bde047a2d6d7fa3c5a91bc1ca68"
+      },
+      "compatibility": {
+        "receipt": "compatibility/crosswalk_no_stop-compatibility.json",
+        "sha256": "146fe31463a325ad914c94807b5cc5bb00ebe89e4a698c3666d75c342e6237ff",
+        "log": "compatibility/crosswalk_no_stop-analysis.log",
+        "negative_log": "compatibility/crosswalk_no_stop-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/crosswalk_no_stop-negative.log",
+        "log_sha256": "5e2c08e759aa3f435115b04739fc5ecb65c2610312e740eb933bb03a37247c18"
+      },
+      "physical_preparation": {
+        "receipt": "physical/crosswalk_no_stop/receipt.json",
+        "sha256": "6904414dc12db31b19c1a811f47a74fe8bdc4e2bf4681c9a54bc5cbaa921581c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop/context-survey.json"
+      },
+      "acquisition": {
+        "native_signal_reference_body_and_conflict": {
+          "entrypoint": "capture.py",
+          "method": "original Native signal, body, reference and conflict joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/execution-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/crosswalk_no_stop-test.log",
+        "test_log_sha256": "5f6ceaefdb2644d48977a9b912c65e1569f2a6a6b2a6c3e2608b6789d18c27a8"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bdde7204946b6375e6f8e1715d451c43f98061a3464f1632171876b8bfdc330d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/crosswalk_no_stop-positive.log",
+        "test_log_sha256": "bce2ba77bb97c89f7031050f73332f216e36971022a068bc89129b367d1c8661",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__crosswalk_no_stop --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original flashing-red reference source unverified",
+        "negative_log": "delivery-audit/crosswalk_no_stop-negative.log",
+        "negative_log_sha256": "ba2d9a310482a55848d9bd9850b7ddfb51de003b5440438f0b9ff07dccfc7986"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    },
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop",
+      "kind": "delivery",
+      "construction": "cases/intersection_stop/construction.json",
+      "construction_sha256": "b4b9937b8975e41e45783b5cbe5a1a6c25109d54717899607c65a8b1a889adf9",
+      "fixture_recipe": "work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-recipe-intersection_stop.json",
+      "measurement_contract": "measurement-intersection_stop.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c111271-flashing-red-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Original signal governance or stopping reference must be source-reviewed; no fallback can substitute for missing original authority while preserving this exact comparison."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop",
+        "construction_sha256": "b4b9937b8975e41e45783b5cbe5a1a6c25109d54717899607c65a8b1a889adf9",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-preflight-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111271-offline/intersection_stop-current2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/intersection_stop.log",
+        "log_sha256": "edefabbec875ac7eb09d6c46ae8e58cb9b5022aeb5e2cd048098f628928a0f48"
+      },
+      "compatibility": {
+        "receipt": "compatibility/intersection_stop-compatibility.json",
+        "sha256": "a49b239f372575c363755df1dfaefd20a26356cec15e1530d27db75d3923f4f9",
+        "log": "compatibility/intersection_stop-analysis.log",
+        "negative_log": "compatibility/intersection_stop-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/intersection_stop-negative.log",
+        "log_sha256": "adee261fe5f69f4dea1f4dcfbee2e928d9e99568b6187e5155f30b7cdb299ec9"
+      },
+      "physical_preparation": {
+        "receipt": "physical/intersection_stop/receipt.json",
+        "sha256": "1081474b8ec535256a6b4b57b2b27c6e78b9ec4d8b8ae997ecb9e3f733692e7b"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop/context-survey.json"
+      },
+      "acquisition": {
+        "native_signal_reference_body_and_conflict": {
+          "entrypoint": "capture.py",
+          "method": "original Native signal, body, reference and conflict joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/execution-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/intersection_stop-test.log",
+        "test_log_sha256": "8796ed696548bd01aee89fc1c5524b7bb583e4230150c288261a5a78c3bc1dc9"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bdde7204946b6375e6f8e1715d451c43f98061a3464f1632171876b8bfdc330d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/intersection_stop-positive.log",
+        "test_log_sha256": "f68919463f789a02c8392e3510bfbd0a67144cf4aa48217d0938fdc6745d688c",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_stop --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original flashing-red reference source unverified",
+        "negative_log": "delivery-audit/intersection_stop-negative.log",
+        "negative_log_sha256": "ba2d9a310482a55848d9bd9850b7ddfb51de003b5440438f0b9ff07dccfc7986"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    },
+    {
+      "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop",
+      "kind": "delivery",
+      "construction": "cases/intersection_no_stop/construction.json",
+      "construction_sha256": "46da0603400fdd2d5e12c880d6ee49f07e08b8bd4ec559a6e6d468865d573bf6",
+      "fixture_recipe": "work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-recipe-intersection_no_stop.json",
+      "measurement_contract": "measurement-intersection_no_stop.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-c111271-flashing-red-analysis-v1"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Original signal governance or stopping reference must be source-reviewed; no fallback can substitute for missing original authority while preserving this exact comparison."
+      },
+      "candidates": [],
+      "offline": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop",
+        "construction_sha256": "46da0603400fdd2d5e12c880d6ee49f07e08b8bd4ec559a6e6d468865d573bf6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/selected-preflight-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c111271-offline/intersection_no_stop-current2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-offline/intersection_no_stop.log",
+        "log_sha256": "cd0f579a0b00e1bb51e19c9afa2fdff33aafabff24e2dea73b1f587b18843d13"
+      },
+      "compatibility": {
+        "receipt": "compatibility/intersection_no_stop-compatibility.json",
+        "sha256": "b04e615e29023e4d34114e6871e88b885d86306abbd20bb771cfc46229191d02",
+        "log": "compatibility/intersection_no_stop-analysis.log",
+        "negative_log": "compatibility/intersection_no_stop-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/intersection_no_stop-negative.log",
+        "log_sha256": "38adb98491b2f35a40ec936baeed815c55307072691197e1a6571b991b1f46a0"
+      },
+      "physical_preparation": {
+        "receipt": "physical/intersection_no_stop/receipt.json",
+        "sha256": "bbfe2c0d472673129166d2b590e4cf15d178cc4bd7426ef03474aef0cd20aa82"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "survey_env_var": "SCENARIO_CONTEXT_SURVEY",
+        "survey_path": ".runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop/context-survey.json",
+        "capture_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop/context-survey.json",
+        "execute_command_prefix": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111271__NRS-484B-310-1__motor_vehicle_driver/training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop/context-survey.json"
+      },
+      "acquisition": {
+        "native_signal_reference_body_and_conflict": {
+          "entrypoint": "capture.py",
+          "method": "original Native signal, body, reference and conflict joined by frame",
+          "evidence": [
+            "native.jsonl",
+            "geometry.json",
+            "context-survey.json",
+            "video_frames.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "capture.py",
+          "method": "four original synchronized RGB streams",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/execution-manifest.json --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "recorded-only/intersection_no_stop-test.log",
+        "test_log_sha256": "31a6d71277f398661fe84db90c0caab92a7c6654452f88696d20b13dfb3dcf77"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bdde7204946b6375e6f8e1715d451c43f98061a3464f1632171876b8bfdc330d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/intersection_no_stop-positive.log",
+        "test_log_sha256": "f0d2e9a3ec4cd016aef2e015bf8d2e976400de02032c058d304fffb37ad6e789",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C111271__NRS-484B-310-1__motor_vehicle_driver/delivery_audit.py --case training__C111271__NRS-484B-310-1__motor_vehicle_driver__intersection_no_stop --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original flashing-red reference source unverified",
+        "negative_log": "delivery-audit/intersection_no_stop-negative.log",
+        "negative_log_sha256": "ba2d9a310482a55848d9bd9850b7ddfb51de003b5440438f0b9ff07dccfc7986"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending"
+    }
+  ]
+}
