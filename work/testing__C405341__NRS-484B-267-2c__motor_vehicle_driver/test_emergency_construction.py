@@ -75,6 +75,22 @@ class ConstructionTests(unittest.TestCase):
         self.assertEqual(hand.cue, "hand_signal")
         self.assertEqual(officer.cue, "movement")
 
+    def test_fallback_engineering_changes_executed_controls(self):
+        case = CASES[0]
+        road, actors, authority = sources(case)
+        adapter = Adapter()
+        execute(adapter, case, road, actors, authority,
+                {"movement_target_mps": 1.8, "signal_hold_to_s": 19.0,
+                 "occluder_min_height_m": 1.4})
+        call = next(arguments for name, arguments in adapter.calls
+                    if name == "configure_unit_movement")
+        self.assertEqual(call[1]["target_mps"], 1.8)
+        occluded = CASES[2]
+        road, actors, authority = sources(occluded)
+        road["occluder"]["height_m"] = 2.0
+        with self.assertRaisesRegex(ValueError, "fallback occluder readback below target"):
+            plan(occluded, road, actors, authority, {"occluder_min_height_m": 2.2})
+
 
 if __name__ == "__main__":
     unittest.main()

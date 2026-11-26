@@ -11,6 +11,7 @@ import subprocess
 import sys
 
 from emergency_construction import CASES
+from build_constructions import FALLBACKS
 from native_packet import AID
 
 HERE = Path(__file__).resolve().parent
@@ -46,9 +47,18 @@ def proof():
                 for channel in ("sealed_native_original_frames", "unit_motion",
                                 "qualifying_flashing_lights", "driver_view_movement_cue",
                                 "ego_approach", "ego_response", "officer_direction", "video_four_views")},
-            "candidate_risk": {"status": "physical", "reason":
-                "Native movement, visibility, hand signal or emergency equipment may not realize on reviewed route"},
+            "candidate_risk": {"status": "physical" if name in FALLBACKS else "none",
+                "reason": FALLBACKS[name][2] if name in FALLBACKS else
+                          "No candidate-specific physical risk after source-gated Native review"},
             "candidates": []}
+        if name in FALLBACKS:
+            fallback = HERE / ("construction-" + name + "-fallback1.json")
+            key, value, trigger = FALLBACKS[name]
+            entry["candidates"] = [{"id": "fallback1", "construction": fallback.name,
+                "construction_sha256": sha(fallback),
+                "trigger": {"source": "sealed original Native motion, cue and driver-view pixel history",
+                            "metric": key, "failure_condition": trigger},
+                "changed_knobs": [key + " = " + str(value)]}]
         entries.append(entry)
     manifest = {"format": "worker-execution-manifest", "assignment_id": AID,
                 "status": "source_gated_draft",
@@ -60,25 +70,34 @@ def proof():
         TMPDIR=str(ROOT / ".runtime-work/c405341/tmp"), PYTHONDONTWRITEBYTECODE="1")
     for entry in entries:
         name = entry["case_id"].removeprefix(AID + "__")
-        destination = SCRATCH / name
-        if destination.exists():
-            shutil.rmtree(destination)
-        command = [sys.executable, str(ROOT / "runtime.py"), "offline",
-                   "--manifest", str(manifest_path), "--case", entry["case_id"],
-                   "--output", str(destination), "--python", sys.executable]
-        process = subprocess.run(command, cwd=ROOT, env=environment,
-                                 capture_output=True, text=True, timeout=300)
-        log_path = HERE / ("cpu-offline-" + name + ".log")
-        details = (destination / "offline.log").read_text(encoding="utf-8") if (destination / "offline.log").exists() else ""
-        log_path.write_text((details + process.stdout + process.stderr).rstrip() + "\n", encoding="utf-8")
-        if process.returncode:
-            raise RuntimeError("exact offline failed: " + name + " (see " + str(log_path) + ")")
-        entry["offline"] = {"command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + AID +
-            "/execution-manifest.json --case " + entry["case_id"] +
-            " --output $OUTPUT --python $CPU_PYTHON", "exit_code": 0,
-            "construction_sha256": entry["construction_sha256"],
-            "log": log_path.name, "log_sha256": sha(log_path)}
-        print(name + ": offline passed", flush=True)
+        for candidate in ([None, "fallback1"] if entry["candidates"] else [None]):
+            label = name + ("-fallback1" if candidate else "")
+            destination = SCRATCH / label
+            if destination.exists():
+                shutil.rmtree(destination)
+            command = [sys.executable, str(ROOT / "runtime.py"), "offline",
+                       "--manifest", str(manifest_path), "--case", entry["case_id"],
+                       "--output", str(destination), "--python", sys.executable]
+            if candidate:
+                command += ["--candidate", candidate]
+            process = subprocess.run(command, cwd=ROOT, env=environment,
+                                     capture_output=True, text=True, timeout=300)
+            log_path = HERE / ("cpu-offline-" + label + ".log")
+            details = (destination / "offline.log").read_text(encoding="utf-8") if (destination / "offline.log").exists() else ""
+            log_path.write_text((details + process.stdout + process.stderr).rstrip() + "\n", encoding="utf-8")
+            if process.returncode:
+                raise RuntimeError("exact offline failed: " + label + " (see " + str(log_path) + ")")
+            proof = {"command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + AID +
+                "/execution-manifest.json --case " + entry["case_id"] +
+                (" --candidate fallback1" if candidate else "") +
+                " --output $OUTPUT --python $CPU_PYTHON", "exit_code": 0,
+                "construction_sha256": entry["candidates"][0]["construction_sha256"] if candidate else entry["construction_sha256"],
+                "log": log_path.name, "log_sha256": sha(log_path)}
+            if candidate:
+                entry["candidates"][0]["offline"] = proof
+            else:
+                entry["offline"] = proof
+            print(label + ": offline passed", flush=True)
     write(manifest_path, manifest)
 
 

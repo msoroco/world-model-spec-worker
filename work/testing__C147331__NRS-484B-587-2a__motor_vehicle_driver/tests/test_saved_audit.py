@@ -19,7 +19,7 @@ class Tests(unittest.TestCase):
                      lane_marking_source_sha256='marking',
                      legal_controlled_access_source_sha256='designation',
                      public_highway_boundary_source_sha256='boundary',
-                     camera_plan_sha256='camera', vehicle_class='ordinary',
+                     camera_plan_sha256='camera', direction_source_sha256='direction', vehicle_class='ordinary',
                      approach='north', route_class='outside_nonshoulder',
                      sign_source_sha256='sign', emergency_record_source_sha256='emergency',
                      subsection3_authorization_source_sha256='authorization',

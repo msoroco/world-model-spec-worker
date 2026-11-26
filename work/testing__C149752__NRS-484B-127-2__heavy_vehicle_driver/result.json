@@ -1,37 +1,25 @@
 {
   "assignment_id": "testing__C149752__NRS-484B-127-2__heavy_vehicle_driver",
   "input_sha256": "de7708e5dca02fc11e4dc305b1a283ebc76e546b090f4c87c98c6dee63e13176",
-  "status": "partial",
-  "readiness_kind": "construction_and_measurement_draft",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C149752__NRS-484B-127-2__heavy_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "cpu-tests.log",
-      "sha256": "c6e688547a4314b5b53d07d157f948856fce3dc588e1440d7549bbf0b362ca9d"
+      "log": "cpu-tests-current.log",
+      "sha256": "129d5b812f958a26f36adf5eda0f60c3b81a21e4841dd6ea0e96eae83d934654"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "663d89163be1c6551f568873490f87b2b224ac0c6c55953e572f6abbadac2239"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C149752__NRS-484B-127-2__heavy_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "check-complete.log",
-      "sha256": "98d0ac66faec2f63a0579d8e42469c335b62fbab4227cee2524bf63d7325b728"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C149752__NRS-484B-127-2__heavy_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "check-strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "log": "cpu-preflight-current.log",
+      "sha256": "33431fb01f4ef60c3812250fd96eaa9df699f22f6e6bd7dc8c4fba7463fb5628"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Original CARLA route and actor motion, four-camera visibility and source seals, independent pixel review, conditions-permit and danger legal judgment, canonical accepted delivery"
   ],
-  "reason": "Original-frame gap auditor now accepts arbitrary live CARLA frame/time origins while enforcing contiguous 20 Hz and measuring the 14..20 s steady window relative to capture start; constructor cleans up owned actors on pass-controller failure. Eight focused CPU tests, pinned preflight and scoped static pass. Exact strict remains partial. Full Native runner/capture bundles, real source-gated map, semantic proposals, per-case offline/compatibility, saved processing, delivery/comparison receipts remain CPU work; accepted original trace/video absent."
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C149752__NRS-484B-127-2__heavy_vehicle_driver --case testing__C149752__NRS-484B-127-2__heavy_vehicle_driver__gap_below_500ft --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

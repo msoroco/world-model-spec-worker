@@ -18,7 +18,7 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         name = case.removeprefix(HERE.name + '__')
-        receipt = SCRATCH / ('saved-emergency-' + name) / 'v0001/processing.json'
+        receipt = SCRATCH / ('saved-emergency-v6-' + name) / 'v0001/processing.json'
         data = json.loads(receipt.read_text(encoding='utf-8'))
         if not (data.get('passed') is True and data.get('recorded_only') is True and
                 data.get('native_revision', {}).get('construction_sha256') == entry['construction_sha256']):

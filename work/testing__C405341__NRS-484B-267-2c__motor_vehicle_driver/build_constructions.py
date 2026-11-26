@@ -11,6 +11,16 @@ from native_packet import AID, VIEWS
 HERE = Path(__file__).resolve().parent
 SCRIPTS = ("runner.py", "native_packet.py", "emergency_construction.py", "emergency_motion_probe.py", "analysis.py")
 SIZES = ((1920, 1080), (1280, 720), (1280, 720), (1280, 720))
+FALLBACKS = {
+    "visible_movement_brake_response": ("movement_target_mps", 1.8,
+        "small original displacement not visible from reviewed driver view"),
+    "movement_occluded": ("occluder_min_height_m", 2.2,
+        "original driver-view pixels still reveal vehicle movement"),
+    "officer_direction": ("signal_hold_to_s", 21.0,
+        "officer direction absent from original driver-view frames"),
+    "hand_signal_alternative": ("signal_hold_to_s", 21.0,
+        "driver hand signal absent from original driver-view frames"),
+}
 
 
 def write(path, obj):
@@ -41,13 +51,16 @@ def description():
                 "Brake lamps alone do not establish preparation-to-move indication."]}
 
 
-def config(case):
+def config(case, fallback=False):
     ids = [AID + "__" + item.suffix for item in CASES]
     return {"assignment_id": AID, "law_id": "NRS-484B-267-2c", "cell_id": "C405341",
             "actor": "motor_vehicle_driver", "selected_case_id": AID + "__" + case.suffix,
             "supported_case_ids": ids, "rate_hz": 20, "duration_s": 45, "frame_count": 900,
             "required_atoms": [], "source_packets": [],
             "engineering": {"movement_start_s": 17.0, "movement_end_s": 19.0,
+                            "movement_target_mps": 1.4,
+                            "signal_hold_to_s": 19.0,
+                            "occluder_min_height_m": 1.4,
                             "ego_brake_after_cue": case.brake_after_cue,
                             "occluder_requested": not case.visible,
                             "officer_requested": case.officer_direction},
@@ -56,6 +69,13 @@ def config(case):
                         for name, (width, height) in zip(VIEWS, SIZES)],
             "case": {"case_id": AID + "__" + case.suffix,
                      "recording_description": description()}}
+
+
+def fallback_config(case):
+    alternate = config(case)
+    key, value, _ = FALLBACKS[case.suffix]
+    alternate["engineering"][key] = value
+    return alternate
 
 
 def build():
@@ -83,6 +103,9 @@ def build():
     for row in plan["cases"]:
         row["new_capture_selected"] = True
         row["construction_status"] = "source_gated_exact_bundle"
+        if row["case_id"].removeprefix(AID + "__") not in FALLBACKS:
+            row["candidate_risk"] = {"status": "none",
+                "reason": "Source-gated controls and capture expose no additional candidate-specific physical risk."}
     write(plan_path, plan)
     code = {name: (HERE / name).read_text(encoding="utf-8") for name in SCRIPTS}
     for index, case in enumerate(CASES):
@@ -109,6 +132,12 @@ def build():
                            "flashing light, movement, hand signal and ego response controllers",
                            "sealed original histories and four-view capture"]}
         write(HERE / ("construction-" + case.suffix + ".json"), construction)
+        if case.suffix in FALLBACKS:
+            alternate = dict(construction)
+            alternate["files"] = [dict(item) for item in files]
+            alternate["files"][-2]["content"] = json.dumps(fallback_config(case), indent=2) + "\n"
+            alternate["measurement_plan"] += "; source-gated engineering fallback " + FALLBACKS[case.suffix][0]
+            write(HERE / ("construction-" + case.suffix + "-fallback1.json"), alternate)
         if index == 0:
             (HERE / "config.json").write_text(config_text, encoding="utf-8")
             (HERE / "tests/test_bundle.py").parent.mkdir(exist_ok=True)

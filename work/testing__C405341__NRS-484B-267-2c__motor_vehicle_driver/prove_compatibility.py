@@ -11,6 +11,7 @@ import subprocess
 import sys
 
 from emergency_construction import CASES
+from build_constructions import FALLBACKS
 from native_packet import AID as ASSIGNMENT
 
 HERE = Path(__file__).resolve().parent
@@ -27,7 +28,7 @@ def run_one(case, candidate=None):
     name = case.suffix
     case_id = ASSIGNMENT + '__' + name
     label = name + ('-fallback1' if candidate else '')
-    output = SCRATCH / ('compat-' + label + '-v5')
+    output = SCRATCH / ('compat-' + label + '-v6')
     if (output / 'compatibility.json').is_file():
         result = json.loads((output / 'compatibility.json').read_text())
         if result.get('case_id') == case_id and result.get('passed') is True:
@@ -60,7 +61,7 @@ def main():
     outcomes = []
     with ThreadPoolExecutor(max_workers=4) as pool:
         futures = [pool.submit(run_one, case, candidate)
-                   for case in CASES for candidate in (None,)]
+                   for case in CASES for candidate in ((None, 'fallback1') if case.suffix in FALLBACKS else (None,))]
         for future in as_completed(futures):
             name, output, code = future.result()
             print(name, 'passed' if code == 0 else 'failed', flush=True)

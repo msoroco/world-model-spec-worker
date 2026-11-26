@@ -41,6 +41,11 @@ def audit_comparison(comparison_id, audit_paths):
     for key in ("road_source_sha256", "weather_sha256", "ego_route_sha256", "camera_plan_sha256"):
         require(len({item["scene_context"][key] for item in audits}) == 1,
                 "fixed original road, weather, ego route or camera changed: " + key)
+    if comparison_id != "vehicle_and_cue_alternatives":
+        require(len({item["scene_context"]["unit_route_sha256"] for item in audits}) == 1
+                and len({item["authority"]["class"] for item in audits}) == 1
+                and len({item["authority"]["equipment_source"] for item in audits}) == 1,
+                "fixed emergency unit, route or equipment changed")
     first = audits[0]
     if comparison_id == "movement_visibility":
         require(len(audits) == 2, "visibility pair required")

@@ -52,12 +52,21 @@ def validate_site(site: Mapping) -> None:
     require(site.get('public_highway_boundary_source_sha256'), 'highway boundary source missing')
     require(site.get('map_sha256') and site.get('lane_marking_source_sha256'), 'map/marking source missing')
     require(site.get('direction_of_travel') == 'one_way', 'one-way source missing')
+    require(site.get('direction_source_sha256'), 'travel direction source missing')
+    direction = site.get('approach_vector')
+    require(_point(direction), 'approach vector missing')
+    dx, dy = direction
+    require(dx*dx + dy*dy > 0, 'approach vector zero')
+    require(site.get('approach') in ('north', 'south'), 'approach designation missing')
     lanes = site.get('lanes', {})
     for key in ('traffic_left', 'traffic_right', 'entrance', 'exit', 'shoulder', 'outside'):
         lane = lanes.get(key, {})
         require(lane.get('source_sha256') and lane.get('id'), f'{key} source missing')
         require(len(lane.get('route', [])) >= 2 and all(_point(p) for p in lane['route']), f'{key} route invalid')
         require(lane.get('classification') == key, f'{key} classification mismatch')
+        route = lane['route']
+        progress = (route[-1][0]-route[0][0])*dx + (route[-1][1]-route[0][1])*dy
+        require(progress > 0, f'{key} route opposes sourced approach')
     require(lanes['traffic_left']['id'] != lanes['traffic_right']['id'], 'two marked travel lanes missing')
     require(site.get('shoulder_paved_source_sha256'), 'paved shoulder source missing')
     require(site.get('sign_source_sha256'), 'sign inventory source missing')
@@ -105,7 +114,7 @@ def measure_original(rows: list[Mapping], case: Case) -> dict:
     require(type(first) is int, 'original frame missing')
     fixed = ('case', 'ego_id', 'map_sha256', 'lane_marking_source_sha256',
              'legal_controlled_access_source_sha256', 'public_highway_boundary_source_sha256',
-             'camera_plan_sha256', 'vehicle_class', 'approach', 'sign_source_sha256',
+             'camera_plan_sha256', 'direction_source_sha256', 'vehicle_class', 'approach', 'sign_source_sha256',
              'emergency_record_source_sha256', 'subsection3_authorization_source_sha256')
     baseline = {key: rows[0].get(key) for key in fixed}
     require(all(baseline.values()), 'fixed original source missing')
@@ -141,7 +150,7 @@ def audit_comparison(left: Mapping, right: Mapping, changed: set[str]) -> dict:
     require(left.get('case') != right.get('case'), 'duplicate case')
     a, b = left.get('fixed', {}), right.get('fixed', {})
     for key in ('map_sha256', 'lane_marking_source_sha256', 'legal_controlled_access_source_sha256',
-                'public_highway_boundary_source_sha256', 'camera_plan_sha256'):
+                'public_highway_boundary_source_sha256', 'camera_plan_sha256', 'direction_source_sha256'):
         require(a.get(key) and a.get(key) == b.get(key), f'fixed source changed: {key}')
     for key in ('vehicle_class', 'approach', 'route_class', 'sign_permits_shoulder',
                 'emergency_required', 'subsection3_authorized'):

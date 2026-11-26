@@ -25,7 +25,8 @@ class AuditTests(unittest.TestCase):
                    for i in range(900)]
         cues = [{"frame": i, "native_frame": 100 + i, "camera": "driver_reference",
                  "pixel_review_source": "original-roi", "reviewer": "independent",
-                 "roi_pixels": [1, 2, 3, 4], "movement_visible": i == 340}
+                 "roi_pixels": [1, 2, 3, 4], "frame_md5": "0" * 32,
+                 "movement_visible": i == 340}
                 for i in range(900)]
         self.assertEqual(audit_cues(cues, history, CASES[0])["movement_visible_frames"], 1)
         cues[340]["native_frame"] += 1

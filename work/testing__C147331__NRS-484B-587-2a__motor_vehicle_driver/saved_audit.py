@@ -23,7 +23,7 @@ def audit_history(path: Path, expected_sha256: str, expected_case: str,
         raise ValueError('original frame missing')
     fixed = ('ego_id', 'map_sha256', 'lane_marking_source_sha256',
              'legal_controlled_access_source_sha256', 'public_highway_boundary_source_sha256',
-             'camera_plan_sha256', 'vehicle_class', 'approach', 'route_class',
+             'camera_plan_sha256', 'direction_source_sha256', 'vehicle_class', 'approach', 'route_class',
              'sign_source_sha256', 'emergency_record_source_sha256',
              'subsection3_authorization_source_sha256')
     baseline = {key: rows[0].get(key) for key in fixed}

@@ -19,7 +19,7 @@ def main():
     path = HERE / 'execution-manifest.json'
     manifest = json.loads(path.read_text())
     test_log = HERE / 'cpu-tests.log'
-    if 'Ran 12 tests' not in test_log.read_text() or 'OK' not in test_log.read_text():
+    if 'Ran 13 tests' not in test_log.read_text() or 'OK' not in test_log.read_text():
         raise ValueError('current independent audit CPU suite missing')
     for entry in manifest['cases']:
         case_id = entry['case_id']

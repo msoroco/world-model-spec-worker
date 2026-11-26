@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from math import hypot
 from pathlib import Path
 import subprocess
 
@@ -27,9 +28,15 @@ def decode(path, expected):
             and stream.get("r_frame_rate") in ("20/1", "20")
             and (stream.get("width"), stream.get("height")) == expected,
             "original full camera decode/profile missing")
-    subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(path),
-                    "-f", "null", "-"], capture_output=True, check=True, timeout=180)
-    return {"decoded_frames": 900, "width": expected[0], "height": expected[1]}
+    digest = subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(path),
+        "-map", "0:v:0", "-f", "framemd5", "-"], capture_output=True, text=True,
+        check=True, timeout=240)
+    frame_md5 = [line.rsplit(",", 1)[-1].strip() for line in digest.stdout.splitlines()
+                 if line and not line.startswith("#")]
+    require(len(frame_md5) == 900 and all(len(value) == 32 for value in frame_md5),
+            "actual decoded frame hashes missing")
+    return {"decoded_frames": 900, "width": expected[0], "height": expected[1],
+            "frame_md5": frame_md5}
 
 
 def audit_cues(cues, history, case):
@@ -40,7 +47,7 @@ def audit_cues(cues, history, case):
                 cue.get("native_frame") == motion["native_frame"],
                 "driver-view cue frame join changed")
         require(cue.get("camera") == "driver_reference" and cue.get("pixel_review_source") and
-                cue.get("reviewer") and cue.get("roi_pixels"),
+                cue.get("reviewer") and cue.get("roi_pixels") and cue.get("frame_md5"),
                 "actual reviewed driver-view pixels missing")
         require(cue.get("movement_visible") == motion["movement_visible"],
                 "driver-view movement visibility disagrees with motion packet")
@@ -65,6 +72,7 @@ def audit_attempt(attempt, processed, case_id, decoder=decode):
     diagnostic, source = check_source(attempt, case_id)
     require(not diagnostic, "source-bound original emergency seal required")
     seal = json.loads(required(attempt, "capture-seal.json").read_text(encoding="utf-8"))
+    require(seal.get("case_id") == case_id, "original seal exact case mismatch")
     source["capture-seal.json"] = hashlib.sha256(required(attempt, "capture-seal.json").read_bytes()).hexdigest()
     for name in ("emergency-site.json", "driver-view-cues.jsonl", "authority-readback.json",
                  "scene-context.json"):
@@ -83,6 +91,16 @@ def audit_attempt(attempt, processed, case_id, decoder=decode):
             "reviewed original emergency authority/equipment missing")
     history = rows(required(attempt, HISTORY))
     check_joins(attempt, history)
+    require(all(row.get("motion_source") and row.get("light_source") and
+                row.get("visibility_source") and row.get("control_source")
+                for row in history), "original emergency source bindings incomplete")
+    require(any(row.get("flashing_light_on") is True for row in history),
+            "qualifying flashing-light use absent from original frames")
+    first_distance = hypot(history[0]["ego_xy"][0] - history[0]["emergency_xy"][0],
+                           history[0]["ego_xy"][1] - history[0]["emergency_xy"][1])
+    require(any(hypot(row["ego_xy"][0] - row["emergency_xy"][0],
+                      row["ego_xy"][1] - row["emergency_xy"][1]) < first_distance
+                for row in history), "ego approach to emergency unit absent")
     site = json.loads(required(attempt, "emergency-site.json").read_text(encoding="utf-8"))
     measurement = measure_case(cases[case_id], site, history)
     cues = audit_cues(rows(required(attempt, "driver-view-cues.jsonl")), history, cases[case_id])
@@ -92,6 +110,8 @@ def audit_attempt(attempt, processed, case_id, decoder=decode):
         decoded[name] = decoder(required(attempt, name + ".mkv"), size)
         require(decoded[name].get("decoded_frames") == 900,
                 "original full camera decode missing")
+    require([cue["frame_md5"] for cue in cues] == decoded["driver_reference"].get("frame_md5"),
+            "reviewed driver-view pixels differ from original decoded frames")
     require(processed.is_file() and not processed.is_symlink(),
             "saved original physical result missing")
     result = json.loads(processed.read_text(encoding="utf-8"))

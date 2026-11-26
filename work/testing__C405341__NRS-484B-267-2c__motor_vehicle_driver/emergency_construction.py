@@ -33,7 +33,8 @@ def require(value, message):
         raise ValueError(message)
 
 
-def plan(case: Case, map_source: dict, actor_source: dict, authority: dict) -> dict:
+def plan(case: Case, map_source: dict, actor_source: dict, authority: dict,
+         engineering: dict | None = None) -> dict:
     """Require independent map, blueprint and authority records before execution."""
     require(case in CASES, "unselected case")
     require(map_source.get("source_kind") == "native_map_readback", "Native map readback required")
@@ -71,16 +72,31 @@ def plan(case: Case, map_source: dict, actor_source: dict, authority: dict) -> d
                     ("x_m", "y_m", "length_m", "width_m", "height_m")), "occluder dimensions invalid")
         require(occlusion["length_m"] > 0 and occlusion["width_m"] > 0 and occlusion["height_m"] > 1.4,
                 "occluder cannot block driver eye")
+    engineering = engineering or {}
+    movement_target = engineering.get("movement_target_mps", 1.4)
+    signal_hold = engineering.get("signal_hold_to_s", 19.0)
+    occluder_min = engineering.get("occluder_min_height_m", 1.4)
+    require(type(movement_target) in (float, int) and 1.0 <= movement_target <= 2.5,
+            "movement engineering speed invalid")
+    require(type(signal_hold) in (float, int) and 19.0 <= signal_hold <= 22.0,
+            "signal hold engineering invalid")
+    require(type(occluder_min) in (float, int) and 1.4 <= occluder_min <= 2.2,
+            "occluder height engineering invalid")
+    if not case.visible:
+        require(map_source["occluder"]["height_m"] >= occluder_min,
+                "fallback occluder readback below target")
     return {
         "case": case.suffix,
         "ego": {"identity": "ego", "blueprint_id": actor_source["ego_blueprint_id"], "route": "approach"},
         "unit": {"identity": "unit", "blueprint_id": actor_source["unit_blueprint_id"],
                  "vehicle_class": case.unit_class, "route": "cross_view"},
-        "movement": {"start_s": 17.0, "end_s": 19.0, "target_mps": 1.4},
-        "hand_signal": {"start_s": 16.5, "end_s": 19.0, "enabled": case.cue == "hand_signal"},
+        "movement": {"start_s": 17.0, "end_s": 19.0, "target_mps": movement_target},
+        "hand_signal": {"start_s": 16.5, "end_s": signal_hold, "enabled": case.cue == "hand_signal"},
         "ego_control": {"approach_mps": 8.0, "brake_after_cue": case.brake_after_cue,
                         "brake_start_s": 19.0, "brake_fraction": 0.5 if case.brake_after_cue else 0.0},
-        "officer_direction": {"enabled": case.officer_direction, "source": authority.get("officer_direction_source")},
+        "officer_direction": {"enabled": case.officer_direction,
+                              "hold_to_s": signal_hold,
+                              "source": authority.get("officer_direction_source")},
         "lights": {"qualifying": True, "flash_from_s": 0.0, "flash_to_s": 45.0,
                    "equipment_source": authority["equipment_source"],
                    "rule_source": authority["light_rule_source"]},
@@ -90,9 +106,10 @@ def plan(case: Case, map_source: dict, actor_source: dict, authority: dict) -> d
     }
 
 
-def execute(adapter, case: Case, map_source: dict, actor_source: dict, authority: dict) -> dict:
+def execute(adapter, case: Case, map_source: dict, actor_source: dict, authority: dict,
+            engineering: dict | None = None) -> dict:
     """Exercise actual adapter operations; caller owns snapshot and restoration."""
-    specification = plan(case, map_source, actor_source, authority)
+    specification = plan(case, map_source, actor_source, authority, engineering)
     ego = adapter.spawn_vehicle(specification["ego"])
     unit = adapter.spawn_vehicle(specification["unit"])
     adapter.configure_route(ego, map_source["ego_route_id"])

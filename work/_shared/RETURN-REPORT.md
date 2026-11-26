@@ -1,3 +1,8 @@
+## 2026-11-26 15:11 UTC C149752 current-runtime ready and queued
+
+- Assignment: `testing__C149752__NRS-484B-127-2__heavy_vehicle_driver`. Owner and independent lead `.venv-cpu/bin/python worker_check.py --assignment testing__C149752__NRS-484B-127-2__heavy_vehicle_driver --complete --require-delivery-ready` passed. Nine exact cases and seven comparison audits, including 71 syntax-checked queue commands, were reviewed.
+- Manifest SHA-256: `9f46759a378f73df08dbc3884def7a2019c7f5171d7b2a4bc6be9233908733ba`; proposal SHA-256: `98093b1475139d38b016fdc05ed3cba195f0bee1a829a9d125457db0110e6676`. Shared queue: 128 assignments, 733 cases, 476 comparison commands; SHA-256 `4e39c00e4857fde41b70cf355ce49c0b379511802fe767839419371fb3363b8c`. Actual CARLA capture and local integration remain later checks.
+
 ## 2026-11-26 14:41 UTC C376646 current-runtime ready and queued
 
 - Assignment: `testing__C376646__NRS-484B-250-4__motor_vehicle_driver`. Owner and independent lead `.venv-cpu/bin/python worker_check.py --assignment testing__C376646__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready` passed. Six exact cases and three comparison audits, including 51 syntax-checked queue commands, were reviewed.

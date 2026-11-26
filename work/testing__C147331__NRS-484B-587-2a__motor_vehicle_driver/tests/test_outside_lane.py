@@ -29,13 +29,15 @@ class Adapter:
 
 def site(case):
     keys = ('traffic_left', 'traffic_right', 'entrance', 'exit', 'shoulder', 'outside')
+    sign = 1 if case.approach == 'north' else -1
     lanes = {key: {'id': key, 'source_sha256': 'lanehash', 'classification': key,
-                   'route': [[i, k], [i+20, k]]} for k, (i, key) in enumerate(zip(range(6), keys))}
+                   'route': [[i, k], [i, k+20*sign]]} for k, (i, key) in enumerate(zip(range(6), keys))}
     return {'cell_id': 'C147331', 'layout': 'one_way_multilane',
             'legal_controlled_access_source_sha256': 'designation',
             'public_highway_boundary_source_sha256': 'boundary',
             'map_sha256': 'map', 'lane_marking_source_sha256': 'markings',
-            'direction_of_travel': 'one_way', 'lanes': lanes,
+            'direction_of_travel': 'one_way', 'direction_source_sha256': 'direction',
+            'approach_vector': [0, sign], 'lanes': lanes,
             'shoulder_paved_source_sha256': 'paved', 'sign_source_sha256': 'sign',
             'vehicle_class_source_sha256': 'vehicle', 'emergency_record_source_sha256': 'emergency',
             'subsection3_authorization_source_sha256': 'authorization',
@@ -51,6 +53,7 @@ def rows(case, n=2):
             'legal_controlled_access_source_sha256': 'designation',
             'public_highway_boundary_source_sha256': 'boundary',
             'camera_plan_sha256': 'camera', 'vehicle_class': case.vehicle_class,
+            'direction_source_sha256': 'direction',
             'approach': case.approach, 'sign_source_sha256': 'sign',
             'emergency_record_source_sha256': 'emergency',
             'subsection3_authorization_source_sha256': 'authorization',
@@ -79,6 +82,9 @@ class Tests(unittest.TestCase):
         s = site(c); s['sign_permits_shoulder'] = False
         with self.assertRaisesRegex(ValueError, 'signed shoulder condition'):
             m.build_case(Adapter(), s, c)
+        s = site(m.CASES[2]); s['lanes']['outside']['route'].reverse()
+        with self.assertRaisesRegex(ValueError, 'route opposes sourced approach'):
+            m.build_case(Adapter(), s, m.CASES[2])
     def test_cleanup_on_failed_route(self):
         a = Adapter(fail=True)
         with self.assertRaisesRegex(RuntimeError, 'route failed'):
