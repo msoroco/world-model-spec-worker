@@ -8,11 +8,25 @@ HERE = Path(__file__).resolve().parent
 ASSIGNMENT = HERE.parent.name
 CASES = {"condition_a": ("yield_then_turn", 15.0),
          "condition_b": ("turn_before_pass", 9.0)}
+RECORDING_DESCRIPTION = {"channels": [
+    {"name": "raw_ego_motion", "unit": "structured",
+     "method": "original ego actor readback", "sampling_rate_hz": 20,
+     "time_window": "600 frames"},
+    {"name": "raw_oncoming_motion", "unit": "structured",
+     "method": "original opposing actor readback", "sampling_rate_hz": 20,
+     "time_window": "600 frames"},
+    {"name": "turn_signal_source", "unit": "structured",
+     "method": "original lamp state and control request", "sampling_rate_hz": 20,
+     "time_window": "600 frames"},
+    {"name": "four_camera_video", "unit": "structured",
+     "method": "four named source streams", "sampling_rate_hz": 20,
+     "time_window": "600 frames"}],
+    "limitations": ["Native motion, signal pixels and legal hazard unverified"]}
 RUNNER = '''import argparse
 import json
 from pathlib import Path
 from capture import check as capture_check, execute as capture_execute
-from saved_measure import analyze as analyze_saved
+from finalize import finalize as finalize_saved
 
 def check(config):
     base = "training__C329654__NRS-484B-253__motor_vehicle_driver__selected_d457f261__condition_"
@@ -54,7 +68,8 @@ if __name__ == "__main__":
     elif args.output_dir:
         print(json.dumps(capture_execute(config,args.output_dir,args.host,args.port),sort_keys=True))
     else:
-        print(json.dumps(analyze_saved(args.process_saved),sort_keys=True))
+        target=Path(args.process_saved)
+        print(json.dumps(finalize_saved(target,target / "analysis-report.json"),sort_keys=True))
 '''
 TESTS = '''import copy
 import json
@@ -98,7 +113,8 @@ def build():
                                              ("driver_reference",1280,720))],
                   "yield_policy": policy, "turn_release_s": release,
                   "oncoming_conflict_s": 12.5, "left_signal_requested": True,
-                  "physical_verified": False, "legal_verdict": None}
+                  "physical_verified": False, "legal_verdict": None,
+                  "recording_description": RECORDING_DESCRIPTION}
         construction = {"format": "worker-inline-construction", "case_id": case,
                         "cell_id": "C329654", "actor": "motor_vehicle_driver",
                         "entrypoint": "runner.py", "files": [
@@ -114,6 +130,12 @@ def build():
                             {"path": "saved_measure.py",
                              "source": str(HERE / "saved_measure.py"),
                              "content": (HERE / "saved_measure.py").read_text()},
+                            {"path": "finalize.py",
+                             "source": str(HERE / "finalize.py"),
+                             "content": (HERE / "finalize.py").read_text()},
+                            {"path": "tests/test_finalize.py",
+                             "source": str(HERE / "test_finalize.py"),
+                             "content": (HERE / "test_finalize.py").read_text()},
                             {"path": "prove_observed.py",
                              "source": str(HERE / "prove_observed.py"),
                              "content": (HERE / "prove_observed.py").read_text()},
@@ -153,16 +175,7 @@ def build():
                             {"path": "tests/test_capture_check.py",
                              "source": str(HERE / "test_capture_check.py"),
                              "content": (HERE / "test_capture_check.py").read_text()}],
-                        "recording_description": {"channels": [
-                            {"name":"raw_ego_motion","method":"original ego actor readback",
-                             "sampling_rate_hz":20,"time_window":"600 frames"},
-                            {"name":"raw_oncoming_motion","method":"original opposing actor readback",
-                             "sampling_rate_hz":20,"time_window":"600 frames"},
-                            {"name":"turn_signal_source","method":"original lamp state and control request",
-                             "sampling_rate_hz":20,"time_window":"600 frames"},
-                            {"name":"four_camera_video","method":"four named source streams",
-                             "sampling_rate_hz":20,"time_window":"600 frames"}],
-                            "limitations":["Native motion, signal pixels and legal hazard unverified"]},
+                        "recording_description": RECORDING_DESCRIPTION,
                         "status":"exact_unselected_offline_with_observed_controller_and_saved_meter"}
         path=HERE/(condition+"-construction.json")
         path.write_text(json.dumps(construction,indent=2)+"\n")

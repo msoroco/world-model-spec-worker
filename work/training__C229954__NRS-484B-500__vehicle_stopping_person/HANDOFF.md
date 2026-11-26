@@ -1,6 +1,6 @@
-# C229954 / NRS 484B.500 CPU checkpoint
+# C229954 / NRS 484B.500 CPU delivery handoff
 
-Status: **partial**. This package has a source-bound measurement contract and synthetic CPU diagnostics, but no selected delivery case or physical claim.
+Status: **delivery prepared** on the pinned CPU runtime. Six selected exact cases passed the assignment-scoped strict gate; original Native and legal review remain local checks. See the final section for current proofs and dispatch. Earlier sections below record superseded partial checkpoints.
 
 The exact law prohibits a person stopping, standing, or parking a vehicle in the place actually designated by official devices erected at a hazardous or congested place. The reviewed training witness asks for a destination stop within that place. The local snapshot has zero accepted recording memberships, so there is no reuse claim. The planned paired comparison holds the road, device, vehicle, person, traffic context and stop policy fixed, while varying whether the resting body overlaps the sourced designated extent. Both cases remain unverified planning entries.
 
@@ -64,3 +64,17 @@ Selected construction, exact compatibility, process-saved, semantic and independ
 The pinned saved processor excludes top-level names beginning `source-` when it stages acquisition. The first selected `runtime.py compatibility` run failed in `build_saved_packet.py` because the original device review was named `source-review.json`. I renamed the assignment-owned official device, designation, map, route and review sidecars to `original-*.json` in the Native runners and selected diagnostic source recipe; the same original authority, erection interval, polygon and route hashes remain required before CARLA contact and in saved measurement. This is a source staging correction, not a new physical claim.
 
 All six exact selected constructions have current SHA-bound `runtime.py offline` checks in `native/*-selected-offline.log`. The six focused route, geometry, saved packet, comparison, physical and controller CPU proof scripts passed after the rename; their JSON proof files and `result.json` hashes were refreshed. Full selected compatibility and process-saved still need completion. Status remains partial.
+
+## 2026-11-26 selected delivery CPU completion
+
+All six exact stop, stand and park inside/outside cases now have selected source-hashed recipes, six positive and missing-source compatibility receipts, and six exact delivery acceptance contracts. The positive CPU path exercised saved finalization, source immutability, Native validation, converter and Lean decoder, four-view decode and review render. Each missing-source negative rejected removal of `person-activity.json`. Receipts and logs are in `native/*-compatibility.json`, `native/*-compatibility-analysis.log` and `native/*-negative-analysis.log`; the manifest binds their hashes. The diagnostic sources in `selected-source/` and `selected-generator.json` are synthetic and do not attest an original vehicle, device, place or pixel.
+
+`proposals/semantic-index.json` binds the relevance, template, hazardous/congested-place judgment observable, bindings and seven cases (one shared baseline and six selected attempts). Its qualitative judgment sweep is explicitly incomplete pending original authority and physical context sources; no worker numeric legal standard or legal verdict is asserted. The three inside/outside comparisons retain activity mode, device authority, independent designated polygon, map and person/direction source requirements. `native/delivery_audit.py` requires an independent original source hash review, original Native provenance, authority/content/erection and designated polygon review, person activity and direction, decisive four-view pixel review, full 600-frame joins and video decode, and observed physical completion. Its six positive self-tests and six synthetic-source negative tests passed; they test rejection logic only.
+
+The selected physical triad and lifecycle CPU proofs were refreshed against each current construction SHA. The root executable copy of condition A is in `construction.json`, `runner.py` and `config.json`. `case-plan.json` maps every source observation term to the captured `designated_place` channel and names original person activity as a separate context input. The assignment-scoped strict command below exited 0 and returned `static_checks_passed: true`; its output is `native/strict-assignment.log`.
+
+```sh
+TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c229954 .venv-cpu/bin/python -B worker_check.py --assignment training__C229954__NRS-484B-500__vehicle_stopping_person --complete --require-delivery-ready
+```
+
+Remaining local physical checks are original official device authority/content/erection, independent designated-place extent and hazard/congestion context, actual stop/stand/park activity, 600-frame Native motion and four camera pixel coverage, and independent original-source delivery/comparison acceptance. The CPU fixture does not resolve them. First GPU dispatch is bound in `result.json.first_gpu_delivery_command` and requires `$CARLA_PYTHON`, `$CARLA_HOST`, `$CARLA_PORT`, `$DB`, `$RUN` and `$JOB_ID` in the local operations environment.

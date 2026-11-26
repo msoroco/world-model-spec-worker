@@ -39,6 +39,11 @@ class SavedMeasureTests(unittest.TestCase):
                          "rgb_sha256": {name: "a" * 64 for name in CAMERAS}}
                         for i in range(600)]
         (self.root / "road.xodr").write_text("<OpenDRIVE/>\n")
+        (self.root / "road_geometry.json").write_text(json.dumps({
+            "source_kind": "synthetic_cpu",
+            "intersection_polygon_xy_m": [[-7, -7], [7, -7], [7, 7], [-7, 7]]}) + "\n")
+        (self.root / "map-survey.json").write_text(json.dumps({
+            "source_kind": "synthetic_cpu", "source_sha256": "a" * 64}) + "\n")
         self.write_join()
 
     def write_join(self):
@@ -52,12 +57,17 @@ class SavedMeasureTests(unittest.TestCase):
     def test_source_bound_positive(self):
         report = self.run_analysis()
         self.assertEqual(report["measured"]["first_turn_progress_frame"], 300)
-        self.assertEqual(len(report["sources"]), 5)
+        self.assertEqual(len(report["sources"]), 7)
         self.assertFalse(report["actual_pixels_reviewed"])
 
     def test_missing_road_source(self):
         (self.root / "road.xodr").unlink()
         with self.assertRaisesRegex(ValueError, "road.xodr"):
+            self.run_analysis()
+
+    def test_missing_map_survey(self):
+        (self.root / "map-survey.json").unlink()
+        with self.assertRaisesRegex(ValueError, "map-survey.json"):
             self.run_analysis()
 
     def test_camera_frame_mismatch(self):

@@ -109,7 +109,6 @@ def execute(config, output_dir, host="127.0.0.1", port=2000):
         changed = True
         world.set_weather(carla.WeatherParameters.ClearNoon)
         _new_json(output / "map-survey.json", survey)
-        (output / "road.xodr").write_text(native_map.to_opendrive())
         _new_json(output / "road_geometry.json", {
             "source_kind": "original_native", "map_sha256": survey["source_sha256"],
             "intersection_polygon_xy_m": survey["intersection_polygon_xy_m"],

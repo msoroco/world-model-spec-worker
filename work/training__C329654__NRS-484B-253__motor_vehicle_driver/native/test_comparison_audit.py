@@ -42,6 +42,11 @@ class ComparisonAuditTests(unittest.TestCase):
             (root / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in maps))
             (root / "camera-frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in cameras))
             (root / "road.xodr").write_text("<OpenDRIVE/>\n")
+            (root / "road_geometry.json").write_text(json.dumps({
+                "source_kind": "synthetic_cpu",
+                "intersection_polygon_xy_m": [[-7, -7], [7, -7], [7, 7], [-7, 7]]}) + "\n")
+            (root / "map-survey.json").write_text(json.dumps({
+                "source_kind": "synthetic_cpu", "source_sha256": "a" * 64}) + "\n")
             analysis = root / "analysis.json"
             analyze(root, analysis)
             self.paths[suffix] = analysis

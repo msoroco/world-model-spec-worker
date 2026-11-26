@@ -31,7 +31,7 @@
       "source": "NRS 484B.500",
       "source_text": "When official traffic-control devices are erected at hazardous or congested places, a person shall not stop, stand or park a vehicle in any such designated place.",
       "status": "selected_required",
-      "evidence_or_gap": "Six selected exact inside/outside Native constructions; source-bound synthetic saved measurement and comparison CPU proof passed. Original Native and complete selected compatibility pending.",
+      "evidence_or_gap": "Six selected exact source-bound constructions, full positive/missing-source software compatibility and independent delivery CPU tests passed; original authority, activity, physical motion and pixels remain unobserved.",
       "case_ids": [
         "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a",
         "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b",
@@ -46,7 +46,7 @@
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Destination stopping within the designated place",
       "status": "selected_required",
-      "evidence_or_gap": "Six selected exact inside/outside Native constructions; source-bound synthetic saved measurement and comparison CPU proof passed. Original Native and complete selected compatibility pending.",
+      "evidence_or_gap": "Six selected exact source-bound constructions, full positive/missing-source software compatibility and independent delivery CPU tests passed; original authority, activity, physical motion and pixels remain unobserved.",
       "case_ids": [
         "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a",
         "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b",
@@ -279,34 +279,10 @@
   ],
   "observations": [
     {
-      "name": "dev.regulatory_sign",
+      "name": "designated_place",
       "mandatory": true,
-      "source_note": "the devices erected at the hazardous or congested place",
-      "status": "mapped_to_native_source_contract_unobserved"
-    },
-    {
-      "name": "dev.governs",
-      "mandatory": true,
-      "source_note": "the designated place",
-      "status": "mapped_to_native_source_contract_unobserved"
-    },
-    {
-      "name": "drv.standing_or_parked",
-      "mandatory": true,
-      "source_note": "the vehicle at rest",
-      "status": "mapped_to_native_source_contract_unobserved"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "source_note": "the resting position within it",
-      "status": "mapped_to_native_source_contract_unobserved"
-    },
-    {
-      "name": "dev.position",
-      "mandatory": true,
-      "source_note": "where the devices stand, which bounds the place",
-      "status": "mapped_to_native_source_contract_unobserved"
+      "source_note": "Original device authority, erection, designated extent, body footprint and speed at every frame; legal characterization unresolved.",
+      "status": "source_bound_cpu_prepared_original_unobserved"
     }
   ],
   "sources": [
@@ -334,53 +310,63 @@
   ],
   "source_observation_mapping": {
     "dev.regulatory_sign": {
-      "evidence": "original device content and authority record required; only synthetic CPU contract proved",
+      "evidence": "Original official device content, authority source and erection interval are hash-bound in original-device.json and original-review.json; CPU fixture only proves rejection behavior.",
       "channels": [
-        "device.content,device.authority_status,device.active_first_frame,device.active_last_frame"
+        "designated_place"
       ],
       "source_refs": [
         "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
-        "native/measurement-contract.json"
+        "native/designated_stop.py",
+        "native/build_saved_packet.py",
+        "native/delivery_audit.py"
       ]
     },
     "dev.governs": {
-      "evidence": "original designated-extent document required; only synthetic CPU contract proved",
+      "evidence": "Original designation polygon source is independently hash-bound in original-designation.json and original-review.json; device pose alone is insufficient.",
       "channels": [
-        "device.designated_polygon_map_m"
+        "designated_place"
       ],
       "source_refs": [
         "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
-        "native/measurement-contract.json"
+        "native/designated_stop.py",
+        "native/build_saved_packet.py",
+        "native/delivery_audit.py"
       ]
     },
     "drv.standing_or_parked": {
-      "evidence": "original Native 20 Hz motion trace required; only synthetic CPU contract proved",
+      "evidence": "Original 20 Hz frame-linked body, speed and reviewed person activity are required to distinguish requested stop, stand and park; fixture mode is not evidence.",
       "channels": [
-        "rows[].observed_speed_mps,rest_runs_inclusive"
+        "designated_place"
       ],
       "source_refs": [
         "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
-        "native/measurement-contract.json"
+        "native/designated_stop.py",
+        "native/build_saved_packet.py",
+        "native/delivery_audit.py"
       ]
     },
     "rel.occupies": {
-      "evidence": "original Native body footprint and designated polygon required; only synthetic CPU contract proved",
+      "evidence": "Original body footprint at rest is intersected with the independently sourced designated polygon for all 600 frames.",
       "channels": [
-        "rows[].vehicle_footprint_map_m,rest_and_body_overlap_frames"
+        "designated_place"
       ],
       "source_refs": [
         "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
-        "native/measurement-contract.json"
+        "native/designated_stop.py",
+        "native/build_saved_packet.py",
+        "native/delivery_audit.py"
       ]
     },
     "dev.position": {
-      "evidence": "original map/device placement required; only synthetic CPU contract proved",
+      "evidence": "Original device map placement and independently sourced designated polygon are retained separately; no legal extent inferred from pose.",
       "channels": [
-        "device.designated_polygon_map_m"
+        "designated_place"
       ],
       "source_refs": [
         "inputs/training__C229954__NRS-484B-500__vehicle_stopping_person/assignment.json",
-        "native/measurement-contract.json"
+        "native/designated_stop.py",
+        "native/build_saved_packet.py",
+        "native/delivery_audit.py"
       ]
     }
   },

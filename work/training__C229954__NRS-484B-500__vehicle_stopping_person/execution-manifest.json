@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C229954__NRS-484B-500__vehicle_stopping_person",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "partial",
+  "status": "ready",
   "cases": [
     {
       "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a",
@@ -14,7 +14,7 @@
         "reason": "No measured original Native motion or visibility failure trigger yet; retain the fixed source-bound primary and reassess from first capture feedback."
       },
       "candidates": [],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "delivery_prepared",
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a --output .runtime-work/c229954-condition_a-selected-offline-r6",
         "exit_code": 0,
@@ -34,9 +34,75 @@
       "measurement_contract": "measurement-condition-a.json",
       "physical_preparation": {
         "receipt": "native/selected-physical/condition-a-receipt.json",
-        "sha256": "d455bee80d4caaf4c8cdd245b036a5f0585e1db82b571edc3cb50dbc3f792770"
+        "sha256": "0519ce125ac6fed7e3c866eb7f45f0a1bb248d962119946818e626748713fc0b"
       },
-      "fixture_recipe": "work/training__C229954__NRS-484B-500__vehicle_stopping_person/selected-recipe-condition-a.json"
+      "fixture_recipe": "work/training__C229954__NRS-484B-500__vehicle_stopping_person/selected-recipe-condition-a.json",
+      "compatibility": {
+        "receipt": "native/condition-a-compatibility.json",
+        "sha256": "8c479be31a36b267ec9608e4c8896bf6b7c47b40ae489c866fc405acf91e2d88",
+        "log": "native/condition-a-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "native/condition-a-negative-analysis.log"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "sample post-tick original CARLA actor pose and retain frame-linked position_m in trace, native-stop-trace and capture/evidence",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "sample original actor velocity after world tick and join to original frame identity",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "designated_place": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound original official-device authority and independently sourced designated polygon joined to original body footprint, velocity, person activity and direction context",
+          "evidence": [
+            "original-device.json",
+            "original-designation.json",
+            "original-review.json",
+            "native-stop-trace.jsonl",
+            "video_frames.jsonl",
+            "person-activity.json",
+            "traffic-direction.json"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a4e01868effa5b5aaefb0719ec418cf086ef315d0b2ade2d729e56b377c1ebe3",
+        "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native exact-case result",
+        "test_log": "native/condition-a-delivery-positive.log",
+        "test_log_sha256": "3d52738dcde7c916db12380349ceadcb2344d0e62a5a9854e613e2e7a8184a9f",
+        "negative_log": "native/condition-a-delivery-negative.log",
+        "negative_log_sha256": "2e9f6a8193b1336604f88c55324a0777578c692407ab85735c364412c4ba79c9"
+      }
     },
     {
       "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b",
@@ -48,7 +114,7 @@
         "reason": "No measured original Native motion or visibility failure trigger yet; retain the fixed source-bound primary and reassess from first capture feedback."
       },
       "candidates": [],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "delivery_prepared",
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b --output .runtime-work/c229954-condition_b-selected-offline-r6",
         "exit_code": 0,
@@ -68,7 +134,74 @@
       "measurement_contract": "measurement-condition-b.json",
       "physical_preparation": {
         "receipt": "native/selected-physical/condition-b-receipt.json",
-        "sha256": "461a64b31aa70e44dc7819efdf11a88e1ee99766381361d828adfc096ae8b28f"
+        "sha256": "e283985d711232302ac01411023fcfde371990c3c0da9ae2b22485bdf225a38c"
+      },
+      "fixture_recipe": "work/training__C229954__NRS-484B-500__vehicle_stopping_person/selected-recipe-condition-b.json",
+      "compatibility": {
+        "receipt": "native/condition-b-compatibility.json",
+        "sha256": "6f13cdbac83119d2015d6b554b9a173a5b39c349504c207e0453a43ae7108597",
+        "log": "native/condition-b-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "native/condition-b-negative-analysis.log"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "sample post-tick original CARLA actor pose and retain frame-linked position_m in trace, native-stop-trace and capture/evidence",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "sample original actor velocity after world tick and join to original frame identity",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "designated_place": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound original official-device authority and independently sourced designated polygon joined to original body footprint, velocity, person activity and direction context",
+          "evidence": [
+            "original-device.json",
+            "original-designation.json",
+            "original-review.json",
+            "native-stop-trace.jsonl",
+            "video_frames.jsonl",
+            "person-activity.json",
+            "traffic-direction.json"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a4e01868effa5b5aaefb0719ec418cf086ef315d0b2ade2d729e56b377c1ebe3",
+        "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native exact-case result",
+        "test_log": "native/condition-b-delivery-positive.log",
+        "test_log_sha256": "426548f7e920c12c0b5049c952fc8bd2dc42156aad9ddcc620169b614aca2dae",
+        "negative_log": "native/condition-b-delivery-negative.log",
+        "negative_log_sha256": "2e9f6a8193b1336604f88c55324a0777578c692407ab85735c364412c4ba79c9"
       }
     },
     {
@@ -81,7 +214,7 @@
         "reason": "No measured original Native motion or visibility failure trigger yet; retain the fixed source-bound primary and reassess from first capture feedback."
       },
       "candidates": [],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "delivery_prepared",
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_a --output .runtime-work/c229954-stand_condition_a-selected-offline-r6",
         "exit_code": 0,
@@ -101,7 +234,74 @@
       "measurement_contract": "measurement-stand-condition-a.json",
       "physical_preparation": {
         "receipt": "native/selected-physical/stand-condition-a-receipt.json",
-        "sha256": "8acb593d916a7c73d3f89925134473ca9a42f571f79804ce31f9b9a535b5332c"
+        "sha256": "b84ea51446d7a531b3c2cf46b40b21db4810b8094783ab49b3e7ae776169b657"
+      },
+      "fixture_recipe": "work/training__C229954__NRS-484B-500__vehicle_stopping_person/selected-recipe-stand-condition-a.json",
+      "compatibility": {
+        "receipt": "native/stand-condition-a-compatibility.json",
+        "sha256": "384d6abcc8811a9b6302c1db1697bfdf64e3ad859607a9b019e94fe28e445b19",
+        "log": "native/stand-condition-a-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "native/stand-condition-a-negative-analysis.log"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "sample post-tick original CARLA actor pose and retain frame-linked position_m in trace, native-stop-trace and capture/evidence",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "sample original actor velocity after world tick and join to original frame identity",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "designated_place": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound original official-device authority and independently sourced designated polygon joined to original body footprint, velocity, person activity and direction context",
+          "evidence": [
+            "original-device.json",
+            "original-designation.json",
+            "original-review.json",
+            "native-stop-trace.jsonl",
+            "video_frames.jsonl",
+            "person-activity.json",
+            "traffic-direction.json"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a4e01868effa5b5aaefb0719ec418cf086ef315d0b2ade2d729e56b377c1ebe3",
+        "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_a --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_a --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native exact-case result",
+        "test_log": "native/stand-condition-a-delivery-positive.log",
+        "test_log_sha256": "ee1aa1c3e0459df0bcef2446764e5f12a71bed5101b5e30de601d81599425f8a",
+        "negative_log": "native/stand-condition-a-delivery-negative.log",
+        "negative_log_sha256": "2e9f6a8193b1336604f88c55324a0777578c692407ab85735c364412c4ba79c9"
       }
     },
     {
@@ -114,7 +314,7 @@
         "reason": "No measured original Native motion or visibility failure trigger yet; retain the fixed source-bound primary and reassess from first capture feedback."
       },
       "candidates": [],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "delivery_prepared",
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_b --output .runtime-work/c229954-stand_condition_b-selected-offline-r6",
         "exit_code": 0,
@@ -134,7 +334,74 @@
       "measurement_contract": "measurement-stand-condition-b.json",
       "physical_preparation": {
         "receipt": "native/selected-physical/stand-condition-b-receipt.json",
-        "sha256": "781386529d13eeaba2735ef3bc3801b341e44c27b2380085b6354e32146de3e5"
+        "sha256": "c553c402d0fa93d8716e10edbd8d7436055a135e2653b54140dc409eea8f0e16"
+      },
+      "fixture_recipe": "work/training__C229954__NRS-484B-500__vehicle_stopping_person/selected-recipe-stand-condition-b.json",
+      "compatibility": {
+        "receipt": "native/stand-condition-b-compatibility.json",
+        "sha256": "731bdaf5fad730c874b5b3f74373a0dd78701b4eff7e132bdd2b6e0027bd3462",
+        "log": "native/stand-condition-b-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "native/stand-condition-b-negative-analysis.log"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "sample post-tick original CARLA actor pose and retain frame-linked position_m in trace, native-stop-trace and capture/evidence",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "sample original actor velocity after world tick and join to original frame identity",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "designated_place": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound original official-device authority and independently sourced designated polygon joined to original body footprint, velocity, person activity and direction context",
+          "evidence": [
+            "original-device.json",
+            "original-designation.json",
+            "original-review.json",
+            "native-stop-trace.jsonl",
+            "video_frames.jsonl",
+            "person-activity.json",
+            "traffic-direction.json"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a4e01868effa5b5aaefb0719ec418cf086ef315d0b2ade2d729e56b377c1ebe3",
+        "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_b --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_b --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native exact-case result",
+        "test_log": "native/stand-condition-b-delivery-positive.log",
+        "test_log_sha256": "3bbc1ed00566d0d293bf84617c50ab3f931fab75f9bfab4091126e1f1c4ec8ca",
+        "negative_log": "native/stand-condition-b-delivery-negative.log",
+        "negative_log_sha256": "2e9f6a8193b1336604f88c55324a0777578c692407ab85735c364412c4ba79c9"
       }
     },
     {
@@ -147,7 +414,7 @@
         "reason": "No measured original Native motion or visibility failure trigger yet; retain the fixed source-bound primary and reassess from first capture feedback."
       },
       "candidates": [],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "delivery_prepared",
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_a --output .runtime-work/c229954-park_condition_a-selected-offline-r6",
         "exit_code": 0,
@@ -167,7 +434,74 @@
       "measurement_contract": "measurement-park-condition-a.json",
       "physical_preparation": {
         "receipt": "native/selected-physical/park-condition-a-receipt.json",
-        "sha256": "64d2376d4ea204fbbcca16965ec201654330bb6a0ef645ac24053e6570915f3e"
+        "sha256": "6f43a9c35510e22357f5d1ed46687dc62d484b87c3f2c9bdad7ea26fe3f17e1a"
+      },
+      "fixture_recipe": "work/training__C229954__NRS-484B-500__vehicle_stopping_person/selected-recipe-park-condition-a.json",
+      "compatibility": {
+        "receipt": "native/park-condition-a-compatibility.json",
+        "sha256": "b2580a09cf1722949679dfb574880c7e70c80a127cfd160e3b841fd3a3afafbc",
+        "log": "native/park-condition-a-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "native/park-condition-a-negative-analysis.log"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "sample post-tick original CARLA actor pose and retain frame-linked position_m in trace, native-stop-trace and capture/evidence",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "sample original actor velocity after world tick and join to original frame identity",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "designated_place": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound original official-device authority and independently sourced designated polygon joined to original body footprint, velocity, person activity and direction context",
+          "evidence": [
+            "original-device.json",
+            "original-designation.json",
+            "original-review.json",
+            "native-stop-trace.jsonl",
+            "video_frames.jsonl",
+            "person-activity.json",
+            "traffic-direction.json"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a4e01868effa5b5aaefb0719ec418cf086ef315d0b2ade2d729e56b377c1ebe3",
+        "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_a --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_a --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native exact-case result",
+        "test_log": "native/park-condition-a-delivery-positive.log",
+        "test_log_sha256": "8f384625ebd4ecb2125bb0b3b194c3bc9e4df643eba3e6fce08bcee74d7b2e3d",
+        "negative_log": "native/park-condition-a-delivery-negative.log",
+        "negative_log_sha256": "2e9f6a8193b1336604f88c55324a0777578c692407ab85735c364412c4ba79c9"
       }
     },
     {
@@ -180,7 +514,7 @@
         "reason": "No measured original Native motion or visibility failure trigger yet; retain the fixed source-bound primary and reassess from first capture feedback."
       },
       "candidates": [],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "delivery_prepared",
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_b --output .runtime-work/c229954-park_condition_b-selected-offline-r6",
         "exit_code": 0,
@@ -200,7 +534,74 @@
       "measurement_contract": "measurement-park-condition-b.json",
       "physical_preparation": {
         "receipt": "native/selected-physical/park-condition-b-receipt.json",
-        "sha256": "498a7f4413fe8c129216ccc7f3f242b8e80ced8216b7f3deccd4758aec57724d"
+        "sha256": "0397538872db2019077bbea500b9a82f18e9f1b23c559e327d14e48947c00f05"
+      },
+      "fixture_recipe": "work/training__C229954__NRS-484B-500__vehicle_stopping_person/selected-recipe-park-condition-b.json",
+      "compatibility": {
+        "receipt": "native/park-condition-b-compatibility.json",
+        "sha256": "2a56f17270b3a90af08f17733a5e1eec3e1933998f15be64f94e566aaa8da4f6",
+        "log": "native/park-condition-b-compatibility-analysis.log"
+      },
+      "negative": {
+        "log": "native/park-condition-b-negative-analysis.log"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "sample post-tick original CARLA actor pose and retain frame-linked position_m in trace, native-stop-trace and capture/evidence",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "sample original actor velocity after world tick and join to original frame identity",
+          "evidence": [
+            "trace.jsonl",
+            "native-stop-trace.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "designated_place": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound original official-device authority and independently sourced designated polygon joined to original body footprint, velocity, person activity and direction context",
+          "evidence": [
+            "original-device.json",
+            "original-designation.json",
+            "original-review.json",
+            "native-stop-trace.jsonl",
+            "video_frames.jsonl",
+            "person-activity.json",
+            "traffic-direction.json"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "a4e01868effa5b5aaefb0719ec418cf086ef315d0b2ade2d729e56b377c1ebe3",
+        "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_b --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_b --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original Native exact-case result",
+        "test_log": "native/park-condition-b-delivery-positive.log",
+        "test_log_sha256": "866f028f0f4b3d1a5a73d3806836c66b370d569df644d060e34f696200061daa",
+        "negative_log": "native/park-condition-b-delivery-negative.log",
+        "negative_log_sha256": "2e9f6a8193b1336604f88c55324a0777578c692407ab85735c364412c4ba79c9"
       }
     }
   ]

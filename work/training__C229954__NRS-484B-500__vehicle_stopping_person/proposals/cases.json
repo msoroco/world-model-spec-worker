@@ -4,12 +4,85 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "cell_id": "C229954",
+      "actor": "vehicle_stopping_person",
+      "rationale": "Shared original-source and camera context for the three activity pairs; no legal label.",
+      "variable_assignments": {
+        "designation_target": {
+          "kind": "controller",
+          "value": "source_review_only"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "stop"
+        },
+        "source_review_context": {
+          "kind": "world_setup",
+          "value": "original official device, designated polygon and physical context must be source-reviewed before Native recording"
+        },
+        "observed_rest_position": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "designated_place",
+            "unit": "structured",
+            "method": "original frame linked speed and vehicle body relative to sourced designated polygon",
+            "time_window": "all 600 frames at 20 Hz",
+            "reference_frame": "original Native frame and source map coordinates",
+            "uncertainty": "Original device authority, designated extent and actual pixels require physical review",
+            "sampling_rate_hz": 20
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "person_activity_context",
+            "unit": "structured",
+            "method": "reviewed original person activity and traffic direction sidecars"
+          }
+        ],
+        "limitations": [
+          "No legal verdict from diagnostic fixtures or source polygon overlap",
+          "Actual stop, stand or park characterization requires original evidence review"
+        ]
+      }
+    },
+    {
       "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a",
       "target_law_id": "NRS-484B-500",
       "target_type": "violating_attempt",
       "cell_id": "C229954",
       "actor": "vehicle_stopping_person",
-      "rationale": "Sourced designated-place inside rest",
+      "rationale": "Sourced designated-place inside rest; requested activity only, not an original or legal finding.",
+      "variable_assignments": {
+        "designation_target": {
+          "kind": "controller",
+          "value": "inside"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "stop"
+        },
+        "source_review_context": {
+          "kind": "world_setup",
+          "value": "original official device, designated polygon and physical context must be source-reviewed before Native recording"
+        },
+        "observed_rest_position": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "hazardous or congested places",
+        "actual stop activity from original person evidence"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -34,12 +107,29 @@
           "Actual stop, stand or park characterization requires original evidence review"
         ]
       },
-      "activity_mode_request": "stop",
-      "unresolved_judgment_calls": [
-        "actual stop/stand/park activity",
-        "official designation and hazardous/congested place legal applicability",
-        "physical visibility and native completion"
-      ]
+      "paired_probe_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__stop__designated-place-pair",
+      "deliberate_differences": [
+        "designation_target"
+      ],
+      "probe": {
+        "primary_variable": "designation_target",
+        "comparison_or_standard": "independently sourced designated polygon",
+        "target_value_or_branch": "inside requested resting body position"
+      },
+      "deterministic_branch": {
+        "source_clause": "When official traffic-control devices are erected at hazardous or congested places",
+        "judgment_context": [
+          {
+            "phrase": "hazardous or congested places",
+            "note": "Physical place context and official designation require original source review; no legal cutoff is inferred.",
+            "status": "fixed_assumption",
+            "reason": "Both paired constructions require the same original official device, designated polygon and physical context source gate; original acceptance remains pending.",
+            "world_setup_refs": [
+              "source_review_context"
+            ]
+          }
+        ]
+      }
     },
     {
       "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b",
@@ -47,7 +137,29 @@
       "target_type": "compliant_attempt",
       "cell_id": "C229954",
       "actor": "vehicle_stopping_person",
-      "rationale": "Sourced designated-place outside rest",
+      "rationale": "Sourced designated-place outside rest; requested activity only, not an original or legal finding.",
+      "variable_assignments": {
+        "designation_target": {
+          "kind": "controller",
+          "value": "outside"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "stop"
+        },
+        "source_review_context": {
+          "kind": "world_setup",
+          "value": "original official device, designated polygon and physical context must be source-reviewed before Native recording"
+        },
+        "observed_rest_position": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "hazardous or congested places",
+        "actual stop activity from original person evidence"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -72,12 +184,29 @@
           "Actual stop, stand or park characterization requires original evidence review"
         ]
       },
-      "activity_mode_request": "stop",
-      "unresolved_judgment_calls": [
-        "actual stop/stand/park activity",
-        "official designation and hazardous/congested place legal applicability",
-        "physical visibility and native completion"
-      ]
+      "paired_probe_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__stop__designated-place-pair",
+      "deliberate_differences": [
+        "designation_target"
+      ],
+      "probe": {
+        "primary_variable": "designation_target",
+        "comparison_or_standard": "independently sourced designated polygon",
+        "target_value_or_branch": "outside requested resting body position"
+      },
+      "deterministic_branch": {
+        "source_clause": "When official traffic-control devices are erected at hazardous or congested places",
+        "judgment_context": [
+          {
+            "phrase": "hazardous or congested places",
+            "note": "Physical place context and official designation require original source review; no legal cutoff is inferred.",
+            "status": "fixed_assumption",
+            "reason": "Both paired constructions require the same original official device, designated polygon and physical context source gate; original acceptance remains pending.",
+            "world_setup_refs": [
+              "source_review_context"
+            ]
+          }
+        ]
+      }
     },
     {
       "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_a",
@@ -85,7 +214,29 @@
       "target_type": "violating_attempt",
       "cell_id": "C229954",
       "actor": "vehicle_stopping_person",
-      "rationale": "Sourced designated-place inside rest",
+      "rationale": "Sourced designated-place inside rest; requested activity only, not an original or legal finding.",
+      "variable_assignments": {
+        "designation_target": {
+          "kind": "controller",
+          "value": "inside"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "stand"
+        },
+        "source_review_context": {
+          "kind": "world_setup",
+          "value": "original official device, designated polygon and physical context must be source-reviewed before Native recording"
+        },
+        "observed_rest_position": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "hazardous or congested places",
+        "actual stand activity from original person evidence"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -110,12 +261,29 @@
           "Actual stop, stand or park characterization requires original evidence review"
         ]
       },
-      "activity_mode_request": "stand",
-      "unresolved_judgment_calls": [
-        "actual stop/stand/park activity",
-        "official designation and hazardous/congested place legal applicability",
-        "physical visibility and native completion"
-      ]
+      "paired_probe_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__stand__designated-place-pair",
+      "deliberate_differences": [
+        "designation_target"
+      ],
+      "probe": {
+        "primary_variable": "designation_target",
+        "comparison_or_standard": "independently sourced designated polygon",
+        "target_value_or_branch": "inside requested resting body position"
+      },
+      "deterministic_branch": {
+        "source_clause": "When official traffic-control devices are erected at hazardous or congested places",
+        "judgment_context": [
+          {
+            "phrase": "hazardous or congested places",
+            "note": "Physical place context and official designation require original source review; no legal cutoff is inferred.",
+            "status": "fixed_assumption",
+            "reason": "Both paired constructions require the same original official device, designated polygon and physical context source gate; original acceptance remains pending.",
+            "world_setup_refs": [
+              "source_review_context"
+            ]
+          }
+        ]
+      }
     },
     {
       "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_b",
@@ -123,7 +291,29 @@
       "target_type": "compliant_attempt",
       "cell_id": "C229954",
       "actor": "vehicle_stopping_person",
-      "rationale": "Sourced designated-place outside rest",
+      "rationale": "Sourced designated-place outside rest; requested activity only, not an original or legal finding.",
+      "variable_assignments": {
+        "designation_target": {
+          "kind": "controller",
+          "value": "outside"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "stand"
+        },
+        "source_review_context": {
+          "kind": "world_setup",
+          "value": "original official device, designated polygon and physical context must be source-reviewed before Native recording"
+        },
+        "observed_rest_position": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "hazardous or congested places",
+        "actual stand activity from original person evidence"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -148,12 +338,29 @@
           "Actual stop, stand or park characterization requires original evidence review"
         ]
       },
-      "activity_mode_request": "stand",
-      "unresolved_judgment_calls": [
-        "actual stop/stand/park activity",
-        "official designation and hazardous/congested place legal applicability",
-        "physical visibility and native completion"
-      ]
+      "paired_probe_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__stand__designated-place-pair",
+      "deliberate_differences": [
+        "designation_target"
+      ],
+      "probe": {
+        "primary_variable": "designation_target",
+        "comparison_or_standard": "independently sourced designated polygon",
+        "target_value_or_branch": "outside requested resting body position"
+      },
+      "deterministic_branch": {
+        "source_clause": "When official traffic-control devices are erected at hazardous or congested places",
+        "judgment_context": [
+          {
+            "phrase": "hazardous or congested places",
+            "note": "Physical place context and official designation require original source review; no legal cutoff is inferred.",
+            "status": "fixed_assumption",
+            "reason": "Both paired constructions require the same original official device, designated polygon and physical context source gate; original acceptance remains pending.",
+            "world_setup_refs": [
+              "source_review_context"
+            ]
+          }
+        ]
+      }
     },
     {
       "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_a",
@@ -161,7 +368,29 @@
       "target_type": "violating_attempt",
       "cell_id": "C229954",
       "actor": "vehicle_stopping_person",
-      "rationale": "Sourced designated-place inside rest",
+      "rationale": "Sourced designated-place inside rest; requested activity only, not an original or legal finding.",
+      "variable_assignments": {
+        "designation_target": {
+          "kind": "controller",
+          "value": "inside"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "source_review_context": {
+          "kind": "world_setup",
+          "value": "original official device, designated polygon and physical context must be source-reviewed before Native recording"
+        },
+        "observed_rest_position": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "hazardous or congested places",
+        "actual park activity from original person evidence"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -186,12 +415,29 @@
           "Actual stop, stand or park characterization requires original evidence review"
         ]
       },
-      "activity_mode_request": "park",
-      "unresolved_judgment_calls": [
-        "actual stop/stand/park activity",
-        "official designation and hazardous/congested place legal applicability",
-        "physical visibility and native completion"
-      ]
+      "paired_probe_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__park__designated-place-pair",
+      "deliberate_differences": [
+        "designation_target"
+      ],
+      "probe": {
+        "primary_variable": "designation_target",
+        "comparison_or_standard": "independently sourced designated polygon",
+        "target_value_or_branch": "inside requested resting body position"
+      },
+      "deterministic_branch": {
+        "source_clause": "When official traffic-control devices are erected at hazardous or congested places",
+        "judgment_context": [
+          {
+            "phrase": "hazardous or congested places",
+            "note": "Physical place context and official designation require original source review; no legal cutoff is inferred.",
+            "status": "fixed_assumption",
+            "reason": "Both paired constructions require the same original official device, designated polygon and physical context source gate; original acceptance remains pending.",
+            "world_setup_refs": [
+              "source_review_context"
+            ]
+          }
+        ]
+      }
     },
     {
       "case_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_b",
@@ -199,7 +445,29 @@
       "target_type": "compliant_attempt",
       "cell_id": "C229954",
       "actor": "vehicle_stopping_person",
-      "rationale": "Sourced designated-place outside rest",
+      "rationale": "Sourced designated-place outside rest; requested activity only, not an original or legal finding.",
+      "variable_assignments": {
+        "designation_target": {
+          "kind": "controller",
+          "value": "outside"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "source_review_context": {
+          "kind": "world_setup",
+          "value": "original official device, designated polygon and physical context must be source-reviewed before Native recording"
+        },
+        "observed_rest_position": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "hazardous or congested places",
+        "actual park activity from original person evidence"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -224,11 +492,46 @@
           "Actual stop, stand or park characterization requires original evidence review"
         ]
       },
-      "activity_mode_request": "park",
-      "unresolved_judgment_calls": [
-        "actual stop/stand/park activity",
-        "official designation and hazardous/congested place legal applicability",
-        "physical visibility and native completion"
+      "paired_probe_id": "training__C229954__NRS-484B-500__vehicle_stopping_person__park__designated-place-pair",
+      "deliberate_differences": [
+        "designation_target"
+      ],
+      "probe": {
+        "primary_variable": "designation_target",
+        "comparison_or_standard": "independently sourced designated polygon",
+        "target_value_or_branch": "outside requested resting body position"
+      },
+      "deterministic_branch": {
+        "source_clause": "When official traffic-control devices are erected at hazardous or congested places",
+        "judgment_context": [
+          {
+            "phrase": "hazardous or congested places",
+            "note": "Physical place context and official designation require original source review; no legal cutoff is inferred.",
+            "status": "fixed_assumption",
+            "reason": "Both paired constructions require the same original official device, designated polygon and physical context source gate; original acceptance remains pending.",
+            "world_setup_refs": [
+              "source_review_context"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c229954-hazard-context-source-coverage",
+      "target_law_id": "NRS-484B-500",
+      "judgment_refs": [
+        {
+          "phrase": "hazardous or congested places",
+          "note": "Physical place context and official designation require original source review; no legal cutoff is inferred."
+        }
+      ],
+      "rationale": "A physical sweep cannot choose a legal boundary or build credible hazard alternatives without original authority and place evidence.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original official device authority/content and independently sourced designated extent",
+        "Source-reviewed physical hazard or congestion context for comparable realizable settings"
       ]
     }
   ],

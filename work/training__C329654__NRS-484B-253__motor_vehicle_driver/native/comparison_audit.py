@@ -22,7 +22,8 @@ def audit_reports(reports):
             raise ValueError("Measured source provenance differs")
         if not isinstance(report.get("sources"), dict) or set(report["sources"]) != {
                 "config.json", "left-turn-actors.jsonl", "video_frames.jsonl",
-                "camera-frames.jsonl", "road.xodr"}:
+                "camera-frames.jsonl", "road.xodr", "road_geometry.json",
+                "map-survey.json"}:
             raise ValueError("Missing source-bound comparison evidence")
         if any(not isinstance(value, str) or len(value) != 64 for value in report["sources"].values()):
             raise ValueError("Invalid source hash in comparison")

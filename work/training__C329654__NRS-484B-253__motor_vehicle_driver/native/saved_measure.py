@@ -42,6 +42,18 @@ def analyze(attempt, output=None):
     camera_rows = read_rows(attempt / "camera-frames.jsonl")
     if not (attempt / "road.xodr").is_file():
         raise ValueError("Missing saved original source: road.xodr")
+    for name in ("road_geometry.json", "map-survey.json"):
+        if not (attempt / name).is_file():
+            raise ValueError("Missing saved original source: " + name)
+    road = json.loads((attempt / "road_geometry.json").read_text())
+    survey = json.loads((attempt / "map-survey.json").read_text())
+    survey_kind = survey.get("source_kind")
+    if survey.get("format") == "c329654-original-map-survey-v1":
+        survey_kind = "original_native"
+    if road.get("source_kind") != measured["source_kind"] or survey_kind != measured["source_kind"]:
+        raise ValueError("Saved map and actor provenance differ")
+    if not road.get("intersection_polygon_xy_m"):
+        raise ValueError("Missing source-bound intersection polygon")
     for index, (actor, frame, camera) in enumerate(zip(actor_rows, maps, camera_rows)):
         native = actor["native_frame"]
         if (frame.get("native_frame") != native or camera.get("native_frame") != native
@@ -57,7 +69,8 @@ def analyze(attempt, output=None):
             raise ValueError("Missing four original camera pixel hashes")
     sources = {name: sha(attempt / name) for name in (
         "config.json", "left-turn-actors.jsonl", "video_frames.jsonl",
-        "camera-frames.jsonl", "road.xodr")}
+        "camera-frames.jsonl", "road.xodr", "road_geometry.json",
+        "map-survey.json")}
     fixed = {name: config.get(name) for name in (
         "law_id", "cell_id", "actor", "rate_hz", "duration_s", "duration_frames",
         "cameras", "oncoming_conflict_s", "left_signal_requested")}

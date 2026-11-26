@@ -27,6 +27,11 @@ class ComparisonSourcesTest(unittest.TestCase):
                       "yield_policy": policy}
             (folder / "config.json").write_text(json.dumps(config) + "\n")
             (folder / "road.xodr").write_text("<OpenDRIVE/>\n")
+            (folder / "road_geometry.json").write_text(json.dumps({
+                "source_kind": "synthetic_cpu",
+                "intersection_polygon_xy_m": [[-7, -7], [7, -7], [7, 7], [-7, 7]]}) + "\n")
+            (folder / "map-survey.json").write_text(json.dumps({
+                "source_kind": "synthetic_cpu", "source_sha256": "a" * 64}) + "\n")
             (folder / "left-turn-actors.jsonl").write_text("".join(
                 json.dumps(row) + "\n" for row in data))
             (folder / "video_frames.jsonl").write_text("".join(json.dumps({

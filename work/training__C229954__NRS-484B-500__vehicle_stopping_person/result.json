@@ -2,23 +2,25 @@
   "assignment_id": "training__C229954__NRS-484B-500__vehicle_stopping_person",
   "input_sha256": "3dadd1e44916522c917d1b537ba0e4caa6ced10b7b9e9dd99820f1eef43d461d",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "Six exact stop/stand/park inside/outside selected constructions and pinned offline checks pass. Source-bound route, original-sidecar saved staging, four-view encoding, physical observation and independent comparison pass focused CPU positives/negatives. Full selected compatibility, process-saved, semantic proposals and independent delivery/lifecycle audits remain CPU work; original activity evidence is unobserved.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "counts": {
     "source_topics": 2,
     "selected_comparison_cases_planned": 6,
     "comparisons_planned": 3,
-    "delivery_cases_prepared": 0,
-    "candidates_proven": 0,
+    "delivery_cases_prepared": 6,
+    "candidates_proven": 6,
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 0
   },
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c229954 .venv-cpu/bin/python -B runtime.py preflight",
       "exit_code": 0,
-      "result": "pinned CPU runtime preflight passed; simulation_started false"
+      "result": "pinned CPU runtime preflight passed; simulation_started false",
+      "log": "native/preflight.log",
+      "sha256": "462938bc89fb71226310decdf94a83e581f9d3ddc72ced8beca21cd33d391816"
     },
     {
       "command": ".venv-cpu/bin/python work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/prove_designated_stop.py",
@@ -110,6 +112,145 @@
       "log": "native/physical-proof.json",
       "sha256": "419d75e7d07df92aa7e8b0038f421f7b8446be4799ca11dd3fdfee7927eb6e8f",
       "scope": "synthetic position and rest positives/negatives; no original physical acceptance"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a --output .runtime-work/c229954-condition_a-selected-offline-r6",
+      "exit_code": 0,
+      "log": "native/condition-a-selected-offline.log",
+      "sha256": "aeffec0a0928d83f4d302a6467430e0ee8f2ee1fc6bc15220e7073a476c117d7",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": "runtime.py compatibility --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a",
+      "exit_code": 0,
+      "log": "native/condition-a-compatibility-analysis.log",
+      "sha256": "aa21edd1ac12bd1224486fb455f694e2e86661323c72f75c5c3ccd0a6bf03f4c",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a --self-test",
+      "exit_code": 0,
+      "log": "native/condition-a-delivery-positive.log",
+      "sha256": "3d52738dcde7c916db12380349ceadcb2344d0e62a5a9854e613e2e7a8184a9f",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b --output .runtime-work/c229954-condition_b-selected-offline-r6",
+      "exit_code": 0,
+      "log": "native/condition-b-selected-offline.log",
+      "sha256": "7dd87746b9c31d45c4939c1ce949407ca769b83e2c5661c0edb670b7f5106933",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": "runtime.py compatibility --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b",
+      "exit_code": 0,
+      "log": "native/condition-b-compatibility-analysis.log",
+      "sha256": "3d11eafc5375d425fe3c0cce73024bfa1dd004eeb9179402a3621092694475e0",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_b --self-test",
+      "exit_code": 0,
+      "log": "native/condition-b-delivery-positive.log",
+      "sha256": "426548f7e920c12c0b5049c952fc8bd2dc42156aad9ddcc620169b614aca2dae",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_a --output .runtime-work/c229954-stand_condition_a-selected-offline-r6",
+      "exit_code": 0,
+      "log": "native/stand-condition-a-selected-offline.log",
+      "sha256": "052cdbe59c42e75ccbbe13da385b500f0a8d2084ab29267ec7892af9e8f08ff0",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": "runtime.py compatibility --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_a",
+      "exit_code": 0,
+      "log": "native/stand-condition-a-compatibility-analysis.log",
+      "sha256": "d7f4cdd2e8283413ef31e582f3bd424e062e4ee9e35fcfe3a4a2dc7b8091c347",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_a --self-test",
+      "exit_code": 0,
+      "log": "native/stand-condition-a-delivery-positive.log",
+      "sha256": "ee1aa1c3e0459df0bcef2446764e5f12a71bed5101b5e30de601d81599425f8a",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_b --output .runtime-work/c229954-stand_condition_b-selected-offline-r6",
+      "exit_code": 0,
+      "log": "native/stand-condition-b-selected-offline.log",
+      "sha256": "6e38bdbbc6f012d663f2ea9ce34e50240980bb92d71de9d04fc2876089ced9cf",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": "runtime.py compatibility --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_b",
+      "exit_code": 0,
+      "log": "native/stand-condition-b-compatibility-analysis.log",
+      "sha256": "9917ad79c055fb45a79f84f71b8b9c6323e92956308c52c92afb5d4ea321fbe9",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__stand_condition_b --self-test",
+      "exit_code": 0,
+      "log": "native/stand-condition-b-delivery-positive.log",
+      "sha256": "3bbc1ed00566d0d293bf84617c50ab3f931fab75f9bfab4091126e1f1c4ec8ca",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_a --output .runtime-work/c229954-park_condition_a-selected-offline-r6",
+      "exit_code": 0,
+      "log": "native/park-condition-a-selected-offline.log",
+      "sha256": "25b1489b43f752d4ecd2a5b7c4213a0d325211810b993a9f3f794230fd506ae3",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": "runtime.py compatibility --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_a",
+      "exit_code": 0,
+      "log": "native/park-condition-a-compatibility-analysis.log",
+      "sha256": "4d74c8a0052519901570e3cf20d64f96cadf591ddc6632a20e468002bb8bfad6",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_a --self-test",
+      "exit_code": 0,
+      "log": "native/park-condition-a-delivery-positive.log",
+      "sha256": "8f384625ebd4ecb2125bb0b3b194c3bc9e4df643eba3e6fce08bcee74d7b2e3d",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_b --output .runtime-work/c229954-park_condition_b-selected-offline-r6",
+      "exit_code": 0,
+      "log": "native/park-condition-b-selected-offline.log",
+      "sha256": "75656c1e4b4173ad23b9fd56ec087b583f30ca1c2491b55bea8f9b15768ba187",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": "runtime.py compatibility --manifest work/training__C229954__NRS-484B-500__vehicle_stopping_person/execution-manifest.json --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_b",
+      "exit_code": 0,
+      "log": "native/park-condition-b-compatibility-analysis.log",
+      "sha256": "68b10a5a8e517b91d71f72ae8c3453be7e826107f838f352bce7c49d2762eefd",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C229954__NRS-484B-500__vehicle_stopping_person/native/delivery_audit.py --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__park_condition_b --self-test",
+      "exit_code": 0,
+      "log": "native/park-condition-b-delivery-positive.log",
+      "sha256": "866f028f0f4b3d1a5a73d3806836c66b370d569df644d060e34f696200061daa",
+      "scope": "CPU diagnostic only; original Native evidence and legal characterization unverified"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c229954 .venv-cpu/bin/python -B worker_check.py --assignment training__C229954__NRS-484B-500__vehicle_stopping_person --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "native/strict-assignment.log",
+      "sha256": "8785dbc280c32bc5927cbadec931418fb58778022c76b7092cd4b5773cf74179",
+      "scope": "assignment-scoped static delivery readiness after all selected CPU proofs"
     }
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C229954__NRS-484B-500__vehicle_stopping_person --case training__C229954__NRS-484B-500__vehicle_stopping_person__selected_d67fe2ae__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "remaining_gpu_checks": [
+    "Original device authority, content, erection interval and designated polygon source review",
+    "Actual stop, stand and park activity, physical hazardous/congested context and traffic direction review",
+    "Native 600-frame motion, four-view pixels, video decode and independent original-source delivery/comparison acceptance"
   ]
 }
