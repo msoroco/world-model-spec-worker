@@ -113,6 +113,14 @@ class FlaggerZoneTests(unittest.TestCase):
             mod.construct(a, scene(case), case)
         self.assertEqual(a.destroyed, ['vehicle', 'flagger'])
 
+    def test_signal_interval_is_relative_to_original_start_frame(self):
+        case = mod.CASES[1]
+        original = rows(case)
+        for row in original:
+            row['original_frame'] += 1000
+        measured = mod.measure_original(original, scene(case), case)
+        self.assertEqual(measured['active_signal_frames'], 100)
+
 
 if __name__ == '__main__':
     unittest.main()

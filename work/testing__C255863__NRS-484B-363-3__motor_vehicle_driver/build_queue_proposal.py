@@ -36,15 +36,15 @@ def build() -> dict:
                                        "--validator \"$LEAN_VALIDATOR\" "
                                        "--owner-release-receipt \"$OWNER_RELEASE_RECEIPT\""),
             "additional_source_audit_command": (f".venv-cpu/bin/python work/{ASSIGNMENT}/"
-                                                "source_audit.py --repo \"$PWD\" "
-                                                "--output \"$SOURCE_AUDIT_RECEIPT\""),
+                                                "diagnostic_delivery_audit.py --index \"$DELIVERY_INDEX\" "
+                                                f"--case {case_id} --output \"$SOURCE_AUDIT_RECEIPT\""),
             "accept_command": (common + "accept-delivery " + dispatch +
                                " --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" "
                                "--audit \"$AUDIT\" --review-archive /external/archive"),
             "candidate_commands": {}
         })
     return {"format": "worker-ordered-gpu-queue-proposal", "assignment_id": ASSIGNMENT,
-            "status": "partial_unbound_school_sources_and_manifest", "source": "case-plan.json",
+            "status": "source_gated_cpu_prepared", "source": "case-plan.json",
             "cases": rows,
             "comparison_audit_commands": [
                 {"assignment_id": ASSIGNMENT, "comparison_id": comparison["comparison_id"],
@@ -54,7 +54,7 @@ def build() -> dict:
                              "--left \"$LEFT_ORIGINAL_PACKET\" --right \"$RIGHT_ORIGINAL_PACKET\" "
                              "--output \"$COMPARISON_AUDIT_RECEIPT\"")}
                 for comparison in plan["comparisons"]],
-            "dispatch_limit": "No dispatch until selected manifest and source-bound CPU proofs pass."}
+            "dispatch_limit": "Original reviewed school site, calendar, clock, beacon, sign and Native capture sources must be supplied and audited before physical or legal acceptance."}
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ def main() -> None:
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         tag = case_id.rsplit("__", 1)[-1]
-        output = output_root / ("compat-" + tag + "-" + candidate + "-v2")
+        output = output_root / ("compat-" + tag + "-" + candidate + "-v3")
         if output.exists():
             raise ValueError("compatibility output already exists: " + str(output))
         command = [sys.executable, str(REPO / "runtime.py"), "compatibility",

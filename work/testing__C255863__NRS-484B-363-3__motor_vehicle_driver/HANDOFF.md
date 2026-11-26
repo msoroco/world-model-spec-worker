@@ -1,3 +1,15 @@
+# 2026-11-26 selected delivery-prepared CPU handoff
+
+Six exact source-gated school crossing-zone cases and five comparisons now pass the exact assignment-scoped `worker_check.py --complete --require-delivery-ready` gate (`strict-gate-nov26.log`, SHA-256 `6f2bebff75b45f3e09e157fd3e86a3385ba639e52d52d0e141c19e48c8e0ee91`). The pinned sweep expander ran on the one explicitly incomplete source-bound school-judgment sweep and retained its missing original inputs. The ten-stage semantic validator still selects exactly six cases. Current focused tests pass 17/17 and pinned preflight passes.
+
+New CPU proofs bind six three-outcome synthetic physical/lifecycle receipts, six independent positive and negative diagnostic delivery audits, and five diagnostic comparison receipts. The diagnostic audits hash original-shaped fixture packets, decode all four fixture videos, and reject missing context. The comparison receipts check fixed diagnostic geometry and camera protocol while isolating each planned exception intervention; the school-session control also changes its derived operation-window state. The queue proposal now uses an exact case-aware original source-audit command for each job. Diagnostic receipts claim no original physical or legal acceptance.
+
+Original reviewed crossing-zone site and extent, school calendar, operation/class hours, local clock, official beacon/sign survey and Native capture remain source gates at dispatch and acceptance. The ready status means the CPU construction and proof package passed the scoped gate; no original source packet or statutory outcome was invented.
+
+Stable SHA-256: `execution-manifest.json` `bd25deff5d4f4a4dedf41d82fb97a36909056ce38ea181dde29d898a2613e6fb`; `gpu-queue-proposal.json` `63c9303140d6a3cb9d15943a95e7366835df6f575d1119dd6173fa71d14f1897`; `result.json` `1a84148ac9eba084b344214b004fce78aa46b9bf4d995e7ed2afac522f9ec240`. All 205 returned files passed size, UTF-8, whitespace, blank-EOF and conflict-marker checks.
+
+---
+
 # C255863 NRS 484B.363(3) handoff
 
 Status: **partial**. Six selected school crossing-zone U-turn cases and five fixed-geometry controls are prepared. The pinned scoped complete check passes; the exact strict delivery-ready check cannot pass while original source packets are absent.

@@ -128,7 +128,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
                 row['vehicle_speed_mps'] >= 0 and
                 point(row.get('vehicle_xy')),
                 'original vehicle motion missing')
-        if scene['signal_frame'] <= frame < scene['release_frame']:
+        if scene['signal_frame'] <= i < scene['release_frame']:
             active_speeds.append(row['vehicle_speed_mps'])
             active_positions.append(row['vehicle_xy'])
     require(active_speeds, 'active signal interval absent')

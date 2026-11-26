@@ -1,26 +1,22 @@
 # testing__C380107__NRS-484B-208-1__motor_vehicle_driver
 
-Status: partial exact-case measurement checkpoint, 2026-11-23. No delivered original capture or legal conclusion is claimed.
+Status: CPU delivery prepared; original local CARLA capture and independent legal review remain pending. The exact scoped strict CPU gate passed on 2026-11-26. No physical acceptance or legal verdict is claimed.
 
-NRS 484B.208(1), with subsection 2, addresses continued operation below the posted limit in the extreme left lane of a controlled-access multilane highway while a faster motor vehicle overtakes from the rear, subject to several exceptions. This assigned cell specifically requires an active qualified HOV-lane exception comparison. Frozen accepted evidence for this exact assignment is zero recordings; no exact-law judgment ranges were identified. The conditional witness remains a proposal, not accepted physical evidence.
+## Selected construction
 
-## Constructed CPU work
+The canonical semantic draft selects 18 exact NRS 484B.208(1) cases and 11 controlled comparisons. The nine source-law variants cover the core extreme-left-lane encounter, qualified/ineligible/inactive HOV operation, posted-limit equality, no faster rear vehicle, moving right, city boundary, and hazard necessity. Three bounded three-point sweeps cover sign exposure onset, rear speed delta, and original HOV occupancy. Sweep stations are engineering controls, not legal thresholds. All selected requirements have explicit source-bound measurement methods; legal knowledge, continued operation, and HOV qualification judgments remain unresolved.
 
-`case-plan.json` specifies nine unexecuted exact variants and eight controlled comparisons: core encounter, actually qualified HOV operation, ineligible and inactive HOV designation, posted-limit equality, rear vehicle not faster, moving right, city/town boundary, and hazard necessity. The plan requires independent posted-limit, controlled-access, extreme-left lane, driver, knowledge, geography, HOV hours/signs/access/occupancy/category/compliance and other-exception sources. HOV designation alone does not establish eligibility.
+Each selected case has an inline exact Native construction. The runner requires a SHA-linked reviewed controlled-access highway, marked same-direction lane geometry, posted limit, geography, HOV designation/hours/occupancy/access/sign/category/compliance, knowledge circumstances, exception authority, and reviewed actor/camera poses. It checks the selected controls against source packets, samples ego and rear actor/lane/speed/gap and four synchronized RGB views at 20 Hz for 900 frames, and emits a SHA-bound original context, motion JSONL, frame map, wrapper, and receipt. The finalizer checks the receipt and wrapper against original motion before deriving measurements. Source and capture gates fail closed; the diagnostic fixtures remain synthetic.
 
-`hov_encounter_observations.py` consumes a hash-sealed original Native context, source receipt, and 20 Hz ego/rear actor trace. It validates exact identity, original provenance, two distinct marked same-direction lanes, lane identity, posted limit, cadence, speeds and signed rear gap. It reports below-limit samples, faster rear vehicles in the same extreme-left lane, and the first signed-gap crossing frame. It leaves legal knowledge, continued operation and HOV qualification judgments unresolved and physical acceptance unverified. Seven focused tests include positive extraction and rejection of diagnostic, changed, source-incomplete and lane-incomplete inputs.
+## CPU evidence
 
-## Proofs
+- Pinned runtime verify and preflight: exit 0.
+- Focused tests: 25/25 pass, including reviewed-site source joins, original capture receipt tamper rejection, exact control bounds, source-bound measurement, comparison isolation, and delivery audit refusal.
+- Pinned offline construction: 18/18 pass against current inline hashes.
+- Exact saved compatibility: 18/18 pass, including native validation, Lean decoder, final video decode, measurement contract and missing-source negative proof.
+- Saved processing: 18/18 pass, recorded-only with originals preserved and no physical acceptance claim.
+- Physical/lifecycle/delivery CPU protocols: 18/18 pass, with expected unreleased-attempt rejection.
+- Exact comparison protocols: 11/11 pass against current case construction and compatibility seals; original comparison receipts remain a later local task.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C380107__NRS-484B-208-1__motor_vehicle_driver --complete --require-delivery-ready`: exit 0; output in `cpu-scoped-strict.log`.
 
-- `.venv-cpu/bin/python runtime.py preflight`: exit 0; `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
-- `.venv-cpu/bin/python -m unittest discover -s work/testing__C380107__NRS-484B-208-1__motor_vehicle_driver/tests -v`: exit 0; `cpu-hov-tests.log` SHA256 `f2803ef56b51c9cba9132e6d364a5c923e9a5dc4343a492218d5775b0ae58e6b`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C380107__NRS-484B-208-1__motor_vehicle_driver --complete`: exit 0; `assignment-check.log` SHA256 `7c149712cdc13f38f0832182f2902822ef520123b8e721d926228b3b5be45dd5`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C380107__NRS-484B-208-1__motor_vehicle_driver --complete --require-delivery-ready`: exit 1 as truthful partial; `strict-gate.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`. It fails the all-ready requirement.
-
-## Remaining CPU and physical work
-
-Build and prove exact Native scene/controller, full original 20 Hz four-camera capture, source-bound finalizer and semantic proposal, saved compatibility/processing, and delivery/comparison audits for all variants. Resolve applicable HOV requirements including NRS 484B.323(1) before any legal exception determination. Actual CARLA motion, lane markings, HOV signs and camera visibility remain physical checks after CPU preparation. No dependency or missing-tool blocker is asserted.
-
-## 2026-11-26 construction checkpoint
-
-Canonical semantic draft validates with 18 selected exact cases and 11 comparisons. SHA-gated original highway, HOV authority, actor and camera Native construction has been written; diagnostic fixtures are explicitly synthetic. Eleven focused CPU tests and 18/18 pinned offline construction proofs passed. Saved compatibility, delivery and comparison proofs remain in progress; result status is partial.
+`execution-manifest.json` binds all 18 current case chains. `gpu-queue-proposal.json` contains 18 canonical local delivery rows and 11 comparison audit commands for lead review and queue integration. Original site authority, CARLA realization, camera pixels, HOV eligibility, legal exceptions, and independent physical review remain local checks. No frozen input, runtime, batch, or shared queue file was edited by this owner.

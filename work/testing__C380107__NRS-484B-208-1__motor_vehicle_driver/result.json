@@ -1,13 +1,13 @@
 {
   "applied_update": 0,
   "assignment_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver",
+  "first_gpu_delivery_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c380107-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C380107__NRS-484B-208-1__motor_vehicle_driver --case testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "557dc1a652089d6015b47416d24d89d35cc2627f6a461f391c65ffda8a3cf497",
-  "readiness_kind": "exact_case_construction_checkpoint",
-  "reason": "Eighteen exact source-gated Native cases and eleven comparisons now selected; pinned semantic validation, eleven focused CPU tests and all eighteen offline constructions pass. First exact saved compatibility replay and finalizer repairs are in progress. Original CARLA realization and legal knowledge/HOV qualification remain unverified.",
+  "readiness_kind": "delivery_prepared",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
@@ -19,7 +19,19 @@
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C380107__NRS-484B-208-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-hov-tests.log",
-      "sha256": "e30e9f3c5158c301d4da135724cac6b423866f223ea6cf95214e8b3bca974920"
+      "sha256": "edb14eb78111e9c8d7097168b7e49645075f7549f6af6950f764a568e1f12425"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C380107__NRS-484B-208-1__motor_vehicle_driver/validate_semantic_draft.py",
+      "exit_code": 0,
+      "log": "cpu-semantic.log",
+      "sha256": "db0de948770ad0b13b97604a2926ad3598ca650e7243067409b1e4d141b27888"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C380107__NRS-484B-208-1__motor_vehicle_driver/prove_comparisons.py",
+      "exit_code": 0,
+      "log": "cpu-comparison-tests.log",
+      "sha256": "a6bb568ec2cdb95fd7834e67188c97a3411ca9d4e813f1cb613c34bc8a778c29"
     }
   ]
 }

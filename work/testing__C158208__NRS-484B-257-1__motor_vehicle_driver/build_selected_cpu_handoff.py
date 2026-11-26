@@ -38,6 +38,20 @@ def build() -> dict:
         raise ValueError("source-gated sweep status changed; use production selection")
     proof_by_case = {row["case_id"]: row for row in index["case_proofs"]}
     entry_by_case = {row["case_id"]: row for row in manifest["cases"]}
+    diagnostic_audits = {}
+    for stage, filename in (("delivery", "diagnostic-delivery-index-all.json"),
+                            ("physical", "diagnostic-physical-index-all.json")):
+        data = load(HERE / filename)
+        if (data.get("assignment_id") != aid or data.get("diagnostic_only") is not True
+                or data.get("manifest_sha256") != sha(HERE / "execution-manifest.diagnostic.json")
+                or data.get("physical_acceptance_claimed") is not False
+                or {row["case_id"] for row in data["case_proofs"]} != expected):
+            raise ValueError("diagnostic " + stage + " case inventory differs")
+        for row in data["case_proofs"]:
+            if (row["construction_sha256"] != entry_by_case[row["case_id"]]["construction_sha256"]
+                    or sha(HERE / row["receipt"]) != row["receipt_sha256"]):
+                raise ValueError("diagnostic " + stage + " receipt changed: " + row["case_id"])
+        diagnostic_audits[stage] = {"path": filename, "sha256": sha(HERE / filename)}
     if set(proof_by_case) != expected:
         raise ValueError("diagnostic proof case coverage differs")
     cases = []
@@ -80,6 +94,7 @@ def build() -> dict:
               "physical_acceptance_claimed": False, "legal_acceptance_claimed": False,
               "diagnostic_manifest_sha256": sha(HERE / "execution-manifest.diagnostic.json"),
               "diagnostic_index_sha256": sha(HERE / "diagnostic-compatibility-index-all.json"),
+              "diagnostic_audits": diagnostic_audits,
               "semantic_index_sha256": sha(HERE / "proposals/semantic-index.json"),
               "statutory_matrix_sha256": sha(HERE / "statutory-matrix.draft.json"),
               "cases": cases,

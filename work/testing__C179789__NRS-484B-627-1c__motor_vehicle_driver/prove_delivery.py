@@ -55,7 +55,7 @@ def main() -> None:
     parser.add_argument("--negative", action="store_true")
     args = parser.parse_args()
     tag = args.case.rsplit("__", 1)[-1]
-    attempt = PRIVATE / ("saved-compat-" + tag + "-v1")
+    attempt = PRIVATE / ("saved-compat-" + tag + "-v2")
     if not attempt.is_dir():
         raise ValueError("exact saved diagnostic attempt missing")
     if args.negative:

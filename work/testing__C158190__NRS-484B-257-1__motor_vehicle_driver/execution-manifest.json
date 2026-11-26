@@ -2,6 +2,38 @@
   "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "ego_motion_and_crossing": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original-trace.jsonl",
+          "method": "20 Hz original ego body and crossing readback"
+        },
+        "governing_control": {
+          "entrypoint": "native_capture.py",
+          "evidence": "context.json and original-trace.jsonl",
+          "method": "Reviewed control joined to original frame observations"
+        },
+        "nearest_view_stations": {
+          "entrypoint": "yield_view_measurement.py",
+          "evidence": "original-trace.jsonl and reviewed-view_ray_survey_sha256.source",
+          "method": "Original approach samples projected against reviewed view rays"
+        },
+        "original_four_camera_pixels": {
+          "entrypoint": "native_capture.py",
+          "evidence": "cameras.json and four source MKV streams",
+          "method": "Synchronized original RGB readback and source video hashes"
+        },
+        "through_vehicle_motion": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original-trace.jsonl",
+          "method": "20 Hz original through-vehicle body readback"
+        },
+        "yield_sign_and_marking": {
+          "entrypoint": "native_capture.py",
+          "evidence": "reviewed-site.json and reviewed-sources.json",
+          "method": "SHA-verified reviewed yield sign and marking survey"
+        }
+      },
       "candidate_risk": {
         "reason": "No reviewed alternate yield-site geometry is available for a defensible same-case fallback.",
         "status": "none"
@@ -13,10 +45,10 @@
         "negative_log": "cpu-compat-yield_slow_hazard-negative.log",
         "negative_log_sha256": "12d4a1f027151dfd3be49f51b0b212c9d06ee2be9bbc66083d601869f56f85b4",
         "receipt": "cpu-compat-yield_slow_hazard-receipt.json",
-        "sha256": "31fa835d6e531dc2ee08ce393f9d7f23a1e12af5398a89bf526d092e2c9f55d2"
+        "sha256": "2f1447fa024cab2e797f259bacc67d8a3cdb51d1e9a1550332e4acaea2093a75"
       },
       "construction": "construction.json",
-      "construction_sha256": "7e97caa8f12b63bb1a6cef1cf9334db4f526bfe58847fa2564b685989558eec5",
+      "construction_sha256": "e49b3402326092e5e46dd2a22cb92957cd3b15c04e7bef8d5807c1b941f5005e",
       "delivery_acceptance": {
         "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
         "checks": [
@@ -37,6 +69,7 @@
         "script": "delivery_acceptance.py",
         "script_sha256": "944161376f3c2273b25437094a35446d31747f34b1658b264e6a52755b5a1b96",
         "sets": [
+          "demo-test",
           "full-test"
         ],
         "test_exit_code": 0,
@@ -55,9 +88,12 @@
         "method": "source-bound original nearest-view and through-motion measurement"
       },
       "missing_proofs": [
-        "reviewed original yield-governed site and route source",
-        "original Native capture and saved processing",
-        "original delivery and comparison audit"
+        "reviewed_yield_site",
+        "original_native_capture",
+        "positive_negative_compatibility",
+        "saved_only_original",
+        "physical_preparation",
+        "delivery_acceptance"
       ],
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
@@ -67,14 +103,14 @@
       },
       "negative": {
         "log": "cpu-compat-yield_slow_hazard-negative.log",
-        "log_sha256": "12d4a1f027151dfd3be49f51b0b212c9d06ee2be9bbc66083d601869f56f85b4"
+        "log_sha256": "dbe5ddcc8cfbb8b56f55d916a67a42dab0cc2840c5239b533c92684fc80d70c1"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard --output .runtime-work/c158190-owner-nov26/offline-v5-yield_slow_hazard --python .venv-cpu/bin/python",
-        "construction_sha256": "7e97caa8f12b63bb1a6cef1cf9334db4f526bfe58847fa2564b685989558eec5",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158190-owner-nov26/offline-v6-yield_slow_hazard --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "e49b3402326092e5e46dd2a22cb92957cd3b15c04e7bef8d5807c1b941f5005e",
         "exit_code": 0,
         "log": "cpu-offline-yield_slow_hazard.log",
-        "log_sha256": "30af507e33e4ab369035f8d0a1ca4563877bdf32cae5c74a131bc2f09e7ee496"
+        "log_sha256": "4a38b3c2aee72b84e3c8f1b9ab1334ab709590480a89388e8150e4816a20e5f3"
       },
       "physical_preparation": {
         "receipt": "cases/yield_slow_hazard/physical-preparation.json",
@@ -91,6 +127,38 @@
       "status": "source_pending"
     },
     {
+      "acquisition": {
+        "ego_motion_and_crossing": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original-trace.jsonl",
+          "method": "20 Hz original ego body and crossing readback"
+        },
+        "governing_control": {
+          "entrypoint": "native_capture.py",
+          "evidence": "context.json and original-trace.jsonl",
+          "method": "Reviewed control joined to original frame observations"
+        },
+        "nearest_view_stations": {
+          "entrypoint": "yield_view_measurement.py",
+          "evidence": "original-trace.jsonl and reviewed-view_ray_survey_sha256.source",
+          "method": "Original approach samples projected against reviewed view rays"
+        },
+        "original_four_camera_pixels": {
+          "entrypoint": "native_capture.py",
+          "evidence": "cameras.json and four source MKV streams",
+          "method": "Synchronized original RGB readback and source video hashes"
+        },
+        "through_vehicle_motion": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original-trace.jsonl",
+          "method": "20 Hz original through-vehicle body readback"
+        },
+        "yield_sign_and_marking": {
+          "entrypoint": "native_capture.py",
+          "evidence": "reviewed-site.json and reviewed-sources.json",
+          "method": "SHA-verified reviewed yield sign and marking survey"
+        }
+      },
       "candidate_risk": {
         "reason": "No reviewed alternate yield-site geometry is available for a defensible same-case fallback.",
         "status": "none"
@@ -102,10 +170,10 @@
         "negative_log": "cpu-compat-yield_stop_hazard-negative.log",
         "negative_log_sha256": "77d0de391e27dbdf27b34f4530aaccd8751a5f54ebd1ef55ae5f078f3591070f",
         "receipt": "cpu-compat-yield_stop_hazard-receipt.json",
-        "sha256": "2c8c2982529c8188fe33cbc3067fed44eb3dd157ebf4cc12ceee5c3d505a5b56"
+        "sha256": "9a8325a36536263694e130bd039607838357238f37121eed5879a097682637bc"
       },
       "construction": "cases/yield_stop_hazard/construction.json",
-      "construction_sha256": "f96cc134e828a9374a259fcae4e42f80f27aab544d7283f65ce8f247481c4828",
+      "construction_sha256": "cd35161077a868a158cb1ad9c525e9637171ddce783a16fb23a7ddef3fc402f6",
       "delivery_acceptance": {
         "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard",
         "checks": [
@@ -126,6 +194,7 @@
         "script": "delivery_acceptance.py",
         "script_sha256": "944161376f3c2273b25437094a35446d31747f34b1658b264e6a52755b5a1b96",
         "sets": [
+          "demo-test",
           "full-test"
         ],
         "test_exit_code": 0,
@@ -144,9 +213,12 @@
         "method": "source-bound original nearest-view and through-motion measurement"
       },
       "missing_proofs": [
-        "reviewed original yield-governed site and route source",
-        "original Native capture and saved processing",
-        "original delivery and comparison audit"
+        "reviewed_yield_site",
+        "original_native_capture",
+        "positive_negative_compatibility",
+        "saved_only_original",
+        "physical_preparation",
+        "delivery_acceptance"
       ],
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
@@ -156,14 +228,14 @@
       },
       "negative": {
         "log": "cpu-compat-yield_stop_hazard-negative.log",
-        "log_sha256": "77d0de391e27dbdf27b34f4530aaccd8751a5f54ebd1ef55ae5f078f3591070f"
+        "log_sha256": "5af6a927748008e9c219570ad929b186a98bffd9ccca3c1b756f8352c4218ff5"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard --output .runtime-work/c158190-owner-nov26/offline-v5-yield_stop_hazard --python .venv-cpu/bin/python",
-        "construction_sha256": "f96cc134e828a9374a259fcae4e42f80f27aab544d7283f65ce8f247481c4828",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158190-owner-nov26/offline-v6-yield_stop_hazard --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "cd35161077a868a158cb1ad9c525e9637171ddce783a16fb23a7ddef3fc402f6",
         "exit_code": 0,
         "log": "cpu-offline-yield_stop_hazard.log",
-        "log_sha256": "e80c2c6da9e166076dadc61af0b33735a26d7dc4dd9f8af1733ed7ba4943b189"
+        "log_sha256": "afd18c9af43d540be1caa96fd9cb6ddf22d1affb6eec211c3b1647faa245a119"
       },
       "physical_preparation": {
         "receipt": "cases/yield_stop_hazard/physical-preparation.json",
@@ -180,6 +252,38 @@
       "status": "source_pending"
     },
     {
+      "acquisition": {
+        "ego_motion_and_crossing": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original-trace.jsonl",
+          "method": "20 Hz original ego body and crossing readback"
+        },
+        "governing_control": {
+          "entrypoint": "native_capture.py",
+          "evidence": "context.json and original-trace.jsonl",
+          "method": "Reviewed control joined to original frame observations"
+        },
+        "nearest_view_stations": {
+          "entrypoint": "yield_view_measurement.py",
+          "evidence": "original-trace.jsonl and reviewed-view_ray_survey_sha256.source",
+          "method": "Original approach samples projected against reviewed view rays"
+        },
+        "original_four_camera_pixels": {
+          "entrypoint": "native_capture.py",
+          "evidence": "cameras.json and four source MKV streams",
+          "method": "Synchronized original RGB readback and source video hashes"
+        },
+        "through_vehicle_motion": {
+          "entrypoint": "native_capture.py",
+          "evidence": "original-trace.jsonl",
+          "method": "20 Hz original through-vehicle body readback"
+        },
+        "yield_sign_and_marking": {
+          "entrypoint": "native_capture.py",
+          "evidence": "reviewed-site.json and reviewed-sources.json",
+          "method": "SHA-verified reviewed yield sign and marking survey"
+        }
+      },
       "candidate_risk": {
         "reason": "No reviewed alternate yield-site geometry is available for a defensible same-case fallback.",
         "status": "none"
@@ -194,7 +298,7 @@
         "sha256": "51868a0abe0193eb81e3a90a19421100b3db2c5298fe8d2eeca68885f267c078"
       },
       "construction": "cases/yield_slow_no_hazard/construction.json",
-      "construction_sha256": "a238fa34cedfdc89dedbd537f1f45dbc80896a43a2412943cd2af60b780c3493",
+      "construction_sha256": "013c166e87094893139e2cfef43768c9b0b076cbe9df59e2c20f4dfcccd93f98",
       "delivery_acceptance": {
         "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard",
         "checks": [
@@ -215,6 +319,7 @@
         "script": "delivery_acceptance.py",
         "script_sha256": "944161376f3c2273b25437094a35446d31747f34b1658b264e6a52755b5a1b96",
         "sets": [
+          "demo-test",
           "full-test"
         ],
         "test_exit_code": 0,
@@ -233,9 +338,12 @@
         "method": "source-bound original nearest-view and through-motion measurement"
       },
       "missing_proofs": [
-        "reviewed original yield-governed site and route source",
-        "original Native capture and saved processing",
-        "original delivery and comparison audit"
+        "reviewed_yield_site",
+        "original_native_capture",
+        "positive_negative_compatibility",
+        "saved_only_original",
+        "physical_preparation",
+        "delivery_acceptance"
       ],
       "native_handoff": {
         "host_env_var": "CARLA_HOST",
@@ -248,11 +356,11 @@
         "log_sha256": "581e64f3b3e70866987636856ca212eda5f6f28f301d440101fa18b2f4113482"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard --output .runtime-work/c158190-owner-nov26/offline-v5-yield_slow_no_hazard --python .venv-cpu/bin/python",
-        "construction_sha256": "a238fa34cedfdc89dedbd537f1f45dbc80896a43a2412943cd2af60b780c3493",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c158190-owner-nov26/offline-v6-yield_slow_no_hazard --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "013c166e87094893139e2cfef43768c9b0b076cbe9df59e2c20f4dfcccd93f98",
         "exit_code": 0,
         "log": "cpu-offline-yield_slow_no_hazard.log",
-        "log_sha256": "6f105a3bca4aa5867763ef17f3b90710926f77796b49c35bf389992ee6fc9dd9"
+        "log_sha256": "dfe3c267f7bc8bd25b06f17b7c58cdf5fbd15aef7bd1a0ee75be0701e03cfbe0"
       },
       "physical_preparation": {
         "receipt": "cases/yield_slow_no_hazard/physical-preparation.json",

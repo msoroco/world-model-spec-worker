@@ -1,37 +1,49 @@
 {
-  "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C158190",
-  "law_id": "NRS-484B-257-1",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-257-1",
-      "cell_id": "C158190",
-      "actor": "motor_vehicle_driver",
-      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "worker_binding": {
-        "batch_id": "demo-test-full-branches-v7",
-        "package_sha256": "3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326"
+  "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 45 s",
+        "subject": "yield sign, no line/crosswalk and full intersection",
+        "view": "overview"
+      },
+      {
+        "interval": "approach and crossing",
+        "subject": "ego response at nearest view point",
+        "view": "approach"
+      },
+      {
+        "interval": "approach and crossing",
+        "subject": "through traffic and nearest-view geometry",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "approach and crossing",
+        "subject": "ego/through sightline",
+        "view": "driver_reference"
       }
-    }
-  ],
-  "law_text": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
-  "law_source": "NRS 484B.257(1)",
-  "topic_inventory": {
-    "exact-text": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection."
+    ],
+    "duration_s": 45,
+    "profile": "four-view-20hz-45s-v1"
   },
   "cases": [
     {
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
       "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
-      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": true,
+      "construction_implementation": "yield_scene_construction.py",
+      "construction_status": "source_gated_selected_cpu_implementation",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "source_gated_selected_cpu_implementation",
-      "requested_yield_action": "slow",
+      "kind": "planned_controlled_construction",
+      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
+      "motion_and_comparison_audit": "through_motion_measurement.py",
+      "new_capture_selected": true,
+      "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
       "requested_close_through_vehicle": true,
+      "requested_yield_action": "slow",
       "required_original_packets": [
         "site_sign_and_exception_state",
         "stop_line_and_near_crosswalk_absence",
@@ -40,23 +52,23 @@
         "through_vehicle_motion",
         "four_camera_video"
       ],
-      "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
-      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
-      "construction_implementation": "yield_scene_construction.py",
-      "source_preflight": "source_audit.py",
-      "motion_and_comparison_audit": "through_motion_measurement.py"
+      "source_preflight": "source_audit.py"
     },
     {
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
       "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard",
-      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": true,
+      "construction_implementation": "yield_scene_construction.py",
+      "construction_status": "source_gated_selected_cpu_implementation",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "source_gated_selected_cpu_implementation",
-      "requested_yield_action": "stop",
+      "kind": "planned_controlled_construction",
+      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
+      "motion_and_comparison_audit": "through_motion_measurement.py",
+      "new_capture_selected": true,
+      "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
       "requested_close_through_vehicle": true,
+      "requested_yield_action": "stop",
       "required_original_packets": [
         "site_sign_and_exception_state",
         "stop_line_and_near_crosswalk_absence",
@@ -65,23 +77,23 @@
         "through_vehicle_motion",
         "four_camera_video"
       ],
-      "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
-      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
-      "construction_implementation": "yield_scene_construction.py",
-      "source_preflight": "source_audit.py",
-      "motion_and_comparison_audit": "through_motion_measurement.py"
+      "source_preflight": "source_audit.py"
     },
     {
-      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard",
       "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": true,
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard",
+      "construction_implementation": "yield_scene_construction.py",
+      "construction_status": "source_gated_selected_cpu_implementation",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "source_gated_selected_cpu_implementation",
-      "requested_yield_action": "slow",
+      "kind": "planned_controlled_construction",
+      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
+      "motion_and_comparison_audit": "through_motion_measurement.py",
+      "new_capture_selected": true,
+      "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
       "requested_close_through_vehicle": false,
+      "requested_yield_action": "slow",
       "required_original_packets": [
         "site_sign_and_exception_state",
         "stop_line_and_near_crosswalk_absence",
@@ -90,20 +102,18 @@
         "through_vehicle_motion",
         "four_camera_video"
       ],
-      "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
-      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
-      "construction_implementation": "yield_scene_construction.py",
-      "source_preflight": "source_audit.py",
-      "motion_and_comparison_audit": "through_motion_measurement.py"
+      "source_preflight": "source_audit.py"
     }
   ],
+  "cell_id": "C158190",
   "comparisons": [
     {
-      "comparison_id": "slow_vs_stop",
+      "audit_implementation": "through_motion_measurement.py",
       "case_ids": [
         "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
         "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard"
       ],
+      "comparison_id": "slow_vs_stop",
       "deliberate_differences": [
         "ego slows versus stops before entry"
       ],
@@ -111,15 +121,15 @@
         "same proper yield sign, no stop line/crosswalk and same nearest view point",
         "same intersection, ego path, actor identities and capture except named variable"
       ],
-      "status": "source_gated_cpu_audit_tested",
-      "audit_implementation": "through_motion_measurement.py"
+      "status": "source_gated_cpu_audit_tested"
     },
     {
-      "comparison_id": "through_hazard",
+      "audit_implementation": "through_motion_measurement.py",
       "case_ids": [
         "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
         "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard"
       ],
+      "comparison_id": "through_hazard",
       "deliberate_differences": [
         "through-vehicle approach relative timing and distance"
       ],
@@ -127,42 +137,215 @@
         "same proper yield sign, no stop line/crosswalk and same nearest view point",
         "same intersection, ego path, actor identities and capture except named variable"
       ],
-      "status": "source_gated_cpu_audit_tested",
-      "audit_implementation": "through_motion_measurement.py"
+      "status": "source_gated_cpu_audit_tested"
     }
   ],
+  "evidence_review": {
+    "facts": [
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee",
+        "sources": [
+          {
+            "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/accepted/e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee/metadata.json",
+            "sha256": "f5f55260c7f61689c6f160d91f42aca481aa877373588c43c6fde88a05126e05"
+          }
+        ]
+      },
+      {
+        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted, and decoder_passed=None.",
+        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
+        "recording_id": "9f9884de772c537608d1a3c2d71c4be6e2526081cc3689466a6ae72faf39b7c6",
+        "sources": [
+          {
+            "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/accepted/9f9884de772c537608d1a3c2d71c4be6e2526081cc3689466a6ae72faf39b7c6/metadata.json",
+            "sha256": "c0f199685a58fd3d8b48d76dbf644c14adfef583b45b9ab5673b29a6180c1e14"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "unverified-law-coverage",
+        "requirement": "Prepare and review evidence for these assigned branches: Yield sign; neither stop line nor crosswalk; nearest-view location.. Verify any existing accepted evidence before selecting a new recording.",
+        "source": {
+          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
+          "sha256": "8ffaac8f74a9d8cb5b03196bf077f095b876662e3acf3cfc3809406fc87e7d94"
+        },
+        "why_existing_insufficient": "The frozen inventory gives acceptance metadata, not source-bound proof of every law branch, physical observation or comparison."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [
+    "e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee",
+    "9f9884de772c537608d1a3c2d71c4be6e2526081cc3689466a6ae72faf39b7c6"
+  ],
+  "judgment_range_inventory": [
+    {
+      "key": "[\"NRS-484B-257-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"ego_speed\", \"m/s\", {\"method\": \"Minimum original raw subject speed from actual approach peak before line through first leading physical-line crossing; retain all raw velocity/displacement/controls and exact-zero samples separately. Request0/.5m/s is not a legal threshold or required precisely realized speed.\", \"statistic\": \"min\", \"time_window\": \"Measured original approach-peak frame through first actual leading-body crossing of upstream Native physical line edge; full original history remains delivered\"}]",
+      "maximum": 0.008092836273277232,
+      "minimum": 0.0,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"through_vehicle_center_station\", \"m\", {\"method\": \"Initial through vehicle actual Native center y in the first original frame matched to observed engineering all-at-reference event. Preserve min eight-vertex y minus7m separately as through_vehicle_phase.\", \"statistic\": \"first\", \"time_window\": \"Original observed reference event after subject initial stopping/wait; whole crossing histories independently retained\"}]",
+      "maximum": 40.04802322387695,
+      "minimum": 0.045348070561885834,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yield the right-of-way\"}, \"ego_speed\", \"m/s\", {\"method\": \"Minimum original raw subject speed from actual approach peak before line through first leading physical-line crossing; retain all raw velocity/displacement/controls and exact-zero samples separately. Request0/.5m/s is not a legal threshold or required precisely realized speed.\", \"statistic\": \"min\", \"time_window\": \"Measured original approach-peak frame through first actual leading-body crossing of upstream Native physical line edge; full original history remains delivered\"}]",
+      "maximum": 0.008092836273277232,
+      "minimum": 0.0,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    },
+    {
+      "key": "[\"NRS-484B-257-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yield the right-of-way\"}, \"through_vehicle_center_station\", \"m\", {\"method\": \"Initial through vehicle actual Native center y in the first original frame matched to observed engineering all-at-reference event. Preserve min eight-vertex y minus7m separately as through_vehicle_phase.\", \"statistic\": \"first\", \"time_window\": \"Original observed reference event after subject initial stopping/wait; whole crossing histories independently retained\"}]",
+      "maximum": 40.04802322387695,
+      "minimum": 0.045348070561885834,
+      "missing": [
+        "below",
+        "inside",
+        "above"
+      ],
+      "set": "full-test"
+    }
+  ],
+  "law_id": "NRS-484B-257-1",
+  "law_source": "NRS 484B.257(1)",
+  "law_text": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
   "observations": [
     {
+      "mandatory": true,
       "name": "yield_sign_and_marking",
-      "mandatory": true,
       "source": "original Native 20 Hz readback"
     },
     {
+      "mandatory": true,
       "name": "nearest_view_stations",
-      "mandatory": true,
       "source": "original Native 20 Hz readback"
     },
     {
+      "mandatory": true,
       "name": "ego_motion_and_crossing",
-      "mandatory": true,
       "source": "original Native 20 Hz readback"
     },
     {
+      "mandatory": true,
       "name": "through_vehicle_motion",
-      "mandatory": true,
       "source": "original Native 20 Hz readback"
     },
     {
+      "mandatory": true,
       "name": "governing_control",
-      "mandatory": true,
       "source": "original Native 20 Hz readback"
     },
     {
-      "name": "original_four_camera_pixels",
       "mandatory": true,
+      "name": "original_four_camera_pixels",
       "source": "original Native 20 Hz readback"
     }
   ],
+  "planning_status": "selected_source_pending_cpu_construction",
+  "prior_review_context": {
+    "comparison_ids": [
+      "stop_near_side_sidewalk_derived_crosswalk"
+    ],
+    "remaining_requirements_note": null
+  },
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard",
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard"
+      ],
+      "disposition_index": 0,
+      "evidence_or_gap": "Three selected source-gated cases and two fixed-site comparisons; original reviewed yield-control site, view and through motion absent",
+      "requirement": "Proper yield sign with no stop line or near crosswalk; nearest view, slow or stop, and yield to through-highway immediate hazards during crossing",
+      "source": "NRS 484B.257(1)",
+      "status": "selected_required"
+    }
+  ],
+  "reviewed_evidence_candidates": [
+    {
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__accepted_source_1",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "source_review_candidate",
+      "measurement": "Original nearest-view point, slowdown or stop before entry, through-vehicle trajectory during crossing; authored settings do not establish outcome.",
+      "new_capture_selected": false,
+      "recording_id": "e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee",
+      "required_original_packets": [
+        "site_sign_and_exception_state",
+        "stop_line_and_near_crosswalk_absence",
+        "approach_view_station_readback",
+        "ego_motion_and_intersection_occupancy",
+        "through_vehicle_motion",
+        "four_camera_video"
+      ],
+      "review_status": "pending_original_trace_and_video"
+    },
+    {
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__accepted_source_2",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "source_review_candidate",
+      "measurement": "Original nearest-view point, slowdown or stop before entry, through-vehicle trajectory during crossing; authored settings do not establish outcome.",
+      "new_capture_selected": false,
+      "recording_id": "9f9884de772c537608d1a3c2d71c4be6e2526081cc3689466a6ae72faf39b7c6",
+      "required_original_packets": [
+        "site_sign_and_exception_state",
+        "stop_line_and_near_crosswalk_absence",
+        "approach_view_station_readback",
+        "ego_motion_and_intersection_occupancy",
+        "through_vehicle_motion",
+        "four_camera_video"
+      ],
+      "review_status": "pending_original_trace_and_video"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Frozen C158190 cell control is stop_sign while selected branch requires yield_sign. Source-reviewed approval for a yield-control variant is absent.",
+    "Only two accepted metadata files are exported. No original trace, video, sign/marking survey, view-ray survey, or through-highway route/motion packet is exported.",
+    "The source-gated construction adapter and through-motion comparison audit pass synthetic CPU tests, but selected manifest, saved finalizer, canonical semantic proposals and delivery proofs require an actual reviewed site source and current Native integration."
+  ],
+  "selected_branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+      "cell_id": "C158190",
+      "law_id": "NRS-484B-257-1",
+      "worker_binding": {
+        "batch_id": "demo-test-full-branches-v7",
+        "package_sha256": "3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326"
+      }
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
@@ -201,209 +384,19 @@
       "sha256": "517eea86aba32370c63db8b4a0601437d44d783016dc4299d96005afe7698fab"
     }
   ],
-  "existing_evidence": [
-    "e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee",
-    "9f9884de772c537608d1a3c2d71c4be6e2526081cc3689466a6ae72faf39b7c6"
-  ],
-  "runtime_uncertainties": [
-    "Frozen C158190 cell control is stop_sign while selected branch requires yield_sign. Source-reviewed approval for a yield-control variant is absent.",
-    "Only two accepted metadata files are exported. No original trace, video, sign/marking survey, view-ray survey, or through-highway route/motion packet is exported.",
-    "The source-gated construction adapter and through-motion comparison audit pass synthetic CPU tests, but selected manifest, saved finalizer, canonical semantic proposals and delivery proofs require an actual reviewed site source and current Native integration."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
-    "facts": [
-      {
-        "recording_id": "e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_response, and decoder_passed=None. Frozen review context describes the authored setting as: near side sidewalk derived crosswalk response",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/accepted/e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee/metadata.json",
-            "sha256": "f5f55260c7f61689c6f160d91f42aca481aa877373588c43c6fde88a05126e05"
-          },
-          {
-            "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "81bd72a571b706d3f71deb1d5f8574329d774b41226f779c517faea9eea02183"
-          }
-        ]
-      },
-      {
-        "recording_id": "9f9884de772c537608d1a3c2d71c4be6e2526081cc3689466a6ae72faf39b7c6",
-        "demonstrated_fact": "Frozen metadata reports status accepted, 900 frames, case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__near_side_sidewalk_derived_crosswalk_uninterrupted, and decoder_passed=None. Frozen review context describes the authored setting as: near side sidewalk derived crosswalk uninterrupted",
-        "limitations": "Metadata alone does not establish law-specific physical measurements, comparison isolation, or visibility; underlying original trace and video are not present in this export. The review context identifies requested/authored settings, not measured outcomes; its judgment labels remain unresolved.",
-        "sources": [
-          {
-            "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/accepted/9f9884de772c537608d1a3c2d71c4be6e2526081cc3689466a6ae72faf39b7c6/metadata.json",
-            "sha256": "c0f199685a58fd3d8b48d76dbf644c14adfef583b45b9ab5673b29a6180c1e14"
-          },
-          {
-            "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "81bd72a571b706d3f71deb1d5f8574329d774b41226f779c517faea9eea02183"
-          }
-        ]
-      }
-    ],
-    "gaps": [
-      {
-        "id": "unverified-law-coverage",
-        "requirement": "Prepare and review evidence for these assigned branches: Yield sign; neither stop line nor crosswalk; nearest-view location.. Verify any existing accepted evidence before selecting a new recording.",
-        "source": {
-          "path": "inputs/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
-          "sha256": "8ffaac8f74a9d8cb5b03196bf077f095b876662e3acf3cfc3809406fc87e7d94"
-        },
-        "why_existing_insufficient": "The frozen inventory gives acceptance metadata, not source-bound proof of every law branch, physical observation or comparison."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection."
   },
-  "judgment_range_inventory": [
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"ego_speed\", \"m/s\", {\"method\": \"Minimum original raw subject speed from actual approach peak before line through first leading physical-line crossing; retain all raw velocity/displacement/controls and exact-zero samples separately. Request0/.5m/s is not a legal threshold or required precisely realized speed.\", \"statistic\": \"min\", \"time_window\": \"Measured original approach-peak frame through first actual leading-body crossing of upstream Native physical line edge; full original history remains delivered\"}]",
-      "minimum": 0.0,
-      "maximum": 0.008092836273277232,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"immediate hazard\"}, \"through_vehicle_center_station\", \"m\", {\"method\": \"Initial through vehicle actual Native center y in the first original frame matched to observed engineering all-at-reference event. Preserve min eight-vertex y minus7m separately as through_vehicle_phase.\", \"statistic\": \"first\", \"time_window\": \"Original observed reference event after subject initial stopping/wait; whole crossing histories independently retained\"}]",
-      "minimum": 0.045348070561885834,
-      "maximum": 40.04802322387695,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yield the right-of-way\"}, \"ego_speed\", \"m/s\", {\"method\": \"Minimum original raw subject speed from actual approach peak before line through first leading physical-line crossing; retain all raw velocity/displacement/controls and exact-zero samples separately. Request0/.5m/s is not a legal threshold or required precisely realized speed.\", \"statistic\": \"min\", \"time_window\": \"Measured original approach-peak frame through first actual leading-body crossing of upstream Native physical line edge; full original history remains delivered\"}]",
-      "minimum": 0.0,
-      "maximum": 0.008092836273277232,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    },
-    {
-      "set": "full-test",
-      "key": "[\"NRS-484B-257-1\", \"motor_vehicle_driver\", {\"note\": \"\", \"phrase\": \"yield the right-of-way\"}, \"through_vehicle_center_station\", \"m\", {\"method\": \"Initial through vehicle actual Native center y in the first original frame matched to observed engineering all-at-reference event. Preserve min eight-vertex y minus7m separately as through_vehicle_phase.\", \"statistic\": \"first\", \"time_window\": \"Original observed reference event after subject initial stopping/wait; whole crossing histories independently retained\"}]",
-      "minimum": 0.045348070561885834,
-      "maximum": 40.04802322387695,
-      "missing": [
-        "below",
-        "inside",
-        "above"
-      ]
-    }
-  ],
-  "planning_status": "selected_source_pending_cpu_construction",
   "witness_review": [
     {
+      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+      "confidence": null,
+      "decision": null,
+      "reason": null,
+      "required_context": [],
       "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/assignment.json",
       "source_index": null,
-      "source_sha256": "997282ae8e7a44d85cca4b4dd5c4035426094aefcac524bcbe7203901d2a4421",
-      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "decision": null,
-      "confidence": null,
-      "required_context": [],
-      "reason": null
+      "source_sha256": "997282ae8e7a44d85cca4b4dd5c4035426094aefcac524bcbe7203901d2a4421"
     }
-  ],
-  "prior_review_context": {
-    "comparison_ids": [
-      "stop_near_side_sidewalk_derived_crosswalk"
-    ],
-    "remaining_requirements_note": null
-  },
-  "reviewed_evidence_candidates": [
-    {
-      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__accepted_source_1",
-      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "kind": "source_review_candidate",
-      "recording_id": "e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee",
-      "new_capture_selected": false,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "review_status": "pending_original_trace_and_video",
-      "required_original_packets": [
-        "site_sign_and_exception_state",
-        "stop_line_and_near_crosswalk_absence",
-        "approach_view_station_readback",
-        "ego_motion_and_intersection_occupancy",
-        "through_vehicle_motion",
-        "four_camera_video"
-      ],
-      "measurement": "Original nearest-view point, slowdown or stop before entry, through-vehicle trajectory during crossing; authored settings do not establish outcome."
-    },
-    {
-      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__accepted_source_2",
-      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "kind": "source_review_candidate",
-      "recording_id": "9f9884de772c537608d1a3c2d71c4be6e2526081cc3689466a6ae72faf39b7c6",
-      "new_capture_selected": false,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "review_status": "pending_original_trace_and_video",
-      "required_original_packets": [
-        "site_sign_and_exception_state",
-        "stop_line_and_near_crosswalk_absence",
-        "approach_view_station_readback",
-        "ego_motion_and_intersection_occupancy",
-        "through_vehicle_motion",
-        "four_camera_video"
-      ],
-      "measurement": "Original nearest-view point, slowdown or stop before entry, through-vehicle trajectory during crossing; authored settings do not establish outcome."
-    }
-  ],
-  "selected_branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-  "requirement_dispositions": [
-    {
-      "requirement": "Proper yield sign with no stop line or near crosswalk; nearest view, slow or stop, and yield to through-highway immediate hazards during crossing",
-      "source": "NRS 484B.257(1)",
-      "status": "selected_required",
-      "evidence_or_gap": "Three selected source-gated cases and two fixed-site comparisons; original reviewed yield-control site, view and through motion absent",
-      "case_ids": [
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard",
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard"
-      ],
-      "disposition_index": 0
-    }
-  ],
-  "camera_plan": {
-    "profile": "four-view-20hz-45s-v1",
-    "duration_s": 45,
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "view": "overview",
-        "subject": "yield sign, no line/crosswalk and full intersection",
-        "interval": "all 45 s"
-      },
-      {
-        "view": "approach",
-        "subject": "ego response at nearest view point",
-        "interval": "approach and crossing"
-      },
-      {
-        "view": "reference_corner",
-        "subject": "through traffic and nearest-view geometry",
-        "interval": "approach and crossing"
-      },
-      {
-        "view": "driver_reference",
-        "subject": "ego/through sightline",
-        "interval": "approach and crossing"
-      }
-    ]
-  }
+  ]
 }

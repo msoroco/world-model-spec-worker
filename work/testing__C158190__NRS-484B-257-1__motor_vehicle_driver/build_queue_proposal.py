@@ -36,7 +36,7 @@ def build() -> dict:
                                        "--output \"$PROCESSED\" --library runtime/library "
                                        "--validator \"$LEAN_VALIDATOR\" "
                                        "--owner-release-receipt \"$OWNER_RELEASE_RECEIPT\""),
-            "additional_source_audit_command": (f".venv-cpu/bin/python work/{ASSIGNMENT}/"
+            "additional_source_audit_command": (f"CASE_ID='{case_id}' .venv-cpu/bin/python work/{ASSIGNMENT}/"
                                                 "through_motion_measurement.py --original "
                                                 "\"$ORIGINAL_PACKET\" --output \"$SOURCE_AUDIT_RECEIPT\""),
             "accept_command": (common + "accept-delivery " + dispatch +

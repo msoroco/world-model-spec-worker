@@ -17,6 +17,14 @@ TESTS = tuple(sorted("tests/" + p.name for p in (ROOT / "tests").glob("test*.py"
                      if p.name != "test_source_and_queue.py"))
 CHANNELS = ("yield_sign_and_marking", "nearest_view_stations", "ego_motion_and_crossing",
             "through_vehicle_motion", "governing_control", "original_four_camera_pixels")
+ACQUISITION = {
+    "yield_sign_and_marking": ("native_capture.py", "reviewed-site.json and reviewed-sources.json", "SHA-verified reviewed yield sign and marking survey"),
+    "nearest_view_stations": ("yield_view_measurement.py", "original-trace.jsonl and reviewed-view_ray_survey_sha256.source", "Original approach samples projected against reviewed view rays"),
+    "ego_motion_and_crossing": ("native_capture.py", "original-trace.jsonl", "20 Hz original ego body and crossing readback"),
+    "through_vehicle_motion": ("native_capture.py", "original-trace.jsonl", "20 Hz original through-vehicle body readback"),
+    "governing_control": ("native_capture.py", "context.json and original-trace.jsonl", "Reviewed control joined to original frame observations"),
+    "original_four_camera_pixels": ("native_capture.py", "cameras.json and four source MKV streams", "Synchronized original RGB readback and source video hashes"),
+}
 
 
 def sha(data):
@@ -30,6 +38,9 @@ def write(path, value):
 
 def main():
     plan = json.loads((ROOT / "case-plan.json").read_text())
+    original = json.loads((REPO / "inputs" / ASSIGNMENT / "assignment.json").read_text())
+    prior_path = ROOT / "execution-manifest.json"
+    prior = {entry["case_id"]: entry for entry in json.loads(prior_path.read_text()).get("cases", [])} if prior_path.exists() else {}
     ids = [case["case_id"] for case in plan["cases"]]
     record = {"channels": [{"name": name, "unit": "structured", "sampling_rate_hz": 20,
                             "time_window": "all 900 original frames", "reference_frame": "reviewed original yield intersection",
@@ -94,7 +105,7 @@ def main():
                     "negative": {"remove": ["context.json"],
                                  "error_contains": "Missing required source: context.json"}}
         write(folder / "measurement-contract.json", contract)
-        manifest["cases"].append({"case_id": case_id, "kind": "delivery",
+        entry = {**prior.get(case_id, {}), "case_id": case_id, "kind": "delivery",
                                   "status": "source_pending", "construction": str(target.relative_to(ROOT)),
                                   "construction_sha256": digest,
                                   "measurement_contract": str((folder / "measurement-contract.json").relative_to(ROOT)),
@@ -102,7 +113,12 @@ def main():
                                                             "method": "source-bound original nearest-view and through-motion measurement"},
                                   "missing_proofs": ["reviewed_yield_site", "original_native_capture",
                                                      "positive_negative_compatibility", "saved_only_original",
-                                                     "physical_preparation", "delivery_acceptance"]})
+                                                     "physical_preparation", "delivery_acceptance"]}
+        entry["acquisition"] = {name: {"entrypoint": source, "evidence": evidence, "method": method}
+                                for name, (source, evidence, method) in ACQUISITION.items()}
+        if "delivery_acceptance" in entry:
+            entry["delivery_acceptance"]["sets"] = original["selection_targets"]
+        manifest["cases"].append(entry)
     write(ROOT / "execution-manifest.json", manifest)
     print(len(manifest["cases"]), "source-pending selected bundles")
 

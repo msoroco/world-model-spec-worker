@@ -107,7 +107,13 @@ def main() -> None:
     checksum = args.site_sha256 or os.environ.get("ROUTE_SITE_SHA256")
     if site is None or not checksum or args.output_dir is None:
         parser.error("original route capture requires reviewed site path, SHA-256 and output")
-    print(json.dumps(execute(case_id, site, checksum, args.output_dir, args.host, args.port)))
+    try:
+        print(json.dumps(execute(case_id, site, checksum, args.output_dir, args.host, args.port)))
+    except BaseException as error:
+        if args.output_dir.is_dir():
+            (args.output_dir / "native-run-status.json").write_text(json.dumps({
+                "errors": [repr(error)], "physical_acceptance_claimed": False}) + "\n")
+        raise
 
 
 if __name__ == "__main__":

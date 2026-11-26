@@ -24,8 +24,8 @@ def main() -> None:
     for entry in manifest["cases"]:
         case = entry["case_id"]
         tag = case.rsplit("__", 1)[-1]
-        attempt = PRIVATE / ("saved-compat-" + tag + "-v1")
-        output = PRIVATE / ("saved-" + tag + "-v1")
+        attempt = PRIVATE / ("saved-compat-" + tag + "-v2")
+        output = PRIVATE / ("saved-" + tag + "-v2")
         compat = [sys.executable, str(REPO / "runtime.py"), "compatibility",
                   "--manifest", str(MANIFEST), "--case", case,
                   "--output", str(attempt), "--library", str(REPO / "runtime/library"),

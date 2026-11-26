@@ -18,7 +18,7 @@ def sha(path: Path) -> str:
 
 
 def main() -> None:
-    scratch = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) / "c179789-offline-v2"
+    scratch = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) / "c179789-offline-v3"
     scratch.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:

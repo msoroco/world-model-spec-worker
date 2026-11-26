@@ -1,37 +1,27 @@
 # testing__C179789__NRS-484B-627-1c__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: delivery prepared; exact scoped strict acceptance passed. Ten selected cases and five controlled comparisons for NRS 484B.627(1)(c), motor vehicle driver, C179789.
 
-Exact law: NRS 484B.627(1)(c) — If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway is a controlled-access highway, use alternate routes whenever possible.
-Assigned branch(es): Controlled-access alternate-route duty with paved-road context..
-Cell: C179789 (paved_road, travel, other_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The original controlled-access route site, map classification, route and restriction review, follower placement, alternate feasibility and 900-frame four-view physical capture remain source gates. The package contains no accepted original recording. Diagnostic fixtures exercise CPU contracts only. The engineering speed and alternate-entry sweeps are coverage points, not legal thresholds. Original impediment, immediately-behind and whenever-possible judgments remain unresolved for physical review.
 
-## Next CPU actions
+## CPU proof results
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C179789__NRS-484B-627-1c__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+- Nine focused construction and source-rejection unit tests pass.
+- Pinned selected semantic validator passes seven stages for ten cases.
+- Twenty exact primary/fallback offline checks pass.
+- Twenty pinned compatibility checks pass, including saved analysis, source-removal negative, Native validation, Core conversion, Lean validation and four-view video decode.
+- Ten recorded-only saved replays pass.
+- Ten three-outcome physical preparation and lifecycle proofs pass.
+- Ten independent delivery positive/negative audits pass.
+- Five comparison audits pass, including stale-site negative checks.
 
-## Proven checks and dependency boundary
+The source-gated Native runner validates a SHA-bound reviewed route site and map before CARLA use, captures distinct ego and follower trajectories at 20 Hz for 900 frames with four synchronized views, records route and following observations, restores simulator settings and provides saved-only analysis. The queue proposal uses pinned prepare, execute and accept commands. All ten owner release commands bind the exact case ID through CASE_ID. Eighty-five proposed commands passed Bash syntax and case binding checks. The pinned queue validator reached only the shared local integration proof boundary when exercised on this proposal; shared queue integration remains lead-owned.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+Exact scoped check: `.venv-cpu/bin/python worker_check.py --assignment testing__C179789__NRS-484B-627-1c__motor_vehicle_driver --complete --require-delivery-ready`. The exact scoped strict gate exited 0; output is in `strict-final.log`.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Stable files
 
-## CPU construction checkpoint
-
-Added `alternate_route.py` for four exact physical probes: alternate selected, available but not selected, restricted alternate, and ordinary-road classification contrast. The source-gated lazy constructor requests common approach, divergent main/alternate routes, ego and following vehicle and cleans owned actors on failure. Original measurement joins 900 frames, identities, shared segment, following gap, both speeds and actual terminal route. Legal controlled-access classification, so-slow impediment, immediately-behind and possibility judgments remain unresolved.
-
-Four focused CPU tests pass, including all probes and negative route/restriction/source, participant identity, actual-route and cleanup paths. Pinned preflight and scoped static pass. Exact scoped strict exits 1 because package status remains partial. The diagnostic graph is synthetic. Physical controlled-access classification and alternate feasibility need original evidence; canonical capture/offline/compatibility, semantic proposals and independent saved delivery/comparison audits remain worker-owned CPU work.
-
-Proof SHA256:
-
-- `alternate_route.py`: `6b5b73b31c758cdd413777ac42a6740cb36cdc83afaf924545409e1e0c618e74`
-- `tests/test_alternate_route.py`: `55e235b442438ffddc580b8104bcc9cb3c0c1538c536e4560f9d1e322b692226`
-- `cpu-tests.log`: `323bd6fe09a3bf8c87eee4ec31726a753c74f2ce797f59a012790373cfdb8d04`
-- `cpu-preflight.log`: `41ce1b504e3260e67e0ddfea9f85c45bdcf874d084c3f9dccb3f7538493ba647`
-- `cpu-static-check.log`: `38626eef611456a5d0f0712d46a9ac84a36a01009a280abf0bd6058403581313`
-- `cpu-strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+- `execution-manifest.json` SHA256: 553bb9fe2e9afe44163d07c1518f504de1df4c89cc516d51e2c036a6e5b8dbbf
+- `gpu-queue-proposal.json` SHA256: d2f24a722fac9b79d3f021492d559d8d75cd48710f6a1a0a27a2f104cfaae032
+- `case-plan.json` SHA256: 8ce5da32673759d9d92366e77efe8fb5080b545f9fdc149d3ebabc286caaf558
+- `result.json` SHA256 is reported separately because this handoff and the exact gate may update after this checkpoint.
