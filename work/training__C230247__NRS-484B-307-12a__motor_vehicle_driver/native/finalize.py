@@ -86,7 +86,8 @@ def finalize(attempt,output):
         name=channel['name']
         path=channels/(name.replace('/','_')+'.jsonl')
         path.write_text(''.join(json.dumps({'time_s':row['time_s'],
-            'value':{'indication':row['signal']['indication'],
+            'value':row['vehicle']['lane_id'] if name=='rel.occupies' else {
+            'indication':row['signal']['indication'],
             'signal_lane_id':row['signal']['lane_id'],
             'occupied_lane_id':row['vehicle']['lane_id'],
             'proposed_lane_id':row['vehicle']['proposed_lane_id']}},
@@ -116,6 +117,11 @@ def finalize(attempt,output):
         'recording_description':cfg['recording_description'],
         'recording_evidence':channel_refs,
         'realized_observables':{
+            'rel.occupies':{'value':signal_rows[0]['vehicle']['lane_id'],
+                'unit':'lane_id','method':'original actor body and waypoint projection',
+                'time_window':'600 original frames','statistic':'first',
+                'reference':'channels/rel.occupies.jsonl',
+                'sample_window_s':[signal_rows[0]['time_s'],signal_rows[-1]['time_s']]},
             'facing_green_proposed_frames':{'value':arrow_frames,'unit':'frames',
                 'method':'original Native signal and actor frame join','time_window':'600 frames',
                 'statistic':'count','reference':'native-signal-rows.jsonl'},

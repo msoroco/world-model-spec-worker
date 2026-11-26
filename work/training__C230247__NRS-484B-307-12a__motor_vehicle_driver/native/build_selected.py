@@ -12,7 +12,7 @@ CAMERAS=[{'name':name,'width':width,'height':height,
           'fov_deg':85} for name,width,height in (
     ('overview',1920,1080),('approach',1280,720),
     ('reference_corner',1280,720),('driver_reference',1280,720))]
-CHANNELS=[{'name':name,'unit':'structured','method':'original Native 600-frame signal, map and actor source join',
+CHANNELS=[{'name':name,'unit':'lane_id' if name=='rel.occupies' else 'structured','method':'original Native 600-frame signal, map and actor source join',
            'sampling_rate_hz':20,'time_window':'30 s / 600 original frames',
            'reference_frame':'original Native map and frame',
            'uncertainty':'official authority and actual pixels pending independent local review'}
@@ -38,7 +38,8 @@ def build():
              'law_id':'NRS-484B-307-12a','cell_id':'C230247',
              'actor':'motor_vehicle_driver','rate_hz':20,'duration_s':30,
              'cameras':CAMERAS,'required_atoms':[],'source_packets':[],
-             'case':{'case_id':case_id,'target_lane_id':lane},
+             'case':{'case_id':case_id,'target_lane_id':lane,
+                     'recording_description':RECORDING},
              'recording_description':RECORDING,
              'physical_completion':{'criterion':'travel_progress',
                 'motion_source':'trace.jsonl','position_key':'position_m',
@@ -107,7 +108,7 @@ def build():
             'candidates':[]}
         offline_log=ROOT/f'selected-{tag}-offline.log'
         if offline_log.is_file() and json.loads(offline_log.read_text()).get('offline_passed') is True:
-            entry['offline']={'command':f'TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230247 .venv-cpu/bin/python -B runtime.py offline --manifest work/{ASSIGNMENT}/execution-manifest.json --case {case_id} --output .runtime-work/c230247-selected-{tag}-20261126g',
+            entry['offline']={'command':f'TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230247 .venv-cpu/bin/python -B runtime.py offline --manifest work/{ASSIGNMENT}/execution-manifest.json --case {case_id} --output .runtime-work/c230247-selected-{tag}-20261126i',
                 'exit_code':0,'construction_sha256':entry['construction_sha256'],
                 'log':offline_log.name,
                 'log_sha256':hashlib.sha256(offline_log.read_bytes()).hexdigest()}

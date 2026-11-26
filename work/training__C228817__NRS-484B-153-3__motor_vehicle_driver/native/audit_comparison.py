@@ -1,4 +1,4 @@
-"""Independent source-bound comparison for the two door-duration probes.
+"""Independent source-bound comparison for passenger and cargo duration pairs.
 
 This compares original Native trace envelopes; it does not decide whether an
 observed interval was necessary for immediate loading or unloading.
@@ -35,10 +35,10 @@ def _context(packet: dict) -> dict:
 
 
 def compare(reference: dict, contrast: dict) -> dict:
-    if reference.get("case_id", "").split("__")[-1] != "probe_1" or contrast.get("case_id", "").split("__")[-1] != "probe_2":
+    if not any(reference.get("case_id", "").endswith("__probe_" + str(a)) and
+               contrast.get("case_id", "") == reference["case_id"].removesuffix(str(a)) + str(b)
+               for a, b in ((1, 2), (3, 4))):
         raise ValueError("exact probe order required")
-    if reference.get("case_id", "").removesuffix("probe_1") != contrast.get("case_id", "").removesuffix("probe_2"):
-        raise ValueError("comparison cases must share assignment")
     left = _context(reference)
     right = _context(contrast)
     changed = [key for key in FIXED if left[key] != right[key]]

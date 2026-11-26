@@ -1,4 +1,4 @@
-"""Bind exact source files into both draft Native constructions."""
+"""Bind exact source files into four draft Native constructions."""
 
 import hashlib
 import json
@@ -24,7 +24,7 @@ def sha(path):
 def build():
     manifest = {"format": "draft-execution-manifest", "assignment_id": ASSIGNMENT,
                 "status": "draft_not_selected", "cases": []}
-    for number in (1, 2):
+    for number in (1, 2, 3, 4):
         case_id = ASSIGNMENT + "__probe_" + str(number)
         files = [{"path": name, "content": (ROOT / source).read_text()}
                  for name, source in SOURCES.items()]
@@ -37,6 +37,7 @@ def build():
                           "reference_frame": "original Native tick and camera frame map",
                           "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"}
                          for name in channels],
+            "context_inputs": [],
             "limitations": [
                 "Door pose, occupant transfer and camera visibility require original-source review",
                 "Legal necessity duration remains unresolved"]}

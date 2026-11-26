@@ -1,0 +1,69 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "NRS-484B-153-3",
+      "source": "NRS 484B.153(3)",
+      "output_key": "door_open_duration",
+      "method": "measure_open_duration",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-door-trace.jsonl",
+        "video_frames.jsonl",
+        "door-pixel-review.json",
+        "original-scene-review.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "NRS-484B-153-3",
+      "source": "NRS 484B.153(3)",
+      "output_key": "traffic_side_orientation",
+      "method": "measure_traffic_side",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "door-pixel-review.json",
+        "original-road.json",
+        "native-door-trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "NRS-484B-153-3",
+      "source": "NRS 484B.153(3)",
+      "output_key": "passenger_or_cargo_transfer",
+      "method": "measure_transfer",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "door-pixel-review.json",
+        "original-transfer.json",
+        "native-door-trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "NRS-484B-153-3",
+      "source": "NRS 484B.153(3)",
+      "output_key": "necessity_context",
+      "method": "measure_necessity_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "door-pixel-review.json",
+        "original-scene-review.json",
+        "native-door-trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "original-scene-review.json"
+    ],
+    "error_contains": "Missing required source: original-scene-review.json"
+  }
+}

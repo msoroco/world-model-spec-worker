@@ -95,6 +95,66 @@ def measure_open_duration(root, report):
         "sources": {name: digest(required(root, name)) for name in sources}}
 
 
+def measure_traffic_side(root, report):
+    sources = ("door-pixel-review.json", "original-road.json",
+               "native-door-trace.jsonl")
+    return {"value": {"observed_door_side": report["door_side"],
+                      "observed_passing_side": report["passing_side"],
+                      "traffic_side_door": report["door_side"] == report["passing_side"]},
+            "method": "measure_traffic_side",
+            "sources": {name: digest(required(root, name)) for name in sources}}
+
+
+def measure_transfer(root, report):
+    sources = ("door-pixel-review.json", "original-transfer.json",
+               "native-door-trace.jsonl")
+    return {"value": {"reviewed_transfer_kinds": report["transfer_kinds"],
+                      "transfer_frame": 200},
+            "method": "measure_transfer",
+            "sources": {name: digest(required(root, name)) for name in sources}}
+
+
+def measure_necessity_context(root, report):
+    sources = ("door-pixel-review.json", "original-scene-review.json",
+               "native-door-trace.jsonl", "video_frames.jsonl")
+    return {"value": {"post_transfer_open_s": report["post_transfer_open_s"],
+                      "loading_activity_source": "door-pixel-review.json#transfer_events",
+                      "necessity_requires_contextual_review": True},
+            "method": "measure_necessity_context",
+            "sources": {name: digest(required(root, name)) for name in sources}}
+
+
+def derived_channels(root, config, frame_rows, trace, packet, measured):
+    """Write derived channel streams after all original joins have passed."""
+    names = [item["name"] for item in config["recording_description"]["channels"]]
+    expected = ["sig.door_open", "kin.time", "drv.standing_or_parked",
+                "ru.occupant_count", "ru.pedestrian", "st.lane"]
+    if names != expected:
+        raise ValueError("Frozen door recording description differs")
+    channel_dir = root / "channels"
+    channel_dir.mkdir(exist_ok=True)
+    transfer_by_frame = {event["video_frame"]: event for event in packet["transfer_events"]}
+    values = {
+        "sig.door_open": lambda i: frame_rows[i]["door_open"],
+        "kin.time": lambda i: frame_rows[i]["native_time_s"],
+        "drv.standing_or_parked": lambda i: abs(trace[i]["ego_speed_mps"]) <= 0.15,
+        "ru.occupant_count": lambda i: {"observed_delta":
+            transfer_by_frame[i].get("occupancy_delta") if i in transfer_by_frame else None,
+            "source_ref": "door-pixel-review.json#transfer_events" if i in transfer_by_frame else None},
+        "ru.pedestrian": lambda i: {"actor_id": trace[i].get("pedestrian_actor_id"),
+            "position_m": trace[i].get("pedestrian_position_m")},
+        "st.lane": lambda i: {"passing_side": measured["passing_side"],
+            "door_side": measured["door_side"],
+            "lateral_offset_m": trace[i]["passing_lateral_offset_m"]},
+    }
+    for name in names:
+        (channel_dir / (name + ".jsonl")).write_text("".join(json.dumps({
+            "time_s": frame_rows[i]["native_time_s"], "value": values[name](i)},
+            allow_nan=False) + "\n" for i in range(FRAME_COUNT)))
+    return [{"name": name, "unit": "structured",
+             "reference": "channels/" + name + ".jsonl"} for name in names]
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
     if output.exists() or (attempt / "result.json").exists():
@@ -124,6 +184,9 @@ def finalize(attempt, output):
         original = required(attempt, "original-" + name + ".json")
         if sources.get(name, {}).get("sha256") != digest(original):
             raise ValueError("Original scene source hash differs: " + name)
+    transfer_setup = json.loads(required(attempt, "original-transfer.json").read_text())
+    if transfer_setup.get("kind") != config.get("transfer_kind", "passenger"):
+        raise ValueError("Original transfer setup differs from selected alternative")
     driver = trace[0].get("driver_actor_id")
     passing = trace[0].get("passing_actor_id")
     if not driver or not passing or driver == passing:
@@ -169,15 +232,51 @@ def finalize(attempt, output):
         source = dict(event)
         source["source_ref"] = "door-pixel-review.json#transfer_events"
         if source["kind"] == "passenger":
+            if config.get("transfer_kind", "passenger") != "passenger":
+                raise ValueError("Reviewed transfer differs from selected alternative")
             source["pedestrian_actor_id"] = trace[0].get("pedestrian_actor_id")
             source["occupancy_delta"] = source["occupancy_delta_observed"]
         else:
+            if config.get("transfer_kind") != "cargo" or \
+                    source["cargo_actor_id_observed"] != trace[0].get("cargo_actor_id"):
+                raise ValueError("Reviewed cargo differs from original Native actor")
             source["cargo_actor_id"] = source["cargo_actor_id_observed"]
         packet["transfer_events"].append(source)
     measured = measure(packet)
+    recording_evidence = derived_channels(attempt, config, frame_rows, trace, packet, measured)
+    from worker_exchange.native_output import write_result
+    result = {"case_id": config["case_id"],
+        "measured_values": {"open_duration_s": measured["open_duration_s"],
+                            "post_transfer_open_s": measured["post_transfer_open_s"]},
+        "target_checks": [{"target": "observed traffic-side door open duration",
+            "requested": config.get("schedule"),
+            "measured": measured["open_duration_s"],
+            "method": "independently reviewed source camera frames joined to Native time",
+            "tolerance": None, "matched": None,
+            "physical_cause_confirmed": False,
+            "cause_evidence": ["door-pixel-review.json", "native-door-trace.jsonl"]}],
+        "setup_confirmed": False, "behavior_attempted": False,
+        "maneuver_completed": False,
+        "termination_reason": "Saved exact window measured; physical and legal review separate",
+        "physical_failure_flags": ["original_physical_completion_review_required"],
+        "trace_reference": "trace.jsonl",
+        "video_references": [name + ".mkv" for name in VIEWS],
+        "video_frame_map_reference": "video_frames.jsonl",
+        "recording_description": config["recording_description"],
+        "recording_evidence": recording_evidence,
+        "realized_observables": {"open_duration_s": {
+            "value": measured["open_duration_s"], "unit": "s", "statistic": "interval",
+            "method": "reviewed pixels with original Native frame/time join",
+            "time_window": "600 original frames", "sample_window_s": [0, 599 / 20],
+            "reference": "channels/sig.door_open.jsonl"}},
+        "legal_verdict_claimed": False, "physical_acceptance_claimed": False}
+    write_result(attempt, result)
     report = {"format": "c228817-door-saved-analysis-v1",
         "case_id": config["case_id"],
-        "measurements": {"door_open_duration": measure_open_duration(attempt, measured)},
+        "measurements": {"door_open_duration": measure_open_duration(attempt, measured),
+                         "traffic_side_orientation": measure_traffic_side(attempt, measured),
+                         "passenger_or_cargo_transfer": measure_transfer(attempt, measured),
+                         "necessity_context": measure_necessity_context(attempt, measured)},
         "measured": measured,
         "original_source_hashes": {name: digest(required(attempt, name)) for name in (
             "native-door-trace.jsonl", "video_frames.jsonl", "door-pixel-review.json",

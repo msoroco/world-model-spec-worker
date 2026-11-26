@@ -14,13 +14,19 @@ def main():
     manifest_cases=[]
     for suffix,(label,target_mps) in CASES.items():
       case=HERE.name+'__'+suffix
-      config={'case_id':case,'selected_case_id':case,
+      variants=[]
+      for candidate,starting_x in (('primary',-70.0),('fallback1',-60.0)):
+       config={'case_id':case,'selected_case_id':case,
       'supported_case_ids':[HERE.name+'__'+key for key in CASES],
-      'candidate_id':'primary','law_id':'NRS-484B-633-2','cell_id':'C32014',
+      'candidate_id':candidate,'initial_spawn_x_m':starting_x,
+      'law_id':'NRS-484B-633-2','cell_id':'C32014',
       'actor':'motor_vehicle_driver','rate_hz':20,'duration_s':30,'required_atoms':[],
       'source_packets':[],'case':{'case_id':case},
       'cameras':[{'name':name,'width':1920 if name == 'overview' else 1280,
-                 'height':1080 if name == 'overview' else 720} for name in
+                 'height':1080 if name == 'overview' else 720,
+                 'fov_deg':85,
+                 'pose_strategy':('attached ego driver reference' if name == 'driver_reference'
+                                  else 'fixed surveyed bridge view')} for name in
         ('overview','approach','reference_corner','driver_reference')],
       'recording_description':{'channels':[
         {'name':'original_velocity_position','unit':'structured','sampling_rate_hz':20,
@@ -33,10 +39,11 @@ def main():
         'limitations':['Department structural-safety investigation/determination absent',
                        'Original sign pixels and bridge mesh unverified']},
       'status':'partial_cpu_draft','requested_speed_mps':target_mps}
-      files=[{'path':name,'content':(HERE/'native'/name).read_text()}
+       config['case']['recording_description']=config['recording_description']
+       files=[{'path':name,'content':(HERE/'native'/name).read_text()}
         for name in ('runner.py','geometry.py','measure.py','finalize.py','tests/test_native.py')]
-      files.append({'path':'config.json','content':json.dumps(config,indent=2)+'\n'})
-      proposal={'case_id':case,'law_id':config['law_id'],'cell_id':config['cell_id'],
+       files.append({'path':'config.json','content':json.dumps(config,indent=2)+'\n'})
+       proposal={'case_id':case,'law_id':config['law_id'],'cell_id':config['cell_id'],
       'actor':config['actor'],'entrypoint':'runner.py','files':files,
       'recording_description':config['recording_description'],
       'measurement_plan':{'entrypoint':'finalize.py',
@@ -46,18 +53,27 @@ def main():
         'two 100-foot advance sign metadata records','four cameras, 600 frames'],
       'termination_rules':['600 original frames','restore world and destroy owned actors'],
       'mechanisms':[f'{target_mps}m/s request over surveyed structure',
+        f'spawn at {starting_x} m before the surveyed bridge',
         'measure actual post-tick speed only on elevated structure'],
       'status':'partial_native_execution_cpu_checked_physical_unverified'}
-      path=HERE/'draft-bridge'/label/'primary/construction.json'
-      path.parent.mkdir(parents=True,exist_ok=True)
-      path.write_text(json.dumps(proposal,indent=2)+'\n')
+       path=HERE/'draft-bridge'/label/candidate/'construction.json'
+       path.parent.mkdir(parents=True,exist_ok=True)
+       path.write_text(json.dumps(proposal,indent=2)+'\n')
+       variants.append((candidate,path))
+      primary=variants[0][1];fallback=variants[1][1]
       manifest_cases.append({'case_id':case,'kind':'delivery',
-        'construction':str(path.relative_to(HERE)),'construction_sha256':sha(path),
+        'construction':str(primary.relative_to(HERE)),'construction_sha256':sha(primary),
         'fixture_recipe':str((HERE/'diagnostic'/suffix/'fixture-recipe.json').relative_to(ROOT)),
         'measurement_contract':f'diagnostic/{suffix}/measurement-contract.json',
         'candidate_risk':{'status':'physical',
           'reason':'Native bridge mesh, sign pixels and actual speed require inspection'},
-        'candidates':[],'measurement_procedure':{'entrypoint':'finalize.py'},
+        'candidates':[{'id':'fallback1','construction':str(fallback.relative_to(HERE)),
+          'construction_sha256':sha(fallback),
+          'trigger':{'source':'original Native trajectory and camera audit',
+                     'metric':'first stable on-deck frame plus legible near sign pixels',
+                     'failure_condition':'primary has no stable on-deck frame or sign face leaves all views'},
+          'changed_knobs':['start 10 m closer to bridge; preserve requested speed and observation contract']}],
+        'measurement_procedure':{'entrypoint':'finalize.py'},
         'delivery_readiness':'incomplete'})
     manifest={'format':'worker-selected-cpu-draft-manifest-v1','assignment_id':HERE.name,
       'runtime_manifest_sha256':batch['runtime']['source_manifest_sha256'],

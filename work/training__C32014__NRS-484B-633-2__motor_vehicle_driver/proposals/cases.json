@@ -4,8 +4,23 @@
   "status": "draft",
   "cases": [
     {
-      "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01",
-      "target_type": "controlled_attempt",
+      "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral frozen bridge travel context, not a selected recording.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "maximum speed which can be maintained with safety to the bridge or structure"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -27,6 +42,62 @@
             "uncertainty": "physical pixels unverified"
           }
         ],
+        "context_inputs": [],
+        "limitations": [
+          "Department structural-safety investigation/determination absent",
+          "Original sign pixels and bridge mesh unverified"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-633-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare physical speed requests around the authored posting; original measured speed and Department authority remain separate.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 9.0
+        }
+      },
+      "unresolved_judgment_calls": [
+        "maximum speed which can be maintained with safety to the bridge or structure"
+      ],
+      "paired_probe_id": "bridge_speed_request_pair",
+      "deliberate_differences": [
+        "commanded_approach_speed"
+      ],
+      "probe": {
+        "primary_variable": "commanded_approach_speed",
+        "comparison_or_standard": "same authored bridge and posting; original on-deck speed measured without legal labeling",
+        "target_value_or_branch": 9.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "original_velocity_position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native post-tick actor velocity and transform",
+            "time_window": "600 frames",
+            "reference_frame": "bridge OpenDRIVE",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "structure_sign_survey",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native map/sign/elevation readback",
+            "time_window": "600 frames",
+            "reference_frame": "bridge road 1",
+            "uncertainty": "physical pixels unverified"
+          }
+        ],
+        "context_inputs": [],
         "limitations": [
           "Department structural-safety investigation/determination absent",
           "Original sign pixels and bridge mesh unverified"
@@ -35,7 +106,31 @@
     },
     {
       "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02",
-      "target_type": "controlled_attempt",
+      "target_law_id": "NRS-484B-633-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare physical speed requests around the authored posting; original measured speed and Department authority remain separate.",
+      "variable_assignments": {
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_approach_speed": {
+          "kind": "controller",
+          "value": 13.0
+        }
+      },
+      "unresolved_judgment_calls": [
+        "maximum speed which can be maintained with safety to the bridge or structure"
+      ],
+      "paired_probe_id": "bridge_speed_request_pair",
+      "deliberate_differences": [
+        "commanded_approach_speed"
+      ],
+      "probe": {
+        "primary_variable": "commanded_approach_speed",
+        "comparison_or_standard": "same authored bridge and posting; original on-deck speed measured without legal labeling",
+        "target_value_or_branch": 13.0
+      },
       "recording_description": {
         "channels": [
           {
@@ -57,11 +152,31 @@
             "uncertainty": "physical pixels unverified"
           }
         ],
+        "context_inputs": [],
         "limitations": [
           "Department structural-safety investigation/determination absent",
           "Original sign pixels and bridge mesh unverified"
         ]
       }
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "bridge_safe_speed_authority",
+      "target_law_id": "NRS-484B-633-2",
+      "judgment_refs": [
+        {
+          "phrase": "maximum speed which can be maintained with safety to the bridge or structure",
+          "note": "The Department investigation and declaration are independent administrative sources; authored sign metadata does not establish the safe maximum."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "The Department structural determination is not supplied; two engineering requests cannot resolve it.",
+      "missing_inputs": [
+        "Independent Department investigation and declaration for this structure",
+        "Original source and pixel review of qualifying bridge and maintained signs"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

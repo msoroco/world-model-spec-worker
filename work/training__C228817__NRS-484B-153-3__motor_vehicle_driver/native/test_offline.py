@@ -1,4 +1,4 @@
-"""Offline construction tests for both exact door-duration schedules."""
+"""Offline construction tests for passenger and cargo door-duration schedules."""
 
 import hashlib
 import json
@@ -18,7 +18,7 @@ class DoorNativeOfflineTest(unittest.TestCase):
         schedule = config["schedule"]
         commands = [command(schedule, frame) for frame in range(600)]
         self.assertEqual(sum(row["door_command"] == "open" for row in commands),
-                         112 if schedule == "closes_after_transfer" else 300)
+                         112 if schedule.endswith("closes_after_transfer") else 300)
         self.assertTrue(all(row["observed_door_open"] is None for row in commands))
 
     def test_missing_original_observation_remains_missing(self):
@@ -63,7 +63,8 @@ class DoorNativeOfflineTest(unittest.TestCase):
                           "road": ref("road.json", {"map_name": "Town03",
                               "frozen_cell": config["frozen_cell"],
                               "door_side": "left", "passing_side": "left"}),
-                          "transfer": ref("transfer.json", {"kind": "passenger", "frame": 200})},
+                          "transfer": ref("transfer.json", {"kind": config.get("transfer_kind", "passenger"),
+                              "frame": 200, "cargo_actor_id": "cargo-4"})},
                       "native_setup": {"ego_spawn_index": 0,
                                        "passing_spawn_index": 1,
                                        "walker_spawn_index": 2, "door": "FL"}}

@@ -1,4 +1,4 @@
-"""Prospective original Native capture for the two C228817 door cases.
+"""Prospective original Native capture for the C228817 door cases.
 
 Door commands and actor positions are recorded as separate facts. The capture
 does not turn a command into a measured door pose or an occupancy change.
@@ -21,7 +21,9 @@ from door_actuation import VIEWS, apply_door_command, validate_setup
 
 BASE = "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_"
 SCHEDULE = {BASE + "1": "closes_after_transfer",
-            BASE + "2": "remains_open"}
+            BASE + "2": "remains_open",
+            BASE + "3": "cargo_closes_after_transfer",
+            BASE + "4": "cargo_remains_open"}
 
 
 def _require(ok, message):
@@ -43,6 +45,9 @@ def check(config):
              "Full 600-frame 20 Hz capture required")
     _require(config.get("schedule") == SCHEDULE[case_id],
              "Exact door schedule differs")
+    kind = "cargo" if case_id.endswith(("3", "4")) else "passenger"
+    _require(config.get("transfer_kind", "passenger") == kind,
+             "Exact passenger/cargo alternative differs")
     cameras = config.get("cameras")
     _require(isinstance(cameras, list) and
              tuple(c.get("name") for c in cameras) == VIEWS,
@@ -59,11 +64,15 @@ def check(config):
              and config.get("passing_vehicle_blueprint") == "vehicle.tesla.model3"
              and config.get("walker_blueprint", "").startswith("walker.pedestrian."),
              "Original actor blueprints required")
+    if kind == "cargo":
+        _require(config.get("cargo_blueprint") == "static.prop.box01",
+                 "Identified cargo actor blueprint required")
     _require(config.get("physical_verified") is False
              and config.get("legal_verdict") is None
              and config.get("door_state_observed_by_command") is False,
              "Command cannot establish physical door motion or legal result")
     return {"case_id": case_id, "schedule": SCHEDULE[case_id],
+            "transfer_kind": kind,
             "frames": FRAMES, "source_cameras": list(VIEWS),
             "carla_contacted": False, "physical_verified": False}
 
@@ -106,6 +115,8 @@ def execute(config, output_dir, review_path, host, port):
     source = validate_setup(review, config["schedule"])
     _require(review.get("case_id") == config["case_id"],
              "Original scene review binds another exact case")
+    _require(source["transfer_kind_requested"] == checked["transfer_kind"],
+             "Original transfer source differs from selected alternative")
     # Read source-bound index/geometry choices before any simulator contact.
     setup = review.get("native_setup", {})
     _require(all(type(setup.get(name)) is int and setup[name] >= 0
@@ -159,6 +170,14 @@ def execute(config, output_dir, review_path, host, port):
                                        spawns[setup["walker_spawn_index"]])
         _require(walker is not None, "Passenger walker spawn occupied")
         actors.append(walker)
+        cargo = None
+        if checked["transfer_kind"] == "cargo":
+            cargo = world.try_spawn_actor(
+                blueprints.find(config["cargo_blueprint"]),
+                carla.Transform(carla.Location(x=0.3, y=0.0, z=1.0)),
+                attach_to=walker)
+            _require(cargo is not None, "Cargo actor spawn failed")
+            actors.append(cargo)
         # Native observed identifiers supersede authored source labels.
         _require(ego.id != passing.id and ego.id != walker.id and passing.id != walker.id,
                  "Original participant identities overlap")
@@ -214,6 +233,9 @@ def execute(config, output_dir, review_path, host, port):
                     "native_elapsed_s": timestamp, "time_s": index / 20,
                     "driver_actor_id": ego.id, "passing_actor_id": passing.id,
                     "pedestrian_actor_id": walker.id,
+                    "cargo_actor_id": cargo.id if cargo is not None else None,
+                    "cargo_position_m": _xyz(cargo.get_transform().location)
+                    if cargo is not None else None,
                     "ego_position_m": _xyz(ego.get_transform().location),
                     "ego_speed_mps": _speed(ego),
                     "passing_position_m": _xyz(passing.get_transform().location),

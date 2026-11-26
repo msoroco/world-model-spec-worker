@@ -52,7 +52,7 @@ def build():
             "observables": [{"name": "signal_facing_driver", "unit": "structured",
                 "description": "Original signal position, indication and actor travel direction"}],
             "context_inputs": [],
-            "sweep_dimensions": [{"name": "rel.occupies", "unit": "structured",
+            "sweep_dimensions": [{"name": "rel.occupies", "unit": "lane_id",
                 "description": "Measured original actor body and waypoint lane identity"}],
             "landmarks": [],
             "recording_needs": [{"name": "dev.lane_control_signal", "unit": "structured",
@@ -67,10 +67,14 @@ def build():
         "variable_parameters": [{**row, "used_by_laws": [LAW]} for row in parameters]})
     cases = json.loads((ROOT / "proposals" / "cases.json").read_text())
     for item in cases["cases"]:
+        if item.get("target_type") != "baseline":
+            tag = item["case_id"].rsplit("_", 1)[-1]
+            source = ROOT / "construction.json" if tag == "a" else ROOT / "cases/condition_b/construction.json"
+            item["recording_description"] = json.loads(source.read_text())["recording_description"]
         item["unresolved_judgment_calls"] = ["facing the signal"]
         item["variable_assignments"].pop("observed_occupied_lane_id", None)
         item["variable_assignments"]["rel.occupies"] = {
-            "kind": "subject_behavior", "unit": "structured", "value": None}
+            "kind": "subject_behavior", "unit": "lane_id", "value": None}
     cases["cases"].sort(key=lambda item: item["variable_assignments"]["target_lane_id"]["value"])
     selected = [item for item in cases["cases"] if item["target_type"] != "baseline"]
     sweep_id = ROOT.name + "__selected_378a10ff__comparison"
@@ -80,7 +84,7 @@ def build():
         "rationale": "Vary proposed lane while holding the downward arrow and road context fixed; no legal threshold or adjacent-lane prohibition is inferred.",
         "status": "complete", "mode": "one_dimensional",
         "axes": [{"variable": "target_lane_id", "observable": "rel.occupies",
-            "unit": "structured", "min": -2, "max": -1, "spacing": 1,
+            "unit": "lane_id", "min": -2, "max": -1, "spacing": 1,
             "range_rationale": "Two adjacent authored travel lanes under one original signal mount.",
             "spacing_rationale": "One whole adjacent lane distinguishes governed from neighboring lane.",
             "feasibility_evidence": "Both exact offline constructions and source-bound diagnostic finalization pass.",
@@ -100,7 +104,7 @@ def build():
         item["sweep_point"] = {"target_lane_id": item["variable_assignments"]["target_lane_id"]["value"]}
         item["sweep_spec_version"] = spec["spec_version"]
         item["sweep_measurements"] = [{"variable": "target_lane_id",
-            "observable": "rel.occupies", "unit": "structured",
+            "observable": "rel.occupies", "unit": "lane_id",
             "measurement": {"method": "original actor body and waypoint projection",
                 "time_window": "600 original frames", "statistic": "first"}}]
     if not any(case.get("target_type") == "baseline" for case in cases["cases"]):

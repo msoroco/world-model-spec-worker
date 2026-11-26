@@ -70,15 +70,15 @@
     {
       "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01",
       "target_law_id": "NRS-484B-633-2",
-      "kind": "delivery_draft",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "cross bridge below signed structural maximum",
       "comparison_variable": "speed relative to declared structural maximum",
-      "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
+      "selection_status": "selected_cpu_proof_pending_independent_delivery_review",
       "expected_label": null,
-      "construction_status": "survey_gated_native_capture_cpu_offline_passed_physical_unverified",
+      "construction_status": "current_runtime_offline_and_public_compatibility_passed_physical_unverified",
       "construction": "draft-bridge/below_posted_structure_speed/primary/construction.json",
-      "construction_sha256": "cb74ebc99bccce40e963bd684d177eded57e49ebce759f2de58fee505689e804",
+      "construction_sha256": "0103511180259541b4fafc982541a9fb13eaffd82c6db4ad7e416b6893503232",
       "gap_ids": [
         "g1",
         "g2",
@@ -89,15 +89,15 @@
     {
       "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02",
       "target_law_id": "NRS-484B-633-2",
-      "kind": "delivery_draft",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "cross bridge above signed structural maximum",
       "comparison_variable": "speed relative to declared structural maximum",
-      "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
+      "selection_status": "selected_cpu_proof_pending_independent_delivery_review",
       "expected_label": null,
-      "construction_status": "survey_gated_native_capture_cpu_offline_passed_physical_unverified",
+      "construction_status": "current_runtime_offline_and_public_compatibility_passed_physical_unverified",
       "construction": "draft-bridge/above_posted_structure_speed/primary/construction.json",
-      "construction_sha256": "634c3eb0d061f93f5437d54952febbfff996b0b67fab8ec69774152b9034ba97",
+      "construction_sha256": "9d92eb071b6ed5346f8e7c8630a7c94fbac49e2bd6174a907ff3f6fe8c53ae06",
       "gap_ids": [
         "g1",
         "g2",
@@ -181,39 +181,14 @@
   ],
   "observations": [
     {
-      "name": "st.elevated_structure",
+      "name": "original_velocity_position",
       "mandatory": true,
-      "reason": "the bridge or other elevated structure"
+      "reason": "original actor position and velocity for on-structure speed"
     },
     {
-      "name": "dev.speed_limit_sign",
+      "name": "structure_sign_survey",
       "mandatory": true,
-      "reason": "kind structure_maximum, with its value; posted 100 feet before each end"
-    },
-    {
-      "name": "dev.position",
-      "mandatory": true,
-      "reason": "the sign's position relative to the structure"
-    },
-    {
-      "name": "dev.governs",
-      "mandatory": true,
-      "reason": "the approach it controls"
-    },
-    {
-      "name": "kin.speed",
-      "mandatory": true,
-      "reason": "the speed over the structure, against the posted maximum"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "the footprint on the structure"
-    },
-    {
-      "name": "drv.approaching",
-      "mandatory": true,
-      "reason": "the approach where the sign stands"
+      "reason": "original bridge and sign readback for both approaches"
     }
   ],
   "sources": [
@@ -345,5 +320,104 @@
         "why_existing_insufficient": "Membership and case title do not establish Department-declared maximum, required signs or original measured on-structure speed."
       }
     ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "qualifying elevated bridge mesh, both approaches and vehicle",
+        "interval": "all 600 original frames; physical sight lines unverified"
+      },
+      {
+        "view": "approach",
+        "subject": "near 100-foot structural maximum sign and entering vehicle",
+        "interval": "approach through deck entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "far sign and outgoing bridge end",
+        "interval": "deck occupancy through exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver and vehicle travel over structure",
+        "interval": "all 600 original frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "st.elevated_structure": {
+      "evidence": "Native road/elevation readback, OpenDRIVE and original camera pixels; rendered bridge qualification still unverified",
+      "channels": [
+        "structure_sign_survey"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "bridge-context.json"
+      ]
+    },
+    "dev.speed_limit_sign": {
+      "evidence": "Two native sign metadata rows and later independently reviewed sign-face pixels",
+      "channels": [
+        "structure_sign_survey"
+      ],
+      "source_refs": [
+        "bridge-context.json",
+        "pixel-review.json"
+      ]
+    },
+    "dev.position": {
+      "evidence": "Native sign road coordinate and distance to each bridge end",
+      "channels": [
+        "structure_sign_survey"
+      ],
+      "source_refs": [
+        "bridge-context.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Native sign orientation and approach road/lane; governance requires later physical review",
+      "channels": [
+        "structure_sign_survey"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "bridge-context.json"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original post-tick velocity vector on deck, joined to frame map",
+      "channels": [
+        "original_velocity_position"
+      ],
+      "source_refs": [
+        "bridge-speed-history.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original vehicle position and elevated deck interval; physical mesh remains unverified",
+      "channels": [
+        "original_velocity_position",
+        "structure_sign_survey"
+      ],
+      "source_refs": [
+        "bridge-speed-history.jsonl",
+        "bridge-context.json"
+      ]
+    },
+    "drv.approaching": {
+      "evidence": "Original vehicle trajectory in governed approach lane",
+      "channels": [
+        "original_velocity_position",
+        "structure_sign_survey"
+      ],
+      "source_refs": [
+        "bridge-speed-history.jsonl",
+        "road.xodr"
+      ]
+    }
   }
 }

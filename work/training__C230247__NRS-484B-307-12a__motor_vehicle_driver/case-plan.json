@@ -37,7 +37,7 @@
       "source": "NRS 484B.307(12)(a)",
       "source_text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows:",
       "status": "selected_required",
-      "evidence_or_gap": "Exact selected source-gated Native construction and offline proof exist; saved analysis and physical source/pixel review remain unverified.",
+      "evidence_or_gap": "Two exact source-gated CPU constructions and diagnostic saved-processing proofs; actual Native arrow pixels, device authority, driver facing and physical completion require independent original review.",
       "case_ids": [
         "training__C230247__NRS-484B-307-12a__motor_vehicle_driver__selected_378a10ff__condition_a",
         "training__C230247__NRS-484B-307-12a__motor_vehicle_driver__selected_378a10ff__condition_b"
@@ -48,7 +48,7 @@
       "source": "NRS 484B.307(12)(a)",
       "source_text": "A downward-pointing green arrow means that a driver facing the signal may drive in any lane over which the green signal is shown.",
       "status": "selected_required",
-      "evidence_or_gap": "Exact selected source-gated Native construction and offline proof exist; saved analysis and physical source/pixel review remain unverified.",
+      "evidence_or_gap": "Two exact source-gated CPU constructions and diagnostic saved-processing proofs; actual Native arrow pixels, device authority, driver facing and physical completion require independent original review.",
       "case_ids": [
         "training__C230247__NRS-484B-307-12a__motor_vehicle_driver__selected_378a10ff__condition_a",
         "training__C230247__NRS-484B-307-12a__motor_vehicle_driver__selected_378a10ff__condition_b"
@@ -59,7 +59,7 @@
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Facing a green arrow over a proposed travel lane.",
       "status": "selected_required",
-      "evidence_or_gap": "Exact selected source-gated Native construction and offline proof exist; saved analysis and physical source/pixel review remain unverified.",
+      "evidence_or_gap": "Two exact source-gated CPU constructions and diagnostic saved-processing proofs; actual Native arrow pixels, device authority, driver facing and physical completion require independent original review.",
       "case_ids": [
         "training__C230247__NRS-484B-307-12a__motor_vehicle_driver__selected_378a10ff__condition_a",
         "training__C230247__NRS-484B-307-12a__motor_vehicle_driver__selected_378a10ff__condition_b"
@@ -87,7 +87,10 @@
         ]
       },
       "source_text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows: A downward-pointing green arrow means that a driver facing the signal may drive in any lane over which the green signal is shown.",
-      "claim": "Selected CPU construction only; no Native motion, physical acceptance or legal outcome asserted."
+      "claim": "Selected CPU construction only; no Native motion, physical acceptance or legal outcome asserted.",
+      "gap_ids": [
+        "exact-green-arrow-original"
+      ]
     },
     {
       "case_id": "training__C230247__NRS-484B-307-12a__motor_vehicle_driver__selected_378a10ff__condition_b",
@@ -109,7 +112,10 @@
         ]
       },
       "source_text": "Whenever signals are placed over the individual lanes of a highway, the signals indicate, and apply to drivers of vehicles, as follows: A downward-pointing green arrow means that a driver facing the signal may drive in any lane over which the green signal is shown.",
-      "claim": "Selected CPU construction only; no Native motion, physical acceptance or legal outcome asserted."
+      "claim": "Selected CPU construction only; no Native motion, physical acceptance or legal outcome asserted.",
+      "gap_ids": [
+        "exact-green-arrow-original"
+      ]
     }
   ],
   "comparisons": [
@@ -134,7 +140,7 @@
         ]
       },
       "status": "selected_cpu_construction",
-      "audit_gap": "Independent original-source comparison audit and public compatibility receipts remain unfinished."
+      "audit_gap": "Independent audit script is CPU tested on diagnostic source structure; original Native comparison remains at delivery."
     }
   ],
   "observations": [
@@ -186,15 +192,14 @@
   "existing_evidence": [],
   "runtime_uncertainties": [
     "Exact Native lane-control actor and downward-arrow state may be unavailable after OpenDRIVE world generation; generic Green is rejected.",
-    "Official device authority and actual arrow pixels require independent original local review.",
-    "Original motion, four-camera coverage, saved processing public compatibility, semantic proposals and delivery/comparison audits remain unverified."
+    "Official device authority, driver facing, and actual arrow pixels require independent original local review.",
+    "CPU diagnostic compatibility does not assert actual Native motion or legal outcome."
   ],
   "source_observation_mapping": {
     "dev.lane_control_signal": {
       "evidence": "Native signal indication state joined to signal inventory and original post-tick frame",
       "channels": [
-        "signal.indication",
-        "signal.source"
+        "dev.lane_control_signal"
       ],
       "source_refs": [
         "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
@@ -204,9 +209,7 @@
     "dev.governs": {
       "evidence": "Map lane-validity binding for signal id 100, compared with proposed and occupied lane ids",
       "channels": [
-        "signal.lane_id",
-        "signal.mount_lane_id",
-        "vehicle.proposed_lane_id"
+        "dev.governs"
       ],
       "source_refs": [
         "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
@@ -216,7 +219,7 @@
     "st.lane": {
       "evidence": "Map waypoint projection for original actor pose",
       "channels": [
-        "vehicle.lane_id"
+        "st.lane"
       ],
       "source_refs": [
         "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
@@ -224,10 +227,9 @@
       ]
     },
     "rel.occupies": {
-      "evidence": "Actor pose and body vertices must be joined to waypoint lane; current meter uses waypoint lane only",
+      "evidence": "Original actor body vertices joined to map waypoint lane in saved analysis; actual source must be reviewed.",
       "channels": [
-        "vehicle.lane_id",
-        "actor_body_vertices_m"
+        "rel.occupies"
       ],
       "source_refs": [
         "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
@@ -237,8 +239,7 @@
     "dev.position": {
       "evidence": "OpenDRIVE overhead mount plan plus original map signal transform; physical placement unverified",
       "channels": [
-        "signal.mount_source",
-        "signal.mount_lane_id"
+        "dev.position"
       ],
       "source_refs": [
         "inputs/training__C230247__NRS-484B-307-12a__motor_vehicle_driver/assignment.json",
@@ -256,5 +257,45 @@
   "draft_manifest": "draft-manifest.json",
   "selected_manifest": "execution-manifest.json",
   "selected_source_capture": "native/capture.py",
-  "selected_saved_finalizer": "native/finalize.py"
+  "selected_saved_finalizer": "native/finalize.py",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "motor vehicle body, both individual lanes, overhead signal and full travel path",
+        "interval": "startup through final observation, 0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "driver approach to overhead lane-control indication and lane boundaries",
+        "interval": "startup through arrow passage, 0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "overhead device face, mounting position and governed lane boundary",
+        "interval": "startup through final observation, 0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "signal facing the driver and actor occupied lane",
+        "interval": "startup through final observation, 0-30 s"
+      }
+    ]
+  },
+  "evidence_review": {
+    "method": "Read frozen assignment, membership snapshot and accepted-recording inventory; no accepted recording is supplied for this exact branch.",
+    "reviewer": "worker source review",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "exact-green-arrow-original",
+        "requirement": "source-grounded original downward green lane arrow, lane validity, vehicle occupancy and travel over time",
+        "source": "NRS 484B.307(12)(a); frozen assignment and witness",
+        "why_existing_insufficient": "No accepted recording for this exact actor, lane signal and cell is supplied."
+      }
+    ]
+  }
 }

@@ -86,9 +86,9 @@ def finalize(attempt, output):
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': construction['recording_description'],
               'recording_evidence': evidence, 'realized_observables': {},
-              'provenance_kind': 'synthetic_local_diagnostic' if config.get('diagnostic_fixture') else 'original_source_review',
               'accepted': False}
-    from worker_exchange.native_output import write_result
+    from worker_exchange.native_output import write_result, physical_result
+    result = physical_result(attempt, result)
     write_result(attempt, result)
     output.write_text(json.dumps(report, indent=2) + '\n')
     return report

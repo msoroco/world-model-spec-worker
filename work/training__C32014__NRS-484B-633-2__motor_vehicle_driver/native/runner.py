@@ -103,7 +103,8 @@ def execute(case_id,output_dir,host,port):
             'structure_load_safety_verified':False},indent=2)+'\n')
         library=world.get_blueprint_library();bp=library.find('vehicle.audi.tt')
         bp.set_attribute('role_name','c32014_bridge_speed_subject')
-        vehicle=world.spawn_actor(bp,carla.Transform(carla.Location(x=-70,y=-1.75,z=1),carla.Rotation(yaw=0)))
+        starting_x = json.loads((Path(__file__).parent/'config.json').read_text()).get('initial_spawn_x_m', -70.0)
+        vehicle=world.spawn_actor(bp,carla.Transform(carla.Location(x=starting_x,y=-1.75,z=1),carla.Rotation(yaw=0)))
         owned.append(vehicle)
         capture=PipelineCapture(client,vehicle,output,case_id,visibility=False,
             required_observations=json.loads((Path(__file__).parent/'config.json').read_text()).get('required_atoms',[]))

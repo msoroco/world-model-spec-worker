@@ -2,38 +2,70 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "partial",
+  "status": "ready",
   "cases": [
     {
       "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01",
       "kind": "delivery",
       "construction": "draft-bridge/below_posted_structure_speed/primary/construction.json",
-      "construction_sha256": "cb74ebc99bccce40e963bd684d177eded57e49ebce759f2de58fee505689e804",
+      "construction_sha256": "0103511180259541b4fafc982541a9fb13eaffd82c6db4ad7e416b6893503232",
       "fixture_recipe": "work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/diagnostic/probe_01/fixture-recipe.json",
       "measurement_contract": "diagnostic/probe_01/measurement-contract.json",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native bridge mesh, sign pixels and actual speed require inspection"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-bridge/below_posted_structure_speed/fallback1/construction.json",
+          "construction_sha256": "35d613c76730e9e4ac0dbdc9eb465d58470d60d4f2fd3df0492a6fb5e38ccc16",
+          "trigger": {
+            "source": "original Native trajectory and camera audit",
+            "metric": "first stable on-deck frame plus legible near sign pixels",
+            "failure_condition": "primary has no stable on-deck frame or sign face leaves all views"
+          },
+          "changed_knobs": [
+            "start 10 m closer to bridge; preserve requested speed and observation contract"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c32014-fresh-probe_01-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "35d613c76730e9e4ac0dbdc9eb465d58470d60d4f2fd3df0492a6fb5e38ccc16",
+            "log": "proof/probe_01/fallback1/offline.log",
+            "log_sha256": "37c28fe068a8080d15c880cefe1d2c3b2aa0afe70fc1742f3a0147b4d21ad3c3"
+          },
+          "compatibility": {
+            "receipt": "proof/probe_01/fallback1/compatibility.json",
+            "sha256": "82d57f29e94646a67743a3f77b1ccee920e9eb490b429c35566e28ba7eb38201",
+            "log": "proof/probe_01/fallback1/analysis.log",
+            "negative_log": "proof/probe_01/fallback1/negative-analysis.log"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "cpu_prepared_native_authority_and_pixels_pending",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c32014-fresh-probe_01-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "0103511180259541b4fafc982541a9fb13eaffd82c6db4ad7e416b6893503232",
+        "log": "proof/probe_01/primary/offline.log",
+        "log_sha256": "8c6c5beff5df68f56f0f10776844add7df1559a8883ee0ab2c24a6cd175d0b2d"
+      },
       "compatibility": {
-        "receipt": "proof/probe_01/compatibility.json",
-        "sha256": "e3a3ed7779d2371e1c58b3f50352b0cb63bb1fc951906d55f9a66ab618022447",
-        "log": "proof/probe_01/analysis.log"
+        "receipt": "proof/probe_01/primary/compatibility.json",
+        "sha256": "49da9cf3ee5087cc454d97d46cdc1d8711d77f46805c59e4ccd0806ab50a7a07",
+        "log": "proof/probe_01/primary/analysis.log",
+        "negative_log": "proof/probe_01/primary/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "proof/probe_01/physical-preparation.json",
+        "sha256": "fb106149b223555e17ddf03bc6397777e85f74f5d86baa19fe73bb65abaff14f"
       },
       "negative": {
-        "log": "proof/probe_01/negative-analysis.log"
-      },
-      "offline": {
-        "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c32014-runtime .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01 --output .runtime-work/c32014-offline-v10-01 --python $PWD/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "cb74ebc99bccce40e963bd684d177eded57e49ebce759f2de58fee505689e804",
-        "log": "proof/probe_01/offline.log",
-        "log_sha256": "bf6b1442be4e9df2f8d5bd72a079a22f096913e3d03bf3b3fcc573a7d2f8256e"
+        "log": "proof/probe_01/primary/negative-analysis.log"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
@@ -43,46 +75,117 @@
       "acquisition": {
         "original_velocity_position": {
           "entrypoint": "finalize.py",
-          "method": "original bridge history/context join",
-          "evidence": "bridge-speed-history.jsonl; bridge-context.json; channels/original_velocity_position.jsonl"
+          "method": "original 600-frame bridge history and FrameMap join",
+          "evidence": "bridge-speed-history.jsonl; video_frames.jsonl; channels/original_velocity_position.jsonl"
         },
         "structure_sign_survey": {
           "entrypoint": "finalize.py",
-          "method": "original bridge history/context join",
-          "evidence": "bridge-speed-history.jsonl; bridge-context.json; channels/structure_sign_survey.jsonl"
+          "method": "native bridge road/sign survey carried through source-bound saved finalization",
+          "evidence": "road.xodr; bridge-context.json; channels/structure_sign_survey.jsonl"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json # training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01",
+        "test_exit_code": 0,
+        "test_log": "proof/probe_01/saved-final.log",
+        "test_log_sha256": "e7aeea9aa43df1d06b8c3ecea5fb53cddb7e20b68da8e64bf0f9b6b6366578d8"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "department_source",
+          "bridge_mesh_and_both_sign_faces",
+          "actual_on_structure_speed"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e2e8735d93353086745ac65ccc5d43703d94c70cc918de2242ddcdfeb713709c",
+        "command": ".venv-cpu/bin/python work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01 --processing $PROCESSING --output $AUDIT_OUTPUT",
+        "test_exit_code": 0,
+        "test_log": "proof/probe_01/delivery-positive.log",
+        "test_log_sha256": "1a133b02e3f10bd7d3071072a725aa831db4048704ec1742e5824464b0708b30",
+        "negative_command": ".venv-cpu/bin/python work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01 --processing $PROCESSING --output $AUDIT_OUTPUT --diagnostic --omit-source bridge-speed-history.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original delivery source: bridge-speed-history.jsonl",
+        "negative_log": "proof/probe_01/delivery-negative.log",
+        "negative_log_sha256": "5bad887adf7acff7c78c4765e0cdd3477ee2468e3392fb57e7f79391be4dad8b",
+        "diagnostic_only_test": true,
+        "authority_negative_log": "proof/authority-negative.log",
+        "authority_negative_log_sha256": "c685c7336cf1d0346b29e420312357153436ee06833341e2c7e7fe35d2628b76"
       }
     },
     {
       "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02",
       "kind": "delivery",
       "construction": "draft-bridge/above_posted_structure_speed/primary/construction.json",
-      "construction_sha256": "634c3eb0d061f93f5437d54952febbfff996b0b67fab8ec69774152b9034ba97",
+      "construction_sha256": "9d92eb071b6ed5346f8e7c8630a7c94fbac49e2bd6174a907ff3f6fe8c53ae06",
       "fixture_recipe": "work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/diagnostic/probe_02/fixture-recipe.json",
       "measurement_contract": "diagnostic/probe_02/measurement-contract.json",
       "candidate_risk": {
         "status": "physical",
         "reason": "Native bridge mesh, sign pixels and actual speed require inspection"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-bridge/above_posted_structure_speed/fallback1/construction.json",
+          "construction_sha256": "a0f2df96abb3c66867292e6ab5816a6b6c52b40f8328a62f93277af00bcf4359",
+          "trigger": {
+            "source": "original Native trajectory and camera audit",
+            "metric": "first stable on-deck frame plus legible near sign pixels",
+            "failure_condition": "primary has no stable on-deck frame or sign face leaves all views"
+          },
+          "changed_knobs": [
+            "start 10 m closer to bridge; preserve requested speed and observation contract"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c32014-fresh-probe_02-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "a0f2df96abb3c66867292e6ab5816a6b6c52b40f8328a62f93277af00bcf4359",
+            "log": "proof/probe_02/fallback1/offline.log",
+            "log_sha256": "ceb7fd8869d5f1c91ecc6b4ac5a6c9ba895a745a51d2c3bd1a4df2383fd8637f"
+          },
+          "compatibility": {
+            "receipt": "proof/probe_02/fallback1/compatibility.json",
+            "sha256": "0bfa49aa5a95c0e8072ef81d9e0903c0215c17f2290f0b7ae3b8bb649d61e069",
+            "log": "proof/probe_02/fallback1/analysis.log",
+            "negative_log": "proof/probe_02/fallback1/negative-analysis.log"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "cpu_prepared_native_authority_and_pixels_pending",
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c32014-fresh-probe_02-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "9d92eb071b6ed5346f8e7c8630a7c94fbac49e2bd6174a907ff3f6fe8c53ae06",
+        "log": "proof/probe_02/primary/offline.log",
+        "log_sha256": "5958c3b50d257f75a1d34d3d16ea78f17813eb62ebb20c9b8ea829cd1b91c49e"
+      },
       "compatibility": {
-        "receipt": "proof/probe_02/compatibility.json",
-        "sha256": "0af3b1b60d4530acdaecf376e6eddd15f0965dd0c438d6b48de3058e95763abb",
-        "log": "proof/probe_02/analysis.log"
+        "receipt": "proof/probe_02/primary/compatibility.json",
+        "sha256": "a3da293d573ae997833e118efdec4723e74706b75b78f351703bd040c42af8c8",
+        "log": "proof/probe_02/primary/analysis.log",
+        "negative_log": "proof/probe_02/primary/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "proof/probe_02/physical-preparation.json",
+        "sha256": "4e7fa01082d0ef66082ff4c4dfbb52fe5926836236c82124b01a71694c0f432d"
       },
       "negative": {
-        "log": "proof/probe_02/negative-analysis.log"
-      },
-      "offline": {
-        "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c32014-runtime .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02 --output .runtime-work/c32014-offline-v10-02 --python $PWD/.venv-cpu/bin/python",
-        "exit_code": 0,
-        "construction_sha256": "634c3eb0d061f93f5437d54952febbfff996b0b67fab8ec69774152b9034ba97",
-        "log": "proof/probe_02/offline.log",
-        "log_sha256": "28906eb540cfb252ba0cbbd0e64a6c839a34c8d369f402e68545a685c5d90a23"
+        "log": "proof/probe_02/primary/negative-analysis.log"
       },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
@@ -92,14 +195,53 @@
       "acquisition": {
         "original_velocity_position": {
           "entrypoint": "finalize.py",
-          "method": "original bridge history/context join",
-          "evidence": "bridge-speed-history.jsonl; bridge-context.json; channels/original_velocity_position.jsonl"
+          "method": "original 600-frame bridge history and FrameMap join",
+          "evidence": "bridge-speed-history.jsonl; video_frames.jsonl; channels/original_velocity_position.jsonl"
         },
         "structure_sign_survey": {
           "entrypoint": "finalize.py",
-          "method": "original bridge history/context join",
-          "evidence": "bridge-speed-history.jsonl; bridge-context.json; channels/structure_sign_survey.jsonl"
+          "method": "native bridge road/sign survey carried through source-bound saved finalization",
+          "evidence": "road.xodr; bridge-context.json; channels/structure_sign_survey.jsonl"
         }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json # training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02",
+        "test_exit_code": 0,
+        "test_log": "proof/probe_02/saved-final.log",
+        "test_log_sha256": "b4edcef1ffe1072aca7bbf98c0316c9eec1d1ba040c51e3f7f8518995bf48e51"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "department_source",
+          "bridge_mesh_and_both_sign_faces",
+          "actual_on_structure_speed"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "e2e8735d93353086745ac65ccc5d43703d94c70cc918de2242ddcdfeb713709c",
+        "command": ".venv-cpu/bin/python work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02 --processing $PROCESSING --output $AUDIT_OUTPUT",
+        "test_exit_code": 0,
+        "test_log": "proof/probe_02/delivery-positive.log",
+        "test_log_sha256": "1a133b02e3f10bd7d3071072a725aa831db4048704ec1742e5824464b0708b30",
+        "negative_command": ".venv-cpu/bin/python work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02 --processing $PROCESSING --output $AUDIT_OUTPUT --diagnostic --omit-source bridge-speed-history.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original delivery source: bridge-speed-history.jsonl",
+        "negative_log": "proof/probe_02/delivery-negative.log",
+        "negative_log_sha256": "5bad887adf7acff7c78c4765e0cdd3477ee2468e3392fb57e7f79391be4dad8b",
+        "diagnostic_only_test": true,
+        "authority_negative_log": "proof/authority-negative.log",
+        "authority_negative_log_sha256": "c685c7336cf1d0346b29e420312357153436ee06833341e2c7e7fe35d2628b76"
       }
     }
   ]
