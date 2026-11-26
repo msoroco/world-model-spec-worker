@@ -1,0 +1,36 @@
+{
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: original-turn-signal.json",
+    "remove": [
+      "original-turn-signal.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "original-site.json"
+      ],
+      "kind": "sourced_context",
+      "method": "build_report",
+      "output_key": "site_context_measurement",
+      "requirement": "Source-reviewed highway, district and rightward course-change context",
+      "source": "NRS 484B.413(2) exact text; frozen C177008 lane-change/other-vehicle cell",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "original-turn-signal.json",
+        "video_frames.jsonl"
+      ],
+      "kind": "measured",
+      "method": "build_report",
+      "output_key": "signal_distance_measurement",
+      "requirement": "Continuous right signal over not less than last 100 feet traveled in a business district",
+      "source": "NRS 484B.413(2) exact text; frozen C177008 lane-change/other-vehicle cell",
+      "value_type": "object"
+    }
+  ]
+}

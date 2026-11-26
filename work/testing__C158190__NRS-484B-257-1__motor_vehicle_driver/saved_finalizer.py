@@ -9,6 +9,7 @@ from pathlib import Path
 import subprocess
 
 from through_motion_measurement import inspect_original
+from physical_completion import assess
 from yield_view_measurement import ASSIGNMENT
 
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
@@ -91,6 +92,7 @@ def finalize(case_id, root):
             raise ValueError("source-sealed original camera missing: " + view)
         inspect_video(path, view)
     measured = inspect_original(packet_path)
+    measured["physical_completion_probe"] = assess(rows, site)
     measured["camera_manifest_sha256"] = sha(camera_path)
     measured["camera_stream_sha256"] = {view: streams[view]["sha256"] for view in VIEWS}
     measured["legal_hazard_judgment"] = None

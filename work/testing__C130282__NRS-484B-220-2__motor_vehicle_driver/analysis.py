@@ -52,6 +52,9 @@ def analyze(root, output):
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     if receipt.get("case_id") != case_id:
         raise ValueError("saved original case identity differs")
+    if not receipt.get("diagnostic_fixture"):
+        from delivery_audit import audit
+        audit(root, case_id)
     measurement = measure(case_id=case_id, map_path=_required(root, "original-map.json"),
         trace_path=_required(root, "original-trace.jsonl"), receipt_path=receipt_path,
         allow_diagnostic=True)

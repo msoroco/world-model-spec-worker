@@ -12,7 +12,7 @@ ASSIGNMENT = ROOT.name
 COMMON = ("runner.py", "native_capture.py", "native_output_bridge.py",
           "yield_scene_construction.py", "yield_view_measurement.py",
           "through_motion_measurement.py", "saved_finalizer.py", "analysis.py",
-          "delivery_audit.py", "case-plan.json")
+          "delivery_audit.py", "physical_completion.py", "case-plan.json")
 TESTS = tuple(sorted("tests/" + p.name for p in (ROOT / "tests").glob("test*.py")
                      if p.name != "test_source_and_queue.py"))
 CHANNELS = ("yield_sign_and_marking", "nearest_view_stations", "ego_motion_and_crossing",

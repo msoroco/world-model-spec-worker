@@ -1,25 +1,50 @@
 {
-  "assignment_id": "testing__C130282__NRS-484B-220-2__motor_vehicle_driver",
-  "input_sha256": "718c636df0f19fa278fddd7553fe774d21f37115f11734859ab0b4eaac8b46fe",
-  "status": "partial",
-  "readiness_kind": "exact_case_measurement_checkpoint",
   "applied_update": 0,
+  "assignment_id": "testing__C130282__NRS-484B-220-2__motor_vehicle_driver",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C130282__NRS-484B-220-2__motor_vehicle_driver --case testing__C130282__NRS-484B-220-2__motor_vehicle_driver__inner_right --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+  "input_sha256": "718c636df0f19fa278fddd7553fe774d21f37115f11734859ab0b4eaac8b46fe",
+  "readiness_kind": "delivery_prepared",
+  "reason": "Exact strict first pass found root inline test file absent; source-safe repair in progress.",
+  "remaining_gpu_checks": [
+    "Reviewed original rotary traffic island identity and physical polygon, connected inner/outer and physically feasible left-side routes, actual Native 900-frame motion, four-camera pixels and legal/physical passage review"
+  ],
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C130282__NRS-484B-220-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "cpu-island-tests.log",
-      "sha256": "0a4722c9923d3c3ba9b7f00944e26598fd4964ad8a1feb171bcaaa2f0d58ad4b"
+      "log": "cpu-final-island-tests.log",
+      "sha256": "a53d0dab1a3d4b42c30f9f8866ebf4dcd192d543a93b5d755158631add646649"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C130282__NRS-484B-220-2__motor_vehicle_driver --complete",
+      "command": ".venv-cpu/bin/python work/testing__C130282__NRS-484B-220-2__motor_vehicle_driver/prove_selected.py",
       "exit_code": 0,
-      "log": "assignment-check.log",
-      "sha256": "9c397dce405df8f33da933604a810fd3dcb0d24c6b4959f9f961453cfa64b224"
+      "log": "cpu-offline-proofs.json",
+      "sha256": "3e40ec045d12c8a99a74b5162793a5fc278f37c503d36b6e8cf067e6ebb6bae6"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C130282__NRS-484B-220-2__motor_vehicle_driver/prove_selected.py",
+      "exit_code": 0,
+      "log": "cpu-compatibility-proofs.json",
+      "sha256": "de84b696958a97de201467493e0f92a20fbb7efd2539d78c53b0f922adc9b357"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C130282__NRS-484B-220-2__motor_vehicle_driver/prove_saved.py",
+      "exit_code": 0,
+      "log": "cpu-saved-proofs.json",
+      "sha256": "9b6d5fcea1c26d067ce2f5947633c0bf9d6b506a564a391be12a935479c2fff9"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C130282__NRS-484B-220-2__motor_vehicle_driver/prove_delivery.py",
+      "exit_code": 0,
+      "log": "cpu-delivery-proofs.json",
+      "sha256": "ff367462e651b88cf4231e14cdab3ba011114571acfb7637cd6dfc18661b5542"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C130282__NRS-484B-220-2__motor_vehicle_driver/prove_comparisons.py",
+      "exit_code": 0,
+      "log": "comparison-proof-index.json",
+      "sha256": "0ce367c7e4769106bcc77640ed978b53d2c8bed6c7465f7242cea1cd6a5f2b11"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Four exact inner/outer and right/left-of-rotary-island cases with three comparisons planned. Source-bound saved map/trace audit independently requires rotary island identity and original physical polygon, distinct connected circulation routes, original eight-vertex vehicle body and heading, and ordered 20 Hz passage; eight CPU tests pass. Reviewed real Native island geometry, executable route/controller bundles, four-camera capture, finalizers, semantic proposals, offline/compatibility receipts and independent delivery/comparison audits remain worker-owned CPU work. No accepted recordings listed; physical and between-frame continuity unverified."
+  ]
 }

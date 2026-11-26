@@ -1,13 +1,13 @@
 {
   "applied_update": 0,
   "assignment_id": "testing__C422976__LVMC-11-46-030__motor_vehicle_driver",
+  "first_gpu_delivery_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c422976-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C422976__LVMC-11-46-030__motor_vehicle_driver --case testing__C422976__LVMC-11-46-030__motor_vehicle_driver__human_warning_stop_51ft_go --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "5a93cca448bf1bb0fd7867c8f5d0c3e41ea33e96b7d5d3f49a63a60b1ca78a33",
-  "readiness_kind": "selected_source_gated_cpu_proofs_in_progress",
-  "reason": "Fifteen exact selected school-lane cases and twelve comparisons have source-gated constructions and current-hash offline proofs. A prior pinned compatibility pass covered nine cases; six sweeps exposed a missing realized-onset summary, now corrected. One corrected sweep and one selected saved-only process-saved run pass. Full current-hash compatibility, saved-only, physical/lifecycle, delivery and comparison proofs, manifest/queue binding and scoped strict check remain worker-owned. Original CARLA capture and legal interpretation are unclaimed.",
+  "readiness_kind": "delivery_prepared",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
@@ -16,10 +16,10 @@
       "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C422976__LVMC-11-46-030__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C422976__LVMC-11-46-030__motor_vehicle_driver/tests -p 'test_[!e]*.py' -v",
       "exit_code": 0,
       "log": "cpu-school-tests.log",
-      "sha256": "c2cdcbefe8ee7d609fd3cf21455851fe77192e107571ff1d23e5e028f4c7f5ff"
+      "sha256": "977147211a6e5e6b634b45206f55bf58f51f54e4ab3548681d71eb2b5c834af1"
     },
     {
       "command": ".venv-cpu/bin/python work/testing__C422976__LVMC-11-46-030__motor_vehicle_driver/validate_semantic_draft.py",
@@ -28,10 +28,10 @@
       "sha256": "987b935093a987b3106c7f91859655e5ff96d34c64ba6dbc219f4307e24edf75"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C422976__LVMC-11-46-030__motor_vehicle_driver --complete",
+      "command": ".venv-cpu/bin/python work/testing__C422976__LVMC-11-46-030__motor_vehicle_driver/prove_comparisons.py",
       "exit_code": 0,
-      "log": "assignment-check.log",
-      "sha256": "97cf1a1a4dd97d04c6ea75286322c507b1bffa57bb2691f90ec304336ed73fa5"
+      "log": "cpu-comparison-tests.log",
+      "sha256": "c82cf97ffd6e6c22ec2ea5fa9fabd7d48d491a40f1a9d420dae601de54e4ea43"
     }
   ]
 }

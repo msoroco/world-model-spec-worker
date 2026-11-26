@@ -1,6 +1,33 @@
 {
   "actor": "motor_vehicle_driver",
   "assignment_id": "testing__C130282__NRS-484B-220-2__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "entry through complete passage and exit",
+        "subject": "whole rotary island and vehicle route",
+        "view": "overview"
+      },
+      {
+        "interval": "before entry through circulation",
+        "subject": "motor-vehicle approach and entry",
+        "view": "approach"
+      },
+      {
+        "interval": "full passage",
+        "subject": "island physical boundary and near-side body clearance",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full passage and exit",
+        "subject": "motor-vehicle pose, lane and local island side",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "actor": "motor_vehicle_driver",
@@ -91,22 +118,43 @@
   "law_text": "A vehicle passing around a rotary traffic island shall be driven only to the right of such island.",
   "observations": [
     {
-      "measurement": "do not infer island identity from roundabout label",
-      "name": "rotary traffic island identity and extent",
-      "source": "independent source-reviewed physical island kind, original polygon and Native map hash"
+      "mandatory": true,
+      "measurement": "full body source and island footprint overlap for every sampled passage frame",
+      "name": "original_body_polygon",
+      "source": "original CARLA eight world-space ego body vertices at 20 Hz"
     },
     {
-      "measurement": "nearest island boundary local side sign and full footprint overlap at every sampled passage frame; between-frame continuity unresolved",
-      "name": "continuous right-side passage",
-      "source": "20 Hz original vehicle center, heading, eight body vertices and island polygon"
+      "mandatory": true,
+      "measurement": "local island-side sign from observed heading and nearest physical island boundary",
+      "name": "original_heading",
+      "source": "original CARLA ego pose yaw at 20 Hz"
     },
     {
-      "measurement": "verify distinct lanes and retain exact observed lane ID through passage",
-      "name": "connected circulation lanes",
-      "source": "original inner/outer lane IDs and route sources"
+      "mandatory": true,
+      "measurement": "inner/outer role and connected circulation route; intended lane is never substituted for observed lane",
+      "name": "observed_lane",
+      "source": "original live Native map waypoint road and lane IDs"
+    },
+    {
+      "mandatory": true,
+      "measurement": "sampled right-side versus left/overlap frames; between-frame continuity and legal judgment unresolved",
+      "name": "island_side_and_overlap",
+      "source": "source-sealed original island polygon and 20 Hz body/heading trace"
+    },
+    {
+      "mandatory": true,
+      "measurement": "frame identity, encoded decode and source pixel archive hashes",
+      "name": "four_camera_frames",
+      "source": "four original synchronized Native RGB cameras"
+    },
+    {
+      "mandatory": false,
+      "measurement": "source gate for qualifying island and connected physically feasible route",
+      "name": "reviewed_island_source",
+      "source": "independently reviewed original island identity, polygon and Native map/route source packet"
     }
   ],
-  "planning_status": "exact_cases_and_source_bound_measurement_draft",
+  "planning_status": "four_exact_source_gated_executable_cases_cpu_proofs_in_progress",
   "requirement_dispositions": [
     {
       "case_ids": [
@@ -171,6 +219,7 @@
       "source_sha256": "c8afc52bc9763552dce06a8ef8a4ebbd944e4569985ce91dbccfee0c342c260e"
     }
   ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C130282__NRS-484B-220-2__motor_vehicle_driver/assignment.json",

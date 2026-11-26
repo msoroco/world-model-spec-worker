@@ -1,30 +1,21 @@
-# testing__C130282__NRS-484B-220-2__motor_vehicle_driver
+# C130282 rotary traffic island handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: `ready` for source-gated CPU delivery preparation. The exact assignment gate passed on 2026-11-26. This is not physical or legal acceptance.
 
-Exact law: NRS 484B.220(2) — A vehicle passing around a rotary traffic island shall be driven only to the right of such island.
-Assigned branch(es): Continuous right-of-island obligation during passage..
-Cell: C130282 (multilane_roundabout, circulate, traffic_island); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The four selected exact cases are `inner_right`, `inner_left`, `outer_right`, and `outer_left`; the three controlled comparisons are `inner_side`, `outer_side`, and `right_lane_choice`. The frozen NRS 484B.220(2) text controls. A multilane roundabout label does not establish a qualifying rotary traffic island. No accepted original recording is listed in the frozen inventory.
 
-## Next CPU actions
+The selected Native bundle requires an independently reviewed and SHA-sealed original OpenDRIVE map, physical rotary-island polygon and identity source, connected inner/outer circulation lanes and case-specific entry/exit routes, motor vehicle and driver source, source-selected spawn, and four camera poses. Left-side requests additionally require reviewed physical route and clearance. The Native runner aborts on a missing or changed source. It records original 20 Hz live lane, heading, center, eight-vertex vehicle body, and four synchronized cameras for 900 frames. Saved analysis reports sampled island-side sign, body overlap and lane identity. Between-frame continuity, physical feasibility, legal side status and actual camera visibility remain unresolved until original capture and review.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C130282__NRS-484B-220-2__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+CPU proofs passed: eight primary/fallback offline checks; eight pinned-runtime compatibility checks with selected measurements and missing-map negatives; four three-outcome physical/lifecycle receipts; four independent delivery positive/missing-map pairs; eight saved-only positive/missing-map checks; three comparison audits; nine local tests. The diagnostic geometry and videos are explicitly synthetic and never stand in for original source. All four selected cases have a bounded throttle fallback on the same reviewed route. The assignment-scoped GPU queue proposal contains four exact jobs and three comparison commands; lead integrates the shared queue.
 
-## Proven checks and dependency boundary
+Exact gate: `.venv-cpu/bin/python worker_check.py --assignment testing__C130282__NRS-484B-220-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0. The result is in `strict-gate.log`.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+Stable SHA-256:
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+- `case-plan.json`: `fe35d98ef315b8eaf34908f08b3502c6287e82d38b795f36d9c32038fc518068`
+- `execution-manifest.json`: `ce0047d7f343da822c5ba9549c3d7d062c497cc2c390bfe997cbabcecf5be4e1`
+- `gpu-queue-proposal.json`: `64732913ceeb7a729abf8ee7c4ee5f1411fef228e6cf53aaab712e159ac04663`
+- `result.json`: `1881c21727b7c472eb15dac7601ab0b522d734be77d77c81453ff167bba58336`
+- `strict-gate.log`: `9c397dce405df8f33da933604a810fd3dcb0d24c6b4959f9f961453cfa64b224`
 
-## 2026-11-24 rotary-island physical-side checkpoint
-
-The exact NRS 484B.220(2) requires a vehicle passing around a rotary traffic island to be driven only to its right. The frozen multilane-roundabout witness is conditional and expressly warns that the roundabout label alone does not prove a qualifying island. `case-plan.json` now holds four exact inner/outer-lane right/left-side targets and three comparisons. The left-side contrasts need physically supportable routes and remain unexecuted. No accepted recordings are listed.
-
-`island_measurements.py` reopens hash-sealed original map/trace/receipt bytes and requires an independently sourced rotary-traffic-island identity and physical polygon, distinct inner/outer circulation lanes and connected routes, a motor-vehicle driver source, original eight-vertex world-space body and heading on ordered 20 Hz frames. It computes a nearest-island-boundary local side sign and full footprint overlap for every sampled passage frame. It records right-side and left/overlap frames separately, leaving between-frame continuity and legal judgment unresolved. The CLI writes replayable JSON after validation.
-
-Eight focused CPU tests passed in `cpu-island-tests.log`, covering CLI replay, reverse heading, physical body overlap, missing island identity or route, source mutation, missing body and diagnostic rejection. Static scoped check passed in `assignment-check.log`; exact scoped strict failed on truthful partial status in `strict-gate.log`. Proof hashes are current in `result.json`. Next CPU work: bind reviewed real Native island/map geometry and four executable route/controller bundles, synchronize/audit four cameras, author finalizers and proposals, run exact offline/positive-negative compatibility and saved-only delivery/comparison audits. Actual body motion, camera visibility and between-frame side continuity await later verification.
+All returned files under this assignment are UTF-8, at most 1,219,264 bytes, with clean whitespace and EOF. Scratch and generated attempts are under `.runtime-work/c130282/`.

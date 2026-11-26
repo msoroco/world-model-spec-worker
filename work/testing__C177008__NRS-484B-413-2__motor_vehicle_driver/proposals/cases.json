@@ -1,0 +1,707 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__baseline",
+      "rationale": "Nonexecuted neutral reference for the linked signal probes.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "other_vehicle_context",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering target is not measured signal distance.",
+          "A C177008 lane-change cell requires a reviewed rightward course-change route and original district/highway survey; no freight-zone premise is assumed."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "district_kind": {
+          "kind": "world_setup",
+          "value": "unselected"
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "value": "unselected"
+        },
+        "signal_start_distance_ft": {
+          "kind": "controller",
+          "value": "unselected"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "value": "unselected"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_sufficient",
+      "deliberate_differences": [
+        "signal_start_distance_ft"
+      ],
+      "paired_probe_id": "lead_distance",
+      "probe": {
+        "comparison_or_standard": "Applicable 100/300 ft continuous-signal statutory reference and source-measured onset",
+        "primary_variable": "signal_start_distance_ft",
+        "target_value_or_branch": 114.829396
+      },
+      "rationale": "Requested signal target; actual traveled distance, continuity and course-change onset require saved Native measurement.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "other_vehicle_context",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering target is not measured signal distance.",
+          "A C177008 lane-change cell requires a reviewed rightward course-change route and original district/highway survey; no freight-zone premise is assumed."
+        ]
+      },
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "compliant_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "district_kind": {
+          "kind": "world_setup",
+          "value": "business"
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "value": "continuous"
+        },
+        "signal_start_distance_ft": {
+          "kind": "controller",
+          "value": 114.829396
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "value": "clear"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_short",
+      "deliberate_differences": [
+        "signal_start_distance_ft"
+      ],
+      "paired_probe_id": "lead_distance",
+      "probe": {
+        "comparison_or_standard": "Applicable 100/300 ft continuous-signal statutory reference and source-measured onset",
+        "primary_variable": "signal_start_distance_ft",
+        "target_value_or_branch": 65.616798
+      },
+      "rationale": "Requested signal target; actual traveled distance, continuity and course-change onset require saved Native measurement.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "other_vehicle_context",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering target is not measured signal distance.",
+          "A C177008 lane-change cell requires a reviewed rightward course-change route and original district/highway survey; no freight-zone premise is assumed."
+        ]
+      },
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "violating_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "district_kind": {
+          "kind": "world_setup",
+          "value": "business"
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "value": "continuous"
+        },
+        "signal_start_distance_ft": {
+          "kind": "controller",
+          "value": 65.616798
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "value": "clear"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_interrupted",
+      "deliberate_differences": [
+        "signal_continuity_request"
+      ],
+      "paired_probe_id": "continuity",
+      "probe": {
+        "comparison_or_standard": "Applicable 100/300 ft continuous-signal statutory reference and source-measured onset",
+        "primary_variable": "signal_continuity_request",
+        "target_value_or_branch": 114.829396
+      },
+      "rationale": "Requested signal target; actual traveled distance, continuity and course-change onset require saved Native measurement.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "other_vehicle_context",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering target is not measured signal distance.",
+          "A C177008 lane-change cell requires a reviewed rightward course-change route and original district/highway survey; no freight-zone premise is assumed."
+        ]
+      },
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "violating_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "district_kind": {
+          "kind": "world_setup",
+          "value": "business"
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "value": "interrupt_then_resume"
+        },
+        "signal_start_distance_ft": {
+          "kind": "controller",
+          "value": 114.829396
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "value": "clear"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__other_area_short",
+      "deliberate_differences": [
+        "district_kind"
+      ],
+      "paired_probe_id": "district_threshold",
+      "probe": {
+        "comparison_or_standard": "Applicable 100/300 ft continuous-signal statutory reference and source-measured onset",
+        "primary_variable": "district_kind",
+        "target_value_or_branch": 114.829396
+      },
+      "rationale": "Requested signal target; actual traveled distance, continuity and course-change onset require saved Native measurement.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "other_vehicle_context",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering target is not measured signal distance.",
+          "A C177008 lane-change cell requires a reviewed rightward course-change route and original district/highway survey; no freight-zone premise is assumed."
+        ]
+      },
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "violating_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "district_kind": {
+          "kind": "world_setup",
+          "value": "other"
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "value": "continuous"
+        },
+        "signal_start_distance_ft": {
+          "kind": "controller",
+          "value": 114.829396
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "value": "clear"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C177008__NRS-484B-413-2__motor_vehicle_driver__business_rain",
+      "deliberate_differences": [
+        "weather_request"
+      ],
+      "paired_probe_id": "weather_invariance",
+      "probe": {
+        "comparison_or_standard": "Applicable 100/300 ft continuous-signal statutory reference and source-measured onset",
+        "primary_variable": "weather_request",
+        "target_value_or_branch": "rain"
+      },
+      "rationale": "Requested signal target; actual traveled distance, continuity and course-change onset require saved Native measurement.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original CARLA tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform position readback",
+            "name": "ego_xy",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          },
+          {
+            "method": "original vehicle light-state readback",
+            "name": "right_signal",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original ego heading against reviewed approach",
+            "name": "course_change",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "boolean"
+          },
+          {
+            "method": "original Native weather readback",
+            "name": "weather",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "four synchronized original camera sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound local review packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "district_frontage_and_use",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "other_vehicle_context",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound local review packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Engineering target is not measured signal distance.",
+          "A C177008 lane-change cell requires a reviewed rightward course-change route and original district/highway survey; no freight-zone premise is assumed."
+        ]
+      },
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "compliant_attempt",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "district_kind": {
+          "kind": "world_setup",
+          "value": "business"
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "value": "continuous"
+        },
+        "signal_start_distance_ft": {
+          "kind": "controller",
+          "value": 114.829396
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "value": "rain"
+        }
+      }
+    }
+  ],
+  "cell_id": "C177008",
+  "status": "draft",
+  "sweep_specs": []
+}

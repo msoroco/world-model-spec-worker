@@ -110,7 +110,7 @@ def analyze(attempt, output):
                                  "physical_cause_confirmed": False,
                                  "cause_evidence": hashes}],
               "setup_confirmed": False, "behavior_attempted": False,
-              "maneuver_completed": False,
+              "maneuver_completed": value.get("physical_completion_probe", {}).get("status") == "met",
               "termination_reason": "Original yield-site and physical review pending",
               "physical_failure_flags": [], "trace_reference": "trace.jsonl",
               "video_references": [view + ".mkv" for view in VIEWS],

@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MODULES = ("runner.py", "analysis.py", "island_source.py", "island_measurements.py",
            "native_island.py", "native_island_entry.py", "capture_island.py",
-           "carla_island_readback.py", "island_video_sources.py")
+           "carla_island_readback.py", "island_video_sources.py", "delivery_audit.py")
 OFFLINE_TEST = '''import json
 import unittest
 from pathlib import Path
@@ -91,6 +91,9 @@ def build():
                     "saved_method": "900 source-bound body, heading, lane and four-camera frames; sample local side and footprint overlap"},
                 "static_checks": ["exact island source and plan hash", "source-selected connected lane role",
                                   "20 Hz four-camera original frame join"],
+                "mechanisms": ["SHA-sealed independently reviewed original rotary-island and lane sources",
+                               "bounded Native route follower with observed lane and eight-vertex body readback",
+                               "900 synchronized original 20 Hz body and four-camera frames"],
                 "termination_rules": {"duration_s": 45,
                     "early_termination": "retain failed attempt; never publish as completed"}}
             construction_path = candidate_folder / "construction.json"

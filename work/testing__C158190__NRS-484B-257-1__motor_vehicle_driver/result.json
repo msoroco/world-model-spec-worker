@@ -1,9 +1,13 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "8ffaac8f74a9d8cb5b03196bf077f095b876662e3acf3cfc3809406fc87e7d94",
+  "readiness_kind": "source_gated_selected_cpu_preparation",
+  "reason": "Three selected yield/no-line/no-crosswalk cases, two controlled comparisons, current-hash manifest and semantic chain, 3/3 offline, positive/negative compatibility, 3/3 recorded-only diagnostic processing, synthetic physical/lifecycle fixtures and independent audit code are CPU prepared. The frozen C158190 cell is stop_sign and the export contains two metadata records but zero original yield-control approval/site surveys, original Native trace or video. Without an immutable reviewed yield-governed variant and original source packets, original physical/delivery/comparison acceptance cannot be established; exact strict gate must remain partial.",
+  "remaining_gpu_checks": [
+    "Authorized original yield-governed site and route Native capture: actual 900-frame motion, nearest-view visibility, four camera views and independent physical review."
+  ],
   "status": "partial",
-  "readiness_kind": "source_gated_yield_construction_and_motion_comparison",
-  "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python runtime.py verify --runtime runtime",
@@ -18,26 +22,130 @@
       "sha256": "6f6d1ccec2c30c39017594067e5d7c163d140ba51300d20629373cdbab307101"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "unittest.log",
-      "sha256": "db33e38e8db62f798393f8f96dda5a665f84cb53111ec7e4073a15dd5cd50861"
+      "sha256": "144b5eb0158af7e641b57cce1edac7e7e24a19c653b70fb390c9cb0f9b488d98"
     },
     {
-      "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/source_audit.py --repo \"$PWD\"",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/source_audit.py --repo \"$PWD\"",
       "exit_code": 0,
       "log": "source-audit.log",
-      "sha256": "18836004feb77cc2f97361cf1c802c02030ef43d2f620d58a27313e61ff8718d"
+      "sha256": "36dc781879cb0fbeb1dfa590e2264e96eb8840fdb96b20f6bf5abadb65eb80fe"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C158190__NRS-484B-257-1__motor_vehicle_driver --complete",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/check_semantic.py",
       "exit_code": 0,
-      "log": "static.log",
-      "sha256": "fc15fb1752fad1ac61dffd700aaaea71ef4633cfbcc3965bd69b2e3481373422"
+      "log": "cpu-semantic.log",
+      "sha256": "787e1ff248118d9e6b61b94b734285b79c82cec275bf5809913fb9b5ca370d65"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard --output .runtime-work/c158190-owner-nov26/offline-v5-yield_slow_hazard --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-offline-yield_slow_hazard.log",
+      "sha256": "30af507e33e4ab369035f8d0a1ca4563877bdf32cae5c74a131bc2f09e7ee496"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
+      "exit_code": 0,
+      "log": "cpu-compat-yield_slow_hazard-analysis.log",
+      "sha256": "ad95073ac7a28c9f8ad970689cfca9cb220e620b55c4272a12643a9ab21ebb75"
+    },
+    {
+      "command": "pinned compatibility negative source perturbation",
+      "exit_code": 1,
+      "log": "cpu-compat-yield_slow_hazard-negative.log",
+      "sha256": "12d4a1f027151dfd3be49f51b0b212c9d06ee2be9bbc66083d601869f56f85b4"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard --attempt .runtime-work/c158190-owner-nov26/recorded-v5-attempt-yield_slow_hazard --output .runtime-work/c158190-owner-nov26/recorded-v5-output-yield_slow_hazard --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-recorded-yield_slow_hazard-receipt.json",
+      "sha256": "6a3ce07a4994db54d85ff6ad4438898e279b08eacefcb62ee8ec7ec10d1db292"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_acceptance.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard .runtime-work/c158190-owner-nov26/recorded-v5-output-yield_slow_hazard/v0001/processing.json --diagnostic",
+      "exit_code": 0,
+      "log": "cpu-delivery-positive-yield_slow_hazard.log",
+      "sha256": "f9336ac69b6cb5d966f89cc0285c595ae77d57db2ab2346674f745647a623d9b"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_acceptance.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard .runtime-work/c158190-owner-nov26/recorded-v5-output-yield_slow_hazard/v0001/processing.json",
+      "exit_code": 1,
+      "log": "cpu-delivery-negative-yield_slow_hazard.log",
+      "sha256": "e7f5de654c32533273c6d24a6db68b584768bb444573b092bd1137e205cdb656"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard --output .runtime-work/c158190-owner-nov26/offline-v5-yield_stop_hazard --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-offline-yield_stop_hazard.log",
+      "sha256": "e80c2c6da9e166076dadc61af0b33735a26d7dc4dd9f8af1733ed7ba4943b189"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard",
+      "exit_code": 0,
+      "log": "cpu-compat-yield_stop_hazard-analysis.log",
+      "sha256": "83168fa0be5b380b2168cdc5d9f14c49f6c42219d5b9b623b9cd13aee439fff5"
+    },
+    {
+      "command": "pinned compatibility negative source perturbation",
+      "exit_code": 1,
+      "log": "cpu-compat-yield_stop_hazard-negative.log",
+      "sha256": "77d0de391e27dbdf27b34f4530aaccd8751a5f54ebd1ef55ae5f078f3591070f"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard --attempt .runtime-work/c158190-owner-nov26/recorded-v5-attempt-yield_stop_hazard --output .runtime-work/c158190-owner-nov26/recorded-v5-output-yield_stop_hazard --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-recorded-yield_stop_hazard-receipt.json",
+      "sha256": "bff9879a3da8db04ae7c6eb196e4882ab051e03672d2cbef0401b67876ef72bf"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_acceptance.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard .runtime-work/c158190-owner-nov26/recorded-v5-output-yield_stop_hazard/v0001/processing.json --diagnostic",
+      "exit_code": 0,
+      "log": "cpu-delivery-positive-yield_stop_hazard.log",
+      "sha256": "bc550b2c6303cace17ec48688ead7468ad2143a515e561a940fefdf5442e26c6"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_acceptance.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard .runtime-work/c158190-owner-nov26/recorded-v5-output-yield_stop_hazard/v0001/processing.json",
+      "exit_code": 1,
+      "log": "cpu-delivery-negative-yield_stop_hazard.log",
+      "sha256": "e7f5de654c32533273c6d24a6db68b584768bb444573b092bd1137e205cdb656"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard --output .runtime-work/c158190-owner-nov26/offline-v5-yield_slow_no_hazard --python .venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "cpu-offline-yield_slow_no_hazard.log",
+      "sha256": "6f105a3bca4aa5867763ef17f3b90710926f77796b49c35bf389992ee6fc9dd9"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard",
+      "exit_code": 0,
+      "log": "cpu-compat-yield_slow_no_hazard-analysis.log",
+      "sha256": "f6645758d53ac69ba1063e8e95c83a55c15bc3a7e1fcd7faebc568d48dc136e4"
+    },
+    {
+      "command": "pinned compatibility negative source perturbation",
+      "exit_code": 1,
+      "log": "cpu-compat-yield_slow_no_hazard-negative.log",
+      "sha256": "581e64f3b3e70866987636856ca212eda5f6f28f301d440101fa18b2f4113482"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard --attempt .runtime-work/c158190-owner-nov26/recorded-v5-attempt-yield_slow_no_hazard --output .runtime-work/c158190-owner-nov26/recorded-v5-output-yield_slow_no_hazard --library runtime/library --validator .runtime-work/c110969-decoder/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "cpu-recorded-yield_slow_no_hazard-receipt.json",
+      "sha256": "184cc8195769d179a87c369d2f2a8db7d2168ea6ac22f59aa06072966481933f"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_acceptance.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard .runtime-work/c158190-owner-nov26/recorded-v5-output-yield_slow_no_hazard/v0001/processing.json --diagnostic",
+      "exit_code": 0,
+      "log": "cpu-delivery-positive-yield_slow_no_hazard.log",
+      "sha256": "d8b3ec1a18f6a496729ba9e59c643f9170ed19fd4aa967c866fb8e7f2bd86267"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/delivery_acceptance.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard .runtime-work/c158190-owner-nov26/recorded-v5-output-yield_slow_no_hazard/v0001/processing.json",
+      "exit_code": 1,
+      "log": "cpu-delivery-negative-yield_slow_no_hazard.log",
+      "sha256": "e7f5de654c32533273c6d24a6db68b584768bb444573b092bd1137e205cdb656"
     }
-  ],
-  "remaining_gpu_checks": [
-    "After a reviewed yield-site source is supplied and CPU package passes strict: actual CARLA motion, four-camera visibility and capture quality."
-  ],
-  "reason": "Three exact yield variants and two comparisons now have source-gated Native adapter construction calls, full-crossing through-motion measurement, fixed-source comparison audit, and a canonical-order queue proposal; 16 synthetic CPU tests, current runtime verification/preflight and scoped partial check pass. Frozen C158190 is stop_sign, and exported inputs include no original yield-sign variant approval, original site/marking/view/through-highway survey, trace or video. No selected manifest or source-bound delivery proof can truthfully be bound to this branch yet; scoped strict remains partial."
+  ]
 }
