@@ -19,7 +19,7 @@ LANE_WIDTH_M = 3.5
 NEAREST_TRACK_X_M = 0.0
 FAR_TRACK_X_M = 1.5
 APPROACH_Y_M = -LANE_WIDTH_M / 2
-CAMERAS = ("overview", "ego_front", "rail_side", "opposite_side")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def open_drive():
@@ -87,9 +87,9 @@ def scene_request(case, *, vehicle_blueprint="vehicle.tesla.model3",
                      "visibility_effect_verified": False},
         "cameras": [
             {"name": "overview", "xyz": [-18, -13, 25], "yaw": 35, "pitch": -50, "size": [1920, 1080]},
-            {"name": "ego_front", "xyz": [1, 0, 2], "yaw": 0, "pitch": -8, "size": [1280, 720], "attach_to_vehicle": True},
-            {"name": "rail_side", "xyz": [1, -12, 8], "yaw": 90, "pitch": -20, "size": [1280, 720]},
-            {"name": "opposite_side", "xyz": [5, 12, 8], "yaw": 180, "pitch": -20, "size": [1280, 720]},
+            {"name": "approach", "xyz": [-30, -11, 10], "yaw": 0, "pitch": -20, "size": [1280, 720]},
+            {"name": "reference_corner", "xyz": [1, -12, 8], "yaw": 90, "pitch": -20, "size": [1280, 720]},
+            {"name": "driver_reference", "xyz": [5, 12, 8], "yaw": 180, "pitch": -20, "size": [1280, 720]},
         ],
         "rate_hz": 20, "duration_s": 30, "planned_frames": 600,
         "designation_record_source_required": True,

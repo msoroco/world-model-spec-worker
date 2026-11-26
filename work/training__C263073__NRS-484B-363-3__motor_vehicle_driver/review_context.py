@@ -69,9 +69,23 @@ def verified_sources(attempt, context):
     case_context = review.get('case_context')
     if not isinstance(case_context, str) or not case_context:
         raise ValueError('Independent selected case context missing')
+    clock = review.get('operation_clock')
+    names_by_topic = {'school_operation': ('operation_ceases_at', 'next_operation_begins_at'),
+                      'civil_time': ('civil_time_at_capture',)}
+    if not isinstance(clock, dict):
+        raise ValueError('School operation clock review missing')
+    for topic, names in names_by_topic.items():
+        source = (attempt / bound[topic]['path']).resolve()
+        try:
+            observed = json.loads(source.read_text())
+        except (ValueError, UnicodeError) as error:
+            raise ValueError('School operation clock source unreadable: ' + topic) from error
+        if not isinstance(observed, dict) or any(observed.get(name) != clock.get(name) for name in names):
+            raise ValueError('School operation clock differs from source: ' + topic)
     return {'records': bound, 'exception_dispositions': dispositions,
             'case_context': case_context, 'case_facts': review.get('case_facts'),
-            'beacon_definition': review.get('beacon_definition')}
+            'beacon_definition': review.get('beacon_definition'),
+            'operation_clock': clock}
 
 
 def attach_original_review(output, source_dir):

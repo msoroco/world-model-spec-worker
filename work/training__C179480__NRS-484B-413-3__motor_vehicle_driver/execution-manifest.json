@@ -32,7 +32,97 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "fixture_recipe": "work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/selected-recipe-witness_1.json"
+      "fixture_recipe": "work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/selected-recipe-witness_1.json",
+      "physical_preparation": {
+        "receipt": "physical-proof/witness_1/proof.json",
+        "sha256": "c827b735e1b90cb455387371ca38ec224dcaf2aa38008c63dedc35f260fe475b"
+      },
+      "compatibility": {
+        "receipt": "compatibility/witness_1-primary-compatibility.json",
+        "sha256": "2a935bd8369638b8d1559bf4ef39e62e56316c5e194acb1f2599300110a237c6",
+        "log": "compatibility/witness_1-primary-analysis.log",
+        "negative_log": "compatibility/witness_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/witness_1-primary-negative.log"
+      },
+      "acquisition": {
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "sig.brake_lamp": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "sig.hand_signal": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "drv.following": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "15be20c9db857139bd6b2e9e2e91c3d9e27fe1691bc9acd6fe330cd09a6dff9b",
+        "command": ".venv-cpu/bin/python -B work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/delivery_audit.py --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1 --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/delivery_audit.py --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1 --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "test_log": "delivery-proofs/witness_1-positive.log",
+        "test_log_sha256": "fa02da466c28bc607c50e65fcb2515f2bde01147be135dc3ecd178832410056e",
+        "negative_log": "delivery-proofs/witness_1-negative.log",
+        "negative_log_sha256": "a1dd31e3a5a92c3e77fc72efac0a4d1aef6dc83881b82d7e04f0c02051e34056"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/witness_1-processing.log",
+        "test_log_sha256": "0e3ed31dbe694769aeff0f3ac40f9b962c0f28580db3d3a55fa571a717635b02",
+        "processing_receipt": "saved/witness_1-processing.json",
+        "processing_receipt_sha256": "0e3ed31dbe694769aeff0f3ac40f9b962c0f28580db3d3a55fa571a717635b02"
+      }
     },
     {
       "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2",
@@ -62,7 +152,97 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "fixture_recipe": "work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/selected-recipe-witness_2.json"
+      "fixture_recipe": "work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/selected-recipe-witness_2.json",
+      "physical_preparation": {
+        "receipt": "physical-proof/witness_2/proof.json",
+        "sha256": "9924eb08113b48f57c379743c74a5b6364cd1b4690c5f2c420984488f06537c4"
+      },
+      "compatibility": {
+        "receipt": "compatibility/witness_2-primary-compatibility.json",
+        "sha256": "e9b3e1a65941939a4839da347fbfa08797d6a88157df7175ad94d76e2f985638",
+        "log": "compatibility/witness_2-primary-analysis.log",
+        "negative_log": "compatibility/witness_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/witness_2-primary-negative.log"
+      },
+      "acquisition": {
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "sig.brake_lamp": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "sig.hand_signal": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "drv.following": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "15be20c9db857139bd6b2e9e2e91c3d9e27fe1691bc9acd6fe330cd09a6dff9b",
+        "command": ".venv-cpu/bin/python -B work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/delivery_audit.py --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2 --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/delivery_audit.py --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2 --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "test_log": "delivery-proofs/witness_2-positive.log",
+        "test_log_sha256": "433a7e4c1e8aca8e30c446ab99a1cb7bfda76407d8425dfddbff890e8fef942e",
+        "negative_log": "delivery-proofs/witness_2-negative.log",
+        "negative_log_sha256": "a1dd31e3a5a92c3e77fc72efac0a4d1aef6dc83881b82d7e04f0c02051e34056"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/witness_2-processing.log",
+        "test_log_sha256": "51cbe406b4d20a793d559dc76645afe3d360360b7ab9f2559bffda99fbc2ca64",
+        "processing_receipt": "saved/witness_2-processing.json",
+        "processing_receipt_sha256": "51cbe406b4d20a793d559dc76645afe3d360360b7ab9f2559bffda99fbc2ca64"
+      }
     },
     {
       "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early",
@@ -92,7 +272,97 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "fixture_recipe": "work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/selected-recipe-decrease_early.json"
+      "fixture_recipe": "work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/selected-recipe-decrease_early.json",
+      "physical_preparation": {
+        "receipt": "physical-proof/decrease_early/proof.json",
+        "sha256": "37f06f8449e5ef65f2e376dedcfa001fd5929ddd4813a8d19db219e99ca42f96"
+      },
+      "compatibility": {
+        "receipt": "compatibility/decrease_early-primary-compatibility.json",
+        "sha256": "6e4593823b9b9db5f540e1bc60f171e4eecac9b23349a5b0352a2e05f8e12b48",
+        "log": "compatibility/decrease_early-primary-analysis.log",
+        "negative_log": "compatibility/decrease_early-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/decrease_early-primary-negative.log"
+      },
+      "acquisition": {
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "sig.brake_lamp": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "sig.hand_signal": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "drv.following": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "15be20c9db857139bd6b2e9e2e91c3d9e27fe1691bc9acd6fe330cd09a6dff9b",
+        "command": ".venv-cpu/bin/python -B work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/delivery_audit.py --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/delivery_audit.py --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "test_log": "delivery-proofs/decrease_early-positive.log",
+        "test_log_sha256": "34617d5d3b298c78e18fd8718a992688f0416dc61aeb2bd0033d0871d967b3e9",
+        "negative_log": "delivery-proofs/decrease_early-negative.log",
+        "negative_log_sha256": "a1dd31e3a5a92c3e77fc72efac0a4d1aef6dc83881b82d7e04f0c02051e34056"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/decrease_early-processing.log",
+        "test_log_sha256": "4f51d4f690d8d23f17e90b9189cf18ff434946580b24ec715011d027d994b837",
+        "processing_receipt": "saved/decrease_early-processing.json",
+        "processing_receipt_sha256": "4f51d4f690d8d23f17e90b9189cf18ff434946580b24ec715011d027d994b837"
+      }
     },
     {
       "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late",
@@ -122,7 +392,97 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "fixture_recipe": "work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/selected-recipe-decrease_late.json"
+      "fixture_recipe": "work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/selected-recipe-decrease_late.json",
+      "physical_preparation": {
+        "receipt": "physical-proof/decrease_late/proof.json",
+        "sha256": "3d4b334a00ce88d37be381ae95c7e643c39cf7d9997fd55317cc0e6f11c454bc"
+      },
+      "compatibility": {
+        "receipt": "compatibility/decrease_late-primary-compatibility.json",
+        "sha256": "269ef1f9c50b15d035d0f539033ec92667f1f08178c1cc88e1ac0d4da7532c16",
+        "log": "compatibility/decrease_late-primary-analysis.log",
+        "negative_log": "compatibility/decrease_late-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/decrease_late-primary-negative.log"
+      },
+      "acquisition": {
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "kin.accel_longitudinal": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "sig.brake_lamp": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "sig.hand_signal": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "drv.following": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "rel.ahead_behind_in_lane": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native ego/rear kinematic, observed signal and four-camera capture, then recorded-only source-bound derivation",
+          "evidence": "actor-sources.jsonl, camera-frames.jsonl, video_frames.jsonl, rear-signal-context.json and observation streams; original pixels and recipient reviewed after capture"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "15be20c9db857139bd6b2e9e2e91c3d9e27fe1691bc9acd6fe330cd09a6dff9b",
+        "command": ".venv-cpu/bin/python -B work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/delivery_audit.py --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/delivery_audit.py --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late --self-test --negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "test_log": "delivery-proofs/decrease_late-positive.log",
+        "test_log_sha256": "4d9f271278084cb0f1c1856625a8c24ad99ed060ba1b47d580fddde790069007",
+        "negative_log": "delivery-proofs/decrease_late-negative.log",
+        "negative_log_sha256": "a1dd31e3a5a92c3e77fc72efac0a4d1aef6dc83881b82d7e04f0c02051e34056"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179480__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/decrease_late-processing.log",
+        "test_log_sha256": "2f378cb853489984c81a1c422a7fb9081505496c48abcd16ef03e7f12a6b3384",
+        "processing_receipt": "saved/decrease_late-processing.json",
+        "processing_receipt_sha256": "2f378cb853489984c81a1c422a7fb9081505496c48abcd16ef03e7f12a6b3384"
+      }
     }
   ]
 }

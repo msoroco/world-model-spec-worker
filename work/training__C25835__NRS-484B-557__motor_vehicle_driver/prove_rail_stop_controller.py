@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from rail_stop_controller import RailStopController
+from rail_stop_controller import RailStopController, STOP_CENTER_DISTANCE_FT
 
 
 def reject(label, fn, expected):
@@ -18,7 +18,7 @@ def reject(label, fn, expected):
 
 if __name__ == "__main__":
     positive = {}
-    for case in ("probe_1", "probe_2"):
+    for case in STOP_CENTER_DISTANCE_FT:
         controller = RailStopController(case, 0.0)
         target = controller.target_x
         assert controller.command(0, target - 20.0, 4.0, "occluded")["phase"] == "approach"
@@ -29,7 +29,8 @@ if __name__ == "__main__":
         assert controller.command(41, target, 0.0, "clear")["phase"] == "proceed"
         assert controller.command(42, target + 0.2, 0.4, "occluded")["phase"] == "hold"
         positive[case] = {"target_center_x_m": target, "visibility_loss_rebrakes": True}
-    assert positive["probe_1"]["target_center_x_m"] < positive["probe_2"]["target_center_x_m"]
+    assert positive["probe_4"]["target_center_x_m"] < positive["probe_1"]["target_center_x_m"] < positive["probe_3"]["target_center_x_m"] < positive["probe_2"]["target_center_x_m"]
+    assert positive["probe_5"]["target_center_x_m"] < positive["probe_4"]["target_center_x_m"]
     negative = [
         reject("unknown_case", lambda: RailStopController("none", 0), "Unknown"),
         reject("missing_rail", lambda: RailStopController("probe_1", float("nan")), "rail geometry"),

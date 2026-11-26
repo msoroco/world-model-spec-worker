@@ -1,0 +1,67 @@
+{
+  "template_id": "NRS-484B-557@motor_vehicle_driver",
+  "law_id": "NRS-484B-557",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The Department of Transportation, and local authorities with the approval of the Department of Transportation, may designate dangerous highway grade crossings of railroads and erect official traffic-control devices at such crossings directing a stop. When such stop signs are erected the driver of any vehicle shall stop within 50 feet but not less than 15 feet from the nearest track of such a grade crossing and afterward may proceed only upon exercising due care.",
+  "structure": {
+    "activation": {
+      "description": "Source-established dangerous highway railroad grade crossing with official erected stop sign governing the subject approach.",
+      "source_clause": "When such stop signs are erected"
+    },
+    "obligation": {
+      "description": "Observe complete cessation within the statutory distance band from the nearest track before proceeding.",
+      "type": "must",
+      "source_clause": "shall stop within 50 feet but not less than 15 feet from the nearest track",
+      "numeric_conditions": [
+        {
+          "name": "outer_distance_ft",
+          "value": 50
+        },
+        {
+          "name": "inner_distance_ft",
+          "value": 15
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Original stop precedes proceeding; no statutory stop duration."
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "designate dangerous highway grade crossings of railroads",
+        "note": "Department of Transportation designation or local authority with Department approval requires an original administrative source."
+      },
+      {
+        "phrase": "erect official traffic-control devices at such crossings directing a stop",
+        "note": "Original installed official stop sign and approach governance require separate source review."
+      },
+      {
+        "phrase": "within 50 feet but not less than 15 feet from the nearest track",
+        "note": "Original nearest-track and vehicle geometry yield front, centre and rear distances; the statute does not specify a vehicle reference point."
+      },
+      {
+        "phrase": "afterward may proceed only upon exercising due care",
+        "note": "Retain motion, visibility, occluder and actual train state; no numerical due-care substitute."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "official_rail_crossing_context",
+      "kind": "world_setup",
+      "range_or_domain": "independent original designation and sign authority sources"
+    },
+    {
+      "name": "requested_stop_center_ft",
+      "kind": "controller",
+      "range_or_domain": "10, 15, 25, 50 or 50.5 ft centre request"
+    },
+    {
+      "name": "observed_stop_distances_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "original front, centre and rear source-joined distances"
+    }
+  ]
+}

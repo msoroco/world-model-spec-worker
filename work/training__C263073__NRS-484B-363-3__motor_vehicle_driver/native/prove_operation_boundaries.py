@@ -11,6 +11,7 @@ from review_context import verified_sources
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SCRATCH = ROOT.parents[1] / '.runtime-work' / 'c263073-owner'
 CASES = (
     ('after_cessation_below', '2026-11-25T15:29:59-08:00', 'before_lower'),
     ('after_cessation_at', '2026-11-25T15:30:00-08:00', 'at_lower'),
@@ -23,7 +24,8 @@ CASES = (
 
 def main():
     rows = []
-    with tempfile.TemporaryDirectory() as temporary:
+    SCRATCH.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=SCRATCH, prefix='operation-boundary-') as temporary:
         base = Path(temporary)
         for name, civil, expected in CASES:
             attempt = base / name
@@ -33,6 +35,18 @@ def main():
             review = context['independent_review']
             assert review['case_facts']['children_present']['value'] is True
             assert review['case_facts']['school_session_day']['value'] is True
+            fixed_source_hashes = {}
+            for topic, field in (('child_identity', 'children_present'),
+                                 ('child_location', 'children_present'),
+                                 ('school_session', 'school_session_day')):
+                source_path = attempt / review['records'][topic]['path']
+                fixed_source = json.loads(source_path.read_text())
+                fixed_source[field] = True
+                source_path.write_text(json.dumps(fixed_source) + '\n')
+                fixed_digest = hashlib.sha256(source_path.read_bytes()).hexdigest()
+                review['records'][topic]['sha256'] = fixed_digest
+                review['case_facts'][field]['source_sha256'][topic] = fixed_digest
+                fixed_source_hashes[topic] = fixed_digest
             civil_path = attempt / review['records']['civil_time']['path']
             source = json.loads(civil_path.read_text())
             source['civil_time_at_capture'] = civil
@@ -45,6 +59,10 @@ def main():
                 if 'civil_time' in fact['source_sha256']:
                     fact['source_sha256']['civil_time'] = digest
             verified = verified_sources(attempt, context)
+            assert all(json.loads((attempt / review['records'][topic]['path']).read_text())[field] is True
+                       for topic, field in (('child_identity', 'children_present'),
+                                            ('child_location', 'children_present'),
+                                            ('school_session', 'school_session_day')))
             position = operation_window_position(verified['operation_clock'])
             assert position['position'] == expected, (name, position)
             assert position['lower'] == '2026-11-25T15:30:00-08:00'
@@ -66,6 +84,7 @@ def main():
                          'operation_ceases_at': review['operation_clock']['operation_ceases_at'],
                          'next_operation_begins_at': review['operation_clock']['next_operation_begins_at'],
                          'school_session_day': True, 'children_present': True,
+                         'fixed_child_session_source_sha256': fixed_source_hashes,
                          'school_operation_source_sha256': review['records']['school_operation']['sha256'],
                          'civil_time_source_sha256': digest,
                          'source_verified': True,

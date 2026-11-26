@@ -14,7 +14,7 @@ from pathlib import Path
 
 FRAME_COUNT = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "rail_side", "opposite_side"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 FEET_PER_METRE = 3.280839895013123
 
 

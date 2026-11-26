@@ -1,0 +1,766 @@
+{
+  "cell_id": "C25835",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "rail-stop-distance-boundaries",
+      "target_law_id": "NRS-484B-557",
+      "judgment_refs": [
+        {
+          "phrase": "designate dangerous highway grade crossings of railroads",
+          "note": "Department of Transportation designation or local authority with Department approval requires an original administrative source."
+        },
+        {
+          "phrase": "erect official traffic-control devices at such crossings directing a stop",
+          "note": "Original installed official stop sign and approach governance require separate source review."
+        },
+        {
+          "phrase": "within 50 feet but not less than 15 feet from the nearest track",
+          "note": "Original nearest-track and vehicle geometry yield front, centre and rear distances; the statute does not specify a vehicle reference point."
+        },
+        {
+          "phrase": "afterward may proceed only upon exercising due care",
+          "note": "Retain motion, visibility, occluder and actual train state; no numerical due-care substitute."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Source-shaped boundary diagnostics retain original stop geometry; authority and due care remain for review.",
+      "missing_inputs": [
+        "Original designation, official sign and physical crossing source reviews."
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral crossing context.",
+      "variable_assignments": {
+        "observed_stop_distances_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": null
+        },
+        "official_rail_crossing_context": {
+          "kind": "world_setup",
+          "value": "review_pending"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "designate dangerous highway grade crossings of railroads",
+        "erect official traffic-control devices at such crossings directing a stop",
+        "within 50 feet but not less than 15 feet from the nearest track",
+        "afterward may proceed only upon exercising due care"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.stop_sign.jsonl"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.governs.jsonl"
+          },
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/st.railway_crossing.jsonl"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/rel.centre_distance.jsonl"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.stopped.jsonl"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.approaching.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "ru.rail_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/ru.rail_vehicle.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored props and synthetic fixtures cannot establish administrative designation, official sign authority, actual pixels, physical completion, due care, or legal outcome."
+        ]
+      }
+    },
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1",
+      "target_law_id": "NRS-484B-557",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "rail_stop_boundary_sweeps",
+      "rationale": "Request source-measured cessation 25 ft from nearest rail by vehicle centre, retaining all vehicle reference points.",
+      "deliberate_differences": [
+        "requested_stop_center_ft"
+      ],
+      "variable_assignments": {
+        "observed_stop_distances_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 25
+        },
+        "official_rail_crossing_context": {
+          "kind": "world_setup",
+          "value": "review_pending"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "designate dangerous highway grade crossings of railroads",
+        "erect official traffic-control devices at such crossings directing a stop",
+        "within 50 feet but not less than 15 feet from the nearest track",
+        "afterward may proceed only upon exercising due care"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.stop_sign.jsonl"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.governs.jsonl"
+          },
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/st.railway_crossing.jsonl"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/rel.centre_distance.jsonl"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.stopped.jsonl"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.approaching.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "ru.rail_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/ru.rail_vehicle.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored props and synthetic fixtures cannot establish administrative designation, official sign authority, actual pixels, physical completion, due care, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_stop_distances_ft",
+        "comparison_or_standard": "original source-reviewed nearest track",
+        "target_value_or_branch": "25 ft centre request"
+      }
+    },
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2",
+      "target_law_id": "NRS-484B-557",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "rail_stop_boundary_sweeps",
+      "rationale": "Request source-measured cessation 10 ft from nearest rail by vehicle centre, retaining all vehicle reference points.",
+      "deliberate_differences": [
+        "requested_stop_center_ft"
+      ],
+      "variable_assignments": {
+        "observed_stop_distances_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 10
+        },
+        "official_rail_crossing_context": {
+          "kind": "world_setup",
+          "value": "review_pending"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "designate dangerous highway grade crossings of railroads",
+        "erect official traffic-control devices at such crossings directing a stop",
+        "within 50 feet but not less than 15 feet from the nearest track",
+        "afterward may proceed only upon exercising due care"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.stop_sign.jsonl"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.governs.jsonl"
+          },
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/st.railway_crossing.jsonl"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/rel.centre_distance.jsonl"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.stopped.jsonl"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.approaching.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "ru.rail_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/ru.rail_vehicle.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored props and synthetic fixtures cannot establish administrative designation, official sign authority, actual pixels, physical completion, due care, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_stop_distances_ft",
+        "comparison_or_standard": "original source-reviewed nearest track",
+        "target_value_or_branch": "10 ft centre request"
+      }
+    },
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3",
+      "target_law_id": "NRS-484B-557",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "rail_stop_boundary_sweeps",
+      "rationale": "Request source-measured cessation 15 ft from nearest rail by vehicle centre, retaining all vehicle reference points.",
+      "deliberate_differences": [
+        "requested_stop_center_ft"
+      ],
+      "variable_assignments": {
+        "observed_stop_distances_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 15
+        },
+        "official_rail_crossing_context": {
+          "kind": "world_setup",
+          "value": "review_pending"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "designate dangerous highway grade crossings of railroads",
+        "erect official traffic-control devices at such crossings directing a stop",
+        "within 50 feet but not less than 15 feet from the nearest track",
+        "afterward may proceed only upon exercising due care"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.stop_sign.jsonl"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.governs.jsonl"
+          },
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/st.railway_crossing.jsonl"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/rel.centre_distance.jsonl"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.stopped.jsonl"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.approaching.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "ru.rail_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/ru.rail_vehicle.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored props and synthetic fixtures cannot establish administrative designation, official sign authority, actual pixels, physical completion, due care, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_stop_distances_ft",
+        "comparison_or_standard": "original source-reviewed nearest track",
+        "target_value_or_branch": "15 ft centre request"
+      }
+    },
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4",
+      "target_law_id": "NRS-484B-557",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "rail_stop_boundary_sweeps",
+      "rationale": "Request source-measured cessation 50 ft from nearest rail by vehicle centre, retaining all vehicle reference points.",
+      "deliberate_differences": [
+        "requested_stop_center_ft"
+      ],
+      "variable_assignments": {
+        "observed_stop_distances_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 50
+        },
+        "official_rail_crossing_context": {
+          "kind": "world_setup",
+          "value": "review_pending"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "designate dangerous highway grade crossings of railroads",
+        "erect official traffic-control devices at such crossings directing a stop",
+        "within 50 feet but not less than 15 feet from the nearest track",
+        "afterward may proceed only upon exercising due care"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.stop_sign.jsonl"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.governs.jsonl"
+          },
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/st.railway_crossing.jsonl"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/rel.centre_distance.jsonl"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.stopped.jsonl"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.approaching.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "ru.rail_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/ru.rail_vehicle.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored props and synthetic fixtures cannot establish administrative designation, official sign authority, actual pixels, physical completion, due care, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_stop_distances_ft",
+        "comparison_or_standard": "original source-reviewed nearest track",
+        "target_value_or_branch": "50 ft centre request"
+      }
+    },
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5",
+      "target_law_id": "NRS-484B-557",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "rail_stop_boundary_sweeps",
+      "rationale": "Request source-measured cessation 50.5 ft from nearest rail by vehicle centre, retaining all vehicle reference points.",
+      "deliberate_differences": [
+        "requested_stop_center_ft"
+      ],
+      "variable_assignments": {
+        "observed_stop_distances_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "requested_stop_center_ft": {
+          "kind": "controller",
+          "value": 50.5
+        },
+        "official_rail_crossing_context": {
+          "kind": "world_setup",
+          "value": "review_pending"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "designate dangerous highway grade crossings of railroads",
+        "erect official traffic-control devices at such crossings directing a stop",
+        "within 50 feet but not less than 15 feet from the nearest track",
+        "afterward may proceed only upon exercising due care"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.stop_sign.jsonl"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/dev.governs.jsonl"
+          },
+          {
+            "name": "st.railway_crossing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/st.railway_crossing.jsonl"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/rel.centre_distance.jsonl"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.stopped.jsonl"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.approaching.jsonl"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/drv.time_to_conflict.jsonl"
+          },
+          {
+            "name": "ru.rail_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native rail/vehicle/frame join with independent designation and official-sign reviews",
+            "time_window": "600 original frames",
+            "reference_frame": "nearest track approach edge; front, centre and rear retained",
+            "uncertainty": "50 ms sampling; vehicle reference point and due care require independent review",
+            "source": "channels/ru.rail_vehicle.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored props and synthetic fixtures cannot establish administrative designation, official sign authority, actual pixels, physical completion, due care, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_stop_distances_ft",
+        "comparison_or_standard": "original source-reviewed nearest track",
+        "target_value_or_branch": "50.5 ft centre request"
+      }
+    }
+  ]
+}

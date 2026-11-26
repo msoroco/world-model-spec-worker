@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from rail_stop_scene import scene_request, validate_request
+from rail_stop_controller import STOP_CENTER_DISTANCE_FT
 
 
 def reject(label, fn, expected):
@@ -18,12 +19,14 @@ def reject(label, fn, expected):
 
 
 if __name__ == "__main__":
-    first, second = scene_request("probe_1"), scene_request("probe_2")
-    positive = [validate_request(first), validate_request(second)]
-    assert first["road_opendrive"] == second["road_opendrive"]
+    requests = {case: scene_request(case) for case in STOP_CENTER_DISTANCE_FT}
+    first, second = requests["probe_1"], requests["probe_2"]
+    positive = [validate_request(request) for request in requests.values()]
+    assert len({r["road_opendrive"] for r in requests.values()}) == 1
     for key in ("rails", "stop_sign", "occluder", "cameras"):
-        assert first[key] == second[key]
+        assert all(r[key] == first[key] for r in requests.values())
     assert first["vehicle"]["requested_stop_center_x_m"] < second["vehicle"]["requested_stop_center_x_m"]
+    assert requests["probe_5"]["vehicle"]["requested_stop_center_x_m"] < requests["probe_4"]["vehicle"]["requested_stop_center_x_m"] < first["vehicle"]["requested_stop_center_x_m"] < requests["probe_3"]["vehicle"]["requested_stop_center_x_m"]
     missing_camera = copy.deepcopy(first)
     missing_camera["cameras"].pop()
     false_governance = copy.deepcopy(first)

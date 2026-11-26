@@ -1,4 +1,4 @@
-"""Feedback controller policy for two rail stop positions.
+"""Feedback controller policy for five rail stop positions.
 
 The policy requests motion only. Native readback and independent review determine
 whether a stop, subsequent movement, and due care actually occurred.
@@ -10,17 +10,20 @@ import math
 RATE_HZ = 20
 FRAME_COUNT = 600
 FEET_PER_METRE = 3.280839895013123
-STOP_CENTER_DISTANCE_FT = {"probe_1": 25.0, "probe_2": 10.0}
+STOP_CENTER_DISTANCE_FT = {"probe_1": 25.0, "probe_2": 10.0, "probe_3": 15.0, "probe_4": 50.0, "probe_5": 50.5}
 
 
 class RailStopController:
-    def __init__(self, case, nearest_track_approach_edge_x_m):
+    def __init__(self, case, nearest_track_approach_edge_x_m, brake_gain=0.7):
         if case not in STOP_CENTER_DISTANCE_FT:
             raise ValueError("Unknown rail stop case")
         if not isinstance(nearest_track_approach_edge_x_m, (int, float)) or not math.isfinite(nearest_track_approach_edge_x_m):
             raise ValueError("Missing observed rail geometry")
+        if isinstance(brake_gain, bool) or not isinstance(brake_gain, (int, float)) or not 0.6 <= brake_gain <= 1.0:
+            raise ValueError("Invalid braking gain")
         self.case = case
         self.target_x = float(nearest_track_approach_edge_x_m) - STOP_CENTER_DISTANCE_FT[case] / FEET_PER_METRE
+        self.brake_gain = float(brake_gain)
         self.phase = "approach"
         self.hold_frames = 0
 
@@ -39,7 +42,7 @@ class RailStopController:
             if remaining <= 0.5 and observed_speed_mps <= 0.10:
                 self.phase = "hold"
             elif remaining <= max(1.0, observed_speed_mps ** 2 / 4.0 + 1.0):
-                return {"phase": "brake", "throttle": 0.0, "brake": 0.7, "steer": 0.0}
+                return {"phase": "brake", "throttle": 0.0, "brake": self.brake_gain, "steer": 0.0}
             else:
                 return {"phase": "approach", "throttle": 0.25, "brake": 0.0, "steer": 0.0}
         if self.phase == "hold":

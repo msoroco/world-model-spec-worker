@@ -59,13 +59,17 @@ def rejects(label, ctx, rows, expected):
 
 
 if __name__ == "__main__":
-    # Centre targets approximate 25 ft and 10 ft. Report all measured reference
-    # points; do not equate a centre target with a legal boundary verdict.
-    inside = measure(context(), trace(-25 / 3.280839895013123))
-    near = measure(context(), trace(-10 / 3.280839895013123))
-    assert 24.5 < inside["stop_reference_distances_from_nearest_track_ft"]["center_ft"] < 25.5
-    assert 9.5 < near["stop_reference_distances_from_nearest_track_ft"]["center_ft"] < 10.5
-    assert inside["first_stop_frame"] == near["first_stop_frame"] == 151
+    # Engineering centre requests probe both statutory boundaries. The source
+    # never specifies a legal vehicle reference point; retain all three.
+    targets = {"center_25_ft": 25, "center_10_ft": 10,
+               "center_15_ft": 15, "center_50_ft": 50,
+               "center_50_5_ft": 50.5}
+    positive = {name: measure(context(), trace(-feet / 3.280839895013123))
+                for name, feet in targets.items()}
+    for name, feet in targets.items():
+        observed = positive[name]["stop_reference_distances_from_nearest_track_ft"]["center_ft"]
+        assert abs(observed - feet) < 0.5, (name, observed)
+        assert positive[name]["first_stop_frame"] == 151
     negative = []
     ctx = context()
     ctx.pop("designation_source_sha256")
@@ -78,7 +82,7 @@ if __name__ == "__main__":
     negative.append(rejects("not_grade_crossing", ctx, trace(-7), "grade crossing"))
     negative.append(rejects("short_capture", context(), trace(-7)[:-1], "Incomplete 30-second"))
     rows = trace(-7)
-    rows[250]["source_cameras"].pop("rail_side")
+    rows[250]["source_cameras"].pop("reference_corner")
     negative.append(rejects("missing_source_camera", context(), rows, "Four source camera"))
     rows = trace(-7)
     rows[250]["native_frame"] = rows[249]["native_frame"]
@@ -93,7 +97,7 @@ if __name__ == "__main__":
     proof = {
         "format": "worker-cpu-rail-stop-proof", "passed": True,
         "diagnostic_only": True, "original_native_observed": False,
-        "positive": {"center_25_ft": inside, "center_10_ft": near},
+        "positive": positive,
         "negative": negative,
     }
     path = Path(__file__).with_name("rail-stop-proof.json")

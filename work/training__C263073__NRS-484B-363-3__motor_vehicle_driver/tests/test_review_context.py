@@ -10,9 +10,18 @@ from review_context import EXCEPTIONS, EXCEPTION_TOPICS, REQUIRED, attach_origin
 class IndependentSchoolSourceTests(unittest.TestCase):
     def make_review(self, root):
         records = {}
+        clock = {'operation_ceases_at': '2026-11-25T15:00:00-08:00',
+                 'next_operation_begins_at': '2026-11-26T08:00:00-08:00',
+                 'civil_time_at_capture': '2026-11-25T15:45:00-08:00'}
         for topic in REQUIRED:
             path = root / (topic + '.json')
-            path.write_text(json.dumps({'topic': topic, 'synthetic_fixture': True}) + '\n')
+            payload = {'topic': topic, 'synthetic_fixture': True}
+            if topic == 'school_operation':
+                payload.update({key: clock[key] for key in
+                                ('operation_ceases_at', 'next_operation_begins_at')})
+            elif topic == 'civil_time':
+                payload['civil_time_at_capture'] = clock['civil_time_at_capture']
+            path.write_text(json.dumps(payload) + '\n')
             records[topic] = {'topic': topic, 'path': path.name,
                               'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
                               'reviewer': 'synthetic-test', 'observation': 'synthetic source-shape fixture'}
@@ -21,7 +30,12 @@ class IndependentSchoolSourceTests(unittest.TestCase):
                         for name in EXCEPTIONS}
         return {'independent_review': {'format': 'c263073-source-review-v1',
                                        'records': records, 'exception_dispositions': dispositions,
-                                       'case_context': 'source_shape_fixture'}}
+                                       'case_context': 'source_shape_fixture',
+                                       'operation_clock': {**clock,
+                                           'source_topics': ['school_operation', 'civil_time'],
+                                           'source_sha256': {topic: records[topic]['sha256'] for topic in
+                                                             ('school_operation', 'civil_time')},
+                                           'reviewer_reason': 'Synthetic clock shape'}}}
 
     def test_binds_all_five_exception_sources(self):
         with tempfile.TemporaryDirectory() as scratch:
