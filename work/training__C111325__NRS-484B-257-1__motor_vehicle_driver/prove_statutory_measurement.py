@@ -23,20 +23,31 @@ def packet(case):
         "intersection_near_x_m": -3.5, "intersection_far_x_m": 3.5,
         "through_conflict_halfwidth_m": 3.5,
     }
-    context.update({name + "_sha256": diagnostic_hash(name + case) for name in SOURCE_NAMES})
-    rolling = case in {"roll_through_conflict", "yield_sign_no_slow_conflict", "through_occupancy_during_crossing"}
+    static_source_variant = {
+        "map": "same-crossing-map",
+        "sign": context["sign_kind"],
+        "reference": context["reference_kind"],
+        "controls": "police" if context["police_controlling"] else "signal" if context["signal_controlling"] else "ordinary",
+        "through_road": "same-through-road",
+        "ego_body": "same-subject-body",
+        "through_body": "same-through-body",
+    }
+    context.update({name + "_sha256": diagnostic_hash(name + static_source_variant[name]) for name in SOURCE_NAMES})
+    rolling = case in {"roll_through_conflict", "yield_sign_no_slow_conflict"}
     rows = []
     for i in range(600):
         native = 800000 + i
         if rolling:
             x, speed = -45 + i * .25, 5.0
         else:
-            x = -45 + min(i, 100) * .3575 if i <= 100 else (-9.25 if i < 250 else -9.25 + (i - 250) * .25)
-            speed = 0.0 if 100 <= i < 250 else (7.15 if i < 100 else 5.0)
+            stop_center = -8.25 if case in {"stop_before_crosswalk_no_line", "yield_sign_crosswalk_no_line"} else -6.35 if case in {"stop_at_viewpoint_no_line_crosswalk", "yield_sign_viewpoint_no_line_crosswalk"} else -9.25
+            x = -45 + min(i, 100) * ((stop_center + 45) / 100) if i <= 100 else (stop_center if i < 250 else stop_center + (i - 250) * .25)
+            speed = 0.0 if 100 <= i < 250 else (((stop_center + 45) / 100) * 20 if i < 100 else 5.0)
+        through_start = -100 if case == "approaching_through_hazard" else -65 if case == "through_occupancy_during_crossing" else -50
         rows.append({"video_frame": i, "native_frame": native, "time_s": i / 20,
                      "source_cameras": {name: native for name in CAMERAS},
                      "ego_x_m": x, "ego_length_m": 4.5, "ego_speed_mps": speed,
-                     "through_y_m": -50 + i * .25, "through_length_m": 4.5,
+                     "through_y_m": through_start + i * .25, "through_length_m": 4.5,
                      "through_speed_mps": 5.0})
     return context, rows
 
@@ -84,7 +95,7 @@ def main():
     context, rows = packet("stop_at_viewpoint_no_line_crosswalk")
     context["sight_ray_source"] = None
     rejects(context, rows, None, "sight-ray")
-    print("10 statutory source-shaped measurements and 7 negative checks passed; no legal verdict")
+    print("12 statutory source-shaped measurements and 7 negative checks passed; no legal verdict")
 
 
 if __name__ == "__main__":

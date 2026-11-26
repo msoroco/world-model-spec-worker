@@ -90,8 +90,8 @@ def audit(args):
     result = json.loads(result_path.read_text())
     branch = check_result(result, args.case)
     source_names = ("pedestrian-caution-trace.jsonl", "pedestrian-source-review.jsonl",
-                    "context-survey.json", "video_frames.jsonl", "driver_reference.mkv",
-                    "reference_corner.mkv")
+                    "context-survey.json", "video_frames.jsonl", "overview.mkv",
+                    "approach.mkv", "driver_reference.mkv", "reference_corner.mkv")
     sources = {name: inside(attempt, name) for name in source_names}
     survey = json.loads(sources["context-survey.json"].read_text())
     if (survey.get("source_kind") != "original_native_context_survey" or
@@ -111,9 +111,26 @@ def audit(args):
                 or row.get("video_frame") != index or source.get("video_frame") != index
                 or row.get("time_s") != frame.get("time_s")):
             raise ValueError("Original pose/review/video time join differs")
+    actor_pairs = {(row.get("ego_actor_id"), row.get("pedestrian_actor_id"))
+                   for row in capture}
+    if (len(actor_pairs) != 1 or any(not ego or not pedestrian or ego == pedestrian
+                                     for ego, pedestrian in actor_pairs)):
+        raise ValueError("Original ego and pedestrian actor identities differ")
     if not any(row.get("driver_observed_pedestrian") is True and
                row.get("driver_observation_source") for row in checked):
         raise ValueError("Actual driver observation has no separate source")
+    source_video_receipts = {}
+    for name in ("overview", "approach", "reference_corner", "driver_reference"):
+        source_video = inside(attempt, name + ".mkv")
+        source_decode = output.with_name("source-" + name + "-" +
+                                         args.case.rsplit("__", 1)[-1] + ".json")
+        media.audit(source_video, 600,
+                    mapping_sha256=sha(sources["video_frames.jsonl"]),
+                    receipt=source_decode)
+        media.verify_receipt(source_video, source_decode, 600,
+                             mapping_sha256=sha(sources["video_frames.jsonl"]))
+        source_video_receipts[name] = {"video_sha256": sha(source_video),
+                                       "decode_receipt_sha256": sha(source_decode)}
     video = inside(attempt, args.video)
     trace = inside(attempt, args.trace)
     decode = output.with_name("source-decode-" + args.case.rsplit("__", 1)[-1] + ".json")
@@ -132,6 +149,8 @@ def audit(args):
              "source_decode_receipt_path": str(decode),
              "source_decode_receipt_sha256": sha(decode),
              "source_decode_auditor_sha256": verified["auditor_sha256"],
+             "source_video_receipts": source_video_receipts,
+             "actor_ids": list(next(iter(actor_pairs))),
              "independent_review_sha256": sha(inside(attempt, args.review))}
     output.write_text(json.dumps(proof, indent=2) + "\n")
     return proof

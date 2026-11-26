@@ -33,8 +33,8 @@ def measure(context, rows, expected_case):
     if sign not in ("stop", "yield") or sign != ("yield" if slug.startswith("yield_sign_") else "stop"):
         raise ValueError("Governing sign differs from exact case")
     reference = context.get("reference_kind")
-    expected_reference = "crosswalk" if slug == "stop_before_crosswalk_no_line" else (
-        "nearest_viewpoint" if slug == "stop_at_viewpoint_no_line_crosswalk" else "stop_line")
+    expected_reference = "crosswalk" if slug in {"stop_before_crosswalk_no_line", "yield_sign_crosswalk_no_line"} else (
+        "nearest_viewpoint" if slug in {"stop_at_viewpoint_no_line_crosswalk", "yield_sign_viewpoint_no_line_crosswalk"} else "stop_line")
     if reference != expected_reference:
         raise ValueError("Stopping-reference hierarchy differs from exact case")
     if context.get("marked_line_present") is not (reference == "stop_line"):

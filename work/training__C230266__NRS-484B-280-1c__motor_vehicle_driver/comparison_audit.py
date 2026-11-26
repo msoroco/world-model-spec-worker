@@ -53,6 +53,9 @@ def check(left, right, comparison):
             or right.get("legal_verdict_claimed") is not False):
         raise ValueError("Comparison prelabels the legal outcome")
     first, second = left.get("measured_values", {}), right.get("measured_values", {})
+    expected_branch = comparison["comparison_id"].rsplit("__", 1)[-1].removesuffix("_comparison")
+    if first.get("branch") != expected_branch or second.get("branch") != expected_branch:
+        raise ValueError("Comparison selected another statutory position")
     fixed = ("branch", "pedestrian_source_identity", "approach_source_identity",
              "visibility_review_protocol", "driver_observation_review_protocol",
              "capture_profile")
@@ -76,7 +79,7 @@ def check(left, right, comparison):
 def selftest(comparison, negative):
     common = {"provenance_kind": "native", "diagnostic_fixture": False,
               "accepted": False, "legal_verdict_claimed": False,
-              "measured_values": {"branch": comparison["comparison_id"],
+              "measured_values": {"branch": comparison["comparison_id"].rsplit("__", 1)[-1].removesuffix("_comparison"),
                                   "pedestrian_source_identity": "original position survey",
                                   "approach_source_identity": "original approach survey",
                                   "visibility_review_protocol": "independent review",

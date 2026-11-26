@@ -4,7 +4,7 @@ import math
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "stop_line_side", "through_road"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 HASHES = ("map", "stop_sign", "stop_line", "through_road", "vehicle_bodies",
           "vehicle_motion", "control_state", "visibility")
 

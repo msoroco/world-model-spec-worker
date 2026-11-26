@@ -66,7 +66,7 @@ if __name__ == "__main__":
     negative.append(reject("no_marked_line", source, trace("complete_stop_then_yield"), "marked line"))
     negative.append(reject("short_capture", context(), trace("complete_stop_then_yield")[:-1], "Incomplete"))
     rows = trace("complete_stop_then_yield")
-    rows[200]["source_cameras"].pop("stop_line_side")
+    rows[200]["source_cameras"].pop("reference_corner")
     negative.append(reject("missing_camera", context(), rows, "camera"))
     rows = trace("complete_stop_then_yield")
     rows[200]["native_frame"] = rows[199]["native_frame"]

@@ -1,6 +1,7 @@
 """Check source-distinct scene requests without claiming CARLA realization."""
 
 from copy import deepcopy
+import xml.etree.ElementTree as ET
 
 from stop_yield_scene import CASES, request, validate
 
@@ -29,6 +30,11 @@ def main():
             assert payload["stop_line_marking"] is None and payload["crosswalk_marking"] is None
         if case == "stop_before_crosswalk_no_line":
             assert payload["stop_line_marking"] is None and payload["crosswalk_marking"] is not None
+    baseline = request("complete_stop_then_yield")
+    for variant in ("approaching_through_hazard", "through_occupancy_during_crossing"):
+        changed = request(variant)
+        assert changed["controller"] == baseline["controller"]
+        assert changed["through_vehicle"]["start_xyz"] != baseline["through_vehicle"]["start_xyz"]
     missing = deepcopy(request("stop_before_crosswalk_no_line"))
     missing["crosswalk_marking"] = None
     rejects(missing, "crosswalk hierarchy")
@@ -47,7 +53,22 @@ def main():
     missing = deepcopy(request("complete_stop_then_yield"))
     missing["cameras"].append(deepcopy(missing["cameras"][0]))
     rejects(missing, "Four camera")
-    print("10 branch scene requests and 6 negative checks passed; physical realization unverified")
+    missing = deepcopy(request("complete_stop_then_yield"))
+    root = ET.fromstring(missing["road_opendrive"])
+    objects = root.find("road/objects")
+    objects.remove(objects[0])
+    missing["road_opendrive"] = ET.tostring(root, encoding="unicode")
+    rejects(missing, "Marked stop line")
+    missing = deepcopy(request("police_directed_control"))
+    missing["police_actor_request"] = None
+    rejects(missing, "officer actor")
+    missing = deepcopy(request("signal_directed_control"))
+    root = ET.fromstring(missing["road_opendrive"])
+    signals = root.find("road/signals")
+    signals.remove(signals[1])
+    missing["road_opendrive"] = ET.tostring(root, encoding="unicode")
+    rejects(missing, "signal construction")
+    print("12 branch scene requests and 9 negative checks passed; physical realization unverified")
 
 
 if __name__ == "__main__":
