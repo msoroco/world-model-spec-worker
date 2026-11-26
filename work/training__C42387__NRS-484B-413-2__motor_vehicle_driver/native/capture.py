@@ -141,6 +141,7 @@ def capture(config: dict, output_dir: Path, host: str, port: int) -> dict:
         _new(output / 'control_context.json', {'control': 'other_vehicle',
             'native_actor_id': other.id, 'native_blueprint': other.type_id,
             'native_road_id': other_waypoint.road_id, 'native_lane_id': other_waypoint.lane_id,
+            'approach_lane_id': -1,
             'stationary_opposing_lane_plan': True,
             'approach_road_id': waypoint.road_id, 'approach_lane_id': waypoint.lane_id,
             'legal_effect_not_inferred': True})

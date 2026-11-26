@@ -1,11 +1,27 @@
 {
   "assignment_id": "training__C329610__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "67c5eee2a5283f95d1578f5d9c013557aca86db9fb5f617cefd197542d08bf27",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "Two exact 30-second, 600-frame, four-camera same-cell left-turn speed requests (75/85 mph) pass current-runtime offline and independent road/route comparison. They remain unselected drafts: requested speed is not original Native velocity; accepted membership IDs lack exact source review. Native capture, selected compatibility, actual process-saved, candidates and independent audits remain worker-owned CPU work; physical and legal outcomes unverified.",
-  "readiness_kind": null,
-  "planned_case_count": 2,
-  "candidate_count": 0,
-  "source_law_review": "Exact law text copied from frozen assignment; summary marked recovered_requires_source_review"
+  "planned_case_count": 3,
+  "selected_delivery_case_count": 3,
+  "candidate_count": 1,
+  "reuse_count": 0,
+  "source_law_review": "Exact NRS 484B.600(1)(e) prohibits a speed greater than 80 mph in any event for any vehicle kind. The three requested speeds are engineering targets; only original Native velocity can establish the observed rate, and no legal tolerance is invented.",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C329610__NRS-484B-600-1e__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "62903f5a693bf8f3047258f41bb0a53505b19bc344d7aeaf9ce21a0c7cff5d51"
+    }
+  ],
+  "remaining_gpu_checks": [
+    "Original Native 75/80/85 mph velocity and completed left-turn road sequence",
+    "Source-camera pixel visibility and independent participant review",
+    "Physical original-source comparison and local canonical acceptance"
+  ],
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --assignment training__C329610__NRS-484B-600-1e__motor_vehicle_driver --case training__C329610__NRS-484B-600-1e__motor_vehicle_driver__probe_a --job $JOB_ID --db $DB --run $RUN --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "reason": null
 }

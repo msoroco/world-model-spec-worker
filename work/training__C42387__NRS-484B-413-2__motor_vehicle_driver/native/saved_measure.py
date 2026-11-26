@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from measure_observed import measure
@@ -56,8 +57,21 @@ def process(attempt: Path, config: dict, *, allow_fixture: bool = False) -> dict
     control = json.loads(paths['control_context.json'].read_text())
     if control.get('control') != 'other_vehicle' or \
             control.get('native_blueprint') != 'vehicle.lincoln.mkz_2020' or \
-            type(control.get('native_actor_id')) is not int:
-        raise ValueError('Original Native speed-limit sign source context missing')
+            type(control.get('native_actor_id')) is not int or \
+            type(control.get('native_road_id')) is not int or \
+            type(control.get('native_lane_id')) is not int or \
+            control.get('stationary_opposing_lane_plan') is not True:
+        raise ValueError('Original Native other-vehicle source context missing')
+    if control['native_lane_id'] == control.get('approach_lane_id'):
+        raise ValueError('Other vehicle occupies the ego lane')
+    for row in samples:
+        other = row.get('other_vehicle')
+        if not isinstance(other, dict) or other.get('native_actor_id') != control['native_actor_id'] or \
+                other.get('alive') is not True or \
+                not isinstance(other.get('center_xy_m'), list) or len(other['center_xy_m']) != 2 or \
+                any(type(value) not in (int, float) or not math.isfinite(value) for value in
+                    (*other['center_xy_m'], other.get('heading_deg'), other.get('speed_mps'))):
+            raise ValueError('Original Native other-vehicle frame source missing')
     measured = measure(paths['native_samples.jsonl'], config['case_id'],
                        allow_fixture=allow_fixture)
     if measured['source_kind'] != geometry['provenance']:

@@ -20,7 +20,7 @@ class ComparisonSourceAudit(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.paths = []
         self.receipts = []
-        for suffix, onset, target in [('a', 220, 40), ('b', 260, 20)]:
+        for suffix, onset, target in [('a', 230, 35), ('b', 260, 20)]:
             attempt = self.root / suffix
             attempt.mkdir()
             case = CASE_PREFIX + suffix
@@ -32,7 +32,9 @@ class ComparisonSourceAudit(unittest.TestCase):
                         'right_lamp_observed': i >= onset,
                         'course_change_observed': i >= 300,
                         'area_classification': 'business_district',
-                        'precipitation': 'clear'} for i in range(600)]
+                        'precipitation': 'clear',
+                        'other_vehicle': {'native_actor_id':23,'center_xy_m':[-45,-1.75],
+                                          'heading_deg':180,'speed_mps':0,'alive':True}} for i in range(600)]
             mapping = [{'video_frame': i, 'native_frame': 200 + i,
                         'time_s': i / 20} for i in range(600)]
             bodies = [{'frame': 200 + i, 'time_s': i / 20,
@@ -51,7 +53,8 @@ class ComparisonSourceAudit(unittest.TestCase):
             (attempt / 'control_context.json').write_text(json.dumps({
                 'control': 'other_vehicle',
                 'native_blueprint': 'vehicle.lincoln.mkz_2020',
-                'native_actor_id': 23}) + '\n')
+                'native_actor_id': 23, 'native_road_id':1,'native_lane_id':1,
+                'stationary_opposing_lane_plan':True}) + '\n')
             config = {'case_id': case, 'law_id': 'NRS-484B-413-2',
                       'cell_id': 'C42387', 'actor': 'motor_vehicle_driver',
                       'layout': 'business_district', 'maneuver': 'right_turn',
@@ -73,7 +76,7 @@ class ComparisonSourceAudit(unittest.TestCase):
 
     def test_comparison_and_missing_source(self):
         result = self.run_audit()
-        self.assertEqual(result['measured_distances_m'], [40.0, 20.0])
+        self.assertEqual(result['measured_distances_m'], [35.0, 20.0])
         self.assertFalse(result['physical_acceptance_claimed'])
         (self.paths[1] / 'body_history.jsonl').unlink()
         with self.assertRaisesRegex(ValueError, 'Missing or stale original comparison source'):
@@ -82,7 +85,7 @@ class ComparisonSourceAudit(unittest.TestCase):
     def test_changed_fixed_condition_rejected(self):
         path = self.paths[1] / 'config.json'
         config = json.loads(path.read_text())
-        config['precipitation'] = 'clear'
+        config['precipitation'] = 'rain'
         path.write_text(json.dumps(config) + '\n')
         with self.assertRaisesRegex(ValueError, 'Comparison fixed conditions changed'):
             self.run_audit()

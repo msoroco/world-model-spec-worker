@@ -34,11 +34,15 @@ def main():
             for case in obj['cases']:
                 if case['case_id'].endswith(('probe_a','probe_at','probe_b')):
                     case['rationale'] += ' C329610 left-turn road sequence 1,13,4 is mandatory.'
+                    suffix = case['case_id'].removeprefix(AID+'__')
+                    construction = json.loads((ROOT/('selected-'+suffix+'-primary-construction.json')).read_text())
+                    case['recording_description'] = construction['recording_description']
         path = DEST/(name+'.json')
         path.write_text(json.dumps(obj, indent=2, ensure_ascii=False) + '\n')
         stages['relevance_batch' if name == 'relevance-batch' else name] = {
             'path': 'proposals/'+path.name,
             'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
+    stages['judgment_observables'] = []
     (DEST/'semantic-index.json').write_text(json.dumps({
         'format': 'worker-semantic-delivery', 'assignment_id': AID, 'stages': stages},
         indent=2) + '\n')

@@ -18,7 +18,7 @@ def check_config(config,road_text):
      or config.get('actor')!='motor_vehicle_driver'
      or config.get('duration_s')!=30 or config.get('rate_hz')!=HZ
      or config.get('frames')!=FRAMES or config.get('legal_verdict') is not None
-     or config.get('physical_completion') is not False):
+     or config.get('physical_completion') not in (False, {})):
   raise ValueError('Exact C329610 scope or duration differs')
  if tuple(x.get('name') for x in config.get('cameras',()))!=CAMERAS:
   raise ValueError('Four named source cameras required')

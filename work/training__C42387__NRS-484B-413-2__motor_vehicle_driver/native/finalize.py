@@ -83,6 +83,7 @@ def derive_channels(attempt, description, samples, mapping, trace):
                 'env.precipitation': sample['precipitation'],
                 'kin.speed': sample['ego_speed_mps'],
                 'native_body_pose_control': sample,
+                'other_vehicle_pose': sample['other_vehicle'],
                 'camera_frame_join': frame_map,
             }
             if name not in values:

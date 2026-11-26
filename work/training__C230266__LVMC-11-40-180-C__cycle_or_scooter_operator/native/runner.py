@@ -28,7 +28,7 @@ def check(config):
         raise ValueError('Audio must be measured at pedestrian location')
     if config['signal_frame'] is not None and not 0 <= config['signal_frame'] < 600:
         raise ValueError('Signal frame outside original capture')
-    road = ET.parse(HERE/'road.xodr').getroot()
+    road = ET.parse(HERE/'authored-road.xodr').getroot()
     sidewalk = road.find('.//lane[@id="-2"]')
     if sidewalk is None or sidewalk.attrib.get('type') != 'sidewalk':
         raise ValueError('Authored sidewalk lane absent')
@@ -80,7 +80,7 @@ def execute(config, output_dir, host, port):
     encoder_exits = {}
     changed = False
     try:
-        world = client.generate_opendrive_world((HERE/'road.xodr').read_text(),
+        world = client.generate_opendrive_world((HERE/'authored-road.xodr').read_text(),
             carla.OpendriveGenerationParameters(vertex_distance=.5,
                 max_road_length=25, wall_height=0, additional_width=0,
                 smooth_junctions=False, enable_mesh_visibility=True,

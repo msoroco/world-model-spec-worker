@@ -106,14 +106,14 @@ def build():
                 'target_value_or_branch':target,'test_value':target,
                 'operator':'>=','unit':'m',
                 'threshold_ref':'timing.numeric_conditions[0]'},
-            'epsilon_used':{'value':10.48,'unit':'m',
-                'purpose':'source-grounded below/at/above probe spacing'}}
+            'epsilon_used':{'value':round(abs(target - 30.48), 2),'unit':'m',
+                'purpose':'distance from the statutory 100-foot boundary'}}
         proposals.append(proposal)
         fixtures=[]
         for kind in ('complete_motion','incomplete_motion','missing_evidence'):
             stem=f'native/physical-{suffix}-{kind}'
             command=('.venv-cpu/bin/python '+str((HERE/'prove_physical.py').relative_to(ROOT))+
-                ' --source .runtime-work/c42387-selected-'+suffix+'-fixture'+
+                ' --source .runtime-work/c42387-selected-'+suffix+'-fixture-v2'+
                 ' --kind '+kind+' --output work/'+FOLDER.name+'/'+stem+'.json'+
                 ' --scratch .runtime-work/c42387-test-tmp')
             fixtures.append({'kind':kind,'command':command,'exit_code':0,
@@ -142,7 +142,7 @@ def build():
                 'source':'original Native pose and controller_request.route_error_m'},
             'changed_knobs':['controller_lookahead_base_m'],
             'offline':{'command':'.venv-cpu/bin/python runtime.py offline --manifest work/'+FOLDER.name+
-                '/native/draft-manifest.json --case '+case+' --candidate fallback1 --output .runtime-work/c42387-offline-selected2-'+suffix+'-fallback1',
+                '/native/draft-manifest.json --case '+case+' --candidate fallback1 --output .runtime-work/c42387-offline-current-'+suffix+'-fallback1',
                 'exit_code':0,'construction_sha256':alternate['construction_sha256'],
                 'log':'native/'+fallback_log.name,'log_sha256':sha(fallback_log),
                 'scope':'exact unselected CPU offline; simulation_started=false'},
@@ -166,7 +166,7 @@ def build():
                 'sha256':sha(physical_path),
                 'scope':'synthetic CPU triads; original Native completion unverified'},
             'offline':{'command':'.venv-cpu/bin/python runtime.py offline --manifest work/'+FOLDER.name+
-                '/native/draft-manifest.json --case '+case+' --candidate primary --output .runtime-work/c42387-offline-selected2-'+suffix+'-primary',
+                '/native/draft-manifest.json --case '+case+' --candidate primary --output .runtime-work/c42387-offline-current-'+suffix+'-primary',
                 'exit_code':0,'construction_sha256':draft_entry['construction_sha256'],
                 'log':'native/'+offline_log.name,'log_sha256':sha(offline_log),
                 'scope':'exact unselected CPU offline; simulation_started=false'},

@@ -50,7 +50,9 @@ def create(suffix):
             'ego_speed_mps':8.0,'road_id':road_id,'lane_id':-1,
             'right_lamp_commanded':observed,'right_lamp_observed':observed,
             'course_change_observed':index>=301,
-            'area_classification':'business_district','precipitation':'clear'}
+            'area_classification':'business_district','precipitation':'clear',
+            'other_vehicle':{'native_actor_id':23,'center_xy_m':[-45,-1.75],
+                             'heading_deg':180,'speed_mps':0,'alive':True}}
         samples.append(sample)
         mapping.append({'video_frame':index,'carla_frame':frame,'native_frame':frame,'time_s':time})
         bodies.append({'frame':frame,'time_s':time,'road_id':road_id,'lane_id':-1,
@@ -80,7 +82,9 @@ def create(suffix):
             'area_classification':'business_district','area_classification_review_required':True,
             'provenance':'synthetic_cpu_fixture'})+'\n',
         'control_context.json':json.dumps({'control':'other_vehicle',
-            'native_blueprint':'vehicle.lincoln.mkz_2020','native_actor_id':23})+'\n',
+            'native_blueprint':'vehicle.lincoln.mkz_2020','native_actor_id':23,
+            'native_road_id':1,'native_lane_id':1,'approach_lane_id':-1,
+            'stationary_opposing_lane_plan':True})+'\n',
         'native_samples.jsonl':lines(samples),'video_frames.jsonl':lines(mapping),
         'body_history.jsonl':lines(bodies),'trace.jsonl':lines(trace),
         'capture/evidence.jsonl':lines(evidence),

@@ -30,6 +30,7 @@ def main():
         config = json.loads(next(row['content'] for row in config['files'] if row['path'] == 'config.json'))
         config.update({'assignment_id': AID, 'selected_case_id': case, 'supported_case_ids': [AID+'__'+s for s in TARGETS],
                        'candidate_id': 'primary', 'spawn_s_m': 5, 'required_atoms': [], 'source_packets': [],
+                       'physical_completion': {},
                        'physical_acceptance_claimed': False,
                        'recording_description': {'channels': [
                            {'name': name, 'unit': unit, 'method': method,

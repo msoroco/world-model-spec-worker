@@ -113,7 +113,7 @@ def execute(case_id, output_dir, host, port):
         library = world.get_blueprint_library()
         ego_bp = library.find('vehicle.tesla.model3')
         ego_bp.set_attribute('role_name', 'c329610_speed_subject')
-        
+
         ego_pose = ego_wp.transform
         ego_pose.location.z += 1
         ego = world.try_spawn_actor(ego_bp, ego_pose)

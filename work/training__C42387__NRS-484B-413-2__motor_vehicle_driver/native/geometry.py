@@ -4,7 +4,7 @@ from __future__ import annotations
 import math
 import xml.etree.ElementTree as ET
 
-APPROACH_M = 130.0
+APPROACH_M = 200.0
 LANE_M = 3.5
 RADIUS_M = 18.0
 STEP_M = 0.1
@@ -30,7 +30,7 @@ def open_drive(radius_m: float = RADIUS_M) -> str:
     ET.SubElement(root, 'header', revMajor='1', revMinor='4',
                   name='C42387-business-right-turn', version='1.00',
                   date='2026-11-25', north='20', south='-30', east='30',
-                  west='-140', vendor='worker')
+                  west='-210', vendor='worker')
     roads = ((1, -APPROACH_M, 0.0, APPROACH_M, 'line'),
              (2, 0.0, 0.0, math.pi * radius_m / 2, 'arc'))
     for road_id, x, y, length, kind in roads:
@@ -69,7 +69,13 @@ def open_drive(radius_m: float = RADIUS_M) -> str:
         ET.SubElement(lane, 'roadMark', sOffset='0', type='broken', color='white', width='0.12')
         sidewalk = ET.SubElement(right, 'lane', id='-2', type='sidewalk', level='false')
         ET.SubElement(sidewalk, 'width', sOffset='0', a='2', b='0', c='0', d='0')
-        ET.SubElement(road, 'objects')
+        objects = ET.SubElement(road, 'objects')
+        if road_id == 1:
+            for index in range(10):
+                ET.SubElement(objects, 'object', id=str(100 + index),
+                    name=f'business_use_frontage_{index}', type='building',
+                    s=str(55 + 10 * index), t='8', zOffset='0', hdg='0',
+                    length='10', width='7', height='8', orientation='+')
         ET.SubElement(road, 'signals')
     return ET.tostring(root, encoding='unicode')
 
@@ -84,15 +90,22 @@ def check() -> dict:
         raise ValueError('Not a right-turn arc')
     points = route()
     gaps = [math.dist(a, b) for a, b in zip(points, points[1:])]
-    if max(gaps) >= .101 or math.dist(points[1300], points[1301]) >= .101:
+    turn_index = round(APPROACH_M / STEP_M)
+    if max(gaps) >= .101 or math.dist(points[turn_index], points[turn_index + 1]) >= .101:
         raise ValueError('Route gap at right-turn connection')
-    if points[1300] != [0.0, -LANE_M / 2] or points[-1][1] > -RADIUS_M + 1e-6:
+    if points[turn_index] != [0.0, -LANE_M / 2] or points[-1][1] > -RADIUS_M + 1e-6:
         raise ValueError('Route does not enter right turn')
     if 35 >= APPROACH_M or 20 >= APPROACH_M:
         raise ValueError('Signal interval cannot fit on approach')
+    frontage = roads[0].findall('objects/object')
+    if APPROACH_M < 182.88 or len(frontage) != 10 or \
+            sum(float(item.get('length')) for item in frontage) < 91.44:
+        raise ValueError('Authored 600-foot interval and 300-foot business frontage missing')
     return {'format': 'c42387-connected-right-turn-geometry-v1',
             'authored_route_points': len(points), 'max_step_m': round(max(gaps), 6),
             'approach_m': APPROACH_M, 'right_turn_radius_m': RADIUS_M,
+            'authored_business_use_frontage_m':100.0,
+            'business_frontage_review_required':True,
             'unverified': ['Native map lane survey', 'Native body containment',
                            'business-district legal classification', 'physical turn motion']}
 

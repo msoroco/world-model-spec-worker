@@ -57,7 +57,7 @@ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def description():
     names=('sig.turn_indicator','sig.hand_signal','drv.distance_while',
            'kin.path_length','drv.turning','drv.lane_change','env.precipitation',
-           'kin.speed','native_body_pose_control','camera_frame_join')
+           'kin.speed','native_body_pose_control','other_vehicle_pose','camera_frame_join')
     return {'channels':[{'name':name,'unit':'structured','sampling_rate_hz':20,
         'method':'Retain original Native source and synchronized frame for saved verification',
         'time_window':'entire 30 s / 600-frame attempt',

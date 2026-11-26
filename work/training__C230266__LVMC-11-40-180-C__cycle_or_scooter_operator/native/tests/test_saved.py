@@ -25,7 +25,7 @@ def write_fixture(root, signal_frame=80, pause_requested=True):
             'rider_bbox_extent_xyz_m':[.45,.3,.5],
             'pedestrian_bbox_extent_xyz_m':[.35,.3,.9],
             'rider_velocity_xyz_mps':[0 if pause else 1.4,0,0]})
-        mapping.append({'video_frame':i,'native_frame':frame,'time_s':time_s,
+        mapping.append({'video_frame':i,'native_frame':frame,'carla_frame':frame,'time_s':time_s,
             'camera_native_frames':{name:frame for name in NAMES}})
         mic_frames.append({'video_frame':i,'native_frame':frame,
                            'monotonic_ns':1_700_000_000+50_000_000*i,

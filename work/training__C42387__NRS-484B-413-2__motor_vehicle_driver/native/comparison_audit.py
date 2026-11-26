@@ -73,7 +73,7 @@ def audit(left_attempt: Path, right_attempt: Path, left_receipt: Path,
     if not all(measured[i][1] > measured[i+1][1] for i in range(len(measured)-1)):
         raise ValueError('Measured signal-distance ordering absent')
     return {'format': 'c42387-independent-comparison-audit-v1',
-            'comparison_id': CASE_PREFIX[:-len('condition_')] + 'comparison',
+            'comparison_id': CASE_PREFIX[:-len('probe_')] + 'business_signal_distance_comparison',
             'case_ids': list(cases), 'fixed_conditions': measured[0][0],
             'measured_distances_m': [row[1] for row in measured],
             'source_hashes': [row[2] for row in measured],

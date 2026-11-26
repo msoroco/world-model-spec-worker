@@ -62,7 +62,7 @@ def check_review(review, case, hashes, dimensions, source_kind):
             review.get('course_change_reviewed') is True,
             'Original physical or visual review incomplete')
     boxes = review.get('pixel_boxes', [])
-    require({'vehicle', 'right_indicator', 'course_change', 'business_district'} <=
+    require({'vehicle', 'other_vehicle', 'right_indicator', 'course_change', 'business_district'} <=
             {box.get('claim') for box in boxes}, 'Original pixel claims missing')
     for box in boxes:
         camera = box.get('source')
@@ -107,6 +107,12 @@ def audit(case, attempt, review_path):
         hashes[name] = sha(path)
     check_join(*(rows(attempt / name) for name in
                  ('video_frames.jsonl', 'native_samples.jsonl', 'trace.jsonl')))
+    context = read(attempt / 'control_context.json')
+    native_rows = rows(attempt / 'native_samples.jsonl')
+    require(context.get('control') == 'other_vehicle' and
+            all(row.get('other_vehicle', {}).get('native_actor_id') == context.get('native_actor_id')
+                and row['other_vehicle'].get('alive') is True for row in native_rows),
+            'Original other-vehicle participant source incomplete')
     physical = assess_physical(attempt)
     require(physical['status'] == 'met',
             'Original source-derived physical completion not established')
@@ -146,9 +152,9 @@ def selftest(case, negative):
         'source_hashes':hashes, 'checks':list(CHECKS),
         'physical_completion':True, 'business_district_reviewed':True,
         'right_indicator_pixels_reviewed':True, 'course_change_reviewed':True,
-        'pixel_boxes':[{'claim':claim, 'source':CAMERAS[i], 'frame':300+i,
+        'pixel_boxes':[{'claim':claim, 'source':CAMERAS[i % len(CAMERAS)], 'frame':300+i,
                         'rect_xywh':[0,0,4,4]} for i,claim in
-                       enumerate(('vehicle','right_indicator','course_change','business_district'))]}
+                       enumerate(('vehicle','other_vehicle','right_indicator','course_change','business_district'))]}
     if negative:
         review['pixel_boxes'][0]['rect_xywh'][0] = dimensions['overview'][0]
     check_review(review, case, hashes, dimensions, 'synthetic_cpu_mechanics')

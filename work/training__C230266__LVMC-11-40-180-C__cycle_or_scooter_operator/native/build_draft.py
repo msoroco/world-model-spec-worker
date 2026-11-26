@@ -26,12 +26,17 @@ def main():
         channels=[{'name':'rider_and_pedestrian_footprints','unit':'m',
                    'sampling_rate_hz':20,'source':'original Native transforms and bounding boxes'},
                   {'name':'pedestrian_location_audio','unit':'PCM s16le',
-                   'sampling_rate_hz':8000,'source':'live microphone at pedestrian position'},
+                   'sampling_rate_hz':20,'source':'8 kHz live microphone PCM summarized in 20 Hz windows at pedestrian position'},
                   {'name':'sidewalk_map_context','unit':'Native map',
                    'sampling_rate_hz':20,'source':'OpenDRIVE and Native lane readback'},
                   {'name':'four_source_views','unit':'RGB frame',
                    'sampling_rate_hz':20,'source':'four synchronized original cameras'}]
-        description={'channels':channels,
+        for channel in channels:
+            channel['method']=channel['source']
+            channel['time_window']='600 original Native frames'
+            channel['reference_frame']='Native frame and pedestrian-position microphone clock'
+            channel['uncertainty']='50 ms Native sampling; audio onset and device placement require review'
+        description={'channels':channels,'context_inputs':[],
                      'limitations':['Original microphone position, sound identity, device class and legal audibility need independent review']}
         config = {'case_id': case, 'selected_case_id': case,
                   'cell_id': 'C230266', 'law_id': 'LVMC-11-40-180-C',
@@ -58,7 +63,7 @@ def main():
                                (NATIVE/'audio_source.py', 'audio_source.py'),
                                (NATIVE/'measure_sidewalk.py', 'measure_sidewalk.py'),
                                (NATIVE/'finalize.py', 'finalize.py'),
-                               (NATIVE/'road.xodr', 'road.xodr'),
+                               (NATIVE/'road.xodr', 'authored-road.xodr'),
                                (NATIVE/'tests/test_offline.py', 'tests/test_offline.py'),
                                (NATIVE/'tests/test_saved.py', 'tests/test_saved.py')):
             files.append({'path': target, 'content': source.read_text()})

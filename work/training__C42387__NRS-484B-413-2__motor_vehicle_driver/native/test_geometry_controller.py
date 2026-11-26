@@ -15,9 +15,9 @@ class BusinessRightTurnGeometry(unittest.TestCase):
                   'cell_id': 'C42387', 'actor': 'motor_vehicle_driver',
                   'rate_hz': 20, 'duration_s': 30,
                   'layout': 'business_district', 'maneuver': 'right_turn',
-                  'precipitation': 'clear', 'signal_distance_m': 40,
+                  'precipitation': 'clear', 'signal_distance_m': 35,
                   'controller_lookahead_base_m': 4.0}
-        self.assertEqual(capture_check(config)['signal_start_x_m'], -40)
+        self.assertEqual(capture_check(config)['signal_start_x_m'], -35)
         config['case_id'] = CASE_PREFIX + 'b'
         config['signal_distance_m'] = 20
         self.assertEqual(capture_check(config)['signal_start_x_m'], -20)
@@ -36,7 +36,7 @@ class BusinessRightTurnGeometry(unittest.TestCase):
         points = route()
         turn_index = round(APPROACH_M / .1)
         self.assertEqual(points[turn_index], [0.0, -1.75])
-        self.assertEqual(points[turn_index - 400], [-40.0, -1.75])
+        self.assertEqual(points[turn_index - 350], [-35.0, -1.75])
         self.assertEqual(points[turn_index - 200], [-20.0, -1.75])
         self.assertLess(points[-1][1], -17.9)
 

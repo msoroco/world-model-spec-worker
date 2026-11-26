@@ -23,7 +23,9 @@ class ObservedSignalMeter(unittest.TestCase):
              'right_lamp_commanded': frame >= 220,
              'right_lamp_observed': frame >= 220,
              'course_change_observed': frame >= 300,
-             'area_classification': 'business_district', 'precipitation': 'clear'}
+             'area_classification': 'business_district', 'precipitation': 'clear',
+             'other_vehicle': {'native_actor_id':23,'center_xy_m':[-45,-1.75],
+                               'heading_deg':180,'speed_mps':0,'alive':True}}
             for frame in range(600)]
 
     def write(self):
@@ -108,7 +110,8 @@ class ObservedSignalMeter(unittest.TestCase):
             'native_map_sha256': 'a' * 64, 'provenance': 'synthetic_cpu_fixture'}) + '\n')
         (root / 'control_context.json').write_text(json.dumps({
             'control': 'other_vehicle', 'native_blueprint': 'vehicle.lincoln.mkz_2020',
-            'native_actor_id': 23}) + '\n')
+            'native_actor_id': 23, 'native_road_id':1,'native_lane_id':1,
+            'stationary_opposing_lane_plan':True}) + '\n')
         config = {'case_id': self.case, 'signal_distance_m': 40}
         result = process(root, config, allow_fixture=True)
         self.assertEqual(result['measured_signal_distance_m'], 40)

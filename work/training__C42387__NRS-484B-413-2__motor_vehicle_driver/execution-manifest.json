@@ -1,0 +1,533 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C42387__NRS-484B-413-2__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_prepared",
+  "cases": [
+    {
+      "case_id": "training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/condition_a-construction.json",
+      "construction_sha256": "55311668b81683d3bdd65003cbead36e2c33fe43c99c658a61017e184775151f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native lane containment and route error must be measured on original poses"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_a-fallback1-construction.json",
+          "construction_sha256": "ae730437d44056ccd68113fc9b3697554ad8327d8419111a91a3d815a7d75aca",
+          "trigger": {
+            "metric": "maximum_original_turn_route_error_m",
+            "failure_condition": "original controller route error exceeds 0.35 m before destination road",
+            "source": "original Native pose and controller_request.route_error_m"
+          },
+          "changed_knobs": [
+            "controller_lookahead_base_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/draft-manifest.json --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c42387-offline-current-a-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "ae730437d44056ccd68113fc9b3697554ad8327d8419111a91a3d815a7d75aca",
+            "log": "native/current-condition-a-fallback1-offline.log",
+            "log_sha256": "c67263e630a1d1f1ce89e19f98eae98c6010d8abbd3d9e8452052deec4c97776",
+            "scope": "exact unselected CPU offline; simulation_started=false"
+          },
+          "compatibility": {
+            "receipt": "native/selected-a-fallback1-compatibility.json",
+            "sha256": "088fd1ff3328487e08af3a33d52eab58facf532c884acfe406bfb3c53b620084",
+            "log": "native/selected-a-fallback1-analysis.log",
+            "negative_log": "native/selected-a-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/selected-a-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-a-receipt.json",
+        "sha256": "257eec76244a0dbca24d9ee4d15bf17a896968b35c2dfd3fcf9469cf7eab2925",
+        "scope": "synthetic CPU triads; original Native completion unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/draft-manifest.json --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c42387-offline-current-a-primary",
+        "exit_code": 0,
+        "construction_sha256": "55311668b81683d3bdd65003cbead36e2c33fe43c99c658a61017e184775151f",
+        "log": "native/current-condition-a-primary-offline.log",
+        "log_sha256": "2b313feddb6073b3b13bbf5eb2349466e9d898cfa78808b963cc1eaad1a76e01",
+        "scope": "exact unselected CPU offline; simulation_started=false"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "native/selected-a-primary-compatibility.json",
+        "sha256": "1da0f3c194c3108b8007cec1d8630682210231e9039e588e96cdce4cd812e31c",
+        "log": "native/selected-a-primary-analysis.log",
+        "negative_log": "native/selected-a-primary-negative.log"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "drv.distance_while": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "drv.lane_change": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "drv.turning": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "env.precipitation": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "kin.path_length": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "sig.hand_signal": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "capture.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        }
+      },
+      "negative": {
+        "log": "native/selected-a-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_a",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "bf5d7bd6f583f0f3eba45e7463660f56cc9a97f2e06279ae0eb149020c36ddff",
+        "command": ".venv-cpu/bin/python work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_a --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-a-positive.log",
+        "test_log_sha256": "eec9a18d954d830d5a552f6ee473b0cac58f84ba67c8cd8b5d25fdde38543431",
+        "negative_command": ".venv-cpu/bin/python work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_a --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-a-negative.log",
+        "negative_log_sha256": "263c3859f0e7df1ba2b4633e49e4f406d46955d3d48dec87ef04de5ef34d4f87",
+        "scope": "synthetic CPU mechanics; original source review required"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_a --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_a",
+        "test_exit_code": 0,
+        "test_log": "native/selected-a-saved-test.log",
+        "test_log_sha256": "d0dd6ed811760275b18924b35d50ac5f5e9f65d433e82fdefd2012ce9691d03d",
+        "positive_processing_receipt": "native/selected-a-saved-receipt.json",
+        "positive_processing_sha256": "b2fb73a266e0afd5b0eceafe23f5e94f3c81f0b406ccf340706600a999f0cc3b",
+        "missing_source_feedback": "native/selected-a-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "8f7908a21819587298e00d73fc81232447478b4b5c25021d490fb1d90f94c6cb",
+        "scope": "source-shaped synthetic saved positive and missing-source negative; original physical recording unverified"
+      }
+    },
+    {
+      "case_id": "training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/condition_b-construction.json",
+      "construction_sha256": "30a0542c26d3c2972895e8fe0af318923eb15819cb46b0362a71feb896e8d6a2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native lane containment and route error must be measured on original poses"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_b-fallback1-construction.json",
+          "construction_sha256": "dc8c4a5f29589bc4b886731fc5d94d16c7a7f73c130cee89459a7170a072177b",
+          "trigger": {
+            "metric": "maximum_original_turn_route_error_m",
+            "failure_condition": "original controller route error exceeds 0.35 m before destination road",
+            "source": "original Native pose and controller_request.route_error_m"
+          },
+          "changed_knobs": [
+            "controller_lookahead_base_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/draft-manifest.json --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c42387-offline-current-b-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "dc8c4a5f29589bc4b886731fc5d94d16c7a7f73c130cee89459a7170a072177b",
+            "log": "native/current-condition-b-fallback1-offline.log",
+            "log_sha256": "328f3abac74eee9ed4147baded590d8e808246d55ffa8205542d762d28d654dd",
+            "scope": "exact unselected CPU offline; simulation_started=false"
+          },
+          "compatibility": {
+            "receipt": "native/selected-b-fallback1-compatibility.json",
+            "sha256": "3d67f87bae9aa0b9136a56afe18b348897305e2e960579b70353eeb2dd8443ce",
+            "log": "native/selected-b-fallback1-analysis.log",
+            "negative_log": "native/selected-b-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/selected-b-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-b-receipt.json",
+        "sha256": "6e1ddd313f9c6ff10d2b2cd494e1dfbfd6f9118f2df74b4bff52b160d97a803b",
+        "scope": "synthetic CPU triads; original Native completion unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/draft-manifest.json --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c42387-offline-current-b-primary",
+        "exit_code": 0,
+        "construction_sha256": "30a0542c26d3c2972895e8fe0af318923eb15819cb46b0362a71feb896e8d6a2",
+        "log": "native/current-condition-b-primary-offline.log",
+        "log_sha256": "733200944eb8c826b235a092b3bcfbd9cb208989d7729bdf9a3005b24a2c548c",
+        "scope": "exact unselected CPU offline; simulation_started=false"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "native/selected-b-primary-compatibility.json",
+        "sha256": "f1bc1252400e1fb02884d48c0216d9be7341e4e38212a9e60aaf0e375fd74761",
+        "log": "native/selected-b-primary-analysis.log",
+        "negative_log": "native/selected-b-primary-negative.log"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "drv.distance_while": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "drv.lane_change": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "drv.turning": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "env.precipitation": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "kin.path_length": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "sig.hand_signal": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "capture.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        }
+      },
+      "negative": {
+        "log": "native/selected-b-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_b",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "bf5d7bd6f583f0f3eba45e7463660f56cc9a97f2e06279ae0eb149020c36ddff",
+        "command": ".venv-cpu/bin/python work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_b --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-b-positive.log",
+        "test_log_sha256": "2f9ba01a8205b1c4f14b236c90493c8dfd11549c4567e35a0b086e94eca4fa83",
+        "negative_command": ".venv-cpu/bin/python work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_b --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-b-negative.log",
+        "negative_log_sha256": "263c3859f0e7df1ba2b4633e49e4f406d46955d3d48dec87ef04de5ef34d4f87",
+        "scope": "synthetic CPU mechanics; original source review required"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_b --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_b",
+        "test_exit_code": 0,
+        "test_log": "native/selected-b-saved-test.log",
+        "test_log_sha256": "b4879c14f06faa605f1c1cd4087223a83375d40fa8f2e5a2a78a697c1b326c68",
+        "positive_processing_receipt": "native/selected-b-saved-receipt.json",
+        "positive_processing_sha256": "7399d175b14681dfa53bee189580f65de12ecb990a2fdbfccd5f058a6f8ad9b9",
+        "missing_source_feedback": "native/selected-b-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "4bb2d3da5c6142ff7f5fb9cb9f7cec4c41a45f108332d09d06df18fc4fe5627b",
+        "scope": "source-shaped synthetic saved positive and missing-source negative; original physical recording unverified"
+      }
+    },
+    {
+      "case_id": "training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_c",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/condition_c-construction.json",
+      "construction_sha256": "caa89e774b4d9f19eaa1afb670bbb293c883d92d211813a4fbe57b5832e1098f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native lane containment and route error must be measured on original poses"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_c-fallback1-construction.json",
+          "construction_sha256": "28d5c084c8d7643848b67d6c81a90e9930aeaa8a8818a1322ee68321f2e3a4b7",
+          "trigger": {
+            "metric": "maximum_original_turn_route_error_m",
+            "failure_condition": "original controller route error exceeds 0.35 m before destination road",
+            "source": "original Native pose and controller_request.route_error_m"
+          },
+          "changed_knobs": [
+            "controller_lookahead_base_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/draft-manifest.json --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_c --candidate fallback1 --output .runtime-work/c42387-offline-current-c-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "28d5c084c8d7643848b67d6c81a90e9930aeaa8a8818a1322ee68321f2e3a4b7",
+            "log": "native/current-condition-c-fallback1-offline.log",
+            "log_sha256": "15f98ebf1a8f141cf4997720828826d4f66668acdf0cb49f09e860b3aafc4e2d",
+            "scope": "exact unselected CPU offline; simulation_started=false"
+          },
+          "compatibility": {
+            "receipt": "native/selected-c-fallback1-compatibility.json",
+            "sha256": "7427f5a6a804294dec4538dc208ac3adf883cd1f001776b25258cadfad4fe2b7",
+            "log": "native/selected-c-fallback1-analysis.log",
+            "negative_log": "native/selected-c-fallback1-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-c-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/selected-c-fixture-recipe.json",
+      "physical_preparation": {
+        "receipt": "native/physical-c-receipt.json",
+        "sha256": "ad8c13c1649b9074c4a96581a9b8aa3b3ed1948a7e1bdcfa1ff0daa08ddc1cff",
+        "scope": "synthetic CPU triads; original Native completion unverified"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/draft-manifest.json --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_c --candidate primary --output .runtime-work/c42387-offline-current-c-primary",
+        "exit_code": 0,
+        "construction_sha256": "caa89e774b4d9f19eaa1afb670bbb293c883d92d211813a4fbe57b5832e1098f",
+        "log": "native/current-condition-c-primary-offline.log",
+        "log_sha256": "08a93d02c13d0ceb32d3044b8c8c4d3fca014b4fc557e79bf76a7c40d6e0c0c3",
+        "scope": "exact unselected CPU offline; simulation_started=false"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "native/selected-c-primary-compatibility.json",
+        "sha256": "67666e8d4d0add27517bcfa1df46730c24a0c5573cb3e655e3e3a8b1f4b984fc",
+        "log": "native/selected-c-primary-analysis.log",
+        "negative_log": "native/selected-c-primary-negative.log"
+      },
+      "acquisition": {
+        "camera_frame_join": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "drv.distance_while": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "drv.lane_change": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "drv.turning": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "env.precipitation": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "kin.path_length": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "native_body_pose_control": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "other_vehicle_pose": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "sig.hand_signal": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        },
+        "sig.turn_indicator": {
+          "entrypoint": "capture.py",
+          "method": "source-bound Native sample or deterministic saved-source measurement",
+          "evidence": "capture/native_samples.jsonl and analysis-report.json"
+        }
+      },
+      "negative": {
+        "log": "native/selected-c-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_c",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "bf5d7bd6f583f0f3eba45e7463660f56cc9a97f2e06279ae0eb149020c36ddff",
+        "command": ".venv-cpu/bin/python work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_c --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-c-positive.log",
+        "test_log_sha256": "038f92f64c150dc9fd70e92a2c1d64a4dc18ced1207c9086edf03f84c0cc5bcf",
+        "negative_command": ".venv-cpu/bin/python work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/native/delivery_audit.py --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_c --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-c-negative.log",
+        "negative_log_sha256": "263c3859f0e7df1ba2b4633e49e4f406d46955d3d48dec87ef04de5ef34d4f87",
+        "scope": "synthetic CPU mechanics; original source review required"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C42387__NRS-484B-413-2__motor_vehicle_driver/execution-manifest.json --case training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_c --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C42387__NRS-484B-413-2__motor_vehicle_driver__probe_c",
+        "test_exit_code": 0,
+        "test_log": "native/selected-c-saved-test.log",
+        "test_log_sha256": "9763241aff9e96439301032dae567b44de55eb0ff17690ddb7abed8b94b98018",
+        "positive_processing_receipt": "native/selected-c-saved-receipt.json",
+        "positive_processing_sha256": "9278daa676f98af0473bbca39fba88e4d2fe76dece54546923258d55e88b9099",
+        "missing_source_feedback": "native/selected-c-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "07cbf8e89afc2f2ee9379e716cfdb29918133986510b38040a914ff715520e37",
+        "scope": "source-shaped synthetic saved positive and missing-source negative; original physical recording unverified"
+      }
+    }
+  ]
+}
