@@ -222,13 +222,36 @@
     }
   ],
   "observations": [
-    "public highway dedication/access and vehicle scope",
-    "grade measured at parking target; perceptibility remains legal judgment without numeric cutoff",
-    "curb/road-side vector and front-wheel orientation from original source",
-    "standing interval separate from passenger loading/unloading",
-    "responsible person identity, distance and actions before/during/after departure; absence alone not unattended legal conclusion",
-    "actual engine ignition/RPM, brake engagement/torque; brake effectiveness unresolved",
-    "other vehicle route and motion independently sourced"
+    {
+      "name": "grade_geometry",
+      "mandatory": true,
+      "method": "sourced grade and curb/highway geometry"
+    },
+    {
+      "name": "standing_motion",
+      "mandatory": true,
+      "method": "source-joined original ego speed and standing interval"
+    },
+    {
+      "name": "mechanical_state",
+      "mandatory": true,
+      "method": "separate ignition/RPM, parking-brake/torque and front-wheel vector readbacks"
+    },
+    {
+      "name": "person_activity",
+      "mandatory": true,
+      "method": "identified responsible-person position and observed action"
+    },
+    {
+      "name": "other_vehicle_motion",
+      "mandatory": true,
+      "method": "separate other vehicle route and original motion"
+    },
+    {
+      "name": "camera_pixels",
+      "mandatory": true,
+      "method": "four synchronized original RGB views"
+    }
   ],
   "sources": [
     {
@@ -254,8 +277,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Native front-wheel pose and effective brake readback, person transition and grade require CARLA/original review.",
-    "Selected-case bundles, compatibility, saved processing, semantic and independent audits remain CPU work."
+    "CARLA mechanical engine-ignition and effective-brake source readback require a reviewed operator; common Core capture alone does not provide them.",
+    "Original OpenDRIVE grade and highway dedication/access need reviewed source packets.",
+    "No local Native capture, source-bound compatibility, saved processing, delivery/comparison proof or semantic stage chain is claimed by this draft."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -271,7 +295,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_constructed_cpu_probe",
+  "planning_status": "selected_draft_source_gated",
   "witness_review": [
     {
       "source": "inputs/planning/law-split-demo-overlap-v2/reviews/NRS-484B-533.json",
@@ -290,5 +314,116 @@
       ],
       "reason": "Sloped-road parking can transition into unattended standing while preserving the fixed other vehicle as a separately routed participant."
     }
-  ]
+  ],
+  "selected_branch": "Engine, brake and wheel preparation across an attendance transition",
+  "source_observation_mapping": {},
+  "requirement_dispositions": [
+    {
+      "requirement": "qualifying vehicle stands upon a perceptible grade on a highway",
+      "source": "NRS 484B.533",
+      "status": "selected_required",
+      "evidence_or_gap": "Original source-grounded measurement required; no accepted recording in frozen inventory. Legal judgment remains unresolved.",
+      "case_ids": [
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_all_set",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_engine_on",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_brake_off",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_wheels_away",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_person_stays",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_passenger_exchange",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__flat_depart_all_set"
+      ],
+      "disposition_index": 0
+    },
+    {
+      "requirement": "standing unattended, distinct from actual passenger exchange",
+      "source": "NRS 484B.533",
+      "status": "selected_required",
+      "evidence_or_gap": "Original source-grounded measurement required; no accepted recording in frozen inventory. Legal judgment remains unresolved.",
+      "case_ids": [
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_all_set",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_engine_on",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_brake_off",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_wheels_away",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_person_stays",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_passenger_exchange",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__flat_depart_all_set"
+      ],
+      "disposition_index": 1
+    },
+    {
+      "requirement": "engine stopped",
+      "source": "NRS 484B.533",
+      "status": "selected_required",
+      "evidence_or_gap": "Original source-grounded measurement required; no accepted recording in frozen inventory. Legal judgment remains unresolved.",
+      "case_ids": [
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_all_set",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_engine_on",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_brake_off",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_wheels_away",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_person_stays",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_passenger_exchange",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__flat_depart_all_set"
+      ],
+      "disposition_index": 2
+    },
+    {
+      "requirement": "brake effectively set",
+      "source": "NRS 484B.533",
+      "status": "selected_required",
+      "evidence_or_gap": "Original source-grounded measurement required; no accepted recording in frozen inventory. Legal judgment remains unresolved.",
+      "case_ids": [
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_all_set",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_engine_on",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_brake_off",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_wheels_away",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_person_stays",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_passenger_exchange",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__flat_depart_all_set"
+      ],
+      "disposition_index": 3
+    },
+    {
+      "requirement": "front wheels turned toward the curb or side of highway",
+      "source": "NRS 484B.533",
+      "status": "selected_required",
+      "evidence_or_gap": "Original source-grounded measurement required; no accepted recording in frozen inventory. Legal judgment remains unresolved.",
+      "case_ids": [
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_all_set",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_engine_on",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_brake_off",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_depart_wheels_away",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_person_stays",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__slope_passenger_exchange",
+        "testing__C276300__NRS-484B-533__motor_vehicle_driver__flat_depart_all_set"
+      ],
+      "disposition_index": 4
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego, person, other vehicle, highway side and grade",
+        "interval": "all original 45s"
+      },
+      {
+        "view": "approach",
+        "subject": "ego parking approach and standing",
+        "interval": "all original 45s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "curb side, grade and front wheels",
+        "interval": "all original 45s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "responsible-person action and passenger activity",
+        "interval": "all original 45s"
+      }
+    ]
+  }
 }

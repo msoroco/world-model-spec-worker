@@ -1,6 +1,10 @@
 import importlib.util
+import hashlib
+import json
+import os
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 
@@ -9,12 +13,19 @@ spec = importlib.util.spec_from_file_location('lamp_direction', path)
 probe = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = probe
 spec.loader.exec_module(probe)
+import importlib
+sys.path.insert(0, str(path.parent))
+source_packet = importlib.import_module('source_packet')
+runner = importlib.import_module('runner')
+native_acquisition = importlib.import_module('native_acquisition')
+saved_audit = importlib.import_module('saved_audit')
 
 
 def scene(case):
     s = dict(cell_id='C230294', actor='motor_vehicle_driver',
              nevada_jurisdiction=True, public_highway=True,
              vehicle_class='ordinary_motor_vehicle', parked=False,
+             map_sha256='reviewed_map_sha256',
              device_directs=case.device_directs,
              lamps_on_request=case.lamps_on, context=case.context,
              official_device=case.device_directs, device_message='use_lamps',
@@ -59,10 +70,33 @@ class Adapter:
             self.calls.append((name, args))
             if name == 'spawn_vehicle':
                 return None if self.fail else 'ego'
+            if name == 'place_official_device':
+                return 'device'
         return invoke
 
 
 class LampTests(unittest.TestCase):
+    def write_packet(self, root, case):
+        s = scene(case)
+        sources = {}
+        for field in source_packet.SOURCE_FIELDS:
+            s.setdefault(field, field + '_reviewed_value')
+            raw = (json.dumps({field: s[field]}) + '\n').encode()
+            name = field + '.json'
+            (root / name).write_bytes(raw)
+            checksum = hashlib.sha256(raw).hexdigest()
+            s[field + '_source_sha256'] = checksum
+            sources[field] = {'path': name, 'sha256': checksum}
+        s['device_message'] = 'use_lamps'
+        raw = (json.dumps({'device_message': 'use_lamps'}) + '\n').encode()
+        (root / 'device_message.json').write_bytes(raw)
+        sources['device_message']['sha256'] = hashlib.sha256(raw).hexdigest()
+        s['device_message_source_sha256'] = sources['device_message']['sha256']
+        packet = root / 'packet.json'
+        packet.write_text(json.dumps({'case_id': source_packet.ASSIGNMENT + '__' + case.name,
+                                      'scene': s, 'sources': sources}) + '\n')
+        return packet, s
+
     def test_all_cases_construct_and_measure(self):
         for case in probe.CASES:
             with self.subTest(case=case.name):
@@ -95,6 +129,93 @@ class LampTests(unittest.TestCase):
             probe.validate_scene(s, case)
         with self.assertRaisesRegex(ValueError, 'vehicle spawn failed'):
             probe.construct(Adapter(fail=True), scene(case), case)
+
+    def test_source_packet_binds_actual_bytes_and_assertions(self):
+        case = probe.CASES[0]
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            packet, s = self.write_packet(root, case)
+            verified = source_packet.verify(packet, case.name)
+            self.assertEqual(verified['case'].name, case.name)
+            (root / 'device_message.json').write_text('{"device_message":"different"}\n')
+            with self.assertRaisesRegex(ValueError, 'bytes changed'):
+                source_packet.verify(packet, case.name)
+
+    def test_runner_static_and_comparison_isolation(self):
+        checked = runner.check()
+        self.assertEqual(checked['rate_hz'], 20)
+        base = dict(case_id=probe.CASES[0].name, frame_count=900,
+                    lamp_on_frame_counts={'headlamp_left': 900}, map_sha256='map',
+                    vehicle_class_source_sha256='class', route_source_sha256='route',
+                    required_lamp_provisions_source_sha256='provisions',
+                    camera_profile_sha256='cameras')
+        other = dict(base, case_id=probe.CASES[1].name,
+                     lamp_on_frame_counts={'headlamp_left': 0})
+        probe.audit_comparison([base, other], probe.CASES[:2], {'lamps_on'})
+        other['map_sha256'] = 'changed'
+        with self.assertRaisesRegex(ValueError, 'fixed context changed'):
+            probe.audit_comparison([base, other], probe.CASES[:2], {'lamps_on'})
+
+    def test_saved_original_capture_and_missing_camera_rejection(self):
+        case = probe.CASES[0]
+        scratch = Path(os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT'])
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            root = Path(temporary)
+            packet, s = self.write_packet(root, case)
+            original_rows = rows(case, s)
+
+            class Pipeline:
+                def __init__(self):
+                    self.frames = []
+                def capture(self, frame, time_s):
+                    self.frames.append(frame)
+                def close(self):
+                    pass
+
+            class Native(Adapter):
+                def __init__(self):
+                    super().__init__()
+                    self.pipeline = Pipeline()
+                    self.destroyed = []
+                    self.restored = False
+                def loaded_map_sha256(self):
+                    return s['map_sha256']
+                def snapshot_settings(self):
+                    return 'saved'
+                def configure_sync(self, rate_hz):
+                    self.rate_hz = rate_hz
+                def readback_sync(self, rate_hz):
+                    return self.rate_hz == rate_hz
+                def spawn_cameras(self, vehicle, names, scene):
+                    return {name: 'camera-' + name for name in names}
+                def start_pipeline_capture(self, vehicle, output, case_id):
+                    return self.pipeline
+                def tick_capture(self, index, scene, cameras):
+                    row = original_rows[index]
+                    return row, {name: {'original_frame': row['original_frame'],
+                                        'sensor_id': actor, 'bytes': b'fixture-image'}
+                                 for name, actor in cameras.items()}
+                def actor_id(self, actor):
+                    return actor
+                def destroy(self, actor):
+                    self.destroyed.append(actor)
+                def restore_settings(self, settings):
+                    self.restored = settings == 'saved'
+                def readback_restored(self, settings):
+                    return self.restored
+
+            adapter = Native()
+            attempt = root / 'attempt'
+            measured = native_acquisition.acquire(adapter, packet, attempt)
+            self.assertEqual(measured['lamp_on_frame_counts']['headlamp_left'], 900)
+            self.assertEqual(len(adapter.pipeline.frames), 900)
+            self.assertTrue(adapter.restored)
+            self.assertEqual(len(adapter.destroyed), 6)
+            checked = saved_audit.audit_saved(attempt, case.name)
+            self.assertEqual(checked['camera_count'], 4)
+            (attempt / 'cameras/overview/0001.png').unlink()
+            with self.assertRaisesRegex(ValueError, 'camera source missing'):
+                saved_audit.audit_saved(attempt, case.name)
 
 
 if __name__ == '__main__':

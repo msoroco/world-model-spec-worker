@@ -30,6 +30,8 @@ class PassingProbeTests(unittest.TestCase):
     def test_early_return_observed(self):
         frames = self.frames(early_return=True)
         frames[2]["vehicle_box"] = (11.0, 13.0, 0.0, 2.0)
+        frames.append({**frames[-1], "original_frame": 3, "time_s": .15,
+                       "vehicle_box": (13.0, 15.0, 0.0, 2.0)})
         m = measure_pass(self.site(), frames)
         self.assertFalse(m["longitudinal_clear_before_return"])
 
@@ -51,6 +53,12 @@ class PassingProbeTests(unittest.TestCase):
         for f in frames:
             f["vehicle_box"] = (0, 4, 1.5, 3.5)
         with self.assertRaisesRegex(ValueError, "no longitudinal"):
+            measure_pass(self.site(), frames)
+
+    def test_reject_overlap_without_completed_pass(self):
+        frames = self.frames()
+        frames[2]["vehicle_box"] = (9.0, 11.0, 1.5, 3.5)
+        with self.assertRaisesRegex(ValueError, "did not finish"):
             measure_pass(self.site(), frames)
 
 

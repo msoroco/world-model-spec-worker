@@ -1,0 +1,132 @@
+{
+  "law_id": "NRS-484B-270-2b",
+  "cell_id": "C272352",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed one-lane road, qualifying rider, passing route"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed one-lane road, qualifying rider, passing route"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed one-lane road, qualifying rider, passing route"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed one-lane road, qualifying rider, passing route"
+    }
+  ],
+  "supported_case_ids": [
+    "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below",
+    "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_at",
+    "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_above",
+    "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_early",
+    "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_return_after_clear",
+    "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_bicycle_pass",
+    "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__electric_scooter_pass",
+    "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__centerline_authorized",
+    "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__no_passing_zone_authorized"
+  ],
+  "case": {
+    "case_id": "testing__C272352__NRS-484B-270-2b__motor_vehicle_driver__bike_clearance_below",
+    "target_law_id": "NRS-484B-270-2b",
+    "cell_id": "C272352",
+    "actor": "motor_vehicle_driver",
+    "control_kind": "bicycle",
+    "same_direction_lane_count_requested": 1,
+    "target_clearance_m": 0.8,
+    "return_request": "after_clear",
+    "route_request": "within_right_half",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "body_envelopes",
+          "unit": "m",
+          "method": "original ego and qualifying rider body extents",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second original pass",
+          "reference_frame": "source-sealed Native road axis and original frame",
+          "uncertainty": "actual motion and legal judgment require local review"
+        },
+        {
+          "name": "passing_clearance",
+          "unit": "m",
+          "method": "minimum body gap during longitudinal overlap",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second original pass",
+          "reference_frame": "source-sealed Native road axis and original frame",
+          "uncertainty": "actual motion and legal judgment require local review"
+        },
+        {
+          "name": "return_order",
+          "unit": "original frame",
+          "method": "first right return versus rider front",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second original pass",
+          "reference_frame": "source-sealed Native road axis and original frame",
+          "uncertainty": "actual motion and legal judgment require local review"
+        },
+        {
+          "name": "lane_controls",
+          "unit": "source record",
+          "method": "one forward lane, centerline and zone",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second original pass",
+          "reference_frame": "source-sealed Native road axis and original frame",
+          "uncertainty": "actual motion and legal judgment require local review"
+        },
+        {
+          "name": "opposing_traffic",
+          "unit": "source record",
+          "method": "original opposing trajectories",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second original pass",
+          "reference_frame": "source-sealed Native road axis and original frame",
+          "uncertainty": "actual motion and legal judgment require local review"
+        },
+        {
+          "name": "camera_identity",
+          "unit": "frame",
+          "method": "four synchronized original camera streams",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second original pass",
+          "reference_frame": "source-sealed Native road axis and original frame",
+          "uncertainty": "actual motion and legal judgment require local review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_native_site_packet",
+          "unit": "source record",
+          "method": "sealed map, lane, actors, controls, traffic and exception sources"
+        }
+      ],
+      "limitations": [
+        "Synthetic fixtures prove CPU software only.",
+        "The 3-foot floor is statutory; safe distance, safely clear, due care and exceptions remain human judgments."
+      ]
+    }
+  }
+}

@@ -94,6 +94,10 @@ class GradeTests(unittest.TestCase):
         data[120]['brake_engaged'] = False
         with self.assertRaisesRegex(ValueError, 'preparation not measured'):
             probe.measure_original(data,s,case)
+        data = rows(case,s)
+        data[120]['engine_source_sha256'] = 'b' * 64
+        with self.assertRaisesRegex(ValueError, 'source join differs: engine'):
+            probe.measure_original(data,s,case)
 
     def test_highway_source_and_cleanup(self):
         case = probe.CASES[0]

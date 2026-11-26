@@ -7,6 +7,8 @@ import sys
 from tempfile import TemporaryDirectory
 import unittest
 
+SCRATCH = Path.cwd() / ".runtime-work" / "c178244-signal-tests"
+SCRATCH.mkdir(parents=True, exist_ok=True)
 
 SPEC = importlib.util.spec_from_file_location("signal_distance", Path(__file__).resolve().parents[1] / "signal_distance.py")
 mod = importlib.util.module_from_spec(SPEC)
@@ -127,7 +129,7 @@ class SignalDistanceTest(unittest.TestCase):
 
     def test_source_inventory_checks_file_bytes_and_missing_source(self):
         p = packet()
-        with TemporaryDirectory() as temp:
+        with TemporaryDirectory(dir=SCRATCH) as temp:
             root = Path(temp)
             write_sources(root, p)
             self.assertEqual(len(mod.verify_source_bindings(p, root)), 5)
@@ -141,13 +143,13 @@ class SignalDistanceTest(unittest.TestCase):
     def test_source_inventory_rejects_traversal(self):
         p = packet()
         p["source_files"] = {"sealed_result": {"path": "../elsewhere", "sha256": "a" * 64}}
-        with TemporaryDirectory() as temp:
+        with TemporaryDirectory(dir=SCRATCH) as temp:
             with self.assertRaisesRegex(mod.EvidenceError, "escapes root"):
                 mod.verify_source_bindings(p, Path(temp))
 
     def test_source_inventory_rejects_rebound_packet_values(self):
         p = packet()
-        with TemporaryDirectory() as temp:
+        with TemporaryDirectory(dir=SCRATCH) as temp:
             root = Path(temp)
             write_sources(root, p)
             p["samples"][4]["signal"] = "off"
@@ -161,7 +163,7 @@ class SignalDistanceTest(unittest.TestCase):
 
     def test_resealed_frame_map_disagreement_rejected(self):
         p = packet()
-        with TemporaryDirectory() as temp:
+        with TemporaryDirectory(dir=SCRATCH) as temp:
             root = Path(temp)
             write_sources(root, p)
             frame_path = root / "frame_map.json"
@@ -176,7 +178,7 @@ class SignalDistanceTest(unittest.TestCase):
 
     def test_relabelled_turn_direction_rejected_by_original_sources(self):
         p = packet(direction="left")
-        with TemporaryDirectory() as temp:
+        with TemporaryDirectory(dir=SCRATCH) as temp:
             root = Path(temp)
             write_sources(root, p)
             p["turn_direction"] = "right"
@@ -193,7 +195,7 @@ class SignalDistanceTest(unittest.TestCase):
 
     def test_cli_reads_and_verifies_source_packet(self):
         p = packet()
-        with TemporaryDirectory() as temp:
+        with TemporaryDirectory(dir=SCRATCH) as temp:
             root = Path(temp)
             write_sources(root, p)
             packet_file = root / "packet.json"

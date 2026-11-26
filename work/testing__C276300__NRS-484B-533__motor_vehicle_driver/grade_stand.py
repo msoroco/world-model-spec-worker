@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from math import isfinite
 from typing import Mapping
+import re
 
 
 @dataclass(frozen=True)
@@ -23,6 +24,19 @@ CASES = (
     Case('slope_passenger_exchange', 'slope', 'passenger_exchange', True, True, True),
     Case('flat_depart_all_set', 'flat', 'depart', True, True, True),
 )
+
+SCENE_SOURCES = ('highway', 'vehicle', 'grade', 'curb_side', 'engine',
+                 'brake_mechanics', 'front_wheels', 'responsible_person',
+                 'person_actions', 'standing_interval', 'passenger_activity',
+                 'other_vehicle_route')
+ROW_SOURCE_JOINS = {
+    'grade': 'grade', 'curb_side': 'curb_side', 'engine': 'engine',
+    'brake_mechanics': 'brake_mechanics', 'front_wheels': 'front_wheels',
+    'responsible_person': 'responsible_person',
+    'person_actions': 'person_actions',
+    'passenger_activity': 'passenger_activity',
+    'other_vehicle_motion': 'other_vehicle_route',
+}
 
 
 def require(ok, message):
@@ -52,11 +66,9 @@ def validate_scene(scene: Mapping, case: Case):
             scene.get('brake_set_request') is case.brake_set and
             scene.get('wheels_toward_request') is case.wheels_toward,
             'case variables changed')
-    for field in ('highway', 'vehicle', 'grade', 'curb_side', 'engine',
-                  'brake_mechanics', 'front_wheels', 'responsible_person',
-                  'person_actions', 'standing_interval', 'passenger_activity',
-                  'other_vehicle_route'):
-        require(scene.get(field + '_source_sha256'),
+    for field in SCENE_SOURCES:
+        require(isinstance(scene.get(field + '_source_sha256'), str) and
+                re.fullmatch('[0-9a-f]{64}', scene[field + '_source_sha256']),
                 'original context missing: ' + field)
     require(number(scene.get('grade_percent')) and
             scene['grade_percent'] >= 0 and
@@ -100,9 +112,11 @@ def construct(adapter, scene: Mapping, case: Case):
         raise
 
 
-def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
+def measure_original(rows: list[Mapping], scene: Mapping, case: Case,
+                     *, diagnostic_fixture: bool = False):
     validate_scene(scene, case)
-    require(len(rows) == 900, 'original 900-frame capture missing')
+    require(len(rows) == (9 if diagnostic_fixture else 900),
+            'original frame capture missing')
     first = rows[0].get('original_frame')
     require(type(first) is int and number(rows[0].get('time_s')),
             'original frame/time identity missing')
@@ -118,9 +132,12 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
                       'person_actions', 'passenger_activity', 'other_vehicle_motion'):
             require(row.get(field + '_source_sha256'),
                     'original measurement source missing: ' + field)
-        require(row.get('grade_source_sha256') == scene['grade_source_sha256'] and
-                row.get('person_action') == case.person_action,
-                'original grade/person context changed')
+        for row_field, scene_field in ROW_SOURCE_JOINS.items():
+            require(row.get(row_field + '_source_sha256') ==
+                    scene[scene_field + '_source_sha256'],
+                    'original source join differs: ' + row_field)
+        require(row.get('person_action') == case.person_action,
+                'original person context changed')
         require(row.get('ego_id') and row.get('person_id') and
                 row.get('other_id'), 'participant identity missing')
         ego_id = ego_id or row['ego_id'];person_id = person_id or row['person_id']
@@ -140,7 +157,8 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
             dot = sum(a*b for a,b in zip(row['front_wheel_vector_xy'],
                                          scene['curb_direction_xy']))
             standing.append((row, dot))
-    require(len(standing) >= 20, 'standing interval missing')
+    require(len(standing) >= (2 if diagnostic_fixture else 20),
+            'standing interval missing')
     require(any(row['person_distance_m'] >= 2 for row,_ in standing)
             if case.person_action == 'depart' else True,
             'person departure not observed')

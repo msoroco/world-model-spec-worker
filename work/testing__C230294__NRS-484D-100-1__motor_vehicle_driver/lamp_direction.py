@@ -87,7 +87,9 @@ def construct(adapter, scene: Mapping, case: Case):
     owned = []
     try:
         if case.device_directs:
-            adapter.place_official_device(scene['device_xy'], 'use_lamps')
+            device = adapter.place_official_device(scene['device_xy'], 'use_lamps')
+            require(device is not None, 'official lamp device placement failed')
+            owned.append(device)
         vehicle = adapter.spawn_vehicle(scene['route_xy'][0])
         require(vehicle is not None, 'vehicle spawn failed')
         owned.append(vehicle)
@@ -140,3 +142,31 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
             'device_directs': case.device_directs,
             'lamp_on_frame_counts': lamp_counts,
             'legal_judgment': None}
+
+
+def audit_comparison(reports, cases, changed_fields):
+    """Check original measurements and fixed context, without legal labeling."""
+    require(len(reports) == len(cases) and len(cases) >= 2,
+            'comparison members missing')
+    fixed = ('map_sha256', 'vehicle_class_source_sha256', 'route_source_sha256',
+             'required_lamp_provisions_source_sha256', 'camera_profile_sha256')
+    for report, case in zip(reports, cases):
+        require(case in CASES and report.get('case_id') == case.name and
+                report.get('frame_count') == 900,
+                'comparison original measurement missing')
+        require(isinstance(report.get('lamp_on_frame_counts'), dict) and
+                report['lamp_on_frame_counts'], 'comparison lamp measurement missing')
+        for field in fixed:
+            require(report.get(field) and report[field] == reports[0].get(field),
+                    'comparison fixed context changed: ' + field)
+    allowed = {'device_directs', 'lamps_on', 'context'}
+    require(set(changed_fields) <= allowed and changed_fields,
+            'comparison difference unknown')
+    for field in allowed:
+        values = [getattr(case, field) for case in cases]
+        if field in changed_fields:
+            require(len(set(values)) > 1, 'declared difference absent: ' + field)
+        else:
+            require(len(set(values)) == 1, 'undeclared difference: ' + field)
+    return {'case_ids': [report['case_id'] for report in reports],
+            'changed_fields': sorted(changed_fields), 'legal_judgment': None}

@@ -58,6 +58,10 @@ def measure_pass(site, frames):
                and f["vehicle_box"][0] <= f["bicycle_box"][1]]
     if not passing:
         raise ValueError("no longitudinal passing overlap")
+    if not any(f["vehicle_box"][1] < f["bicycle_box"][0] for f in frames[:passing[0] + 1]):
+        raise ValueError("pass did not begin behind bicycle")
+    if not any(f["vehicle_box"][0] > f["bicycle_box"][1] for f in frames[passing[-1]:]):
+        raise ValueError("pass did not finish ahead of bicycle")
     left_during_overlap = all(frames[i]["vehicle_box"][2] > frames[i]["bicycle_box"][3]
                               for i in passing)
     return_indices = [i for i, f in enumerate(frames)
