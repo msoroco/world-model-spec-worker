@@ -1,3 +1,7 @@
+## 2026-11-26 pinned runtime correction pending
+
+Selected configs contain unsupported `physical_completion.criterion: observed_crosswalk_passage`. Pinned `runtime/scenario_pipeline/worker_exchange/native_output.py` rejects that criterion in `assess_physical` after original capture. The package is returned to `partial` and removed from the shared queue until a supported original-motion criterion and current-hash CPU proof refresh pass the exact scoped strict gate. Existing law-specific measurements and original source review must remain separate; a physical engineering proxy cannot decide legal outcome. The earlier strict gate did not exercise this original execution path. No physical or legal acceptance is claimed.
+
 # testing__C150911__NRS-484B-293__pedestrian
 
 Status: CPU delivery prepared on the pinned current runtime. Exact scoped `worker_check.py --assignment testing__C150911__NRS-484B-293__pedestrian --complete --require-delivery-ready` passes. This does not establish physical, pixel, evidentiary or legal acceptance.

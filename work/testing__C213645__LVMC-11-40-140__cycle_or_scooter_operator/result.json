@@ -1,37 +1,26 @@
 {
   "assignment_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator",
   "input_sha256": "e4b1dc1fed9498030180a25f62cb3d92a2864f06da751362faf93c42aebe65bc",
-  "status": "partial",
-  "readiness_kind": "driveway_sidewalk_entry_measurement_and_cases",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/tests -v",
       "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "84dc37c79402c082a4ea6991d42409b7111f3bee25632c156ee0fed1e0314a05"
+      "log": "cpu-nov25-tests-current.log",
+      "sha256": "779288df256fd308997a4f0155e3ab083d6256221c6157a0aea543185eaca399"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/tests -v",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator --complete",
       "exit_code": 0,
-      "log": "unittest.log",
-      "sha256": "ec4a2be1c2b43bf78d0010a1fe487807daedfa85b757ec0fa8af0466082cda31"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator --complete",
-      "exit_code": 0,
-      "log": "static.log",
+      "log": "cpu-nov25-static-current.log",
       "sha256": "7e3fa4cd2f4e2d012cfd516b68ebfe05a00294c6ea9b9419bef87cbe3d75fd96"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Acquire reviewed original residence driveway/sidewalk and qualifying cycle or scooter packet; run actual CARLA crossing and four-view capture; independently review original source, 900 frame joins, pedestrian motion, pixels, physical outcome and legal judgment."
   ],
-  "reason": "Four planned controlled driveway-sidewalk cases, three isolated comparisons and a five-test source-bound pre-entry stop/pedestrian/yield measurement are added. Physical construction, original source, saved finalization, compatibility and delivery audits remain CPU work; strict gate truthfully fails on partial status."
+  "reason": "CPU delivery preparation passes for four exact driveway-sidewalk cycle cases and three original-only comparisons. Reviewed original district, driveway, sidewalk and pedestrian sources, actual physical behavior, pixel review and legal judgment remain source gated; no original acceptance is claimed.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

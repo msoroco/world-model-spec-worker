@@ -165,8 +165,36 @@ def main():
                                       case, config.get('cycle_start_offset_m', 0))
     adapter = importlib.import_module(args.adapter_module).create_adapter(
         config, args.host, int(args.port))
-    print(json.dumps(run(adapter, scene, case, config, args.output_dir,
-                         packet_sha256), sort_keys=True))
+    from worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.native_output import seal_capture
+    saved_world = snapshot(adapter.client)
+    result = None
+    error = None
+    restoration = None
+    try:
+        result = run(adapter, scene, case, config, args.output_dir,
+                     packet_sha256)
+    except Exception as failure:
+        error = failure
+    finally:
+        try:
+            restoration = restore(adapter.client, saved_world)
+        except Exception as failure:
+            error = error or failure
+    if error is not None:
+        (args.output_dir / 'native-run-status.json').write_text(json.dumps({
+            'errors': [str(error)], 'restoration': restoration,
+            'physical_acceptance_claimed': False}, indent=2) + '\n')
+        raise error
+    codes = adapter.encoder_exit_codes()
+    require(isinstance(codes, dict) and len(codes) == 4 and
+            set(codes) == set(VIEWS) and all(code == 0 for code in codes.values()),
+            'four original camera encoders did not close cleanly')
+    seal_capture(args.output_dir, frames=900, restoration=restoration,
+                 errors=[], encoder_exit_codes=codes,
+                 context={'reviewed_scene_packet_sha256': packet_sha256,
+                          'case_id': config['selected_case_id']})
+    print(json.dumps(result, sort_keys=True))
 
 
 if __name__ == '__main__':

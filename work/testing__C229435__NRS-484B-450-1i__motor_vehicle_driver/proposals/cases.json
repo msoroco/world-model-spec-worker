@@ -1,0 +1,457 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__baseline",
+      "rationale": "Shared reviewed railroad and parking reference.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original carrier and all nearby rail source readback",
+            "name": "railroad_site",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "classification"
+          },
+          {
+            "method": "original complete ego footprint to every rail segment distance",
+            "name": "vehicle_rail_distance",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "m"
+          },
+          {
+            "method": "original ego approach, stop and parking action readback",
+            "name": "vehicle_parking_action",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          },
+          {
+            "method": "original other-vehicle motion and four independent exception source reviews",
+            "name": "traffic_and_exceptions",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original railroad, carrier, geometry and exception review",
+            "name": "reviewed_railroad_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "50 feet is exactly 15.24 m; retain raw distances and boundary uncertainty.",
+          "Another vehicle presence alone does not establish traffic-conflict necessity."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic"
+      ],
+      "variable_assignments": {
+        "nearest_vehicle_to_rail_m": {
+          "kind": "world_setup",
+          "value": 14.0
+        },
+        "traffic_conflict_necessity": {
+          "kind": "world_setup",
+          "value": "absent"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_no_exception",
+      "deliberate_differences": [
+        "nearest_vehicle_to_rail_m",
+        "traffic_conflict_necessity"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering probe separation; not a legal tolerance.",
+        "unit": "m",
+        "value": 0.01
+      },
+      "paired_probe_id": "source-gated-nearest-rail",
+      "probe": {
+        "comparison_or_standard": "same reviewed railroad, parking action, other vehicle and four-camera policy",
+        "operator": "<",
+        "primary_variable": "nearest_vehicle_to_rail_m",
+        "target_value_or_branch": {
+          "nearest_vehicle_to_rail_m": 14.0,
+          "traffic_conflict_necessity": "absent"
+        },
+        "test_value": 14.0,
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "unit": "m"
+      },
+      "rationale": "Controlled original rail distance and separately reviewed traffic necessity.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original carrier and all nearby rail source readback",
+            "name": "railroad_site",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "classification"
+          },
+          {
+            "method": "original complete ego footprint to every rail segment distance",
+            "name": "vehicle_rail_distance",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "m"
+          },
+          {
+            "method": "original ego approach, stop and parking action readback",
+            "name": "vehicle_parking_action",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          },
+          {
+            "method": "original other-vehicle motion and four independent exception source reviews",
+            "name": "traffic_and_exceptions",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original railroad, carrier, geometry and exception review",
+            "name": "reviewed_railroad_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "50 feet is exactly 15.24 m; retain raw distances and boundary uncertainty.",
+          "Another vehicle presence alone does not establish traffic-conflict necessity."
+        ]
+      },
+      "target_law_id": "NRS-484B-450-1i",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic"
+      ],
+      "variable_assignments": {
+        "nearest_vehicle_to_rail_m": {
+          "kind": "world_setup",
+          "value": 14.0
+        },
+        "traffic_conflict_necessity": {
+          "kind": "world_setup",
+          "value": "absent"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__boundary_no_exception",
+      "deliberate_differences": [
+        "nearest_vehicle_to_rail_m",
+        "traffic_conflict_necessity"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering probe separation; not a legal tolerance.",
+        "unit": "m",
+        "value": 0.01
+      },
+      "paired_probe_id": "source-gated-nearest-rail",
+      "probe": {
+        "comparison_or_standard": "same reviewed railroad, parking action, other vehicle and four-camera policy",
+        "operator": "<",
+        "primary_variable": "nearest_vehicle_to_rail_m",
+        "target_value_or_branch": {
+          "nearest_vehicle_to_rail_m": 15.24,
+          "traffic_conflict_necessity": "absent"
+        },
+        "test_value": 15.24,
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "unit": "m"
+      },
+      "rationale": "Controlled original rail distance and separately reviewed traffic necessity.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original carrier and all nearby rail source readback",
+            "name": "railroad_site",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "classification"
+          },
+          {
+            "method": "original complete ego footprint to every rail segment distance",
+            "name": "vehicle_rail_distance",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "m"
+          },
+          {
+            "method": "original ego approach, stop and parking action readback",
+            "name": "vehicle_parking_action",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          },
+          {
+            "method": "original other-vehicle motion and four independent exception source reviews",
+            "name": "traffic_and_exceptions",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original railroad, carrier, geometry and exception review",
+            "name": "reviewed_railroad_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "50 feet is exactly 15.24 m; retain raw distances and boundary uncertainty.",
+          "Another vehicle presence alone does not establish traffic-conflict necessity."
+        ]
+      },
+      "target_law_id": "NRS-484B-450-1i",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic"
+      ],
+      "variable_assignments": {
+        "nearest_vehicle_to_rail_m": {
+          "kind": "world_setup",
+          "value": 15.24
+        },
+        "traffic_conflict_necessity": {
+          "kind": "world_setup",
+          "value": "absent"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__outside_no_exception",
+      "deliberate_differences": [
+        "nearest_vehicle_to_rail_m",
+        "traffic_conflict_necessity"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering probe separation; not a legal tolerance.",
+        "unit": "m",
+        "value": 0.01
+      },
+      "paired_probe_id": "source-gated-nearest-rail",
+      "probe": {
+        "comparison_or_standard": "same reviewed railroad, parking action, other vehicle and four-camera policy",
+        "operator": "<",
+        "primary_variable": "nearest_vehicle_to_rail_m",
+        "target_value_or_branch": {
+          "nearest_vehicle_to_rail_m": 17.0,
+          "traffic_conflict_necessity": "absent"
+        },
+        "test_value": 17.0,
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "unit": "m"
+      },
+      "rationale": "Controlled original rail distance and separately reviewed traffic necessity.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original carrier and all nearby rail source readback",
+            "name": "railroad_site",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "classification"
+          },
+          {
+            "method": "original complete ego footprint to every rail segment distance",
+            "name": "vehicle_rail_distance",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "m"
+          },
+          {
+            "method": "original ego approach, stop and parking action readback",
+            "name": "vehicle_parking_action",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          },
+          {
+            "method": "original other-vehicle motion and four independent exception source reviews",
+            "name": "traffic_and_exceptions",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original railroad, carrier, geometry and exception review",
+            "name": "reviewed_railroad_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "50 feet is exactly 15.24 m; retain raw distances and boundary uncertainty.",
+          "Another vehicle presence alone does not establish traffic-conflict necessity."
+        ]
+      },
+      "target_law_id": "NRS-484B-450-1i",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic"
+      ],
+      "variable_assignments": {
+        "nearest_vehicle_to_rail_m": {
+          "kind": "world_setup",
+          "value": 17.0
+        },
+        "traffic_conflict_necessity": {
+          "kind": "world_setup",
+          "value": "absent"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_other_vehicle_unresolved",
+      "deliberate_differences": [
+        "nearest_vehicle_to_rail_m",
+        "traffic_conflict_necessity"
+      ],
+      "paired_probe_id": "source-gated-nearest-rail",
+      "probe": {
+        "comparison_or_standard": "same reviewed railroad, parking action, other vehicle and four-camera policy",
+        "primary_variable": "nearest_vehicle_to_rail_m",
+        "target_value_or_branch": {
+          "nearest_vehicle_to_rail_m": 14.0,
+          "traffic_conflict_necessity": "unresolved"
+        }
+      },
+      "rationale": "Controlled original rail distance and separately reviewed traffic necessity.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original carrier and all nearby rail source readback",
+            "name": "railroad_site",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "classification"
+          },
+          {
+            "method": "original complete ego footprint to every rail segment distance",
+            "name": "vehicle_rail_distance",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "m"
+          },
+          {
+            "method": "original ego approach, stop and parking action readback",
+            "name": "vehicle_parking_action",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          },
+          {
+            "method": "original other-vehicle motion and four independent exception source reviews",
+            "name": "traffic_and_exceptions",
+            "reference_frame": "reviewed railroad XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original physical rail/vehicle readback pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original railroad, carrier, geometry and exception review",
+            "name": "reviewed_railroad_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "50 feet is exactly 15.24 m; retain raw distances and boundary uncertainty.",
+          "Another vehicle presence alone does not establish traffic-conflict necessity."
+        ]
+      },
+      "target_law_id": "NRS-484B-450-1i",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic"
+      ],
+      "variable_assignments": {
+        "nearest_vehicle_to_rail_m": {
+          "kind": "world_setup",
+          "value": 14.0
+        },
+        "traffic_conflict_necessity": {
+          "kind": "world_setup",
+          "value": "unresolved"
+        }
+      }
+    }
+  ],
+  "cell_id": "C229435",
+  "status": "draft",
+  "sweep_expansion_scope": "Four controlled original-source physical probes; legal exceptions unresolved.",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Traffic-conflict necessity and law, officer or device direction require independent original source review; nearby traffic alone proves no exception.",
+          "phrase": "necessary to avoid conflict with other traffic"
+        }
+      ],
+      "missing_inputs": [
+        "reviewed original carrier and all nearby railroad rails",
+        "complete original ego footprint and parked action",
+        "independent traffic/law/officer/device exception source review"
+      ],
+      "rationale": "15.24 m is statutory distance; traffic necessity and other exceptions require original source judgments.",
+      "status": "incomplete",
+      "sweep_id": "source-gated-nearest-rail-duty",
+      "target_law_id": "NRS-484B-450-1i"
+    }
+  ],
+  "sweeps_expanded": true
+}

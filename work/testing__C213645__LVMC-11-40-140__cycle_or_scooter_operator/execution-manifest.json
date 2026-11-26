@@ -1,0 +1,500 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "105d53bc26df686f612b0e726c7294520cbf2db77c5454ace46fdfcfb3efc038",
+      "fixture_recipe": "work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/diagnostic-stops_pedestrian-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original district, driveway, sidewalk and pedestrian source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "district_access_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-district_access_context.jsonl"
+        },
+        "sidewalk_edge": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-sidewalk_edge.jsonl"
+        },
+        "cycle_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-cycle_speed_history.jsonl"
+        },
+        "edge_distance_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-edge_distance_history.jsonl"
+        },
+        "pedestrian_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-pedestrian_motion.jsonl"
+        },
+        "pedestrian_conflict": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-pedestrian_conflict.jsonl"
+        },
+        "operator_yield": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-operator_yield.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed driveway geometry and cycle/pedestrian route are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "105d53bc26df686f612b0e726c7294520cbf2db77c5454ace46fdfcfb3efc038",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian --output .runtime-work/c213645/offline-final-stops_pedestrian",
+        "exit_code": 0,
+        "log": "cpu-offline-stops_pedestrian.log",
+        "log_sha256": "a03e8b6be822867304329efd8225fe5081e2c85a9920bdf268a03f5347aade91"
+      },
+      "compatibility": {
+        "receipt": "proofs/stops_pedestrian/receipt.json",
+        "sha256": "ee2b445cc67df22ae1d47169a69507505efc67fb0c464992ca99a27d6fae3d60",
+        "log": "proofs/stops_pedestrian/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/stops_pedestrian/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final-stops_pedestrian-receipt.json",
+        "sha256": "4f8e622c3e84d0621fb5e5a310a2512aa676ddd416c24c57f6d301d848169af5"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-final-stops_pedestrian.log",
+        "test_log_sha256": "930f00747362d1ee81b3920e750694a4f99bd12cc7960639554d8c1433982670",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original driveway, sidewalk, pedestrian and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2f96b11ca6b5dccbdbadb9afe0febf310db5b767bafecbf42cb3a4cd2e56ec2a",
+        "command": ".venv-cpu/bin/python work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/delivery_probe.py --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian --attempt .runtime-work/c213645/compat-final-stops_pedestrian --saved-root .runtime-work/c213645/saved-final-stops_pedestrian --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-stops_pedestrian-positive.log",
+        "test_log_sha256": "c15c676ca6e2d0e7fd9a55fe9cac04a09d91f13df5836365795a17c7d5ed6622",
+        "negative_command": ".venv-cpu/bin/python work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/delivery_probe.py --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian --attempt .runtime-work/c213645/compat-final-stops_pedestrian --saved-root .runtime-work/c213645/saved-final-stops_pedestrian --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: driveway-site.json",
+        "negative_log": "delivery-stops_pedestrian-missing_source.log",
+        "negative_log_sha256": "8f3e678262c2ffb8a2142cbd4e803cba9af4c5f07412097382781660046a4f11"
+      }
+    },
+    {
+      "case_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__no_stop_pedestrian",
+      "kind": "delivery",
+      "construction": "cases/no_stop_pedestrian/construction.json",
+      "construction_sha256": "5ecc02b36177acdbafe839c5a9a33ab0b262b2408ff4d0f8b958e861e77bee6f",
+      "fixture_recipe": "work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/diagnostic-no_stop_pedestrian-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original district, driveway, sidewalk and pedestrian source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "district_access_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-district_access_context.jsonl"
+        },
+        "sidewalk_edge": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-sidewalk_edge.jsonl"
+        },
+        "cycle_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-cycle_speed_history.jsonl"
+        },
+        "edge_distance_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-edge_distance_history.jsonl"
+        },
+        "pedestrian_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-pedestrian_motion.jsonl"
+        },
+        "pedestrian_conflict": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-pedestrian_conflict.jsonl"
+        },
+        "operator_yield": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-operator_yield.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed driveway geometry and cycle/pedestrian route are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "5ecc02b36177acdbafe839c5a9a33ab0b262b2408ff4d0f8b958e861e77bee6f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__no_stop_pedestrian --output .runtime-work/c213645/offline-final-no_stop_pedestrian",
+        "exit_code": 0,
+        "log": "cpu-offline-no_stop_pedestrian.log",
+        "log_sha256": "a20dd9e5536b793aaf57c5d7b44a378e6c4ed6473a0bca8e5666b6acfffeb0d3"
+      },
+      "compatibility": {
+        "receipt": "proofs/no_stop_pedestrian/receipt.json",
+        "sha256": "2382f5aef8a47f8f6d9e758a750ee8c8c1d889ddf0b03a8d0ad279b9d70dc244",
+        "log": "proofs/no_stop_pedestrian/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/no_stop_pedestrian/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final-no_stop_pedestrian-receipt.json",
+        "sha256": "81e058d6979d0943657a7d286a08e921fdbd8d7b5dd8eda6d7cb446157d5b305"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__no_stop_pedestrian --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__no_stop_pedestrian --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-final-no_stop_pedestrian.log",
+        "test_log_sha256": "b934b400c6b92da68aaabd2ed1139de6213b3b93f34e53f514c44fcaa6764058",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original driveway, sidewalk, pedestrian and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__no_stop_pedestrian",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2f96b11ca6b5dccbdbadb9afe0febf310db5b767bafecbf42cb3a4cd2e56ec2a",
+        "command": ".venv-cpu/bin/python work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/delivery_probe.py --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__no_stop_pedestrian --attempt .runtime-work/c213645/compat-final-no_stop_pedestrian --saved-root .runtime-work/c213645/saved-final-no_stop_pedestrian --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-no_stop_pedestrian-positive.log",
+        "test_log_sha256": "4922dd0a23d85b11a6a0368806c365e8898afe68a5aa965bd320be227f4f1611",
+        "negative_command": ".venv-cpu/bin/python work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/delivery_probe.py --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__no_stop_pedestrian --attempt .runtime-work/c213645/compat-final-no_stop_pedestrian --saved-root .runtime-work/c213645/saved-final-no_stop_pedestrian --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: driveway-site.json",
+        "negative_log": "delivery-no_stop_pedestrian-missing_source.log",
+        "negative_log_sha256": "8f3e678262c2ffb8a2142cbd4e803cba9af4c5f07412097382781660046a4f11"
+      }
+    },
+    {
+      "case_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_no_pedestrian",
+      "kind": "delivery",
+      "construction": "cases/stops_no_pedestrian/construction.json",
+      "construction_sha256": "aec3ff9432f0b584c2d997892293224b2829c3aa96d890ac8766be316af559c1",
+      "fixture_recipe": "work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/diagnostic-stops_no_pedestrian-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original district, driveway, sidewalk and pedestrian source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "district_access_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-district_access_context.jsonl"
+        },
+        "sidewalk_edge": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-sidewalk_edge.jsonl"
+        },
+        "cycle_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-cycle_speed_history.jsonl"
+        },
+        "edge_distance_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-edge_distance_history.jsonl"
+        },
+        "pedestrian_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-pedestrian_motion.jsonl"
+        },
+        "pedestrian_conflict": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-pedestrian_conflict.jsonl"
+        },
+        "operator_yield": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-operator_yield.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed driveway geometry and cycle/pedestrian route are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "aec3ff9432f0b584c2d997892293224b2829c3aa96d890ac8766be316af559c1",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_no_pedestrian --output .runtime-work/c213645/offline-final-stops_no_pedestrian",
+        "exit_code": 0,
+        "log": "cpu-offline-stops_no_pedestrian.log",
+        "log_sha256": "1a5b9f37802cfadf3768325f27a4410327c402c4f0270e29caf807c6f0a60aa0"
+      },
+      "compatibility": {
+        "receipt": "proofs/stops_no_pedestrian/receipt.json",
+        "sha256": "d7f7b3386cf0b92ebbaae1cbde0922b530ae3fe0442350a48925eba41e2c8bfa",
+        "log": "proofs/stops_no_pedestrian/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/stops_no_pedestrian/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final-stops_no_pedestrian-receipt.json",
+        "sha256": "1ff69bf352df4636ed92acdc2af6a9bd9fbc55b82b271ee7e0d22836ab7f3201"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_no_pedestrian --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_no_pedestrian --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-final-stops_no_pedestrian.log",
+        "test_log_sha256": "c48a6d202652355095b81f3b9acdbb53bc7863a044f31afa5cc612f3de717f59",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original driveway, sidewalk, pedestrian and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_no_pedestrian",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2f96b11ca6b5dccbdbadb9afe0febf310db5b767bafecbf42cb3a4cd2e56ec2a",
+        "command": ".venv-cpu/bin/python work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/delivery_probe.py --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_no_pedestrian --attempt .runtime-work/c213645/compat-final-stops_no_pedestrian --saved-root .runtime-work/c213645/saved-final-stops_no_pedestrian --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-stops_no_pedestrian-positive.log",
+        "test_log_sha256": "e1a71f85fa025763a3065693a3411c5232e210df8096634249257dfe1b117ab0",
+        "negative_command": ".venv-cpu/bin/python work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/delivery_probe.py --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_no_pedestrian --attempt .runtime-work/c213645/compat-final-stops_no_pedestrian --saved-root .runtime-work/c213645/saved-final-stops_no_pedestrian --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: driveway-site.json",
+        "negative_log": "delivery-stops_no_pedestrian-missing_source.log",
+        "negative_log_sha256": "8f3e678262c2ffb8a2142cbd4e803cba9af4c5f07412097382781660046a4f11"
+      }
+    },
+    {
+      "case_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian_no_yield",
+      "kind": "delivery",
+      "construction": "cases/stops_pedestrian_no_yield/construction.json",
+      "construction_sha256": "d4f133a6b8f61f822a02418e53db9343cc861b945f4337d029e0b8dc2c1e05e9",
+      "fixture_recipe": "work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/diagnostic-stops_pedestrian_no_yield-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original district, driveway, sidewalk and pedestrian source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "district_access_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-district_access_context.jsonl"
+        },
+        "sidewalk_edge": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-sidewalk_edge.jsonl"
+        },
+        "cycle_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-cycle_speed_history.jsonl"
+        },
+        "edge_distance_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-edge_distance_history.jsonl"
+        },
+        "pedestrian_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-pedestrian_motion.jsonl"
+        },
+        "pedestrian_conflict": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-pedestrian_conflict.jsonl"
+        },
+        "operator_yield": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-operator_yield.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound cycle, edge, pedestrian and yield readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed driveway geometry and cycle/pedestrian route are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "d4f133a6b8f61f822a02418e53db9343cc861b945f4337d029e0b8dc2c1e05e9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian_no_yield --output .runtime-work/c213645/offline-final-stops_pedestrian_no_yield",
+        "exit_code": 0,
+        "log": "cpu-offline-stops_pedestrian_no_yield.log",
+        "log_sha256": "4b31fa299cf0114021586a0bb94747985b24895bdbbc558ef081c4c24e56b108"
+      },
+      "compatibility": {
+        "receipt": "proofs/stops_pedestrian_no_yield/receipt.json",
+        "sha256": "959168bbaf172482d4fa105b9b5bd464a5b256779fb04b02a0e0682469198239",
+        "log": "proofs/stops_pedestrian_no_yield/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/stops_pedestrian_no_yield/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final-stops_pedestrian_no_yield-receipt.json",
+        "sha256": "b869636c7aac8d90afc23dfa114bcf0e39913e9bde4a3f71534f1c9403b76c49"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian_no_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/execution-manifest.json --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian_no_yield --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-final-stops_pedestrian_no_yield.log",
+        "test_log_sha256": "a65e5e1fd2c19d9be2ae68e2fa75ee5b8d55fd470a563a7675f2edfb2324f7c8",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original driveway, sidewalk, pedestrian and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian_no_yield",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2f96b11ca6b5dccbdbadb9afe0febf310db5b767bafecbf42cb3a4cd2e56ec2a",
+        "command": ".venv-cpu/bin/python work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/delivery_probe.py --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian_no_yield --attempt .runtime-work/c213645/compat-final-stops_pedestrian_no_yield --saved-root .runtime-work/c213645/saved-final-stops_pedestrian_no_yield --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-stops_pedestrian_no_yield-positive.log",
+        "test_log_sha256": "30ecab465a7fb49392e9cd7b74c4bf83d4da9f6477de6cb549aedcde021f961a",
+        "negative_command": ".venv-cpu/bin/python work/testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator/delivery_probe.py --case testing__C213645__LVMC-11-40-140__cycle_or_scooter_operator__stops_pedestrian_no_yield --attempt .runtime-work/c213645/compat-final-stops_pedestrian_no_yield --saved-root .runtime-work/c213645/saved-final-stops_pedestrian_no_yield --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: driveway-site.json",
+        "negative_log": "delivery-stops_pedestrian_no_yield-missing_source.log",
+        "negative_log_sha256": "8f3e678262c2ffb8a2142cbd4e803cba9af4c5f07412097382781660046a4f11"
+      }
+    }
+  ]
+}

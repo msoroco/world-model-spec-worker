@@ -1,3 +1,7 @@
+## 2026-11-26 pinned runtime correction pending
+
+Selected configs contain unsupported `physical_completion.criterion: hill_crest_passage`. Pinned `runtime/scenario_pipeline/worker_exchange/native_output.py` rejects that criterion in `assess_physical` after original capture. The package is returned to `partial` and removed from the shared queue until a supported original-motion criterion and current-hash CPU proof refresh pass the exact scoped strict gate. Existing law-specific measurements and original source review must remain separate; a physical engineering proxy cannot decide legal outcome. The earlier strict gate did not exercise this original execution path. No physical or legal acceptance is claimed.
+
 # testing__C104084__NRS-484B-603-1__motor_vehicle_driver
 
 Status: partial exact-case construction. Three planned cases and two comparisons are proposed; no recording or physical acceptance is claimed. The authored OpenDRIVE candidate and lazy route survey have CPU geometry tests, but Native loading and motion remain unverified.

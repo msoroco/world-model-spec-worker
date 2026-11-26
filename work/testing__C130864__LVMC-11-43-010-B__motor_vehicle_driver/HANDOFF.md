@@ -1,3 +1,7 @@
+## 2026-11-26 pinned runtime correction pending
+
+Selected configs contain unsupported `physical_completion.criterion: roundabout_entry_or_observed_wait`. Pinned `runtime/scenario_pipeline/worker_exchange/native_output.py` rejects that criterion in `assess_physical` after original capture. The package is returned to `partial` and removed from the shared queue until a supported original-motion criterion and current-hash CPU proof refresh pass the exact scoped strict gate. Existing law-specific measurements and original source review must remain separate; a physical engineering proxy cannot decide legal outcome. The earlier strict gate did not exercise this original execution path. No physical or legal acceptance is claimed.
+
 # C130864 current delivery handoff (2026-11-25)
 
 Status: `ready`, `delivery_prepared`. The exact scoped gate `.venv-cpu/bin/python worker_check.py --assignment testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver --complete --require-delivery-ready` passed after all new source-bound CPU proofs. Six exact selected cases and five comparisons are listed in `case-plan.json`; the lead can integrate `queue-proposal.json` after independently checking the scoped gate. The selected `execution-manifest.json` SHA256 is `5ae459ace3a18d9153df79ac9fbf7644b6617664277963f6002e906520fa617f`.

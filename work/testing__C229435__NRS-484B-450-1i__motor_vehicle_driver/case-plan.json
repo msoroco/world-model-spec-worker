@@ -1,38 +1,47 @@
 {
-  "assignment_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C229435",
-  "law_id": "NRS-484B-450-1i",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-450-1i",
-      "cell_id": "C229435",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-450-1i",
-      "branch": "Parking near a railroad rail with another vehicle present.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 441,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 50 feet of the nearest rail of a railroad.",
-  "law_source": "NRS 484B.450(1)(i)",
-  "topic_inventory": {
-    "exact-text": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 50 feet of the nearest rail of a railroad."
+  "assignment_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "rail, ego parked position and other vehicle",
+        "view": "overview"
+      },
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "ego approach, stopping and parking action",
+        "view": "approach"
+      },
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "nearest rail and ego footprint reference",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "other vehicle trajectory and conflict context",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
       "branch": "Parking near a railroad rail with another vehicle present.",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_no_exception",
+      "construction_status": "selected_source_deferred",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
+      "kind": "delivery",
+      "measurement": "Closest original vehicle-footprint-to-nearest-rail polyline distance, exact 15.24 m boundary, independent exception evidence; other vehicle presence alone does not establish necessity.",
+      "new_capture_selected": true,
+      "physical_risk": "Railroad tracks may be absent in the source road map; actual rail geometry, vehicle footprint and camera visibility require readback.",
+      "requested_nearest_vehicle_to_rail_m": 14.0,
+      "requested_traffic_conflict_necessity_status": "absent",
       "required_original_packets": [
         "frame_map",
         "vehicle_footprint_and_action",
@@ -40,43 +49,21 @@
         "traffic_conflict_motion",
         "law_officer_device_exception_context",
         "four_camera_video"
-      ],
-      "physical_risk": "Railroad tracks may be absent in the source road map; actual rail geometry, vehicle footprint and camera visibility require readback.",
-      "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_no_exception",
-      "requested_nearest_vehicle_to_rail_m": 14.0,
-      "requested_traffic_conflict_necessity_status": "absent",
-      "measurement": "Closest original vehicle-footprint-to-nearest-rail polyline distance, exact 15.24 m boundary, independent exception evidence; other vehicle presence alone does not establish necessity."
+      ]
     },
     {
       "branch": "Parking near a railroad rail with another vehicle present.",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__boundary_no_exception",
+      "construction_status": "selected_source_deferred",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
-      "required_original_packets": [
-        "frame_map",
-        "vehicle_footprint_and_action",
-        "all_nearby_rail_polylines",
-        "traffic_conflict_motion",
-        "law_officer_device_exception_context",
-        "four_camera_video"
-      ],
+      "kind": "delivery",
+      "measurement": "Closest original vehicle-footprint-to-nearest-rail polyline distance, exact 15.24 m boundary, independent exception evidence; other vehicle presence alone does not establish necessity.",
+      "new_capture_selected": true,
       "physical_risk": "Railroad tracks may be absent in the source road map; actual rail geometry, vehicle footprint and camera visibility require readback.",
-      "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__boundary_no_exception",
       "requested_nearest_vehicle_to_rail_m": 15.24,
       "requested_traffic_conflict_necessity_status": "absent",
-      "measurement": "Closest original vehicle-footprint-to-nearest-rail polyline distance, exact 15.24 m boundary, independent exception evidence; other vehicle presence alone does not establish necessity."
-    },
-    {
-      "branch": "Parking near a railroad rail with another vehicle present.",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction_status": "not_implemented",
       "required_original_packets": [
         "frame_map",
         "vehicle_footprint_and_action",
@@ -84,21 +71,21 @@
         "traffic_conflict_motion",
         "law_officer_device_exception_context",
         "four_camera_video"
-      ],
-      "physical_risk": "Railroad tracks may be absent in the source road map; actual rail geometry, vehicle footprint and camera visibility require readback.",
+      ]
+    },
+    {
+      "branch": "Parking near a railroad rail with another vehicle present.",
       "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__outside_no_exception",
+      "construction_status": "selected_source_deferred",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "measurement": "Closest original vehicle-footprint-to-nearest-rail polyline distance, exact 15.24 m boundary, independent exception evidence; other vehicle presence alone does not establish necessity.",
+      "new_capture_selected": true,
+      "physical_risk": "Railroad tracks may be absent in the source road map; actual rail geometry, vehicle footprint and camera visibility require readback.",
       "requested_nearest_vehicle_to_rail_m": 17.0,
       "requested_traffic_conflict_necessity_status": "absent",
-      "measurement": "Closest original vehicle-footprint-to-nearest-rail polyline distance, exact 15.24 m boundary, independent exception evidence; other vehicle presence alone does not establish necessity."
-    },
-    {
-      "branch": "Parking near a railroad rail with another vehicle present.",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction_status": "not_implemented",
       "required_original_packets": [
         "frame_map",
         "vehicle_footprint_and_action",
@@ -106,21 +93,39 @@
         "traffic_conflict_motion",
         "law_officer_device_exception_context",
         "four_camera_video"
-      ],
-      "physical_risk": "Railroad tracks may be absent in the source road map; actual rail geometry, vehicle footprint and camera visibility require readback.",
+      ]
+    },
+    {
+      "branch": "Parking near a railroad rail with another vehicle present.",
       "case_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_other_vehicle_unresolved",
+      "construction_status": "selected_source_deferred",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "measurement": "Closest original vehicle-footprint-to-nearest-rail polyline distance, exact 15.24 m boundary, independent exception evidence; other vehicle presence alone does not establish necessity.",
+      "new_capture_selected": true,
+      "physical_risk": "Railroad tracks may be absent in the source road map; actual rail geometry, vehicle footprint and camera visibility require readback.",
       "requested_nearest_vehicle_to_rail_m": 14.0,
       "requested_traffic_conflict_necessity_status": "unresolved",
-      "measurement": "Closest original vehicle-footprint-to-nearest-rail polyline distance, exact 15.24 m boundary, independent exception evidence; other vehicle presence alone does not establish necessity."
+      "required_original_packets": [
+        "frame_map",
+        "vehicle_footprint_and_action",
+        "all_nearby_rail_polylines",
+        "traffic_conflict_motion",
+        "law_officer_device_exception_context",
+        "four_camera_video"
+      ]
     }
   ],
+  "cell_id": "C229435",
   "comparisons": [
     {
-      "comparison_id": "fifty_foot_boundary",
       "case_ids": [
         "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_no_exception",
         "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__boundary_no_exception"
       ],
+      "comparison_id": "fifty_foot_boundary",
       "deliberate_differences": [
         "vehicle footprint distance inside versus at 50-foot boundary"
       ],
@@ -128,14 +133,14 @@
         "same railroad rail source, road, parked vehicle and camera plan except named change",
         "same exception conditions except named change"
       ],
-      "status": "planned_unbuilt"
+      "status": "cpu_proven_original_source_pending"
     },
     {
-      "comparison_id": "outside_boundary",
       "case_ids": [
         "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_no_exception",
         "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__outside_no_exception"
       ],
+      "comparison_id": "outside_boundary",
       "deliberate_differences": [
         "vehicle footprint distance inside versus outside 50 feet"
       ],
@@ -143,14 +148,14 @@
         "same railroad rail source, road, parked vehicle and camera plan except named change",
         "same exception conditions except named change"
       ],
-      "status": "planned_unbuilt"
+      "status": "cpu_proven_original_source_pending"
     },
     {
-      "comparison_id": "traffic_conflict_exception",
       "case_ids": [
         "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_no_exception",
         "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_other_vehicle_unresolved"
       ],
+      "comparison_id": "traffic_conflict_exception",
       "deliberate_differences": [
         "other-vehicle traffic-conflict necessity evidence absent versus unresolved"
       ],
@@ -158,10 +163,82 @@
         "same railroad rail source, road, parked vehicle and camera plan except named change",
         "same exception conditions except named change"
       ],
-      "status": "planned_unbuilt"
+      "status": "cpu_proven_original_source_pending"
     }
   ],
-  "observations": [],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-450-1i",
+  "law_source": "NRS 484B.450(1)(i)",
+  "law_text": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 50 feet of the nearest rail of a railroad.",
+  "observations": [
+    {
+      "mandatory": true,
+      "method": "reviewed original railroad carrier, every nearby rail polyline and map geometry",
+      "name": "railroad_site",
+      "source": "original-rail-observations.json"
+    },
+    {
+      "mandatory": true,
+      "method": "original 20 Hz full ego footprint and nearest-rail distance",
+      "name": "vehicle_rail_distance",
+      "source": "original-rail-observations.json"
+    },
+    {
+      "mandatory": true,
+      "method": "original ego stop, stand or park state and 20 Hz motion",
+      "name": "vehicle_parking_action",
+      "source": "original-rail-observations.json"
+    },
+    {
+      "mandatory": true,
+      "method": "original other-vehicle motion plus separate traffic, law, officer and device exception source review",
+      "name": "traffic_and_exceptions",
+      "source": "original-rail-observations.json"
+    }
+  ],
+  "planning_status": "cpu_delivery_prepared_original_source_deferred",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_no_exception",
+        "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__boundary_no_exception",
+        "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__outside_no_exception",
+        "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_other_vehicle_unresolved"
+      ],
+      "evidence_or_gap": "No accepted recording; original railroad identity, all nearby rails, complete vehicle footprint, action and independent exception sources require capture and review.",
+      "requirement": "NRS 484B.450(1)(i) within 50 feet of nearest railroad rail with traffic/law/officer/device exceptions",
+      "source": "inputs/testing__C229435__NRS-484B-450-1i__motor_vehicle_driver/assignment.json",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "No accepted recording in frozen inventory; real railroad rail geometry and vehicle footprint need construction/readback.",
+    "The cell includes another vehicle, but its presence does not prove traffic-conflict necessity."
+  ],
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Parking near a railroad rail with another vehicle present.",
+      "cell_id": "C229435",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-450-1i",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-450-1i",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 441,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C229435__NRS-484B-450-1i__motor_vehicle_driver/assignment.json",
@@ -184,27 +261,15 @@
       "sha256": "d5b7ce2ddb66b5a729478bb174d95c55be665d4c2d6483279c3be98790b0af96"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No accepted recording in frozen inventory; real railroad rail geometry and vehicle footprint need construction/readback.",
-    "The cell includes another vehicle, but its presence does not prove traffic-conflict necessity."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": []
+  "topic_inventory": {
+    "exact-text": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 50 feet of the nearest rail of a railroad."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_rail_proximity_cases_and_tested_geometry",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 441,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Parking near a railroad rail with another vehicle present.",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "A road parking task with another vehicle remains compatible with nearby railroad rails.",
       "required_context": [
         "Add railroad geometry and carrier provenance and locate the ego parking destination near the nearest rail.",
         "Establish both vehicles' geometry, state, motion and purposes without assuming the other vehicle is curbside or that ego double parks.",
@@ -215,7 +280,9 @@
         "Specify both vehicles' geometry, routes, states, motion, purposes and timing.",
         "Supply railroad carrier provenance, rail geometry and the ego parking destination relative to the nearest rail."
       ],
-      "reason": "A road parking task with another vehicle remains compatible with nearby railroad rails."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 441,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

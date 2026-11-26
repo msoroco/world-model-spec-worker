@@ -1,37 +1,28 @@
 {
-  "assignment_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver",
-  "input_sha256": "6ddf38bbbc95b2ba621b36fe588014625097518e05b7eba4f5c3be94d64e1f00",
-  "status": "partial",
-  "readiness_kind": "nearest_rail_geometry_and_cases",
   "applied_update": 0,
+  "assignment_id": "testing__C229435__NRS-484B-450-1i__motor_vehicle_driver",
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --assignment testing__C229435__NRS-484B-450-1i__motor_vehicle_driver --case testing__C229435__NRS-484B-450-1i__motor_vehicle_driver__inside_no_exception --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+  "input_sha256": "6ddf38bbbc95b2ba621b36fe588014625097518e05b7eba4f5c3be94d64e1f00",
+  "readiness_kind": "delivery_prepared",
+  "reason": "CPU delivery package and exact selected proofs pass; original railroad, parking, exception and legal review remain for first GPU execution.",
+  "remaining_gpu_checks": [
+    "Operator-reviewed original railroad carrier and every nearby rail polyline, full vehicle footprint, ego/other routes, independent exception sources and four camera poses before Native capture",
+    "Actual CARLA same-tick parking action, both vehicle trajectories and four-view video pixels",
+    "Independent original-source rail distance and exception/comparison audit, including boundary interpretation"
+  ],
+  "status": "ready",
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "command": "PYTHONPATH=work/testing__C229435__NRS-484B-450-1i__motor_vehicle_driver .venv-cpu/bin/python -m unittest discover -s work/testing__C229435__NRS-484B-450-1i__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "73a0ce007118590b8399cf1f5cff4e7092ff92a0aad84917b351a325d24c0ca7"
+      "log": "cpu-final-tests.log",
+      "sha256": "80e89c96b301960d5f34552a71991fd2d076c628b16238ad39624a463db5c7a2"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229435__NRS-484B-450-1i__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python work/testing__C229435__NRS-484B-450-1i__motor_vehicle_driver/validate_selected.py",
       "exit_code": 0,
-      "log": "unittest.log",
-      "sha256": "b1691d79e8edddd5440857941b740cad179a2702c0acb3bab91e6b6d24a628d9"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229435__NRS-484B-450-1i__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "static.log",
-      "sha256": "c5ae601fd9e60e9fb7784b8804178ad14b91f8e989dc12d17746eaf92f5c5a55"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229435__NRS-484B-450-1i__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "log": "cpu-current-validators.log",
+      "sha256": "c56c7cdcdb83ea3ea21e31bea3392affffc2e3827a3760267fdb71e5b5ce97e9"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Four planned controlled nearest-rail cases, three isolated comparisons and a five-test source-bound vehicle-footprint-to-rail geometry measurement are added. Physical railroad construction, original source, exception review, saved finalization, compatibility and delivery audits remain CPU work; strict gate truthfully fails on partial status."
+  ]
 }

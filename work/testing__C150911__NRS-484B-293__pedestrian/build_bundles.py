@@ -61,8 +61,11 @@ def build():
                 "fov_deg": 75, "pose_strategy": "reviewed original crossing and right-half view"}
                 for name, width, height in (("overview", 1920, 1080), ("approach", 1280, 720),
                     ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))],
-            "physical_completion": {"criterion": "observed_crosswalk_passage",
-                "completion_goal_method": "900 original source-bound walker frames and full crossing station"},
+            "physical_completion": {"criterion": "travel_progress",
+                "motion_source": "trace.jsonl", "position_key": "position_m",
+                "minimum_progress_m": 1.0, "minimum_samples": 3,
+                "engineering_tolerances_not_legal": True,
+                "completion_goal_method": "Original walker displacement is an engineering motion check; full crosswalk passage, right-half position and practicability require independent source-bound review"},
             "case": {"case_id": cid, "physical_target": "direction-relative crosswalk passage",
                      "recording_description": description}}
         spec = {"case_id": cid, "direction": case["direction"],

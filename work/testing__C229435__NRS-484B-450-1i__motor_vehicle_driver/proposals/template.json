@@ -1,0 +1,54 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1i",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "nearest_vehicle_to_rail_m",
+      "range_or_domain": "14.0, 15.24 or 17.0 m"
+    },
+    {
+      "kind": "world_setup",
+      "name": "traffic_conflict_necessity",
+      "range_or_domain": "absent or unresolved"
+    }
+  ],
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 50 feet of the nearest rail of a railroad.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "condition": "Ego stops, stands or parks near the nearest railroad rail.",
+      "numeric_conditions": [
+        {
+          "operator": "<",
+          "unit": "m",
+          "value": 15.24,
+          "variable": "nearest_vehicle_to_rail_m"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "description": "Traffic-conflict necessity and law, officer or device direction require independent original source review; nearby traffic alone proves no exception.",
+        "numeric_conditions": [],
+        "source_clause": "except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Traffic-conflict necessity and law, officer or device direction require independent original source review; nearby traffic alone proves no exception.",
+        "phrase": "necessary to avoid conflict with other traffic"
+      }
+    ],
+    "obligation": {
+      "description": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 50 feet of the nearest rail of a railroad.",
+      "numeric_conditions": [],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Observe original approach and parked footprint with other vehicle at 20 Hz.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-450-1i@motor_vehicle_driver"
+}

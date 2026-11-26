@@ -35,7 +35,13 @@ def _point_segment_distance(p, a, b):
 def _segments_intersect(a, b, c, d):
     def cross(p, q, r):
         return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
-    return cross(a, b, c) * cross(a, b, d) <= 0 and cross(c, d, a) * cross(c, d, b) <= 0
+    signs = (cross(a, b, c), cross(a, b, d), cross(c, d, a), cross(c, d, b))
+    if all(abs(value) <= 1e-12 for value in signs):
+        return (max(min(a[0], b[0]), min(c[0], d[0])) <=
+                min(max(a[0], b[0]), max(c[0], d[0])) and
+                max(min(a[1], b[1]), min(c[1], d[1])) <=
+                min(max(a[1], b[1]), max(c[1], d[1])))
+    return signs[0] * signs[1] <= 0 and signs[2] * signs[3] <= 0
 
 
 def _segment_distance(a, b, c, d):
