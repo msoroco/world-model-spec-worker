@@ -1,0 +1,1046 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__semantic_baseline",
+      "rationale": "Shared source-dependent setup; no additional recording.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original vehicle position, body and speed sealed to world ticks",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original signal, orientation, visibility, recipient and release sealed to world ticks",
+            "name": "flagger_signal",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four synchronized original camera images",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Independently reviewed original source finding for flagger_authorization",
+            "name": "flagger_authorization",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for traffic_control_role",
+            "name": "traffic_control_role",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for zone_designation",
+            "name": "zone_designation",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for construction_marking",
+            "name": "construction_marking",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for signal_content",
+            "name": "signal_content",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for vehicle_motion",
+            "name": "vehicle_motion",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture is not a reviewed zone or actual Native motion."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "authorized flagger",
+        "serving in a traffic control capacity",
+        "designated as a temporary traffic control zone",
+        "clearly marked area of highway construction or maintenance",
+        "any signal",
+        "fail or refuse to comply"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "driver_response": {
+          "kind": "controller",
+          "value": "continue"
+        },
+        "flagger_authorization": {
+          "kind": "world_setup",
+          "value": "authorized"
+        },
+        "marked_construction": {
+          "kind": "world_setup",
+          "value": "not_marked_construction"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "original C230235 source packet required"
+        },
+        "signal_content": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "zone_designation": {
+          "kind": "world_setup",
+          "value": "designated"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
+      "deliberate_differences": [
+        "driver_response"
+      ],
+      "paired_probe_id": "flagger_zone",
+      "probe": {
+        "comparison_or_standard": "case-plan.json",
+        "primary_variable": "driver_response",
+        "target_value_or_branch": "designated_stop_driver_continues"
+      },
+      "rationale": "Controlled original-source flagger, zone, signal and response contrast.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original vehicle position, body and speed sealed to world ticks",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original signal, orientation, visibility, recipient and release sealed to world ticks",
+            "name": "flagger_signal",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four synchronized original camera images",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Independently reviewed original source finding for flagger_authorization",
+            "name": "flagger_authorization",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for traffic_control_role",
+            "name": "traffic_control_role",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for zone_designation",
+            "name": "zone_designation",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for construction_marking",
+            "name": "construction_marking",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for signal_content",
+            "name": "signal_content",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for vehicle_motion",
+            "name": "vehicle_motion",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture is not a reviewed zone or actual Native motion."
+        ]
+      },
+      "target_law_id": "NRS-484B-330-1",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "authorized flagger",
+        "serving in a traffic control capacity",
+        "designated as a temporary traffic control zone",
+        "clearly marked area of highway construction or maintenance",
+        "any signal",
+        "fail or refuse to comply"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "driver_response": {
+          "kind": "controller",
+          "value": "continue"
+        },
+        "flagger_authorization": {
+          "kind": "world_setup",
+          "value": "authorized"
+        },
+        "marked_construction": {
+          "kind": "world_setup",
+          "value": "not_marked_construction"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "original C230235 source packet required"
+        },
+        "signal_content": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "zone_designation": {
+          "kind": "world_setup",
+          "value": "designated"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops",
+      "deliberate_differences": [
+        "driver_response"
+      ],
+      "paired_probe_id": "flagger_zone",
+      "probe": {
+        "comparison_or_standard": "case-plan.json",
+        "primary_variable": "driver_response",
+        "target_value_or_branch": "designated_stop_driver_stops"
+      },
+      "rationale": "Controlled original-source flagger, zone, signal and response contrast.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original vehicle position, body and speed sealed to world ticks",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original signal, orientation, visibility, recipient and release sealed to world ticks",
+            "name": "flagger_signal",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four synchronized original camera images",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Independently reviewed original source finding for flagger_authorization",
+            "name": "flagger_authorization",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for traffic_control_role",
+            "name": "traffic_control_role",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for zone_designation",
+            "name": "zone_designation",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for construction_marking",
+            "name": "construction_marking",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for signal_content",
+            "name": "signal_content",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for vehicle_motion",
+            "name": "vehicle_motion",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture is not a reviewed zone or actual Native motion."
+        ]
+      },
+      "target_law_id": "NRS-484B-330-1",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "authorized flagger",
+        "serving in a traffic control capacity",
+        "designated as a temporary traffic control zone",
+        "clearly marked area of highway construction or maintenance",
+        "any signal",
+        "fail or refuse to comply"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "driver_response": {
+          "kind": "controller",
+          "value": "stop"
+        },
+        "flagger_authorization": {
+          "kind": "world_setup",
+          "value": "authorized"
+        },
+        "marked_construction": {
+          "kind": "world_setup",
+          "value": "not_marked_construction"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "original C230235 source packet required"
+        },
+        "signal_content": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "zone_designation": {
+          "kind": "world_setup",
+          "value": "designated"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues",
+      "deliberate_differences": [
+        "zone_designation"
+      ],
+      "paired_probe_id": "flagger_zone",
+      "probe": {
+        "comparison_or_standard": "case-plan.json",
+        "primary_variable": "zone_designation",
+        "target_value_or_branch": "undesignated_stop_driver_continues"
+      },
+      "rationale": "Controlled original-source flagger, zone, signal and response contrast.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original vehicle position, body and speed sealed to world ticks",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original signal, orientation, visibility, recipient and release sealed to world ticks",
+            "name": "flagger_signal",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four synchronized original camera images",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Independently reviewed original source finding for flagger_authorization",
+            "name": "flagger_authorization",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for traffic_control_role",
+            "name": "traffic_control_role",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for zone_designation",
+            "name": "zone_designation",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for construction_marking",
+            "name": "construction_marking",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for signal_content",
+            "name": "signal_content",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for vehicle_motion",
+            "name": "vehicle_motion",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture is not a reviewed zone or actual Native motion."
+        ]
+      },
+      "target_law_id": "NRS-484B-330-1",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "authorized flagger",
+        "serving in a traffic control capacity",
+        "designated as a temporary traffic control zone",
+        "clearly marked area of highway construction or maintenance",
+        "any signal",
+        "fail or refuse to comply"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "driver_response": {
+          "kind": "controller",
+          "value": "continue"
+        },
+        "flagger_authorization": {
+          "kind": "world_setup",
+          "value": "authorized"
+        },
+        "marked_construction": {
+          "kind": "world_setup",
+          "value": "not_marked_construction"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "original C230235 source packet required"
+        },
+        "signal_content": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "zone_designation": {
+          "kind": "world_setup",
+          "value": "not_designated"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues",
+      "deliberate_differences": [
+        "flagger_authorization"
+      ],
+      "paired_probe_id": "flagger_zone",
+      "probe": {
+        "comparison_or_standard": "case-plan.json",
+        "primary_variable": "flagger_authorization",
+        "target_value_or_branch": "unauthorized_stop_driver_continues"
+      },
+      "rationale": "Controlled original-source flagger, zone, signal and response contrast.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original vehicle position, body and speed sealed to world ticks",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original signal, orientation, visibility, recipient and release sealed to world ticks",
+            "name": "flagger_signal",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four synchronized original camera images",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Independently reviewed original source finding for flagger_authorization",
+            "name": "flagger_authorization",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for traffic_control_role",
+            "name": "traffic_control_role",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for zone_designation",
+            "name": "zone_designation",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for construction_marking",
+            "name": "construction_marking",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for signal_content",
+            "name": "signal_content",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for vehicle_motion",
+            "name": "vehicle_motion",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture is not a reviewed zone or actual Native motion."
+        ]
+      },
+      "target_law_id": "NRS-484B-330-1",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "authorized flagger",
+        "serving in a traffic control capacity",
+        "designated as a temporary traffic control zone",
+        "clearly marked area of highway construction or maintenance",
+        "any signal",
+        "fail or refuse to comply"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "driver_response": {
+          "kind": "controller",
+          "value": "continue"
+        },
+        "flagger_authorization": {
+          "kind": "world_setup",
+          "value": "not_authorized"
+        },
+        "marked_construction": {
+          "kind": "world_setup",
+          "value": "not_marked_construction"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "original C230235 source packet required"
+        },
+        "signal_content": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "zone_designation": {
+          "kind": "world_setup",
+          "value": "designated"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues",
+      "deliberate_differences": [
+        "signal_content"
+      ],
+      "paired_probe_id": "flagger_zone",
+      "probe": {
+        "comparison_or_standard": "case-plan.json",
+        "primary_variable": "signal_content",
+        "target_value_or_branch": "designated_proceed_driver_continues"
+      },
+      "rationale": "Controlled original-source flagger, zone, signal and response contrast.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original vehicle position, body and speed sealed to world ticks",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original signal, orientation, visibility, recipient and release sealed to world ticks",
+            "name": "flagger_signal",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four synchronized original camera images",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Independently reviewed original source finding for flagger_authorization",
+            "name": "flagger_authorization",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for traffic_control_role",
+            "name": "traffic_control_role",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for zone_designation",
+            "name": "zone_designation",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for construction_marking",
+            "name": "construction_marking",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for signal_content",
+            "name": "signal_content",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for vehicle_motion",
+            "name": "vehicle_motion",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture is not a reviewed zone or actual Native motion."
+        ]
+      },
+      "target_law_id": "NRS-484B-330-1",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "authorized flagger",
+        "serving in a traffic control capacity",
+        "designated as a temporary traffic control zone",
+        "clearly marked area of highway construction or maintenance",
+        "any signal",
+        "fail or refuse to comply"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "driver_response": {
+          "kind": "controller",
+          "value": "continue"
+        },
+        "flagger_authorization": {
+          "kind": "world_setup",
+          "value": "authorized"
+        },
+        "marked_construction": {
+          "kind": "world_setup",
+          "value": "not_marked_construction"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "original C230235 source packet required"
+        },
+        "signal_content": {
+          "kind": "world_setup",
+          "value": "proceed"
+        },
+        "zone_designation": {
+          "kind": "world_setup",
+          "value": "designated"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_continues",
+      "deliberate_differences": [
+        "zone_designation",
+        "marked_construction"
+      ],
+      "paired_probe_id": "flagger_zone",
+      "probe": {
+        "comparison_or_standard": "case-plan.json",
+        "primary_variable": "zone_designation",
+        "target_value_or_branch": "marked_construction_stop_driver_continues"
+      },
+      "rationale": "Controlled original-source flagger, zone, signal and response contrast.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original vehicle position, body and speed sealed to world ticks",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original signal, orientation, visibility, recipient and release sealed to world ticks",
+            "name": "flagger_signal",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four synchronized original camera images",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Independently reviewed original source finding for flagger_authorization",
+            "name": "flagger_authorization",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for traffic_control_role",
+            "name": "traffic_control_role",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for zone_designation",
+            "name": "zone_designation",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for construction_marking",
+            "name": "construction_marking",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for signal_content",
+            "name": "signal_content",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for vehicle_motion",
+            "name": "vehicle_motion",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture is not a reviewed zone or actual Native motion."
+        ]
+      },
+      "target_law_id": "NRS-484B-330-1",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "authorized flagger",
+        "serving in a traffic control capacity",
+        "designated as a temporary traffic control zone",
+        "clearly marked area of highway construction or maintenance",
+        "any signal",
+        "fail or refuse to comply"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "driver_response": {
+          "kind": "controller",
+          "value": "continue"
+        },
+        "flagger_authorization": {
+          "kind": "world_setup",
+          "value": "authorized"
+        },
+        "marked_construction": {
+          "kind": "world_setup",
+          "value": "marked_construction"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "original C230235 source packet required"
+        },
+        "signal_content": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "zone_designation": {
+          "kind": "world_setup",
+          "value": "not_designated"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_stops",
+      "deliberate_differences": [
+        "driver_response",
+        "zone_designation",
+        "marked_construction"
+      ],
+      "paired_probe_id": "flagger_zone",
+      "probe": {
+        "comparison_or_standard": "case-plan.json",
+        "primary_variable": "driver_response",
+        "target_value_or_branch": "marked_construction_stop_driver_stops"
+      },
+      "rationale": "Controlled original-source flagger, zone, signal and response contrast.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original vehicle position, body and speed sealed to world ticks",
+            "name": "original_vehicle_motion",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Original signal, orientation, visibility, recipient and release sealed to world ticks",
+            "name": "flagger_signal",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          },
+          {
+            "method": "Four synchronized original camera images",
+            "name": "camera_pixels",
+            "reference_frame": "reviewed C230235 CARLA world frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original world ticks",
+            "uncertainty": "original realization and visibility await Native review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "Independently reviewed original source finding for flagger_authorization",
+            "name": "flagger_authorization",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for traffic_control_role",
+            "name": "traffic_control_role",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for zone_designation",
+            "name": "zone_designation",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for construction_marking",
+            "name": "construction_marking",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for signal_content",
+            "name": "signal_content",
+            "unit": "structured"
+          },
+          {
+            "method": "Independently reviewed original source finding for vehicle_motion",
+            "name": "vehicle_motion",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture is not a reviewed zone or actual Native motion."
+        ]
+      },
+      "target_law_id": "NRS-484B-330-1",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "authorized flagger",
+        "serving in a traffic control capacity",
+        "designated as a temporary traffic control zone",
+        "clearly marked area of highway construction or maintenance",
+        "any signal",
+        "fail or refuse to comply"
+      ],
+      "variable_assignments": {
+        "capture_profile": {
+          "kind": "world_setup",
+          "value": "four original cameras, 20 Hz, 900 frames"
+        },
+        "driver_response": {
+          "kind": "controller",
+          "value": "stop"
+        },
+        "flagger_authorization": {
+          "kind": "world_setup",
+          "value": "authorized"
+        },
+        "marked_construction": {
+          "kind": "world_setup",
+          "value": "marked_construction"
+        },
+        "reviewed_site": {
+          "kind": "world_setup",
+          "value": "original C230235 source packet required"
+        },
+        "signal_content": {
+          "kind": "world_setup",
+          "value": "stop"
+        },
+        "zone_designation": {
+          "kind": "world_setup",
+          "value": "not_designated"
+        }
+      }
+    }
+  ],
+  "cell_id": "C230235",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Authorization requires an independently reviewed source.",
+          "phrase": "authorized flagger"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed source observation and feasible engineering range"
+      ],
+      "rationale": "No engineering value is a statutory cutoff.",
+      "status": "incomplete",
+      "sweep_id": "pending-1",
+      "target_law_id": "NRS-484B-330-1"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Original role and timing require source review.",
+          "phrase": "serving in a traffic control capacity"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed source observation and feasible engineering range"
+      ],
+      "rationale": "No engineering value is a statutory cutoff.",
+      "status": "incomplete",
+      "sweep_id": "pending-2",
+      "target_law_id": "NRS-484B-330-1"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Designation and boundaries are separate from visual markings.",
+          "phrase": "designated as a temporary traffic control zone"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed source observation and feasible engineering range"
+      ],
+      "rationale": "No engineering value is a statutory cutoff.",
+      "status": "incomplete",
+      "sweep_id": "pending-3",
+      "target_law_id": "NRS-484B-330-1"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Construction or maintenance and clear marking need separate original sources.",
+          "phrase": "clearly marked area of highway construction or maintenance"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed source observation and feasible engineering range"
+      ],
+      "rationale": "No engineering value is a statutory cutoff.",
+      "status": "incomplete",
+      "sweep_id": "pending-4",
+      "target_law_id": "NRS-484B-330-1"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Original content, orientation, visibility and recipient remain source-bound.",
+          "phrase": "any signal"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed source observation and feasible engineering range"
+      ],
+      "rationale": "No engineering value is a statutory cutoff.",
+      "status": "incomplete",
+      "sweep_id": "pending-5",
+      "target_law_id": "NRS-484B-330-1"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Observed vehicle motion does not itself decide this legal judgment.",
+          "phrase": "fail or refuse to comply"
+        }
+      ],
+      "missing_inputs": [
+        "Reviewed source observation and feasible engineering range"
+      ],
+      "rationale": "No engineering value is a statutory cutoff.",
+      "status": "incomplete",
+      "sweep_id": "pending-6",
+      "target_law_id": "NRS-484B-330-1"
+    }
+  ],
+  "sweeps_expanded": false
+}

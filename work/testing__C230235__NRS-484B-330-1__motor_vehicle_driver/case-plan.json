@@ -74,10 +74,31 @@
       "construction": "flagger_zone.py:construct",
       "measurement": "flagger_zone.py:measure_original",
       "physical_risk": "Authorized flagger, official zone designation, applicable visible signal and intended recipient cannot be inferred from appearance; require independent authoritative sources and original capture."
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_continues",
+      "target_law_id": "NRS-484B-330-1",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "flagger_zone.py:construct",
+      "measurement": "flagger_zone.py:measure_original",
+      "physical_risk": "Clearly marked highway construction or maintenance requires independently reviewed marking, construction/maintenance, flagger authority, signal and original capture sources."
+    },
+    {
+      "case_id": "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_stops",
+      "target_law_id": "NRS-484B-330-1",
+      "case_kind": "physical_capture_probe",
+      "capture_frames": 900,
+      "fps": 20,
+      "construction": "flagger_zone.py:construct",
+      "measurement": "flagger_zone.py:measure_original",
+      "physical_risk": "Clearly marked highway construction or maintenance requires independently reviewed marking, construction/maintenance, flagger authority, signal and original capture sources."
     }
   ],
   "comparisons": [
     {
+      "comparison_id": "flagger_response",
       "case_ids": [
         "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
         "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_stops"
@@ -86,6 +107,7 @@
       "fixed_conditions": "Same identified driver, vehicle, flagger, road/zone geometry, time window and source format; one condition changed."
     },
     {
+      "comparison_id": "zone_designation",
       "case_ids": [
         "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
         "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__undesignated_stop_driver_continues"
@@ -94,6 +116,7 @@
       "fixed_conditions": "Same identified driver, vehicle, flagger, road/zone geometry, time window and source format; one condition changed."
     },
     {
+      "comparison_id": "flagger_authorization",
       "case_ids": [
         "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
         "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__unauthorized_stop_driver_continues"
@@ -102,16 +125,27 @@
       "fixed_conditions": "Same identified driver, vehicle, flagger, road/zone geometry, time window and source format; one condition changed."
     },
     {
+      "comparison_id": "signal_content",
       "case_ids": [
         "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_stop_driver_continues",
         "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__designated_proceed_driver_continues"
       ],
       "deliberate_differences": "proceed rather than stop signal",
       "fixed_conditions": "Same identified driver, vehicle, flagger, road/zone geometry, time window and source format; one condition changed."
+    },
+    {
+      "comparison_id": "marked_construction_response",
+      "case_ids": [
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_continues",
+        "testing__C230235__NRS-484B-330-1__motor_vehicle_driver__marked_construction_stop_driver_stops"
+      ],
+      "deliberate_differences": "driver stops versus continues within clearly marked highway construction or maintenance",
+      "fixed_conditions": "Same identified driver, vehicle, flagger, marked construction area, road geometry, time window and source format; only response changes."
     }
   ],
   "observations": [
-    "Original 900-frame driver/vehicle/flagger identities, zone designation and boundaries, signal content/orientation/visibility/recipient, release time, and physical vehicle speed/position are separately source-bound."
+    "Original 900-frame driver/vehicle/flagger identities, zone designation and boundaries, signal content/orientation/visibility/recipient, release time, and physical vehicle speed/position are separately source-bound.",
+    "Clearly marked highway construction or maintenance is a separate statutory alternative; construction/maintenance activity and visible marking require distinct reviewed sources from zone designation."
   ],
   "sources": [
     {
@@ -137,9 +171,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No accepted exact recording or original capture has been established.",
-    "The designated-zone alternative is kept separate from clearly marked construction/maintenance; failure or refusal remains uninterpreted.",
-    "Canonical offline/compatibility, semantic proposals, saved-only delivery and independent audits remain."
+    "Original reviewed site, map, construction/maintenance and marking evidence, flagger authorization, signal and 900-frame capture remain absent; synthetic CPU proofs are diagnostic only."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",

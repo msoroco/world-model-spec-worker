@@ -311,3 +311,15 @@ The current CPU preflight, isolated source-bound permission trial, full 59-test 
 - `cpu-nov26-owner-tests.log` SHA-256 `b4b1b7b8a080fd231de6b10536f7c839ba4f43d7819e3ba4a2c187b3f87907ef`: exit 0.
 - `cpu-nov26-owner-components.log` SHA-256 `c921fc22b7f407d596d4b8ca525f215e6eb56ec3b2a24919b3c8bd746d983e36`: exit 0.
 - `cpu-nov26-owner-strict.log` SHA-256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`: exit 1.
+
+## 2026-11-26 exact permission and strict recheck
+
+The current preflight, isolated permission-aware trial, 59-test assignment suite and scoped complete check pass. The unmodified pinned semantic proof exits 1 at `batch_pipeline/validation.py:220` with `Missing plain-rule attempt pair: NRS-484B-307-12a@bus_driver`. The exact scoped strict check exits 1 because the source-grounded result remains partial. No selected boundary probe was relabelled as a violation. Frozen inputs still lack the reviewed public-highway and official green-arrow device source packet, original Native bus motion and original-pixel human review. The worker-only permission validator repair remains a tested proposal for the runtime owner.
+
+- `cpu-nov26-final-preflight.log` SHA-256 `9f37e59b34ec4a6bff3d28379cea5d91a9ea2fe1c21362aa48802c71c06f6b64`; exit 0.
+- `cpu-nov26-final-permission-trial.log` SHA-256 `7e3ec2a048e7fcdc53e71dfcb66fab6fbd425d9302a01373d68a1b338a1c5212`; exit 0.
+- `cpu-nov26-final-semantic-gap.log` SHA-256 `c92c1270e50be22e63a94d5e3d7215aba0224557c1d6d01b2dd842b562c6cb51`; exit 1.
+- `cpu-nov26-final-tests.log` SHA-256 `4adef42f29cb6c172aa64eb50d433d52fd68abfafafc522c835d705793cc9307`; exit 0.
+- `cpu-nov26-final-static.log` SHA-256 `630978e272fdacb427c5a3e13d74d7ee08e295b9fb5c5ae36a6d8792d51d7c16`; exit 0.
+- `cpu-nov26-final-strict.log` SHA-256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`; exit 1.
+- `result.json` SHA-256 `f9a61c9be2d3d9e87dc5767069fb47678ba42d8695eb620f6d05e772293a32b8`.

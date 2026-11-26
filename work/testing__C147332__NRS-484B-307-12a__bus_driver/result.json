@@ -2,7 +2,7 @@
   "assignment_id": "testing__C147332__NRS-484B-307-12a__bus_driver",
   "input_sha256": "11969d5de99296f1e4e239576445e661a136c5fab42bae5386de6ad7ad38c0ae",
   "status": "partial",
-  "readiness_kind": "selected_cpu_components_proven_permission_semantic_runtime_contract_and_original_source_pending",
+  "readiness_kind": "selected_cpu_proven_permission_semantic_runtime_contract_and_original_source_pending",
   "applied_update": 0,
   "tests": [
     {
@@ -1366,12 +1366,48 @@
       "exit_code": 1,
       "log": "cpu-nov26-owner-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-nov26-final-preflight.log",
+      "sha256": "9f37e59b34ec4a6bff3d28379cea5d91a9ea2fe1c21362aa48802c71c06f6b64"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/permission_runtime_trial.py",
+      "exit_code": 0,
+      "log": "cpu-nov26-final-permission-trial.log",
+      "sha256": "7e3ec2a048e7fcdc53e71dfcb66fab6fbd425d9302a01373d68a1b338a1c5212"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C147332__NRS-484B-307-12a__bus_driver/prove_semantic.py",
+      "exit_code": 1,
+      "log": "cpu-nov26-final-semantic-gap.log",
+      "sha256": "c92c1270e50be22e63a94d5e3d7215aba0224557c1d6d01b2dd842b562c6cb51"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C147332__NRS-484B-307-12a__bus_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov26-final-tests.log",
+      "sha256": "4adef42f29cb6c172aa64eb50d433d52fd68abfafafc522c835d705793cc9307"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C147332__NRS-484B-307-12a__bus_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov26-final-static.log",
+      "sha256": "630978e272fdacb427c5a3e13d74d7ee08e295b9fb5c5ae36a6d8792d51d7c16"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C147332__NRS-484B-307-12a__bus_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov26-final-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "The current pinned semantic validator requires compliant/violating attempts for this permission-only clause, while the exact 12(a) source supplies no violating act. Four exact cases retain their bound CPU proofs; current preflight, permission-specific isolated trial, 59 tests and readiness components pass. The exact strict gate rejects the truthful partial status. Reviewed original highway/device evidence and Native motion/pixel observations remain unverified.",
+  "reason": "Four source-gated permission boundary probes and two comparisons have current CPU construction and receipts. Pinned semantic coverage unconditionally requires compliant and violating attempts for a plain rule, but exact NRS 484B.307(12)(a) grants permission only. The frozen inputs do not support calling standing under green or adjacent dark-lane travel a 12(a) violation. An isolated source-bound permission trial passes, but unmodified pinned semantic exits 1. Reviewed original public-highway/device sources and Native bus motion/pixel review also remain absent; strict must remain partial.",
   "historical_failed_checks": [
     {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C147332__NRS-484B-307-12a__bus_driver --complete --require-delivery-ready",

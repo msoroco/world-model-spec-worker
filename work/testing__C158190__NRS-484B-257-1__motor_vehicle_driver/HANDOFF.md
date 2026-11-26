@@ -17,7 +17,7 @@ Controlled comparisons: `slow_vs_stop` changes only ego response; `through_hazar
 
 `runner.py`, `yield_scene_construction.py` and `native_capture.py` implement source-sealed selected construction, 900 frames at 20 Hz, four RGB cameras, readback, source custody and world restoration. `native_output_bridge.py` publishes pinned Core inputs. `saved_finalizer.py`, `through_motion_measurement.py` and `physical_completion.py` require complete original motion, source hashes, 900 frames and camera decode; they emit measurements and engineering status without legal acceptance. `delivery_audit.py` independently checks all three original case packets and two comparison pairs; `delivery_acceptance.py` rejects diagnostic evidence as original delivery. `gpu-queue-proposal.json` has three ordered exact-case commands and two comparison commands; it is a proposal, not dispatched.
 
-`execution-manifest.json` binds three current constructions, three exact measurement contracts, diagnostic recipes, offline receipts, positive/negative compatibility receipts, recorded-only processing, synthetic physical outcome and lifecycle fixtures, and delivery positive/negative CPU checks. The canonical semantic chain has eight stages and three selected cases. All fixtures and their nine-frame video are explicitly synthetic; no fixture establishes original motion, physical acceptance or statutory compliance.
+`execution-manifest.json` binds three current constructions, three exact measurement contracts, diagnostic recipes, offline receipts, positive/negative compatibility receipts, recorded-only processing, synthetic physical outcome and lifecycle fixtures, and delivery positive/negative CPU checks. The canonical semantic chain has eight stages and three selected cases. All 23 queue commands pass shell syntax and exact ID checks; pinned queue validation reaches only the lead-owned missing local integration proof. All fixtures and their nine-frame video are explicitly synthetic; no fixture establishes original motion, physical acceptance or statutory compliance.
 
 | Check | Count | Result |
 | --- | ---: | --- |
@@ -39,12 +39,12 @@ Controlled comparisons: `slow_vs_stop` changes only ego response; `through_hazar
 
 | File | SHA256 |
 | --- | --- |
-| `case-plan.json` | `aaf3189a8a9951226af12d619f7f4a99488df0f6fad63d7182e395f7744fb02a` |
-| `execution-manifest.json` | `31f2d00eef38c9ffb3365347281c25ed9bc0c9fadf73aa1ee25d05053d850d9b` |
-| `gpu-queue-proposal.json` | `d3bb19692c2e3f943a44cf52ab6d09eb3653c58d6ccc9fb3911ca52de322a695` |
+| `case-plan.json` | `a32e4e40cddbc0b5beeb3683427ba0c895b74165a47421ef37c5add1dd98fabc` |
+| `execution-manifest.json` | `47144b08417e91d752e3cef49af1956832a44b80a6c45da76be05135f3eb63f7` |
+| `gpu-queue-proposal.json` | `b8e1d9b832dafe8ab8550d5b566c96e6dd2010f3693d14f5cc7c441860ad3f0d` |
 | `proposals/semantic-index.json` | `d5c3b7d48368b34781ce2f36939adfc0ec52175700b6dcde1263e7a4400a2769` |
-| `result.json` | `2a864b0c41afe67655475bc76d0e2b720ef17a8b88025c91dca5618609507eee` |
-| `unittest.log` | `144b5eb0158af7e641b57cce1edac7e7e24a19c653b70fb390c9cb0f9b488d98` |
+| `result.json` | `fb65b43074fdfd6d858f7820704b7d5cce7f7c0649e01ab23de7b24c3d2d192b` |
+| `unittest.log` | `cbbb4bd006b5139e227ad211d798b8a386f6bb08ff2ddc62fb61f4e1a9d095b1` |
 | `cpu-semantic.log` | `787e1ff248118d9e6b61b94b734285b79c82cec275bf5809913fb9b5ca370d65` |
 | `source-audit.log` | `36dc781879cb0fbeb1dfa590e2264e96eb8840fdb96b20f6bf5abadb65eb80fe` |
 

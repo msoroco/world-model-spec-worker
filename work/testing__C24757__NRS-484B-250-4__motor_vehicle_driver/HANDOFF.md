@@ -1,25 +1,29 @@
-# C24757 inoperative signal checkpoint
+# C24757 inoperative-signal delivery handoff
 
-Status: partial. Exact scoped strict gate exits 1 because this result remains partial.
+Status: ready for exact CPU delivery. The assignment-scoped strict gate passed with exit 0; original CARLA and legal review remain pending.
 
-## Constructed CPU scope
+## Exact source-gated construction
 
-`inoperative_signal.py` source-gates installed, uncovered, wholly inoperative governing vehicular heads at every inventoried entrance. It constructs an occluder and distinct ego/other vehicle routes, with stop/entry and other-history control. Its 900-frame original finalizer verifies frame/time/source joins, complete pre-entry ego stop, and other prior-stop or intersection occupancy; yielding and caution remain unresolved judgments.
+Six selected cases and five controlled comparisons cover complete signal-head inoperability at blind-intersection entry, statutory stop line/crosswalk/nearest-view hierarchy, prior-stopped or occupied or clear interacting vehicles, and measured yield versus enter sequence. A reviewed site packet must bind the original map, official installation/governance, every entrance and governing head, physical occluder and sightline, stop reference, routes and actor identities. The Native operator must read back every governing head, both vehicle histories, conflict-zone clearance, and occluder presence. Four original cameras and 900 synchronized 20 Hz frames are required. Cautious proceeding has no invented numeric legal cutoff.
 
-Six exact cases and five comparisons in `case-plan.json` cover stop-line/crosswalk/viewpoint hierarchy, earlier-stopped and occupied vehicles, clear approach and yield versus enter policy. Frozen evidence inventory has no accepted recording. The stop-line and fallback conditions are source-gated; no numeric caution or sight threshold is invented.
+## CPU proof results
 
-## CPU proof receipts
+- Pinned runtime verify and preflight passed. Seven focused Native tests and five probe/bundle tests passed.
+- Six primary and six fallback offline executions passed; all twelve positive and negative compatibility runs passed.
+- Six saved-only positive and missing-source probes passed. Six complete/incomplete/missing physical protocol fixtures and Native lifecycle closure proofs passed; these are synthetic CPU tests only.
+- Six independent positive and negative delivery audits and all five controlled comparison audits passed.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C24757__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready` exited 0.
 
-- `case-plan.json` SHA256 `2597894e5aa546b3d50bc5b7cdd113b80de7b6945690cb5540241e0235807fcd`
-- `inoperative_signal.py` SHA256 `a45334e77a0132757dd67c3f7870e5473bda367626e3717f1405fbaa85c25f3a`
-- `tests/test_inoperative_signal.py` SHA256 `a63caefc5bdb30330d5facc4d51bec983c4c45d22885242720da66e5fc9a39d2`
-- `cpu-tests.log` SHA256 `9617593b39ddf898ce168d6ab3e954006675a4201a3b4a704acfd4ec553b23ec`
-- `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`
-- `cpu-static-check.log` SHA256 `7e897d866fa548190b8d675eca6b1457eb13d78011e0bad6620cd17ab7ac5ea7`
-- `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+## Sealed references
 
-Focused unittest exit 0 (3 tests); pinned `runtime.py preflight` exit 0; scoped static `worker_check.py --assignment testing__C24757__NRS-484B-250-4__motor_vehicle_driver` exit 0; exact scoped strict with `--complete --require-delivery-ready` exit 1 on truthful partial. `result.json.tests` includes only successful commands with package-relative logs and SHA256.
+- Case plan SHA256 `a6c0551aed970ec13807eb2f16fd82bdf9ddf763d8d6eb514a4ea0287b112439`.
+- Execution manifest SHA256 `f027766f16ff2e2db43d8f7a45814fb592b8f177b953ce4b6f42752ac6fc12fb`.
+- Queue proposal SHA256 `fe6698a74fc8fc18369cdc906fe2f52c4fc8121834cf396d1f1b0b2cf380011e`.
+- Result SHA256 `14accfaddc5cc7877e522423b3e9b79b79d160082a6d1d42e210336add8c15b8`.
+- Scoped strict log SHA256 `7e897d866fa548190b8d675eca6b1457eb13d78011e0bad6620cd17ab7ac5ea7`.
 
-## Remaining CPU work
+- Exact counts: 6 cases and 5 comparisons. The lead integrates the shared queue.
 
-Create canonical selected-case execution bundles, source-bound positive/negative compatibility, saved-only processing, semantic proposals and independent delivery/comparison audits. Strengthen original evidence of signal inoperability specifically at entry and objective yield timing. Then rerun scoped strict. Actual CARLA signal state, physical obstruction and camera visibility remain physical review after CPU readiness.
+## Remaining physical review
+
+Original CARLA capture must confirm an installed uncovered official governing signal with every inventoried vehicular head inoperative at actual entry, real blind sightline and physical occluder, complete stop at the correct statutory reference, original other-vehicle priority and conflict clearance order, four-camera pixels, and cautious-proceeding legal assessment. CPU diagnostics claim no physical acceptance.

@@ -15,7 +15,8 @@ def scene(case):
     s = {'cell_id': 'C230235', 'actor': 'motor_vehicle_driver',
          'qualifying_vehicle': True, 'highway': True,
          'driver_id': 'd1', 'vehicle_id': 'v1', 'flagger_id': 'f1',
-         'designated': case.designated, 'authorized': case.authorized,
+         'designated': case.designated, 'marked_construction': case.marked_construction,
+         'authorized': case.authorized,
          'signal': case.signal, 'response': case.response,
          'zone_rect_m': [0., 0., 50., 10.],
          'stop_line_xy': [10., 5.], 'flagger_xy': [10., 8.],
@@ -31,7 +32,8 @@ def rows(case):
     for i in range(900):
         r = {'original_frame': i, 'time_s': i / 20,
              'driver_id': 'd1', 'vehicle_id': 'v1', 'flagger_id': 'f1',
-             'designated': case.designated, 'authorized': case.authorized,
+             'designated': case.designated, 'marked_construction': case.marked_construction,
+             'authorized': case.authorized,
              'signal': case.signal, 'signal_visible': True,
              'intended_vehicle_id': 'v1',
              'vehicle_speed_mps': 0. if case.response == 'stop' and

@@ -1,186 +1,326 @@
 {
-  "assignment_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C24757",
-  "law_id": "NRS-484B-250-4",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-250-4",
-      "cell_id": "C24757",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-250-4",
-      "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 359,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
-  "law_source": "NRS 484B.250(4)",
-  "topic_inventory": {
-    "exact-text": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection."
+  "assignment_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45 s",
+        "subject": "blind intersection, signal and both vehicles",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through entry",
+        "subject": "ego front, stop reference and cessation",
+        "view": "approach"
+      },
+      {
+        "interval": "approach through crossing",
+        "subject": "marked line, near-side crosswalk or surveyed nearest-view point",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "approach through clearance",
+        "subject": "uncovered vehicular heads, sightline and other-vehicle priority",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
+      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_yield",
-      "target_law_id": "NRS-484B-250-4",
-      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
-      "stop_basis": "stop_line",
-      "other_state": "prior_stop",
+      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
       "ego_policy": "yield",
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
+      "legal_judgment": "unresolved",
       "measurement": "inoperative_signal.measure_original: 900 synchronized original frames, complete pre-entry stop and other stop/occupancy history",
+      "other_state": "prior_stop",
       "physical_risk": "Native inoperative signal state, sight obstruction, route/priority interaction and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "stop_basis": "stop_line",
+      "target_law_id": "NRS-484B-250-4"
     },
     {
+      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_occupied_yield",
-      "target_law_id": "NRS-484B-250-4",
-      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
-      "stop_basis": "stop_line",
+      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
+      "ego_policy": "yield",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "legal_judgment": "unresolved",
+      "measurement": "inoperative_signal.measure_original: 900 synchronized original frames, complete pre-entry stop and other stop/occupancy history",
       "other_state": "inside",
-      "ego_policy": "yield",
-      "gap_ids": [
-        "no-accepted-recording"
-      ],
-      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
-      "measurement": "inoperative_signal.measure_original: 900 synchronized original frames, complete pre-entry stop and other stop/occupancy history",
       "physical_risk": "Native inoperative signal state, sight obstruction, route/priority interaction and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "stop_basis": "stop_line",
+      "target_law_id": "NRS-484B-250-4"
     },
     {
+      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_no_yield",
-      "target_law_id": "NRS-484B-250-4",
-      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
-      "stop_basis": "stop_line",
-      "other_state": "prior_stop",
+      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
       "ego_policy": "enter",
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
+      "legal_judgment": "unresolved",
       "measurement": "inoperative_signal.measure_original: 900 synchronized original frames, complete pre-entry stop and other stop/occupancy history",
+      "other_state": "prior_stop",
       "physical_risk": "Native inoperative signal state, sight obstruction, route/priority interaction and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "stop_basis": "stop_line",
+      "target_law_id": "NRS-484B-250-4"
     },
     {
+      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_clear_enter",
-      "target_law_id": "NRS-484B-250-4",
-      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
-      "stop_basis": "stop_line",
-      "other_state": "clear",
+      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
       "ego_policy": "enter",
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
+      "legal_judgment": "unresolved",
       "measurement": "inoperative_signal.measure_original: 900 synchronized original frames, complete pre-entry stop and other stop/occupancy history",
+      "other_state": "clear",
       "physical_risk": "Native inoperative signal state, sight obstruction, route/priority interaction and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "stop_basis": "stop_line",
+      "target_law_id": "NRS-484B-250-4"
     },
     {
+      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
       "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_prior_stop_yield",
-      "target_law_id": "NRS-484B-250-4",
-      "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
-      "stop_basis": "crosswalk",
-      "other_state": "prior_stop",
+      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
       "ego_policy": "yield",
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
+      "legal_judgment": "unresolved",
       "measurement": "inoperative_signal.measure_original: 900 synchronized original frames, complete pre-entry stop and other stop/occupancy history",
+      "other_state": "prior_stop",
       "physical_risk": "Native inoperative signal state, sight obstruction, route/priority interaction and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "stop_basis": "crosswalk",
+      "target_law_id": "NRS-484B-250-4"
     },
     {
-      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__viewpoint_prior_stop_yield",
-      "target_law_id": "NRS-484B-250-4",
       "branch": "installed uncovered wholly inoperative signal at entry; stop then cautious/yield interaction",
-      "stop_basis": "viewpoint",
-      "other_state": "prior_stop",
+      "case_id": "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__viewpoint_prior_stop_yield",
+      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
       "ego_policy": "yield",
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction": "inoperative_signal.construct: wholly inoperative heads, physical occluder, ego/other routes and stop/entry behavior",
+      "legal_judgment": "unresolved",
       "measurement": "inoperative_signal.measure_original: 900 synchronized original frames, complete pre-entry stop and other stop/occupancy history",
+      "other_state": "prior_stop",
       "physical_risk": "Native inoperative signal state, sight obstruction, route/priority interaction and camera visibility require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "stop_basis": "viewpoint",
+      "target_law_id": "NRS-484B-250-4"
     }
   ],
+  "cell_id": "C24757",
   "comparisons": [
     {
-      "comparison_id": "prior_stop_vs_inside",
       "case_ids": [
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_yield",
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_occupied_yield"
       ],
-      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable",
+      "comparison_id": "prior_stop_vs_inside",
       "deliberate_differences": [
         "other vehicle prior stop versus intersection occupancy"
-      ]
+      ],
+      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable"
     },
     {
-      "comparison_id": "yield_vs_enter",
       "case_ids": [
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_yield",
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_no_yield"
       ],
-      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable",
+      "comparison_id": "yield_vs_enter",
       "deliberate_differences": [
         "ego yielding policy"
-      ]
+      ],
+      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable"
     },
     {
-      "comparison_id": "prior_stop_vs_clear",
       "case_ids": [
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_no_yield",
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_clear_enter"
       ],
-      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable",
+      "comparison_id": "prior_stop_vs_clear",
       "deliberate_differences": [
         "other vehicle earlier stop status"
-      ]
+      ],
+      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable"
     },
     {
-      "comparison_id": "line_vs_crosswalk",
       "case_ids": [
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_yield",
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_prior_stop_yield"
       ],
-      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable",
+      "comparison_id": "line_vs_crosswalk",
       "deliberate_differences": [
         "marked line absence and crosswalk fallback"
-      ]
+      ],
+      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable"
     },
     {
-      "comparison_id": "crosswalk_vs_viewpoint",
       "case_ids": [
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_prior_stop_yield",
         "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__viewpoint_prior_stop_yield"
       ],
-      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable",
+      "comparison_id": "crosswalk_vs_viewpoint",
       "deliberate_differences": [
         "crosswalk absence and nearest-viewpoint fallback"
-      ]
+      ],
+      "fixed_conditions": "same blind intersection, installed uncovered wholly inoperative signal, ego and other routes, camera/duration except declared variable"
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "source": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/evidence.json",
+        "source_sha256": "f482a9d1197c554d7c2f1f754e08dceff382f5c32a41c1215d4ecbd05236bcc3",
+        "why_existing_insufficient": "Frozen evidence inventory has no accepted recording; original signal state, stop and yielding interaction remain unproven."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-250-4",
+  "law_source": "NRS 484B.250(4)",
+  "law_text": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.",
   "observations": [
-    "official installed governing vehicular signal, uncovered and all heads wholly inoperative at entry",
-    "all intersection entrances, clearly marked stop line/crosswalk/viewpoint fallback hierarchy",
-    "driver control, ordinary vehicle and connected approach route",
-    "actual occluder geometry, driver viewpoint and approach sight lines without numeric caution threshold",
-    "900 original synchronized ego and distinct other-vehicle frames; complete stop before entry",
-    "other earlier completed stop or occupancy at ego entry; cautiousness and yielding remain judgment"
+    {
+      "method": "source-sealed original Native signal readback",
+      "name": "governing_signal_at_entry",
+      "unit": "structured"
+    },
+    {
+      "method": "reviewed stop line, near-side crosswalk or nearest-view survey",
+      "name": "stop_reference_hierarchy",
+      "unit": "structured"
+    },
+    {
+      "method": "20 Hz original Native vehicle front and speed",
+      "name": "ego_front_and_cessation",
+      "unit": "structured"
+    },
+    {
+      "method": "20 Hz distinct-vehicle stop history and intersection occupancy",
+      "name": "other_vehicle_priority",
+      "unit": "structured"
+    },
+    {
+      "method": "independent reviewed map and sightline sources",
+      "name": "blind_sightline_and_through_highway",
+      "unit": "structured"
+    },
+    {
+      "method": "four synchronized 900-frame original RGB captures",
+      "name": "original_four_camera_pixels",
+      "unit": "structured"
+    },
+    {
+      "method": "20 Hz original two-vehicle priority and ego entry/clearance order",
+      "name": "ego_yield_sequence",
+      "unit": "structured"
+    }
   ],
+  "planning_status": "selected_source_gated_native_construction",
+  "prior_review_context": {
+    "comparison_ids": [],
+    "remaining_requirements_note": null
+  },
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_occupied_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_no_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_clear_enter",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_prior_stop_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__viewpoint_prior_stop_yield"
+      ],
+      "evidence_or_gap": "Frozen evidence has no accepted original signal, vehicle or crossing recording; source-gated Native proof is required.",
+      "measurement": "native_signal.py:measure_original",
+      "requirement": "installed uncovered signal inoperative at actual intersection entry",
+      "source": "NRS 484B.250(4)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_occupied_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_no_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_clear_enter",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_prior_stop_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__viewpoint_prior_stop_yield"
+      ],
+      "evidence_or_gap": "Frozen evidence has no accepted original signal, vehicle or crossing recording; source-gated Native proof is required.",
+      "measurement": "native_signal.py:measure_original",
+      "requirement": "stop at statutory line, otherwise near crosswalk, otherwise nearest-view point",
+      "source": "NRS 484B.250(4)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_occupied_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_no_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_clear_enter",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_prior_stop_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__viewpoint_prior_stop_yield"
+      ],
+      "evidence_or_gap": "Frozen evidence has no accepted original signal, vehicle or crossing recording; source-gated Native proof is required.",
+      "measurement": "native_signal.py:measure_original",
+      "requirement": "yield to vehicles previously completed stop or within intersection",
+      "source": "NRS 484B.250(4)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_occupied_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_no_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__line_clear_enter",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__crosswalk_prior_stop_yield",
+        "testing__C24757__NRS-484B-250-4__motor_vehicle_driver__viewpoint_prior_stop_yield"
+      ],
+      "evidence_or_gap": "Frozen evidence has no accepted original signal, vehicle or crossing recording; source-gated Native proof is required.",
+      "measurement": "original vehicle trajectory and blind sightline; no invented speed cutoff",
+      "requirement": "proceed cautiously",
+      "source": "NRS 484B.250(4)",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Native complete signal inoperability, blind sightline, route and yield timing require original CARLA review.",
+    "No statutory numeric caution cutoff exists; retain original movement and sightline for legal review."
+  ],
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
+      "cell_id": "C24757",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-250-4",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-250-4",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 359,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/assignment.json",
@@ -211,34 +351,15 @@
       "sha256": "d8d76827219dbceac8ef2b5761cb1631b676ca7f97805ba2c3f4a3d089f3cd39"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Native complete signal inoperability and sight obstruction require CARLA/original review.",
-    "Selected-case bundles, compatibility, saved processing, semantic and independent audits remain CPU work."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved. Read frozen review context and distinguished authored settings from measured outcomes; did not treat linked but absent videos/traces as reviewed.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no-accepted-recording",
-        "source": "inputs/testing__C24757__NRS-484B-250-4__motor_vehicle_driver/evidence.json",
-        "source_sha256": "f482a9d1197c554d7c2f1f754e08dceff382f5c32a41c1215d4ecbd05236bcc3",
-        "why_existing_insufficient": "Frozen evidence inventory has no accepted recording; original signal state, stop and yielding interaction remain unproven."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_constructed_cpu_probe",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 359,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Blind-intersection post-stop interactions under complete signal inoperability.",
-      "decision": "conditional",
       "confidence": "medium",
+      "decision": "conditional",
+      "reason": "An intersection with obstructed approach sight lines can support installed, uncovered, wholly inoperative signals and distinct post-stop vehicle interactions. Obstruction does not itself establish signal governance or yielding relationships. This is a new null-reservation alternative.",
       "required_context": [
         "Establish actual sight obstructions, driver viewpoint, connected ordinary-vehicle routes and statutory intersection boundaries.",
         "Establish installed, uncovered governing vehicular signals that are wholly inoperative at entry; do not substitute malfunction or failed detection.",
@@ -252,11 +373,9 @@
         "Retain every entrance and synchronized histories for distinct earlier-stopped and intersection-occupying vehicles.",
         "Retain every entrance, driver viewpoint and occlusion geometry without assigning a numerical visibility or caution standard."
       ],
-      "reason": "An intersection with obstructed approach sight lines can support installed, uncovered, wholly inoperative signals and distinct post-stop vehicle interactions. Obstruction does not itself establish signal governance or yielding relationships. This is a new null-reservation alternative."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 359,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
-  ],
-  "prior_review_context": {
-    "comparison_ids": [],
-    "remaining_requirements_note": null
-  }
+  ]
 }

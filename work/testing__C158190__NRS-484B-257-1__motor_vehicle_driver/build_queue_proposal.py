@@ -51,7 +51,7 @@ def build() -> dict:
         comparison_rows.append({
             "assignment_id": ASSIGNMENT, "comparison_id": name,
             "case_ids": comparison["case_ids"],
-            "command": (f".venv-cpu/bin/python work/{ASSIGNMENT}/"
+            "command": (f"COMPARISON_ID='{name}' .venv-cpu/bin/python work/{ASSIGNMENT}/"
                         "through_motion_measurement.py --left \"$LEFT_ORIGINAL_PACKET\" "
                         "--right \"$RIGHT_ORIGINAL_PACKET\" "
                         f"--variable {variables[name]} --output \"$COMPARISON_AUDIT_RECEIPT\"")})

@@ -22,6 +22,15 @@ CASES = (
     Case('unlawful_park_undimmed', 'undimmed', 'none', True, False),
 )
 
+SCENE_SOURCES = ('vehicle_identity', 'highway', 'parking_lawfulness',
+                 'nighttime', 'displayed_lights', 'beam_aim', 'cowl_lamp',
+                 'parking_lamp', 'curb_geometry', 'standing_purpose',
+                 'loading', 'traffic_direction', 'safety_zone',
+                 'double_parking', 'grade', 'frame', 'vehicle_motion')
+ROW_SOURCES = ('frame', 'vehicle_identity', 'vehicle_motion',
+               'parking_lawfulness', 'nighttime', 'displayed_lights',
+               'beam_aim', 'cowl_lamp', 'parking_lamp')
+
 
 def require(ok, message):
     if not ok:
@@ -44,11 +53,7 @@ def validate_scene(scene: Mapping, case: Case):
             scene.get('lamp_mode') == case.lamp_mode and
             scene.get('auxiliary_lamp') == case.auxiliary_lamp,
             'case dimensions changed')
-    for field in ('vehicle_identity', 'highway', 'parking_lawfulness',
-                  'nighttime', 'displayed_lights', 'beam_aim',
-                  'cowl_lamp', 'parking_lamp', 'curb_geometry',
-                  'standing_purpose', 'loading', 'traffic_direction',
-                  'safety_zone', 'double_parking', 'grade'):
+    for field in SCENE_SOURCES:
         require(scene.get(field + '_source_sha256'),
                 'source missing: ' + field)
     route = scene.get('parking_route_xy')
@@ -96,16 +101,10 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
                 valid_number(row.get('time_s')) and
                 abs(row['time_s'] - t0 - i / 20) <= .005,
                 'original frame/time join invalid')
-        for field in ('frame', 'vehicle_identity', 'vehicle_motion',
-                      'parking_lawfulness', 'nighttime', 'displayed_lights',
-                      'beam_aim', 'cowl_lamp', 'parking_lamp'):
-            require(row.get(field + '_source_sha256'),
-                    'original measurement source missing: ' + field)
-        require(row['vehicle_identity_source_sha256'] ==
-                scene['vehicle_identity_source_sha256'] and
-                row['nighttime_source_sha256'] ==
-                scene['nighttime_source_sha256'],
-                'source context changed')
+        for field in ROW_SOURCES:
+            require(row.get(field + '_source_sha256') ==
+                    scene[field + '_source_sha256'],
+                    'original measurement source changed: ' + field)
         identity = identity or row.get('vehicle_id')
         require(identity == row.get('vehicle_id') == scene['vehicle_id'],
                 'original vehicle identity changed')
@@ -118,7 +117,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
                 row['speed_mps'] >= 0 and
                 valid_number(row.get('beam_aim_deg')),
                 'physical speed/beam measurement missing')
-        if first + i >= scene['park_start_frame']:
+        if i >= scene['park_start_frame']:
             stationary.append(row['speed_mps'] <= .1)
             dimmed.append(row['lamp_mode'] == 'dimmed')
     require(stationary and all(stationary),

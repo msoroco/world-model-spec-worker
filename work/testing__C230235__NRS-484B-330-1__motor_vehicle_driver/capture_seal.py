@@ -51,6 +51,7 @@ def seal(stage: Path, *, diagnostic_fixture: bool = False) -> dict:
             if tick.get(name + "_source_sha256") != verified["source_hashes"][name]:
                 raise ValueError("original source context differs: " + name)
         if (tick.get("designated") is not case.designated or
+                tick.get("marked_construction") is not case.marked_construction or
                 tick.get("authorized") is not case.authorized or
                 not number(tick.get("vehicle_speed_mps")) or
                 tick["vehicle_speed_mps"] < 0 or not point(tick.get("vehicle_xy"))):

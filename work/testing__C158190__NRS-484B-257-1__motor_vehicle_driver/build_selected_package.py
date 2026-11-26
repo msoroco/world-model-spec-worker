@@ -112,8 +112,8 @@ def main():
                                   "measurement_procedure": {"entrypoint": "analysis.py",
                                                             "method": "source-bound original nearest-view and through-motion measurement"},
                                   "missing_proofs": ["reviewed_yield_site", "original_native_capture",
-                                                     "positive_negative_compatibility", "saved_only_original",
-                                                     "physical_preparation", "delivery_acceptance"]}
+                                                     "saved_only_original", "original_delivery_acceptance",
+                                                     "original_comparison_audit"]}
         entry["acquisition"] = {name: {"entrypoint": source, "evidence": evidence, "method": method}
                                 for name, (source, evidence, method) in ACQUISITION.items()}
         if "delivery_acceptance" in entry:

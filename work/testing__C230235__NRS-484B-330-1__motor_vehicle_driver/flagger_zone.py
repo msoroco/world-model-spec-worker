@@ -11,6 +11,7 @@ class Case:
     authorized: bool
     signal: str
     response: str
+    marked_construction: bool = False
 
 
 CASES = (
@@ -19,11 +20,14 @@ CASES = (
     Case('undesignated_stop_driver_continues', False, True, 'stop', 'continue'),
     Case('unauthorized_stop_driver_continues', True, False, 'stop', 'continue'),
     Case('designated_proceed_driver_continues', True, True, 'proceed', 'continue'),
+    Case('marked_construction_stop_driver_continues', False, True, 'stop', 'continue', True),
+    Case('marked_construction_stop_driver_stops', False, True, 'stop', 'stop', True),
 )
 
 
 SOURCES = ('driver_identity', 'vehicle_class', 'autonomous_operation',
            'highway_status', 'zone_designation', 'zone_boundaries',
+           'construction_or_maintenance', 'construction_marking',
            'flagger_identity', 'flagger_authorization', 'traffic_control_role',
            'signal_content', 'signal_orientation', 'signal_visibility',
            'intended_recipient', 'release_event', 'vehicle_motion')
@@ -55,7 +59,7 @@ def validate_scene(scene: Mapping, case: Case):
             scene.get('highway') is True and scene.get('driver_id') and
             scene.get('vehicle_id') and scene.get('flagger_id'),
             'driver/vehicle/highway/flagger identity missing')
-    for key in ('designated', 'authorized', 'signal', 'response'):
+    for key in ('designated', 'authorized', 'signal', 'response', 'marked_construction'):
         require(scene.get(key) == getattr(case, key),
                 'case dimension changed: ' + key)
     for field in SOURCES:
@@ -119,6 +123,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
             require(row.get(field) == scene[field],
                     'original participant identity changed: ' + field)
         require(row.get('designated') is case.designated and
+                row.get('marked_construction') is case.marked_construction and
                 row.get('authorized') is case.authorized and
                 row.get('signal') == case.signal and
                 row.get('signal_visible') is True and

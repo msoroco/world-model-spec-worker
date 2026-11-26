@@ -11,13 +11,8 @@ sys.modules[spec.name] = mod
 spec.loader.exec_module(mod)
 
 
-FIELDS = ('vehicle_identity', 'highway', 'parking_lawfulness', 'nighttime',
-          'displayed_lights', 'beam_aim', 'cowl_lamp', 'parking_lamp',
-          'curb_geometry', 'standing_purpose', 'loading',
-          'traffic_direction', 'safety_zone', 'double_parking', 'grade')
-ROW_FIELDS = ('frame', 'vehicle_identity', 'vehicle_motion',
-              'parking_lawfulness', 'nighttime', 'displayed_lights',
-              'beam_aim', 'cowl_lamp', 'parking_lamp')
+FIELDS = mod.SCENE_SOURCES
+ROW_FIELDS = mod.ROW_SOURCES
 
 
 def scene(case):
@@ -129,6 +124,13 @@ class ParkedLampsTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             mod.construct(adapter, scene(case), case)
         self.assertEqual(adapter.destroyed, ['vehicle'])
+
+    def test_original_parking_interval_relative_to_capture_start(self):
+        case = mod.CASES[0]
+        measured = rows(case)
+        for row in measured:
+            row['original_frame'] += 1000
+        self.assertEqual(mod.measure_original(measured, scene(case), case)['parked_frames'], 800)
 
 
 if __name__ == '__main__':
