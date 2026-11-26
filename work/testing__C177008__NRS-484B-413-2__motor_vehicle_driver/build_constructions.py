@@ -14,7 +14,7 @@ DESCRIPTION = {item["case_id"]: item["recording_description"]
                for item in PROPOSALS["cases"] if item["target_law_id"]}
 SOURCES = ("runner.py", "analysis.py", "saved_export.py", "native_capture.py", "native_capture_contract.py",
            "native_site.py", "carla_adapter.py", "signal_controller.py",
-           "signal_measure.py", "signal_audit.py", "source_audit.py",
+           "signal_measure.py", "continuous_signal.py", "signal_audit.py", "source_audit.py",
            "turn_signal_probe.py", "test_native_capture.py", "test_signal_construction.py",
            "test_signal_measure.py", "test_turn_signal_probe.py", "case-plan.json")
 TESTS = tuple(sorted(path.relative_to(ROOT).as_posix()
@@ -107,6 +107,8 @@ def main() -> None:
             requirement = disposition["requirement"]
             if requirement.startswith("Source-reviewed"):
                 key, kind, inputs = "site_context_measurement", "sourced_context", ["original-site.json"]
+            elif "without interruption" in requirement:
+                key, kind, inputs = "continuity_measurement", "measured", ["original-turn-signal.json"]
             elif "regardless of weather" in requirement:
                 key, kind, inputs = "weather_independence_measurement", "measured", ["original-turn-signal.json"]
             else:

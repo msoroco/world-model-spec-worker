@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import tempfile
 from pathlib import Path
 
@@ -16,7 +17,8 @@ def run(case: str, kind: str) -> dict:
         raise ValueError("unknown physical fixture")
     config = json.loads((ROOT / "config.json").read_text())
     config["selected_case_id"] = case
-    scratch = ROOT.parents[1] / ".runtime-work"
+    scratch = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"])
+    scratch.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="c177008-physical-", dir=scratch) as temporary:
         attempt = Path(temporary)
         (attempt / "config.json").write_text(json.dumps(config) + "\n")

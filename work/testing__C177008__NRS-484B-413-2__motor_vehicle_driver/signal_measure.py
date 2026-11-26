@@ -45,7 +45,8 @@ def measure(source_path: str | Path, expected_case_id: str) -> dict:
                  and len(rows) == 900, "incomplete original 20 Hz signal history")
         _require(isinstance(packet.get("site_sha256"), str)
                  and len(packet["site_sha256"]) == 64, "missing original site binding")
-        for key in ("route_source", "driver_source", "camera_rig_source"):
+        for key in ("route_source", "driver_source", "camera_rig_source",
+                    "right_turn_variant_source", "other_vehicle_actor_id"):
             _require(isinstance(context.get(key), str) and context[key],
                      "missing original fixed source: " + key)
         archives = packet.get("camera_archives", {})
@@ -114,7 +115,7 @@ def measure(source_path: str | Path, expected_case_id: str) -> dict:
         "site_sha256": packet.get("site_sha256"),
         "weather_source": context.get("weather_source"),
         "district_kind": expected_district,
-        "context_sources": {key: context.get(key) for key in ("highway_source", "district_source", "frontage_source", "building_use_source", "other_vehicle_source", "route_source", "driver_source", "camera_rig_source")},
+        "context_sources": {key: context.get(key) for key in ("highway_source", "district_source", "frontage_source", "building_use_source", "other_vehicle_source", "route_source", "driver_source", "camera_rig_source", "right_turn_variant_source", "other_vehicle_actor_id")},
         "limitations": ["Sampled path length is a lower bound between retained frames.", "Authored context sources require independent physical and statutory review."],
     }
 

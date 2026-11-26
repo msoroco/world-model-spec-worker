@@ -13,7 +13,7 @@ import sys
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / "execution-manifest.json"
-PRIVATE = REPO / ".runtime-work/c177008-nov26"
+PRIVATE = REPO / ".runtime-work/c177008-owner-nov26/output"
 VALIDATOR = REPO / ".runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck"
 
 

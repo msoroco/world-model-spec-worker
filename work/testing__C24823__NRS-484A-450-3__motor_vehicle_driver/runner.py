@@ -27,7 +27,11 @@ def check(root):
     controller = json.loads((root / "controller.json").read_text(encoding="utf-8"))
     if controller.get("target_behavior") != case_id.rsplit("__", 1)[1]:
         raise ValueError("exact stop behavior differs")
-    return {"case_id": case_id, "source_gate": "reviewed original yield sign, map, crossing inventory, sight geometry, safety context and four-camera placement required"}
+    throttle = controller.get("throttle")
+    if type(throttle) not in (float, int) or not 0 < throttle <= .5:
+        raise ValueError("bounded engineering throttle required")
+    return {"case_id": case_id, "throttle": float(throttle),
+            "source_gate": "reviewed original yield sign, map, crossing inventory, sight geometry, safety context and four-camera placement required"}
 
 
 def main(argv=None):
@@ -48,7 +52,7 @@ def main(argv=None):
     reviewed = load_reviewed(source, selected["case_id"])
     from native_yield_entry import run_native
     print(json.dumps(run_native(reviewed, selected["case_id"], args.output_dir,
-                                host=args.host, port=args.port), sort_keys=True))
+                                host=args.host, port=args.port, throttle=selected["throttle"]), sort_keys=True))
     return 0
 
 

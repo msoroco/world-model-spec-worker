@@ -68,9 +68,11 @@ def main() -> None:
                               "body_vertices_m": corners, "heading_deg": heading})
         context = {key: site[key] for key in ("highway_source", "district_source",
                    "frontage_source", "building_use_source", "other_vehicle_source",
-                   "route_source", "driver_source", "camera_rig_source")}
+                   "route_source", "driver_source", "camera_rig_source",
+                   "right_turn_variant_source")}
         context.update(district_kind=district, maneuver="right_turn",
-                       weather_source="diagnostic " + weather)
+                       weather_source="diagnostic " + weather,
+                       other_vehicle_actor_id="diagnostic-other-vehicle")
         packet = {"format": "native-turn-signal-samples-v1", "source_kind": "diagnostic_fixture",
                   "diagnostic_fixture": True, "case_id": case_id,
                   "ego_actor": "motor_vehicle_driver", "context": context,

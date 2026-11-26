@@ -41,6 +41,18 @@ def load_reviewed(path, case_id):
     if (site.get("case_id") != case_id or site.get("source_review_status") != "reviewed_original" or
             not site.get("source_records") or site.get("map_sha256") != sha(sources["opendrive"])):
         raise ValueError("original site, map or source-review binding differs")
+    required_records = {"yield_sign", "crosswalk_and_line_inventory", "highway_boundary",
+                        "occluder_geometry", "driver_viewpoint", "approaching_traffic",
+                        "safety_necessity"}
+    if not required_records <= set(site["source_records"]):
+        raise ValueError("original yield statutory source inventory incomplete")
+    for name, ref in site["source_records"].items():
+        if not isinstance(ref, dict) or not ref.get("path") or not ref.get("sha256"):
+            raise ValueError("source-hashed original yield record required: " + str(name))
+        source = Path(ref["path"])
+        source = (source if source.is_absolute() else sources["site_packet"].parent / source).resolve()
+        if not source.is_file() or sha(source) != ref["sha256"]:
+            raise ValueError("original yield source record changed: " + str(name))
     reference = select_stop_reference(sources["site_packet"])
     suffix = case_id.rsplit("__", 1)[1]
     expected = {"fallback_nearest_view_stop": ("nearest_point_with_geometric_view", "yes"),
@@ -52,6 +64,17 @@ def load_reviewed(path, case_id):
         raise ValueError("original stop reference or reviewed safety context differs from exact case")
     if not str(site.get("ego_blueprint", "")).startswith("vehicle.") or not site.get("ego_spawn"):
         raise ValueError("reviewed motor-vehicle spawn required")
+    if not isinstance(site.get("occluder_actor_specs"), list) or not site["occluder_actor_specs"]:
+        raise ValueError("source-selected original occluder actor construction required")
+    if len(site["occluder_actor_specs"]) != len(site["occluders"]):
+        raise ValueError("original occluder actor/geometry count differs")
+    for spec, rectangle in zip(site["occluder_actor_specs"], site["occluders"]):
+        if (not spec.get("blueprint") or not isinstance(spec.get("transform"), dict) or
+                spec.get("expected_rectangle_xy_m") != rectangle):
+            raise ValueError("original occluder blueprint and transform required")
+    sign = site.get("yield_sign_actor_spec")
+    if not isinstance(sign, dict) or not sign.get("blueprint") or not isinstance(sign.get("transform"), dict):
+        raise ValueError("source-selected original yield-sign actor construction required")
     route = site.get("ego_route")
     if not isinstance(route, list) or len(route) < 3:
         raise ValueError("source-selected original ego route required")

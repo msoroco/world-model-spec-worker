@@ -1,0 +1,54 @@
+{
+  "case_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_nearest_view_stop",
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: original-yield-site.json",
+    "remove": [
+      "original-yield-site.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "original-yield-site.json",
+        "original-yield-trace.jsonl",
+        "original-yield-receipt.json"
+      ],
+      "kind": "sourced_context",
+      "method": "measure_reference_hierarchy",
+      "output_key": "reference_hierarchy",
+      "requirement": "Yield sign governance and nearest crosswalk, otherwise marked line, otherwise nearest-view reference",
+      "source": "NRS 484A.450(3) exact text",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "original-yield-site.json",
+        "original-yield-trace.jsonl",
+        "original-yield-receipt.json"
+      ],
+      "kind": "measured",
+      "method": "measure_original_view",
+      "output_key": "original_view",
+      "requirement": "Original blind-approach occluder and approaching-traffic sight geometry",
+      "source": "NRS 484A.450(3) and frozen C24823 conditional witness",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "original-yield-site.json",
+        "original-yield-trace.jsonl",
+        "original-yield-receipt.json"
+      ],
+      "kind": "measured",
+      "method": "measure_stop_behavior",
+      "output_key": "stop_behavior",
+      "requirement": "Independently sourced safety necessity and original 20 Hz motor-vehicle stopping trace",
+      "source": "NRS 484A.450(3) conditional if required for safety",
+      "value_type": "object"
+    }
+  ]
+}

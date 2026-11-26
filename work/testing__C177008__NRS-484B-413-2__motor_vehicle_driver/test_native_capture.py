@@ -38,6 +38,10 @@ class Session:
         self.commands.append(("spawn", blueprint_id, start))
         return {"actor_id": 7}
 
+    def spawn_other_vehicle(self, blueprint_id, start):
+        self.commands.append(("spawn_other", blueprint_id, start))
+        return {"actor_id": 8, "blueprint_id": blueprint_id}
+
     def read_ego_state(self):
         return {"actor_id": 7, "blueprint_id": "reviewed-vehicle",
                 "x_m": -120 + (self.frame - 100) * 0.2, "y_m": 0,
@@ -83,7 +87,8 @@ class CaptureTest(unittest.TestCase):
             self.assertEqual(packet["source_kind"], "diagnostic_fixture")
             self.assertEqual(set(packet["camera_archives"]), set(CAMERAS))
             self.assertEqual(len(packet["samples"]), 3)
-            self.assertEqual(session.commands[0][0], "spawn")
+            self.assertEqual(session.commands[0][0], "spawn_other")
+            self.assertEqual(session.commands[1][0], "spawn")
             self.assertEqual(len([c for c in session.commands if c[0] == "drive"]), 3)
 
     def test_bad_camera_discards_incomplete_capture(self):

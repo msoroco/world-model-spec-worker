@@ -53,7 +53,7 @@ def measure(root, case_id):
         if previous_frame is not None and (frame != previous_frame + 1 or abs(time - previous_time - .05) > .005):
             raise ValueError("original 20 Hz frame/time join differs")
         previous_frame, previous_time = frame, time
-        if row.get("ego_actor_id") != site.get("ego_actor_id"):
+        if row.get("ego_actor_id") != receipt.get("ego_actor_id"):
             raise ValueError("original ego actor differs")
         position, speed = row.get("ego_center_xy_m"), row.get("ego_speed_mps")
         if (not isinstance(position, list) or len(position) != 2 or
@@ -62,10 +62,25 @@ def measure(root, case_id):
             raise ValueError("original position/speed missing")
         if row.get("camera_frames") is None:
             raise ValueError("original four-camera frame join missing")
+        control = row.get("yield_control_readback")
+        if (not isinstance(control, dict) or control.get("yield_sign_id") != site["yield_sign_id"] or
+                control.get("control") != "yield_sign"):
+            raise ValueError("original yield-sign readback differs")
+        if not receipt.get("diagnostic_fixture") and (not control.get("live_actor_id") or
+                set(row["camera_frames"]) != {"overview", "approach", "reference_corner", "driver_reference"}):
+            raise ValueError("original sign actor or four-camera source missing")
+        vertices = row.get("ego_vertices")
+        if (not isinstance(vertices, list) or len(vertices) != 8 or any(
+                not isinstance(vertex, list) or len(vertex) != 3 or any(
+                    type(value) not in (float, int) or not math.isfinite(value) for value in vertex)
+                for vertex in vertices)):
+            raise ValueError("original eight-vertex motor-vehicle body missing")
         # A small speed is an engineering witness only; preserve the full trace.
-        if speed <= .1:
+        if speed <= .1 and position[0] < site["intersecting_highway_boundary_x"]:
             stops.append({"frame": frame, "time_s": time, "position_xy_m": position,
-                          "distance_to_reference_m": math.dist(position, reference["reference_position"])})
+                          "distance_to_reference_m": math.dist(position, reference["reference_position"]),
+                          "leading_body_x_minus_reference_x_m": max(vertex[0] for vertex in vertices) -
+                              reference["reference_position"][0]})
     return {"case_id": case_id, "reference": reference,
             "original_stop_samples": stops, "original_sample_count": len(rows),
             "source_bindings": {name: digest(root / name) for name in

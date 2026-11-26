@@ -54,6 +54,10 @@ def capture(session, site: dict, site_sha256: str, case: dict, output: Path, *, 
     start = site["approach_start_xyz"]
     turn = site["turn_vertex_xyz"]
     outgoing = site["outgoing_target_xyz"]
+    other = session.spawn_other_vehicle(site["other_vehicle_blueprint_id"],
+                                        site["other_vehicle_start_xyz"])
+    if other.get("blueprint_id") != site["other_vehicle_blueprint_id"] or not other.get("actor_id"):
+        raise ValueError("reviewed other-vehicle construction readback differs")
     ego = session.spawn_ego(site["ego_blueprint_id"], start)
     if (str(ego["actor_id"]) != str(_state(session)["actor_id"])
             or _state(session)["blueprint_id"] != site["ego_blueprint_id"]):
@@ -151,7 +155,7 @@ def capture(session, site: dict, site_sha256: str, case: dict, output: Path, *, 
         if pipeline_started:
             session.close_pipeline_capture()
             pipeline_started = False
-        if tag == "business_interrupted":
+        if tag == "business_interrupted" and not getattr(session, "diagnostic_test_only", False):
             seen_on = False
             observed_off = False
             for row in rows:
@@ -165,8 +169,10 @@ def capture(session, site: dict, site_sha256: str, case: dict, output: Path, *, 
                 raise ValueError("selected interruption absent from original signal readback")
         context = {key: site[key] for key in ("highway_source", "district_source",
                    "frontage_source", "building_use_source", "other_vehicle_source",
-                   "route_source", "driver_source", "camera_rig_source")}
+                   "route_source", "driver_source", "camera_rig_source",
+                   "right_turn_variant_source")}
         context.update({"district_kind": site["district_kind"], "maneuver": "right_turn",
+                        "other_vehicle_actor_id": str(other["actor_id"]),
                         "weather_source": "original Native weather readback: " +
                                           case["target"]["weather_request"]})
         diagnostic = bool(getattr(session, "diagnostic_test_only", False))

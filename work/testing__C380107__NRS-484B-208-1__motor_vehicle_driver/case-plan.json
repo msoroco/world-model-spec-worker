@@ -1,172 +1,331 @@
 {
-  "assignment_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C380107",
-  "law_id": "NRS-484B-208-1",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-208-1",
-      "cell_id": "C380107",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-208-1",
-      "branch": "Core encounter with qualified HOV exception",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 338,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Except as otherwise provided in subsection 2, on a controlled-access highway which has two or more clearly marked lanes for traveling in the same direction, a driver may not continue to operate a motor vehicle in the extreme left lane if the driver knows, or reasonably should know, that he or she is traveling at a rate of speed which is less than the posted speed limit for that portion of the controlled-access highway and is being overtaken in that lane from the rear by a motor vehicle traveling at a higher rate of speed. The requirements of subsection 1 do not apply: (a) To a driver operating a motor vehicle that is: (1) Overtaking another vehicle proceeding in the same direction; (2) Preparing for a left turn at an intersection; (3) Traveling in a lane designated for the use of high-occupancy vehicles pursuant to NRS 484A.460, if the driver complies with the requirements to travel in such a lane [DEF-NRS-484A-460-2, NRS-484B-323-1]; or (4) Engaged in the construction, maintenance or repair of the highway, including, without limitation, the removal of snow. (b) When traffic conditions, inclement weather, obstructions or hazards make it necessary to drive in the extreme left lane. (c) When compliance with an official traffic control device or the directions given by a peace officer makes it necessary to drive in the extreme left lane. (d) To the driver of an authorized emergency vehicle in the course of his or her official duties. (e) To a driver operating a motor vehicle within the geographical limits of a city or town.",
-  "law_source": "NRS 484B.208(1); with 484B.208(2)",
-  "topic_inventory": {
-    "exact-text": "Except as otherwise provided in subsection 2, on a controlled-access highway which has two or more clearly marked lanes for traveling in the same direction, a driver may not continue to operate a motor vehicle in the extreme left lane if the driver knows, or reasonably should know, that he or she is traveling at a rate of speed which is less than the posted speed limit for that portion of the controlled-access highway and is being overtaken in that lane from the rear by a motor vehicle traveling at a higher rate of speed. The requirements of subsection 1 do not apply: (a) To a driver operating a motor vehicle that is: (1) Overtaking another vehicle proceeding in the same direction; (2) Preparing for a left turn at an intersection; (3) Traveling in a lane designated for the use of high-occupancy vehicles pursuant to NRS 484A.460, if the driver complies with the requirements to travel in such a lane [DEF-NRS-484A-460-2, NRS-484B-323-1]; or (4) Engaged in the construction, maintenance or repair of the highway, including, without limitation, the removal of snow. (b) When traffic conditions, inclement weather, obstructions or hazards make it necessary to drive in the extreme left lane. (c) When compliance with an official traffic control device or the directions given by a peace officer makes it necessary to drive in the extreme left lane. (d) To the driver of an authorized emergency vehicle in the course of his or her official duties. (e) To a driver operating a motor vehicle within the geographical limits of a city or town."
+  "assignment_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 900 original 20 Hz ticks",
+        "subject": "full controlled-access two-lane/HOV scene",
+        "view": "overview"
+      },
+      {
+        "interval": "all 900 original 20 Hz ticks",
+        "subject": "ego and rear vehicle encounter",
+        "view": "approach"
+      },
+      {
+        "interval": "all 900 original 20 Hz ticks",
+        "subject": "extreme-left boundary and HOV designation",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 900 original 20 Hz ticks",
+        "subject": "driver response and HOV sign/access",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
+      "actor": "motor_vehicle_driver",
       "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
-      "target_law_id": "NRS-484B-208-1",
       "cell_id": "C380107",
-      "actor": "motor_vehicle_driver",
-      "variant": "core_no_hov",
-      "hov_designation_request": "none",
-      "hov_compliance_request": "unresolved",
-      "ego_speed_request": "below",
-      "rear_encounter_request": "faster_same_left",
       "ego_response_request": "remain_left",
+      "ego_speed_request": "below",
       "exception_context_request": "outside_city",
+      "hov_compliance_request": "unresolved",
+      "hov_designation_request": "none",
+      "planning_status": "exact_target_unexecuted",
+      "rear_encounter_request": "faster_same_left",
       "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
-      "planning_status": "exact_target_unexecuted"
+      "target_law_id": "NRS-484B-208-1",
+      "variant": "core_no_hov"
     },
     {
+      "actor": "motor_vehicle_driver",
       "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__qualified_hov",
-      "target_law_id": "NRS-484B-208-1",
       "cell_id": "C380107",
-      "actor": "motor_vehicle_driver",
-      "variant": "qualified_hov",
-      "hov_designation_request": "active",
+      "ego_response_request": "remain_left",
+      "ego_speed_request": "below",
+      "exception_context_request": "outside_city",
       "hov_compliance_request": "compliant",
-      "ego_speed_request": "below",
-      "rear_encounter_request": "faster_same_left",
-      "ego_response_request": "remain_left",
-      "exception_context_request": "outside_city",
-      "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
-      "planning_status": "exact_target_unexecuted"
-    },
-    {
-      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__ineligible_hov",
-      "target_law_id": "NRS-484B-208-1",
-      "cell_id": "C380107",
-      "actor": "motor_vehicle_driver",
-      "variant": "ineligible_hov",
       "hov_designation_request": "active",
+      "planning_status": "exact_target_unexecuted",
+      "rear_encounter_request": "faster_same_left",
+      "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
+      "target_law_id": "NRS-484B-208-1",
+      "variant": "qualified_hov"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__ineligible_hov",
+      "cell_id": "C380107",
+      "ego_response_request": "remain_left",
+      "ego_speed_request": "below",
+      "exception_context_request": "outside_city",
       "hov_compliance_request": "noncompliant",
-      "ego_speed_request": "below",
+      "hov_designation_request": "active",
+      "planning_status": "exact_target_unexecuted",
       "rear_encounter_request": "faster_same_left",
-      "ego_response_request": "remain_left",
-      "exception_context_request": "outside_city",
       "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
-      "planning_status": "exact_target_unexecuted"
+      "target_law_id": "NRS-484B-208-1",
+      "variant": "ineligible_hov"
     },
     {
+      "actor": "motor_vehicle_driver",
       "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__inactive_hov",
-      "target_law_id": "NRS-484B-208-1",
       "cell_id": "C380107",
-      "actor": "motor_vehicle_driver",
-      "variant": "inactive_hov",
+      "ego_response_request": "remain_left",
+      "ego_speed_request": "below",
+      "exception_context_request": "outside_city",
+      "hov_compliance_request": "unresolved",
       "hov_designation_request": "inactive",
-      "hov_compliance_request": "unresolved",
-      "ego_speed_request": "below",
+      "planning_status": "exact_target_unexecuted",
       "rear_encounter_request": "faster_same_left",
-      "ego_response_request": "remain_left",
-      "exception_context_request": "outside_city",
       "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
-      "planning_status": "exact_target_unexecuted"
+      "target_law_id": "NRS-484B-208-1",
+      "variant": "inactive_hov"
     },
     {
+      "actor": "motor_vehicle_driver",
       "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__speed_at_limit",
-      "target_law_id": "NRS-484B-208-1",
       "cell_id": "C380107",
-      "actor": "motor_vehicle_driver",
-      "variant": "speed_at_limit",
-      "hov_designation_request": "none",
-      "hov_compliance_request": "unresolved",
+      "ego_response_request": "remain_left",
       "ego_speed_request": "at_limit",
-      "rear_encounter_request": "faster_same_left",
-      "ego_response_request": "remain_left",
       "exception_context_request": "outside_city",
+      "hov_compliance_request": "unresolved",
+      "hov_designation_request": "none",
+      "planning_status": "exact_target_unexecuted",
+      "rear_encounter_request": "faster_same_left",
       "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
-      "planning_status": "exact_target_unexecuted"
+      "target_law_id": "NRS-484B-208-1",
+      "variant": "speed_at_limit"
     },
     {
+      "actor": "motor_vehicle_driver",
       "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__no_faster_rear",
-      "target_law_id": "NRS-484B-208-1",
       "cell_id": "C380107",
-      "actor": "motor_vehicle_driver",
-      "variant": "no_faster_rear",
-      "hov_designation_request": "none",
-      "hov_compliance_request": "unresolved",
+      "ego_response_request": "remain_left",
       "ego_speed_request": "below",
+      "exception_context_request": "outside_city",
+      "hov_compliance_request": "unresolved",
+      "hov_designation_request": "none",
+      "planning_status": "exact_target_unexecuted",
       "rear_encounter_request": "same_speed_rear",
-      "ego_response_request": "remain_left",
-      "exception_context_request": "outside_city",
       "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
-      "planning_status": "exact_target_unexecuted"
+      "target_law_id": "NRS-484B-208-1",
+      "variant": "no_faster_rear"
     },
     {
+      "actor": "motor_vehicle_driver",
       "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__move_right",
-      "target_law_id": "NRS-484B-208-1",
       "cell_id": "C380107",
-      "actor": "motor_vehicle_driver",
-      "variant": "move_right",
-      "hov_designation_request": "none",
-      "hov_compliance_request": "unresolved",
-      "ego_speed_request": "below",
-      "rear_encounter_request": "faster_same_left",
       "ego_response_request": "move_right",
+      "ego_speed_request": "below",
       "exception_context_request": "outside_city",
+      "hov_compliance_request": "unresolved",
+      "hov_designation_request": "none",
+      "planning_status": "exact_target_unexecuted",
+      "rear_encounter_request": "faster_same_left",
       "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
-      "planning_status": "exact_target_unexecuted"
+      "target_law_id": "NRS-484B-208-1",
+      "variant": "move_right"
     },
     {
+      "actor": "motor_vehicle_driver",
       "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__city_boundary",
-      "target_law_id": "NRS-484B-208-1",
       "cell_id": "C380107",
-      "actor": "motor_vehicle_driver",
-      "variant": "city_boundary",
-      "hov_designation_request": "none",
-      "hov_compliance_request": "unresolved",
-      "ego_speed_request": "below",
-      "rear_encounter_request": "faster_same_left",
       "ego_response_request": "remain_left",
+      "ego_speed_request": "below",
       "exception_context_request": "inside_city",
+      "hov_compliance_request": "unresolved",
+      "hov_designation_request": "none",
+      "planning_status": "exact_target_unexecuted",
+      "rear_encounter_request": "faster_same_left",
       "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
-      "planning_status": "exact_target_unexecuted"
+      "target_law_id": "NRS-484B-208-1",
+      "variant": "city_boundary"
     },
     {
-      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hazard_necessity",
-      "target_law_id": "NRS-484B-208-1",
-      "cell_id": "C380107",
       "actor": "motor_vehicle_driver",
-      "variant": "hazard_necessity",
-      "hov_designation_request": "none",
-      "hov_compliance_request": "unresolved",
-      "ego_speed_request": "below",
-      "rear_encounter_request": "faster_same_left",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hazard_necessity",
+      "cell_id": "C380107",
       "ego_response_request": "remain_left",
+      "ego_speed_request": "below",
       "exception_context_request": "hazard_necessary",
+      "hov_compliance_request": "unresolved",
+      "hov_designation_request": "none",
+      "planning_status": "exact_target_unexecuted",
+      "rear_encounter_request": "faster_same_left",
       "recording_description": "Original 20 Hz ego/rear actor and lane trace with posted-limit and HOV designation, hours, occupancy, access, signage, vehicle category, compliance, knowledge and other-exception sources; four synchronized cameras",
-      "planning_status": "exact_target_unexecuted"
+      "target_law_id": "NRS-484B-208-1",
+      "variant": "hazard_necessity"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0000",
+      "cell_id": "C380107",
+      "controller_requests": {
+        "hov_occupancy_target": 2,
+        "rear_speed_delta_target_mps": 2.0,
+        "sign_exposure_start_s": 4.0
+      },
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original 20 Hz ego/rear lane, speed, gap, HOV and original sign/occupancy context; four synchronized cameras",
+      "sweep_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure",
+      "sweep_point": {
+        "sign_exposure_start_s": 4.0
+      },
+      "target_law_id": "NRS-484B-208-1"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0001",
+      "cell_id": "C380107",
+      "controller_requests": {
+        "hov_occupancy_target": 2,
+        "rear_speed_delta_target_mps": 2.0,
+        "sign_exposure_start_s": 8.0
+      },
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original 20 Hz ego/rear lane, speed, gap, HOV and original sign/occupancy context; four synchronized cameras",
+      "sweep_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure",
+      "sweep_point": {
+        "sign_exposure_start_s": 8.0
+      },
+      "target_law_id": "NRS-484B-208-1"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0002",
+      "cell_id": "C380107",
+      "controller_requests": {
+        "hov_occupancy_target": 2,
+        "rear_speed_delta_target_mps": 2.0,
+        "sign_exposure_start_s": 6.0
+      },
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original 20 Hz ego/rear lane, speed, gap, HOV and original sign/occupancy context; four synchronized cameras",
+      "sweep_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure",
+      "sweep_point": {
+        "sign_exposure_start_s": 6.0
+      },
+      "target_law_id": "NRS-484B-208-1"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0000",
+      "cell_id": "C380107",
+      "controller_requests": {
+        "hov_occupancy_target": 2,
+        "rear_speed_delta_target_mps": 1.0,
+        "sign_exposure_start_s": 6.0
+      },
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original 20 Hz ego/rear lane, speed, gap, HOV and original sign/occupancy context; four synchronized cameras",
+      "sweep_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta",
+      "sweep_point": {
+        "rear_speed_delta_target_mps": 1.0
+      },
+      "target_law_id": "NRS-484B-208-1"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0001",
+      "cell_id": "C380107",
+      "controller_requests": {
+        "hov_occupancy_target": 2,
+        "rear_speed_delta_target_mps": 3.0,
+        "sign_exposure_start_s": 6.0
+      },
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original 20 Hz ego/rear lane, speed, gap, HOV and original sign/occupancy context; four synchronized cameras",
+      "sweep_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta",
+      "sweep_point": {
+        "rear_speed_delta_target_mps": 3.0
+      },
+      "target_law_id": "NRS-484B-208-1"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0002",
+      "cell_id": "C380107",
+      "controller_requests": {
+        "hov_occupancy_target": 2,
+        "rear_speed_delta_target_mps": 2.0,
+        "sign_exposure_start_s": 6.0
+      },
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original 20 Hz ego/rear lane, speed, gap, HOV and original sign/occupancy context; four synchronized cameras",
+      "sweep_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta",
+      "sweep_point": {
+        "rear_speed_delta_target_mps": 2.0
+      },
+      "target_law_id": "NRS-484B-208-1"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0000",
+      "cell_id": "C380107",
+      "controller_requests": {
+        "hov_occupancy_target": 1.0,
+        "rear_speed_delta_target_mps": 2.0,
+        "sign_exposure_start_s": 6.0
+      },
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original 20 Hz ego/rear lane, speed, gap, HOV and original sign/occupancy context; four synchronized cameras",
+      "sweep_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy",
+      "sweep_point": {
+        "hov_occupancy_target": 1.0
+      },
+      "target_law_id": "NRS-484B-208-1"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0001",
+      "cell_id": "C380107",
+      "controller_requests": {
+        "hov_occupancy_target": 3.0,
+        "rear_speed_delta_target_mps": 2.0,
+        "sign_exposure_start_s": 6.0
+      },
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original 20 Hz ego/rear lane, speed, gap, HOV and original sign/occupancy context; four synchronized cameras",
+      "sweep_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy",
+      "sweep_point": {
+        "hov_occupancy_target": 3.0
+      },
+      "target_law_id": "NRS-484B-208-1"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "case_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0002",
+      "cell_id": "C380107",
+      "controller_requests": {
+        "hov_occupancy_target": 2.0,
+        "rear_speed_delta_target_mps": 2.0,
+        "sign_exposure_start_s": 6.0
+      },
+      "planning_status": "exact_target_unexecuted",
+      "recording_description": "Original 20 Hz ego/rear lane, speed, gap, HOV and original sign/occupancy context; four synchronized cameras",
+      "sweep_id": "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy",
+      "sweep_point": {
+        "hov_occupancy_target": 2.0
+      },
+      "target_law_id": "NRS-484B-208-1"
     }
   ],
+  "cell_id": "C380107",
   "comparisons": [
     {
       "case_ids": [
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__qualified_hov"
       ],
+      "comparison_id": "core_vs_qualified_hov",
       "deliberate_differences": [
         "qualified HOV eligibility"
       ],
@@ -183,6 +342,7 @@
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__ineligible_hov"
       ],
+      "comparison_id": "core_vs_ineligible_hov",
       "deliberate_differences": [
         "HOV designation without eligibility"
       ],
@@ -199,6 +359,7 @@
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__inactive_hov"
       ],
+      "comparison_id": "core_vs_inactive_hov",
       "deliberate_differences": [
         "inactive HOV designation"
       ],
@@ -215,6 +376,7 @@
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__speed_at_limit"
       ],
+      "comparison_id": "core_vs_speed_at_limit",
       "deliberate_differences": [
         "ego at posted limit"
       ],
@@ -231,6 +393,7 @@
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__no_faster_rear"
       ],
+      "comparison_id": "core_vs_no_faster_rear",
       "deliberate_differences": [
         "no higher-speed rear motor vehicle"
       ],
@@ -247,6 +410,7 @@
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__move_right"
       ],
+      "comparison_id": "core_vs_move_right",
       "deliberate_differences": [
         "move out of extreme-left lane"
       ],
@@ -263,6 +427,7 @@
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__city_boundary"
       ],
+      "comparison_id": "core_vs_city_boundary",
       "deliberate_differences": [
         "city or town geographic exception"
       ],
@@ -279,6 +444,7 @@
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
         "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hazard_necessity"
       ],
+      "comparison_id": "core_vs_hazard_necessity",
       "deliberate_differences": [
         "hazard necessity exception"
       ],
@@ -289,17 +455,285 @@
       ],
       "isolated_question": "hazard necessity exception",
       "status": "unexecuted"
+    },
+    {
+      "case_ids": [
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0002"
+      ],
+      "comparison_id": "sweep_sign_exposure",
+      "deliberate_differences": [
+        "sign_exposure engineering controller"
+      ],
+      "fixed_conditions": [
+        "same reviewed controlled-access/HOV site, law, actor, posted-limit authority and camera protocol",
+        "all non-axis controller requests fixed"
+      ],
+      "isolated_question": "sign_exposure original source-bound measurement",
+      "status": "unexecuted"
+    },
+    {
+      "case_ids": [
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0002"
+      ],
+      "comparison_id": "sweep_rear_speed_delta",
+      "deliberate_differences": [
+        "rear_speed_delta engineering controller"
+      ],
+      "fixed_conditions": [
+        "same reviewed controlled-access/HOV site, law, actor, posted-limit authority and camera protocol",
+        "all non-axis controller requests fixed"
+      ],
+      "isolated_question": "rear_speed_delta original source-bound measurement",
+      "status": "unexecuted"
+    },
+    {
+      "case_ids": [
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0002"
+      ],
+      "comparison_id": "sweep_hov_occupancy",
+      "deliberate_differences": [
+        "hov_occupancy engineering controller"
+      ],
+      "fixed_conditions": [
+        "same reviewed controlled-access/HOV site, law, actor, posted-limit authority and camera protocol",
+        "all non-axis controller requests fixed"
+      ],
+      "isolated_question": "hov_occupancy original source-bound measurement",
+      "status": "unexecuted"
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-208-1",
+  "law_source": "NRS 484B.208(1); with 484B.208(2)",
+  "law_text": "Except as otherwise provided in subsection 2, on a controlled-access highway which has two or more clearly marked lanes for traveling in the same direction, a driver may not continue to operate a motor vehicle in the extreme left lane if the driver knows, or reasonably should know, that he or she is traveling at a rate of speed which is less than the posted speed limit for that portion of the controlled-access highway and is being overtaken in that lane from the rear by a motor vehicle traveling at a higher rate of speed. The requirements of subsection 1 do not apply: (a) To a driver operating a motor vehicle that is: (1) Overtaking another vehicle proceeding in the same direction; (2) Preparing for a left turn at an intersection; (3) Traveling in a lane designated for the use of high-occupancy vehicles pursuant to NRS 484A.460, if the driver complies with the requirements to travel in such a lane [DEF-NRS-484A-460-2, NRS-484B-323-1]; or (4) Engaged in the construction, maintenance or repair of the highway, including, without limitation, the removal of snow. (b) When traffic conditions, inclement weather, obstructions or hazards make it necessary to drive in the extreme left lane. (c) When compliance with an official traffic control device or the directions given by a peace officer makes it necessary to drive in the extreme left lane. (d) To the driver of an authorized emergency vehicle in the course of his or her official duties. (e) To a driver operating a motor vehicle within the geographical limits of a city or town.",
   "observations": [
-    "controlled-access legal status and two clearly marked same-direction lanes",
-    "extreme-left lane and posted speed-limit source",
-    "original 20 Hz ego/rear speed, lane identity and signed longitudinal gap",
-    "source-backed knowledge circumstances and continued-left-lane interval",
-    "HOV designation extent, hours, signs, access, occupancy, category and actual compliance",
-    "city/town boundary and every other subsection 2 exception circumstance",
-    "four synchronized original camera streams"
+    {
+      "mandatory": true,
+      "name": "controlled_access_and_lane_geometry",
+      "source": "NRS 484B.208(1)-(2)"
+    },
+    {
+      "mandatory": true,
+      "name": "ego_rear_lane_speed_gap",
+      "source": "NRS 484B.208(1)-(2)"
+    },
+    {
+      "mandatory": true,
+      "name": "posted_limit_and_knowledge",
+      "source": "NRS 484B.208(1)-(2)"
+    },
+    {
+      "mandatory": true,
+      "name": "hov_designation_and_compliance",
+      "source": "NRS 484B.208(1)-(2)"
+    },
+    {
+      "mandatory": true,
+      "name": "other_exception_context",
+      "source": "NRS 484B.208(1)-(2)"
+    },
+    {
+      "mandatory": true,
+      "name": "four_synchronized_camera_views",
+      "source": "NRS 484B.208(1)-(2)"
+    }
   ],
+  "planning_status": "exact_targets_unexecuted",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__qualified_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__ineligible_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__inactive_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__speed_at_limit",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__no_faster_rear",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__move_right",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__city_boundary",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hazard_necessity",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0002"
+      ],
+      "evidence_or_gap": "Reviewed map and original lane trace required",
+      "requirement": "controlled-access two marked same-direction lanes and extreme-left operation",
+      "source": "NRS 484B.208(1)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__qualified_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__ineligible_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__inactive_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__speed_at_limit",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__no_faster_rear",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__move_right",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__city_boundary",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hazard_necessity",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0002"
+      ],
+      "evidence_or_gap": "Posted-limit authority, original speed and knowledge circumstances required",
+      "requirement": "below posted limit with knowledge or reasonable knowledge",
+      "source": "NRS 484B.208(1)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__qualified_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__ineligible_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__inactive_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__speed_at_limit",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__no_faster_rear",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__move_right",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__city_boundary",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hazard_necessity",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0002"
+      ],
+      "evidence_or_gap": "Original 20 Hz rear identity, speed, lane and signed gap required",
+      "requirement": "faster rear motor vehicle overtakes in extreme-left lane",
+      "source": "NRS 484B.208(1)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__qualified_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__ineligible_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__inactive_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__speed_at_limit",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__no_faster_rear",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__move_right",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__city_boundary",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hazard_necessity",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0002"
+      ],
+      "evidence_or_gap": "Original ego lane history required",
+      "requirement": "continued extreme-left operation or rightward response",
+      "source": "NRS 484B.208(1)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__qualified_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__ineligible_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__inactive_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__speed_at_limit",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__no_faster_rear",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__move_right",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__city_boundary",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hazard_necessity",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0002"
+      ],
+      "evidence_or_gap": "Hours, signs, access, occupancy, category and compliance source needed",
+      "requirement": "qualified designated HOV exception and actual compliance",
+      "source": "NRS 484B.208(2)(a)(3)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__core_no_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__qualified_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__ineligible_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__inactive_hov",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__speed_at_limit",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__no_faster_rear",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__move_right",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__city_boundary",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hazard_necessity",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__sign_exposure-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__rear_speed_delta-0002",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0000",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0001",
+        "testing__C380107__NRS-484B-208-1__motor_vehicle_driver__hov_occupancy-0002"
+      ],
+      "evidence_or_gap": "Original exception and boundary sources needed",
+      "requirement": "other subsection 2 exceptions and city/town geography",
+      "source": "NRS 484B.208(2)(a),(b),(c),(d),(e)",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Original reviewed map, HOV designation, legal status, hours, occupancy, access, vehicle category and driver knowledge require local source review.",
+    "Actual Native motion, lane geometry and four-view visibility require local physical review.",
+    "NRS 484B.323(1) and full HOV designation provisions remain unresolved for legal interpretation.",
+    "Three legal judgment phrases have nine additional finite engineering sweep cases; original measured observables and legal conclusions remain unresolved."
+  ],
+  "selected_branch": "Core encounter with qualified HOV exception",
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Core encounter with qualified HOV exception",
+      "cell_id": "C380107",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-208-1",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-208-1",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 338,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C380107__NRS-484B-208-1__motor_vehicle_driver/assignment.json",
@@ -322,28 +756,15 @@
       "sha256": "36db96b4cf34d7d925a0577189a31a88bd3e41aad3a3c3919418097f8a9b4a6f"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No original physical capture or exact Native delivery is established.",
-    "Source-bound encounter measurement helper is implemented; exact scene/controller, finalizer, semantic proposal, saved compatibility and delivery/comparison audits remain.",
-    "NRS 484B.323(1) and full HOV designation provisions require source resolution before a legal HOV exception judgment."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": []
+  "topic_inventory": {
+    "exact-text": "Except as otherwise provided in subsection 2, on a controlled-access highway which has two or more clearly marked lanes for traveling in the same direction, a driver may not continue to operate a motor vehicle in the extreme left lane if the driver knows, or reasonably should know, that he or she is traveling at a rate of speed which is less than the posted speed limit for that portion of the controlled-access highway and is being overtaken in that lane from the rear by a motor vehicle traveling at a higher rate of speed. The requirements of subsection 1 do not apply: (a) To a driver operating a motor vehicle that is: (1) Overtaking another vehicle proceeding in the same direction; (2) Preparing for a left turn at an intersection; (3) Traveling in a lane designated for the use of high-occupancy vehicles pursuant to NRS 484A.460, if the driver complies with the requirements to travel in such a lane [DEF-NRS-484A-460-2, NRS-484B-323-1]; or (4) Engaged in the construction, maintenance or repair of the highway, including, without limitation, the removal of snow. (b) When traffic conditions, inclement weather, obstructions or hazards make it necessary to drive in the extreme left lane. (c) When compliance with an official traffic control device or the directions given by a peace officer makes it necessary to drive in the extreme left lane. (d) To the driver of an authorized emergency vehicle in the course of his or her official duties. (e) To a driver operating a motor vehicle within the geographical limits of a city or town."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "exact_targets_unexecuted",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 338,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Core encounter with qualified HOV exception",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "The fixed HOV designation supports active assessment of the qualified HOV exception alongside the core rear-overtaking encounter.",
       "required_context": [
         "Construct below-limit subject operation and faster same-lane rear overtaking.",
         "Do not infer HOV eligibility from designation or use a numerical knowledge or persistence standard.",
@@ -355,7 +776,9 @@
         "Specify HOV designation extent, extreme-left-lane relationship, access boundaries, restriction hours, signs, occupancy and actual applicable eligibility requirements.",
         "Specify the HOV designation's extent, restriction hours, occupancy requirements, signs, access boundaries, vehicle category and actual compliance."
       ],
-      "reason": "The fixed HOV designation supports active assessment of the qualified HOV exception alongside the core rear-overtaking encounter."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 338,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

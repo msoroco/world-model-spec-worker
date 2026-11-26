@@ -12,7 +12,7 @@ from comparison_audit import audit
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-PRIVATE = REPO / ".runtime-work/c177008-nov26"
+PRIVATE = REPO / ".runtime-work/c177008-owner-nov26/output"
 
 
 def main() -> None:

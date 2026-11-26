@@ -23,13 +23,12 @@ def main() -> None:
     parser.add_argument("--negative", action="store_true")
     args = parser.parse_args()
     tag = args.case.rsplit("__", 1)[-1]
-    selected = {"case_id": args.case, "target": {
-        "weather_request": "rain" if tag == "business_rain" else "clear",
-        "signal_continuity_request": "continuous"}}
+    plan = json.loads((ROOT / "case-plan.json").read_text())
+    selected = next(item for item in plan["cases"] if item["case_id"] == args.case)
     district = ("residential" if tag.startswith("residence_") else
                 "other" if tag.startswith("other_area_") else "business")
     reviewed_site = site(district)
-    scratch = REPO / ".runtime-work" / "c177008-nov26"
+    scratch = REPO / ".runtime-work" / "c177008-owner-nov26/output"
     with tempfile.TemporaryDirectory(prefix="delivery-test-", dir=scratch) as temporary:
         root = Path(temporary)
         site_raw = (json.dumps(reviewed_site, sort_keys=True) + "\n").encode()

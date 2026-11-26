@@ -1,31 +1,68 @@
 {
-  "assignment_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver",
-  "input_sha256": "076657e5b90a8d964054e52074feb9300407615d2e20a062ee13caf8fe3fc89b",
-  "status": "partial",
-  "readiness_kind": "yield_reference_geometry_and_view_selector",
   "applied_update": 0,
+  "assignment_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver",
+  "first_gpu_delivery_command": "C24823_YIELD_REVIEW=\"$YIELD_REVIEW_PACKET\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C24823__NRS-484A-450-3__motor_vehicle_driver --case testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_nearest_view_stop --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+  "input_sha256": "076657e5b90a8d964054e52074feb9300407615d2e20a062ee13caf8fe3fc89b",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
+  "remaining_gpu_checks": [
+    "Independently reviewed original yield sign, crossing/line inventory, occluder and driver-viewpoint sight geometry, safety necessity, actual 900-frame motor-vehicle stopping trace, four-camera pixels, physical completion and legal review"
+  ],
+  "status": "ready",
   "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py verify --runtime runtime",
+      "exit_code": 0,
+      "log": "runtime-verify-current.log",
+      "sha256": "e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d"
+    },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "3946894b4ba0ea233b8a29a510f78ca53062f787c01b4bdc3bd9f673310e37a7"
+      "log": "preflight-current.log",
+      "sha256": "348f1bea8771ef75b7ee033cafc522e5dacd7b93d1969203795ba5e1a764505b"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/tests -p 'test_yield*.py' -v",
       "exit_code": 0,
-      "log": "unittest.log",
-      "sha256": "c4cb30d4ca4045697f1f2049a0b40e29722be7405103fc3f9e2e174f9d893ec8"
+      "log": "cpu-yield-tests.log",
+      "sha256": "1dd2a4e45716c1eb485ca7d1615958234bc7b2a214e16af4eb55c737c6986717"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C24823__NRS-484A-450-3__motor_vehicle_driver --complete",
+      "command": ".venv-cpu/bin/python work/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/prove_selected.py",
       "exit_code": 0,
-      "log": "static.log",
-      "sha256": "a96f74002126ebaa38a0ade2336ad0d75605a96f182539c75613780cbae431e8"
+      "log": "cpu-offline-proofs.json",
+      "sha256": "87c83787542147d9d9f3012e0915061d05b7da1a7b7c9e635fd57703ff4b75ed"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/prove_selected.py",
+      "exit_code": 0,
+      "log": "cpu-compatibility-proofs.json",
+      "sha256": "095492e023a494ab688f06be98836867f6fdd0997b648f365819a65000ebd6e2"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/prove_physical.py",
+      "exit_code": 0,
+      "log": "physical-fallback_nearest_view_stop-receipt.json",
+      "sha256": "8c4a7df670637bc37ca8dfaa13ee679835fddb3390d61ffac3daae637bda0581"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/prove_saved.py",
+      "exit_code": 0,
+      "log": "cpu-saved-proofs.json",
+      "sha256": "6531320500382b60cbb2eb2b88b77e2d7db1c7976f0a40f72d1f31f14dc389aa"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/prove_delivery.py",
+      "exit_code": 0,
+      "log": "cpu-delivery-proofs.json",
+      "sha256": "046b1deed97d25a730afd5fa0ee388b4410b4a864659d0bc337a841cebed640e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/prove_comparisons.py",
+      "exit_code": 0,
+      "log": "comparison-proof-index.json",
+      "sha256": "f7e5492e71d570caf9b95c982fa76649ba1b2d06dcd0b372eb343310565d6b18"
     }
-  ],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
-  ],
-  "reason": "Five exact planned cases and three comparisons cover the crosswalk, stop-line and nearest-view hierarchy plus conditional safety necessity. A source-bound selector builds occluder sight rays and chooses the nearest candidate with a geometric view; six synthetic CPU tests pass. Actual source geometry/sight and safety review, stop trace, exact bundles, saved processing, compatibility and audits remain CPU work."
+  ]
 }

@@ -23,7 +23,7 @@ def main() -> None:
     parser.add_argument("--case", required=True)
     args = parser.parse_args()
     suffix = args.case.rsplit("__", 1)[-1]
-    construction = ROOT / ("construction.json" if suffix == "residence_continuous" else "cases/" + suffix + "/construction.json")
+    construction = ROOT / ("construction.json" if suffix == "business_sufficient" else "cases/" + suffix + "/construction.json")
     if json.loads(construction.read_text())["case_id"] != args.case:
         raise ValueError("lifecycle fixture case differs")
     Path(private).mkdir(parents=True, exist_ok=True)

@@ -1,44 +1,52 @@
 {
-  "assignment_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C24823",
-  "law_id": "NRS-484A-450-3",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484A-450-3",
-      "cell_id": "C24823",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484A-450-3",
-      "branch": "Conditional stop at nearest point with a view",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 324,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "The driver of a vehicle approaching a yield sign if required for safety to stop shall stop before entering the crosswalk on the nearest side of the intersection or, if there is no crosswalk, at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway.",
-  "law_source": "NRS 484A.450(3)",
-  "topic_inventory": {
-    "exact-text": "The driver of a vehicle approaching a yield sign if required for safety to stop shall stop before entering the crosswalk on the nearest side of the intersection or, if there is no crosswalk, at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway."
+  "assignment_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "before approach through complete passage",
+        "subject": "whole yield approach and intersecting highway",
+        "view": "overview"
+      },
+      {
+        "interval": "before stop through release",
+        "subject": "motor vehicle, yield sign and priority reference",
+        "view": "approach"
+      },
+      {
+        "interval": "stop approach through entry",
+        "subject": "crosswalk, marked line or nearest-view reference",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "approach through intersecting-highway entry",
+        "subject": "occluder, sight target and original vehicle pose",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
+      "actor": "motor_vehicle_driver",
+      "branch": "Conditional stop at nearest point with a view",
       "case_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_nearest_view_stop",
-      "branch": "Conditional stop at nearest point with a view",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "cell_id": "C24823",
+      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
+      "construction_tool": "yield_site.select_stop_reference",
+      "crosswalk_status": "none",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "crosswalk_status": "none",
+      "kind": "delivery",
       "marked_stop_line_status": "none",
-      "stopping_required_for_safety_context": "yes",
+      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff.",
+      "new_capture_selected": true,
+      "physical_risk": "The blind intersection may not offer a real candidate with an unobstructed view; source occluders, driver viewpoint, approaching traffic and actual stop need readback.",
+      "planning_status": "selected_original_source_and_physical_review_pending",
       "requested_stop_behavior": "nearest_view_stop",
-      "construction_tool": "yield_site.select_stop_reference",
-      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
       "required_original_packets": [
         "yield_sign_governance",
         "crosswalk_and_stop_line_inventory",
@@ -50,23 +58,28 @@
         "20hz_vehicle_stop_trace",
         "four_camera_video"
       ],
-      "physical_risk": "The blind intersection may not offer a real candidate with an unobstructed view; source occluders, driver viewpoint, approaching traffic and actual stop need readback.",
-      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff."
+      "stopping_required_for_safety_context": "yes",
+      "target_law_id": "NRS-484A-450-3",
+      "variant": "fallback_nearest_view_stop"
     },
     {
+      "actor": "motor_vehicle_driver",
+      "branch": "Conditional stop at nearest point with a view",
       "case_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_earlier_obscured_stop",
-      "branch": "Conditional stop at nearest point with a view",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "cell_id": "C24823",
+      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
+      "construction_tool": "yield_site.select_stop_reference",
+      "crosswalk_status": "none",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "crosswalk_status": "none",
+      "kind": "delivery",
       "marked_stop_line_status": "none",
-      "stopping_required_for_safety_context": "yes",
+      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff.",
+      "new_capture_selected": true,
+      "physical_risk": "The blind intersection may not offer a real candidate with an unobstructed view; source occluders, driver viewpoint, approaching traffic and actual stop need readback.",
+      "planning_status": "selected_original_source_and_physical_review_pending",
       "requested_stop_behavior": "earlier_obscured_stop",
-      "construction_tool": "yield_site.select_stop_reference",
-      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
       "required_original_packets": [
         "yield_sign_governance",
         "crosswalk_and_stop_line_inventory",
@@ -78,23 +91,28 @@
         "20hz_vehicle_stop_trace",
         "four_camera_video"
       ],
-      "physical_risk": "The blind intersection may not offer a real candidate with an unobstructed view; source occluders, driver viewpoint, approaching traffic and actual stop need readback.",
-      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff."
+      "stopping_required_for_safety_context": "yes",
+      "target_law_id": "NRS-484A-450-3",
+      "variant": "fallback_earlier_obscured_stop"
     },
     {
+      "actor": "motor_vehicle_driver",
+      "branch": "Conditional stop at nearest point with a view",
       "case_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__marked_line_stop",
-      "branch": "Conditional stop at nearest point with a view",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "cell_id": "C24823",
+      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
+      "construction_tool": "yield_site.select_stop_reference",
+      "crosswalk_status": "none",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "crosswalk_status": "none",
+      "kind": "delivery",
       "marked_stop_line_status": "present",
-      "stopping_required_for_safety_context": "yes",
+      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff.",
+      "new_capture_selected": true,
+      "physical_risk": "The blind intersection may not offer a real candidate with an unobstructed view; source occluders, driver viewpoint, approaching traffic and actual stop need readback.",
+      "planning_status": "selected_original_source_and_physical_review_pending",
       "requested_stop_behavior": "marked_line_stop",
-      "construction_tool": "yield_site.select_stop_reference",
-      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
       "required_original_packets": [
         "yield_sign_governance",
         "crosswalk_and_stop_line_inventory",
@@ -106,51 +124,28 @@
         "20hz_vehicle_stop_trace",
         "four_camera_video"
       ],
-      "physical_risk": "The blind intersection may not offer a real candidate with an unobstructed view; source occluders, driver viewpoint, approaching traffic and actual stop need readback.",
-      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff."
-    },
-    {
-      "case_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__nearest_crosswalk_stop",
-      "branch": "Conditional stop at nearest point with a view",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "crosswalk_status": "present",
-      "marked_stop_line_status": "present",
       "stopping_required_for_safety_context": "yes",
-      "requested_stop_behavior": "nearest_crosswalk_stop",
-      "construction_tool": "yield_site.select_stop_reference",
-      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
-      "required_original_packets": [
-        "yield_sign_governance",
-        "crosswalk_and_stop_line_inventory",
-        "qualifying_intersection_and_highway_boundary",
-        "driver_viewpoint_candidates",
-        "actual_occluder_geometry",
-        "approaching_traffic_sight_targets",
-        "safety_necessity_review",
-        "20hz_vehicle_stop_trace",
-        "four_camera_video"
-      ],
-      "physical_risk": "The blind intersection may not offer a real candidate with an unobstructed view; source occluders, driver viewpoint, approaching traffic and actual stop need readback.",
-      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff."
+      "target_law_id": "NRS-484A-450-3",
+      "variant": "marked_line_stop"
     },
     {
-      "case_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__no_safety_stop_required",
+      "actor": "motor_vehicle_driver",
       "branch": "Conditional stop at nearest point with a view",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "case_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__nearest_crosswalk_stop",
+      "cell_id": "C24823",
+      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
+      "construction_tool": "yield_site.select_stop_reference",
+      "crosswalk_status": "present",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "crosswalk_status": "none",
-      "marked_stop_line_status": "none",
-      "stopping_required_for_safety_context": "no",
-      "requested_stop_behavior": "proceed_without_stop",
-      "construction_tool": "yield_site.select_stop_reference",
-      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
+      "kind": "delivery",
+      "marked_stop_line_status": "present",
+      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff.",
+      "new_capture_selected": true,
+      "physical_risk": "The blind intersection may not offer a real candidate with an unobstructed view; source occluders, driver viewpoint, approaching traffic and actual stop need readback.",
+      "planning_status": "selected_original_source_and_physical_review_pending",
+      "requested_stop_behavior": "nearest_crosswalk_stop",
       "required_original_packets": [
         "yield_sign_governance",
         "crosswalk_and_stop_line_inventory",
@@ -162,56 +157,209 @@
         "20hz_vehicle_stop_trace",
         "four_camera_video"
       ],
+      "stopping_required_for_safety_context": "yes",
+      "target_law_id": "NRS-484A-450-3",
+      "variant": "nearest_crosswalk_stop"
+    },
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Conditional stop at nearest point with a view",
+      "case_id": "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__no_safety_stop_required",
+      "cell_id": "C24823",
+      "construction_status": "source_geometry_reference_selector_tested; actual site unresolved",
+      "construction_tool": "yield_site.select_stop_reference",
+      "crosswalk_status": "none",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "marked_stop_line_status": "none",
+      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff.",
+      "new_capture_selected": true,
       "physical_risk": "The blind intersection may not offer a real candidate with an unobstructed view; source occluders, driver viewpoint, approaching traffic and actual stop need readback.",
-      "measurement": "Actual reference hierarchy, original driver sight candidates, closest candidate with view, safety necessity context and 20 Hz stop position/speed; no legal numeric cutoff."
+      "planning_status": "selected_original_source_and_physical_review_pending",
+      "requested_stop_behavior": "proceed_without_stop",
+      "required_original_packets": [
+        "yield_sign_governance",
+        "crosswalk_and_stop_line_inventory",
+        "qualifying_intersection_and_highway_boundary",
+        "driver_viewpoint_candidates",
+        "actual_occluder_geometry",
+        "approaching_traffic_sight_targets",
+        "safety_necessity_review",
+        "20hz_vehicle_stop_trace",
+        "four_camera_video"
+      ],
+      "stopping_required_for_safety_context": "no",
+      "target_law_id": "NRS-484A-450-3",
+      "variant": "no_safety_stop_required"
     }
   ],
+  "cell_id": "C24823",
   "comparisons": [
     {
-      "comparison_id": "nearest_view_vs_earlier_obscured",
       "case_ids": [
         "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_nearest_view_stop",
         "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_earlier_obscured_stop"
       ],
-      "fixed_conditions": [
-        "same yield sign, intersection, crosswalk and line absence, occluder, traffic, driver and cameras"
-      ],
+      "comparison_id": "nearest_view_vs_earlier_obscured",
       "deliberate_differences": [
         "stop at nearest geometric-view candidate versus earlier obscured position"
       ],
-      "status": "planned_unbuilt"
+      "fixed_conditions": [
+        "same yield sign, intersection, crosswalk and line absence, occluder, traffic, driver and cameras"
+      ],
+      "status": "selected_controlled_comparison_cpu_audit_pending"
     },
     {
-      "comparison_id": "stop_reference_hierarchy",
       "case_ids": [
         "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_nearest_view_stop",
         "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__marked_line_stop",
         "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__nearest_crosswalk_stop"
       ],
-      "fixed_conditions": [
-        "same driver, yield-sign approach, intersecting highway, traffic and cameras"
-      ],
+      "comparison_id": "stop_reference_hierarchy",
       "deliberate_differences": [
         "presence of marked stop line and nearest crosswalk changes governing reference in statutory order"
       ],
-      "status": "planned_unbuilt"
+      "fixed_conditions": [
+        "same driver, yield-sign approach, intersecting highway, traffic and cameras"
+      ],
+      "status": "selected_controlled_comparison_cpu_audit_pending"
     },
     {
-      "comparison_id": "conditional_safety_necessity",
       "case_ids": [
         "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_nearest_view_stop",
         "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__no_safety_stop_required"
       ],
-      "fixed_conditions": [
-        "same yield-sign approach and fallback geometry, driver, cameras and duration"
-      ],
+      "comparison_id": "conditional_safety_necessity",
       "deliberate_differences": [
         "independently reviewed necessity for safety and requested stopping behavior"
       ],
-      "status": "planned_unbuilt"
+      "fixed_conditions": [
+        "same yield-sign approach and fallback geometry, driver, cameras and duration"
+      ],
+      "status": "selected_controlled_comparison_cpu_audit_pending"
     }
   ],
-  "observations": [],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "unverified-law-coverage",
+        "requirement": "Yield-sign conditional stopping with crosswalk/marked-line/fallback hierarchy and original view evidence",
+        "source": "inputs/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen accepted inventory lists no recordings for this assignment."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484A-450-3",
+  "law_source": "NRS 484A.450(3)",
+  "law_text": "The driver of a vehicle approaching a yield sign if required for safety to stop shall stop before entering the crosswalk on the nearest side of the intersection or, if there is no crosswalk, at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway.",
+  "observations": [
+    {
+      "mandatory": true,
+      "measurement": "full body relative to governing stop reference",
+      "name": "original_body_polygon",
+      "source": "original CARLA eight world-space body vertices and center at 20 Hz"
+    },
+    {
+      "mandatory": true,
+      "measurement": "sampled stop speed",
+      "name": "original_speed",
+      "source": "original CARLA ego velocity at 20 Hz"
+    },
+    {
+      "mandatory": true,
+      "measurement": "governing control and approach identity",
+      "name": "yield_control_readback",
+      "source": "original yield sign and live approach lane/map readback"
+    },
+    {
+      "mandatory": true,
+      "measurement": "geometric candidate sight ray; driver perception unresolved",
+      "name": "original_view_geometry",
+      "source": "source-sealed original occluder, driver-viewpoint and approaching traffic packets"
+    },
+    {
+      "mandatory": true,
+      "measurement": "frame identity, full decode and actual pixel review",
+      "name": "four_camera_frames",
+      "source": "four original synchronized Native RGB cameras"
+    },
+    {
+      "mandatory": false,
+      "measurement": "source gate and original evidence hashes; no automatic legal judgment",
+      "name": "reviewed_yield_context",
+      "source": "independently reviewed original map, yield sign, crossing inventory, safety context and sight geometry"
+    }
+  ],
+  "planning_status": "selected_five_cases_three_comparisons_source_gated_cpu_preparation",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_nearest_view_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_earlier_obscured_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__marked_line_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__nearest_crosswalk_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__no_safety_stop_required"
+      ],
+      "evidence_or_gap": "No accepted original C24823 recording; source review and Native stop trace pending.",
+      "requirement": "Yield sign governance and nearest crosswalk, otherwise marked line, otherwise nearest-view reference",
+      "source": "NRS 484A.450(3) exact text",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_nearest_view_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_earlier_obscured_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__marked_line_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__nearest_crosswalk_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__no_safety_stop_required"
+      ],
+      "evidence_or_gap": "No accepted original C24823 recording; source review and Native stop trace pending.",
+      "requirement": "Original blind-approach occluder and approaching-traffic sight geometry",
+      "source": "NRS 484A.450(3) and frozen C24823 conditional witness",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_nearest_view_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__fallback_earlier_obscured_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__marked_line_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__nearest_crosswalk_stop",
+        "testing__C24823__NRS-484A-450-3__motor_vehicle_driver__no_safety_stop_required"
+      ],
+      "evidence_or_gap": "No accepted original C24823 recording; source review and Native stop trace pending.",
+      "requirement": "Independently sourced safety necessity and original 20 Hz motor-vehicle stopping trace",
+      "source": "NRS 484A.450(3) conditional if required for safety",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "No accepted recording exists in frozen inventory; actual sight, occlusion, reference hierarchy and stopping trace require source readback.",
+    "Stopping required for safety cannot be inferred from a synthetic traffic conflict or a geometric ray."
+  ],
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Conditional stop at nearest point with a view",
+      "cell_id": "C24823",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484A-450-3",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484A-450-3",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 324,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/assignment.json",
@@ -234,34 +382,15 @@
       "sha256": "3b5dfd48d9042991cd43bb190eff8d9fba0db7be7ca480e4f9ed863c3fe6e12c"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No accepted recording exists in frozen inventory; actual sight, occlusion, reference hierarchy and stopping trace require source readback.",
-    "Stopping required for safety cannot be inferred from a synthetic traffic conflict or a geometric ray."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "unverified-law-coverage",
-        "requirement": "Yield-sign conditional stopping with crosswalk/marked-line/fallback hierarchy and original view evidence",
-        "source": "inputs/testing__C24823__NRS-484A-450-3__motor_vehicle_driver/evidence.json",
-        "why_existing_insufficient": "Frozen accepted inventory lists no recordings for this assignment."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "The driver of a vehicle approaching a yield sign if required for safety to stop shall stop before entering the crosswalk on the nearest side of the intersection or, if there is no crosswalk, at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_five_cases_three_comparisons_tested_reference_selector",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 324,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Conditional stop at nearest point with a view",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "A blind approach can retain obstruction while offering a nearer position with a view, supporting the fallback location conditionally.",
       "required_context": [
         "An eligible motor vehicle and driver.",
         "Driver viewpoint, candidate positions, highway boundary, occluders and approaching traffic; safety necessity remains uninterpreted.",
@@ -273,7 +402,9 @@
         "Stopping required for safety remains unresolved and cannot be inferred solely from constructed traffic conflict.",
         "Yield-sign governance of a qualifying intersection approach."
       ],
-      "reason": "A blind approach can retain obstruction while offering a nearer position with a view, supporting the fallback location conditionally."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 324,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

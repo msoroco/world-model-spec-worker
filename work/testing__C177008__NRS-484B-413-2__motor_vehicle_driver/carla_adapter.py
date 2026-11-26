@@ -28,6 +28,7 @@ class Session:
         self.original_settings = None
         self.original_weather = None
         self.ego = None
+        self.other_vehicle = None
         self.sensors = {}
         self.camera_queues = {}
         self._requested_signal = False
@@ -78,6 +79,12 @@ class Session:
             except Exception as error:
                 errors.append(error)
             self.ego = None
+        if self.other_vehicle is not None:
+            try:
+                self.other_vehicle.destroy()
+            except Exception as error:
+                errors.append(error)
+            self.other_vehicle = None
         if self.world is not None:
             if self.original_weather is not None:
                 try:
@@ -126,6 +133,22 @@ class Session:
 
     def read_map_name(self) -> str:
         return self.world.get_map().name
+
+    def spawn_other_vehicle(self, blueprint_id: str, start: list[float]) -> dict:
+        if self.other_vehicle is not None:
+            raise ValueError("other vehicle already spawned")
+        blueprint = self.world.get_blueprint_library().find(blueprint_id)
+        if blueprint is None or blueprint.id != blueprint_id:
+            raise ValueError("reviewed other-vehicle blueprint unavailable")
+        pose = self.carla.Transform(self.carla.Location(x=start[0], y=start[1], z=start[2]),
+                                    self.carla.Rotation())
+        actor = self.world.spawn_actor(blueprint, pose)
+        if actor is None or actor.type_id != blueprint_id or not actor.is_alive:
+            raise ValueError("reviewed other-vehicle spawn/readback differs")
+        if actor.get_transform().location.distance(pose.location) > 1.0:
+            raise ValueError("reviewed other-vehicle location readback differs")
+        self.other_vehicle = actor
+        return {"actor_id": actor.id, "blueprint_id": actor.type_id}
 
     def spawn_ego(self, blueprint_id: str, start: list[float]) -> dict:
         if self.ego is not None:

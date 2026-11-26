@@ -102,6 +102,12 @@ def build_report(root: Path) -> dict:
                 "value": measured, "method": "build_report", "sources": signal_sources},
                 "site_context_measurement": {"value": {"site": site,
                     "source_audit": source}, "method": "build_report", "sources": site_sources},
+                "continuity_measurement": {"value": {
+                    "continuous_start_frame": measured["continuous_start_frame"],
+                    "interruption_frames_after_activation": measured["interruption_frames_after_activation"],
+                    "observed_continuous_distance_ft": measured["continuous_distance_ft"]},
+                    "method": "build_report",
+                    "sources": {"original-turn-signal.json": signal_sources["original-turn-signal.json"]}},
                 "weather_independence_measurement": {"value": {
                     "selected_weather": expected_weather,
                     "observed_weather_states": sorted(set(row.get("weather") for row in rows)),
