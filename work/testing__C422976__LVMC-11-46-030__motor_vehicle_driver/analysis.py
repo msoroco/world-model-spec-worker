@@ -174,6 +174,18 @@ def saved_result(attempt, report):
                 "school_lane_release": report["measurements"]["school_lane_release_observation"]["value"],
                 "school_lane_warning": report["measurements"]["school_lane_warning_observation"]["value"]}}
     result = physical_result(attempt, result)
+    for name, condition in (
+        ("original_warning_onset_s", "human_warning_active"),
+        ("original_departure_onset_s", "human_left_locality"),
+    ):
+        observed = next((row["time_s"] for row in rows if row[condition]), -1.0)
+        result["realized_observables"][name] = {
+            "value": observed, "unit": "s",
+            "method": "first source-bound actor-state transition in original 20 Hz capture",
+            "time_window": "all 900 original ticks", "statistic": "first",
+            "reference": "channels/" + name + ".jsonl",
+            "sample_window_s": [0.0, 44.95],
+        }
     validate_result(result)
     return result
 

@@ -22,7 +22,7 @@ def main() -> None:
     receipts = []
     for comparison in plan["comparisons"]:
         ident = comparison["comparison_id"]
-        paths = [PRIVATE / ("saved-compat-" + case.rsplit("__", 1)[-1] + "-reviewed")
+        paths = [PRIVATE / ("saved-compat-" + case.rsplit("__", 1)[-1] + "-reviewed2")
                  for case in comparison["case_ids"]]
         proof = audit(ident, paths, diagnostic_fixture=True)
         if proof.get("software_measurement_passed") is not True:

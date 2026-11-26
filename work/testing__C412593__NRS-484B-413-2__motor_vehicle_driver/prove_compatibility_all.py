@@ -39,7 +39,7 @@ def main() -> None:
     for entry in manifest["cases"]:
         case = entry["case_id"]
         tag = case.rsplit("__", 1)[-1]
-        output = PRIVATE / ("compat-" + tag + "-" + candidate + "-reviewed")
+        output = PRIVATE / ("compat-" + tag + "-" + candidate + "-reviewed2")
         command = [sys.executable, str(REPO / "runtime.py"), "compatibility",
                    "--manifest", str(MANIFEST), "--case", case,
                    "--output", str(output), "--library", str(REPO / "runtime/library"),
