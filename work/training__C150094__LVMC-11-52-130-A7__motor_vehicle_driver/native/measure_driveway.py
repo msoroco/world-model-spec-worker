@@ -70,7 +70,12 @@ def measure(root):
                 'traffic_device_direction'):
         if type(context.get(key)) is not bool:
             raise ValueError('Missing reviewed exception fact: ' + key)
-    if context['owner_controller_family_invitee'] and context['driveway_kind'] != 'private':
+    role = context.get('private_driveway_authority_role')
+    if role not in ('none', 'owner', 'controller', 'family_member', 'invitee'):
+        raise ValueError('Missing specific private driveway authority role')
+    if context['owner_controller_family_invitee'] != (role != 'none'):
+        raise ValueError('Aggregate private authority disagrees with specific role')
+    if role != 'none' and context['driveway_kind'] != 'private':
         raise ValueError('Private driveway authority claimed for public driveway')
     prev_native, prev_t = -1, -1.0
     rest, signed_gaps = [], []
@@ -115,6 +120,7 @@ def measure(root):
             'front_of_driveway_frame_count': len(front), 'within_five_feet_frame_count': len(near),
             'five_feet_m': FIVE_FEET_M,
             'private_driveway_authority_context': private_exception_context,
+            'private_driveway_authority_role': role,
             'usps_official_business_context': postal_exception_context,
             'necessary_traffic_conflict_context': context['necessary_to_avoid_traffic_conflict'],
             'law_or_officer_or_device_direction_context': any(context[k] for k in

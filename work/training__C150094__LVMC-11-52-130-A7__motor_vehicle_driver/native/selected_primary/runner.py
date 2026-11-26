@@ -184,6 +184,7 @@ def capture(survey, output, host, port):
             'parking_state_source': 'native_parking_trace.jsonl',
             'camera_sha256': camera_hashes, 'review_required': True,
             'driveway_kind': None, 'owner_controller_family_invitee': None,
+            'private_driveway_authority_role': None,
             'usps_vehicle': None, 'usps_official_business': None,
             'necessary_to_avoid_traffic_conflict': None,
             'complying_with_law': None, 'officer_direction': None,

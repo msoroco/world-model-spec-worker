@@ -3,10 +3,28 @@
   "cases": [
     {
       "candidate_risk": {
-        "reason": "No original route or camera failure is measured for this exact comparison case",
-        "status": "none"
+        "reason": "Live braking can overshoot the surveyed stop centre and miss the exact measured gap",
+        "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake lookahead floor: 3.0 -> 4.0 m",
+            "speed braking denominator: 4.0 -> 3.0",
+            "approach throttle: 0.27 -> 0.18"
+          ],
+          "compatibility": {},
+          "construction": "native/fallback1-probe_01-construction.json",
+          "construction_sha256": "16656f58b39b3cb9a6c9ed9ef631d315d98b3a40de30a3c35f09a88b042a11e2",
+          "id": "fallback1",
+          "offline": {},
+          "trigger": {
+            "failure_condition": "primary stationary measured gap differs from the case target by more than 0.25 m",
+            "metric": "stationary body-footprint gap against surveyed driveway curb interval",
+            "source": "native_parking_trace.jsonl"
+          }
+        }
+      ],
       "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01",
       "compatibility": {
         "log": "native/compatibility/probe_01/analysis.log",
@@ -15,7 +33,7 @@
         "sha256": "c48707f7d975fd08a688958316c5f1e3a6c8123bfa8cee61aad0ca2775f9a90f"
       },
       "construction": "native/selected-construction-probe_01.json",
-      "construction_sha256": "607726ef3c8d4c9411e443bd09d98f9a07199fa6fc98c58de9d581ef01451765",
+      "construction_sha256": "09cc69242accc2e7fb8dd661def6f2cd4603752d3e2181434184915e5bf3f7b7",
       "delivery_acceptance": {
         "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01",
         "checks": [
@@ -26,8 +44,8 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-01-r1 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01 --diagnostic --output work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery-probe_01-positive.json",
-        "negative_command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-01-r1 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01 --output .runtime-work/c150094-owner/delivery-probe-01-negative.json",
+        "command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-01-r9 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01 --diagnostic --output work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery-probe_01-positive.json",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-01-r9 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01 --output .runtime-work/c150094-owner/delivery-probe-01-negative.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing delivery source: capture-seal.json",
         "negative_log": "delivery-probe_01-negative.log",
@@ -64,27 +82,49 @@
         "log": "native/selected-offline-probe_01.log",
         "log_sha256": "04b99488906a503afe118fd973b1b523002ec0840b2e793e1e17e9df7ae29570"
       },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_01/proof.json",
+        "sha256": "0ceca863920e3e9354d954f382f905404aa0e37a62aab5eb18ead3714065a1d1"
+      },
       "post_capture": {
         "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/execution-manifest.json --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/execution-manifest.json --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "negative_feedback": "native/saved/probe_01-negative-feedback.json",
-        "negative_feedback_sha256": "372460f64a6082c8452949ba8ae93b147f71c9bca55e6f320b6d2fc8f42c9d08",
+        "negative_feedback_sha256": "08005520fa6c719d11722137af5e271fd242621e788eeca04b7f36baa534bec2",
         "negative_processing_receipt": "native/saved/probe_01-negative-processing.json",
-        "negative_processing_receipt_sha256": "ec43ece09099313f09b83f46b0fe23186a20f366c891d13ad3c3e31eda9df545",
+        "negative_processing_receipt_sha256": "0e495920336b4d3de5f0be4d5c4cde3ca2dffb6d527ba7527c2e38d19f8816d4",
         "processing_receipt": "native/saved/probe_01-positive-processing.json",
-        "processing_receipt_sha256": "a1212fd3aa62161800cd99df66c0611a2186eec86127cb9941432d6baa6a9e1b",
+        "processing_receipt_sha256": "761586d79f29e3ccf2c14f39de9fa37aa2488ba25e5b9f8371262f619f370e4e",
         "recorded_only": true,
         "test_exit_code": 0,
         "test_log": "native/saved/probe_01-positive-processing.json",
-        "test_log_sha256": "a1212fd3aa62161800cd99df66c0611a2186eec86127cb9941432d6baa6a9e1b"
+        "test_log_sha256": "761586d79f29e3ccf2c14f39de9fa37aa2488ba25e5b9f8371262f619f370e4e"
       }
     },
     {
       "candidate_risk": {
-        "reason": "Driveway stop-point overshoot on surveyed local map",
+        "reason": "Live braking can overshoot the surveyed stop centre and miss the exact measured gap",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake lookahead floor: 3.0 -> 4.0 m",
+            "speed braking denominator: 4.0 -> 3.0",
+            "approach throttle: 0.27 -> 0.18"
+          ],
+          "compatibility": {},
+          "construction": "native/fallback1-probe_02-construction.json",
+          "construction_sha256": "6da05e2efd22e87553d76d853dd235d5c2c3a645d5d2b3bb33efb5ee2bd2efb5",
+          "id": "fallback1",
+          "offline": {},
+          "trigger": {
+            "failure_condition": "primary stationary measured gap differs from the case target by more than 0.25 m",
+            "metric": "stationary body-footprint gap against surveyed driveway curb interval",
+            "source": "native_parking_trace.jsonl"
+          }
+        }
+      ],
       "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02",
       "compatibility": {
         "log": "native/compatibility/probe_02/analysis.log",
@@ -93,7 +133,7 @@
         "sha256": "33e8af1f597a3370c9b8f02233dffb73da816c95eaa49896d0e4d87afe837954"
       },
       "construction": "native/selected-primary-construction.json",
-      "construction_sha256": "48963f3e7efe62e7edac4d577d11eb86ddba9e597d420547d837e1eb19994aba",
+      "construction_sha256": "de824334f802b16cd9e5b07fa2c8c0517d3ead0741201eb77fdd7e4010c81ebb",
       "delivery_acceptance": {
         "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02",
         "checks": [
@@ -104,8 +144,8 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-02-r7 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02 --diagnostic --output work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery-probe_02-positive.json",
-        "negative_command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-02-r7 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02 --output .runtime-work/c150094-owner/delivery-probe-02-negative.json",
+        "command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-02-r9 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02 --diagnostic --output work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery-probe_02-positive.json",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-02-r9 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02 --output .runtime-work/c150094-owner/delivery-probe-02-negative.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing delivery source: capture-seal.json",
         "negative_log": "delivery-probe_02-negative.log",
@@ -142,27 +182,49 @@
         "log": "native/selected-primary-offline.log",
         "log_sha256": "47387cc8cc1cdaa973dce0b949b17e092731ef0460d832dbdecbbb46b35a795a"
       },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_02/proof.json",
+        "sha256": "168665e7cd4d08432182cfbd6740d2a2982ddb15ae6a8bedce56ae1bf0aa00cb"
+      },
       "post_capture": {
         "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/execution-manifest.json --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/execution-manifest.json --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "negative_feedback": "native/saved/probe_02-negative-feedback.json",
-        "negative_feedback_sha256": "fc071ecfc046b89212b25be0b25cb7bc013ab6ca0b81870c1a156cb237dc0a9d",
+        "negative_feedback_sha256": "906abca99b0885f7ccc3d755e8ab2a1198d96e382f66a13cd6628baac2f61c2f",
         "negative_processing_receipt": "native/saved/probe_02-negative-processing.json",
-        "negative_processing_receipt_sha256": "36b7f51bed107bfe5e3553935467d22fa3093393b2d1b8938a077ae85f3dd393",
+        "negative_processing_receipt_sha256": "2659159cedee66495690e7e71e0cf739d97384c2625e4336870333425009da7a",
         "processing_receipt": "native/saved/probe_02-positive-processing.json",
-        "processing_receipt_sha256": "9bdb72b2907b6835e47f6f4ce3f3aa7cde3c8bcf138c243eade03d5ea38b764c",
+        "processing_receipt_sha256": "d9f382654fb553ea8e32f568641166dad5069c4485f799270d28b317f5845b03",
         "recorded_only": true,
         "test_exit_code": 0,
         "test_log": "native/saved/probe_02-positive-processing.json",
-        "test_log_sha256": "9bdb72b2907b6835e47f6f4ce3f3aa7cde3c8bcf138c243eade03d5ea38b764c"
+        "test_log_sha256": "d9f382654fb553ea8e32f568641166dad5069c4485f799270d28b317f5845b03"
       }
     },
     {
       "candidate_risk": {
-        "reason": "No original route or camera failure is measured for this exact comparison case",
-        "status": "none"
+        "reason": "Live braking can overshoot the surveyed stop centre and miss the exact measured gap",
+        "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake lookahead floor: 3.0 -> 4.0 m",
+            "speed braking denominator: 4.0 -> 3.0",
+            "approach throttle: 0.27 -> 0.18"
+          ],
+          "compatibility": {},
+          "construction": "native/fallback1-probe_03-construction.json",
+          "construction_sha256": "42dce0c89843529c96e1c6ef1db0bfedd8cc09169e8cc14551e3c6330f288e5a",
+          "id": "fallback1",
+          "offline": {},
+          "trigger": {
+            "failure_condition": "primary stationary measured gap differs from the case target by more than 0.25 m",
+            "metric": "stationary body-footprint gap against surveyed driveway curb interval",
+            "source": "native_parking_trace.jsonl"
+          }
+        }
+      ],
       "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03",
       "compatibility": {
         "log": "native/compatibility/probe_03/analysis.log",
@@ -171,7 +233,7 @@
         "sha256": "65c6aabe0a6a1bfa1fb4d2faf9669d6542a142a963b4a8df43ae8d1d461fcedf"
       },
       "construction": "native/selected-construction-probe_03.json",
-      "construction_sha256": "217e26affbf86ff2df54d4c2c1b1763567e7812676c255255117f2d376238f22",
+      "construction_sha256": "b70eb01502add53941442ac6c875836706c8657e7ea686436cacb2eba20dd974",
       "delivery_acceptance": {
         "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03",
         "checks": [
@@ -182,8 +244,8 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-03-r1 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03 --diagnostic --output work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery-probe_03-positive.json",
-        "negative_command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-03-r1 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03 --output .runtime-work/c150094-owner/delivery-probe-03-negative.json",
+        "command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-03-r9 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03 --diagnostic --output work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery-probe_03-positive.json",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/delivery_acceptance.py --attempt .runtime-work/c150094-owner/compat-probe-03-r9 --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03 --output .runtime-work/c150094-owner/delivery-probe-03-negative.json",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing delivery source: capture-seal.json",
         "negative_log": "delivery-probe_03-negative.log",
@@ -220,19 +282,23 @@
         "log": "native/selected-offline-probe_03.log",
         "log_sha256": "fff491ef36a6dae30efcaa857c9076dba26ba36c9a2d45c63ed811a7f53b6208"
       },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_03/proof.json",
+        "sha256": "954a12453b0565476ac879b64a609f0a5c724551e2138d8b74ca6689455bfb59"
+      },
       "post_capture": {
         "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/execution-manifest.json --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/execution-manifest.json --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "negative_feedback": "native/saved/probe_03-negative-feedback.json",
-        "negative_feedback_sha256": "4314302002b2146ba360c12203c96883202bf3bcfe33689099ca8933a7232b23",
+        "negative_feedback_sha256": "5362ed40e461379481a518cbe18338a4a23885a9dab63d064bd8bdf18e71129d",
         "negative_processing_receipt": "native/saved/probe_03-negative-processing.json",
-        "negative_processing_receipt_sha256": "ffb4f2b6d40aa1fa6b2d051bb03c6ffe79c4ebf51da15e218ee046ae251d8aa4",
+        "negative_processing_receipt_sha256": "095d78917591fc206ad9bc1945fb9f2e4e8b556c87d6c7d7efc06a1275d6a3d8",
         "processing_receipt": "native/saved/probe_03-positive-processing.json",
-        "processing_receipt_sha256": "54732ff9751e64ad24e7c0473094c259f255d15ccedfa3476f3b523d896125ec",
+        "processing_receipt_sha256": "cb4b25dd0313df37412aabc9fb4c11ca9d5b594357dd866dbfce91f9928fc85d",
         "recorded_only": true,
         "test_exit_code": 0,
         "test_log": "native/saved/probe_03-positive-processing.json",
-        "test_log_sha256": "54732ff9751e64ad24e7c0473094c259f255d15ccedfa3476f3b523d896125ec"
+        "test_log_sha256": "cb4b25dd0313df37412aabc9fb4c11ca9d5b594357dd866dbfce91f9928fc85d"
       }
     }
   ],

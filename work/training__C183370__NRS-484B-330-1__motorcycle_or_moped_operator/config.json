@@ -1,0 +1,195 @@
+{
+  "assignment_id": "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator",
+  "case_id": "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_a",
+  "candidate_id": "primary",
+  "law_id": "NRS-484B-330-1",
+  "cell_id": "C183370",
+  "actor": "motorcycle_or_moped_operator",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "frame_count": 600,
+  "controller_policy": "hold_until_release",
+  "stop_line_x_m": 0.0,
+  "requested_route": "driving_lane_beside_paved_shoulder",
+  "signal_policy": {
+    "stop_begin_frame": 1100,
+    "release_frame": 1300
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 80,
+      "pose_strategy": "reviewed flagger corridor and operator reference"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "reviewed flagger corridor and operator reference"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed flagger corridor and operator reference"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 80,
+      "pose_strategy": "reviewed flagger corridor and operator reference"
+    }
+  ],
+  "assignment_source": "inputs/training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator/assignment.json",
+  "assignment_sha256": "a5d42a7a1419b90b1085cc4692b7c1f88d8fa3f83c7e9da28e505ca751d22bcd",
+  "road_sha256": "5b97706a0f47b58f7e1a73b5d3baa1f6a9c306d6859515ea6e8a486ae0b8c5a8",
+  "tracks_sha256": "b5f1c4c00a124db7cadf206d6f55b9b7c063985fdfb9467ea988f4b76df44eba",
+  "source_review_required": [
+    "flagger_authorization",
+    "temporary_zone_designation",
+    "signal_governance_and_visibility",
+    "motorcycle_operator_control",
+    "native_paved_shoulder_geometry"
+  ],
+  "physical_or_legal_outcome_claimed": false,
+  "selected_case_id": "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_a",
+  "supported_case_ids": [
+    "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_a",
+    "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_b",
+    "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_c",
+    "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_d"
+  ],
+  "required_atoms": [
+    "ru.motor_vehicle",
+    "kin.position",
+    "kin.speed"
+  ],
+  "source_packets": [],
+  "case": {
+    "case_id": "training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator__probe_a",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "flagger_signal_observation",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "same-frame original signal-asset and flagger readback",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native world frame and reviewed approach",
+          "uncertainty": "Requested indication is distinct from visible original pixels"
+        },
+        {
+          "name": "motorcycle_response",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original vehicle body, velocity and stop-line join",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native world XY and marked stop line",
+          "uncertainty": "50 ms sampling; Native motion requires physical review"
+        },
+        {
+          "name": "four_view_video",
+          "unit": "FFV1 frames",
+          "sampling_rate_hz": 20,
+          "method": "synchronized original overview, approach, reference_corner, driver_reference sources",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "scene and motorcycle-mounted reference cameras",
+          "uncertainty": "Original signal, zone and subject visibility require review"
+        },
+        {
+          "name": "dev.human_direction",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Same-frame source join: Requested stop/release per Native frame plus original flagger identity and independent signal-pixel interpretation; requested signal alone does not establish the visible indication",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native frame joined to source and review identifiers",
+          "uncertainty": "Prospective channel; requires_original_source_and_pixel_review; missing original source or review remains unknown"
+        },
+        {
+          "name": "dev.governs",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Same-frame source join: Reviewed flagger orientation and signal direction relative to motorcycle approach, joined to original subject and signal frames",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native frame joined to source and review identifiers",
+          "uncertainty": "Prospective channel; requires_original_source_and_pixel_review; missing original source or review remains unknown"
+        },
+        {
+          "name": "dev.temporary_traffic_control",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Same-frame source join: Source-reviewed temporary-zone designation and original road/zone geometry; road layout alone does not establish designation",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native frame joined to source and review identifiers",
+          "uncertainty": "Prospective channel; requires_original_source_and_pixel_review; missing original source or review remains unknown"
+        },
+        {
+          "name": "drv.within_signed_zone",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Same-frame source join: Original motorcycle body position per joined frame against reviewed marked-zone limits and sign pixels",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native frame joined to source and review identifiers",
+          "uncertainty": "Prospective channel; requires_original_source_and_pixel_review; missing original source or review remains unknown"
+        },
+        {
+          "name": "dev.zone_sign",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Same-frame source join: Original camera pixels and independent sign-content review, bound to source-reviewed temporary-zone record",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native frame joined to source and review identifiers",
+          "uncertainty": "Prospective channel; requires_original_source_and_pixel_review; missing original source or review remains unknown"
+        },
+        {
+          "name": "kin.velocity",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Same-frame source join: Original motorcycle velocity from PipelineCapture trace and observed Native speed over 600 joined frames",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native frame joined to source and review identifiers",
+          "uncertainty": "Prospective channel; requires_original_source_and_pixel_review; missing original source or review remains unknown"
+        },
+        {
+          "name": "drv.stopped",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Same-frame source join: Observed low-speed interval during requested stop, with body position relative to stop line; no legal stopping threshold inferred",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native frame joined to source and review identifiers",
+          "uncertainty": "Prospective channel; requires_original_source_and_pixel_review; missing original source or review remains unknown"
+        },
+        {
+          "name": "drv.officer_directed",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Same-frame source join: Derived direction only after source-reviewed flagger authorization, governance and original signal pixels; unresolved until independent review",
+          "time_window": "600 frames over 30 seconds",
+          "reference_frame": "Native frame joined to source and review identifiers",
+          "uncertainty": "Prospective channel; requires_original_source_and_pixel_review; missing original source or review remains unknown"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "flagger_authority_and_governance",
+          "unit": "structured",
+          "method": "independent reviewed and sealed authority/signal source packet"
+        },
+        {
+          "name": "statutory_location_basis",
+          "unit": "structured",
+          "method": "independent reviewed and sealed designation or work-area packet"
+        }
+      ],
+      "limitations": [
+        "Original authorization, governing direction and signal meaning require local review",
+        "Requested controller behavior and synthetic fixtures do not establish legal compliance"
+      ]
+    }
+  }
+}

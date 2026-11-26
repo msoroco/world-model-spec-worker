@@ -1,4 +1,4 @@
-"""Build a source-shaped probe_a diagnostic without claiming original capture."""
+"""Build a source-shaped exact-case diagnostic without claiming original capture."""
 
 import hashlib
 import json
@@ -12,9 +12,13 @@ from prove_original import fixture
 
 ROOT = Path(__file__).resolve().parent.parent
 REPO = ROOT.parent.parent
-CASE = ROOT.name + "__probe_a"
-DEST = ROOT / "selected/probe_a/diagnostic"
-TEMP = REPO / ".runtime-work/c183370-probe-a-fixture-build"
+SUFFIX = sys.argv[1] if len(sys.argv) > 1 else "a"
+if SUFFIX not in "abcd" or len(SUFFIX) != 1:
+    raise SystemExit("Choose one of a, b, c, d")
+PROBE = "probe_" + SUFFIX
+CASE = ROOT.name + "__" + PROBE
+DEST = ROOT / "selected" / PROBE / "diagnostic"
+TEMP = REPO / ".runtime-work" / ("c183370-" + PROBE + "-fixture-build")
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
@@ -36,7 +40,7 @@ def main():
     if TEMP.exists():
         shutil.rmtree(TEMP)
     TEMP.mkdir(parents=True)
-    fixture(TEMP, "probe_a")
+    fixture(TEMP, PROBE)
     original = [json.loads(line) for line in (TEMP / "native-rows.jsonl").read_text().splitlines()]
     traces, evidence, frames, graph_specs = [], [], [], []
     for index, row in enumerate(original):
@@ -44,11 +48,29 @@ def main():
         xyz = row["motorcycle_xyz_m"]
         traces.append({"frame": frame, "time_s": time_s,
                        "position": {"x": xyz[0], "y": xyz[1], "z": xyz[2]},
+                       "position_m": xyz, "speed_mph": row["motorcycle_speed_mps"] * 2.2369362921,
+                       "velocity_mps": [row["motorcycle_speed_mps"], 0, 0],
+                       "control": {"diagnostic": True},
                        "heading_deg": 0.0,
                        "speed_mps": row["motorcycle_speed_mps"]})
         evidence.append({"original_frame": frame, "recording_time_s": time_s,
+                         "actor_id": 12, "replay_frame": frame,
+                         "replay_simulation_time_s": time_s,
                          "ego": {"position_m": xyz,
-                                 "speed_mps": row["motorcycle_speed_mps"]}})
+                                 "speed_mps": row["motorcycle_speed_mps"],
+                                 "body_vertices_m": row["motorcycle_body_vertices_m"],
+                                 "heading_deg": 0.0,
+                                 "speed_provenance": "synthetic_native_sample",
+                                 "synthetic_diagnostic": True},
+                         "other_actors": [{"actor_id": 13, "sem_class": "pedestrian",
+                                           "body_vertices_m": [[dx, -7 + dy, z]
+                                                               for dx in (-0.3, 0.3)
+                                                               for dy in (-0.3, 0.3)
+                                                               for z in (0, 1.8)]}],
+                         "world": {"road_projection": {"road_id": 1, "section_id": 0,
+                                                       "lane_id": -1, "s_m": xyz[0] + 40},
+                                   "weather": {"cloudiness": 0, "fog_density": 0,
+                                               "precipitation": 0, "wetness": 0}}})
         graph_path = "capture/native/graphs/base/" + str(index).zfill(8) + ".adapter.json"
         frames.append({"frame": frame, "time_s": time_s,
                        "simulation_time": time_s,
@@ -78,7 +100,7 @@ def main():
     write(TEMP / "trace.jsonl", lines(traces))
     write(TEMP / "capture/evidence.jsonl", lines(evidence))
     videos = []
-    config = json.loads((ROOT / "native/probe_a/config.json").read_text())
+    config = json.loads((ROOT / "native" / PROBE / "config.json").read_text())
     for name in CAMERAS:
         target = TEMP / (name + ".mkv")
         target.unlink()
@@ -113,7 +135,9 @@ def main():
     sources.append({"path": "capture/manifest.json", "source": str(target.relative_to(REPO)),
                     "sha256": sha(target)})
     spec = {"files": {"capture/native/frames.jsonl": lines(frames),
-                       "capture/recorder_info.txt": "C183370 synthetic diagnostic only\n"},
+                       "capture/recorder_info.txt":
+                       "Synthetic diagnostic; no Native recording.\n"
+                       "Create 12: vehicle.kawasaki.ninja (0)\n"},
             "graphs": graph_specs, "videos": videos}
     spec_path = DEST / "fixture-spec.json"
     write(spec_path, json.dumps(spec, separators=(",", ":")) + "\n")

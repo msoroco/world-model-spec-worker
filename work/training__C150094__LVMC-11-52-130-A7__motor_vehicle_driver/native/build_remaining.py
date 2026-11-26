@@ -6,7 +6,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 AID = 'training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver'
 VARIANTS = {'01': {'gap_m': 2.0, 'authority': False},
-            '03': {'gap_m': 1.2, 'authority': True}}
+            '03': {'gap_m': 1.2, 'authority': True},
+            '04': {'gap_m': 1.524, 'authority': False}}
 
 
 def write(path, value):
@@ -35,13 +36,17 @@ def main():
         config['supported_case_ids'] = [case]
         config['case']['case_id'] = case
         config['target_gap_m'] = variant['gap_m']
+        branch = {'01': 'far-no-exception', '03': 'near-private-owner',
+                  '04': 'at-five-feet-no-exception'}[probe]
         config['case'] = {'case_id': case,
                           'recording_description': config['recording_description'],
-                          'branch': 'far-no-exception' if probe == '01' else 'near-private-authority'}
+                          'branch': branch}
         write(bundle / 'config.json', config)
         tests = (original / 'tests/test_bundle.py').read_text()
         if probe == '01':
             tests = tests.replace('[14.2, 0, 0]', '[15.0, 0, 0]')
+        if probe == '04':
+            tests = tests.replace('[14.2, 0, 0]', '[14.524, 0, 0]')
         (bundle / 'tests').mkdir(exist_ok=True)
         (bundle / 'tests/test_bundle.py').write_text(tests)
         names = ('runner.py', 'config.json', 'finalize.py', 'measure_driveway.py', 'tests/test_bundle.py')

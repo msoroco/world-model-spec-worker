@@ -11,7 +11,8 @@ AID = ROOT.name
 COUNT = 600
 VARIANTS = {'01': {'gap_m': 2.0, 'authority': False},
             '02': {'gap_m': 1.2, 'authority': False},
-            '03': {'gap_m': 1.2, 'authority': True}}
+            '03': {'gap_m': 1.2, 'authority': True},
+            '04': {'gap_m': 1.524, 'authority': False}}
 
 
 def sha_bytes(value):
@@ -48,6 +49,7 @@ def main(probe):
                'driveway_curb_interval_m': [50.0, 53.0],
                'driveway_kind': 'private',
                'owner_controller_family_invitee': variant['authority'],
+               'private_driveway_authority_role': 'owner' if variant['authority'] else 'none',
                'usps_vehicle': False, 'usps_official_business': False,
                'necessary_to_avoid_traffic_conflict': False,
                'complying_with_law': False, 'officer_direction': False,

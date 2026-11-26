@@ -50,7 +50,8 @@ def main():
                    'traffic_conflict_source': 'synthetic traffic context',
                    'lawful_direction_source': 'synthetic direction context',
                    'driveway_curb_interval_m': [0.0, 3.0], 'driveway_kind': 'private',
-                   'owner_controller_family_invitee': False, 'usps_vehicle': False,
+                   'owner_controller_family_invitee': False,
+                   'private_driveway_authority_role': 'none', 'usps_vehicle': False,
                    'usps_official_business': False, 'necessary_to_avoid_traffic_conflict': False,
                    'complying_with_law': False, 'officer_direction': False,
                    'traffic_device_direction': False}
@@ -76,9 +77,11 @@ def main():
         save(tp, trace)
         ctx = copy.deepcopy(context)
         ctx['owner_controller_family_invitee'] = True
+        ctx['private_driveway_authority_role'] = 'owner'
         cp.write_text(json.dumps(ctx))
         owner = measure(root)
         assert owner['private_driveway_authority_context']
+        assert owner['private_driveway_authority_role'] == 'owner'
         ctx = copy.deepcopy(context)
         ctx['usps_vehicle'] = True
         ctx['usps_official_business'] = True
@@ -107,8 +110,17 @@ def main():
         bad = copy.deepcopy(context)
         bad['driveway_kind'] = 'public'
         bad['owner_controller_family_invitee'] = True
+        bad['private_driveway_authority_role'] = 'owner'
         cp.write_text(json.dumps(bad))
         failures['public_owner_claim'] = rejects(root, 'public driveway')
+        bad = copy.deepcopy(context)
+        bad.pop('private_driveway_authority_role')
+        cp.write_text(json.dumps(bad))
+        failures['missing_authority_role'] = rejects(root, 'specific private driveway authority role')
+        bad = copy.deepcopy(context)
+        bad['private_driveway_authority_role'] = 'owner'
+        cp.write_text(json.dumps(bad))
+        failures['inconsistent_authority_role'] = rejects(root, 'Aggregate private authority disagrees')
         cp.write_text(json.dumps(context))
         bad_trace = copy.deepcopy(trace)
         bad_trace[100]['native_frame'] = bad_trace[99]['native_frame']

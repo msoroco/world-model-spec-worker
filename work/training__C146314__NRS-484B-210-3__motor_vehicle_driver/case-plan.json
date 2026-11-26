@@ -14,25 +14,31 @@
         "training__C146314__NRS-484B-210-3__motor_vehicle_driver__probe_a",
         "training__C146314__NRS-484B-210-3__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Original accepted review describes a paved right pass only. A CPU-checked Native geometry/runner plan now separates a paved right-pass corridor from a lead placement with insufficient paved lateral clearance, but original shoulder material and body motion await physical review."
     }
   ],
   "cases": [
     {
       "case_id": "training__C146314__NRS-484B-210-3__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484B-210-3",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "compliant_attempt",
       "physical_target": "pass on right while retaining full footprint on pavement",
-      "comparison_variable": "right_pass_paved_surface"
+      "comparison_variable": "right_pass_paved_surface",
+      "gap_ids": [
+        "right_pass_pavement_necessity"
+      ]
     },
     {
       "case_id": "training__C146314__NRS-484B-210-3__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-210-3",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "violating_attempt",
       "physical_target": "pass on right with footprint off pavement",
-      "comparison_variable": "right_pass_paved_surface"
+      "comparison_variable": "right_pass_paved_surface",
+      "gap_ids": [
+        "right_pass_pavement_necessity"
+      ]
     }
   ],
   "comparisons": [
@@ -43,49 +49,61 @@
         "training__C146314__NRS-484B-210-3__motor_vehicle_driver__probe_b"
       ],
       "deliberate_differences": [
-        "right_pass_paved_surface"
+        "lead lateral lane placement",
+        "ego right-pass lateral route",
+        "whether paved clearance fits subject body"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+        "frozen cell, actor and law",
+        "same authored two-lane road and unpaved shoulder geometry",
+        "same motor-vehicle blueprints, longitudinal speed requests, pass timing, duration and four-camera policy"
       ]
     }
   ],
   "observations": [
     {
-      "name": "drv.overtaking",
+      "name": "right_pass",
       "mandatory": true,
-      "reason": "the subject overtakes"
+      "reason": "full-body behind/right overlap/ahead with separate vehicle"
     },
     {
-      "name": "drv.passing_side",
+      "name": "paved_footprint",
       "mandatory": true,
-      "reason": "on the right"
+      "reason": "ego body corners against paved edge"
     },
     {
-      "name": "st.roadway",
+      "name": "paved_clearance",
       "mandatory": true,
-      "reason": "the paved portion"
+      "reason": "lead body and subject width compared with paved corridor"
     },
     {
-      "name": "st.shoulder",
+      "name": "ego_pose",
       "mandatory": true,
-      "reason": "with its paved attribute"
+      "reason": "original subject body and velocity"
     },
     {
-      "name": "st.road_edge",
+      "name": "lead_pose",
       "mandatory": true,
-      "reason": "the edge of the paved portion, and whether beyond it is paved"
+      "reason": "original overtaken vehicle body and velocity"
     },
     {
-      "name": "rel.occupies",
+      "name": "road_surface",
       "mandatory": true,
-      "reason": "the footprint leaving the paved portion during the pass"
+      "reason": "original map and unpaved shoulder material review"
     }
   ],
   "sources": [
     {
       "path": "inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/assignment.json",
       "sha256": "3d00cb89cd87a1126cb9a96822f0af2921204bc93e4d20067304f833ed14220c"
+    },
+    {
+      "path": "inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/review-context/review.json",
+      "sha256": "85a03e10342bec988c6610911c5f5e4ea988ff1862f03694855ae063f36b2b9d"
+    },
+    {
+      "path": "inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/witnesses.json",
+      "sha256": "dabbd803753275d845e4779c8acb30f64be4c1c7f37e5779535058e5c88d1a0e"
     }
   ],
   "existing_evidence": [
@@ -95,8 +113,9 @@
     }
   ],
   "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Native road and two route constructions are authored and pass CPU geometry/clearance checks, but original CARLA map readback, shoulder material, body dimensions, motion, 600-frame capture and video adequacy have not been observed.",
+    "The accepted recording remains membership/context only: no source-hashed equivalence receipt or footage was supplied.",
+    "The recovered summary is unreviewed; exact statutory text controls the case definitions."
   ],
   "statutory_text": "The driver of a vehicle shall not overtake and pass another vehicle upon the right when such movement requires driving off the paved portion of the highway.",
   "activation_conditions_from_unreviewed_summary": [
@@ -113,5 +132,105 @@
     "st.shoulder",
     "st.road_edge",
     "rel.occupies"
-  ]
+  ],
+  "evidence_review": {
+    "method": "Frozen accepted membership and review-context source inspection; no accepted media or source-hashed recording receipt available in this export",
+    "reviewer": "assignment worker CPU review",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "right_pass_pavement_necessity",
+        "requirement": "Whether right-side passing requires driving off the paved portion",
+        "source": "NRS 484B.210(3)",
+        "why_existing_insufficient": "The review context describes one accepted entirely paved pass, but provides no source-hashed recording receipt, measured body footprints, shoulder material, or necessary-off-pavement case."
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both original vehicles, road, pass and paved right edge",
+        "interval": "0-30 seconds, all 600 source frames"
+      },
+      {
+        "view": "approach",
+        "subject": "entire-body behind, right-side overlap and ahead sequence",
+        "interval": "0-30 seconds, all 600 source frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "lead placement, ego footprint, paved lanes and shoulder boundary",
+        "interval": "0-30 seconds, all 600 source frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject driver-facing path and overtaken vehicle",
+        "interval": "0-30 seconds, all 600 source frames"
+      }
+    ],
+    "physical_visibility_unverified": true
+  },
+  "source_observation_mapping": {
+    "drv.overtaking": {
+      "evidence": "Selected original Native body/map source plan; physical realization and shoulder material require review.",
+      "channels": [
+        "right_pass"
+      ],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.passing_side": {
+      "evidence": "Selected original Native body/map source plan; physical realization and shoulder material require review.",
+      "channels": [
+        "right_pass"
+      ],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Selected original Native body/map source plan; physical realization and shoulder material require review.",
+      "channels": [
+        "paved_clearance",
+        "road_surface"
+      ],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.shoulder": {
+      "evidence": "Selected original Native body/map source plan; physical realization and shoulder material require review.",
+      "channels": [
+        "road_surface",
+        "paved_footprint"
+      ],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.road_edge": {
+      "evidence": "Selected original Native body/map source plan; physical realization and shoulder material require review.",
+      "channels": [
+        "paved_clearance",
+        "road_surface"
+      ],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Selected original Native body/map source plan; physical realization and shoulder material require review.",
+      "channels": [
+        "paved_footprint"
+      ],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  }
 }
