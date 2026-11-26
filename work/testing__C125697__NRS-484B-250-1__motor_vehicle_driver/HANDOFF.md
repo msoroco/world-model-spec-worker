@@ -123,3 +123,9 @@ Status is now **ready** with `delivery_prepared` after the actual assignment-sco
 All five exact delivery-acceptance contracts passed positive and tampered-source negative CPU tests for both demo-test and full-test targets; `delivery_handoff.validate_case` passed each. Twenty primary/fallback compatibility receipts bind their exact source analysis and missing-source negative logs. Pinned `execution_manifest.validate` and `package_compatibility.check_receipts` passed. Root construction files, four-camera plan, source acquisition map and first exact dispatch command are materialized. The actual scoped strict gate passed. These are CPU preparation proofs only; Native motion, original pixels, physical and legal acceptance remain for the local GPU operator.
 
 Historical result-only logs in four other assignments were compacted into byte-preserving hash-bound archives to remain below the 8,600-file return limit; their scoped complete checks passed. The batch strict gate was retried with a 55-second bound, produced no output and exited 124, so batch readiness is not claimed. Fifteen of 43 packages currently report ready. No frozen input, runtime, batch file or Git action was taken.
+
+## 2026-11-26 current runtime renewal
+
+The current runtime manifest is bound in `execution-manifest.json` to `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. The prior manifest is preserved at `prior-runtime-20261125/execution-manifest.json`. Five exact cases and 20 primary/fallback candidate combinations have new current-runtime offline and compatibility receipts under `current-runtime-proof/`. The old source-bound receipts remain preserved.
+
+`.venv-cpu/bin/python worker_check.py --assignment testing__C125697__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready` exited 0 on 2026-11-26 with `static_checks_passed=true`. The package remains `ready` / `delivery_prepared`; only physical GPU and source review listed above remains.

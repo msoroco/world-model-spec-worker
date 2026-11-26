@@ -1,0 +1,1108 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial_cpu_construction",
+  "cases": [
+    {
+      "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "422a3c62ed2e9072c749c31b4dd468753921525c97dabdbf1bb6c9b77d21aa92",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native stop sign trigger, other-first body entry, and four-camera visibility may drift"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "72f94931c191f0e4912ac2654189b2e49c6ee47c0de933dbb5a0b46e3a6312e4",
+          "trigger": {
+            "source": "original Native crossing history and four source-camera frame joins",
+            "metric": "measured other-body complete-entry frame relative to ego approach",
+            "failure_condition": "Other vehicle enters too late for the planned other-first timing while ego approaches"
+          },
+          "changed_knobs": [
+            "other_release_frame: 100 to 84"
+          ],
+          "remedy": "Release the other vehicle 16 frames earlier while retaining route, ego hold, case identity and capture contract",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --candidate fallback1 --output .runtime-work/c125745-1-other-inside/rebind-offline-stop_sign_other_first-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "72f94931c191f0e4912ac2654189b2e49c6ee47c0de933dbb5a0b46e3a6312e4",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "fallback1-compatibility-receipt.json",
+            "sha256": "6535e5b8f75ff83e2e79ce62644a4e04991d1fa689d80f5d10faefd81df2c991",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --attempt .runtime-work/c125745-1-other-inside/saved-rebind-stop_sign_other_first-fallback1 --output .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_other_first-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_other_first-fallback1/v0001/processing.json",
+            "test_log": "ego-first-rebound-saved.log",
+            "test_log_sha256": "1830e9ff3ee6ca80ff53114f6f74dea58fbd0c697c1737c60d1e55a65d94f189",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "fallback2-construction.json",
+          "construction_sha256": "c9abb8711a607d188c8bc910350bac3cf9d0978e66b7b05929c554d1c5e61201",
+          "trigger": {
+            "source": "original Native crossing/body occupancy and controller history",
+            "metric": "ego release frame after measured other-body clearance",
+            "failure_condition": "Ego leaves the stop too soon after measured other-body clearance for stable conflict-free crossing"
+          },
+          "changed_knobs": [
+            "ego measured-clearance hold: 0 to 12 frames"
+          ],
+          "remedy": "Retain a 12-frame engineering hold after measured other-body clearance before ego release",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --candidate fallback2 --output .runtime-work/c125745-1-other-inside/rebind-offline-stop_sign_other_first-fallback2",
+            "exit_code": 0,
+            "construction_sha256": "c9abb8711a607d188c8bc910350bac3cf9d0978e66b7b05929c554d1c5e61201",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "fallback2-compatibility-receipt.json",
+            "sha256": "f69e95b4d5ffd159bf724f1f4ccc8df2f2f8cf112e4718576a2356d5222d73fc",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --attempt .runtime-work/c125745-1-other-inside/saved-rebind-stop_sign_other_first-fallback2 --output .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_other_first-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_other_first-fallback2/v0001/processing.json",
+            "test_log": "ego-first-rebound-saved.log",
+            "test_log_sha256": "1830e9ff3ee6ca80ff53114f6f74dea58fbd0c697c1737c60d1e55a65d94f189",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "fallback3-construction.json",
+          "construction_sha256": "69796c0820681a82ed3492e8f3ddb16d6b0b9635a98019a34c83acc265ea0899",
+          "trigger": {
+            "source": "original reference-corner source-camera frames and complete Native actor/sign inventory",
+            "metric": "visibility of the stop-sign face and crossing entry in reference-corner frames",
+            "failure_condition": "The reference-corner view does not show the sign face and both crossing approaches throughout the required entry window"
+          },
+          "changed_knobs": [
+            "reference_corner camera x position: +2.0 m"
+          ],
+          "remedy": "Shift only the reference-corner Native source camera 2 m east while retaining all four streams and capture profile",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --candidate fallback3 --output .runtime-work/c125745-1-other-inside/rebind-offline-stop_sign_other_first-fallback3",
+            "exit_code": 0,
+            "construction_sha256": "69796c0820681a82ed3492e8f3ddb16d6b0b9635a98019a34c83acc265ea0899",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "fallback3-compatibility-receipt.json",
+            "sha256": "253447c2948658a3e43d44f5c0ebfa83ea2430de5dd743c889900d23affa1120",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --attempt .runtime-work/c125745-1-other-inside/saved-rebind-stop_sign_other_first-fallback3 --output .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_other_first-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_other_first-fallback3/v0001/processing.json",
+            "test_log": "ego-first-rebound-saved.log",
+            "test_log_sha256": "1830e9ff3ee6ca80ff53114f6f74dea58fbd0c697c1737c60d1e55a65d94f189",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "crossing_measurements.py",
+        "method": "source-hashed original body entry and frame joins"
+      },
+      "pending_cpu_proofs": [
+        "independent delivery and comparison audits"
+      ],
+      "fixture_recipe": "work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/diagnostic-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "rel.bearing": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_speed.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_speed.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_approach_distance.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_approach_distance.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_body_inside.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_body_inside.jsonl"
+        },
+        "stop_sign_id": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/stop_sign_id.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_position.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_position.jsonl"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --output .runtime-work/c125745-1-plan-rebind/offline-stop_sign_other_first-primary",
+        "exit_code": 0,
+        "construction_sha256": "422a3c62ed2e9072c749c31b4dd468753921525c97dabdbf1bb6c9b77d21aa92",
+        "log": "camera-offline-all.log",
+        "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+      },
+      "compatibility": {
+        "receipt": "first-primary-compatibility-receipt.json",
+        "sha256": "202ec558e2e0946fd5f54eb65f641f3052bc80db59739725b81ec113a83623e1",
+        "log": "first-primary-analysis.log",
+        "negative_log": "negative-proofs-aggregate.log"
+      },
+      "negative": {
+        "log": "negative-proofs-aggregate.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --attempt .runtime-work/c125745-1-plan-rebind/saved-source-first-primary --output .runtime-work/c125745-1-plan-rebind/saved-first-primary-v2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c125745-1-plan-rebind/saved-first-primary-v2/v0001/processing.json",
+        "test_log": "ego-first-rebound-saved.log",
+        "test_log_sha256": "1830e9ff3ee6ca80ff53114f6f74dea58fbd0c697c1737c60d1e55a65d94f189",
+        "test_exit_code": 0,
+        "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-other-first-receipt.json",
+        "sha256": "7bb25ad401e7b541e0ec6315133d919f65235fa4a6259479dec847dc3ad10735"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "758a1d510cca008821211be2f7b555ff70d4b0a7e6f0f708fb905be4d42b9af9",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "d25db84e6f7a9133b0fa09b9efcf0e6d05f43ee954c14b8c75af49fd4796332a",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --mode positive",
+        "test_exit_code": 0,
+        "test_log": "other-inside-offline.log",
+        "test_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_first --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "negative_log": "other-inside-offline.log",
+        "negative_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+        "proof_scope": "900-frame synthetic source-join and physical/pixel CPU boundary; Native acceptance pending"
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first",
+      "kind": "delivery",
+      "construction": "ego-first-construction.json",
+      "construction_sha256": "7e4ab572f0ec8ef818c1aff229ded18595e739a9c7774084ff1842fd39e6707f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native stop-sign governance, complete stop, ego-first body order, and camera visibility may drift; three distinct fallback constructions have CPU proofs"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "ego-first-fallback1-construction.json",
+          "construction_sha256": "7c526a2fe3188af0ca91b3232fccfbafa9b8d07c2683bc619ea77b35bf379543",
+          "trigger": {
+            "source": "original Native crossing history and controller history",
+            "metric": "other complete-body first-entry frame relative to ego",
+            "failure_condition": "Other enters before ego despite planned staged other release"
+          },
+          "changed_knobs": [
+            "other_release_frame=460"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --candidate fallback1 --output .runtime-work/c125745-1-other-inside/rebind-offline-stop_sign_ego_first-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "7c526a2fe3188af0ca91b3232fccfbafa9b8d07c2683bc619ea77b35bf379543",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "ego-first-fallback1-compatibility-receipt.json",
+            "sha256": "1a10aa4b55f4f0365547db6d446c520fb2806d4db91012337d6b4960d3770f9b",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --attempt .runtime-work/c125745-1-other-inside/saved-rebind-stop_sign_ego_first-fallback1 --output .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_ego_first-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_ego_first-fallback1/v0001/processing.json",
+            "test_log": "ego-first-rebound-saved.log",
+            "test_log_sha256": "1830e9ff3ee6ca80ff53114f6f74dea58fbd0c697c1737c60d1e55a65d94f189",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "ego-first-fallback2-construction.json",
+          "construction_sha256": "77554c65b725bba05b572b870925e0e873b75475931485c0b81c633bf2e4a492",
+          "trigger": {
+            "source": "original Native crossing history and controller history",
+            "metric": "ego complete-body first-entry frame after full stop",
+            "failure_condition": "Ego first entry occurs after other entry because Native acceleration is slower than planned"
+          },
+          "changed_knobs": [
+            "ego_release_frame=200"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --candidate fallback2 --output .runtime-work/c125745-1-other-inside/rebind-offline-stop_sign_ego_first-fallback2",
+            "exit_code": 0,
+            "construction_sha256": "77554c65b725bba05b572b870925e0e873b75475931485c0b81c633bf2e4a492",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "ego-first-fallback2-compatibility-receipt.json",
+            "sha256": "1c0adbd4d678da07cc980f9be44303353e6e5d9ae316a1dd61a17a5e3d4d7db7",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --attempt .runtime-work/c125745-1-other-inside/saved-rebind-stop_sign_ego_first-fallback2 --output .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_ego_first-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_ego_first-fallback2/v0001/processing.json",
+            "test_log": "ego-first-rebound-saved.log",
+            "test_log_sha256": "1830e9ff3ee6ca80ff53114f6f74dea58fbd0c697c1737c60d1e55a65d94f189",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "ego-first-fallback3-construction.json",
+          "construction_sha256": "116866c497bcef93254518f6b25dbe2c3b40dafb2efdbaba6377868b2d90d821",
+          "trigger": {
+            "source": "original source reference-corner video and frame map",
+            "metric": "stop-sign face and crossing visibility",
+            "failure_condition": "Reference-corner source frames do not show the stop-sign face and crossing together"
+          },
+          "changed_knobs": [
+            "reference_corner camera x +2 m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --candidate fallback3 --output .runtime-work/c125745-1-other-inside/rebind-offline-stop_sign_ego_first-fallback3",
+            "exit_code": 0,
+            "construction_sha256": "116866c497bcef93254518f6b25dbe2c3b40dafb2efdbaba6377868b2d90d821",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "ego-first-fallback3-compatibility-receipt.json",
+            "sha256": "e6a3fa0b339b2f4cba84573346566fea733f35313c7355c3876af67fb04e7c66",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --attempt .runtime-work/c125745-1-other-inside/saved-rebind-stop_sign_ego_first-fallback3 --output .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_ego_first-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_ego_first-fallback3/v0001/processing.json",
+            "test_log": "ego-first-rebound-saved.log",
+            "test_log_sha256": "1830e9ff3ee6ca80ff53114f6f74dea58fbd0c697c1737c60d1e55a65d94f189",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "crossing_measurements.py",
+        "method": "source-hashed original body entry and frame joins"
+      },
+      "pending_cpu_proofs": [
+        "independent delivery and comparison audits"
+      ],
+      "fixture_recipe": "work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/ego-first-diagnostic-recipe.json",
+      "measurement_contract": "ego-first-measurement-contract.json",
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "rel.bearing": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_speed.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_speed.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_approach_distance.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_approach_distance.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_body_inside.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_body_inside.jsonl"
+        },
+        "stop_sign_id": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/stop_sign_id.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_position.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_position.jsonl"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --output .runtime-work/c125745-1-other-inside/rebind-offline-stop_sign_ego_first-primary",
+        "exit_code": 0,
+        "construction_sha256": "7e4ab572f0ec8ef818c1aff229ded18595e739a9c7774084ff1842fd39e6707f",
+        "log": "camera-offline-all.log",
+        "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+      },
+      "compatibility": {
+        "receipt": "ego-first-compatibility-receipt.json",
+        "sha256": "1db53310b674113bed06593d4f0475af7763c60d7cb1c641f6bde0382fe64310",
+        "log": "first-primary-analysis.log",
+        "negative_log": "negative-proofs-aggregate.log"
+      },
+      "negative": {
+        "log": "negative-proofs-aggregate.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --attempt .runtime-work/c125745-1-other-inside/saved-rebind-stop_sign_ego_first-primary --output .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_ego_first-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-rebind-stop_sign_ego_first-primary/v0001/processing.json",
+        "test_log": "ego-first-rebound-saved.log",
+        "test_log_sha256": "1830e9ff3ee6ca80ff53114f6f74dea58fbd0c697c1737c60d1e55a65d94f189",
+        "test_exit_code": 0,
+        "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-ego-first-receipt.json",
+        "sha256": "1c3e0d8d2719446b630bb238b49c7762d9c867e6cfe36c00308f5f266d7e2e91"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "758a1d510cca008821211be2f7b555ff70d4b0a7e6f0f708fb905be4d42b9af9",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "d25db84e6f7a9133b0fa09b9efcf0e6d05f43ee954c14b8c75af49fd4796332a",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --mode positive",
+        "test_exit_code": 0,
+        "test_log": "other-inside-offline.log",
+        "test_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_ego_first --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "negative_log": "other-inside-offline.log",
+        "negative_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+        "proof_scope": "900-frame synthetic source-join and physical/pixel CPU boundary; Native acceptance pending"
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside",
+      "kind": "delivery",
+      "construction": "other-inside-construction.json",
+      "construction_sha256": "fe7e688f411af23fde23149c9b3d97d27f658afdba8250e0871338cf2d83bd89",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native pre-roll occupancy, complete body inside at first source frame, ego stop and four-camera visibility may drift"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "other-inside-fallback1-construction.json",
+          "construction_sha256": "2dc9a791248b5b64775cad83fe10f6ed9bf86f9765404aca12cac630c973c665",
+          "trigger": {
+            "source": "original Native crossing history and controller history",
+            "metric": "recorded frames with other complete body inside while ego remains outside",
+            "failure_condition": "Other clears too early for an observable occupied-crossing ego approach"
+          },
+          "changed_knobs": [
+            "other_release_frame=130"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --candidate fallback1 --output .runtime-work/c125745-1-other-inside/offline-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "2dc9a791248b5b64775cad83fe10f6ed9bf86f9765404aca12cac630c973c665",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "other-inside-fallback1-compatibility-receipt.json",
+            "sha256": "0c473bf8c95aba2e7da74fba3e40a2e0bcf4fcd0dd9040776a9c1e6dd09bfba9",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --attempt .runtime-work/c125745-1-other-inside/saved-fallback1 --output .runtime-work/c125745-1-other-inside/processed-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-fallback1/v0001/processing.json",
+            "test_log": "other-inside-saved.log",
+            "test_log_sha256": "c1fa8a39d1f773e1e169c4596da97f6ad7400e7a877d161475522a982f7d9ecc",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "other-inside-fallback2-construction.json",
+          "construction_sha256": "b4fae5825fcc45aeb16ff64d569ee886ff2055be909e57a78f4c5160969b55e5",
+          "trigger": {
+            "source": "original Native crossing history and controller history",
+            "metric": "ego complete-body entry relative to observed other clearance",
+            "failure_condition": "Ego enters before the other fully clears despite the planned stop and clearance interlock"
+          },
+          "changed_knobs": [
+            "ego_release_frame=300"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --candidate fallback2 --output .runtime-work/c125745-1-other-inside/offline-fallback2",
+            "exit_code": 0,
+            "construction_sha256": "b4fae5825fcc45aeb16ff64d569ee886ff2055be909e57a78f4c5160969b55e5",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "other-inside-fallback2-compatibility-receipt.json",
+            "sha256": "f23520dfb9c4987f6d2fbcfc6736486b155b074f17822de027f783f6897105c3",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --attempt .runtime-work/c125745-1-other-inside/saved-fallback2 --output .runtime-work/c125745-1-other-inside/processed-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-fallback2/v0001/processing.json",
+            "test_log": "other-inside-saved.log",
+            "test_log_sha256": "c1fa8a39d1f773e1e169c4596da97f6ad7400e7a877d161475522a982f7d9ecc",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "other-inside-fallback3-construction.json",
+          "construction_sha256": "883d72c5e1ab05de39de39cc3a45b7e48e992f11d566d51dd73deef0bf175ba1",
+          "trigger": {
+            "source": "original reference-corner source video and frame map",
+            "metric": "first-frame occupied crossing and stop-sign face visibility",
+            "failure_condition": "Reference-corner frames do not show both complete other body and governing sign during ego approach"
+          },
+          "changed_knobs": [
+            "reference_corner camera x +2 m"
+          ],
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --candidate fallback3 --output .runtime-work/c125745-1-other-inside/offline-fallback3",
+            "exit_code": 0,
+            "construction_sha256": "883d72c5e1ab05de39de39cc3a45b7e48e992f11d566d51dd73deef0bf175ba1",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "other-inside-fallback3-compatibility-receipt.json",
+            "sha256": "c4801e6c1250c8dcb194ee0e94af49205453182c1bf216a5b90a5a1c3dcd0a77",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --attempt .runtime-work/c125745-1-other-inside/saved-fallback3 --output .runtime-work/c125745-1-other-inside/processed-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-fallback3/v0001/processing.json",
+            "test_log": "other-inside-saved.log",
+            "test_log_sha256": "c1fa8a39d1f773e1e169c4596da97f6ad7400e7a877d161475522a982f7d9ecc",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "crossing_measurements.py",
+        "method": "source-hashed first-frame complete-body occupancy, ego approach and original frame joins"
+      },
+      "pending_cpu_proofs": [
+        "independent delivery and comparison audits"
+      ],
+      "fixture_recipe": "work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/other-inside-diagnostic-recipe.json",
+      "measurement_contract": "other-inside-measurement-contract.json",
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "rel.bearing": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_speed.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_speed.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_approach_distance.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_approach_distance.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_body_inside.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_body_inside.jsonl"
+        },
+        "stop_sign_id": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/stop_sign_id.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_position.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_position.jsonl"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --output .runtime-work/c125745-1-other-inside/offline-primary-v3",
+        "exit_code": 0,
+        "construction_sha256": "fe7e688f411af23fde23149c9b3d97d27f658afdba8250e0871338cf2d83bd89",
+        "log": "camera-offline-all.log",
+        "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+      },
+      "compatibility": {
+        "receipt": "other-inside-compatibility-receipt.json",
+        "sha256": "e67664573d3f9aaeb69f022fa107cd6b2ef62b4060bd982ea433a433a9ec22a0",
+        "log": "first-primary-analysis.log",
+        "negative_log": "negative-proofs-aggregate.log"
+      },
+      "negative": {
+        "log": "negative-proofs-aggregate.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --attempt .runtime-work/c125745-1-other-inside/saved-primary --output .runtime-work/c125745-1-other-inside/processed-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c125745-1-other-inside/processed-primary/v0001/processing.json",
+        "test_log": "other-inside-saved.log",
+        "test_log_sha256": "c1fa8a39d1f773e1e169c4596da97f6ad7400e7a877d161475522a982f7d9ecc",
+        "test_exit_code": 0,
+        "proof_scope": "900-frame synthetic original-source and four-camera CPU saved processing; no Native, physical or legal acceptance"
+      },
+      "physical_preparation": {
+        "receipt": "physical-other-inside-receipt.json",
+        "sha256": "68a7497029ff86a9f83260d4ee7baea43ad72c820300205764c81982122bdbb7"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "758a1d510cca008821211be2f7b555ff70d4b0a7e6f0f708fb905be4d42b9af9",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "d25db84e6f7a9133b0fa09b9efcf0e6d05f43ee954c14b8c75af49fd4796332a",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --mode positive",
+        "test_exit_code": 0,
+        "test_log": "other-inside-offline.log",
+        "test_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_other_inside --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "negative_log": "other-inside-offline.log",
+        "negative_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+        "proof_scope": "900-frame synthetic source-join and physical/pixel CPU boundary; Native acceptance pending"
+      }
+    },
+    {
+      "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left",
+      "kind": "delivery",
+      "construction": "opposite-left-construction.json",
+      "construction_sha256": "96dd29ba8f004bea1f3f9db7bb4331f52695c9a7186bd08e9df933188f41b609",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Opposing left turn timing, execution and source-camera visibility require measured alternatives"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "opposite-left-fallback1-construction.json",
+          "trigger": {
+            "source": "original crossing_history.jsonl and controller_history.jsonl",
+            "metric": "other complete-body entry frame relative to ego stop and approach",
+            "failure_condition": "opposing vehicle reaches crossing before original cameras establish approach"
+          },
+          "changed_knobs": [
+            "delay opposing vehicle release to frame 130"
+          ],
+          "construction_sha256": "38d751fb8e7121b551057366d95c1a110ceae707e58f320c1325aa78abc712d3",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --candidate fallback1 --output .runtime-work/c1257451-sourcefix-offline-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "38d751fb8e7121b551057366d95c1a110ceae707e58f320c1325aa78abc712d3",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "opposite-left-fallback1-compatibility-receipt.json",
+            "sha256": "999f6a7b53a34eaf4bb06ec8e15c08068f0ba43bc8221ecc4a9961e5ca1b6f2a",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log",
+            "negative_sha256": "a1361e01255208d88a72cde59c3d7720edf6179e8a54421a7effa5872ca04aea"
+          },
+          "negative": {
+            "log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --attempt .runtime-work/c1257451-final-900-source-fallback1 --output .runtime-work/c1257451-final-900-saved-fallback1 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c1257451-final-900-saved-fallback1/v0001/processing.json",
+            "test_log": "other-inside-offline.log",
+            "test_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera recorded-only processing; actual Native motion and legal acceptance unverified"
+          }
+        },
+        {
+          "id": "fallback2",
+          "construction": "opposite-left-fallback2-construction.json",
+          "trigger": {
+            "source": "original crossing_history.jsonl heading_yaw_deg and body vertices",
+            "metric": "opposing vehicle turn heading change and southward body displacement",
+            "failure_condition": "late steering fails to produce source-measured left turn"
+          },
+          "changed_knobs": [
+            "begin the opposing left-turn steering before x=19 m"
+          ],
+          "construction_sha256": "d9b4b7da55ea5476cf492f9a208db41331c755678b8ccc3467749b867e5f32e7",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --candidate fallback2 --output .runtime-work/c1257451-sourcefix-offline-fallback2",
+            "exit_code": 0,
+            "construction_sha256": "d9b4b7da55ea5476cf492f9a208db41331c755678b8ccc3467749b867e5f32e7",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "opposite-left-fallback2-compatibility-receipt.json",
+            "sha256": "c39ce587808dd0bb1fcb0ef9e4e36759e8cb3305e41332be513fff417a3bc2d0",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log",
+            "negative_sha256": "a1361e01255208d88a72cde59c3d7720edf6179e8a54421a7effa5872ca04aea"
+          },
+          "negative": {
+            "log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --attempt .runtime-work/c1257451-final-900-source-fallback2 --output .runtime-work/c1257451-final-900-saved-fallback2 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c1257451-final-900-saved-fallback2/v0001/processing.json",
+            "test_log": "other-inside-offline.log",
+            "test_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera recorded-only processing; actual Native motion and legal acceptance unverified"
+          }
+        },
+        {
+          "id": "fallback3",
+          "construction": "opposite-left-fallback3-construction.json",
+          "trigger": {
+            "source": "original reference_corner.mkv and source camera frame map",
+            "metric": "opposing approach and turn visible in reference-corner frames",
+            "failure_condition": "camera occludes left-turn trajectory"
+          },
+          "changed_knobs": [
+            "shift reference-corner camera x by 2 m for turn visibility"
+          ],
+          "construction_sha256": "bdcdc2bf5f1e6f8ff94694ccb03f13ff9a38e1e31799c92a19f9224c1f8589db",
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --candidate fallback3 --output .runtime-work/c1257451-sourcefix-offline-fallback3",
+            "exit_code": 0,
+            "construction_sha256": "bdcdc2bf5f1e6f8ff94694ccb03f13ff9a38e1e31799c92a19f9224c1f8589db",
+            "log": "camera-offline-all.log",
+            "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+          },
+          "compatibility": {
+            "receipt": "opposite-left-fallback3-compatibility-receipt.json",
+            "sha256": "32771b56479dca24b00368fb6a5837b131afcfb4cff069f1ecda14334c85aa34",
+            "log": "first-primary-analysis.log",
+            "negative_log": "negative-proofs-aggregate.log",
+            "negative_sha256": "a1361e01255208d88a72cde59c3d7720edf6179e8a54421a7effa5872ca04aea"
+          },
+          "negative": {
+            "log": "negative-proofs-aggregate.log"
+          },
+          "post_capture": {
+            "recorded_only": true,
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --attempt .runtime-work/c1257451-final-900-source-fallback3 --output .runtime-work/c1257451-final-900-saved-fallback3 --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+            "feedback_command": "cat .runtime-work/c1257451-final-900-saved-fallback3/v0001/processing.json",
+            "test_log": "other-inside-offline.log",
+            "test_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+            "test_exit_code": 0,
+            "proof_scope": "900-frame synthetic original-source and four-camera recorded-only processing; actual Native motion and legal acceptance unverified"
+          }
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "crossing_measurements.py",
+        "method": "source-hashed opposing approach, heading change, turn motion and original frame joins"
+      },
+      "pending_cpu_proofs": [
+        "independent delivery and comparison audits"
+      ],
+      "fixture_recipe": "work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/opposite-left-diagnostic-recipe.json",
+      "measurement_contract": "opposite-left-measurement-contract.json",
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "rel.bearing": {
+          "entrypoint": "runner.py",
+          "method": "PipelineCapture original per-tick Native graph and actor evidence",
+          "evidence": "capture/evidence.jsonl and capture/native/frames.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_speed.jsonl"
+        },
+        "other_speed": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_speed.jsonl"
+        },
+        "ego_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_approach_distance.jsonl"
+        },
+        "other_approach_distance": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_approach_distance.jsonl"
+        },
+        "ego_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_body_inside.jsonl"
+        },
+        "other_body_inside": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_body_inside.jsonl"
+        },
+        "stop_sign_id": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/stop_sign_id.jsonl"
+        },
+        "ego_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/ego_position.jsonl"
+        },
+        "other_position": {
+          "entrypoint": "crossing_measurements.py",
+          "method": "finalize_saved derives channel from retained crossing/trace/frame sources",
+          "evidence": "channels/other_position.jsonl"
+        }
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --output .runtime-work/c1257451-sourcefix-offline-primary",
+        "exit_code": 0,
+        "construction_sha256": "96dd29ba8f004bea1f3f9db7bb4331f52695c9a7186bd08e9df933188f41b609",
+        "log": "camera-offline-all.log",
+        "log_sha256": "7cb0dc7d806661517cd4c94d405c3612e14491036191235a66b47251ebc168f1"
+      },
+      "compatibility": {
+        "receipt": "opposite-left-primary-compatibility-receipt.json",
+        "sha256": "739693182ae944e750f2e2593fa667d7cfbbe0e7f18192ada28bf48e594ac6a4",
+        "log": "first-primary-analysis.log",
+        "negative_log": "negative-proofs-aggregate.log",
+        "negative_sha256": "a1361e01255208d88a72cde59c3d7720edf6179e8a54421a7effa5872ca04aea"
+      },
+      "negative": {
+        "log": "negative-proofs-aggregate.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/execution-manifest.json --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --attempt .runtime-work/c1257451-final-900-source-primary --output .runtime-work/c1257451-final-900-saved-primary --library runtime/library --validator .runtime-work/c101303-decoder-b/.lake/build/bin/adapterCheck",
+        "feedback_command": "cat .runtime-work/c1257451-final-900-saved-primary/v0001/processing.json",
+        "test_log": "other-inside-offline.log",
+        "test_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+        "test_exit_code": 0,
+        "proof_scope": "900-frame synthetic original-source and four-camera recorded-only processing; actual Native motion and legal acceptance unverified"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite-left-receipt.json",
+        "sha256": "ce5e189c906fd9efc3b0254fc142623363a24214aa6fa6d849be8947f31c4c97"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery_acceptance.py",
+        "script_sha256": "758a1d510cca008821211be2f7b555ff70d4b0a7e6f0f708fb905be4d42b9af9",
+        "auditor": "delivery_audit.py",
+        "auditor_sha256": "d25db84e6f7a9133b0fa09b9efcf0e6d05f43ee954c14b8c75af49fd4796332a",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --mode positive",
+        "test_exit_code": 0,
+        "test_log": "other-inside-offline.log",
+        "test_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C125745__NRS-484B-250-1__motor_vehicle_driver/prove_delivery_acceptance.py --case testing__C125745__NRS-484B-250-1__motor_vehicle_driver__stop_sign_opposite_left --mode negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Physical completion source changed",
+        "negative_log": "other-inside-offline.log",
+        "negative_log_sha256": "1d8c0385665137ba8da86154c73e16600c657767dc597db10d1181a1c946da8c",
+        "proof_scope": "900-frame synthetic source-join and physical/pixel CPU boundary; Native acceptance pending"
+      }
+    }
+  ]
+}
