@@ -61,14 +61,17 @@ def check() -> dict:
                     {"request": request, "dependencies": [binding],
                      "templates": [template], "canonical_parameter_rules": rules,
                      "judgment_completion_policy": {}})
-    if cases.get("sweeps_expanded") is not False or any(
-            spec.get("status") != "incomplete" for spec in cases["sweep_specs"]):
-        raise ValueError("original-source-dependent judgment sweeps must remain incomplete")
+    if cases.get("sweeps_expanded") is not True or any(
+            spec.get("status") != "complete" for spec in cases["sweep_specs"]):
+        raise ValueError("engineering sweep proposals must be canonically expanded")
+    if len(cases["sweep_specs"]) != 2 or len(cases["cases"]) != 11:
+        raise ValueError("six engineering points and four anchors required")
     return {"assignment_id": ROOT.name, "stage_contracts_passed": True,
             "selected_cases_planned": len(cases["cases"]) - 1,
             "comparisons_planned": len(cases["comparisons"]),
-            "judgment_sweeps_pending_source": len(cases["sweep_specs"]),
-            "delivery_ready": False}
+            "engineering_sweeps_expanded": len(cases["sweep_specs"]),
+            "legal_judgments_resolved": False,
+            "original_source_acceptance_claimed": False}
 
 
 if __name__ == "__main__":

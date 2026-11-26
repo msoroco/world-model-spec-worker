@@ -126,3 +126,41 @@ def measure_entry(rows, highway_polygon):
             "sample_count": len(rows),
             "measurement_only": True,
             "legal_permission_determined": False}
+
+
+def measure_walking_speed(rows, *, start_s=6.0, end_s=12.0):
+    """Mean observed body-center speed after startup from original 20 Hz rows.
+
+    Returns None when a short diagnostic source cannot cover the evaluation
+    window. Setpoints and legal permission are not inferred from this value.
+    """
+    if not rows:
+        raise ValueError("original walker body history missing")
+    origin = rows[0].get("time_s")
+    if type(origin) not in (float, int) or not math.isfinite(origin):
+        raise ValueError("original walker time missing")
+    selected = []
+    previous_frame = -1
+    for row in rows:
+        frame, time_s = row.get("frame"), row.get("time_s")
+        if type(frame) is not int or frame <= previous_frame or type(time_s) not in (float, int) or not math.isfinite(time_s):
+            raise ValueError("original walker frame/time invalid")
+        previous_frame = frame
+        polygon = _polygon(row.get("body_polygon_xy_m"))
+        center = (sum(p[0] for p in polygon) / len(polygon),
+                  sum(p[1] for p in polygon) / len(polygon))
+        elapsed = time_s - origin
+        if start_s <= elapsed <= end_s:
+            selected.append((frame, time_s, center))
+    if len(selected) < 3 or selected[-1][1] - selected[0][1] < 1.0:
+        return None
+    speeds = []
+    for previous, current in zip(selected, selected[1:]):
+        if current[0] != previous[0] + 1 or abs((current[1] - previous[1]) - .05) > .005:
+            raise ValueError("original walker speed window has a frame/time gap")
+        speeds.append(math.dist(current[2], previous[2]) / (current[1] - previous[1]))
+    return {"value": sum(speeds) / len(speeds), "unit": "m/s", "statistic": "mean",
+            "method": "original 20 Hz walker body-center displacement",
+            "time_window": "original seconds 6 through 12 excluding startup transient",
+            "first_frame": selected[0][0], "last_frame": selected[-1][0],
+            "sample_count": len(speeds), "legal_permission_determined": False}

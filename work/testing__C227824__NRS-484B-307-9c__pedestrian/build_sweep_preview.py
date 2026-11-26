@@ -9,6 +9,8 @@ import json
 from copy import deepcopy
 from pathlib import Path
 
+from build_bundles import recording_description
+
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = ROOT.name
@@ -22,6 +24,8 @@ def preview() -> dict:
     proposal["cases"] = [case for case in proposal["cases"] if not case.get("sweep_id")]
     proposal["comparisons"] = [c for c in proposal["comparisons"]
                                if not c["comparison_id"].startswith("sweep_walk_speed_")]
+    for case in proposal["cases"]:
+        case["recording_description"] = recording_description()
     source = next(c for c in proposal["cases"] if c.get("case_id", "").endswith("__enter_walk_display"))
     spec = proposal["sweep_specs"][0]
     values = deepcopy(source["variable_assignments"])

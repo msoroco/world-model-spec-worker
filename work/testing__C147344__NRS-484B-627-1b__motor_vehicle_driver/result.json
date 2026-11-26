@@ -1,37 +1,33 @@
 {
   "applied_update": 0,
   "assignment_id": "testing__C147344__NRS-484B-627-1b__motor_vehicle_driver",
+  "first_gpu_delivery_command": "C147344_AUTHORITY_ROOT=\"$C147344_AUTHORITY_ROOT\" C147344_SITE_REF=\"$C147344_SITE_REF\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C147344__NRS-484B-627-1b__motor_vehicle_driver --case testing__C147344__NRS-484B-627-1b__motor_vehicle_driver__slow_middle_follower --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "c95309091d29a6932f2db586789b8aafa0aadfe53eb28cc445a253a62a6acac1",
-  "readiness_kind": "source_gated_selected_production_cpu_preparation_partial",
-  "reason": "Four selected cases retain passing current-hash semantic, compatibility, physical and delivery validators. Six additional engineering sweep scenes, one-case Native runner, slower-vehicle speed readback and source-bound six-attempt comparison audit are CPU-implemented and tested, but cannot be expanded into selected below/interior/above proposals without reviewed original feasible ranges, control and site sources. Frozen judgment_ranges.json contains zero entries for NRS-484B-627-1b/motor_vehicle_driver, and evidence.json contains zero accepted recordings. Selected execution therefore fails at unexpanded sweeps; exact scoped strict rejects truthful partial status. Synthetic tests are software proofs only, not original capture or legal findings.",
+  "readiness_kind": "delivery_prepared",
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Provide SHA-bound reviewed original highway/OpenDRIVE, marked lanes, actor stations and camera authority before CARLA.",
+    "Capture original Native motion, relation and four camera streams for ten exact cases; inspect realized speed and physical quality.",
+    "Independently review impediment and passing necessity without numeric legal cutoff."
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C147344__NRS-484B-627-1b__motor_vehicle_driver/tests -p test_*.py",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C147344__NRS-484B-627-1b__motor_vehicle_driver/tests -q",
       "exit_code": 0,
-      "log": "cpu-sweep-tests.log",
-      "sha256": "9afe40da2b766ab2db9f5a0f331d148364677459f1c7c10c6d0cd9857f8adbac"
+      "log": "cpu-final-tests.log",
+      "sha256": "8718d27c47a0a7ccb89bc3d3511a70bf3f0122784f95019d951d2c4100e9b88e"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-627-1b__motor_vehicle_driver/validate_semantic_draft.py",
+      "exit_code": 0,
+      "log": "cpu-final-semantic.log",
+      "sha256": "6e0065619356e79154c94e934f784bd4336223a28a1fab3c4a5dfef6b3bdc6e4"
     },
     {
       "command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-627-1b__motor_vehicle_driver/validate_selected_cpu.py",
       "exit_code": 0,
-      "log": "cpu-sweep-selected-validation.json",
-      "sha256": "75b14a4fa1df30901b7ca7e59efd0c186e316001a424459cccfb1968f729d6de"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C147344__NRS-484B-627-1b__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-sweep-static.log",
-      "sha256": "edc0436fde98171827bcdac9065e8b83b908253d8cfd8d52fd6007bc7cf39a44"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C147344__NRS-484B-627-1b__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-sweep-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+      "log": "selected-validator-report.json",
+      "sha256": "14a333fedd9b374fa2c61ac0bff272c295a143a2d4286b4d8319bc8fc5263f9c"
     }
   ]
 }

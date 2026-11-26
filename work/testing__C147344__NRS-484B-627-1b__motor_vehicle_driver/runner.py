@@ -16,7 +16,7 @@ def check_config(config: dict):
         raise ValueError("unassigned selected case")
     if config.get("diagnostic_only") is not True or config.get("rate_hz") != 20 or config.get("duration_s") != 45:
         raise ValueError("diagnostic capture contract mismatch")
-    if set(config.get("cameras", [])) != {"overview", "approach", "reference_corner", "driver_reference"}:
+    if {item["name"] for item in config.get("cameras", [])} != {"overview", "approach", "reference_corner", "driver_reference"}:
         raise ValueError("four-camera contract mismatch")
     return True
 

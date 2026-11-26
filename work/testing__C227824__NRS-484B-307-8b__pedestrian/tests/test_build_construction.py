@@ -12,7 +12,7 @@ import build_construction
 class ConstructionPackageTests(unittest.TestCase):
     def test_shared_package_binds_every_case_and_original_sources(self):
         config, measurement, construction = build_construction.build()
-        self.assertEqual(len(config["supported_case_ids"]), 6)
+        self.assertEqual(len(config["supported_case_ids"]), 9)
         self.assertEqual(config["selected_case_id"], construction["case_id"])
         self.assertEqual(config["duration_s"] * config["rate_hz"], 240)
         self.assertEqual(construction["recording_description"], config["case"]["recording_description"])

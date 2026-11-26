@@ -36,8 +36,8 @@ def write_selected():
                        "construction": str(path.relative_to(ROOT)),
                        "construction_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                        "status": "draft"})
-    if len(result) != 6 or len({row["case_id"] for row in result}) != 6:
-        raise ValueError("exact six selected cases required")
+    if len(result) != 9 or len({row["case_id"] for row in result}) != 9:
+        raise ValueError("six branch cases and three exact sweep cases required")
     (ROOT / "selected-constructions.json").write_text(
         json.dumps({"format": "worker-selected-draft-constructions",
                     "assignment_id": plan["assignment_id"], "cases": result}, indent=2) + "\n")

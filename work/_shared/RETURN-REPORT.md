@@ -1,3 +1,9 @@
+## 2026-11-26 16:32 UTC: C228096 283(1)(b) delivered CPU package
+
+- Newly ready: `testing__C228096__NRS-484B-283-1b__pedestrian`; 11 exact cases, eight comparison audits, 85 GPU queue commands. Owner and lead independently passed `.venv-cpu/bin/python worker_check.py --assignment testing__C228096__NRS-484B-283-1b__pedestrian --complete --require-delivery-ready`; lead log `.runtime-work/c228096-lead/strict.log` exited 0 with `static_checks_passed: true`. Exact manifest/case-plan/proposal IDs and candidate IDs match; all command strings passed `bash -n`.
+- Manifest SHA256 `ab89a419c484e19ec802d6ad7900bb2f143601028b0bdb07be86c4e4ac348cdf`; proposal SHA256 `17f9c222be9ef995e2e0677c3444f6cef88b92f281d442aebc97c6d6119a5d48`. Shared queue now 134 assignments, 785 cases, 515 comparisons; SHA256 `05d77114da6d3d5461b476a659b31f0c4160962cb038bf4cf80facb1fcf3f85d`. Pinned queue validator accepts all rows through the later batch-level `local-integration-proof.json` stage.
+- Engineering sweep samples remain physical observation targets, not legal thresholds. Original CARLA motion/capture and independent acceptance remain later checks. C147344 is provisionally staging ready during its own strict validation and is not yet in the shared queue; the batch still has 107 partial results plus that unintegrated provisional package.
+
 ## 2026-11-26 16:07 UTC: C158208 257(2) delivered CPU package
 
 - Newly ready: `testing__C158208__NRS-484B-257-2__motor_vehicle_driver`; seven exact cases, four comparison audits, 60 GPU queue commands. Owner and lead independently passed `.venv-cpu/bin/python worker_check.py --assignment testing__C158208__NRS-484B-257-2__motor_vehicle_driver --complete --require-delivery-ready`; lead receipt: `.runtime-work/c158208-2572-lead/strict.log` (exit 0, `static_checks_passed: true`). All proposed shell commands passed `bash -n`; exact manifest/case-plan/queue IDs and candidate IDs match.

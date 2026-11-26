@@ -1,163 +1,246 @@
 {
-  "assignment_id": "testing__C227824__NRS-484B-307-8b__pedestrian",
   "actor": "pedestrian",
-  "cell_id": "C227824",
-  "law_id": "NRS-484B-307-8b",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-307-8b",
-      "cell_id": "C227824",
-      "actor": "pedestrian",
-      "requirement": "NRS-484B-307-8b",
-      "branch": "pedestrian_highway_entry",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 408,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].",
-  "law_source": "NRS 484B.307(8)(b)",
-  "topic_inventory": {
-    "exact-text": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4]."
+  "assignment_id": "testing__C227824__NRS-484B-307-8b__pedestrian",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "startup through final observation",
+        "subject": "full highway boundary, walker and facing signal",
+        "view": "overview"
+      },
+      {
+        "interval": "startup through entry or wait",
+        "subject": "original walker body and highway entry line",
+        "view": "approach"
+      },
+      {
+        "interval": "startup through final observation",
+        "subject": "route-facing red head and independent pedestrian device",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "startup through final observation",
+        "subject": "walker route and device countdown/pixels",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 12,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
-      "target_law_id": "NRS-484B-307-8b",
-      "target_type": "controlled_entry_probe",
       "construction": "pending exact Native scene and runner",
+      "entry_request": "entry",
       "gap_ids": [
         "red-entry-and-device-unverified"
       ],
-      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
-      "requested_behavior": "Enter the mapped highway while facing steady red alone, with no separate permitting device",
-      "other_device_indication": "none",
-      "entry_request": "entry",
       "legal_judgment": "unresolved",
+      "other_device_indication": "none",
       "physical_acceptance_claimed": false,
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_construction": null,
         "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
-        "trigger": "original body, signal state or camera pixels disagree with the exact planned event",
-        "fallback_construction": null
-      }
+        "status": "physical",
+        "trigger": "original body, signal state or camera pixels disagree with the exact planned event"
+      },
+      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
+      "requested_behavior": "Enter the mapped highway while facing steady red alone, with no separate permitting device",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "controlled_entry_probe"
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait",
-      "target_law_id": "NRS-484B-307-8b",
-      "target_type": "controlled_entry_probe",
       "construction": "pending exact Native scene and runner",
+      "entry_request": "wait",
       "gap_ids": [
         "red-entry-and-device-unverified"
       ],
-      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
-      "requested_behavior": "Remain wholly outside the mapped highway while facing steady red alone, with no separate permitting device",
-      "other_device_indication": "none",
-      "entry_request": "wait",
       "legal_judgment": "unresolved",
+      "other_device_indication": "none",
       "physical_acceptance_claimed": false,
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_construction": null,
         "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
-        "trigger": "original body, signal state or camera pixels disagree with the exact planned event",
-        "fallback_construction": null
-      }
+        "status": "physical",
+        "trigger": "original body, signal state or camera pixels disagree with the exact planned event"
+      },
+      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
+      "requested_behavior": "Remain wholly outside the mapped highway while facing steady red alone, with no separate permitting device",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "controlled_entry_probe"
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry",
-      "target_law_id": "NRS-484B-307-8b",
-      "target_type": "controlled_entry_probe",
       "construction": "pending exact Native scene and runner",
+      "entry_request": "entry",
       "gap_ids": [
         "red-entry-and-device-unverified"
       ],
-      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
-      "requested_behavior": "Enter while facing steady red alone and a separate official WALK indication",
-      "other_device_indication": "walk",
-      "entry_request": "entry",
       "legal_judgment": "unresolved",
+      "other_device_indication": "walk",
       "physical_acceptance_claimed": false,
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_construction": null,
         "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
-        "trigger": "original body, signal state or camera pixels disagree with the exact planned event",
-        "fallback_construction": null
-      }
+        "status": "physical",
+        "trigger": "original body, signal state or camera pixels disagree with the exact planned event"
+      },
+      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
+      "requested_behavior": "Enter while facing steady red alone and a separate official WALK indication",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "controlled_entry_probe"
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry",
-      "target_law_id": "NRS-484B-307-8b",
-      "target_type": "controlled_entry_probe",
       "construction": "pending exact Native scene and runner",
+      "entry_request": "entry",
       "gap_ids": [
         "red-entry-and-device-unverified"
       ],
-      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
-      "requested_behavior": "Enter with separate flashing hand and countdown and measure full-body clearance relative to zero",
-      "other_device_indication": "flashing_hand_countdown",
-      "entry_request": "entry",
       "legal_judgment": "unresolved",
+      "other_device_indication": "flashing_hand_countdown",
       "physical_acceptance_claimed": false,
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_construction": null,
         "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
-        "trigger": "original body, signal state or camera pixels disagree with the exact planned event",
-        "fallback_construction": null
-      }
+        "status": "physical",
+        "trigger": "original body, signal state or camera pixels disagree with the exact planned event"
+      },
+      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
+      "requested_behavior": "Enter with separate flashing hand and countdown and measure full-body clearance relative to zero",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "controlled_entry_probe"
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry",
-      "target_law_id": "NRS-484B-307-8b",
-      "target_type": "controlled_entry_probe",
       "construction": "pending exact Native scene and runner",
+      "entry_request": "entry",
       "gap_ids": [
         "red-entry-and-device-unverified"
       ],
-      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
-      "requested_behavior": "Enter with separate flashing hand and no countdown; distinguish new entry from lawful prior continuation",
-      "other_device_indication": "flashing_hand_no_countdown",
-      "entry_request": "entry",
       "legal_judgment": "unresolved",
+      "other_device_indication": "flashing_hand_no_countdown",
       "physical_acceptance_claimed": false,
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_construction": null,
         "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
-        "trigger": "original body, signal state or camera pixels disagree with the exact planned event",
-        "fallback_construction": null
-      }
+        "status": "physical",
+        "trigger": "original body, signal state or camera pixels disagree with the exact planned event"
+      },
+      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
+      "requested_behavior": "Enter with separate flashing hand and no countdown; distinguish new entry from lawful prior continuation",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "controlled_entry_probe"
     },
     {
       "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry",
-      "target_law_id": "NRS-484B-307-8b",
-      "target_type": "controlled_entry_probe",
       "construction": "pending exact Native scene and runner",
+      "entry_request": "entry",
       "gap_ids": [
         "red-entry-and-device-unverified"
       ],
-      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
-      "requested_behavior": "Enter with separate steady hand; distinguish new entry from lawful prior continuation",
-      "other_device_indication": "steady_hand",
-      "entry_request": "entry",
       "legal_judgment": "unresolved",
+      "other_device_indication": "steady_hand",
       "physical_acceptance_claimed": false,
       "physical_risk_assessment": {
-        "status": "physical",
+        "fallback_construction": null,
         "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
-        "trigger": "original body, signal state or camera pixels disagree with the exact planned event",
-        "fallback_construction": null
-      }
+        "status": "physical",
+        "trigger": "original body, signal state or camera pixels disagree with the exact planned event"
+      },
+      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
+      "requested_behavior": "Enter with separate steady hand; distinguish new entry from lawful prior continuation",
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "controlled_entry_probe"
+    },
+    {
+      "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0000",
+      "entry_request": "entry",
+      "gap_ids": [
+        "red-entry-and-device-unverified"
+      ],
+      "legal_judgment": "unresolved",
+      "other_device_indication": "walk",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "fallback_construction": null,
+        "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
+        "status": "physical",
+        "trigger": "original body, signal state or camera pixels disagree with the exact planned event"
+      },
+      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
+      "requested_behavior": "Request highway entry under separate WALK indication at an engineering walker speed",
+      "sweep_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission",
+      "sweep_point": {
+        "walk_speed_target_mps": 0.8
+      },
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "controlled_entry_probe",
+      "walk_speed_target_mps": 0.8
+    },
+    {
+      "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001",
+      "entry_request": "entry",
+      "gap_ids": [
+        "red-entry-and-device-unverified"
+      ],
+      "legal_judgment": "unresolved",
+      "other_device_indication": "walk",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "fallback_construction": null,
+        "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
+        "status": "physical",
+        "trigger": "original body, signal state or camera pixels disagree with the exact planned event"
+      },
+      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
+      "requested_behavior": "Request highway entry under separate WALK indication at an engineering walker speed",
+      "sweep_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission",
+      "sweep_point": {
+        "walk_speed_target_mps": 1.6
+      },
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "controlled_entry_probe",
+      "walk_speed_target_mps": 1.6
+    },
+    {
+      "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002",
+      "entry_request": "entry",
+      "gap_ids": [
+        "red-entry-and-device-unverified"
+      ],
+      "legal_judgment": "unresolved",
+      "other_device_indication": "walk",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "fallback_construction": null,
+        "risk": "CARLA walker footprint, signal visibility or authored highway boundary may differ from the requested scene",
+        "status": "physical",
+        "trigger": "original body, signal state or camera pixels disagree with the exact planned event"
+      },
+      "preparation_status": "source_bound_measurement_cpu_tested_construction_pending",
+      "requested_behavior": "Request highway entry under separate WALK indication at an engineering walker speed",
+      "sweep_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission",
+      "sweep_point": {
+        "walk_speed_target_mps": 1.2
+      },
+      "target_law_id": "NRS-484B-307-8b",
+      "target_type": "controlled_entry_probe",
+      "walk_speed_target_mps": 1.2
     }
   ],
+  "cell_id": "C227824",
   "comparisons": [
     {
-      "comparison_id": "red_entry_vs_wait",
       "case_ids": [
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait"
+      ],
+      "comparison_id": "red_entry_vs_wait",
+      "deliberate_differences": [
+        "requested walker movement across the highway boundary"
       ],
       "fixed_conditions": [
         "same official facing steady red alone",
@@ -165,108 +248,199 @@
         "same absence of other device",
         "same walker spawn and camera plan"
       ],
-      "deliberate_differences": [
-        "requested walker movement across the highway boundary"
-      ],
-      "status": "planned_cpu_measurement_only",
-      "legal_judgment": "unresolved"
+      "legal_judgment": "unresolved",
+      "status": "planned_cpu_measurement_only"
     },
     {
-      "comparison_id": "red_entry_vs_red_walk_entry",
       "case_ids": [
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry"
       ],
+      "comparison_id": "red_entry_vs_red_walk_entry",
+      "deliberate_differences": [
+        "separate pedestrian-device indication at first highway entry"
+      ],
       "fixed_conditions": [
         "same official facing steady red alone",
         "same mapped highway boundary",
         "same walker crossing route and camera plan"
       ],
-      "deliberate_differences": [
-        "separate pedestrian-device indication at first highway entry"
-      ],
-      "status": "planned_cpu_measurement_only",
-      "legal_judgment": "unresolved"
+      "legal_judgment": "unresolved",
+      "status": "planned_cpu_measurement_only"
     },
     {
-      "comparison_id": "red_entry_vs_red_countdown_entry",
       "case_ids": [
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry"
       ],
+      "comparison_id": "red_entry_vs_red_countdown_entry",
+      "deliberate_differences": [
+        "separate pedestrian-device indication at first highway entry"
+      ],
       "fixed_conditions": [
         "same official facing steady red alone",
         "same mapped highway boundary",
         "same walker crossing route and camera plan"
       ],
-      "deliberate_differences": [
-        "separate pedestrian-device indication at first highway entry"
-      ],
-      "status": "planned_cpu_measurement_only",
-      "legal_judgment": "unresolved"
+      "legal_judgment": "unresolved",
+      "status": "planned_cpu_measurement_only"
     },
     {
-      "comparison_id": "red_entry_vs_red_flashing_no_countdown_entry",
       "case_ids": [
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry"
       ],
+      "comparison_id": "red_entry_vs_red_flashing_no_countdown_entry",
+      "deliberate_differences": [
+        "separate pedestrian-device indication at first highway entry"
+      ],
       "fixed_conditions": [
         "same official facing steady red alone",
         "same mapped highway boundary",
         "same walker crossing route and camera plan"
       ],
-      "deliberate_differences": [
-        "separate pedestrian-device indication at first highway entry"
-      ],
-      "status": "planned_cpu_measurement_only",
-      "legal_judgment": "unresolved"
+      "legal_judgment": "unresolved",
+      "status": "planned_cpu_measurement_only"
     },
     {
-      "comparison_id": "red_entry_vs_red_steady_hand_entry",
       "case_ids": [
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
         "testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry"
       ],
+      "comparison_id": "red_entry_vs_red_steady_hand_entry",
+      "deliberate_differences": [
+        "separate pedestrian-device indication at first highway entry"
+      ],
       "fixed_conditions": [
         "same official facing steady red alone",
         "same mapped highway boundary",
         "same walker crossing route and camera plan"
       ],
-      "deliberate_differences": [
-        "separate pedestrian-device indication at first highway entry"
+      "legal_judgment": "unresolved",
+      "status": "planned_cpu_measurement_only"
+    },
+    {
+      "case_ids": [
+        "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0000",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001"
       ],
-      "status": "planned_cpu_measurement_only",
-      "legal_judgment": "unresolved"
+      "comparison_id": "sweep_walk_speed_0",
+      "deliberate_differences": [
+        "walk_speed_target_mps"
+      ],
+      "fixed_conditions": [
+        "same red head, reviewed highway, pedestrian route, separate WALK display, cameras and duration"
+      ],
+      "legal_judgment": "unresolved",
+      "status": "planned_cpu_measurement_only"
+    },
+    {
+      "case_ids": [
+        "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002"
+      ],
+      "comparison_id": "sweep_walk_speed_1",
+      "deliberate_differences": [
+        "walk_speed_target_mps"
+      ],
+      "fixed_conditions": [
+        "same red head, reviewed highway, pedestrian route, separate WALK display, cameras and duration"
+      ],
+      "legal_judgment": "unresolved",
+      "status": "planned_cpu_measurement_only"
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "red-entry-and-device-unverified",
+        "requirement": "Observed first highway entry, facing steady red alone, and separate device inventory at entry",
+        "source": "NRS 484B.307(8)(b); NRS 484B.283(1)(d)(1)-(4)",
+        "why_existing_insufficient": "The frozen accepted-evidence inventory contains no recordings for this assignment."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-307-8b",
+  "law_source": "NRS 484B.307(8)(b)",
+  "law_text": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].",
   "observations": [
     {
+      "mandatory": true,
       "name": "walker_body_history",
-      "source": "original Native walker bounding-box vertices joined to world frame",
-      "mandatory": true
+      "source": "original Native walker bounding-box vertices joined to world frame"
     },
     {
-      "name": "highway_boundary",
-      "source": "source-hashed map survey including public highway boundary, not roadway edge alone",
-      "mandatory": false,
       "evidence_kind": "required_static_context",
-      "required_by": "saved_entry and independent delivery audit"
+      "mandatory": false,
+      "name": "highway_boundary",
+      "required_by": "saved_entry and independent delivery audit",
+      "source": "source-hashed map survey including public highway boundary, not roadway edge alone"
     },
     {
+      "mandatory": true,
       "name": "facing_signal_history",
-      "source": "original official traffic-light actor state and facing orientation at each walker frame",
-      "mandatory": true
+      "source": "original official traffic-light actor state and facing orientation at each walker frame"
     },
     {
+      "mandatory": true,
       "name": "other_device_history",
-      "source": "complete source-bound inventory of governing pedestrian devices and their frame indications, including countdown when present",
-      "mandatory": true
+      "source": "complete source-bound inventory of governing pedestrian devices and their frame indications, including countdown when present"
     },
     {
+      "mandatory": true,
       "name": "camera_frame_map",
-      "source": "synchronized four-camera original frame map and decoded actual pixels",
-      "mandatory": true
+      "source": "synchronized four-camera original frame map and decoded actual pixels"
+    }
+  ],
+  "planning_status": "six_source_grounded_cases_measurement_cpu_tested_construction_pending",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0000",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001",
+        "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002"
+      ],
+      "disposition_index": 0,
+      "evidence_or_gap": "No accepted recording; six controlled entry/device cases planned with original body, signal and device histories.",
+      "requirement": "Steady-red pedestrian highway entry subject to another-device permission under NRS 484B.283",
+      "source": {
+        "path": "inputs/testing__C227824__NRS-484B-307-8b__pedestrian/assignment.json",
+        "quote": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4]."
+      },
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "The exact public highway boundary and signal/device authority require source-backed map survey and original-pixel verification; the authored scene alone cannot establish them.",
+    "The six exact Native constructions, capture, saved finalization and audit proofs are still CPU work.",
+    "The NRS 484B.283 permission and continuation clauses require independent legal/source review; the measurement module reports events without a legal verdict."
+  ],
+  "selected_branch": "pedestrian_highway_entry",
+  "selected_branches": [
+    {
+      "actor": "pedestrian",
+      "branch": "pedestrian_highway_entry",
+      "cell_id": "C227824",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-307-8b",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-307-8b",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 408,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ],
   "sources": [
@@ -291,35 +465,15 @@
       "sha256": "03871662cb59752f0d0215b4be08fbecb4989d805b8435a6879ec3975717245f"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "The exact public highway boundary and signal/device authority require source-backed map survey and original-pixel verification; the authored scene alone cannot establish them.",
-    "The six exact Native constructions, capture, saved finalization and audit proofs are still CPU work.",
-    "The NRS 484B.283 permission and continuation clauses require independent legal/source review; the measurement module reports events without a legal verdict."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "red-entry-and-device-unverified",
-        "requirement": "Observed first highway entry, facing steady red alone, and separate device inventory at entry",
-        "source": "NRS 484B.307(8)(b); NRS 484B.283(1)(d)(1)-(4)",
-        "why_existing_insufficient": "The frozen accepted-evidence inventory contains no recordings for this assignment."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4]."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "six_source_grounded_cases_measurement_cpu_tested_construction_pending",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 408,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "pedestrian_highway_entry",
-      "decision": "conditional",
       "confidence": "medium",
+      "decision": "conditional",
+      "reason": "The fixed road-crossing task supports pedestrian highway entry facing red.",
       "required_context": [
         "Establish highway dedication, public vehicular use, official signal governance and entry-time facing indications.",
         "Establish the entire public highway boundary and entry trajectory.",
@@ -328,55 +482,9 @@
         "Locate the entire highway boundary independently of roadway edges and start the pedestrian outside it.",
         "Use a person afoot facing an official steady-red-alone signal."
       ],
-      "reason": "The fixed road-crossing task supports pedestrian highway entry facing red."
-    }
-  ],
-  "camera_plan": {
-    "profile": "overview1080-capability",
-    "duration_s": 12,
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "view": "overview",
-        "subject": "full highway boundary, walker and facing signal",
-        "interval": "startup through final observation"
-      },
-      {
-        "view": "approach",
-        "subject": "original walker body and highway entry line",
-        "interval": "startup through entry or wait"
-      },
-      {
-        "view": "reference_corner",
-        "subject": "route-facing red head and independent pedestrian device",
-        "interval": "startup through final observation"
-      },
-      {
-        "view": "driver_reference",
-        "subject": "walker route and device countdown/pixels",
-        "interval": "startup through final observation"
-      }
-    ]
-  },
-  "selected_branch": "pedestrian_highway_entry",
-  "requirement_dispositions": [
-    {
-      "disposition_index": 0,
-      "requirement": "Steady-red pedestrian highway entry subject to another-device permission under NRS 484B.283",
-      "source": {
-        "path": "inputs/testing__C227824__NRS-484B-307-8b__pedestrian/assignment.json",
-        "quote": "Where the signal is a steady red signal alone: Pedestrians facing such a signal shall not enter the highway, unless permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4]."
-      },
-      "status": "selected_required",
-      "evidence_or_gap": "No accepted recording; six controlled entry/device cases planned with original body, signal and device histories.",
-      "case_ids": [
-        "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
-        "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait",
-        "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry",
-        "testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry",
-        "testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry",
-        "testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry"
-      ]
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 408,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

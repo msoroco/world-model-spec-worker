@@ -26,7 +26,7 @@ class CaseBundleTests(unittest.TestCase):
         self.one_device = {**self.common, "governing_pedestrian_device_ids": [8],
                            "device_inventory_review": {"source_sha256": "c" * 64}}
 
-    def test_exact_six_cases_preserve_fixed_sources(self):
+    def test_exact_branches_and_sweep_preserve_fixed_sources(self):
         scenes = expand(self.plan, no_device_base=self.no_device,
                         one_device_base=self.one_device)
         self.assertEqual(set(scenes), {case["case_id"] for case in self.plan["cases"]})
@@ -39,7 +39,10 @@ class CaseBundleTests(unittest.TestCase):
         self.assertEqual(sum(not scene["governing_pedestrian_device_ids"]
                              for scene in scenes.values()), 2)
         self.assertEqual(sum(bool(scene["governing_pedestrian_device_ids"])
-                             for scene in scenes.values()), 4)
+                             for scene in scenes.values()), 7)
+        self.assertEqual(sorted(scene["speed_mps"] for scene in scenes.values()
+                                if "other_device_permission-" in scene["case_id"]),
+                         [0.8, 1.2, 1.6])
 
     def test_changed_fixed_source_or_device_inventory_fails(self):
         self.one_device["map_source_sha256"] = "d" * 64

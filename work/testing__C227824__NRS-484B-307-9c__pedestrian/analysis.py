@@ -123,6 +123,10 @@ def saved_result(attempt: Path, report: dict) -> dict:
         "realized_observables": {"pedestrian_highway_entry": observed,
                                  "original_pedestrian_speed_mps": observed.get("original_pedestrian_speed_mps")}}
     result = physical_result(attempt, result)
+    speed = observed.get("original_pedestrian_speed_mps")
+    if speed is not None:
+        result.setdefault("realized_observables", {})["original_pedestrian_speed_mps"] = {
+            **speed, "reference": "channels/original_pedestrian_speed_mps.jsonl"}
     validate_result(result)
     return result
 

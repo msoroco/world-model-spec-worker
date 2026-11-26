@@ -22,6 +22,22 @@ def row(frame, body, devices=None):
 
 
 class EntryMeasurementTests(unittest.TestCase):
+    def test_original_body_speed_uses_post_startup_samples(self):
+        def sample(frame):
+            x = 0.05 * frame if frame >= 121 else 0.0
+            return {"frame": frame, "time_s": frame * .05,
+                    "body_polygon_xy_m": [[x, 0], [x + 1, 0], [x + 1, 1], [x, 1]]}
+        rows = [sample(frame) for frame in range(1, 241)]
+        measured = MODULE.measure_walking_speed(rows)
+        self.assertIsNotNone(measured)
+        self.assertAlmostEqual(measured["value"], 1.0)
+        self.assertEqual(measured["first_frame"], 121)
+        self.assertFalse(measured["legal_permission_determined"])
+        self.assertIsNone(MODULE.measure_walking_speed(rows[:3]))
+        rows[180]["frame"] = 2000
+        with self.assertRaisesRegex(ValueError, "frame/time"):
+            MODULE.measure_walking_speed(rows)
+
     def test_boundary_contact_is_first_entry(self):
         measured = MODULE.measure_entry([row(1, OUTSIDE), row(2, CONTACT), row(3, INSIDE)], HIGHWAY)
         self.assertEqual(measured["first_entry"]["frame"], 2)

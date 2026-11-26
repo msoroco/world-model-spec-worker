@@ -1,6 +1,6 @@
 # C228096 pedestrian curb-entry handoff
 
-Status: CPU proof set complete for 11 selected exact cases; scoped strict gate pending. Original physical or legal completion is not claimed.
+Status: ready after the exact scoped strict delivery gate exited 0 on 2026-11-26. Original physical or legal completion is not claimed.
 
 ## Selected construction
 
@@ -10,9 +10,9 @@ The pinned semantic proposal has one neutral baseline and 11 selected exact case
 
 ## Exact CPU proofs
 
-Every one of the 11 exact cases has current pinned offline, positive and negative compatibility, recorded-only saved processing, three synthetic physical outcomes and lifecycle, and delivery positive and negative CPU proofs. `execution-manifest.json` binds these current receipts; `proof-summary.json` indexes their hashes. The queue proposal contains 11 exact job rows and eight comparison commands, with shell syntax checked. The five selected CPU validator families passed in the preceding in-memory diagnostic invocation; the current exact-case invocation and scoped strict gate are pending. No original recording or legal finding is asserted by synthetic proofs.
+Every one of the 11 exact cases has current pinned offline, positive and negative compatibility, recorded-only saved processing, three synthetic physical outcomes and lifecycle, and delivery positive and negative CPU proofs. `execution-manifest.json` binds these current receipts; `proof-summary.json` indexes their hashes. The queue proposal contains 11 exact job rows and eight comparison commands, with shell syntax checked. The five selected CPU validator families passed on the current exact-case manifest. The exact scoped strict delivery gate exited 0; `cpu-strict-check.log` records its result. No original recording or legal finding is asserted by synthetic proofs.
 
-The assignment gate is `.venv-cpu/bin/python worker_check.py --assignment testing__C228096__NRS-484B-283-1b__pedestrian --complete --require-delivery-ready`. Use `SCENARIO_PIPELINE_OUTPUT_ROOT` and `TMPDIR` under `.runtime-work/` for direct pipeline imports or temporary artifacts.
+The passed assignment gate is `.venv-cpu/bin/python worker_check.py --assignment testing__C228096__NRS-484B-283-1b__pedestrian --complete --require-delivery-ready`. Use `SCENARIO_PIPELINE_OUTPUT_ROOT` and `TMPDIR` under `.runtime-work/` for direct pipeline imports or temporary artifacts.
 
 ## Original source and review limits
 

@@ -31,9 +31,9 @@ def main() -> None:
         if suffix not in {item.case_id for item in CASES}:
             raise ValueError("nonselected case")
         folder = ROOT / "cases" / suffix
-        compat = SCRATCH / ("compat4-" + suffix)
-        offline = SCRATCH / ("offline4-" + suffix)
-        saved = SCRATCH / ("saved4-" + suffix + ".log")
+        compat = SCRATCH / ("compat5-" + suffix)
+        offline = SCRATCH / ("offline5-" + suffix)
+        saved = SCRATCH / ("saved5-" + suffix + ".log")
         for name, origin in (("compatibility.json", compat / "compatibility.json"),
                              ("cpu-compat-analysis.log", compat / "compatibility-analysis.log"),
                              ("negative-analysis.log", compat / "negative-analysis.log"),
@@ -65,7 +65,7 @@ def main() -> None:
         write(physical, {"format": "c227824-diagnostic-physical-preparation",
                          "case_id": case_id, "construction_sha256": source["construction_sha256"],
                          "source_kind": "synthetic_software_fixture", "fixtures": fixtures,
-                         "lifecycle": {"command": f".venv-cpu/bin/python work/{ASSIGNMENT}/prove_lifecycle.py --case {case_id} --attempt .runtime-work/c227824-owner/{compat.name} --saved-receipt .runtime-work/c227824-owner/saved4-{suffix}.log",
+                         "lifecycle": {"command": f".venv-cpu/bin/python work/{ASSIGNMENT}/prove_lifecycle.py --case {case_id} --attempt .runtime-work/c227824-owner/{compat.name} --saved-receipt .runtime-work/c227824-owner/saved5-{suffix}.log",
                                        "events": ["capture_finished", "encoders_closed", "restoration_verified", "native_exit", "owner_released", "saved_processing_started"],
                                        "exit_code": 0, "log": f"cases/{suffix}/{life.name}",
                                        "log_sha256": sha(life),

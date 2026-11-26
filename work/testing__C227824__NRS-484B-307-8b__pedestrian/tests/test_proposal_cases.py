@@ -6,20 +6,22 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class CaseProposalTests(unittest.TestCase):
-    def test_six_exact_cases_and_five_comparisons(self):
+    def test_nine_exact_cases_and_seven_comparisons(self):
         plan = json.loads((ROOT / "case-plan.json").read_text())
         proposal = json.loads((ROOT / "proposals" / "cases.json").read_text())
         selected = {case["case_id"]: case for case in proposal["cases"]
                     if case["target_type"] != "baseline"}
         self.assertEqual(set(selected), {case["case_id"] for case in plan["cases"]})
-        self.assertEqual(len(plan["comparisons"]), 5)
+        self.assertEqual(len(plan["comparisons"]), 7)
         for case in plan["cases"]:
             assignments = selected[case["case_id"]]["variable_assignments"]
             self.assertEqual(assignments["entry_request"]["value"], case["entry_request"])
             self.assertEqual(assignments["other_device_indication"]["value"],
                              case["other_device_indication"])
-            self.assertEqual(selected[case["case_id"]]["unresolved_judgment_calls"][0]["phrase"],
-                             "unless permitted to proceed by another device as provided in NRS 484B.283")
+            judgments = selected[case["case_id"]]["unresolved_judgment_calls"]
+            self.assertTrue(any((item.get("phrase") if isinstance(item, dict) else item)
+                                == "unless permitted to proceed by another device as provided in NRS 484B.283"
+                                for item in judgments))
         for comparison in plan["comparisons"]:
             self.assertTrue(set(comparison["case_ids"]) <= set(selected))
 

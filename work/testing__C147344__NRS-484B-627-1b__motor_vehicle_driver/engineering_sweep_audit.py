@@ -82,3 +82,24 @@ def audit(root: Path, site_ref: dict, receipts: list[dict]) -> dict:
     return {"format": "c147344-engineering-sweep-audit-v1",
             "site_sha256": site_ref["sha256"], "comparisons": comparisons,
             "physical_acceptance": False, "legal_verdict": None}
+
+
+def main() -> None:
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--authority-root", type=Path, required=True)
+    parser.add_argument("--site-ref", type=Path, required=True)
+    parser.add_argument("--receipt", type=Path, action="append", required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    if args.output.exists() or args.output.resolve().is_relative_to(args.authority_root.resolve()):
+        raise ValueError("fresh sweep audit outside original source root required")
+    site = json.loads(args.site_ref.read_text(encoding="utf-8"))
+    receipts = [json.loads(path.read_text(encoding="utf-8")) for path in args.receipt]
+    result = audit(args.authority_root, site, receipts)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

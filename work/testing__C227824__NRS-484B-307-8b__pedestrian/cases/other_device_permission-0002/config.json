@@ -1,0 +1,173 @@
+{
+  "law_id": "NRS-484B-307-8b",
+  "cell_id": "C227824",
+  "actor": "pedestrian",
+  "selected_case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002",
+  "supported_case_ids": [
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_entry",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_no_device_wait",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_walk_entry",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_countdown_entry",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_flashing_no_countdown_entry",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__red_steady_hand_entry",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0000",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0001",
+    "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002"
+  ],
+  "case": {
+    "case_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission-0002",
+    "deliberate_differences": [
+      "walk_speed_target_mps"
+    ],
+    "judgment_refs": [
+      {
+        "note": "Permission depends on original device authority, indication, timing and the referenced subsection; no legal verdict is assigned.",
+        "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283"
+      }
+    ],
+    "paired_probe_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission",
+    "probe": {
+      "comparison_or_standard": "physical coverage; legal judgment unresolved",
+      "primary_variable": "walk_speed_target_mps",
+      "target_value_or_branch": {
+        "walk_speed_target_mps": 1.2
+      }
+    },
+    "rationale": "Sample finite walker control requests with the other device displaying WALK; official authority and NRS 484B.283 permission remain unresolved.",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "Original CARLA walker world-body vertices and XY envelope",
+          "name": "walker_body_history",
+          "reference_frame": "Native CARLA world frame/time",
+          "sampling_rate_hz": 20,
+          "time_window": "all original recorded frames",
+          "uncertainty": "Source authority, physical behavior and pixel visibility require separate review",
+          "unit": "source packet"
+        },
+        {
+          "method": "Original route-facing official head state and identity",
+          "name": "facing_signal_history",
+          "reference_frame": "Native CARLA world frame/time",
+          "sampling_rate_hz": 20,
+          "time_window": "all original recorded frames",
+          "uncertainty": "Source authority, physical behavior and pixel visibility require separate review",
+          "unit": "source packet"
+        },
+        {
+          "method": "Original complete other-device inventory, indication and countdown",
+          "name": "other_device_history",
+          "reference_frame": "Native CARLA world frame/time",
+          "sampling_rate_hz": 20,
+          "time_window": "all original recorded frames",
+          "uncertainty": "Source authority, physical behavior and pixel visibility require separate review",
+          "unit": "source packet"
+        },
+        {
+          "method": "Original CARLA frame and time joined to four camera streams",
+          "name": "camera_frame_map",
+          "reference_frame": "Native CARLA world frame/time",
+          "sampling_rate_hz": 20,
+          "time_window": "all original recorded frames",
+          "uncertainty": "Source authority, physical behavior and pixel visibility require separate review",
+          "unit": "source packet"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "Source-hashed reviewed full-highway polygon in original scene",
+          "name": "highway_boundary",
+          "unit": "m"
+        }
+      ],
+      "limitations": [
+        "Requested entry or waiting does not establish realized movement.",
+        "Another device indication does not itself establish legal permission.",
+        "Actual pixel visibility and official device authority require independent source review."
+      ]
+    },
+    "selection_rank": 2,
+    "sweep_id": "testing__C227824__NRS-484B-307-8b__pedestrian__other_device_permission",
+    "sweep_measurements": [
+      {
+        "measurement": {
+          "method": "original 20 Hz walker body displacement after startup, retaining original frame samples",
+          "statistic": "mean",
+          "time_window": "original seconds 6 through 12, excluding startup transient"
+        },
+        "observable": "original_pedestrian_speed_mps",
+        "unit": "m/s",
+        "variable": "walk_speed_target_mps"
+      }
+    ],
+    "sweep_point": {
+      "walk_speed_target_mps": 1.2
+    },
+    "sweep_spec_version": "15cce88c3710d48530a956a21cc918c5005e502895a351bec65d668beb8ac166",
+    "target_law_id": "NRS-484B-307-8b",
+    "target_type": "judgment_sweep",
+    "unresolved_judgment_calls": [
+      "unless permitted to proceed by another device as provided in NRS 484B.283"
+    ],
+    "variable_assignments": {
+      "entry_request": {
+        "kind": "controller",
+        "unit": "categorical request",
+        "value": "entry"
+      },
+      "other_device_indication": {
+        "kind": "world_setup",
+        "unit": "categorical indication",
+        "value": "walk"
+      },
+      "walk_speed_target_mps": {
+        "kind": "controller",
+        "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+        "unit": "m/s",
+        "value": 1.2
+      }
+    }
+  },
+  "duration_s": 12,
+  "rate_hz": 20,
+  "capture_provenance": "original Native samples required",
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "source-reviewed original world location and target",
+      "fov_deg": 75
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed original world location and target",
+      "fov_deg": 75
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed original world location and target",
+      "fov_deg": 75
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "source-reviewed original world location and target",
+      "fov_deg": 75
+    }
+  ],
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 1.0,
+    "engineering_tolerances_not_legal": true
+  }
+}

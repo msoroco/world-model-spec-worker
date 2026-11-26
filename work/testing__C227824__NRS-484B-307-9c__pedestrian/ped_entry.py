@@ -152,11 +152,13 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
         entry_frame = None
     speed_observation = None
     if case.walk_speed_target_mps is not None:
-        samples = [row.get('pedestrian_speed_mps') for row in rows[120:240]]
-        require(len(samples) == 120 and all(number(value) and value >= 0 for value in samples),
+        samples = [row.get('pedestrian_speed_mps') for row in rows[120:241]]
+        require(len(samples) == 121 and all(number(value) and value >= 0 for value in samples),
                 'original pedestrian speed readback missing from steady approach')
         speed_observation = {'value': sum(samples) / len(samples), 'unit': 'm/s',
-                             'method': 'mean of original body velocity readbacks from 6 through 12 seconds',
+                             'method': 'original 20 Hz pedestrian body velocity readback after departure, retaining the complete raw stream',
+                             'time_window': 'original seconds 6 through 12 after departure, excluding startup transient',
+                             'statistic': 'mean', 'sample_window_s': [6.0, 12.0],
                              'source_kind': 'original_native_frames'}
     return {'case_id': case.case_id, 'frame_count': 900,
             'first_original_entry_frame': entry_frame,

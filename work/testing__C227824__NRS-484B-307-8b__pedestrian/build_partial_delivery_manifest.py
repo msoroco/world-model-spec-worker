@@ -31,8 +31,8 @@ def build() -> dict:
                 if case.get("target_type") != "baseline"}
     if (draft.get("assignment_id") != aid or index.get("assignment_id") != aid
             or expected != semantic or expected != {case["case_id"] for case in draft["cases"]}
-            or len(expected) != 6):
-        raise ValueError("six exact selected cases differ")
+            or len(expected) != 9):
+        raise ValueError("nine exact selected cases differ")
     if index["execution_manifest_sha256"] != _sha(HERE / "execution-manifest.draft.json"):
         raise ValueError("draft proof index changed")
     if index["semantic_index_sha256"] != _sha(HERE / "proposals/semantic-index.json"):

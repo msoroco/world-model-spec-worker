@@ -62,7 +62,7 @@ class MaterializeTests(unittest.TestCase):
 
     def test_six_private_prechecked_attempts(self):
         ids = materialize(self.source, self.output)
-        self.assertEqual(len(ids), 6)
+        self.assertEqual(len(ids), 9)
         for case_id in ids:
             self.assertTrue((self.output / case_id / "scene.json").is_file())
             self.assertTrue((self.output / case_id / "runner.py").is_file())
@@ -148,7 +148,7 @@ class MaterializeTests(unittest.TestCase):
             for name in declarations:
                 self.assertEqual((target / name).read_bytes(),
                                  (self.source / name).read_bytes())
-        self.assertEqual(len(ids), 6)
+        self.assertEqual(len(ids), 9)
 
     def test_changed_production_source_rejected_before_output(self):
         path = self.source / "no-device-base.json"

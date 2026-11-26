@@ -13,6 +13,7 @@ from pathlib import Path
 
 from saved_entry import CAMERAS, build_report
 from physical_entry import assess as assess_entry
+from entry_measurement import measure_walking_speed
 
 
 def _pipeline_output_root():
@@ -115,6 +116,12 @@ def finalize(attempt):
     _pipeline_output_root()
     from worker_exchange.native_output import physical_result, validate_result
     result = physical_result(root, result)
+    if scene.get("speed_mps") in (0.8, 1.2, 1.6) and "other_device_permission-" in case_id:
+        original_rows = _jsonl(root / "walker-body-history.jsonl")
+        observed_speed = measure_walking_speed(original_rows)
+        if observed_speed is not None:
+            observed_speed["reference"] = "walker-body-history.jsonl"
+            result["realized_observables"]["original_pedestrian_speed_mps"] = observed_speed
     entry_check = assess_entry(report, scene, _jsonl(root / "walker-body-history.jsonl"))
     result["physical_checks"]["maneuver"] = entry_check
     result["maneuver_completed"] = entry_check["status"] == "met"
