@@ -26,6 +26,10 @@ def rows(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line]
 
 
+def measure_walk_entry(source: Path) -> dict:
+    return measure(source)
+
+
 def analyze(attempt: Path, output: Path) -> dict:
     attempt = Path(attempt).resolve()
     output = Path(output).resolve()
@@ -37,10 +41,15 @@ def analyze(attempt: Path, output: Path) -> dict:
     if (receipt.get('case_id') != case_id or receipt.get('source_sha256') != sha(source)
             or receipt.get('fps') != 20 or packet.get('case_id') != case_id):
         raise ValueError('original WALK source receipt identity or hash differs')
-    measurement = measure(source)
+    measurement = measure_walk_entry(source)
     frames = packet['frames']
+    if receipt.get('frame_count') != len(frames):
+        raise ValueError('original WALK receipt frame count differs')
     frame_map = rows(required(attempt, 'video_frames.jsonl'))
     trace = rows(required(attempt, 'trace.jsonl'))
+    if packet.get('diagnostic_fixture') is False and packet.get('original_trace_id') != (
+            'Native:' + sha(attempt / 'trace.jsonl')):
+        raise ValueError('original WALK packet trace source differs')
     if len(frames) != len(frame_map) or len(frames) != len(trace):
         raise ValueError('original WALK frame streams differ')
     for index, (frame, mapped, row) in enumerate(zip(frames, frame_map, trace)):
@@ -82,7 +91,7 @@ def analyze(attempt: Path, output: Path) -> dict:
         'exception_source_sha256': packet['exception_source_sha256'],
         'statutory_exceptions': 'independent review pending'}}) + '\n')
     evidence.append({'name': 'reviewed_walk_site', 'unit': 'source', 'reference': context})
-    native = {'case_id': case_id,
+    native = {'case_id': case_id, 'measured_values': {'walk_entry': measurement},
         'target_checks': [{'target': 'source-bound original WALK crosswalk entry',
             'requested': True, 'measured': True, 'method': 'measure_walk_entry',
             'tolerance': 0, 'matched': True, 'physical_cause_confirmed': False,

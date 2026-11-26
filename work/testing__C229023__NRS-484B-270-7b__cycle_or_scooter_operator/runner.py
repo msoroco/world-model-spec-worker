@@ -4,16 +4,17 @@ import argparse
 import hashlib
 import importlib
 import json
+import math
 import os
 from pathlib import Path
 
 from overtake import CASES, construct, require, validate_scene
 
-VIEWS = ('overview', 'approach', 'alongside', 'rear_reference')
+VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 ASSIGNMENT = 'testing__C229023__NRS-484B-270-7b__cycle_or_scooter_operator'
 
 
-def load_scene(packet_path, source_root, case):
+def load_scene(packet_path, source_root, case, upstream_start_m=0):
     """Resolve every cited original input by bytes before actor creation."""
     raw = Path(packet_path).read_bytes()
     packet = json.loads(raw)
@@ -23,10 +24,16 @@ def load_scene(packet_path, source_root, case):
             'reviewed original scene packet required')
     scene = packet.get('scene')
     require(isinstance(scene, dict), 'reviewed original scene missing')
-    for field in ('jurisdiction', 'road_geometry', 'cycle_classification',
+    fields = ('jurisdiction', 'road_geometry', 'cycle_classification',
                   'wheel_arrangement', 'wheel_diameter', 'moped_exclusion',
                   'operator_control', 'motor_vehicle_classification',
-                  'motor_vehicle_occupants', 'passing_side', 'route_geometry'):
+                  'motor_vehicle_occupants', 'passing_side', 'route_geometry')
+    if upstream_start_m:
+        require(upstream_start_m == 1 and
+                scene.get('approved_upstream_start_m', 0) >= upstream_start_m,
+                'reviewed upstream fallback approval missing')
+        fields += ('upstream_start',)
+    for field in fields:
         entry = packet.get('sources', {}).get(field)
         require(isinstance(entry, dict), 'source manifest missing: ' + field)
         name = entry.get('path')
@@ -43,6 +50,34 @@ def load_scene(packet_path, source_root, case):
     return scene, hashlib.sha256(raw).hexdigest()
 
 
+def seal_original(output, scene, packet_sha256, camera_counts):
+    """Bind original acquisition to reviewed scene and exact bytes."""
+    root = Path(output).resolve()
+    require(root.is_dir(), 'original attempt output missing')
+    context = dict(scene, reviewed_scene_packet_sha256=packet_sha256)
+    context_path = root / 'scene-context.json'
+    require(not context_path.exists(), 'retain prior original scene context')
+    context_path.write_text(json.dumps(context, indent=2, sort_keys=True) + '\n')
+    names = ('config.json', 'scene-context.json', 'pass-readback.jsonl',
+             'trace.jsonl', 'video_frames.jsonl') + tuple(
+                 name + '.mkv' for name in VIEWS)
+    files = {}
+    for name in names:
+        target = root / name
+        require(target.is_file() and not target.is_symlink(),
+                'original capture source missing: ' + name)
+        files[name] = {'sha256': hashlib.sha256(target.read_bytes()).hexdigest()}
+    manifest_path = root / 'original-sources.json'
+    require(not manifest_path.exists(), 'retain prior original source manifest')
+    manifest_path.write_text(json.dumps({
+        'source_kind': 'original_native_capture',
+        'accepted_original_source': True,
+        'reviewed_scene_packet_sha256': packet_sha256,
+        'frame_count': 900, 'camera_frame_counts': camera_counts,
+        'files': files}, indent=2, sort_keys=True) + '\n')
+    return hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+
+
 def run(adapter, scene, case, config, output, packet_sha256):
     require(config['selected_case_id'] == ASSIGNMENT + '__' + case.case_id,
             'exact selected case differs')
@@ -50,6 +85,22 @@ def run(adapter, scene, case, config, output, packet_sha256):
             config['duration_s'] == 45 and
             tuple(camera['name'] for camera in config['cameras']) == VIEWS,
             'capture contract differs')
+    upstream_start_m = config.get('cycle_start_offset_m', 0)
+    require(upstream_start_m in (0, 1), 'unsupported fallback start offset')
+    if upstream_start_m:
+        require(scene.get('approved_upstream_start_m', 0) >= upstream_start_m and
+                scene.get('upstream_start_source_sha256'),
+                'reviewed upstream fallback approval missing')
+        route = scene['cycle_route_xy']
+        dx = route[1][0] - route[0][0]
+        dy = route[1][1] - route[0][1]
+        length = math.hypot(dx, dy)
+        require(length > upstream_start_m,
+                'reviewed route too short for upstream fallback')
+        scene = dict(scene)
+        scene['cycle_route_xy'] = [[route[0][0] - upstream_start_m * dx / length,
+                                    route[0][1] - upstream_start_m * dy / length],
+                                   *route[1:]]
     live_road = adapter.map_opendrive_bytes()
     require(isinstance(live_road, bytes) and
             hashlib.sha256(live_road).hexdigest() ==
@@ -73,9 +124,14 @@ def run(adapter, scene, case, config, output, packet_sha256):
         adapter.finish_four_camera_capture(output)
         require(adapter.camera_frame_counts() == {view: 900 for view in VIEWS},
                 'original four-camera capture incomplete')
+        require(adapter.native_source_kind() == 'original_native_capture',
+                'original Native acquisition provenance missing')
+        source_manifest_sha256 = seal_original(
+            output, scene, packet_sha256, adapter.camera_frame_counts())
         return {'case_id': config['selected_case_id'], 'frame_count': 900,
                 'first_frame': frames[0], 'last_frame': frames[-1],
                 'reviewed_scene_packet_sha256': packet_sha256,
+                'original_sources_sha256': source_manifest_sha256,
                 'physical_acceptance_claimed': False,
                 'legal_judgment': None}
     finally:
@@ -105,7 +161,8 @@ def main():
         return
     require(args.output_dir and args.scene_packet and args.source_root and
             args.host and args.port, 'original scene, output and CARLA endpoint required')
-    scene, packet_sha256 = load_scene(args.scene_packet, args.source_root, case)
+    scene, packet_sha256 = load_scene(args.scene_packet, args.source_root,
+                                      case, config.get('cycle_start_offset_m', 0))
     adapter = importlib.import_module(args.adapter_module).create_adapter(
         config, args.host, int(args.port))
     print(json.dumps(run(adapter, scene, case, config, args.output_dir,

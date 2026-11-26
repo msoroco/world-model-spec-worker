@@ -1,38 +1,48 @@
 {
-  "assignment_id": "testing__C228096__LVMC-11-30-060-A__pedestrian",
   "actor": "pedestrian",
-  "cell_id": "C228096",
-  "law_id": "LVMC-11-30-060-A",
-  "selected_branches": [
-    {
-      "law_id": "LVMC-11-30-060-A",
-      "cell_id": "C228096",
-      "actor": "pedestrian",
-      "requirement": "LVMC-11-30-060-A",
-      "branch": "Outside-crosswalk crossing beginning with road entry",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 283,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Every pedestrian crossing a roadway at any point other than within a marked crosswalk or within an unmarked crosswalk at an intersection shall yield the right-of-way to all vehicles upon the roadway. The foregoing rules in this Section shall have no application under the conditions stated in Section 11.30.070 when pedestrians are prohibited from crossing at certain designated places.",
-  "law_source": "LVMC 11.30.060(A); with 11.30.060(C)",
-  "topic_inventory": {
-    "exact-text": "Every pedestrian crossing a roadway at any point other than within a marked crosswalk or within an unmarked crosswalk at an intersection shall yield the right-of-way to all vehicles upon the roadway. The foregoing rules in this Section shall have no application under the conditions stated in Section 11.30.070 when pedestrians are prohibited from crossing at certain designated places."
+  "assignment_id": "testing__C228096__LVMC-11-30-060-A__pedestrian",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "roadway crossing, pedestrian and all roadway vehicles",
+        "view": "overview"
+      },
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "pedestrian road entry and yielding",
+        "view": "approach"
+      },
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "crossing point, intersection geometry and crosswalk categories",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "vehicle trajectories and pedestrian interaction",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
       "branch": "Outside-crosswalk crossing beginning with road entry",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "case_id": "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_with_vehicle",
+      "construction_status": "selected_source_deferred",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
+      "kind": "delivery",
+      "measurement": "Original crossing point outside marked/unmarked intersection crosswalk, road-entry bracket, vehicle roadway occupancy and pedestrian yield trajectory; prohibited-place exception separately reviewed.",
+      "new_capture_selected": true,
+      "physical_risk": "Original outside-crosswalk classification and pedestrian/vehicle path may not realize or stay visible in all four cameras.",
+      "requested_pedestrian_yield": true,
+      "requested_prohibited_place_under_11_30_070": false,
+      "requested_vehicle_on_roadway": true,
       "required_original_packets": [
         "frame_map",
         "crossing_point_and_marked_unmarked_crosswalk_geometry",
@@ -41,46 +51,22 @@
         "vehicle_roadway_occupancy_and_motion",
         "pedestrian_yield_trajectory",
         "four_camera_video"
-      ],
-      "physical_risk": "Absence of an unmarked intersection crosswalk cannot be inferred from missing paint; original intersection geometry and crossing point need readback.",
-      "case_id": "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_with_vehicle",
-      "requested_vehicle_on_roadway": true,
-      "requested_pedestrian_yield": true,
-      "requested_prohibited_place_under_11_30_070": false,
-      "measurement": "Original crossing point outside marked/unmarked intersection crosswalk, road-entry bracket, vehicle roadway occupancy and pedestrian yield trajectory; prohibited-place exception separately reviewed."
+      ]
     },
     {
       "branch": "Outside-crosswalk crossing beginning with road entry",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "case_id": "testing__C228096__LVMC-11-30-060-A__pedestrian__no_yield_with_vehicle",
+      "construction_status": "selected_source_deferred",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
-      "required_original_packets": [
-        "frame_map",
-        "crossing_point_and_marked_unmarked_crosswalk_geometry",
-        "11_30_070_place_context",
-        "pedestrian_roadway_occupancy",
-        "vehicle_roadway_occupancy_and_motion",
-        "pedestrian_yield_trajectory",
-        "four_camera_video"
-      ],
-      "physical_risk": "Absence of an unmarked intersection crosswalk cannot be inferred from missing paint; original intersection geometry and crossing point need readback.",
-      "case_id": "testing__C228096__LVMC-11-30-060-A__pedestrian__no_yield_with_vehicle",
-      "requested_vehicle_on_roadway": true,
+      "kind": "delivery",
+      "measurement": "Original crossing point outside marked/unmarked intersection crosswalk, road-entry bracket, vehicle roadway occupancy and pedestrian yield trajectory; prohibited-place exception separately reviewed.",
+      "new_capture_selected": true,
+      "physical_risk": "Original outside-crosswalk classification and pedestrian/vehicle path may not realize or stay visible in all four cameras.",
       "requested_pedestrian_yield": false,
       "requested_prohibited_place_under_11_30_070": false,
-      "measurement": "Original crossing point outside marked/unmarked intersection crosswalk, road-entry bracket, vehicle roadway occupancy and pedestrian yield trajectory; prohibited-place exception separately reviewed."
-    },
-    {
-      "branch": "Outside-crosswalk crossing beginning with road entry",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction_status": "not_implemented",
+      "requested_vehicle_on_roadway": true,
       "required_original_packets": [
         "frame_map",
         "crossing_point_and_marked_unmarked_crosswalk_geometry",
@@ -89,22 +75,22 @@
         "vehicle_roadway_occupancy_and_motion",
         "pedestrian_yield_trajectory",
         "four_camera_video"
-      ],
-      "physical_risk": "Absence of an unmarked intersection crosswalk cannot be inferred from missing paint; original intersection geometry and crossing point need readback.",
+      ]
+    },
+    {
+      "branch": "Outside-crosswalk crossing beginning with road entry",
       "case_id": "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_no_vehicle",
-      "requested_vehicle_on_roadway": false,
+      "construction_status": "selected_source_deferred",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "measurement": "Original crossing point outside marked/unmarked intersection crosswalk, road-entry bracket, vehicle roadway occupancy and pedestrian yield trajectory; prohibited-place exception separately reviewed.",
+      "new_capture_selected": true,
+      "physical_risk": "Original outside-crosswalk classification and pedestrian/vehicle path may not realize or stay visible in all four cameras.",
       "requested_pedestrian_yield": true,
       "requested_prohibited_place_under_11_30_070": false,
-      "measurement": "Original crossing point outside marked/unmarked intersection crosswalk, road-entry bracket, vehicle roadway occupancy and pedestrian yield trajectory; prohibited-place exception separately reviewed."
-    },
-    {
-      "branch": "Outside-crosswalk crossing beginning with road entry",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction_status": "not_implemented",
+      "requested_vehicle_on_roadway": false,
       "required_original_packets": [
         "frame_map",
         "crossing_point_and_marked_unmarked_crosswalk_geometry",
@@ -113,22 +99,41 @@
         "vehicle_roadway_occupancy_and_motion",
         "pedestrian_yield_trajectory",
         "four_camera_video"
-      ],
-      "physical_risk": "Absence of an unmarked intersection crosswalk cannot be inferred from missing paint; original intersection geometry and crossing point need readback.",
+      ]
+    },
+    {
+      "branch": "Outside-crosswalk crossing beginning with road entry",
       "case_id": "testing__C228096__LVMC-11-30-060-A__pedestrian__prohibited_place",
-      "requested_vehicle_on_roadway": true,
+      "construction_status": "selected_source_deferred",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "measurement": "Original crossing point outside marked/unmarked intersection crosswalk, road-entry bracket, vehicle roadway occupancy and pedestrian yield trajectory; prohibited-place exception separately reviewed.",
+      "new_capture_selected": true,
+      "physical_risk": "Original outside-crosswalk classification and pedestrian/vehicle path may not realize or stay visible in all four cameras.",
       "requested_pedestrian_yield": true,
       "requested_prohibited_place_under_11_30_070": true,
-      "measurement": "Original crossing point outside marked/unmarked intersection crosswalk, road-entry bracket, vehicle roadway occupancy and pedestrian yield trajectory; prohibited-place exception separately reviewed."
+      "requested_vehicle_on_roadway": true,
+      "required_original_packets": [
+        "frame_map",
+        "crossing_point_and_marked_unmarked_crosswalk_geometry",
+        "11_30_070_place_context",
+        "pedestrian_roadway_occupancy",
+        "vehicle_roadway_occupancy_and_motion",
+        "pedestrian_yield_trajectory",
+        "four_camera_video"
+      ]
     }
   ],
+  "cell_id": "C228096",
   "comparisons": [
     {
-      "comparison_id": "yield_behavior",
       "case_ids": [
         "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_with_vehicle",
         "testing__C228096__LVMC-11-30-060-A__pedestrian__no_yield_with_vehicle"
       ],
+      "comparison_id": "yield_behavior",
       "deliberate_differences": [
         "pedestrian yields to roadway vehicle versus does not"
       ],
@@ -139,11 +144,11 @@
       "status": "planned_unbuilt"
     },
     {
-      "comparison_id": "vehicle_presence",
       "case_ids": [
         "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_with_vehicle",
         "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_no_vehicle"
       ],
+      "comparison_id": "vehicle_presence",
       "deliberate_differences": [
         "vehicle upon roadway present versus absent"
       ],
@@ -154,11 +159,11 @@
       "status": "planned_unbuilt"
     },
     {
-      "comparison_id": "designated_prohibition",
       "case_ids": [
         "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_with_vehicle",
         "testing__C228096__LVMC-11-30-060-A__pedestrian__prohibited_place"
       ],
+      "comparison_id": "designated_prohibition",
       "deliberate_differences": [
         "11.30.070 prohibited-place condition versus ordinary outside-crosswalk location"
       ],
@@ -169,7 +174,86 @@
       "status": "planned_unbuilt"
     }
   ],
-  "observations": [],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "unverified-law-coverage",
+        "requirement": "Outside marked/unmarked intersection crosswalk yield duty, all roadway vehicles, and 11.30.070 exception",
+        "source": "inputs/testing__C228096__LVMC-11-30-060-A__pedestrian/evidence.json",
+        "why_existing_insufficient": "Frozen accepted recording inventory is empty."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "LVMC-11-30-060-A",
+  "law_source": "LVMC 11.30.060(A); with 11.30.060(C)",
+  "law_text": "Every pedestrian crossing a roadway at any point other than within a marked crosswalk or within an unmarked crosswalk at an intersection shall yield the right-of-way to all vehicles upon the roadway. The foregoing rules in this Section shall have no application under the conditions stated in Section 11.30.070 when pedestrians are prohibited from crossing at certain designated places.",
+  "observations": [
+    {
+      "mandatory": true,
+      "method": "reviewed original marked/unmarked intersection geometry and 11.30.070 place status",
+      "name": "outside_crosswalk_site",
+      "source": "original-site.json"
+    },
+    {
+      "mandatory": true,
+      "method": "original 20 Hz pedestrian road entry and crossing history",
+      "name": "pedestrian_roadway_motion",
+      "source": "original-crossing-observations.json"
+    },
+    {
+      "mandatory": true,
+      "method": "original 20 Hz inventory of all roadway vehicles",
+      "name": "vehicle_roadway_motion",
+      "source": "original-crossing-observations.json"
+    },
+    {
+      "mandatory": true,
+      "method": "original pedestrian and vehicle conflict/yield trajectory",
+      "name": "yield_trajectory",
+      "source": "original-crossing-observations.json"
+    }
+  ],
+  "planning_status": "source_deferred_exact_delivery_construction_in_progress",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_with_vehicle",
+        "testing__C228096__LVMC-11-30-060-A__pedestrian__no_yield_with_vehicle",
+        "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_no_vehicle",
+        "testing__C228096__LVMC-11-30-060-A__pedestrian__prohibited_place"
+      ],
+      "evidence_or_gap": "No accepted recording; original roadway/crosswalk/site and all vehicle histories require capture and review.",
+      "requirement": "LVMC 11.30.060(A) outside-crosswalk pedestrian yield duty and 11.30.060(C)/11.30.070 prohibited-place exception",
+      "source": "inputs/testing__C228096__LVMC-11-30-060-A__pedestrian/assignment.json",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "No accepted recording in frozen inventory; original crossing geometry, vehicle occupancy and yield trajectory need source packets.",
+    "The 11.30.070 prohibited-place condition requires separate site evidence and statutory review."
+  ],
+  "selected_branches": [
+    {
+      "actor": "pedestrian",
+      "branch": "Outside-crosswalk crossing beginning with road entry",
+      "cell_id": "C228096",
+      "coverage_status": "pending_review",
+      "law_id": "LVMC-11-30-060-A",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "LVMC-11-30-060-A",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 283,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C228096__LVMC-11-30-060-A__pedestrian/assignment.json",
@@ -192,27 +276,15 @@
       "sha256": "a60ddd845bb773ea8d82476041e9dea94db7e22efdeeeccf8ebe473595308f7b"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No accepted recording in frozen inventory; original crossing geometry, vehicle occupancy and yield trajectory need source packets.",
-    "The 11.30.070 prohibited-place condition requires separate site evidence and statutory review."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": []
+  "topic_inventory": {
+    "exact-text": "Every pedestrian crossing a roadway at any point other than within a marked crosswalk or within an unmarked crosswalk at an intersection shall yield the right-of-way to all vehicles upon the roadway. The foregoing rules in this Section shall have no application under the conditions stated in Section 11.30.070 when pedestrians are prohibited from crossing at certain designated places."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_outside_crosswalk_cases_and_tested_entry_measurement",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 283,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Outside-crosswalk crossing beginning with road entry",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "Road entry can begin a complete pedestrian crossing outside crosswalks.",
       "required_context": [
         "Construct an entry route continuing across the roadway outside both crosswalk categories.",
         "Establish an afoot entry continuing across the roadway, rather than merely occupancy at its edge.",
@@ -223,7 +295,9 @@
         "Retain jurisdiction and unresolved Section 11.30.070 applicability.",
         "Retain roadway and shoulder boundaries, sidewalks, intersections and both crosswalk categories."
       ],
-      "reason": "Road entry can begin a complete pedestrian crossing outside crosswalks."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 283,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

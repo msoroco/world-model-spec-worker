@@ -87,11 +87,6 @@ def build():
             'sources': {'road.xodr': hashlib.sha256(
                 generator['files']['road.xodr'].encode()).hexdigest(),
                         'trace.jsonl': sha(folder / 'trace.jsonl')}}, indent=2) + '\n'
-        for video in generator['videos']:
-            if video['path'] == 'reference_corner.mkv':
-                video['path'] = 'alongside.mkv'
-            if video['path'] == 'driver_reference.mkv':
-                video['path'] = 'rear_reference.mkv'
         generator_path = HERE / 'diagnostics' / (name + '-generator.json')
         dump(generator_path, generator, compact=True)
         recipe_path = HERE / 'diagnostics' / (name + '-recipe.json')

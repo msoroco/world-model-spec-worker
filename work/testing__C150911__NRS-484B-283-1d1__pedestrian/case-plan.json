@@ -1,69 +1,54 @@
 {
-  "assignment_id": "testing__C150911__NRS-484B-283-1d1__pedestrian",
   "actor": "pedestrian",
-  "cell_id": "C150911",
-  "law_id": "NRS-484B-283-1d1",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-283-1d1",
-      "cell_id": "C150911",
-      "actor": "pedestrian",
-      "requirement": "NRS-484B-283-1d1",
-      "branch": "Pedestrian permission paired with a separate driver duty.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 386,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cWalk\u201d indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles.",
-  "law_source": "NRS 484B.283(1)(d)(1)",
-  "topic_inventory": {
-    "exact-text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cWalk\u201d indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles."
+  "assignment_id": "testing__C150911__NRS-484B-283-1d1__pedestrian",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "whole original crosswalk, walker, facing pedestrian signal and driver",
+        "view": "overview"
+      },
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "pedestrian approach, signal face and first crosswalk entry",
+        "view": "approach"
+      },
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "crosswalk boundary, original signal indication and crossing direction",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 900 original 20 Hz frames",
+        "subject": "vehicle approach, pedestrian entry, yielding trajectory and signal context",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
       "branch": "Pedestrian permission paired with a separate driver duty.",
-      "kind": "delivery",
-      "new_capture_selected": true,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction_status": "source_deferred_build_pending",
-      "required_original_packets": [
-        "frame_map",
-        "pedestrian_signal_state",
-        "pedestrian_pose_and_crosswalk_occupancy",
-        "signal_facing_and_crossing_direction",
-        "vehicle_trajectory_and_yield",
-        "exception_context",
-        "four_camera_video"
-      ],
-      "physical_risk": "Pedestrian signal symbol and crossing direction may be outside camera view; original signal state and actor readback are required.",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Walker may miss the reviewed crosswalk or official WALK symbol may leave a four-view footprint; original frame and pixel review required",
+        "status": "physical"
+      },
       "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_yield",
-      "requested_signal_at_entry": "walk",
-      "requested_pedestrian_facing_signal": true,
-      "requested_driver_yield": true,
-      "measurement": "Original 20 Hz signal state at first crosswalk entry, pedestrian facing/direction, and separate vehicle-driver yield observation; listed exceptions reviewed independently.",
-      "target_law_id": "NRS-484B-283-1d1",
-      "physical_status": "unverified",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Walker may miss the reviewed crosswalk or official WALK symbol may leave a four-view footprint; original frame and pixel review required",
-        "candidates": []
-      }
-    },
-    {
-      "branch": "Pedestrian permission paired with a separate driver duty.",
-      "kind": "delivery",
-      "new_capture_selected": true,
+      "construction_status": "source_deferred_build_pending",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "source_deferred_build_pending",
+      "kind": "delivery",
+      "measurement": "Original 20 Hz signal state at first crosswalk entry, pedestrian facing/direction, and separate vehicle-driver yield observation; listed exceptions reviewed independently.",
+      "new_capture_selected": true,
+      "physical_risk": "Pedestrian signal symbol and crossing direction may be outside camera view; original signal state and actor readback are required.",
+      "physical_status": "unverified",
+      "requested_driver_yield": true,
+      "requested_pedestrian_facing_signal": true,
+      "requested_signal_at_entry": "walk",
       "required_original_packets": [
         "frame_map",
         "pedestrian_signal_state",
@@ -73,28 +58,28 @@
         "exception_context",
         "four_camera_video"
       ],
-      "physical_risk": "Pedestrian signal symbol and crossing direction may be outside camera view; original signal state and actor readback are required.",
+      "target_law_id": "NRS-484B-283-1d1"
+    },
+    {
+      "branch": "Pedestrian permission paired with a separate driver duty.",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Walker may miss the reviewed crosswalk or official WALK symbol may leave a four-view footprint; original frame and pixel review required",
+        "status": "physical"
+      },
       "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__wait_facing_yield",
+      "construction_status": "source_deferred_build_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "measurement": "Original 20 Hz signal state at first crosswalk entry, pedestrian facing/direction, and separate vehicle-driver yield observation; listed exceptions reviewed independently.",
+      "new_capture_selected": true,
+      "physical_risk": "Pedestrian signal symbol and crossing direction may be outside camera view; original signal state and actor readback are required.",
+      "physical_status": "unverified",
+      "requested_driver_yield": true,
+      "requested_pedestrian_facing_signal": true,
       "requested_signal_at_entry": "wait",
-      "requested_pedestrian_facing_signal": true,
-      "requested_driver_yield": true,
-      "measurement": "Original 20 Hz signal state at first crosswalk entry, pedestrian facing/direction, and separate vehicle-driver yield observation; listed exceptions reviewed independently.",
-      "target_law_id": "NRS-484B-283-1d1",
-      "physical_status": "unverified",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Walker may miss the reviewed crosswalk or official WALK symbol may leave a four-view footprint; original frame and pixel review required",
-        "candidates": []
-      }
-    },
-    {
-      "branch": "Pedestrian permission paired with a separate driver duty.",
-      "kind": "delivery",
-      "new_capture_selected": true,
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "construction_status": "source_deferred_build_pending",
       "required_original_packets": [
         "frame_map",
         "pedestrian_signal_state",
@@ -104,28 +89,28 @@
         "exception_context",
         "four_camera_video"
       ],
-      "physical_risk": "Pedestrian signal symbol and crossing direction may be outside camera view; original signal state and actor readback are required.",
+      "target_law_id": "NRS-484B-283-1d1"
+    },
+    {
+      "branch": "Pedestrian permission paired with a separate driver duty.",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Walker may miss the reviewed crosswalk or official WALK symbol may leave a four-view footprint; original frame and pixel review required",
+        "status": "physical"
+      },
       "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_not_facing_yield",
-      "requested_signal_at_entry": "walk",
-      "requested_pedestrian_facing_signal": false,
-      "requested_driver_yield": true,
-      "measurement": "Original 20 Hz signal state at first crosswalk entry, pedestrian facing/direction, and separate vehicle-driver yield observation; listed exceptions reviewed independently.",
-      "target_law_id": "NRS-484B-283-1d1",
-      "physical_status": "unverified",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Walker may miss the reviewed crosswalk or official WALK symbol may leave a four-view footprint; original frame and pixel review required",
-        "candidates": []
-      }
-    },
-    {
-      "branch": "Pedestrian permission paired with a separate driver duty.",
-      "kind": "delivery",
-      "new_capture_selected": true,
+      "construction_status": "source_deferred_build_pending",
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "source_deferred_build_pending",
+      "kind": "delivery",
+      "measurement": "Original 20 Hz signal state at first crosswalk entry, pedestrian facing/direction, and separate vehicle-driver yield observation; listed exceptions reviewed independently.",
+      "new_capture_selected": true,
+      "physical_risk": "Pedestrian signal symbol and crossing direction may be outside camera view; original signal state and actor readback are required.",
+      "physical_status": "unverified",
+      "requested_driver_yield": true,
+      "requested_pedestrian_facing_signal": false,
+      "requested_signal_at_entry": "walk",
       "required_original_packets": [
         "frame_map",
         "pedestrian_signal_state",
@@ -135,28 +120,48 @@
         "exception_context",
         "four_camera_video"
       ],
-      "physical_risk": "Pedestrian signal symbol and crossing direction may be outside camera view; original signal state and actor readback are required.",
-      "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_no_yield",
-      "requested_signal_at_entry": "walk",
-      "requested_pedestrian_facing_signal": true,
-      "requested_driver_yield": false,
-      "measurement": "Original 20 Hz signal state at first crosswalk entry, pedestrian facing/direction, and separate vehicle-driver yield observation; listed exceptions reviewed independently.",
-      "target_law_id": "NRS-484B-283-1d1",
-      "physical_status": "unverified",
+      "target_law_id": "NRS-484B-283-1d1"
+    },
+    {
+      "branch": "Pedestrian permission paired with a separate driver duty.",
       "candidate_risk": {
-        "status": "physical",
+        "candidates": [],
         "reason": "Walker may miss the reviewed crosswalk or official WALK symbol may leave a four-view footprint; original frame and pixel review required",
-        "candidates": []
-      }
+        "status": "physical"
+      },
+      "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_no_yield",
+      "construction_status": "source_deferred_build_pending",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ],
+      "kind": "delivery",
+      "measurement": "Original 20 Hz signal state at first crosswalk entry, pedestrian facing/direction, and separate vehicle-driver yield observation; listed exceptions reviewed independently.",
+      "new_capture_selected": true,
+      "physical_risk": "Pedestrian signal symbol and crossing direction may be outside camera view; original signal state and actor readback are required.",
+      "physical_status": "unverified",
+      "requested_driver_yield": false,
+      "requested_pedestrian_facing_signal": true,
+      "requested_signal_at_entry": "walk",
+      "required_original_packets": [
+        "frame_map",
+        "pedestrian_signal_state",
+        "pedestrian_pose_and_crosswalk_occupancy",
+        "signal_facing_and_crossing_direction",
+        "vehicle_trajectory_and_yield",
+        "exception_context",
+        "four_camera_video"
+      ],
+      "target_law_id": "NRS-484B-283-1d1"
     }
   ],
+  "cell_id": "C150911",
   "comparisons": [
     {
-      "comparison_id": "walk_vs_wait",
       "case_ids": [
         "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_yield",
         "testing__C150911__NRS-484B-283-1d1__pedestrian__wait_facing_yield"
       ],
+      "comparison_id": "walk_vs_wait",
       "deliberate_differences": [
         "pedestrian signal indication at entry"
       ],
@@ -164,14 +169,14 @@
         "same one-way highway, crosswalk, pedestrian and vehicle identities",
         "same pedestrian approach, crossing direction and capture except named change"
       ],
-      "status": "planned_unbuilt"
+      "status": "cpu_diagnostic_comparison_proven_original_capture_pending"
     },
     {
-      "comparison_id": "facing_requirement",
       "case_ids": [
         "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_yield",
         "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_not_facing_yield"
       ],
+      "comparison_id": "facing_requirement",
       "deliberate_differences": [
         "pedestrian faces versus does not face signal"
       ],
@@ -179,14 +184,14 @@
         "same one-way highway, crosswalk, pedestrian and vehicle identities",
         "same pedestrian approach, crossing direction and capture except named change"
       ],
-      "status": "planned_unbuilt"
+      "status": "cpu_diagnostic_comparison_proven_original_capture_pending"
     },
     {
-      "comparison_id": "separate_driver_duty",
       "case_ids": [
         "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_yield",
         "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_no_yield"
       ],
+      "comparison_id": "separate_driver_duty",
       "deliberate_differences": [
         "driver yields versus does not yield while WALK permission holds"
       ],
@@ -194,31 +199,106 @@
         "same one-way highway, crosswalk, pedestrian and vehicle identities",
         "same pedestrian approach, crossing direction and capture except named change"
       ],
-      "status": "planned_unbuilt"
+      "status": "cpu_diagnostic_comparison_proven_original_capture_pending"
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "unverified-law-coverage",
+        "requirement": "WALK facing pedestrian permission and separate vehicle-driver duty at C150911",
+        "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/evidence.json",
+        "why_existing_insufficient": "Frozen accepted recording inventory is empty."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "exception_source_review": [
+    {
+      "exception": "NRS 484B.287",
+      "question": "Whether a listed 484B.287 exception governs this crossing and signal interval.",
+      "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
+      "status": "original_context_review_required"
+    },
+    {
+      "exception": "NRS 484B.290",
+      "question": "Whether the 484B.290 exception governs this crossing.",
+      "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
+      "status": "original_context_review_required"
+    },
+    {
+      "exception": "NRS 484B.350",
+      "question": "Whether an authorized emergency or other listed 484B.350 exception governs this encounter.",
+      "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
+      "status": "original_context_review_required"
+    }
+  ],
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-283-1d1",
+  "law_source": "NRS 484B.283(1)(d)(1)",
+  "law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cWalk\u201d indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles.",
   "observations": [
     {
-      "name": "walk_signal_state",
       "mandatory": true,
-      "method": "same-frame source-hashed official pedestrian signal indication readback plus four-view pixel review"
+      "method": "same-frame source-hashed official pedestrian signal indication readback plus four-view pixel review",
+      "name": "walk_signal_state"
     },
     {
-      "name": "pedestrian_crosswalk_motion",
       "mandatory": true,
-      "method": "original 20 Hz walker transform, facing vector and polygon entry bracket"
+      "method": "original 20 Hz walker transform, facing vector and polygon entry bracket",
+      "name": "pedestrian_crosswalk_motion"
     },
     {
-      "name": "driver_yield_trajectory",
       "mandatory": true,
-      "method": "original 20 Hz identified vehicle transforms and observed crossing conflict/yield"
+      "method": "original 20 Hz identified vehicle transforms and observed crossing conflict/yield",
+      "name": "driver_yield_trajectory"
     },
     {
-      "name": "exception_context",
       "mandatory": true,
-      "method": "operator-reviewed source-hashed NRS 484B.287, 484B.290 and 484B.350 context inventory"
+      "method": "operator-reviewed source-hashed NRS 484B.287, 484B.290 and 484B.350 context inventory",
+      "name": "exception_context"
     }
   ],
+  "planning_status": "delivery_prepared_original_source_review_and_gpu_capture_pending",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_yield",
+        "testing__C150911__NRS-484B-283-1d1__pedestrian__wait_facing_yield",
+        "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_not_facing_yield",
+        "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_no_yield"
+      ],
+      "evidence_or_gap": "No accepted recordings; original signal, pedestrian entry, driver trajectory and exception sources require capture and review.",
+      "requirement": "NRS 484B.283(1)(d)(1) WALK permission and separate driver right-of-way duty",
+      "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Original reviewed official pedestrian signal and source-hashed WALK/WAIT readback must be supplied before Native world mutation.",
+    "Original driver identity, trajectory and yielding are separate from pedestrian permission; statutory exceptions need independent original context review.",
+    "Physical crossing, official indication pixels, vehicle interaction and four-camera visibility remain unverified until local CARLA capture."
+  ],
+  "selected_branches": [
+    {
+      "actor": "pedestrian",
+      "branch": "Pedestrian permission paired with a separate driver duty.",
+      "cell_id": "C150911",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-283-1d1",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-283-1d1",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 386,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
@@ -241,35 +321,15 @@
       "sha256": "ebaedd42e532577909720bd83cd4fd1964f0cc713c88d53c7cd1e6db42a30209"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Original reviewed official pedestrian signal and source-hashed WALK/WAIT readback must be supplied before Native world mutation.",
-    "Original driver identity, trajectory and yielding are separate from pedestrian permission; statutory exceptions need independent original context review.",
-    "Physical crossing, official indication pixels, vehicle interaction and four-camera visibility remain unverified until local CARLA capture."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "unverified-law-coverage",
-        "requirement": "WALK facing pedestrian permission and separate vehicle-driver duty at C150911",
-        "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/evidence.json",
-        "why_existing_insufficient": "Frozen accepted recording inventory is empty."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cWalk\u201d indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "source_deferred_exact_delivery_construction_in_progress",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 386,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Pedestrian permission paired with a separate driver duty.",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "Pedestrian ego can travel across the fixed one-way road at the crosswalk under a facing Walk signal.",
       "required_context": [
         "Establish pedestrian classification, highway dedication and public access, signal identity, facing direction and illuminated Walk interval.",
         "Establish pedestrian ego classification and crossing route separately from longitudinal vehicle travel.",
@@ -281,69 +341,9 @@
         "Record governing signals and investigate the introductory exceptions.",
         "Retain one-way geometry and establish highway dedication, public access and extent."
       ],
-      "reason": "Pedestrian ego can travel across the fixed one-way road at the crosswalk under a facing Walk signal."
-    }
-  ],
-  "camera_plan": {
-    "profile": "overview1080-capability",
-    "duration_s": 45,
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "view": "overview",
-        "subject": "whole original crosswalk, walker, facing pedestrian signal and driver",
-        "interval": "all 900 original 20 Hz frames"
-      },
-      {
-        "view": "approach",
-        "subject": "pedestrian approach, signal face and first crosswalk entry",
-        "interval": "all 900 original 20 Hz frames"
-      },
-      {
-        "view": "reference_corner",
-        "subject": "crosswalk boundary, original signal indication and crossing direction",
-        "interval": "all 900 original 20 Hz frames"
-      },
-      {
-        "view": "driver_reference",
-        "subject": "vehicle approach, pedestrian entry, yielding trajectory and signal context",
-        "interval": "all 900 original 20 Hz frames"
-      }
-    ]
-  },
-  "source_observation_mapping": {},
-  "requirement_dispositions": [
-    {
-      "requirement": "NRS 484B.283(1)(d)(1) WALK permission and separate driver right-of-way duty",
-      "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_yield",
-        "testing__C150911__NRS-484B-283-1d1__pedestrian__wait_facing_yield",
-        "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_not_facing_yield",
-        "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_no_yield"
-      ],
-      "evidence_or_gap": "No accepted recordings; original signal, pedestrian entry, driver trajectory and exception sources require capture and review."
-    }
-  ],
-  "exception_source_review": [
-    {
-      "exception": "NRS 484B.287",
-      "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
-      "status": "original_context_review_required",
-      "question": "Whether a listed 484B.287 exception governs this crossing and signal interval."
-    },
-    {
-      "exception": "NRS 484B.290",
-      "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
-      "status": "original_context_review_required",
-      "question": "Whether the 484B.290 exception governs this crossing."
-    },
-    {
-      "exception": "NRS 484B.350",
-      "source": "inputs/testing__C150911__NRS-484B-283-1d1__pedestrian/assignment.json",
-      "status": "original_context_review_required",
-      "question": "Whether an authorized emergency or other listed 484B.350 exception governs this encounter."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 386,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

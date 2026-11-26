@@ -86,8 +86,8 @@ def analyze(attempt):
               'physical_failure_flags': ['original_cycle_motor_scene_absent'],
               'trace_reference': 'trace.jsonl',
               'video_references': [name + '.mkv' for name in
-                                   ('overview', 'approach', 'alongside',
-                                    'rear_reference')],
+                                   ('overview', 'approach', 'reference_corner',
+                                    'driver_reference')],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': case['recording_description'],
               'recording_evidence': evidence, 'realized_observables': {},

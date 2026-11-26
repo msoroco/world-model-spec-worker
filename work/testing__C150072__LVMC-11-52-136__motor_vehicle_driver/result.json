@@ -1,37 +1,26 @@
 {
   "assignment_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver",
   "input_sha256": "ca1a30841d37868ab29fa73eeb8c2ca5d934a6a06f9ec5ec662b7f2006ade524",
-  "status": "partial",
-  "readiness_kind": "partial_exact_access_aisle_cpu_geometry",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "path": "access_aisle.py",
-      "sha256": "b1b69357328d9dd7979733b276cd066374b0fb6d5e22830291687d253237f42d"
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov25-tests-current.log",
+      "sha256": "636c030e900f2dcca647598d53a5d31d0b72c72919a05a7247f6c0189b7d4561"
     },
     {
-      "path": "tests/test_access_aisle.py",
-      "sha256": "dc1cdd60446f83af122696ed0f15f72694c679f94e712bf640118050f62c2afb"
-    },
-    {
-      "path": "cpu-tests.log",
-      "sha256": "202e6eda947743c9202c3c0a01fd100fd8836d0ce314f898ce77bcfa2d043c1e"
-    },
-    {
-      "path": "cpu-preflight.log",
-      "sha256": "a9b1dbe3edf5a99dd04530e1ce92a688f44a9f92ec64cc18f6c708cad50b09e3"
-    },
-    {
-      "path": "cpu-static-check.log",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C150072__LVMC-11-52-136__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov25-static-current.log",
       "sha256": "c3661d5a83e4a4e1201844de28e4e04b7a957103845381da409b761428ffcc27"
-    },
-    {
-      "path": "cpu-strict-check.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Acquire reviewed original access-aisle site packet; run actual CARLA motion and four-view capture; independently review original source hashes, 900 frame joins, decoded pixels, activity and legal judgment."
   ],
-  "reason": "Five exact access-aisle physical probes and 900-frame original body-footprint/activity checker pass CPU fixture tests; sourced CARLA site, executable capture/offline/compatibility, semantic and delivery/comparison proofs remain CPU work. Zero accepted original recordings."
+  "reason": "CPU delivery preparation passes for five exact access-aisle cases and four original-only comparisons. Reviewed original site, actual physical behavior, pixel review and legal judgment remain source gated; no original acceptance is claimed.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C150072__LVMC-11-52-136__motor_vehicle_driver --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

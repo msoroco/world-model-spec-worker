@@ -1,42 +1,29 @@
-# testing__C150911__NRS-484B-283-1d1__pedestrian
+# C150911 NRS 484B.283(1)(d)(1) pedestrian handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: `ready`, `delivery_prepared`. Exact scoped strict gate passed with exit 0 on 2026-11-25:
 
-Exact law: NRS 484B.283(1)(d)(1) — Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Walk” indication or walking person symbol is illuminated, pedestrians facing the signal may proceed across the highway in the direction of the signal and must be given the right-of-way by the drivers of all vehicles.
-Assigned branch(es): Pedestrian permission paired with a separate driver duty..
-Cell: C150911 (one_way_road, travel, crosswalk); actor: pedestrian.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+```text
+PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c150911-owner/pipeline TMPDIR=$PWD/.runtime-work/c150911-owner/tmp .venv-cpu/bin/python worker_check.py --assignment testing__C150911__NRS-484B-283-1d1__pedestrian --complete --require-delivery-ready
+```
 
-## Next CPU actions
+`cpu-final-strict.log` SHA256: `3f36fadd0c7fd5a27fc4774615b7dbc7e98f5d696ef4efedd918953f9cf12a3b`.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C150911__NRS-484B-283-1d1__pedestrian --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+## Selected CPU package
 
-## Proven checks and dependency boundary
+`execution-manifest.json` SHA256: `f4b9449beee7395f28feddb306d749a6411b90f86f356e3dd76525575d7c40eb`. Four exact delivery cases and one speed fallback each are selected. The selected production construction is source deferred: `reviewed_site.py` requires an externally reviewed, source-hashed original OpenDRIVE, qualified crosswalk, official pedestrian signal, pedestrian route, separate vehicle route, exception review and four camera poses before Native world mutation. `runner.py` requires the packet, source root and adapter module at capture. `native_entry.py` records 900 synchronized original signal, walker, driver and four-camera frames and seals Native ownership. `analysis.py` derives the first crosswalk-entry measurement from the saved original packet, receipt and frame/time joins. Pedestrian WALK permission and the separate driver duty remain distinct measurements; NRS 484B.287, 484B.290 and 484B.350 remain independent review questions.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+The selected diagnostic fixtures are explicitly synthetic 9-frame software probes. They do not establish original WALK state, actual crosswalk motion, video visibility, statutory exception absence or a legal verdict. Frozen accepted recording inventory for this exact branch is empty.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Proven CPU checks
 
-## 2026-11-23 CPU checkpoint
+- Eight of eight primary and fallback offline constructions passed (`cpu-offline-proofs.json`, SHA256 `aaf496b540e5bb4e972a62de330ad5f7c8bbce210e10436a3d8142916e483f85`).
+- Eight of eight selected positive and missing-source compatibility receipts passed (`cpu-compatibility-proofs.json`, SHA256 `f66ebad777239d1b18a95da8dab25387a5c6037644dfabe8bc029d60f274fc6a`).
+- Four of four saved-only processing proofs passed (`cpu-saved-proofs.json`, SHA256 `fbb48e33a13af18e575878cf31e41ba095c463ea71e5edc474dfc7493e2e0b8d`).
+- Four independent delivery positive and missing-original-source negatives passed, including frame/time joins and full four-video decode (`cpu-independent-proofs.json`, SHA256 `bec99de36dd5f0f098e03a6a36718291fb7cc840bea4664988bf4b0053ffb251`).
+- Twelve physical outcome fixtures and four Native closure/owner-release lifecycle fixtures passed in each case's `physical-preparation.json`; these prove diagnostic checker behavior only.
+- Three exact saved diagnostic comparisons and missing-source negatives passed (`cpu-comparison-proofs.json`, SHA256 `9e9d69f41ee9c8650cff568bb4eb8890cc45e5650bd6e5a2a101364e88252363`).
+- Selected execution manifest, semantic, delivery handoff and compatibility validators passed (`cpu-current-validators.log`, SHA256 `c56c7cdcdb83ea3ea21e31bea3392affffc2e3827a3760267fdb71e5b5ce97e9`). Six CPU unit tests passed (`cpu-final-tests.log`, SHA256 `590c49fa52d08d783215015fe187abc9781501276cbcc8869daf96f98a541aea`).
 
-The assigned pedestrian permission requires an illuminated WALK/walking-person indication, pedestrian facing the signal, and crossing in its direction. Driver right-of-way duty is separate. The law names NRS 484B.287, 484B.290 and 484B.350 exceptions, which remain source-review questions. `case-plan.json` adds four unselected cases and three isolated comparisons for signal state, facing and driver yielding. No accepted recordings are in the frozen inventory.
+## Queue and GPU review
 
-`walk_signal_measurement.py` binds an original trace hash and records first crosswalk-entry bracket, signal state, facing, direction and distinct driver-yield observation. Five synthetic CPU tests cover WALK with absent yield, WAIT, wrong direction, missing signal state and absent entry. These tests prove measurement behavior, not physical realization or statutory exception absence.
-
-| File | SHA256 |
-| --- | --- |
-| `case-plan.json` | `89ddf0a6cac525fd80098d71d406a52c824fcf211a8727a141b044071ab2ca7b` |
-| `walk_signal_measurement.py` | `e2070f8b0e8e255d983293e1fc878a1b985ff2b3e2fb5c8b10d226e7104e4b82` |
-| `tests/test_walk_signal_measurement.py` | `d5730111d0e467d237bc6301377c9f3142e4f59eae69ed409ffbc9f3cb2ee6c9` |
-| `preflight.log` | `a5169c679459992fc59fd606d9efcac583cbf776a7d529c0c0bab6a31c9d25f0` |
-| `unittest.log` | `8cfe4bc46343f91698b4d69c0abf549be8695f59e47f6db648c66a6395e74a1c` |
-| `static.log` | `3f36fadd0c7fd5a27fc4774615b7dbc7e98f5d696ef4efedd918953f9cf12a3b` |
-| `strict.log` | `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` |
-
-Preflight exit 0; five tests exit 0; scoped static exit 0; exact scoped strict exit 1 because package status remains partial. Command bindings are in `result.json`.
-
-Next CPU work: construct/read back a crosswalk and actual pedestrian signal, synchronized pedestrian and vehicle trajectories; review listed exception contexts; implement selected-case source finalizer, exact positive/negative compatibility, independent delivery/comparison audits. CARLA motion and camera quality follow CPU readiness.
+`gpu-queue-proposal.json` contains four exact case jobs and three comparison audits (SHA256 `f335fb56fa4bdd885da6c93393dc7ff0c72a7f626618fbfe40b500f9df417d64`). Before execution, provide `C150911_WALK_REVIEW_PACKET`, `C150911_WALK_SOURCE_ROOT` and `C150911_WALK_ADAPTER_MODULE` for independently reviewed original sources. Run actual CARLA capture, inspect four-view signal/crosswalk/driver pixels and motion, audit saved original packets, then review the cited statutory exceptions and separate driver duty. Keep source and legal acceptance distinct from CPU diagnostic proof.

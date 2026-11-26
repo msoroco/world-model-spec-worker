@@ -8,7 +8,7 @@ from pathlib import Path
 from overtake import CASES, measure_original, require
 
 ASSIGNMENT = 'testing__C229023__NRS-484B-270-7b__cycle_or_scooter_operator'
-VIEWS = ('overview', 'approach', 'alongside', 'rear_reference')
+VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def source(root, name, manifest):
@@ -133,21 +133,26 @@ def compare(left, right, comparison):
             'physical_acceptance_claimed': False}
 
 
+def measure_case(attempt):
+    marker = Path(attempt) / 'diagnostic-source-note.json'
+    if marker.is_file():
+        import diagnostic_analysis
+        return diagnostic_analysis.analyze(attempt), None
+    report, native = build(attempt)
+    report['measurements']['cycle_motor_pass']['method'] = 'measure_case'
+    return report, native
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     require(not args.output.exists(), 'retain prior original analysis')
-    marker = args.attempt / 'diagnostic-source-note.json'
-    if marker.is_file():
-        import diagnostic_analysis
-        report = diagnostic_analysis.analyze(args.attempt)
-    else:
-        report, native = build(args.attempt)
+    report, native = measure_case(args.attempt)
+    if native is not None:
         from worker_exchange.native_output import write_result
         write_result(args.attempt, native)
-        report['measurements']['cycle_motor_pass']['method'] = 'measure_case'
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
 
 

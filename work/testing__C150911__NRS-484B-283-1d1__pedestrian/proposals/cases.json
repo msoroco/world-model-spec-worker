@@ -1,0 +1,458 @@
+{
+  "actor": "pedestrian",
+  "cases": [
+    {
+      "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__baseline",
+      "rationale": "Shared original crosswalk and signal reference.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original same-frame official pedestrian signal readback",
+            "name": "walk_signal_state",
+            "reference_frame": "reviewed facing signal",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original signal pixels pending",
+            "unit": "indication"
+          },
+          {
+            "method": "original walker polygon entry, facing and direction readback",
+            "name": "pedestrian_crosswalk_motion",
+            "reference_frame": "reviewed crosswalk XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical entry pending",
+            "unit": "state"
+          },
+          {
+            "method": "original identified vehicle conflict and yield readback",
+            "name": "driver_yield_trajectory",
+            "reference_frame": "reviewed conflict zone",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical driver duty pending",
+            "unit": "state"
+          },
+          {
+            "method": "source-hashed introductory exception context",
+            "name": "exception_context",
+            "reference_frame": "reviewed original site",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "independent statutory review pending",
+            "unit": "inventory"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed original signal, crosswalk, routes and exceptions source hashes",
+            "name": "reviewed_walk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Pedestrian WALK permission and vehicle-driver duty are separate.",
+          "NRS 484B.287, 484B.290 and 484B.350 exceptions require independent review."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "right-of-way"
+      ],
+      "variable_assignments": {
+        "driver_yield": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "pedestrian_facing_signal": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "signal_at_entry": {
+          "kind": "world_setup",
+          "value": "walk"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_yield",
+      "deliberate_differences": [
+        "signal_at_entry",
+        "pedestrian_facing_signal",
+        "driver_yield"
+      ],
+      "paired_probe_id": "source-gated-walk-facing-driver-duty",
+      "probe": {
+        "comparison_or_standard": "same reviewed crosswalk, actor identities and four-camera policy",
+        "primary_variable": "signal_at_entry",
+        "target_value_or_branch": {
+          "driver_yield": true,
+          "pedestrian_facing_signal": true,
+          "signal_at_entry": "walk"
+        }
+      },
+      "rationale": "Controlled original WALK, facing and separate driver-yield observation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original same-frame official pedestrian signal readback",
+            "name": "walk_signal_state",
+            "reference_frame": "reviewed facing signal",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original signal pixels pending",
+            "unit": "indication"
+          },
+          {
+            "method": "original walker polygon entry, facing and direction readback",
+            "name": "pedestrian_crosswalk_motion",
+            "reference_frame": "reviewed crosswalk XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical entry pending",
+            "unit": "state"
+          },
+          {
+            "method": "original identified vehicle conflict and yield readback",
+            "name": "driver_yield_trajectory",
+            "reference_frame": "reviewed conflict zone",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical driver duty pending",
+            "unit": "state"
+          },
+          {
+            "method": "source-hashed introductory exception context",
+            "name": "exception_context",
+            "reference_frame": "reviewed original site",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "independent statutory review pending",
+            "unit": "inventory"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed original signal, crosswalk, routes and exceptions source hashes",
+            "name": "reviewed_walk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Pedestrian WALK permission and vehicle-driver duty are separate.",
+          "NRS 484B.287, 484B.290 and 484B.350 exceptions require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-283-1d1",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "right-of-way"
+      ],
+      "variable_assignments": {
+        "driver_yield": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "pedestrian_facing_signal": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "signal_at_entry": {
+          "kind": "world_setup",
+          "value": "walk"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__wait_facing_yield",
+      "deliberate_differences": [
+        "signal_at_entry",
+        "pedestrian_facing_signal",
+        "driver_yield"
+      ],
+      "paired_probe_id": "source-gated-walk-facing-driver-duty",
+      "probe": {
+        "comparison_or_standard": "same reviewed crosswalk, actor identities and four-camera policy",
+        "primary_variable": "signal_at_entry",
+        "target_value_or_branch": {
+          "driver_yield": true,
+          "pedestrian_facing_signal": true,
+          "signal_at_entry": "wait"
+        }
+      },
+      "rationale": "Controlled original WALK, facing and separate driver-yield observation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original same-frame official pedestrian signal readback",
+            "name": "walk_signal_state",
+            "reference_frame": "reviewed facing signal",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original signal pixels pending",
+            "unit": "indication"
+          },
+          {
+            "method": "original walker polygon entry, facing and direction readback",
+            "name": "pedestrian_crosswalk_motion",
+            "reference_frame": "reviewed crosswalk XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical entry pending",
+            "unit": "state"
+          },
+          {
+            "method": "original identified vehicle conflict and yield readback",
+            "name": "driver_yield_trajectory",
+            "reference_frame": "reviewed conflict zone",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical driver duty pending",
+            "unit": "state"
+          },
+          {
+            "method": "source-hashed introductory exception context",
+            "name": "exception_context",
+            "reference_frame": "reviewed original site",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "independent statutory review pending",
+            "unit": "inventory"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed original signal, crosswalk, routes and exceptions source hashes",
+            "name": "reviewed_walk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Pedestrian WALK permission and vehicle-driver duty are separate.",
+          "NRS 484B.287, 484B.290 and 484B.350 exceptions require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-283-1d1",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "right-of-way"
+      ],
+      "variable_assignments": {
+        "driver_yield": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "pedestrian_facing_signal": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "signal_at_entry": {
+          "kind": "world_setup",
+          "value": "wait"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_not_facing_yield",
+      "deliberate_differences": [
+        "signal_at_entry",
+        "pedestrian_facing_signal",
+        "driver_yield"
+      ],
+      "paired_probe_id": "source-gated-walk-facing-driver-duty",
+      "probe": {
+        "comparison_or_standard": "same reviewed crosswalk, actor identities and four-camera policy",
+        "primary_variable": "signal_at_entry",
+        "target_value_or_branch": {
+          "driver_yield": true,
+          "pedestrian_facing_signal": false,
+          "signal_at_entry": "walk"
+        }
+      },
+      "rationale": "Controlled original WALK, facing and separate driver-yield observation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original same-frame official pedestrian signal readback",
+            "name": "walk_signal_state",
+            "reference_frame": "reviewed facing signal",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original signal pixels pending",
+            "unit": "indication"
+          },
+          {
+            "method": "original walker polygon entry, facing and direction readback",
+            "name": "pedestrian_crosswalk_motion",
+            "reference_frame": "reviewed crosswalk XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical entry pending",
+            "unit": "state"
+          },
+          {
+            "method": "original identified vehicle conflict and yield readback",
+            "name": "driver_yield_trajectory",
+            "reference_frame": "reviewed conflict zone",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical driver duty pending",
+            "unit": "state"
+          },
+          {
+            "method": "source-hashed introductory exception context",
+            "name": "exception_context",
+            "reference_frame": "reviewed original site",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "independent statutory review pending",
+            "unit": "inventory"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed original signal, crosswalk, routes and exceptions source hashes",
+            "name": "reviewed_walk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Pedestrian WALK permission and vehicle-driver duty are separate.",
+          "NRS 484B.287, 484B.290 and 484B.350 exceptions require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-283-1d1",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "right-of-way"
+      ],
+      "variable_assignments": {
+        "driver_yield": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "pedestrian_facing_signal": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "signal_at_entry": {
+          "kind": "world_setup",
+          "value": "walk"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C150911__NRS-484B-283-1d1__pedestrian__walk_facing_no_yield",
+      "deliberate_differences": [
+        "signal_at_entry",
+        "pedestrian_facing_signal",
+        "driver_yield"
+      ],
+      "paired_probe_id": "source-gated-walk-facing-driver-duty",
+      "probe": {
+        "comparison_or_standard": "same reviewed crosswalk, actor identities and four-camera policy",
+        "primary_variable": "signal_at_entry",
+        "target_value_or_branch": {
+          "driver_yield": false,
+          "pedestrian_facing_signal": true,
+          "signal_at_entry": "walk"
+        }
+      },
+      "rationale": "Controlled original WALK, facing and separate driver-yield observation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original same-frame official pedestrian signal readback",
+            "name": "walk_signal_state",
+            "reference_frame": "reviewed facing signal",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "original signal pixels pending",
+            "unit": "indication"
+          },
+          {
+            "method": "original walker polygon entry, facing and direction readback",
+            "name": "pedestrian_crosswalk_motion",
+            "reference_frame": "reviewed crosswalk XY",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical entry pending",
+            "unit": "state"
+          },
+          {
+            "method": "original identified vehicle conflict and yield readback",
+            "name": "driver_yield_trajectory",
+            "reference_frame": "reviewed conflict zone",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical driver duty pending",
+            "unit": "state"
+          },
+          {
+            "method": "source-hashed introductory exception context",
+            "name": "exception_context",
+            "reference_frame": "reviewed original site",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "independent statutory review pending",
+            "unit": "inventory"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "reviewed original signal, crosswalk, routes and exceptions source hashes",
+            "name": "reviewed_walk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Pedestrian WALK permission and vehicle-driver duty are separate.",
+          "NRS 484B.287, 484B.290 and 484B.350 exceptions require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-283-1d1",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "right-of-way"
+      ],
+      "variable_assignments": {
+        "driver_yield": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "pedestrian_facing_signal": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "signal_at_entry": {
+          "kind": "world_setup",
+          "value": "walk"
+        }
+      }
+    }
+  ],
+  "cell_id": "C150911",
+  "status": "draft",
+  "sweep_expansion_scope": "Four controlled original-source physical probes; legal judgment unresolved.",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Pedestrian permission and the vehicle-driver duty are separate; no legal verdict is inferred from a command.",
+          "phrase": "right-of-way"
+        }
+      ],
+      "missing_inputs": [
+        "reviewed original official WALK signal and crosswalk",
+        "source-bound driver trajectory and four-camera pixels",
+        "independent NRS 484B.287, 484B.290 and 484B.350 exception review"
+      ],
+      "rationale": "Physical yielding and exception contexts are original source measurements, not legal thresholds.",
+      "status": "incomplete",
+      "sweep_id": "source-gated-driver-duty-context",
+      "target_law_id": "NRS-484B-283-1d1"
+    }
+  ],
+  "sweeps_expanded": true
+}

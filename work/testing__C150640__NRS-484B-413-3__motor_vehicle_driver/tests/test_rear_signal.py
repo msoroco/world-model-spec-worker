@@ -10,6 +10,7 @@ def scene(case):
     x = {'cell_id': 'C150640', 'actor': 'motor_vehicle_driver',
          'route_xy': [[-20, 0], [-5, 0], [0, 0]],
          'stop_footprint_xy': [[0, -1], [4, -1], [4, 1], [0, 1]],
+         'signal_light_name': 'RightBlinker',
          'rear_vehicle': {'driver_present': case.rear_driver,
                           'longitudinal_gap_m': 8, 'lateral_offset_m': .2,
                           'spawn_xy': [-8, .2]}}

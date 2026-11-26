@@ -52,6 +52,9 @@ def validate_scene(scene: Mapping):
             'stopping footprint missing')
     rear = scene.get('rear_vehicle')
     require(isinstance(rear, dict), 'rear vehicle declaration missing')
+    require(isinstance(rear.get('spawn_xy'), list) and len(rear['spawn_xy']) == 2 and
+            all(finite_number(x) for x in rear['spawn_xy']),
+            'rear vehicle spawn point missing')
     for field in ('vehicle', 'driver', 'position', 'motion'):
         require(rear.get(field + '_source_sha256'), 'rear source missing: ' + field)
     require(rear.get('driver_present') in (True, False), 'rear driver state missing')
@@ -59,6 +62,8 @@ def validate_scene(scene: Mapping):
             rear['longitudinal_gap_m'] > 0 and
             finite_number(rear.get('lateral_offset_m')),
             'rear longitudinal/lateral relation missing')
+    require(scene.get('signal_light_name') in ('LeftBlinker', 'RightBlinker'),
+            'reviewed visible signal device missing')
     return {'rear_driver_present': rear['driver_present'],
             'longitudinal_gap_m': rear['longitudinal_gap_m'],
             'lateral_offset_m': rear['lateral_offset_m'],
@@ -146,6 +151,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
         require(max(speeds[-20:]) <= .1, 'original stop absent')
     else:
         require(speeds[event] < speeds[event - 1], 'original speed decrease absent')
+        require(min(speeds[-20:]) > .1, 'speed decrease became a stop')
     return {'case_id': case.case_id, 'frame_count': 900,
             'signal_onset_frame': first + onset, 'event_onset_frame': first + event,
             'signal_precedes_event': onset < event,
@@ -153,5 +159,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
             'rear_driver_present': case.rear_driver,
             'rear_gap_at_event_m': rows[event]['rear_longitudinal_gap_m'],
             'rear_lateral_offset_at_event_m': rows[event]['rear_lateral_offset_m'],
+            'terminal_max_speed_mps': max(speeds[-20:]),
+            'event_speed_drop_mps': speeds[event - 1] - speeds[event],
             'immediately_to_rear_judgment': None, 'signal_appropriateness_judgment': None,
             'conflict_and_official_direction_judgment': None, 'legal_judgment': None}

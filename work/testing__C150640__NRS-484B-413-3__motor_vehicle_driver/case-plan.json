@@ -108,7 +108,9 @@
         "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
         "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after"
       ],
-      "fixed_conditions": "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context",
+      "fixed_conditions": [
+        "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context"
+      ],
       "deliberate_differences": [
         "displayed signal onset order"
       ]
@@ -119,7 +121,9 @@
         "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before",
         "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after"
       ],
-      "fixed_conditions": "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context",
+      "fixed_conditions": [
+        "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context"
+      ],
       "deliberate_differences": [
         "displayed signal onset order"
       ]
@@ -130,7 +134,9 @@
         "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
         "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before"
       ],
-      "fixed_conditions": "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context",
+      "fixed_conditions": [
+        "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context"
+      ],
       "deliberate_differences": [
         "stop versus sudden speed decrease"
       ]
@@ -141,20 +147,55 @@
         "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
         "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver"
       ],
-      "fixed_conditions": "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context",
+      "fixed_conditions": [
+        "same one-way route, vehicle pair, rear position, stop footprint, camera/duration and context"
+      ],
       "deliberate_differences": [
         "actual rear driver presence"
       ]
     }
   ],
   "observations": [
-    "jurisdiction, one-way route and stop footprint",
-    "ordinary vehicle classification and ego driver physical control",
-    "rear vehicle identity, driver presence, longitudinal/lateral gap and motion",
-    "original signal display and visibility from rear driver position",
-    "original stop or speed-decrease event and signal onset order",
-    "conflict avoidance and official direction context",
-    "appropriateness, immediacy and prohibited-stop application reserved for review"
+    {
+      "name": "scene_source",
+      "mandatory": true
+    },
+    {
+      "name": "one_way_route",
+      "mandatory": true
+    },
+    {
+      "name": "ego_motion",
+      "mandatory": true
+    },
+    {
+      "name": "rear_motion",
+      "mandatory": true
+    },
+    {
+      "name": "rear_driver",
+      "mandatory": true
+    },
+    {
+      "name": "rear_relation",
+      "mandatory": true
+    },
+    {
+      "name": "signal_display",
+      "mandatory": true
+    },
+    {
+      "name": "rear_signal_visibility",
+      "mandatory": true
+    },
+    {
+      "name": "maneuver_event",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true
+    }
   ],
   "sources": [
     {
@@ -199,7 +240,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_exact_rear_signal_cpu_probes",
+  "planning_status": "source_gated_cpu_delivery_construction",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -222,5 +263,48 @@
       ],
       "reason": "The one-way road permits a destination stop with another driver positioned to the rear."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-413-3 stop or sudden decrease with rear-driver recipient and advance appropriate signal",
+      "source": "inputs/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted original recording; five selected source-gated probes and four comparisons",
+      "case_ids": [
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after",
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before",
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after",
+        "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver"
+      ]
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "one-way route and two-vehicle stop context",
+        "interval": "all 45 seconds"
+      },
+      {
+        "view": "approach",
+        "subject": "ego stop/decrease and displayed signal",
+        "interval": "all 45 seconds"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "rear longitudinal/lateral relation",
+        "interval": "all 45 seconds"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "rear driver point of view and actual signal visibility",
+        "interval": "all 45 seconds"
+      }
+    ]
+  }
 }

@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import importlib
 import json
+import math
 import os
 from pathlib import Path
 from queue import Empty, Queue
@@ -58,7 +59,9 @@ def _frame(queue: Queue, expected: int):
 def _sample(sample: dict, frame: int, time_s: float, review: dict) -> dict:
     required = ('signal_indication', 'pedestrian_facing_signal',
                 'pedestrian_in_crosswalk', 'crossing_direction_matches_signal',
-                'driver_yield_observed', 'driver_actor_ids', 'exception_context')
+                'driver_yield_observed', 'driver_actor_ids', 'exception_context',
+                'signal_actor_id', 'pedestrian_xyz_m', 'driver_positions_xyz_m',
+                'observation_source')
     if not isinstance(sample, dict) or any(key not in sample for key in required):
         raise ValueError('original WALK adapter observation incomplete')
     if sample['signal_indication'] not in ('walk', 'wait', 'dont_walk', 'dark'):
@@ -70,6 +73,22 @@ def _sample(sample: dict, frame: int, time_s: float, review: dict) -> dict:
         raise ValueError('reviewed driver absent from original frame')
     if not isinstance(sample['exception_context'], dict):
         raise ValueError('original exception context absent')
+    if (sample['signal_actor_id'] != review['sources']['pedestrian_signal']['actor_id']
+            or sample['observation_source'] != 'original_native_snapshot'):
+        raise ValueError('official original pedestrian signal actor readback differs')
+    pedestrian_xyz = sample['pedestrian_xyz_m']
+    if (not isinstance(pedestrian_xyz, list) or len(pedestrian_xyz) != 3
+            or any(type(value) not in (int, float) or not math.isfinite(value)
+                   for value in pedestrian_xyz)):
+        raise ValueError('original pedestrian transform missing')
+    positions = sample['driver_positions_xyz_m']
+    if (not isinstance(positions, dict) or
+            any(str(actor_id) not in positions for actor_id in sample['driver_actor_ids'])):
+        raise ValueError('original driver trajectories missing')
+    for xyz in positions.values():
+        if (not isinstance(xyz, list) or len(xyz) != 3 or
+                any(type(value) not in (int, float) or not math.isfinite(value) for value in xyz)):
+            raise ValueError('original driver transform invalid')
     return {'frame': frame, 'time_s': time_s, **sample}
 
 
@@ -77,8 +96,9 @@ def run_native(packet, source_root, adapter_module, case_id, output_dir, speed,
                *, host='127.0.0.1', port=2000):
     """Require reviewed sources before world mutation and seal 900 original rows."""
     output = Path(output_dir).resolve()
-    allowed = {'config.json', 'case-spec.json', 'controller.json', 'construction.json'}
-    if not output.is_dir() or any(path.name not in allowed for path in output.iterdir()):
+    forbidden = {'trace.jsonl', 'video_frames.jsonl', 'original-walk-observations.json',
+                 'original-walk-receipt.json', 'result.json'}
+    if not output.is_dir() or any((output / name).exists() for name in forbidden):
         raise ValueError('fresh materialized WALK attempt directory required')
     reviewed = load_review(packet, source_root, case_id)
     adapter = importlib.import_module(adapter_module)

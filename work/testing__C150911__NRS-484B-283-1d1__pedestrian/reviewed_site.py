@@ -52,6 +52,7 @@ def load_review(packet: str | Path, source_root: str | Path, case_id: str) -> di
     route = loaded['pedestrian_route']
     if (route.get('signal_route_id') != signal['governs_route_id']
             or route.get('crosswalk_id') != crosswalk['crosswalk_id']
+            or not route.get('pedestrian_actor_id')
             or not route.get('approach_xy_m') or not route.get('exit_xy_m')):
         raise ValueError('pedestrian crossing route and signal authority differ')
     vehicle = loaded['vehicle_route']

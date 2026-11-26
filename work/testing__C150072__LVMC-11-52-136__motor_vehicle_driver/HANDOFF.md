@@ -1,37 +1,21 @@
-# testing__C150072__LVMC-11-52-136__motor_vehicle_driver
+# C150072 access-aisle delivery handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: CPU delivery prepared for five exact selected cases and four controlled comparisons. The selected frozen cell is C150072, one-way road, parking in an access aisle; actor is motor vehicle driver; law is LVMC 11.52.136, “No person shall park a vehicle in an access aisle.” No accepted original recording or legal verdict is claimed.
 
-Exact law: LVMC 11.52.136 — No person shall park a vehicle in an access aisle.
-Assigned branch(es): parking in access aisle.
-Cell: C150072 (one_way_road, park, access_aisle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Exact construction
 
-## Next CPU actions
+The five cases are full aisle parking, partial aisle parking, adjacent space parking, aisle loading stop, and aisle travel. Each has a materialized Native runner/config/construction, four synchronized views for 45 seconds at 20 Hz, a source-gated original site packet, measured vehicle body polygon and activity history, and recorded-only analysis. The site packet must establish jurisdiction, actual aisle marking and accessible route, adjacent designated space, one-way approach, map, vehicle, and route before Native capture. The original analyzer joins 900 frame identities/times and measures body overlap, speed, and activity. It does not infer a legal violation.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C150072__LVMC-11-52-136__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+The comparisons are `full_vs_partial`, `aisle_vs_adjacent`, `park_vs_loading`, and `park_vs_travel`. `comparison_audit.py` accepts only independent original Native audit reports with identical fixed source hashes, camera plan, and duration, and requires the intended measured body/activity difference. The assignment-local `queue-proposal.json` contains the five selected rows and four comparison rows. There are no fallback candidates: the reviewed source geometry is absent, so no distinct source-grounded fallback trigger has been established.
 
-## Proven checks and dependency boundary
+## CPU proof
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- Ten focused tests pass, including original frame and activity rejections, source-packet tamper checks, exact bundle/source binding, and four comparison contrasts.
+- All five exact `runtime.py offline` constructions and pinned compatibility positive/negative receipts pass at their manifest hashes.
+- All five physical/lifecycle probes pass complete, incomplete, and missing-evidence states, including Native exit, owner release, and saved-source staging.
+- All five recorded-only saved replays and delivery audit positive/negative mock probes pass. Mock probes check contract wiring only; they make no physical acceptance claim.
+- Direct execution-manifest, semantic-delivery, delivery-handoff, and shadow ready checks pass for all five cases. `cpu-nov25-static-current.log` records the scoped complete static gate; `cpu-nov25-tests-current.log` records the ten tests.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Original delivery boundary
 
-## CPU construction checkpoint
-
-Added `access_aisle.py` with five case probes: full and partial aisle parking, adjacent designated space parking, loading stop, and travel. The source-gated constructor requests an exact one-way approach, vehicle body target and activity, and cleans an owned ego on failure. Original measurement recomputes convex body-footprint overlap on 900 joined frames and checks identity, activity and stop/travel history. It deliberately leaves parking and legal judgment unresolved.
-
-Four focused CPU tests pass, including all five case measurements and negative source/geometry/activity/frame/cleanup probes. Pinned preflight and scoped static pass. Exact scoped strict exits 1 because the result remains partial. The diagnostic site is synthetic fixture geometry; the frozen evidence inventory has no accepted original recording. Canonical capture/offline/compatibility and saved delivery/comparison proofs, physical source-backed site and semantic proposals remain worker-owned CPU tasks.
-
-Proof SHA256:
-
-- `access_aisle.py`: `b1b69357328d9dd7979733b276cd066374b0fb6d5e22830291687d253237f42d`
-- `tests/test_access_aisle.py`: `dc1cdd60446f83af122696ed0f15f72694c679f94e712bf640118050f62c2afb`
-- `cpu-tests.log`: `202e6eda947743c9202c3c0a01fd100fd8836d0ce314f898ce77bcfa2d043c1e`
-- `cpu-preflight.log`: `a9b1dbe3edf5a99dd04530e1ce92a688f44a9f92ec64cc18f6c708cad50b09e3`
-- `cpu-static-check.log`: `c3661d5a83e4a4e1201844de28e4e04b7a957103845381da409b761428ffcc27`
-- `cpu-strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+Acquire a reviewed original site packet meeting `site_review.py`; set `C150072_REVIEWED_SITE_PACKET` for the Native run. Use the canonical commands in `queue-proposal.json`. Retain actual CARLA recorder, four videos, 900 joined body/activity rows, original map and packet, Native seal/exit/owner release, saved processing receipt and full-decode receipt. An independent reviewer must inspect actual pixels and record `pixel-review.json`; `queue_delivery.py` checks those original artifacts and writes the source audit. Run the four original-only comparison audits after their case reports are accepted. Physical realization, source designation, camera visibility, loading/travel activity, and legal interpretation remain to be determined from original evidence.
