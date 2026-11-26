@@ -87,7 +87,8 @@ def main():
     description = json.loads((HERE / 'selected-probe-1/construction.json').read_text())['recording_description']
     cases = [{'case_id': HERE.name + '__baseline', 'target_law_id': None,
               'target_type': 'baseline', 'rationale': 'Unselected frozen-cell neutral reference.',
-              'variable_assignments': {'sidewalk_vehicle_occupancy': {'kind': 'world_setup', 'value': None}},
+              'variable_assignments': {'sidewalk_vehicle_occupancy': {'kind': 'world_setup', 'value': None},
+                                       'other_traffic_actor_present': {'kind': 'world_setup', 'value': None}},
               'unresolved_judgment_calls': [phrase for phrase, _ in judgments],
               'recording_description': description}]
     for index, occupied in ((1, False), (2, True)):
@@ -95,7 +96,8 @@ def main():
         cases.append({'case_id': case_id, 'target_law_id': LAW_ID,
                       'target_type': 'boundary_probe',
                       'rationale': 'Source-joined sidewalk occupancy contrast; no legal outcome label.',
-                      'variable_assignments': {'sidewalk_vehicle_occupancy': {'kind': 'world_setup', 'value': occupied}},
+                      'variable_assignments': {'sidewalk_vehicle_occupancy': {'kind': 'world_setup', 'value': occupied},
+                                               'other_traffic_actor_present': {'kind': 'world_setup', 'value': None}},
                       'unresolved_judgment_calls': [phrase for phrase, _ in judgments],
                       'paired_probe_id': 'sidewalk-stop-location',
                       'deliberate_differences': ['sidewalk_vehicle_occupancy'],

@@ -108,7 +108,8 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         with FrameMap(output / 'video_frames.jsonl') as frame_map, \
-                (output / 'native-rows.jsonl').open('x') as rows:
+                (output / 'native-rows.jsonl').open('x') as rows, \
+                (output / 'trace.jsonl').open('x') as trace:
             first_time = None
             for index in range(600):
                 active = 160 <= index < 400
@@ -164,6 +165,16 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
                     'stand_designation_review': 'pending',
                     'other_regulations_review': 'pending'}
                 rows.write(json.dumps(row) + '\n')
+                trace.write(json.dumps({
+                    'frame': native_frame, 'time_s': time_s,
+                    'position_m': row['taxi_xyz_m'],
+                    'heading_deg': vehicle_pose.rotation.yaw,
+                    'velocity_mps': row['taxi_velocity_xyz_mps'],
+                    'speed_mps': sum(value * value for value in
+                                     row['taxi_velocity_xyz_mps']) ** .5,
+                    'control': {'brake': 1, 'hand_brake': True},
+                    'source_kind': 'original_native',
+                    'taxi_actor_id': taxi.id}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             error = process.stderr.read()

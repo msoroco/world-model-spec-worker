@@ -1,25 +1,32 @@
 {
-  "format": "worker-source-measurement-contract",
+  "format": "worker-measurement-contract",
   "case_id": "training__C394327__LVMC-11-60-040__taxi_driver__probe_b",
-  "procedure": "finalize_original.py",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "LVMC-11-60-040",
+      "source": "LVMC 11.60.040",
+      "output_key": "taxi_loading_measurement",
+      "method": "taxi_loading_measurement",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "observed-activity.jsonl",
+        "participant-activity-review.json",
+        "stand-designation-review.json",
+        "other-regulations-review.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "observed-activity.jsonl"
+    ],
+    "error_contains": "Missing required source: observed-activity.jsonl"
+  },
   "frame_count": 600,
   "sampling_rate_hz": 20,
   "duration_s": 30,
-  "original_sources": [
-    "native-rows.jsonl",
-    "video_frames.jsonl",
-    "observed-activity.jsonl",
-    "four source videos",
-    "taxi-license, stand-designation, participant-activity and other-regulations reviews"
-  ],
-  "observations": [
-    "taxi identity",
-    "outside-designated-stand location",
-    "stopped speed",
-    "door state",
-    "occupant transition",
-    "actual loading subject and timing"
-  ],
   "legal_verdict": null,
   "physical_acceptance_claimed": false
 }

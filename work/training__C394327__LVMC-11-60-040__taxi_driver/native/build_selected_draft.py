@@ -10,6 +10,28 @@ from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
 PREFIX = BASE.name
+CHANNELS = ('ru.taxicab', 'st.curb_zone', 'dev.regulatory_sign',
+            'drv.standing_or_parked', 'rel.occupies', 'drv.stopped',
+            'sig.door_open', 'ru.occupant_count', 'kin.time')
+
+
+def recording_description():
+    return {
+        'channels': [{
+            'name': name, 'unit': 'source observation',
+            'method': 'joined original Native taxi, camera and reviewed activity sources',
+            'reference_frame': 'original C394327 taxi and participant frames',
+            'sampling_rate_hz': 20, 'time_window': '600 frames / 30 s',
+            'uncertainty': 'Original identity, stand authority, activity and pixels require local review'
+        } for name in CHANNELS],
+        'context_inputs': [
+            {'name': 'taxi_license_review', 'unit': 'source review',
+             'method': 'licensed-taxicab authority document review'},
+            {'name': 'stand_designation_review', 'unit': 'source review',
+             'method': 'designated stand authority document review'},
+            {'name': 'other_regulations_review', 'unit': 'source review',
+             'method': 'other stopping and parking rules review'}],
+        'limitations': ['No legal verdict or original Native acceptance from CPU diagnostic']}
 
 
 def sha(path):
@@ -24,6 +46,9 @@ def selected_construction(source, case_id, candidate_id):
     construction = copy.deepcopy(json.loads(source.read_text()))
     if construction['case_id'] != case_id:
         raise ValueError('Draft construction binds another exact case')
+    finalizer = (BASE / 'native' / 'selected_finalize.py').read_text()
+    construction['files'].append({'path': 'selected_finalize.py',
+                                  'content': finalizer})
     for item in construction['files']:
         if item['path'] == 'config.json':
             config = json.loads(item['content'])
@@ -31,7 +56,9 @@ def selected_construction(source, case_id, candidate_id):
                            'candidate_id': candidate_id, 'required_atoms': [],
                            'source_packets': [], 'case': {'case_id': case_id},
                            'physical_acceptance_claimed': False})
+            config['case']['recording_description'] = recording_description()
             item['content'] = json.dumps(config, indent=2) + '\n'
+    construction['recording_description'] = recording_description()
     construction['status'] = 'selected_cpu_proofs_pending'
     construction['candidate_id'] = candidate_id
     return construction
@@ -39,6 +66,8 @@ def selected_construction(source, case_id, candidate_id):
 
 def main():
     draft = json.loads((BASE / 'draft-native-manifest.json').read_text())
+    bindings_path = BASE / 'native' / 'selected-offline-bindings.json'
+    bindings = json.loads(bindings_path.read_text()) if bindings_path.is_file() else {}
     if draft['assignment_id'] != PREFIX or len(draft['cases']) != 2:
         raise ValueError('Expected two exact taxi cases')
     entries = []
@@ -68,22 +97,28 @@ def main():
             raise ValueError('Fallback changed recording observations')
         contract_path = BASE / ('selected-' + suffix + '-measurement-contract.json')
         write(contract_path, {
-            'format': 'worker-source-measurement-contract', 'case_id': case,
-            'procedure': 'finalize_original.py',
+            'format': 'worker-measurement-contract', 'case_id': case,
+            'requirements': [{
+                'disposition_index': 0, 'requirement': 'LVMC-11-60-040',
+                'source': 'LVMC 11.60.040',
+                'output_key': 'taxi_loading_measurement',
+                'method': 'taxi_loading_measurement', 'kind': 'measured',
+                'value_type': 'object',
+                'inputs': ['observed-activity.jsonl',
+                           'participant-activity-review.json',
+                           'stand-designation-review.json',
+                           'other-regulations-review.json']}],
+            'negative': {
+                'remove': ['observed-activity.jsonl'],
+                'error_contains': 'Missing required source: observed-activity.jsonl'},
             'frame_count': 600, 'sampling_rate_hz': 20, 'duration_s': 30,
-            'original_sources': ['native-rows.jsonl', 'video_frames.jsonl',
-                                 'observed-activity.jsonl', 'four source videos',
-                                 'taxi-license, stand-designation, participant-activity and other-regulations reviews'],
-            'observations': ['taxi identity', 'outside-designated-stand location',
-                             'stopped speed', 'door state', 'occupant transition',
-                             'actual loading subject and timing'],
             'legal_verdict': None, 'physical_acceptance_claimed': False})
         entries.append({
             'case_id': case, 'kind': 'delivery',
             'construction': primary_path.name,
             'construction_sha256': sha(primary_path),
             'measurement_contract': contract_path.name,
-            'measurement_procedure': {'entrypoint': 'finalize_original.py'},
+            'measurement_procedure': {'entrypoint': 'selected_finalize.py'},
             'candidate_risk': original['candidate_risk'],
             'candidates': [{
                 'id': 'fallback1', 'construction': fallback_path.name,
@@ -94,7 +129,7 @@ def main():
                                    ('fallback1', entries[-1]['candidates'][0])]:
             log_path = BASE / 'native' / (
                 'selected-' + suffix.replace('_', '-') + '-' + candidate_id + '-offline.log')
-            if log_path.is_file():
+            if log_path.is_file() and bindings.get(suffix + ':' + candidate_id) == item['construction_sha256']:
                 receipt = json.loads(log_path.read_text())
                 if (receipt.get('case_id') != case or
                         receipt.get('candidate_id') != candidate_id or
@@ -103,8 +138,8 @@ def main():
                     raise ValueError('Selected offline receipt does not match candidate')
                 command = ('.venv-cpu/bin/python -B runtime.py offline --manifest work/' +
                            PREFIX + '/selected-draft-manifest.json --case ' + case +
-                           ' --output .runtime-work/c394327-selected-offline-' + suffix +
-                           '-' + candidate_id + ' --python ' +
+                           ' --output .runtime-work/c394327-selected-' + suffix +
+                           '-' + candidate_id + '-v4 --python ' +
                            str(Path.cwd() / '.venv-cpu/bin/python'))
                 if candidate_id != 'primary':
                     command += ' --candidate ' + candidate_id

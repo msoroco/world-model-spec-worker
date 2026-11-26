@@ -1,7 +1,95 @@
 {
   "cell_id": "C276263",
   "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "parked-lamp-judgment-coverage",
+      "target_law_id": "NRS-484D-165-4",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "parked vehicle",
+          "note": "A zero-speed request alone does not prove parking rather than temporary loading."
+        },
+        {
+          "phrase": "depressed or dimmed",
+          "note": "A low-beam control request alone does not prove the original beam aim or intensity."
+        }
+      ],
+      "rationale": "Original parked activity, beam aim and beam intensity require physical source review; no legal cutoff is supplied.",
+      "missing_inputs": [
+        "A source-backed physical range and feasible controllable beam setpoints for systematic judgment coverage; existing low/high comparison is retained."
+      ]
+    }
+  ],
   "cases": [
+    {
+      "case_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared stationary sloped-curb context; no original Native observation is claimed.",
+      "variable_assignments": {
+        "parked_headlamp_beam": {
+          "kind": "controller",
+          "value": "low_beam"
+        },
+        "observed_beam_aim": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "observed_beam_intensity": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "state",
+            "method": "original parked activity review and body pose",
+            "reference_frame": "original parked subject at C276263 sloped curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; original pixel review required"
+          },
+          {
+            "name": "sig.headlamp",
+            "unit": "state",
+            "method": "original post-tick lamp readback and pixel review",
+            "reference_frame": "original parked subject at C276263 sloped curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; original pixel review required"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "method": "original post-tick three-axis velocity",
+            "reference_frame": "original parked subject at C276263 sloped curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; original pixel review required"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "state",
+            "method": "original full footprint and curb lane readback",
+            "reference_frame": "original parked subject at C276263 sloped curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; original pixel review required"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Low-beam request alone does not prove depressed or dimmed",
+          "Synthetic fixtures do not establish original physical beam or legal outcome"
+        ]
+      }
+    },
     {
       "case_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484D-165-4",
@@ -73,7 +161,12 @@
       },
       "unresolved_judgment_calls": [
         "Depressed or dimmed requires original source and legal review"
-      ]
+      ],
+      "probe": {
+        "primary_variable": "parked_headlamp_beam",
+        "comparison_or_standard": "original beam aim and intensity contrast; legal judgment unresolved",
+        "target_value_or_branch": "low_beam"
+      }
     },
     {
       "case_id": "training__C276263__NRS-484D-165-4__motor_vehicle_driver__probe_b",
@@ -146,7 +239,12 @@
       },
       "unresolved_judgment_calls": [
         "Depressed or dimmed requires original source and legal review"
-      ]
+      ],
+      "probe": {
+        "primary_variable": "parked_headlamp_beam",
+        "comparison_or_standard": "original beam aim and intensity contrast; legal judgment unresolved",
+        "target_value_or_branch": "high_beam"
+      }
     }
   ]
 }

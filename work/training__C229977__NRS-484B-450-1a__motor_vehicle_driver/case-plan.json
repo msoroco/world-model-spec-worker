@@ -91,7 +91,7 @@
     {
       "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_absent",
       "comparison_variable": "officer_identity_direction_and_compliance",
-      "construction_status": "not_yet_selected",
+      "construction_status": "selected_native_construction_offline_proved_public_pending",
       "kind": "planned_only",
       "physical_target": "without the stated exception source while motor vehicle stops on the same sidewalk",
       "requested_not_measured": true,
@@ -105,7 +105,7 @@
     {
       "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_present",
       "comparison_variable": "officer_identity_direction_and_compliance",
-      "construction_status": "not_yet_selected",
+      "construction_status": "selected_native_construction_offline_proved_public_pending",
       "kind": "planned_only",
       "physical_target": "with an independently sourced exception request while motor vehicle stops on the same sidewalk",
       "requested_not_measured": true,
@@ -380,9 +380,11 @@
         "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_1",
         "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_2",
         "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_absent",
-        "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_present"
+        "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_present",
+        "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_absent",
+        "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_present"
       ],
-      "evidence_or_gap": "Two exact selected Native stop-location cases with primary and physical fallback have passing current-runtime offline/public proof and recorded-only saved processing on synthetic sources. Original Native sidewalk status, motion and legal outcome remain unverified.",
+      "evidence_or_gap": "Four exact selected Native cases cover stop location and other-traffic presence, each with primary and physical fallback, current-runtime offline/public positive/missing-source negative and recorded-only saved proofs on synthetic sources. Original Native sidewalk status, physical necessity and legal outcome remain unverified.",
       "requirement": "NRS-484B-450-1a",
       "source": "NRS 484B.450(1)(a); with 484B.450(3)",
       "status": "selected_required"
@@ -417,7 +419,7 @@
         "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_absent",
         "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_present"
       ],
-      "evidence_or_gap": "Two exact selected Native constructions with original other-traffic trajectory acquisition and recorded-only context measurement; physical conflict, necessity, and legal exception remain independently unverified. Current offline passed; public/saved/delivery proof chain pending.",
+      "evidence_or_gap": "Two exact selected Native constructions acquire a frame-aligned other-traffic trajectory and source context. Primary/fallback offline, public positive/missing-traffic-source negative, recorded-only saved positive/missing-source negative, physical/lifecycle diagnostic and independent delivery selftests pass. Another actor's presence is measured; physical conflict, necessity and legal exception remain independently unverified.",
       "requirement": "NRS-484B-450-1a",
       "source": "NRS 484B.450(1)(a); with 484B.450(3)",
       "status": "selected_required"
@@ -439,10 +441,10 @@
         "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_absent",
         "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__officer_direction_present"
       ],
-      "evidence_or_gap": "Requires an original officer identity and direction source plus temporal compliance, absent from current selected pair. Actor and fixed sidewalk cell can support a controlled stop comparison; exact selected constructions remain to be authored and proved. These two exact case IDs are planned but no original authority/traffic source, Native selected construction or CPU proof is yet bound.",
+      "evidence_or_gap": "Two exact selected constructions acquire a separate original pedestrian candidate trace and unverified officer presence request; primary/fallback current-runtime offline passes. Public, saved, semantic, physical and independent audit proofs remain pending. Officer identity, direction, compliance and exception remain unverified.",
       "requirement": "NRS-484B-450-1a",
       "source": "NRS 484B.450(1)(a); with 484B.450(3)",
-      "status": "alternative_pending"
+      "status": "selected_required"
     },
     {
       "branch": "in compliance with official traffic-control device",
@@ -473,15 +475,20 @@
   },
   "source_observation_mapping": {
     "drv.forced_halt": {
-      "channels": [],
-      "evidence": "traffic conflict versus intentional stop requires actor histories and authority context, pending; not asserted observed by the two selected motor-vehicle stop-location cases",
-      "measurement": "traffic conflict versus intentional stop requires actor histories and authority context, pending",
+      "channels": [
+        "vehicle_speed",
+        "other_traffic_trajectory"
+      ],
+      "evidence": "selected traffic pair measures frame-aligned subject speed and separate other-traffic actor presence; necessity to stop remains unverified",
+      "measurement": "600 joined subject and other-traffic trajectory rows with recorded context; no physical necessity verdict",
       "source_refs": [
-        "inputs/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/assignment.json"
+        "inputs/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/assignment.json",
+        "work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/native/traffic_conflict_runner.py",
+        "work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/native/finalize_traffic_conflict.py"
       ],
       "sources": [
-        "native actor trace",
-        "governing sign/officer/law source"
+        "native subject and separate other-traffic post-tick traces",
+        "frame map and authority context"
       ]
     },
     "drv.standing_or_parked": {

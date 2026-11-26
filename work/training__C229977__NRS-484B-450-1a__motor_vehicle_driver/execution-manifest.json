@@ -274,6 +274,38 @@
       }
     },
     {
+      "acquisition": {
+        "exception_authority_context": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "other_traffic_trajectory": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "sidewalk_map_context": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "sidewalk_overlap": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "vehicle_body_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "vehicle_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        }
+      },
       "candidate_risk": {
         "reason": "Native steering or other-traffic placement may not realize controlled stop contrast",
         "status": "physical"
@@ -316,6 +348,31 @@
       },
       "construction": "selected-traffic-conflict-absent/construction.json",
       "construction_sha256": "56b8a25be835b6808a4acc2d43d21a026ec5d0c8757c7d87bc663b39a72ea58e",
+      "delivery_acceptance": {
+        "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_absent",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python -B work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/traffic_delivery_audit.py --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_absent --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/traffic_delivery_audit.py --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_absent --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original sidewalk source",
+        "negative_log": "delivery-proofs/traffic_conflict_absent-negative.log",
+        "negative_log_sha256": "affbb7e1d60ba8af56c56b78631df5d20c8a3ce72d7b1f8967d40ae9a5022e3c",
+        "script": "traffic_delivery_audit.py",
+        "script_sha256": "ae33aa8e4df20c82ee74dc3be102639d4629f7c89d8f7b91261d48903d61bdf8",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/traffic_conflict_absent-positive.log",
+        "test_log_sha256": "befdc56db01a99b5fdef145ba113af0de5c5b67900f8c10975d94b40d4ce3257"
+      },
       "fixture_recipe": "work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/diagnostic-recipe-traffic_conflict_absent.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract-traffic.json",
@@ -336,9 +393,60 @@
         "exit_code": 0,
         "log": "selected-traffic-conflict-absent/proof-primary.log",
         "log_sha256": "678546bb4e7e301bf39122d65599653a1ce9a11b1fe160b4a1c75b01a9abd2e2"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/traffic_conflict_absent/proof.json",
+        "sha256": "c0ccd8ce3e2d1680f0f4b8a6b80be4f8c38b5ebd37981cefda5216469e5c0376"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_absent --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_absent --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "missing_source_log": "saved/traffic_conflict_absent-negative.log",
+        "missing_source_log_sha256": "78cac9a84d3995f819d2580a4755672447595e79e882eca89b434fa3ac186b03",
+        "missing_source_receipt": "saved/traffic_conflict_absent-negative.json",
+        "missing_source_receipt_sha256": "78cac9a84d3995f819d2580a4755672447595e79e882eca89b434fa3ac186b03",
+        "missing_source_test_exit_code": 0,
+        "processing_receipt": "saved/traffic_conflict_absent-positive.json",
+        "processing_receipt_sha256": "9e1b6d40e9a4d46bd74043c0a90a0a9e3907599f7c0cc12d012a7f3c7eddc580",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/traffic_conflict_absent-positive.log",
+        "test_log_sha256": "9e1b6d40e9a4d46bd74043c0a90a0a9e3907599f7c0cc12d012a7f3c7eddc580"
       }
     },
     {
+      "acquisition": {
+        "exception_authority_context": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "other_traffic_trajectory": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "sidewalk_map_context": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "sidewalk_overlap": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "vehicle_body_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        },
+        "vehicle_speed": {
+          "entrypoint": "runner.py",
+          "evidence": "vehicle-trace.jsonl, traffic-trace.jsonl, camera-frames.jsonl, video_frames.jsonl, map-packet.json, authority-context.json, native-road.xodr",
+          "method": "frame-aligned original Native actor, map, camera and authority source capture; independent review required"
+        }
+      },
       "candidate_risk": {
         "reason": "Native steering or other-traffic placement may not realize controlled stop contrast",
         "status": "physical"
@@ -381,6 +489,31 @@
       },
       "construction": "selected-traffic-conflict-present/construction.json",
       "construction_sha256": "f461874cc64ba521f8019417ae5114d1e85d69c87a23d108a74cac6763653222",
+      "delivery_acceptance": {
+        "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_present",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python -B work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/traffic_delivery_audit.py --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_present --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/traffic_delivery_audit.py --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_present --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original sidewalk source",
+        "negative_log": "delivery-proofs/traffic_conflict_present-negative.log",
+        "negative_log_sha256": "affbb7e1d60ba8af56c56b78631df5d20c8a3ce72d7b1f8967d40ae9a5022e3c",
+        "script": "traffic_delivery_audit.py",
+        "script_sha256": "ae33aa8e4df20c82ee74dc3be102639d4629f7c89d8f7b91261d48903d61bdf8",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/traffic_conflict_present-positive.log",
+        "test_log_sha256": "121ac8f88fa1318836df4d67603171e221d7fbf440aa3e62ed1890ad2e2e5876"
+      },
       "fixture_recipe": "work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/diagnostic-recipe-traffic_conflict_present.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract-traffic.json",
@@ -401,6 +534,25 @@
         "exit_code": 0,
         "log": "selected-traffic-conflict-present/proof-primary.log",
         "log_sha256": "bbda96658f00882b09de7dd8d4e8442582bb3a4858f2188bd80f2d8cbc9c819f"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/traffic_conflict_present/proof.json",
+        "sha256": "3504311f272510738a07f17febd515135a8a7d5efd5446767f25c353f5f7d1f7"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_present --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229977__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case training__C229977__NRS-484B-450-1a__motor_vehicle_driver__traffic_conflict_present --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "missing_source_log": "saved/traffic_conflict_present-negative.log",
+        "missing_source_log_sha256": "87acd5a6f6df12ef5ba1488b1c1a40b84437b0fa4e4d122583b1fefd9b9d3649",
+        "missing_source_receipt": "saved/traffic_conflict_present-negative.json",
+        "missing_source_receipt_sha256": "87acd5a6f6df12ef5ba1488b1c1a40b84437b0fa4e4d122583b1fefd9b9d3649",
+        "missing_source_test_exit_code": 0,
+        "processing_receipt": "saved/traffic_conflict_present-positive.json",
+        "processing_receipt_sha256": "3df13cd77cace1214ddd6a65b91dd818a1a3423e52539e2a83bc63de6ac2a33f",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/traffic_conflict_present-positive.log",
+        "test_log_sha256": "3df13cd77cace1214ddd6a65b91dd818a1a3423e52539e2a83bc63de6ac2a33f"
       }
     }
   ],

@@ -199,12 +199,21 @@ class CaptureLifecycle(unittest.TestCase):
                     (attempt / 'native-rows.jsonl').read_text().splitlines()]
             frames = [json.loads(line) for line in
                       (attempt / 'video_frames.jsonl').read_text().splitlines()]
+            trace = [json.loads(line) for line in
+                     (attempt / 'trace.jsonl').read_text().splitlines()]
             self.assertEqual(len(rows), 600)
             self.assertEqual(len(frames), 600)
+            self.assertEqual(len(trace), 600)
             self.assertEqual(rows[0]['time_s'], .05)
             self.assertEqual(rows[-1]['time_s'], 30)
             self.assertEqual(frames[0]['time_s'], .05)
             self.assertEqual(frames[-1]['time_s'], 30)
+            self.assertEqual(trace[0]['time_s'], .05)
+            self.assertEqual(trace[-1]['time_s'], 30)
+            self.assertEqual([row['frame'] for row in trace],
+                             [row['native_frame'] for row in rows])
+            self.assertTrue(all(row['taxi_actor_id'] == rows[index]['taxi_actor_id']
+                                for index, row in enumerate(trace)))
             self.assertEqual(result['frames'], 600)
             self.assertFalse(result['taxi_and_stand_authority_verified'])
             self.assertEqual(len(seals), 1)

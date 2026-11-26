@@ -40,28 +40,28 @@
     {
       "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_01",
       "target_law_id": "LVMC-11-30-090",
-      "kind": "delivery_draft",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "pedestrian walks along sidewalk",
       "comparison_variable": "walking surface",
-      "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
+      "selection_status": "selected_for_delivery_cpu_proofs_pending",
       "expected_label": null,
-      "construction_status": "two_road_overpass_native_capture_and_restore_seal_cpu_offline_passed_physical_unverified",
+      "construction_status": "two_road_capture_and_source_bound_finalizer_cpu_checked_physical_unverified",
       "construction": "draft-roadway/probe_01/primary/construction.json",
-      "construction_sha256": "78bd2f17bd1f17c218d3234637be113801075a393bc551742d671d361ef49f57"
+      "construction_sha256": "b8be73d2929a088c0c66dc7f903887c06ad124fece1f1eb6ba7831d69c994b0c"
     },
     {
       "case_id": "training__C190631__LVMC-11-30-090__pedestrian__probe_02",
       "target_law_id": "LVMC-11-30-090",
-      "kind": "delivery_draft",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "pedestrian walks along adjacent roadway",
       "comparison_variable": "walking surface",
-      "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
+      "selection_status": "selected_for_delivery_cpu_proofs_pending",
       "expected_label": null,
-      "construction_status": "two_road_overpass_native_capture_and_restore_seal_cpu_offline_passed_physical_unverified",
+      "construction_status": "two_road_capture_and_source_bound_finalizer_cpu_checked_physical_unverified",
       "construction": "draft-roadway/probe_02/primary/construction.json",
-      "construction_sha256": "896822bddc3689af8ff814ffab931f04ce9f638772c34015211ddd791e243baf"
+      "construction_sha256": "bad86b07f93117325edc15aa7f9ea6eafd74b4603e6272ec91efb7a7dc7265c5"
     }
   ],
   "comparisons": [
@@ -109,7 +109,7 @@
     },
     {
       "term": "kin.heading",
-      "note": "'along' — walking with the road rather than across it"
+      "note": "'along' \u2014 walking with the road rather than across it"
     },
     {
       "term": "kin.path_length",
@@ -131,7 +131,7 @@
   ],
   "runtime_gaps": [
     "CARLA Native two-road readback, walker motion, body footprints, sidewalk purpose, camera pixels and capture seal not physically verified.",
-    "Selected execution/measurement manifests, source-bound positive/negative compatibility, recorded-only saved processing, Core finalization, semantic proposals, independent acceptance and delivery comparison audits and risk fallback pending."
+    "Selected execution/measurement manifests, public positive/negative compatibility, recorded-only processing, semantic proposals, independent acceptance/delivery comparison audits and justified fallback assessment remain pending."
   ],
   "observations": [
     {
@@ -157,7 +157,7 @@
     {
       "name": "kin.heading",
       "mandatory": true,
-      "reason": "'along' — walking with the road rather than across it"
+      "reason": "'along' \u2014 walking with the road rather than across it"
     },
     {
       "name": "kin.path_length",
@@ -198,76 +198,93 @@
     }
   ],
   "source_law_review": "Exact LVMC 11.30.090 reviewed: prohibition requires a provided sidewalk and pedestrian walking along and upon an adjacent roadway; no statutory duration/distance cutoff. Frozen overpass has two authored grade-separated roads, with upper sidewalk adjacency subject to Native/pixel verification. No accepted membership. State-law sidewalk-obstruction interaction remains unresolved legal context.",
-  "source_observation_mapping": [
-    {
-      "term": "ru.subject",
+  "source_observation_mapping": {
+    "ru.subject": {
       "measurement": "walker_actor_id and walker_blueprint_id",
       "evidence": "pedestrian-poses.jsonl",
       "channels": [
-        "original actor pose"
+        "ru.subject"
       ],
       "source_refs": [
         "LVMC 11.30.090"
       ]
     },
-    {
-      "term": "st.sidewalk",
+    "st.sidewalk": {
       "measurement": "Native sidewalk lane survey, source polygon and sidewalk occupancy intervals",
       "evidence": "surface-geometry.json and pedestrian-poses.jsonl",
       "channels": [
-        "source geometry",
-        "original footprint"
+        "st.sidewalk"
       ],
       "source_refs": [
         "LVMC 11.30.090"
       ]
     },
-    {
-      "term": "st.roadway",
+    "st.roadway": {
       "measurement": "Native roadway lane survey, source polygon and roadway occupancy intervals",
       "evidence": "surface-geometry.json and pedestrian-poses.jsonl",
       "channels": [
-        "source geometry",
-        "original footprint"
+        "st.roadway"
       ],
       "source_refs": [
         "LVMC 11.30.090"
       ]
     },
-    {
-      "term": "rel.occupies",
+    "rel.occupies": {
       "measurement": "all four original pedestrian footprint vertices within source surface polygon per frame",
       "evidence": "pedestrian-poses.jsonl and surface-geometry.json",
       "channels": [
-        "original footprint",
-        "source geometry"
+        "rel.occupies"
       ],
       "source_refs": [
         "LVMC 11.30.090"
       ]
     },
-    {
-      "term": "kin.heading",
+    "kin.heading": {
       "measurement": "longitudinal versus lateral displacement and original heading",
       "evidence": "pedestrian-poses.jsonl and trace.jsonl",
       "channels": [
-        "original pose",
-        "original heading"
+        "kin.heading"
       ],
       "source_refs": [
         "LVMC 11.30.090"
       ]
     },
-    {
-      "term": "kin.path_length",
+    "kin.path_length": {
       "measurement": "sum of inter-frame original pedestrian center displacement",
       "evidence": "pedestrian-poses.jsonl",
       "channels": [
-        "original pose"
+        "kin.path_length"
       ],
       "source_refs": [
         "LVMC 11.30.090"
       ]
     }
-  ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "pedestrian full body, provided upper sidewalk and adjacent upper roadway",
+        "interval": "600 original frames at 20 Hz"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian full body, provided upper sidewalk and adjacent upper roadway",
+        "interval": "600 original frames at 20 Hz"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "pedestrian full body, provided upper sidewalk and adjacent upper roadway",
+        "interval": "600 original frames at 20 Hz"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "pedestrian full body, provided upper sidewalk and adjacent upper roadway",
+        "interval": "600 original frames at 20 Hz"
+      }
+    ]
+  }
 }

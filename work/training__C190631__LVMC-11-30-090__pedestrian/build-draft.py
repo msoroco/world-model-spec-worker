@@ -17,15 +17,21 @@ def main():
     entries = []
     for suffix, surface in CASES:
       case = HERE.name + '__' + suffix
-      config = {'case_id': case, 'selected_case_id': case,
+      config = {'assignment_id': HERE.name, 'case_id': case, 'selected_case_id': case,
               'supported_case_ids': [HERE.name + '__' + s for s, _ in CASES], 'candidate_id': 'primary',
               'law_id': 'LVMC-11-30-090', 'cell_id': 'C190631', 'actor': 'pedestrian',
               'walking_surface': surface,
               'rate_hz': 20, 'duration_s': 30, 'required_atoms': [],
               'source_packets': [], 'case': {'case_id': case},
               'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
-                           'height': 1080 if name == 'overview' else 720}
+                           'height': 1080 if name == 'overview' else 720,
+                           'fov_deg': 85,
+                           'pose_strategy': 'fixed world view of upper overpass pedestrian and both walking surfaces'}
                           for name in ('overview', 'approach', 'reference_corner', 'driver_reference')],
+              'physical_completion': {'criterion': 'travel_progress',
+                                      'minimum_progress_m': 20,
+                                      'direction_xy': [1, 0],
+                                      'completion_goal_method': 'Source-measured 20 m forward travel as an engineering completion check, not a legal distance or duration threshold.'},
               'recording_description': {'channels': [
                   {'name': term, 'unit': 'source observation', 'sampling_rate_hz': 20,
                    'method': 'original Native walker pose/footprint and surveyed map',
@@ -34,8 +40,10 @@ def main():
                    'uncertainty': 'Native provision/purpose and pixels need local review'}
                   for term in ('ru.subject', 'st.sidewalk', 'st.roadway',
                                'rel.occupies', 'kin.heading', 'kin.path_length')],
+                  'context_inputs': [],
                   'limitations': ['Native survey and walker/camera execution require CARLA verification']},
               'status': 'cpu_draft_not_delivery_prepared'}
+      config['case']['recording_description'] = config['recording_description']
       files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
              for name in ('runner.py', 'geometry.py', 'measure.py', 'finalize.py', 'tests/test_native.py')]
       files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
