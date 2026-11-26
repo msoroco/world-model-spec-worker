@@ -6,9 +6,59 @@
   "sweeps_expanded": true,
   "cases": [
     {
+      "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "cell_id": "C262666",
+      "actor": "heavy_vehicle_driver",
+      "rationale": "Unselected school-zone context baseline for semantic stage; no additional recording.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "school_zone_observation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame Native velocity and reviewed school-zone station",
+            "time_window": "600 frames",
+            "reference_frame": "Native world XY and school-zone road station",
+            "uncertainty": "50 ms sampling; designation and exceptions require independent authority review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_zone_context",
+            "unit": "structured",
+            "method": "survey-bound reviewed designation, sign, calendar, civil time and beacon state"
+          }
+        ],
+        "limitations": [
+          "Actual Native pixels, vehicle class and governing school authority require local review",
+          "No legal verdict follows from the engineering speed target"
+        ]
+      },
+      "variable_assignments": {
+        "target_speed_mph": {
+          "kind": "controller",
+          "value": 14,
+          "unit": "mph"
+        },
+        "reviewed_school_zone_context": {
+          "kind": "world_setup",
+          "value": "active designated school zone; source facts independently reviewed",
+          "unit": "structured"
+        },
+        "observed_zone_speed_mph": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "mph"
+        }
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_01",
       "target_law_id": "NRS-484B-363-1",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "cell_id": "C262666",
       "actor": "heavy_vehicle_driver",
       "rationale": "active designated school zone with heavy vehicle speed below 15 mph",
@@ -44,7 +94,7 @@
         },
         "reviewed_school_zone_context": {
           "kind": "world_setup",
-          "value": "active designated school zone with heavy vehicle speed below 15 mph",
+          "value": "active designated school zone; source facts independently reviewed",
           "unit": "structured"
         },
         "observed_zone_speed_mph": {
@@ -53,15 +103,30 @@
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "local school authority and exact statutory exception facts",
-        "actual Native pixels, motion and physical acceptance"
-      ]
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "school_zone_15_mph_boundary",
+      "deliberate_differences": [
+        "target_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "observed_zone_speed_mph",
+        "comparison_or_standard": "exact statutory 15 mph limit when active",
+        "target_value_or_branch": "below",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 14
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "mph",
+        "rationale": "Engineering spacing for requested speed probes; no legal tolerance or physical achievement implied."
+      }
     },
     {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_02",
       "target_law_id": "NRS-484B-363-1",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "cell_id": "C262666",
       "actor": "heavy_vehicle_driver",
       "rationale": "active designated school zone with heavy vehicle speed exactly 15 mph",
@@ -97,7 +162,7 @@
         },
         "reviewed_school_zone_context": {
           "kind": "world_setup",
-          "value": "active designated school zone with heavy vehicle speed exactly 15 mph",
+          "value": "active designated school zone; source facts independently reviewed",
           "unit": "structured"
         },
         "observed_zone_speed_mph": {
@@ -106,15 +171,30 @@
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "local school authority and exact statutory exception facts",
-        "actual Native pixels, motion and physical acceptance"
-      ]
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "school_zone_15_mph_boundary",
+      "deliberate_differences": [
+        "target_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "observed_zone_speed_mph",
+        "comparison_or_standard": "exact statutory 15 mph limit when active",
+        "target_value_or_branch": "at",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 15
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "mph",
+        "rationale": "Engineering spacing for requested speed probes; no legal tolerance or physical achievement implied."
+      }
     },
     {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_03",
       "target_law_id": "NRS-484B-363-1",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "cell_id": "C262666",
       "actor": "heavy_vehicle_driver",
       "rationale": "active school zone above 15 mph",
@@ -150,7 +230,7 @@
         },
         "reviewed_school_zone_context": {
           "kind": "world_setup",
-          "value": "active school zone above 15 mph",
+          "value": "active designated school zone; source facts independently reviewed",
           "unit": "structured"
         },
         "observed_zone_speed_mph": {
@@ -159,15 +239,30 @@
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "local school authority and exact statutory exception facts",
-        "actual Native pixels, motion and physical acceptance"
-      ]
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "school_zone_15_mph_boundary",
+      "deliberate_differences": [
+        "target_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "observed_zone_speed_mph",
+        "comparison_or_standard": "exact statutory 15 mph limit when active",
+        "target_value_or_branch": "above",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "mph",
+        "test_value": 17
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "mph",
+        "rationale": "Engineering spacing for requested speed probes; no legal tolerance or physical achievement implied."
+      }
     },
     {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_04",
       "target_law_id": "NRS-484B-363-1",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "cell_id": "C262666",
       "actor": "heavy_vehicle_driver",
       "rationale": "above-15 mph heavy vehicle traversal on a day school is not in session",
@@ -212,15 +307,21 @@
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "local school authority and exact statutory exception facts",
-        "actual Native pixels, motion and physical acceptance"
-      ]
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "school_zone_exception_source_branches",
+      "deliberate_differences": [
+        "reviewed_school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "reviewed_school_zone_context",
+        "comparison_or_standard": "exact NRS 484B.363(1) exception branch",
+        "target_value_or_branch": "probe_04"
+      }
     },
     {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_05",
       "target_law_id": "NRS-484B-363-1",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "cell_id": "C262666",
       "actor": "heavy_vehicle_driver",
       "rationale": "above-15 mph traversal during half-hour after school ceases or before it resumes",
@@ -265,15 +366,21 @@
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "local school authority and exact statutory exception facts",
-        "actual Native pixels, motion and physical acceptance"
-      ]
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "school_zone_exception_source_branches",
+      "deliberate_differences": [
+        "reviewed_school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "reviewed_school_zone_context",
+        "comparison_or_standard": "exact NRS 484B.363(1) exception branch",
+        "target_value_or_branch": "probe_05"
+      }
     },
     {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_06",
       "target_law_id": "NRS-484B-363-1",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "cell_id": "C262666",
       "actor": "heavy_vehicle_driver",
       "rationale": "above-15 mph traversal during class hours with operational beacon not flashing",
@@ -318,15 +425,21 @@
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "local school authority and exact statutory exception facts",
-        "actual Native pixels, motion and physical acceptance"
-      ]
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "school_zone_exception_source_branches",
+      "deliberate_differences": [
+        "reviewed_school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "reviewed_school_zone_context",
+        "comparison_or_standard": "exact NRS 484B.363(1) exception branch",
+        "target_value_or_branch": "probe_06"
+      }
     },
     {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_07",
       "target_law_id": "NRS-484B-363-1",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "cell_id": "C262666",
       "actor": "heavy_vehicle_driver",
       "rationale": "above-15 mph traversal with no operational beacon and school-zone sign indicating limit in effect",
@@ -371,15 +484,21 @@
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "local school authority and exact statutory exception facts",
-        "actual Native pixels, motion and physical acceptance"
-      ]
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "school_zone_exception_source_branches",
+      "deliberate_differences": [
+        "reviewed_school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "reviewed_school_zone_context",
+        "comparison_or_standard": "exact NRS 484B.363(1) exception branch",
+        "target_value_or_branch": "probe_07"
+      }
     },
     {
       "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_08",
       "target_law_id": "NRS-484B-363-1",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "cell_id": "C262666",
       "actor": "heavy_vehicle_driver",
       "rationale": "above-15 mph traversal with no operational beacon and sign indicating limit not in effect",
@@ -424,10 +543,16 @@
           "unit": "mph"
         }
       },
-      "unresolved_judgment_calls": [
-        "local school authority and exact statutory exception facts",
-        "actual Native pixels, motion and physical acceptance"
-      ]
+      "unresolved_judgment_calls": [],
+      "paired_probe_id": "school_zone_exception_source_branches",
+      "deliberate_differences": [
+        "reviewed_school_zone_context"
+      ],
+      "probe": {
+        "primary_variable": "reviewed_school_zone_context",
+        "comparison_or_standard": "exact NRS 484B.363(1) exception branch",
+        "target_value_or_branch": "probe_08"
+      }
     }
   ]
 }

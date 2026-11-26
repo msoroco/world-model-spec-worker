@@ -1,4 +1,5 @@
-"""Build source-hashed, synthetic-only public fixture for C111334 probe_2."""
+"""Build source-hashed, synthetic-only public fixtures for C111334 cases."""
+import argparse
 import hashlib
 import json
 import os
@@ -8,8 +9,7 @@ HERE = Path(__file__).resolve().parent
 FOLDER = HERE.parent
 ROOT = FOLDER.parents[1]
 TAXI = ROOT / 'work/training__C150173__LVMC-11-52-030-B__taxi_driver/native/diagnostic/probe_a/fixture-spec.json'
-CASE = 'training__C111334__NRS-484B-307-4b__pedestrian__probe_2'
-DEST = FOLDER / 'native/diagnostic/probe_2'
+CASE_ROOT = 'training__C111334__NRS-484B-307-4b__pedestrian'
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SIZES = ((1920, 1080), (1280, 720), (1280, 720), (1280, 720))
 
@@ -36,7 +36,13 @@ def body(y):
             [.2, y+.2, 0], [.2, y+.2, 1.8]]
 
 
-def build():
+def destination(suffix):
+    if suffix not in ('probe_1', 'probe_2', 'permission_before_entry'):
+        raise ValueError('Unknown C111334 suffix')
+    return FOLDER / 'native/diagnostic' / suffix
+
+
+def build(suffix='probe_2'):
     scratch = Path(os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']).resolve()
     if ROOT / '.runtime-work' not in scratch.parents:
         raise ValueError('Diagnostic generation must use .runtime-work')
@@ -54,7 +60,7 @@ def build():
     for i in range(600):
         frame = 1000 + i
         t = (i + 1) / 20
-        y = 4.0 if i < 120 else 4.0 - (i - 119) * .05
+        y = 4.0 if suffix == 'probe_1' or i < 120 else 4.0 - (i - 119) * .05
         b = body(y)
         graph = template['graphs'][i]
         graph['nodes'] = [{'id': 'ego', 'attributes': {
@@ -64,6 +70,9 @@ def build():
         traces.append({'frame': frame, 'time_s': t, 'pedestrian_actor_id': 101,
             'position_m': [0, y, .9], 'position': {'x': 0, 'y': y, 'z': .9},
             'heading_deg': -90, 'speed_mps': 0 if i < 120 else 1,
+            'speed_mph': 0 if i < 120 else 1 / .44704,
+            'velocity_mps': [0, 0 if i < 120 else -1, 0],
+            'control': {},
             'source_kind': 'synthetic_cpu_fixture'})
         evidence.append({'actor_id': 101, 'original_frame': frame,
             'replay_frame': frame, 'recording_time_s': t,
@@ -86,9 +95,10 @@ def build():
             'native_frame': frame, 'time_s': t,
             'camera_native_frames': {name: frame for name in VIEWS},
             'source_rgb_sha256': rgb})
-    DEST.mkdir(parents=True, exist_ok=True)
-    sources = DEST / 'sources'
-    dump(DEST / 'fixture-spec.json', spec)
+    dest = destination(suffix)
+    dest.mkdir(parents=True, exist_ok=True)
+    sources = dest / 'sources'
+    dump(dest / 'fixture-spec.json', spec)
     jsonl(sources / 'capture/evidence.jsonl', evidence)
     jsonl(sources / 'trace.jsonl', traces)
     jsonl(sources / 'video_frames.jsonl', mapping)
@@ -98,38 +108,44 @@ def build():
         'frames': 600, 'synthetic_diagnostic': True,
         'sources': {name: sha(sources / name) for name in
             ('road.xodr', 'trace.jsonl', 'c111334-native-samples.jsonl')}})
-    return DEST, spec
+    return dest, spec
 
 
-def bind_review(videos):
-    sources = DEST / 'sources'
+def bind_review(videos, suffix='probe_2'):
+    dest = destination(suffix)
+    sources = dest / 'sources'
     bound = {name: sha(sources / name) for name in
              ('c111334-native-samples.jsonl', 'video_frames.jsonl')}
     bound.update({name + '.mkv': sha(videos / (name + '.mkv')) for name in VIEWS})
-    review = {'format': 'c111334-device-review-v1', 'case_id': CASE,
+    review = {'format': 'c111334-device-review-v1', 'case_id': CASE_ROOT + '__' + suffix,
         'reviewer': 'synthetic CPU diagnostic',
         'review_method': 'source-shaped positive/negative processing test',
         'source_kind': 'synthetic_cpu_fixture', 'original_pixels_reviewed': False,
         'source_sha256': bound, 'green_turn_arrow_alone_by_frame': [True]*600,
         'arrow_faces_pedestrian_by_frame': [True]*600,
-        'other_device_permits_proceed_by_frame': [False]*600,
+        'other_device_permits_proceed_by_frame': [suffix == 'permission_before_entry' and i >= 100
+                                                   for i in range(600)],
         'other_device_governs_pedestrian_by_frame': [True]*600}
     dump(sources / 'device-review.json', review)
     paths = sorted(p for p in sources.rglob('*') if p.is_file()
                    and p.relative_to(sources).as_posix() != 'road.xodr')
     recipe = {'format': 'worker-fixture-recipe',
-        'generator': {'source': str((DEST / 'fixture-spec.json').relative_to(ROOT)),
-                      'sha256': sha(DEST / 'fixture-spec.json')},
+        'generator': {'source': str((dest / 'fixture-spec.json').relative_to(ROOT)),
+                      'sha256': sha(dest / 'fixture-spec.json')},
         'sources': [{'path': str(p.relative_to(sources)),
                      'source': str(p.relative_to(ROOT)), 'sha256': sha(p)}
                     for p in paths]}
-    dump(DEST / 'fixture-recipe.json', recipe)
-    return {'fixture_spec_sha256': sha(DEST / 'fixture-spec.json'),
-            'fixture_recipe_sha256': sha(DEST / 'fixture-recipe.json'),
+    dump(dest / 'fixture-recipe.json', recipe)
+    return {'fixture_spec_sha256': sha(dest / 'fixture-spec.json'),
+            'fixture_recipe_sha256': sha(dest / 'fixture-recipe.json'),
             'sources': len(paths)}
 
 
 if __name__ == '__main__':
-    target, specification = build()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--suffix', default='probe_2',
+                        choices=('probe_1', 'probe_2', 'permission_before_entry'))
+    args = parser.parse_args()
+    target, specification = build(args.suffix)
     print(json.dumps({'fixture_spec': str(target / 'fixture-spec.json'),
                       'graphs': len(specification['graphs'])}))

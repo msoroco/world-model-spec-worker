@@ -24,6 +24,9 @@ def fixture(folder, suffix):
     review = {key: sha(folder / name) for key, name in REVIEW_COPIES.items()}
     review['governs_approach'] = True
     review['source_review'] = 'synthetic_structural_only'
+    review['statutory_location_basis'] = (
+        'clearly_marked_construction_or_maintenance_area'
+        if suffix in ('probe_c', 'probe_d') else 'designated_temporary_zone')
     (folder / 'original-flagger-review.json').write_text(json.dumps(review) + '\n')
     for camera in CAMERAS:
         (folder / (camera + '.mkv')).write_text('synthetic marker, not video\n')
@@ -39,6 +42,12 @@ def fixture(folder, suffix):
         rows.append({'video_frame': index, 'native_frame': frame,
                      'time_s': (index + 1) / 20, 'source_kind': 'original_native',
                      'motorcycle_actor_id': 12, 'flagger_actor_id': 13,
+                     'zone_entry_marker_actor_id': 14,
+                     'zone_exit_marker_actor_id': 15,
+                     'stop_signal_actor_id': 16,
+                     'release_signal_actor_id': 17,
+                     'work_area_actor_ids': ([18, 19, 20] if suffix in
+                                             ('probe_c', 'probe_d') else []),
                      'motorcycle_blueprint': 'vehicle.kawasaki.ninja',
                      'motorcycle_xyz_m': [x, -1.75, 1],
                      'motorcycle_body_vertices_m': [
@@ -70,7 +79,8 @@ def prove():
     scratch.mkdir(parents=True, exist_ok=True)
     outcomes = []
     with tempfile.TemporaryDirectory(dir=scratch) as folder:
-        for suffix, expected in (('probe_a', 'release'), ('probe_b', 'stop')):
+        for suffix, expected in (('probe_a', 'release'), ('probe_b', 'stop'),
+                                 ('probe_c', 'release'), ('probe_d', 'stop')):
             path = Path(folder) / suffix
             path.mkdir()
             case = fixture(path, suffix)
@@ -78,7 +88,7 @@ def prove():
             if (measured['requested_indication_at_crossing'] != expected or
                     measured['physical_completion'] is not None or
                     measured['body_crossed_during_requested_stop'] !=
-                    (suffix == 'probe_b')):
+                    (suffix in ('probe_b', 'probe_d'))):
                 raise AssertionError('Source-shaped measured crossing differs')
             outcomes.append({'case_id': case, 'measured_cross_frame':
                              measured['first_observed_stop_line_cross_frame'],
@@ -135,6 +145,25 @@ def prove():
                 raise AssertionError('Resealed but unreviewed authority source accepted')
             authority.write_text(original_authority)
             seal_path.write_text(original_seal)
+            review_path = path / 'original-flagger-review.json'
+            original_review = review_path.read_text()
+            wrong_review = json.loads(original_review)
+            wrong_review['statutory_location_basis'] = (
+                'designated_temporary_zone' if suffix in ('probe_c', 'probe_d')
+                else 'clearly_marked_construction_or_maintenance_area')
+            review_path.write_text(json.dumps(wrong_review) + '\n')
+            sealed = json.loads(original_seal)
+            sealed['sha256']['original-flagger-review.json'] = sha(review_path)
+            seal_path.write_text(json.dumps(sealed) + '\n')
+            try:
+                measure(path, case)
+            except ValueError as error:
+                if 'statutory location source binding differs' not in str(error):
+                    raise
+            else:
+                raise AssertionError('Wrong original statutory location accepted')
+            review_path.write_text(original_review)
+            seal_path.write_text(original_seal)
             raw_rows = altered.read_text()
             changed_rows = raw_rows.splitlines()
             first = json.loads(changed_rows[0])
@@ -176,9 +205,26 @@ def prove():
                     raise AssertionError('Resealed invalid original row accepted: ' + field)
                 altered.write_text(raw_rows)
                 seal_path.write_text(original_seal)
+            changed_rows = raw_rows.splitlines()
+            changed = json.loads(changed_rows[1])
+            changed['zone_entry_marker_actor_id'] = 999
+            changed_rows[1] = json.dumps(changed)
+            altered.write_text('\n'.join(changed_rows) + '\n')
+            sealed = json.loads(original_seal)
+            sealed['sha256']['native-rows.jsonl'] = sha(altered)
+            seal_path.write_text(json.dumps(sealed) + '\n')
+            try:
+                measure(path, case)
+            except ValueError as error:
+                if 'location or signal actor identity changed' not in str(error):
+                    raise
+            else:
+                raise AssertionError('Changed original marker actor accepted')
+            altered.write_text(raw_rows)
+            seal_path.write_text(original_seal)
     return {'format': 'c183370-saved-source-shape-proof',
             'source_kind': 'synthetic_structural_fixture',
-            'positive_count': 2, 'negative_count': 16,
+            'positive_count': len(outcomes), 'negative_count': 10 * len(outcomes),
             'cases': outcomes, 'actual_video_decoded': False,
             'original_native_observed': False,
             'physical_or_legal_outcome_claimed': False}

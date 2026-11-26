@@ -18,6 +18,11 @@ OBSERVATIONS = ('flagger_identity', 'signal_stop', 'signal_release',
 def review(attempt, case_id, receipt_path):
     attempt = Path(attempt)
     receipt = json.loads(Path(receipt_path).read_text())
+    suffix = case_id.rsplit('__', 1)[-1]
+    if suffix not in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
+        raise ValueError('Unknown exact review case')
+    location = ('clearly_marked_construction_or_maintenance_area'
+                if suffix in ('probe_c', 'probe_d') else 'designated_temporary_zone')
     measured = measure(attempt, case_id)
     seal = json.loads((attempt / 'captured-source-hashes.json').read_text())
     if (receipt.get('format') != 'c183370-original-review-v1' or
@@ -25,6 +30,7 @@ def review(attempt, case_id, receipt_path):
             receipt.get('source_seal_sha256') != measured['source_seal_sha256'] or
             receipt.get('frame_count') != 600 or
             receipt.get('rate_hz') != 20 or
+            receipt.get('statutory_location_basis') != location or
             receipt.get('source_kind') not in
             ('original_pixel_review', 'synthetic_structural_review') or
             not isinstance(receipt.get('reviewer'), str) or
@@ -53,13 +59,15 @@ def review(attempt, case_id, receipt_path):
             raise ValueError('Reviewed release signal before requested release')
     if receipt['source_kind'] == 'synthetic_structural_review':
         return {'case_id': case_id, 'source_seal_sha256':
-                measured['source_seal_sha256'], 'binding_passed': True,
+                measured['source_seal_sha256'], 'statutory_location_basis': location,
+                'binding_passed': True,
                 'original_pixel_reviewed': False, 'physical_completion': None,
                 'legal_verdict': None}
     if not all(observations[name]['observed'] for name in OBSERVATIONS):
         raise ValueError('Original flagger or zone observation unresolved')
     return {'case_id': case_id, 'source_seal_sha256':
-            measured['source_seal_sha256'], 'binding_passed': True,
+            measured['source_seal_sha256'], 'statutory_location_basis': location,
+            'binding_passed': True,
             'review_receipt_declares_original_observations': True,
             'original_pixel_reviewed': None, 'physical_completion': None,
             'legal_verdict': None}

@@ -1,5 +1,29 @@
 # NRS-484B-330-1 at C183370
 
+## 2026-11-26 saved marker and work-area actor identity
+
+The original-source meter now requires stable, distinct Native actor IDs for both zone markers, both signal assets and, for `probe_c`/`probe_d`, all three work-area assets. It rejects missing, duplicate or changed IDs in joined rows. Four source-shaped meter positives and thirty-six damaging negatives pass (`native/saved-source-shape-proof.json` SHA-256 `6464a3b9d9cec796f67700b43b82cc8b6efcc07c384b8af63178ba20aa47e7f2`). The affected two-pair comparison, four-case review binding and four-case combined saved-delivery fixtures were rerun and pass (proof SHA-256 values `c818b4048dd47b8d42217e07b7176fffdf567a9a92d2e02433bbc49f4ee5853b`, `cd3e5ac7a8f036695219c5daaa2fe4e9912a0ebb1b432a166050ca50f8a00f29`, `c006aa8dcb9259b42e45ad4c4969f3e06a0fa1ff8d03d381dc8428c4a8cb9e28`). The fixtures establish source/audit behavior only; original scene realization and legal meaning remain unverified. All four cases remain unselected and status partial.
+
+## 2026-11-26 exact statutory-location review binding
+
+The independent saved review receipt now names the exact statutory location basis for each case; a designated-zone receipt cannot stand in for a clearly marked work-area case, or vice versa. Four-case review binding passes twelve positives and twenty-eight negatives (`native/review-binding-proof.json` SHA-256 `cd3e5ac7a8f036695219c5daaa2fe4e9912a0ebb1b432a166050ca50f8a00f29`). The combined full-duration saved audit passes eight positives and twenty negatives with a swapped-location receipt rejected for every case (`native/saved-delivery-cpu-proof.json` SHA-256 `c006aa8dcb9259b42e45ad4c4969f3e06a0fa1ff8d03d381dc8428c4a8cb9e28`). All media and source fixtures remain synthetic; no original location marking, authority, signal pixels, physical completion or legal result is claimed. Four cases remain unselected and status partial.
+
+## 2026-11-26 four-case review receipt binding
+
+The independent source-bound review receipt proof now exercises all four exact flagger cases. Twelve direct/CLI or declaration positives and twenty-four altered/incomplete receipt negatives pass (`native/review-binding-proof.json` SHA-256 `c44c9d26ff9aa515c82afcc638276dcb9ec0575aea8d6732638c2caa388a167e`). The proof binds synthetic sealed source hashes only; no original pixels, source authority, physical response or legal verdict is claimed. All four cases remain unselected and status partial.
+
+## 2026-11-26 four-case sealed source meter proof
+
+The saved original-source meter now has structural fixtures for all four exact location/response cases. Four positives and thirty-two damaged source, media, authority, geometry, numeric and actor-identity negatives pass (`native/saved-source-shape-proof.json` SHA-256 `ddd6ee6f4deffaf74923b9aeed9b400bff9e6ad089bacca6a525c0fc7667862c`). These fixtures use synthetic rows and marker files; no original video is decoded or flagger authority or physical response established. All four cases remain unselected and status partial.
+
+## 2026-11-26 both location comparison source audits
+
+The independent comparison procedure now accepts either exact statutory location pair. It checks the same sealed road and flagger review source, fixed law/cell/actor/route/signal/camera conditions, and measured stop-line response order for `probe_a`/`probe_b` and `probe_c`/`probe_d`. Both source-shaped positives and six altered or missing source negatives pass (`native/comparison-source-shape-proof.json` SHA-256 `c818b4048dd47b8d42217e07b7176fffdf567a9a92d2e02433bbc49f4ee5853b`). The fixture proves only the audit procedure, not original flagger authority, work-area marking, realized signal pixels, physical completion or a legal result. Both pairs remain unselected and status partial.
+
+## 2026-11-26 distinct work-area assets and rebound offline proof
+
+The `probe_c` and `probe_d` Native runner now requires reviewed work-area barrier and activity blueprint IDs, rejects absent or unavailable assets, and spawns two shoulder-side barriers and a work activity prop distinct from the designated-zone entry/exit markers. Eleven focused construction tests pass, including the work-area spawn positions. All four exact primary constructions pass pinned current-runtime offline checks after this runner change (`native/draft-offline-proof.json` SHA-256 `36d6ee755c99dbf7626d5c492d377538edcf9f868b22a53eff6cf56e738cecf1`, manifest SHA-256 `417728cf477145914659f592887886b364379de946ff8b78b0aa56358de4b73e`). The assignment-scoped partial `--complete` check exits 0. The original marker/asset meaning and flagger authority still require source review; no selected public/Core, canonical recorded-only or independent delivery proof is claimed. Four cases remain unselected and status partial.
+
 ## 2026-11-26 four-case saved-source procedure proof
 
 The combined saved audit now accepts both statutory location pairs only with their exact canonical case config, source-sealed 600 original rows, four full 20 Hz FFV1 decodes at the actual camera dimensions, and independent source-bound review receipt. It returns the exact location basis without claiming the marker meaning, visible signal, physical completion or legal verdict. All four cases pass direct and CLI positive checks, with four damaging source/review/duration/camera negatives each: eight positives and sixteen negatives total (`native/saved-delivery-cpu-proof.json` SHA-256 `4a0dd191c329f3e0d8751fcdb3565067b1b87a51fb3a81d54a9aa86b83263ce6`). The source-shape meter was rerun on the unchanged first pair (`native/saved-source-shape-proof.json` SHA-256 `7ba9d6f4667707dda548078840d83e06396381018fae7ec160dca45d21c21068`). These are synthetic structural fixtures; no original asset or pixel review has occurred. Four planned cases remain unselected, package partial.

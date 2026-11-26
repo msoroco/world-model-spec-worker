@@ -98,6 +98,7 @@ class ConstructionTests(unittest.TestCase):
                     raise ValueError('Unavailable reviewed signal')
                 return name
         review = {'governs_approach': True,
+                  'statutory_location_basis': 'designated_temporary_zone',
                   'stop_signal_blueprint': 'static.prop.stop_source',
                   'release_signal_blueprint': 'static.prop.release_source',
                   'zone_entry_marker_blueprint': 'static.prop.zone_entry_source',
@@ -112,9 +113,17 @@ class ConstructionTests(unittest.TestCase):
         packet = self.base / 'review.json'
         packet.write_text(json.dumps(review) + '\n')
         self.assertEqual(_read_review(packet, Library())['governs_approach'], True)
+        with self.assertRaisesRegex(ValueError, 'statutory location basis differs'):
+            _read_review(packet, Library(),
+                         'clearly_marked_construction_or_maintenance_area')
+        review['statutory_location_basis'] = (
+            'clearly_marked_construction_or_maintenance_area')
+        packet.write_text(json.dumps(review) + '\n')
         self.assertEqual(_read_review(packet, Library(),
             'clearly_marked_construction_or_maintenance_area')['governs_approach'],
             True)
+        review['statutory_location_basis'] = 'designated_temporary_zone'
+        packet.write_text(json.dumps(review) + '\n')
         for stem, copied in (('authority', 'original-authority-source'),
                              ('zone_designation', 'original-zone-source'),
                              ('signal_asset', 'original-signal-source')):
@@ -130,6 +139,8 @@ class ConstructionTests(unittest.TestCase):
             _read_review(packet, Library())
         review['zone_exit_marker_blueprint'] = 'static.prop.zone_exit_source'
         review.pop('work_activity_blueprint')
+        review['statutory_location_basis'] = (
+            'clearly_marked_construction_or_maintenance_area')
         packet.write_text(json.dumps(review) + '\n')
         with self.assertRaisesRegex(ValueError, 'work-area asset missing'):
             _read_review(packet, Library(),

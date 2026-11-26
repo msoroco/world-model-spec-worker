@@ -50,7 +50,7 @@ class SavedSourceTest(unittest.TestCase):
             self.assertEqual(measured["left_during_pass_frames"], measured["pass_frame_count"])
             self.assertFalse(measured["left_lane_available_verified"])
             (root / "road.xodr").unlink()
-            with self.assertRaisesRegex(ValueError, "Missing original source: road.xodr"):
+            with self.assertRaisesRegex(ValueError, "Missing required source: road.xodr"):
                 derive(root)
 
     def test_saved_channel_writer_is_unaccepted(self):

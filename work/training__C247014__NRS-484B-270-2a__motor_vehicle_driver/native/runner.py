@@ -71,7 +71,7 @@ def execute(case_suffix, case_id, output, host, port):
     if saved["settings"].synchronous_mode or any(a.type_id.startswith(
             ("vehicle.", "walker.", "sensor.", "controller.")) for a in old.get_actors()):
         raise RuntimeError("Exclusive idle asynchronous Native world required")
-    output.mkdir(parents=True)
+    output.mkdir(parents=True, exist_ok=True)
     owned = []
     camera_queues = {}
     encoders = {}

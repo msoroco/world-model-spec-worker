@@ -16,7 +16,7 @@ def prove():
     scratch.mkdir(parents=True, exist_ok=True)
     outcomes = []
     with tempfile.TemporaryDirectory(dir=scratch) as directory:
-        for suffix in ('probe_a', 'probe_b'):
+        for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
             attempt = Path(directory) / suffix
             attempt.mkdir()
             case_id = fixture(attempt, suffix)
@@ -27,6 +27,9 @@ def prove():
                 'case_id': case_id, 'reviewer': 'fixture source-binding test',
                 'source_seal_sha256': sha(attempt / 'captured-source-hashes.json'),
                 'frame_count': 600, 'rate_hz': 20,
+                'statutory_location_basis':
+                    ('clearly_marked_construction_or_maintenance_area'
+                     if suffix in ('probe_c', 'probe_d') else 'designated_temporary_zone'),
                 'reviewed_sha256': {name: seal['sha256'][name] for name in
                     list(REVIEW_COPIES.values()) +
                     [camera + '.mkv' for camera in CAMERAS]},
@@ -62,6 +65,17 @@ def prove():
                         raise
                 else:
                     raise AssertionError('Altered review receipt accepted')
+            wrong_location = dict(receipt, statutory_location_basis=
+                                  'designated_temporary_zone' if suffix in
+                                  ('probe_c', 'probe_d') else
+                                  'clearly_marked_construction_or_maintenance_area')
+            receipt_path.write_text(json.dumps(wrong_location) + '\n')
+            try:
+                review(attempt, case_id, receipt_path)
+            except ValueError as error:
+                assert 'identity or source seal differs' in str(error)
+            else:
+                raise AssertionError('Wrong statutory location accepted')
             invalid_frame = dict(receipt, observations={
                 name: dict(item, video_frame=True) if name == 'signal_stop' else item
                 for name, item in receipt['observations'].items()})
@@ -85,7 +99,8 @@ def prove():
             receipt_path.write_text(json.dumps(receipt) + '\n')
     return {'format': 'c183370-review-binding-proof',
             'source_kind': 'synthetic_structural_fixture',
-            'positive_count': 6, 'negative_count': 12, 'cases': outcomes,
+            'positive_count': 3 * len(outcomes),
+            'negative_count': 7 * len(outcomes), 'cases': outcomes,
             'original_pixels_reviewed': False,
             'physical_or_legal_outcome_claimed': False}
 

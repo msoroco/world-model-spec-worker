@@ -24,6 +24,12 @@ def sha(path):
 
 def measure(attempt, case_id):
     attempt = Path(attempt)
+    suffix = case_id.rsplit('__', 1)[-1]
+    if suffix not in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
+        raise ValueError('Unknown exact flagger case')
+    location_basis = ('clearly_marked_construction_or_maintenance_area'
+                      if suffix in ('probe_c', 'probe_d') else
+                      'designated_temporary_zone')
     manifest = json.loads((attempt / 'captured-source-hashes.json').read_text())
     required = {'road.xodr', 'native-rows.jsonl', 'video_frames.jsonl',
                 'original-flagger-review.json'} | set(REVIEW_COPIES.values()) | {
@@ -38,6 +44,8 @@ def measure(attempt, case_id):
         if not (attempt / name).is_file() or sha(attempt / name) != expected:
             raise ValueError('Original Native source missing or changed: ' + name)
     review = json.loads((attempt / 'original-flagger-review.json').read_text())
+    if review.get('statutory_location_basis') != location_basis:
+        raise ValueError('Original flagger statutory location source binding differs')
     for key, name in REVIEW_COPIES.items():
         if review.get(key) != manifest['sha256'][name]:
             raise ValueError('Original flagger review source binding differs: ' + name)
@@ -57,6 +65,8 @@ def measure(attempt, case_id):
     stopped_frames_during_stop = 0
     body_crossed_during_stop = False
     actor_ids = None
+    location_actor_ids = None
+    work_area_expected = case_id.endswith(('__probe_c', '__probe_d'))
     for index, (row, mapping) in enumerate(zip(rows, frame_map)):
         frame = first_frame + index
         identities = (row.get('motorcycle_actor_id'), row.get('flagger_actor_id'))
@@ -81,6 +91,23 @@ def measure(attempt, case_id):
             actor_ids = identities
         elif identities != actor_ids:
             raise ValueError('Original motorcycle or flagger actor identity changed')
+        location_ids = (row.get('zone_entry_marker_actor_id'),
+                        row.get('zone_exit_marker_actor_id'),
+                        row.get('stop_signal_actor_id'),
+                        row.get('release_signal_actor_id'))
+        work_ids = row.get('work_area_actor_ids')
+        if (any(type(value) is not int for value in location_ids) or
+                not isinstance(work_ids, list) or
+                len(work_ids) != (3 if work_area_expected else 0) or
+                any(type(value) is not int for value in work_ids) or
+                len(set((*identities, *location_ids, *work_ids))) !=
+                2 + len(location_ids) + len(work_ids)):
+            raise ValueError('Original location or signal actor identity missing')
+        combined = (*location_ids, *work_ids)
+        if location_actor_ids is None:
+            location_actor_ids = combined
+        elif combined != location_actor_ids:
+            raise ValueError('Original location or signal actor identity changed')
         xyz = row.get('motorcycle_xyz_m')
         body = row.get('motorcycle_body_vertices_m')
         if (not isinstance(xyz, list) or len(xyz) != 3 or
@@ -119,8 +146,11 @@ def measure(attempt, case_id):
     if not stop_seen or not release_seen or first_cross is None or first_body_cross is None:
         raise ValueError('Original stop, release or crossing event missing')
     return {'case_id': case_id, 'source_kind': 'original_native_capture',
+            'statutory_location_basis': location_basis,
             'source_seal_sha256': sha(attempt / 'captured-source-hashes.json'),
             'frame_count': 600, 'rate_hz': 20,
+            'zone_marker_actor_ids': list(location_actor_ids[:2]),
+            'work_area_actor_ids': list(location_actor_ids[4:]),
             'first_observed_stop_line_cross_frame': first_cross,
             'first_observed_body_stop_line_cross_frame': first_body_cross,
             'observed_stopped_frames_during_requested_stop': stopped_frames_during_stop,

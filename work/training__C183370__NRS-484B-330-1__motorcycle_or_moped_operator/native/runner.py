@@ -43,6 +43,8 @@ def _read_review(path, library, zone_basis='designated_temporary_zone'):
     if not path.is_file():
         raise ValueError('Original flagger authority and visible signal asset review missing')
     review = json.loads(path.read_text())
+    if review.get('statutory_location_basis') != zone_basis:
+        raise ValueError('Source-reviewed statutory location basis differs')
     for key in ('authority_source_path', 'zone_designation_source_path',
                 'signal_asset_source_path'):
         source = Path(review.get(key, ''))

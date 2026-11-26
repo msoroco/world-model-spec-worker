@@ -1,4 +1,4 @@
-"""Independent saved-source comparison for the two exact flagger probes.
+"""Independent saved-source comparison for either exact flagger response pair.
 
 This checks original-source identity and measured event order. A requested
 signal is not proof of an authorized, visible signal or a legal conclusion.
@@ -12,11 +12,11 @@ from check_requests import check_pair, read_case
 from measure_original import measure, sha
 
 
-def audit(first_attempt, second_attempt, base=None):
+def audit(first_attempt, second_attempt, base=None, pair=('probe_a', 'probe_b')):
     base = Path(base) if base is not None else Path(__file__).resolve().parent
-    check_pair(base=base)
-    a_config, _ = read_case('probe_a', base=base)
-    b_config, _ = read_case('probe_b', base=base)
+    check_pair(base=base, pair=pair)
+    a_config, _ = read_case(pair[0], base=base)
+    b_config, _ = read_case(pair[1], base=base)
     attempts = (Path(first_attempt), Path(second_attempt))
     results = [measure(path, config['case_id']) for path, config in
                zip(attempts, (a_config, b_config))]
@@ -64,7 +64,11 @@ if __name__ == '__main__':
     parser.add_argument('--probe-a', required=True)
     parser.add_argument('--probe-b', required=True)
     parser.add_argument('--output', required=True)
+    parser.add_argument('--location', choices=('designated_zone', 'work_area'),
+                        default='designated_zone')
     args = parser.parse_args()
-    report = audit(args.probe_a, args.probe_b)
+    pair = (('probe_a', 'probe_b') if args.location == 'designated_zone'
+            else ('probe_c', 'probe_d'))
+    report = audit(args.probe_a, args.probe_b, pair=pair)
     Path(args.output).write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report))

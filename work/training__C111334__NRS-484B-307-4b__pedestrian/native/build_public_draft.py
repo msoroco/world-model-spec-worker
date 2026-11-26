@@ -18,7 +18,7 @@ def write(path, value):
 
 
 def build():
-    selected = json.loads((FOLDER / 'native-selected/offline-manifest.json').read_text())
+    selected = json.loads((FOLDER / 'native-selected/construction-manifest.json').read_text())
     plan = json.loads((FOLDER / 'case-plan.json').read_text())
     recording = json.loads((HERE / 'config.json').read_text())['recording_description']
     proposal = {'cell_id': 'C111334', 'actor': 'pedestrian',
@@ -45,8 +45,10 @@ def build():
             item[key] = 'native-selected/' + item[key]
         item['offline'] = dict(item['offline'])
         item['offline']['log'] = 'native-selected/' + item['offline']['log']
-        if item['case_id'].endswith('__probe_2'):
-            item['fixture_recipe'] = str((FOLDER / 'native/diagnostic/probe_2/fixture-recipe.json').relative_to(ROOT))
+        suffix = item['case_id'].rsplit('__', 1)[1]
+        recipe = FOLDER / 'native/diagnostic' / suffix / 'fixture-recipe.json'
+        if recipe.is_file():
+            item['fixture_recipe'] = str(recipe.relative_to(ROOT))
         entries.append(item)
     manifest = {'format': 'worker-execution-manifest',
         'assignment_id': selected['assignment_id'],

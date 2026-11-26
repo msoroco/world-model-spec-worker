@@ -1,0 +1,206 @@
+{
+  "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_02",
+  "measured_values": {
+    "format": "saved-heavy-school-zone-observation",
+    "assignment_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver",
+    "case_id": "training__C262666__NRS-484B-363-1__heavy_vehicle_driver__probe_02",
+    "review_kind": "synthetic_diagnostic",
+    "sources": {
+      "video_frames.jsonl": "2bce34c24259408e0efc22971d5b332297bff7a0b5162c01eac6460adfddb6f1",
+      "native_motion.jsonl": "3158992d82bdadded8bf4f61a68cf95c36b6f19bfe18e300c181958d5c53218a",
+      "school_zone_context.json": "b40580778cba74bb74ebe517f784abd00002d384e08ecbb9aabfee7e8dddd6eb",
+      "overview.mkv": "0876252ac7577c4b8af9f5d575daa3798d19c5b423331b273df52dda24707d9e",
+      "approach.mkv": "83c38c77a44f8c1e66474ead6930dbba54c9927f5a64f2735ac690393e86d09e",
+      "reference_corner.mkv": "c5e422f36936aa69efae90a1b32c650373ae118bbffb3901ee4a7975c907fb86",
+      "driver_reference.mkv": "1cf404bb2871c45e10ee2f5a44d1359d6195f732a12fa8ba6a27592a23130212"
+    },
+    "sample_count": 600,
+    "sample_span_s": 29.95,
+    "civil_start_iso": "2026-11-23T08:00:00-08:00",
+    "civil_end_iso": "2026-11-23T08:00:29.950000-08:00",
+    "zone_frame_count": 448,
+    "first_zone_frame": 30,
+    "last_zone_frame": 477,
+    "maximum_observed_mph_in_zone": 15.0,
+    "frames_above_15_mph_in_zone": [],
+    "reviewed_activation_complete": true,
+    "reviewed_exception_facts": {
+      "school_not_in_session": false,
+      "half_hour_window": false,
+      "operational_beacon_nonflashing_class_hours": false,
+      "nonbeacon_sign_off": false
+    },
+    "physical_acceptance_claimed": false,
+    "legal_verdict_claimed": false
+  },
+  "target_checks": [
+    {
+      "target": "school_zone_above_15_mph",
+      "requested": 15,
+      "measured": 15.0,
+      "method": "original velocity magnitude inside reviewed zone",
+      "tolerance": 0.5,
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "native_motion.jsonl",
+        "school_zone_context.json"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "Saved evidence assessed; maneuver unverified; legal judgments remain separate",
+  "physical_failure_flags": [
+    "independent_school_authority_and_pixels_require_review"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "method": "same-frame Native velocity and reviewed school-zone station",
+        "name": "school_zone_observation",
+        "reference_frame": "Native world XY and school-zone road station",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "uncertainty": "50 ms sampling; designation and exceptions require independent authority review",
+        "unit": "structured"
+      }
+    ],
+    "context_inputs": [
+      {
+        "method": "survey-bound reviewed designation, sign, calendar, civil time and beacon state",
+        "name": "school_zone_context",
+        "unit": "structured"
+      }
+    ],
+    "limitations": [
+      "Actual Native pixels, vehicle class and governing school authority require local review",
+      "No legal verdict follows from the engineering speed target"
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "school_zone_observation",
+      "unit": "structured",
+      "reference": "channels/school_zone_observation.jsonl"
+    },
+    {
+      "name": "school_zone_context",
+      "unit": "structured",
+      "reference": "channels/school_zone_context.json"
+    }
+  ],
+  "realized_observables": {},
+  "provenance_kind": "synthetic_fixture",
+  "diagnostic_fixture": true,
+  "accepted": false,
+  "legal_verdict_claimed": false,
+  "physical_checks": {
+    "setup": {
+      "status": "unverified",
+      "method": "source-bound setup assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "3f2ef09e58f7fed5807ca2d4098ee1b8f9f8491604cc723404c4c06304247bd6",
+        "video_frames.jsonl": "2bce34c24259408e0efc22971d5b332297bff7a0b5162c01eac6460adfddb6f1"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 75.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "target": {
+      "status": "unverified",
+      "method": "source-bound target assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "3f2ef09e58f7fed5807ca2d4098ee1b8f9f8491604cc723404c4c06304247bd6",
+        "video_frames.jsonl": "2bce34c24259408e0efc22971d5b332297bff7a0b5162c01eac6460adfddb6f1"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 75.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "maneuver": {
+      "status": "unverified",
+      "method": "source-bound maneuver assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "3f2ef09e58f7fed5807ca2d4098ee1b8f9f8491604cc723404c4c06304247bd6",
+        "video_frames.jsonl": "2bce34c24259408e0efc22971d5b332297bff7a0b5162c01eac6460adfddb6f1"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 75.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "attempt": {
+      "status": "unverified",
+      "method": "observed finite original motion; separate from target success",
+      "intervals": [],
+      "sources": {
+        "config.json": "3f2ef09e58f7fed5807ca2d4098ee1b8f9f8491604cc723404c4c06304247bd6",
+        "video_frames.jsonl": "2bce34c24259408e0efc22971d5b332297bff7a0b5162c01eac6460adfddb6f1"
+      },
+      "physical_causation_claimed": false
+    }
+  },
+  "physical_observations": {},
+  "scope": "Source protocol provenance, not physical or legal acceptance",
+  "physical_acceptance_claimed": false
+}

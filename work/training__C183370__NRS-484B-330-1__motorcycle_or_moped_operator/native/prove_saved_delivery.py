@@ -62,6 +62,8 @@ def prove():
                 'source_seal_sha256': sha(seal_path),
                 'frame_count': 600,
                 'rate_hz': 20,
+                'statutory_location_basis': config.get('zone_basis',
+                                                       'designated_temporary_zone'),
                 'reviewed_sha256': {name: seal['sha256'][name] for name in
                     list(REVIEW_COPIES.values()) +
                     [camera + '.mkv' for camera in CAMERAS]},
@@ -108,6 +110,15 @@ def prove():
             receipt_path.write_text(json.dumps(wrong) + '\n')
             reject(lambda: audit(attempt, config_path, receipt_path),
                    'review source hashes differ')
+            negatives += 1
+            receipt_path.write_text(json.dumps(receipt) + '\n')
+            wrong_location = dict(receipt, statutory_location_basis=
+                                  'designated_temporary_zone' if suffix in
+                                  ('probe_c', 'probe_d') else
+                                  'clearly_marked_construction_or_maintenance_area')
+            receipt_path.write_text(json.dumps(wrong_location) + '\n')
+            reject(lambda: audit(attempt, config_path, receipt_path),
+                   'review identity or source seal differs')
             negatives += 1
             receipt_path.write_text(json.dumps(receipt) + '\n')
             config['duration_s'] = 29

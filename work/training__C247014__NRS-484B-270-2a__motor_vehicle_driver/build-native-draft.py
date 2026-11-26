@@ -81,7 +81,13 @@ def main():
         path = HERE / "selected-native-draft" / suffix / "construction.json"
         write(path, proposal)
         entries.append({"case_id": case, "kind": "delivery", "construction": str(path.relative_to(HERE)),
-                        "construction_sha256": sha(path), "candidate_risk": {
+                        "construction_sha256": sha(path),
+                        "measurement_contract": suffix + "-measurement-contract.json",
+                        "measurement_procedure": {"entrypoint": "finalize.py"},
+                        "fixture_recipe": "work/" + ASSIGNMENT + "/diagnostic/" + suffix + "/fixture-recipe.json",
+                        "native_handoff": {"python_env_var": "CARLA_PYTHON",
+                                           "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
+                        "candidate_risk": {
                             "status": "physical",
                             "reason": "Original lane transition, cyclist pass and four-view visibility need readback"},
                         "candidates": [], "delivery_readiness": "incomplete"})
@@ -90,6 +96,20 @@ def main():
                 "status": "selected_native_offline_draft", "delivery_ready": False,
                 "cases": entries}
     write(HERE / "selected-native-draft-manifest.json", manifest)
+    proposal_cases = {"format": "worker-cases-proposal", "cell_id": "C247014",
+                      "actor": "motor_vehicle_driver", "status": "draft",
+                      "sweep_specs": [], "sweeps_expanded": True, "cases": []}
+    for case in plan["cases"]:
+        suffix = case["case_id"].rsplit("__", 1)[-1]
+        construction = json.loads((HERE / "selected-native-draft" / suffix / "construction.json").read_text())
+        proposal_cases["cases"].append({"case_id": case["case_id"],
+            "target_law_id": "NRS-484B-270-2a", "target_type": "controlled_attempt",
+            "rationale": case["physical_target"],
+            "variable_assignments": {"comparison_variable": case["comparison_variable"],
+                                     "case_suffix": suffix},
+            "unresolved_judgment_calls": case["unresolved_judgment_calls"],
+            "recording_description": construction["recording_description"]})
+    write(HERE / "proposals" / "cases.json", proposal_cases)
     return {"case_count": len(entries), "manifest_sha256": sha(HERE / "selected-native-draft-manifest.json")}
 
 

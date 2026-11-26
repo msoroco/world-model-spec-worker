@@ -1,5 +1,43 @@
 # Full-train delivery best-effort return
 
+## 2026-11-26 parallel owner proof progress
+
+The three disjoint owners retain partial status. C262666 has all eight exact school-zone selected public/Core positive and negative chains passing and is running the remaining canonical recorded-only saved chains before semantic and independent delivery audits. C111334 has three rebound exact offline constructions and `probe_2` public/Core and recorded-only saved positive/missing-source negatives passing; the other two cases remain in progress. C247014 has four exact Native offline and public/Core positive/missing-context chains passing and is rebinding them after a runner output-directory repair; saved and delivery checks follow. None has reported a passing scoped strict gate, so no new ready status is claimed. The shared queue remains at 956 ordered cases, 483 comparisons and zero dispatchable; the full strict batch gate remains unpassed.
+
+## 2026-11-26 saved marker and work-area actor identity
+
+The original-source meter now requires stable, distinct Native actor IDs for both zone markers, both signal assets and, for `probe_c`/`probe_d`, all three work-area assets. It rejects missing, duplicate or changed IDs in joined rows. Four source-shaped meter positives and thirty-six damaging negatives pass (`native/saved-source-shape-proof.json` SHA-256 `6464a3b9d9cec796f67700b43b82cc8b6efcc07c384b8af63178ba20aa47e7f2`). The affected two-pair comparison, four-case review binding and four-case combined saved-delivery fixtures were rerun and pass (proof SHA-256 values `c818b4048dd47b8d42217e07b7176fffdf567a9a92d2e02433bbc49f4ee5853b`, `cd3e5ac7a8f036695219c5daaa2fe4e9912a0ebb1b432a166050ca50f8a00f29`, `c006aa8dcb9259b42e45ad4c4969f3e06a0fa1ff8d03d381dc8428c4a8cb9e28`). The fixtures establish source/audit behavior only; original scene realization and legal meaning remain unverified. All four cases remain unselected and status partial.
+
+## 2026-11-26 exact statutory-location review binding
+
+The independent saved review receipt now names the exact statutory location basis for each case; a designated-zone receipt cannot stand in for a clearly marked work-area case, or vice versa. Four-case review binding passes twelve positives and twenty-eight negatives (`native/review-binding-proof.json` SHA-256 `cd3e5ac7a8f036695219c5daaa2fe4e9912a0ebb1b432a166050ca50f8a00f29`). The combined full-duration saved audit passes eight positives and twenty negatives with a swapped-location receipt rejected for every case (`native/saved-delivery-cpu-proof.json` SHA-256 `c006aa8dcb9259b42e45ad4c4969f3e06a0fa1ff8d03d381dc8428c4a8cb9e28`). All media and source fixtures remain synthetic; no original location marking, authority, signal pixels, physical completion or legal result is claimed. Four cases remain unselected and status partial.
+
+## 2026-11-26 current preflight and scoped gate checkpoint
+
+The lead reran current runtime verification, pinned CPU preflight (Lean 4.28.0), and update notice check; each exits 0 and no assignment is paused. C183370's scoped partial `--complete` check passes after the four-case audit updates. Its scoped strict gate rejects the truthful `partial` result with `Preparation acceptance failed: partial/missing packages remain`; it has not been marked ready. The independent return audit and ordered queue check pass at 148 ready / 105 partial, 956 planned, 707 selected and 483 comparisons. The full strict batch gate remains unpassed.
+
+## 2026-11-26 four-case review receipt binding
+
+The independent source-bound review receipt proof now exercises all four exact flagger cases. Twelve direct/CLI or declaration positives and twenty-four altered/incomplete receipt negatives pass (`native/review-binding-proof.json` SHA-256 `c44c9d26ff9aa515c82afcc638276dcb9ec0575aea8d6732638c2caa388a167e`). The proof binds synthetic sealed source hashes only; no original pixels, source authority, physical response or legal verdict is claimed. All four cases remain unselected and status partial.
+
+## 2026-11-26 four-case sealed source meter proof
+
+The saved original-source meter now has structural fixtures for all four exact location/response cases. Four positives and thirty-two damaged source, media, authority, geometry, numeric and actor-identity negatives pass (`native/saved-source-shape-proof.json` SHA-256 `ddd6ee6f4deffaf74923b9aeed9b400bff9e6ad089bacca6a525c0fc7667862c`). These fixtures use synthetic rows and marker files; no original video is decoded or flagger authority or physical response established. All four cases remain unselected and status partial.
+
+## 2026-11-26 flagged C109166 strict recheck
+
+The lead reran `.venv-cpu/bin/python -B worker_check.py --assignment training__C109166__NRS-484B-287-1c__pedestrian --complete --require-delivery-ready` on the present worktree. It exits 0 with `static_checks_passed: true`; the exact camera and duration plan is present in this version, so the retained ready status is supported. The older CTO clone failure is not reproduced here. This does not change the full batch gate, which remains unpassed with 105 partial assignments.
+
+## 2026-11-26 C183370 both location comparison audit
+
+The independent saved-source comparison now evaluates both exact flagger response pairs, holding sealed road/review sources and law, cell, actor, route, signal and camera policy fixed while measuring stop-line response. Two source-shaped positives and six altered/missing-source negatives pass (`native/comparison-source-shape-proof.json` SHA-256 `c818b4048dd47b8d42217e07b7176fffdf567a9a92d2e02433bbc49f4ee5853b`). The assignment-scoped partial `--complete` check passes. This is a synthetic procedure proof; original source authority, actual signal pixels, physical completion and legal outcome remain unverified. Four cases remain unselected; C183370 is partial and the full strict batch gate remains unpassed.
+
+## 2026-11-26 C183370 physical work-area construction
+
+The C183370 clearly marked construction/maintenance pair now constructs two shoulder-side barriers and a separate activity prop, with reviewed blueprint requirements in the prospective Native runner. Eleven focused tests cover the spawn positions and missing/unavailable assets. All four exact primary bundles pass pinned current-runtime offline checks after the change (draft manifest SHA-256 `417728cf477145914659f592887886b364379de946ff8b78b0aa56358de4b73e`, offline proof SHA-256 `36d6ee755c99dbf7626d5c492d377538edcf9f868b22a53eff6cf56e738cecf1`), and its assignment-scoped partial `--complete` check passes. The four cases are still unselected: original work-area designation, flagger authority and signal pixels require source review, and selected public/Core, canonical saved, semantic and independent delivery proofs are unfinished. Status remains partial.
+
+The lead rebuilt and independently audited the ordered queue: 253 packages, 956 planned cases, 707 selected cases, 483 comparisons, 1,086 proven candidates, zero dispatchable, **148 ready / 105 partial**. Queue SHA-256 `baac1e8e722c13c7193ca950b8ad1dd642665061c8fb1836e55937428b5fa03c`. The full strict batch delivery gate remains unpassed. Three other assignment owners continue their separate CPU proofs.
+
 ## 2026-11-26 C183370 four-case saved audit proof
 
 The lead extended the C183370 exact saved-source procedure to both drafted statutory location pairs. It joins each canonical 600-frame config and sealed Native rows to four full FFV1 decodes and a source-bound independent review receipt; eight direct/CLI positives and sixteen changed-source, review, duration and camera negatives pass (`native/saved-delivery-cpu-proof.json` SHA-256 `4a0dd191c329f3e0d8751fcdb3565067b1b87a51fb3a81d54a9aa86b83263ce6`). Current-runtime scoped partial `--complete` passes. These are synthetic color videos and structural review receipts; no original marker meaning, flagger authority, physical motion, signal visibility or legal conclusion is claimed. Four exact cases remain unselected and C183370 partial pending selected public/Core, canonical saved, semantic and independent delivery chains.

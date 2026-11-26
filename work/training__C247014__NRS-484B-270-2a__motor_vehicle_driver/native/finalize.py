@@ -26,7 +26,7 @@ def derive(attempt):
     attempt = Path(attempt)
     for name in SOURCES:
         if not (attempt / name).is_file():
-            raise ValueError("Missing original source: " + name)
+            raise ValueError("Missing required source: " + name)
     road = ET.fromstring((attempt / "road.xodr").read_text())
     lanes = road.findall("road/lanes/laneSection/right/lane")
     if [int(l.attrib["id"]) for l in lanes] != [-1, -2]:
@@ -118,7 +118,8 @@ def finalize(attempt, output):
         evidence.append({"name": name, "unit": channel["unit"],
                          "reference": "channels/" + path.name})
     availability = channels / "left_lane_availability.json"
-    availability.write_text(json.dumps({"original_left_blocker_frames": measured["left_blocker_frames"],
+    availability.write_text(json.dumps({"left_lane_availability": "unresolved_original_review",
+                                       "original_left_blocker_frames": measured["left_blocker_frames"],
                                        "availability_verified": False,
                                        "reasonable_safety_judged": False}) + "\n")
     evidence.append({"name": "left_lane_availability", "unit": "source context",
