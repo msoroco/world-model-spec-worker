@@ -6,15 +6,50 @@
   "selected_branch": "Extreme-right-hand-lane duty on a multilane roundabout route.",
   "requirement_dispositions": [
     {
-      "requirement": "NRS-484B-627-1b",
+      "disposition_index": 0,
+      "requirement": "slow speed impeding forward movement of traffic immediately behind",
       "source": "NRS 484B.627(1)(b)",
-      "branch": "Extreme-right-hand-lane duty on a multilane roundabout route.",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a",
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b",
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger"
+      ],
+      "evidence_or_gap": "Original ego/follower positions and velocities plus independent review of whether movement was impeded; synthetic speed ordering is diagnostic only."
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "two or more clearly marked same-direction lanes and extreme right-hand lane duty",
+      "source": "NRS 484B.627(1)(b)",
       "status": "selected_required",
       "case_ids": [
         "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_a",
         "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Original Native lane topology, markings, actor body and lane occupancy throughout the impeding interval."
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "exception only when necessary to pass other slowly moving vehicles",
+      "source": "NRS 484B.627(1)(b)",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger"
+      ],
+      "evidence_or_gap": "Original slower vehicle, relative motion, actual pass and clearance timing; independent necessity judgment remains for local review."
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "right-lane return after any necessary pass ends",
+      "source": "NRS 484B.627(1)(b)",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger"
+      ],
+      "evidence_or_gap": "Original pass-clearance event and body-lane occupancy after that event; no invented statutory grace duration."
     }
   ],
   "cases": [
@@ -33,6 +68,24 @@
       "target_type": "violating_attempt",
       "physical_target": "remain in left lane while impeding following traffic",
       "comparison_variable": "impeding_vehicle_lane_position"
+    },
+    {
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+      "target_law_id": "NRS-484B-627-1b",
+      "kind": "planned_only",
+      "target_type": "compliant_attempt",
+      "physical_target": "occupy left lane only while passing an observed slower vehicle and return right after clearance",
+      "comparison_variable": "post_pass_lane_return",
+      "exception_probe_kind": "exception_attempt"
+    },
+    {
+      "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger",
+      "target_law_id": "NRS-484B-627-1b",
+      "kind": "planned_only",
+      "target_type": "violating_attempt",
+      "physical_target": "occupy left lane after the observed slower vehicle is cleared",
+      "comparison_variable": "post_pass_lane_return",
+      "exception_probe_kind": "exception_duration_contrast"
     }
   ],
   "comparisons": [
@@ -48,6 +101,23 @@
       "fixed_conditions": [
         "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
       ]
+    },
+    {
+      "comparison_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__passing_duration_comparison",
+      "case_ids": [
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__necessary_pass",
+        "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger"
+      ],
+      "deliberate_differences": [
+        "post_clearance_target_lane"
+      ],
+      "fixed_conditions": [
+        "same roundabout topology and clearly marked same-direction lanes",
+        "same ego, follower and slower-vehicle blueprints and source speed policy",
+        "same pass initiation and clearance source definition",
+        "same 20 Hz, 30 second four-camera capture policy"
+      ],
+      "source_review": "A slower vehicle ahead and necessity of a pass require original Native and independent review; controller request does not establish either."
     }
   ],
   "observations": [
@@ -95,8 +165,10 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Original roundabout topology and marked same-direction lane readback require Native operator survey.",
+    "A slow ego and trailing follower do not themselves settle statutory impeding; independent review required.",
+    "Slower-vehicle pass necessity and clearance must be observed, not inferred from the requested controller phase.",
+    "Actual camera pixels and physical lane occupancy remain local Native checks."
   ],
   "statutory_text": "If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway has two or more clearly marked lanes for traffic traveling in the direction in which the driver or operator is traveling, drive in the extreme right-hand lane except when necessary to pass other slowly moving vehicles.",
   "activation_conditions_from_unreviewed_summary": [
@@ -115,5 +187,111 @@
     "rel.occupies",
     "drv.overtaking",
     "st.lane_adjacency"
-  ]
+  ],
+  "source_observation_mapping": {
+    "drv.speed_below_traffic": {
+      "evidence": "Original ego and immediately following traffic velocities, with independent impeding judgment.",
+      "channels": [
+        "native_lane_body_follower_and_pass",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/capture.py",
+        "native/measure.py"
+      ]
+    },
+    "drv.queue_behind": {
+      "evidence": "Original follower identity and distance behind ego throughout the interval.",
+      "channels": [
+        "native_lane_body_follower_and_pass",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/capture.py",
+        "native/measure.py"
+      ]
+    },
+    "drv.laned_roadway": {
+      "evidence": "Original Native map lane readback plus visible same-direction lane markings.",
+      "channels": [
+        "native_lane_body_follower_and_pass",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/capture.py",
+        "native/measure.py"
+      ]
+    },
+    "drv.extreme_lane": {
+      "evidence": "Original ego body polygon and extreme-right lane boundary by frame.",
+      "channels": [
+        "native_lane_body_follower_and_pass",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/capture.py",
+        "native/measure.py"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original ego body and lane occupancy join by frame.",
+      "channels": [
+        "native_lane_body_follower_and_pass",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/capture.py",
+        "native/measure.py"
+      ]
+    },
+    "drv.overtaking": {
+      "evidence": "Original slower vehicle, pass onset/clearance and ego motion; necessity separately reviewed.",
+      "channels": [
+        "native_lane_body_follower_and_pass",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/capture.py",
+        "native/measure.py"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "Original Native same-direction lane topology and adjacency readback.",
+      "channels": [
+        "native_lane_body_follower_and_pass",
+        "four_camera_video"
+      ],
+      "source_refs": [
+        "native/capture.py",
+        "native/measure.py"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "entire marked roundabout, ego, follower, slower vehicle and lane topology",
+        "interval": "full impeding and optional passing interval"
+      },
+      {
+        "view": "approach",
+        "subject": "ego and following vehicle positions and same-direction lane markings",
+        "interval": "entry through roundabout circulation"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "roundabout lane boundary, ego body and slower vehicle during pass and return",
+        "interval": "pass onset through post-clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-relative marked lane and slower vehicle view",
+        "interval": "full roundabout circulation"
+      }
+    ]
+  }
 }

@@ -1,0 +1,430 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C111294",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C111294__NRS-484B-250-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral intersection definition.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "dev.yield_sign",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored entry requests do not establish original physical timing.",
+          "Device and opposite-direction left-turn exclusions require original source review.",
+          "No legal right-of-way outcome is assigned by the fixture."
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "ego_yield_action": {
+          "kind": "controller",
+          "unit": "boolean",
+          "value": true
+        }
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_yield",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "compliant_attempt",
+      "probe": {
+        "primary_variable": "ego_yield_action",
+        "comparison_or_standard": "other enters first; ego waits until other clears versus enters while other remains",
+        "target_value_or_branch": true
+      },
+      "paired_probe_id": "C111294-first-entry-yield",
+      "deliberate_differences": [
+        "ego_yield_action"
+      ],
+      "rationale": "Original entry order, occupancy, device and turn context must be reviewed before legal judgment.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "dev.yield_sign",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored entry requests do not establish original physical timing.",
+          "Device and opposite-direction left-turn exclusions require original source review.",
+          "No legal right-of-way outcome is assigned by the fixture."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "original official-device governance",
+        "opposite-turn exclusion and legal yielding"
+      ],
+      "variable_assignments": {
+        "ego_yield_action": {
+          "kind": "controller",
+          "unit": "boolean",
+          "value": true
+        }
+      }
+    },
+    {
+      "case_id": "training__C111294__NRS-484B-250-1__motor_vehicle_driver__priority_intrusion",
+      "target_law_id": "NRS-484B-250-1",
+      "target_type": "violating_attempt",
+      "probe": {
+        "primary_variable": "ego_yield_action",
+        "comparison_or_standard": "other enters first; ego waits until other clears versus enters while other remains",
+        "target_value_or_branch": false
+      },
+      "paired_probe_id": "C111294-first-entry-yield",
+      "deliberate_differences": [
+        "ego_yield_action"
+      ],
+      "rationale": "Original entry order, occupancy, device and turn context must be reviewed before legal judgment.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.intersection",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "dev.stop_sign",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "dev.yield_sign",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "method": "Source-joined original actor body, timing, road and reviewed control context",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "reference_frame": "two-highway Native frame and intersection boundary",
+            "uncertainty": "Original device governance, turn intent, yielding and pixels require review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored entry requests do not establish original physical timing.",
+          "Device and opposite-direction left-turn exclusions require original source review.",
+          "No legal right-of-way outcome is assigned by the fixture."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "original official-device governance",
+        "opposite-turn exclusion and legal yielding"
+      ],
+      "variable_assignments": {
+        "ego_yield_action": {
+          "kind": "controller",
+          "unit": "boolean",
+          "value": false
+        }
+      }
+    }
+  ],
+  "semantic_status": "draft",
+  "sweep_specs": []
+}

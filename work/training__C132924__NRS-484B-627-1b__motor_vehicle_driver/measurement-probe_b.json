@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__probe_b",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "slow speed impeding forward movement of traffic immediately behind",
+      "source": "NRS 484B.627(1)(b)",
+      "output_key": "impeding_source",
+      "method": "impeding_source",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native.jsonl",
+        "video_frames.jsonl",
+        "geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "two or more clearly marked same-direction lanes and extreme right-hand lane duty",
+      "source": "NRS 484B.627(1)(b)",
+      "output_key": "lane_occupancy_source",
+      "method": "lane_occupancy_source",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native.jsonl",
+        "video_frames.jsonl",
+        "geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "geometry.json"
+    ],
+    "error_contains": "Missing required source: geometry.json"
+  }
+}

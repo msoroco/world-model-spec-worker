@@ -40,12 +40,12 @@ def measure_entry(attempt):
         raise ValueError('Expected 600 source-joined frames')
     ego_entry = other_entry = ego_exit = other_exit = None
     for frame, (row, video, pose, body_row, observed) in enumerate(zip(rows, mapping, trace, crossing, evidence)):
-        time = frame / 20
+        time = (frame if diagnostic else frame + 1) / 20
         native = row.get('native_frame', frame)
         if (row['frame'] != frame or video['video_frame'] != frame or
-                video['native_frame'] != native or pose['frame'] != frame or
+                video['native_frame'] != native or pose['frame'] != native or
                 observed['original_frame'] != native or
-                body_row.get('frame') != frame or
+                body_row.get('frame') != native or
                 body_row.get('ego_vertices_m') != row['ego']['body_xyz_m'] or
                 body_row.get('other_vertices_m') != row['other']['body_xyz_m'] or
                 any(abs(item['time_s'] - time) > .01 for item in (row, video, pose)) or
@@ -142,6 +142,7 @@ def finalize(attempt, output):
     if config['case_id'] != CASE or construction['case_id'] != CASE:
         raise ValueError('Exact diagnostic case differs')
     metric, rows, trace, context = measure_entry(attempt)
+    diagnostic = context['source_kind'] == 'synthetic_cpu_diagnostic'
     channels = attempt / 'channels'
     channels.mkdir()
     evidence = []

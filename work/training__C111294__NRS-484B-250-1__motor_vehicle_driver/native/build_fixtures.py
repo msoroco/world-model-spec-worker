@@ -83,7 +83,7 @@ def build(suffix, candidate):
     spec = {'files': {
         'capture/native/frames.jsonl': ''.join(json.dumps(r, separators=(',', ':')) + '\n'
                                                 for r in native_frames),
-        'capture/native/recorder_info.txt':
+        'capture/recorder_info.txt':
             'synthetic CPU diagnostic; no CARLA recorder\nCreate 10: vehicle.tesla.model3 (0)\nCreate 11: vehicle.audi.a2 (0)\n'},
         'graphs': graphs,
         'videos': [{'path': name + '.mkv', 'frames': 600,

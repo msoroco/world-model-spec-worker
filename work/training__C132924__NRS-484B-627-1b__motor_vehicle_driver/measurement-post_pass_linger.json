@@ -1,0 +1,54 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C132924__NRS-484B-627-1b__motor_vehicle_driver__post_pass_linger",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "slow speed impeding forward movement of traffic immediately behind",
+      "source": "NRS 484B.627(1)(b)",
+      "output_key": "impeding_source",
+      "method": "impeding_source",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native.jsonl",
+        "video_frames.jsonl",
+        "geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "exception only when necessary to pass other slowly moving vehicles",
+      "source": "NRS 484B.627(1)(b)",
+      "output_key": "passing_source",
+      "method": "passing_source",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native.jsonl",
+        "video_frames.jsonl",
+        "geometry.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "right-lane return after any necessary pass ends",
+      "source": "NRS 484B.627(1)(b)",
+      "output_key": "post_pass_source",
+      "method": "post_pass_source",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native.jsonl",
+        "video_frames.jsonl",
+        "geometry.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "geometry.json"
+    ],
+    "error_contains": "Missing required source: geometry.json"
+  }
+}

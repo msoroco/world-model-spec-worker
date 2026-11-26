@@ -56,11 +56,11 @@ def assemble(root, *, diagnostic=False):
                         "ego": participant(ego), "other": participant(other),
                         "ego_road_id": actor.get("ego_road_id"),
                         "other_road_id": actor.get("other_road_id")})
-        crossing.append({"frame": index, "time_s": t,
+        crossing.append({"frame": native, "time_s": t,
                          "ego_vertices_m": ego["body_native_xyz_m"],
                          "other_vertices_m": other["body_native_xyz_m"]})
         x, y, z = ego["center_native_xyz_m"]
-        trace.append({"frame": index, "native_frame": native, "time_s": t,
+        trace.append({"frame": native, "native_frame": native, "time_s": t,
                       "position": {"x": x, "y": y, "z": z}, "position_m": [x, y, z],
                       "heading_deg": ego["yaw_deg"], "speed_mps": ego["speed_mps"],
                       "speed_mph": ego["speed_mps"] * 2.2369362920544,
@@ -111,7 +111,7 @@ def assemble(root, *, diagnostic=False):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("".join(json.dumps(row, sort_keys=True, allow_nan=False) + "\n"
                                 for row in output))
-    (root / "capture/native/recorder_info.txt").write_text(
+    (root / "capture/recorder_info.txt").write_text(
         f"{kind} actor source; no recorder claim\nCreate {actors[0]['ego']['actor_id']}: "
         f"{actors[0]['ego']['blueprint']} (0)\nCreate {actors[0]['other']['actor_id']}: "
         f"{actors[0]['other']['blueprint']} (0)\n")

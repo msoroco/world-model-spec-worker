@@ -25,11 +25,14 @@ def build(root=ROOT):
         manifest_path = root / "work" / aid / "execution-manifest.json"
         selected_ids = set()
         selected_candidates = {}
+        selected_handoffs = {}
         if manifest_path.is_file():
             selected = json.loads(manifest_path.read_text())
             selected_ids = {case["case_id"] for case in selected["cases"]}
             selected_candidates = {case["case_id"]: [candidate["id"] for candidate in case.get("candidates", [])]
                                    for case in selected["cases"]}
+            selected_handoffs = {case["case_id"]: case.get("native_handoff", {})
+                                 for case in selected["cases"]}
             if len(selected_ids) != len(selected["cases"]) or not selected_ids <= set(case_ids):
                 raise ValueError("Selected cases differ from current plan: " + aid)
         declared_selected = result.get("cases_selected", result.get("selected_case_count"))
@@ -42,6 +45,14 @@ def build(root=ROOT):
             if aid == "training__C230266__NRS-484B-280-1c__motor_vehicle_driver":
                 survey_binding = ("SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/"
                                   + aid + "/" + case_id + "/context-survey.json ")
+            handoff = selected_handoffs.get(case_id, {})
+            if handoff.get("survey_env_var") == "SCENARIO_CONTEXT_SURVEY":
+                survey_path = handoff.get("survey_path")
+                expected = (".runtime-work/original-surveys/" + aid + "/"
+                            + case_id + "/context-survey.json")
+                if survey_path != expected:
+                    raise ValueError("Invalid original survey binding: " + case_id)
+                survey_binding = "SCENARIO_CONTEXT_SURVEY=" + survey_path + " "
             # Derive the assignment from the exact case ID in a POSIX shell.
             # This keeps every command executable while avoiding a second long
             # assignment ID in each of the three local-integration commands.

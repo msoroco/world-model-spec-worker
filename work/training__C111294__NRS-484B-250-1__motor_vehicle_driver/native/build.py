@@ -117,7 +117,7 @@ def build():
             (bundle / "crossroads.xodr").write_text(road())
             track = bundle / "requested-tracks.jsonl"
             track.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows(suffix, candidate)))
-            cfg = {"format": "c111294-2502-native-request-v1", "assignment_id": CASE.name,
+            cfg = {"format": "c111294-2501-native-request-v1", "assignment_id": CASE.name,
                    "case_id": CASE.name + "__" + suffix, "candidate_id": candidate,
                    "assignment_sha256": SOURCE_SHA, "case_plan_sha256": sha(PLAN),
                    "road_sha256": sha(bundle / "crossroads.xodr"), "tracks_sha256": sha(track),
@@ -132,7 +132,7 @@ def build():
             put(bundle / "config.json", cfg)
             entries.append({"case_id": cfg["case_id"], "candidate_id": candidate,
                             "config_sha256": sha(bundle / "config.json")})
-    manifest = {"format": "c111294-2502-construction-v1", "assignment_id": CASE.name,
+    manifest = {"format": "c111294-2501-construction-v1", "assignment_id": CASE.name,
                 "assignment_sha256": SOURCE_SHA, "case_plan_sha256": sha(PLAN),
                 "status": "draft_not_selected", "delivery_ready": False, "entries": entries}
     put(HERE / "manifest.json", manifest)
