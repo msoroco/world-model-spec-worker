@@ -34,7 +34,11 @@ def main():
                        "--output", str(output)]
             completed = subprocess.run(command, cwd=REPO, capture_output=True,
                                        text=True, env=os.environ.copy())
-            log_text = (completed.stdout + completed.stderr).rstrip() + "\n"
+            materialized_log = output / "offline.log"
+            log_text = (completed.stdout + completed.stderr).rstrip()
+            if materialized_log.is_file():
+                log_text += "\n" + materialized_log.read_text().rstrip()
+            log_text = log_text.rstrip() + "\n"
             staged = Path(temporary) / (suffix + "-offline.log")
             staged.write_text(log_text)
             log = HERE / "branch-cases" / staged.name
