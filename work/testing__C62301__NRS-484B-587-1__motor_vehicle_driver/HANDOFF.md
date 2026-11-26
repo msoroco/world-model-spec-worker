@@ -1,20 +1,13 @@
-# C62301 NRS 484B.587(1) motor vehicle checkpoint
+# C62301 NRS 484B.587(1) handoff
 
-Status: partial CPU construction. Frozen assignment SHA256 `452e7106d1cf8d36f448e781b710f5aaae7a6fc73336ec109a20a1769cddf6d2`. Frozen evidence has no accepted recording for this assignment.
+Status: ready for original Native GPU acquisition; exact scoped strict CPU gate passed. Frozen assignment SHA256 `452e7106d1cf8d36f448e781b710f5aaae7a6fc73336ec109a20a1769cddf6d2`. No accepted original recording exists for this assignment.
 
-## Constructed and tested
+Five exact cases cover an indicated entry, unindicated entry, occluded entry notice, indicated exit and unindicated exit. Three controlled comparisons test entry designation, notice visibility and exit designation. `access.py` requires separately sourced public-authority controlled-access determination, public highway boundary, official erected device inventory and designation, case-specific crossing point, Native vehicle pose and drivable route. Map road type does not establish legal controlled-access status.
 
-`access_probe.py` requires source-bound public-authority controlled-access determination, highway boundary and official erected device inventory. It computes original-frame route boundary crossings and checks entry/exit direction and crossing location against designated, visible-notice access points. It rejects missing authority, an unerected device, absent route sources and no crossing. A map road type alone is never treated as legal controlled-access status.
+`original_runner.py` checks current hashes of the reviewed authority, highway, device, map and route sources. `access_carla_adapter.py` and `access_capture.py` specify 900 original 20 Hz Native frames and four synchronized cameras; `access_capture_audit.py` checks joins and full decode. `analysis.py` recomputes original boundary crossings, keeps official designation separate from map metadata, and requires original boundary coordinates to match Native pose. Diagnostic boundary projections are explicitly synthetic and cannot establish physical or legal acceptance.
 
-`case-plan.json` now plans five exact cases and three controlled comparisons for indicated versus unindicated entrances, notice visibility and indicated versus unindicated exits. Each case states a physical risk. These are plans, not delivery or capture claims.
+Five selected and five source-bound steering fallbacks passed pinned offline, positive and negative compatibility, saved-only analysis, Lean Core and four-camera diagnostic decode checks. Physical/lifecycle and independent delivery CPU protocols passed for all five. Three comparison protocols passed positive diagnostic fixtures and rejected changed fixed authority. No synthetic result is an accepted recording or legal verdict.
 
-## Proofs
+Exact command: `.venv-cpu/bin/python worker_check.py --assignment testing__C62301__NRS-484B-587-1__motor_vehicle_driver --complete --require-delivery-ready` passed exit 0. `strict.log` SHA256 `7316dd21f061a353ca071514f51a6bc8b7b8eed700915d521f4cca16a6319bb8`. `execution-manifest.json` SHA256 `af343f64b812fefe465504c07789c7932a2ed03ea7d8f423af21a39e10139874`. `gpu-queue-proposal.json` SHA256 `1c3e60426635a3f09b070bb671e1b52eca584e19c2bbe8bc9053ede944be37d5`. `comparison-proposal.json` SHA256 `c1d9f0a1b37df4cb1cf57404006472cd8344efdbd065a4f02bd90c7a4da63838`.
 
-- `.venv-cpu/bin/python runtime.py preflight`: exit 0, `preflight.log` SHA256 `422020f6e4e43f6838ac4fa207d9ed0c76a939796d06729580d320577e39bf7b`.
-- `.venv-cpu/bin/python -m unittest discover -s work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver -p 'test_*.py' -v`: exit 0, five tests, `cpu-tests.log` SHA256 `c4b1758da37bc24876a18733574a710b4231e9d94d0936c83bd3976ef2e62eee`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C62301__NRS-484B-587-1__motor_vehicle_driver`: exit 0, `static.log` SHA256 `7316dd21f061a353ca071514f51a6bc8b7b8eed700915d521f4cca16a6319bb8`.
-- `.venv-cpu/bin/python worker_check.py --assignment testing__C62301__NRS-484B-587-1__motor_vehicle_driver --complete --require-delivery-ready`: exit 1, `strict.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`; strict checker rejects truthful partial status.
-
-## Next CPU work
-
-Source the actual authority access determination and notice designation; construct physical highway entrances/exits, erected official devices, route controllers and capture of original vehicle path and notice visibility. Add exact saved finalizers, offline construction and positive/negative compatibility receipts, semantic proposals, saved-only processing, independent delivery/comparison audits, manifest and queue entries. Recheck full law and contracts. Actual boundary crossing and device visibility require later CARLA verification.
+GPU follow-up: source and review original authority determination and official erected device designation, acquire separate Native entry/exit attempts, verify crossing geometry and driver-view notice pixels, then independently review physical completion and legal application. Use fallback only where original route evidence shows a boundary-crossing control failure.

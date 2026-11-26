@@ -67,13 +67,25 @@ def reviewed_site(site, site_path, site_sha256, operator, world, case):
     near.validate_scene(site, case)
 
 
-def _front(actor):
+def _front(actor, body):
+    forward = actor.get_transform().get_forward_vector()
+    projections = [point[0] * forward.x + point[1] * forward.y for point in body]
+    greatest = max(projections)
+    front_vertices = [point for point, projection in zip(body, projections)
+                      if greatest - projection < .05]
+    require(len(front_vertices) >= 2, "Native front body edge missing")
+    return [sum(point[axis] for point in front_vertices) / len(front_vertices)
+            for axis in (0, 1)]
+
+
+def _body(actor):
     transform = actor.get_transform()
-    forward = transform.get_forward_vector()
-    center = transform.location
-    extent = actor.bounding_box.extent
-    return [float(center.x + forward.x * extent.x),
-            float(center.y + forward.y * extent.x)]
+    vertices = actor.bounding_box.get_world_vertices(transform)
+    body = [[float(vertex.x), float(vertex.y), float(vertex.z)]
+            for vertex in vertices]
+    require(len(body) >= 4 and all(math.isfinite(v) for point in body for v in point),
+            "original Native vehicle body vertices missing")
+    return body
 
 
 def capture(world, *, case_id, site_path, site_sha256, output, operator,
@@ -132,19 +144,26 @@ def capture(world, *, case_id, site_path, site_sha256, output, operator,
                     "original governed approach lane changed")
             speed = float(vehicle.get_velocity().length())
             require(math.isfinite(speed) and speed >= 0, "original vehicle speed invalid")
-            front = _front(vehicle)
+            transform = vehicle.get_transform()
+            forward = transform.get_forward_vector()
+            body = _body(vehicle)
+            front = _front(vehicle, body)
             for view in VIEWS:
                 image = callbacks[view](native_frame)
                 require(type(image) is bytes and image, "original RGB frame missing: " + view)
                 camera_dir = output / "cameras" / view
                 camera_dir.mkdir(parents=True, exist_ok=True)
                 (camera_dir / f"{native_frame:06d}.png").write_bytes(image)
-            row = {"original_frame": native_frame, "time_s": round(index / RATE_HZ, 5),
+            row = {"original_frame": native_frame, "source_frame_id": native_frame,
+                   "time_s": round(index / RATE_HZ, 5),
                    "actor_id": str(vehicle.id), "driver_id": site["driver_id"],
                    "vehicle_id": site["vehicle_id"], "vehicle_blueprint": vehicle.type_id,
                    "road_id": observed["road_id"], "lane_id": observed["lane_id"],
                    "marked": case.marked, "stop_sign_governs": True,
-                   "vehicle_front_xy": front, "speed_mps": speed}
+                   "vehicle_front_xy": front, "speed_mps": speed,
+                   "x": float(transform.location.x), "y": float(transform.location.y),
+                   "z": float(transform.location.z), "heading_x": float(forward.x),
+                   "heading_y": float(forward.y), "body_vertices_m": body}
             row.update({name + "_source_sha256": site[name + "_source_sha256"]
                         for name in near.SOURCES})
             frames.append(row)

@@ -1,0 +1,738 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver",
+  "status": "physical_and_selected_cpu_proofs_bound_gpu_pending",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+      "kind": "delivery",
+      "construction": "construction-selected-indicated_entry.json",
+      "construction_sha256": "c1241bcc93b38f9126b9e85dd77405e26524d1941d1081ca2aa8a41d2c0b6446",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-indicated_entry.json",
+          "construction_sha256": "8e91e90986e0ada6c54650e9e86accbfe20da7da0b79cfb9a208baf627421a34",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/indicated_entry --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-indicated_entry.log",
+            "log_sha256": "6417113877792c9badda7e2788074570ccff9ee545bd4adde0e6a0265eb3e920",
+            "construction_sha256": "8e91e90986e0ada6c54650e9e86accbfe20da7da0b79cfb9a208baf627421a34"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-indicated_entry.json",
+            "sha256": "7dd7f95d97189d574f7e7269ae3334d4cab2366732bf2a91269cd63f4116b3ee",
+            "log": "proof-fallback-analysis-indicated_entry.log",
+            "negative_log": "proof-fallback-negative-indicated_entry.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/indicated_entry-recipe.json",
+      "measurement_contract": "diagnostics/indicated_entry-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed Native boundary crossing and independently sourced official device readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/selected-v1/offline/indicated_entry --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-indicated_entry.log",
+        "log_sha256": "d4a60c7df6c94d20d0dda1e3ddccf0a82a149665931539403f5983ab895a1d40",
+        "construction_sha256": "c1241bcc93b38f9126b9e85dd77405e26524d1941d1081ca2aa8a41d2c0b6446"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-indicated_entry.json",
+        "sha256": "98d323810f2611b43229a9772c7a4ef765473c97b80b54a3fb9e50e5c003feaf",
+        "log": "proof-compat-analysis-indicated_entry.log",
+        "negative_log": "proof-compat-negative-indicated_entry.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-indicated_entry.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-indicated_entry-receipt.json",
+        "sha256": "d75c3f06108b0201747888ab54e810bd3a98b45a5f434ec27591197c5b07773f"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-indicated_entry.log",
+        "sha256": "c04b30285de4ff862a6a23f6720191ecb3bbacb5b09b57ff8ea646c9ae2ac2ef"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-indicated_entry.log",
+        "test_log_sha256": "c04b30285de4ff862a6a23f6720191ecb3bbacb5b09b57ff8ea646c9ae2ac2ef"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/indicated_entry --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/indicated_entry/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/indicated_entry/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/indicated_entry --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/indicated_entry/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/indicated_entry/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "5d90cb03199bf4d77fc9a3cda202ac7831aeee6811c822b4759ed3aa129b16da",
+        "test_log": "proof-delivery-positive-indicated_entry.log",
+        "test_log_sha256": "c81c8d209a7eb99146f851326742e701ec6149d03190187747a06e2593e24029",
+        "negative_log": "proof-delivery-negative-indicated_entry.log",
+        "negative_log_sha256": "357da178e8aee45c4df44d754c225c7d196ed701f30d491893c5b9dca7ae64a8",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C62301_REVIEWED_SITE",
+        "adapter_module_env_var": "C62301_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "access.py",
+          "method": "separate official public-authority determination",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "access.py",
+          "method": "surveyed public highway extent and boundary",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "official_erected_devices": {
+          "entrypoint": "access.py",
+          "method": "official designation, erection and notice source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "designated_access_points": {
+          "entrypoint": "access.py",
+          "method": "source-surveyed indicated entrance and exit windows",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "notice_visibility": {
+          "entrypoint": "access_capture.py",
+          "method": "original driver-view pixels plus independent source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_boundary_crossing": {
+          "entrypoint": "access_capture.py",
+          "method": "original Native vehicle pose at 20 Hz",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_motion": {
+          "entrypoint": "access_capture.py",
+          "method": "original speed, position and controller history",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry",
+      "kind": "delivery",
+      "construction": "construction-selected-unindicated_entry.json",
+      "construction_sha256": "f80515cb65f4e354e54dffe617beabf3568629bed48b36ce5aab0e8770c6d429",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-unindicated_entry.json",
+          "construction_sha256": "f63ea53f8d92aa1ccab28ce4a8a0a37b301b5740163779aac37876a1d13077cd",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/unindicated_entry --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-unindicated_entry.log",
+            "log_sha256": "496e36c608abe5fc9ecc3602b1523d582c33c15a87b26aa65cefb6860c17ade5",
+            "construction_sha256": "f63ea53f8d92aa1ccab28ce4a8a0a37b301b5740163779aac37876a1d13077cd"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-unindicated_entry.json",
+            "sha256": "198a9d985b0cc3ee9851e84e7224e9580618c3b9a7223662aba1ae59d7f7c1ac",
+            "log": "proof-fallback-analysis-unindicated_entry.log",
+            "negative_log": "proof-fallback-negative-unindicated_entry.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/unindicated_entry-recipe.json",
+      "measurement_contract": "diagnostics/unindicated_entry-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed Native boundary crossing and independently sourced official device readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/selected-v1/offline/unindicated_entry --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-unindicated_entry.log",
+        "log_sha256": "113a0b468ef3e65e38304da369dc56035155c112564a384e9cd4d290ce033e83",
+        "construction_sha256": "f80515cb65f4e354e54dffe617beabf3568629bed48b36ce5aab0e8770c6d429"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-unindicated_entry.json",
+        "sha256": "e4838053db3fdbd85dc1d51749d7e6a62e4296e7df1103a3d474c24ca86f6a68",
+        "log": "proof-compat-analysis-unindicated_entry.log",
+        "negative_log": "proof-compat-negative-unindicated_entry.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-unindicated_entry.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-unindicated_entry-receipt.json",
+        "sha256": "a913e6dc6fddae683d25708ed98372486bb021849213a918f6c8ebff4e4ef01c"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-unindicated_entry.log",
+        "sha256": "6bacae4d1248bb5c6ae21e724678df66b3f334d559f1717400f0b7ee927ed7c9"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-unindicated_entry.log",
+        "test_log_sha256": "6bacae4d1248bb5c6ae21e724678df66b3f334d559f1717400f0b7ee927ed7c9"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/unindicated_entry --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/unindicated_entry/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/unindicated_entry/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/unindicated_entry --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/unindicated_entry/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/unindicated_entry/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "5d90cb03199bf4d77fc9a3cda202ac7831aeee6811c822b4759ed3aa129b16da",
+        "test_log": "proof-delivery-positive-unindicated_entry.log",
+        "test_log_sha256": "c1e198758c306e6203ded84c3b20747b0697f2cb0e1797d9fde4202e12c8ce53",
+        "negative_log": "proof-delivery-negative-unindicated_entry.log",
+        "negative_log_sha256": "357da178e8aee45c4df44d754c225c7d196ed701f30d491893c5b9dca7ae64a8",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C62301_REVIEWED_SITE",
+        "adapter_module_env_var": "C62301_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "access.py",
+          "method": "separate official public-authority determination",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "access.py",
+          "method": "surveyed public highway extent and boundary",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "official_erected_devices": {
+          "entrypoint": "access.py",
+          "method": "official designation, erection and notice source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "designated_access_points": {
+          "entrypoint": "access.py",
+          "method": "source-surveyed indicated entrance and exit windows",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "notice_visibility": {
+          "entrypoint": "access_capture.py",
+          "method": "original driver-view pixels plus independent source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_boundary_crossing": {
+          "entrypoint": "access_capture.py",
+          "method": "original Native vehicle pose at 20 Hz",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_motion": {
+          "entrypoint": "access_capture.py",
+          "method": "original speed, position and controller history",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible",
+      "kind": "delivery",
+      "construction": "construction-selected-notice_not_visible.json",
+      "construction_sha256": "77002498ea541ff4f44f5a4429370f6aebc23b363451eb8cd476f22eb5cf0cfd",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-notice_not_visible.json",
+          "construction_sha256": "27ecdb4fd7f3a656240ce6db910414cbc1dfc8303e9c20da81b77b3fa6699276",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/notice_not_visible --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-notice_not_visible.log",
+            "log_sha256": "a7a745f2363015eef16ee0a356295f830268c92609a8b4ec8e49bba5a36d1808",
+            "construction_sha256": "27ecdb4fd7f3a656240ce6db910414cbc1dfc8303e9c20da81b77b3fa6699276"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-notice_not_visible.json",
+            "sha256": "07793f2736de8e595c425ac9f4c1a7e6f83fc180e86f468853294fe4c5a07920",
+            "log": "proof-fallback-analysis-notice_not_visible.log",
+            "negative_log": "proof-fallback-negative-notice_not_visible.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/notice_not_visible-recipe.json",
+      "measurement_contract": "diagnostics/notice_not_visible-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed Native boundary crossing and independently sourced official device readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/selected-v1/offline/notice_not_visible --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-notice_not_visible.log",
+        "log_sha256": "51c56c3c5ad8d072febb6092b57ae132fe878eff0ef2eb19d81e94b3c1e96bd2",
+        "construction_sha256": "77002498ea541ff4f44f5a4429370f6aebc23b363451eb8cd476f22eb5cf0cfd"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-notice_not_visible.json",
+        "sha256": "b26624e05a82b66b16a4da2bddb6e1e579c3a8b0bb49d7ec0e7189f11ea2fe8e",
+        "log": "proof-compat-analysis-notice_not_visible.log",
+        "negative_log": "proof-compat-negative-notice_not_visible.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-notice_not_visible.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-notice_not_visible-receipt.json",
+        "sha256": "4e1d4837db09a5ee75daf560c37c222c0277468a10d5c657dc3451988fb78a78"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-notice_not_visible.log",
+        "sha256": "bc115eb83e55765c82d3d42ad3ce4a7f299df9c9de660d11a6c234f7428fc58d"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-notice_not_visible.log",
+        "test_log_sha256": "bc115eb83e55765c82d3d42ad3ce4a7f299df9c9de660d11a6c234f7428fc58d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/notice_not_visible --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/notice_not_visible/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/notice_not_visible/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/notice_not_visible --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/notice_not_visible/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/notice_not_visible/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "5d90cb03199bf4d77fc9a3cda202ac7831aeee6811c822b4759ed3aa129b16da",
+        "test_log": "proof-delivery-positive-notice_not_visible.log",
+        "test_log_sha256": "862b98762caaa3ce2787ccb6d5ae3cf9b837473f3f1971ab3cf3f7a79976fc09",
+        "negative_log": "proof-delivery-negative-notice_not_visible.log",
+        "negative_log_sha256": "357da178e8aee45c4df44d754c225c7d196ed701f30d491893c5b9dca7ae64a8",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C62301_REVIEWED_SITE",
+        "adapter_module_env_var": "C62301_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "access.py",
+          "method": "separate official public-authority determination",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "access.py",
+          "method": "surveyed public highway extent and boundary",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "official_erected_devices": {
+          "entrypoint": "access.py",
+          "method": "official designation, erection and notice source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "designated_access_points": {
+          "entrypoint": "access.py",
+          "method": "source-surveyed indicated entrance and exit windows",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "notice_visibility": {
+          "entrypoint": "access_capture.py",
+          "method": "original driver-view pixels plus independent source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_boundary_crossing": {
+          "entrypoint": "access_capture.py",
+          "method": "original Native vehicle pose at 20 Hz",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_motion": {
+          "entrypoint": "access_capture.py",
+          "method": "original speed, position and controller history",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit",
+      "kind": "delivery",
+      "construction": "construction-selected-indicated_exit.json",
+      "construction_sha256": "680807915dd3e9762dd618c9dee0df64c5ff12c5fab35d47f4b85511322808a2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-indicated_exit.json",
+          "construction_sha256": "9633c3457dcc2248aa84d3f9ab2b0c76c6345df27155a7d40ed4dbe1bf2c6825",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/indicated_exit --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-indicated_exit.log",
+            "log_sha256": "95f85b6321caefced91d4fa3694659abee9f754df8cd7c37bc50aa6fa25db3c3",
+            "construction_sha256": "9633c3457dcc2248aa84d3f9ab2b0c76c6345df27155a7d40ed4dbe1bf2c6825"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-indicated_exit.json",
+            "sha256": "79e89be4e2d30f1b32f540d895bc1ab53d2d86578f3cbeac61e5bd31f193533f",
+            "log": "proof-fallback-analysis-indicated_exit.log",
+            "negative_log": "proof-fallback-negative-indicated_exit.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/indicated_exit-recipe.json",
+      "measurement_contract": "diagnostics/indicated_exit-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed Native boundary crossing and independently sourced official device readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/selected-v1/offline/indicated_exit --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-indicated_exit.log",
+        "log_sha256": "709c598b000fc1f6cf5a42cc4001c6e72a0df9b0b34550e525927a4694897d66",
+        "construction_sha256": "680807915dd3e9762dd618c9dee0df64c5ff12c5fab35d47f4b85511322808a2"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-indicated_exit.json",
+        "sha256": "c058ccdbc4cc77575175709eef381de87906c691523ceeeb58f174e44755e899",
+        "log": "proof-compat-analysis-indicated_exit.log",
+        "negative_log": "proof-compat-negative-indicated_exit.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-indicated_exit.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-indicated_exit-receipt.json",
+        "sha256": "22a29c307e258eff46f4c1a26b268c72ff20144b6ec4154a2950e776c4af052f"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-indicated_exit.log",
+        "sha256": "1753164569e7cb1cda42b3883f4d2c336d3ab7ed9e3c8410fe8bee442c4837c6"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-indicated_exit.log",
+        "test_log_sha256": "1753164569e7cb1cda42b3883f4d2c336d3ab7ed9e3c8410fe8bee442c4837c6"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/indicated_exit --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/indicated_exit/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/indicated_exit/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/indicated_exit --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/indicated_exit/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/indicated_exit/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "5d90cb03199bf4d77fc9a3cda202ac7831aeee6811c822b4759ed3aa129b16da",
+        "test_log": "proof-delivery-positive-indicated_exit.log",
+        "test_log_sha256": "39d1cafed532c31214ba47b16bd65e32f37c5b4eafff894491cc8f3546fbc2ec",
+        "negative_log": "proof-delivery-negative-indicated_exit.log",
+        "negative_log_sha256": "357da178e8aee45c4df44d754c225c7d196ed701f30d491893c5b9dca7ae64a8",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C62301_REVIEWED_SITE",
+        "adapter_module_env_var": "C62301_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "access.py",
+          "method": "separate official public-authority determination",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "access.py",
+          "method": "surveyed public highway extent and boundary",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "official_erected_devices": {
+          "entrypoint": "access.py",
+          "method": "official designation, erection and notice source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "designated_access_points": {
+          "entrypoint": "access.py",
+          "method": "source-surveyed indicated entrance and exit windows",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "notice_visibility": {
+          "entrypoint": "access_capture.py",
+          "method": "original driver-view pixels plus independent source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_boundary_crossing": {
+          "entrypoint": "access_capture.py",
+          "method": "original Native vehicle pose at 20 Hz",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_motion": {
+          "entrypoint": "access_capture.py",
+          "method": "original speed, position and controller history",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit",
+      "kind": "delivery",
+      "construction": "construction-selected-unindicated_exit.json",
+      "construction_sha256": "f3b558376032dc2ce0273bbe8c1d2ce3feef1178b84218b6dfcb8975ff5e60c9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-unindicated_exit.json",
+          "construction_sha256": "eb5d0be4cfb08b886e4bef38bce2d278d2b5b023fc7a4270dec6250d44c32ba2",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/unindicated_exit --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-unindicated_exit.log",
+            "log_sha256": "a0cca910d9384ac72f87281fedce1d793a255c059f18a93e0cd4477f014792ff",
+            "construction_sha256": "eb5d0be4cfb08b886e4bef38bce2d278d2b5b023fc7a4270dec6250d44c32ba2"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-unindicated_exit.json",
+            "sha256": "99f6dd71bf77cfb9b226ac3ce3202ca3fb222fe33c4ed477d09d3b4a805323ca",
+            "log": "proof-fallback-analysis-unindicated_exit.log",
+            "negative_log": "proof-fallback-negative-unindicated_exit.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/unindicated_exit-recipe.json",
+      "measurement_contract": "diagnostics/unindicated_exit-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed Native boundary crossing and independently sourced official device readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/selected-v1/offline/unindicated_exit --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-unindicated_exit.log",
+        "log_sha256": "38cf5d15ddb736b6da24520b2cde78381cbcda1f47edca1a60a8bbe0ec236f0c",
+        "construction_sha256": "f3b558376032dc2ce0273bbe8c1d2ce3feef1178b84218b6dfcb8975ff5e60c9"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-unindicated_exit.json",
+        "sha256": "ce73149f9d8d12de02118288ea511c8a8135e835061e136e9888baf57738bda1",
+        "log": "proof-compat-analysis-unindicated_exit.log",
+        "negative_log": "proof-compat-negative-unindicated_exit.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-unindicated_exit.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-unindicated_exit-receipt.json",
+        "sha256": "405491101a1281cf1739aab8ef2aa01a5ee173be19ceddba75a1c2f93de745e8"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-unindicated_exit.log",
+        "sha256": "902a8f1fdad52250e33c5d439ec2e3516a5ca830dd39ce6b44b9a30f51fd57ea"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-unindicated_exit.log",
+        "test_log_sha256": "902a8f1fdad52250e33c5d439ec2e3516a5ca830dd39ce6b44b9a30f51fd57ea"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/unindicated_exit --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/unindicated_exit/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/unindicated_exit/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/unindicated_exit --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/proofs/physical/unindicated_exit/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/controlled-access-delivery-diagnostic-v3/unindicated_exit/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "5d90cb03199bf4d77fc9a3cda202ac7831aeee6811c822b4759ed3aa129b16da",
+        "test_log": "proof-delivery-positive-unindicated_exit.log",
+        "test_log_sha256": "3a14da59a5315a1250280440e1778af73eaa3787ec9a319fff867cd95fd00321",
+        "negative_log": "proof-delivery-negative-unindicated_exit.log",
+        "negative_log_sha256": "357da178e8aee45c4df44d754c225c7d196ed701f30d491893c5b9dca7ae64a8",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C62301_REVIEWED_SITE",
+        "adapter_module_env_var": "C62301_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "access.py",
+          "method": "separate official public-authority determination",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "access.py",
+          "method": "surveyed public highway extent and boundary",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "official_erected_devices": {
+          "entrypoint": "access.py",
+          "method": "official designation, erection and notice source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "designated_access_points": {
+          "entrypoint": "access.py",
+          "method": "source-surveyed indicated entrance and exit windows",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "notice_visibility": {
+          "entrypoint": "access_capture.py",
+          "method": "original driver-view pixels plus independent source",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_boundary_crossing": {
+          "entrypoint": "access_capture.py",
+          "method": "original Native vehicle pose at 20 Hz",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_motion": {
+          "entrypoint": "access_capture.py",
+          "method": "original speed, position and controller history",
+          "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"
+        }
+      }
+    }
+  ]
+}

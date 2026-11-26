@@ -19,6 +19,12 @@ def measure(path: str | Path) -> dict:
     path = Path(path)
     raw = path.read_bytes()
     packet = json.loads(raw)
+    result = measure_data(packet)
+    result["source"] = {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()}
+    return result
+
+
+def measure_data(packet: dict) -> dict:
     if packet.get("assignment_id") != ASSIGNMENT or not packet.get("original_trace_id"):
         raise ValueError("original assignment and trace identity required")
     if not packet.get("ego_actor_id") or not packet.get("overtaken_actor_id"):
@@ -48,12 +54,20 @@ def measure(path: str | Path) -> dict:
                                  "right_side_paved_corridor_m": corridor,
                                  "ego_body_width_m": width,
                                  "no_zero_clearance_fit_on_pavement": corridor < width})
-    if not observations or not frames[-1]["ego_ahead_of_overtaken"] or frames[0]["ego_ahead_of_overtaken"]:
-        raise ValueError("complete right-side pass event required")
-    if not any(o["ego_to_right_of_overtaken"] for o in observations):
-        raise ValueError("right-side overlap not observed")
+    expected_pass = packet.get("expected_pass", True)
+    if not isinstance(expected_pass, bool):
+        raise ValueError("expected pass status must be source-typed")
+    if not expected_pass:
+        if frames[0]["ego_ahead_of_overtaken"] or frames[-1]["ego_ahead_of_overtaken"]:
+            raise ValueError("no-pass control has completed overtaking")
+        observations = []
+    else:
+        if not observations or not frames[-1]["ego_ahead_of_overtaken"] or frames[0]["ego_ahead_of_overtaken"]:
+            raise ValueError("complete right-side pass event required")
+        if not any(o["ego_to_right_of_overtaken"] for o in observations):
+            raise ValueError("right-side overlap not observed")
     return {"assignment_id": ASSIGNMENT, "original_trace_id": packet["original_trace_id"],
-            "source": {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()},
+            "right_pass_completed": expected_pass,
             "ego_actor_id": packet["ego_actor_id"], "overtaken_actor_id": packet["overtaken_actor_id"],
             "overlap_observations": observations,
             "actual_off_pavement_observed": any(o["ego_body_off_pavement_m"] > 0 for o in observations),

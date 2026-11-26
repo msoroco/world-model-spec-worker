@@ -61,6 +61,9 @@ class FakeAdapter:
     def set_flashing_red(self, *_):
         pass
 
+    def set_controller_tuning(self, _, engineering):
+        self.tuning = engineering
+
     def set_stop_target(self, _, target):
         self.targets.append(target)
 

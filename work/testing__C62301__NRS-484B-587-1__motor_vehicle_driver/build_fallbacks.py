@@ -37,20 +37,20 @@ def build():
         if config["selected_case_id"] != entry["case_id"]:
             raise ValueError("wrong fallback case")
         config["candidate_id"] = "fallback1"
-        # Keep exact 54/55/56 mph target, trip, route, sensors and evidence fixed.
+        # Keep official authority, device inventory, crossing point, route, sensors and evidence fixed.
         config["control_profile"] = {"steer_gain": .035}
         configs[0]["content"] = json.dumps(config, indent=2) + "\n"
         fallback = HERE / ("construction-fallback1-" + suffix + ".json")
         write(fallback, construction)
         entry["candidate_risk"] = {
             "status": "physical",
-            "reason": "Native vehicle may leave the exclusive right-turn lane or fail to reach the source-connected exit; controller steering adjustment preserves exact purpose, route, source geometry and sensors."}
+            "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."}
         entry["candidates"] = [{
             "id": "fallback1", "construction": fallback.name,
             "construction_sha256": sha(fallback),
-            "trigger": {"source": "original 900-frame Native lane occupancy and exit readback",
-                        "metric": "lane containment and observed connected departure",
-                        "failure_condition": "vehicle leaves surveyed right-turn lane or misses the connected departure"},
+            "trigger": {"source": "original 900-frame Native position and boundary crossing readback",
+                        "metric": "measured boundary crossing at requested source point",
+                        "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"},
             "changed_knobs": ["controller steering gain: 0.035"]}]
     write(manifest_path, manifest)
     return len(manifest["cases"])

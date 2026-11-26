@@ -1,37 +1,22 @@
 {
   "assignment_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver",
   "input_sha256": "22e65b004b014392994f83498a8c9b2f0f991fd965d5f1b4e86bd358d8c9ed44",
-  "status": "partial",
-  "readiness_kind": "right_pass_envelope_and_case_decomposition",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/tests -p 'test*.py' -v",
       "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "dc7443eaece283c0211b26636b6d28c21fd74df486ccb90d6ce72aeae0b07f02"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "unittest.log",
-      "sha256": "ac8cdb4d61c234ba14d6811a16f68a40012180952ea534d68612ea6037a2a7c1"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C182383__NRS-484B-210-3__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "static.log",
-      "sha256": "1ef68097d88d2c2629b9863d19c48d52fbb0a2abd1195db2e5ec63349d0fb373"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C182383__NRS-484B-210-3__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "strict.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "log": "cpu-tests.log",
+      "sha256": "52d4b185b22d882d75becc485abfe2ed0a74efef86843dc94bfce63a7eb47c08"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Original 900-frame Native two-actor right-side pass and four-camera capture",
+    "Independent pixel review of paved edge, actor overlap and actual off-pavement travel",
+    "Human review of physical necessity and safe lawful alternative; geometric width alone is insufficient"
   ],
-  "reason": "Four planned controlled cases, three isolated comparisons and a five-test source-bound paved-envelope/right-pass measurement are added. Construction, actual pavement and body source packets, legal requires review, finalizer, compatibility and delivery audits remain CPU work; strict gate truthfully fails on partial status."
+  "reason": "Four exact paved-edge cases, three comparisons, source-gated Native construction and selected/fallback CPU proofs complete; original CARLA evidence and legal requires review remain required.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C182383__NRS-484B-210-3__motor_vehicle_driver --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

@@ -1,0 +1,147 @@
+{
+  "assignment_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-587-1",
+  "cell_id": "C62301",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed highway boundary, official device and vehicle route"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed highway boundary, official device and vehicle route"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed highway boundary, official device and vehicle route"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed highway boundary, official device and vehicle route"
+    }
+  ],
+  "supported_case_ids": [
+    "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+    "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry",
+    "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible",
+    "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit",
+    "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit"
+  ],
+  "case": {
+    "kind": "delivery",
+    "branch": "Entry onto a controlled-access highway.",
+    "gap_ids": [
+      "no-accepted-recording"
+    ],
+    "construction_probe": "access_probe.py",
+    "case_id": "testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry",
+    "candidate_risk": {
+      "status": "physical",
+      "reason": "Ramp geometry and official sign placement may not align with vehicle route."
+    },
+    "requested_direction": "entry",
+    "requested_indicated": true,
+    "requested_notice_visible": true,
+    "new_capture_selected": true,
+    "target_law_id": "NRS-484B-587-1",
+    "construction_status": "source_gated_native_bundle_cpu_preparation",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "controlled_access_authority",
+          "unit": "source record",
+          "method": "separate public-authority controlled-access determination",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second controlled-access entry or exit",
+          "reference_frame": "source-surveyed public highway boundary and Native world",
+          "uncertainty": "Map road type does not establish legal controlled-access status; notice designation requires official source"
+        },
+        {
+          "name": "public_highway_boundary",
+          "unit": "world meters",
+          "method": "surveyed public highway extent and boundary",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second controlled-access entry or exit",
+          "reference_frame": "source-surveyed public highway boundary and Native world",
+          "uncertainty": "Map road type does not establish legal controlled-access status; notice designation requires official source"
+        },
+        {
+          "name": "official_erected_devices",
+          "unit": "source record",
+          "method": "authority-designated erected official device inventory",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second controlled-access entry or exit",
+          "reference_frame": "source-surveyed public highway boundary and Native world",
+          "uncertainty": "Map road type does not establish legal controlled-access status; notice designation requires official source"
+        },
+        {
+          "name": "designated_access_points",
+          "unit": "source record",
+          "method": "officially indicated entrance and exit windows",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second controlled-access entry or exit",
+          "reference_frame": "source-surveyed public highway boundary and Native world",
+          "uncertainty": "Map road type does not establish legal controlled-access status; notice designation requires official source"
+        },
+        {
+          "name": "notice_visibility",
+          "unit": "frame/source",
+          "method": "original driver-view pixels plus independent notice source",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second controlled-access entry or exit",
+          "reference_frame": "source-surveyed public highway boundary and Native world",
+          "uncertainty": "Map road type does not establish legal controlled-access status; notice designation requires official source"
+        },
+        {
+          "name": "vehicle_boundary_crossing",
+          "unit": "world meters/frame",
+          "method": "original Native vehicle pose and boundary crossing at 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second controlled-access entry or exit",
+          "reference_frame": "source-surveyed public highway boundary and Native world",
+          "uncertainty": "Map road type does not establish legal controlled-access status; notice designation requires official source"
+        },
+        {
+          "name": "vehicle_motion",
+          "unit": "world meters/frame",
+          "method": "original Native position, speed and controller history",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second controlled-access entry or exit",
+          "reference_frame": "source-surveyed public highway boundary and Native world",
+          "uncertainty": "Map road type does not establish legal controlled-access status; notice designation requires official source"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_controlled_access_site",
+          "unit": "source record",
+          "method": "sealed authority, highway boundary, official device and route packet"
+        }
+      ],
+      "limitations": [
+        "Official legal designation and authority are separately sourced.",
+        "Synthetic diagnostics prove software behavior only.",
+        "Notice visibility and crossing require original pixels and Native route readback."
+      ]
+    }
+  }
+}

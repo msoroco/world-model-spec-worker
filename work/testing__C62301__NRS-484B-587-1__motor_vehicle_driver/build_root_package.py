@@ -34,11 +34,11 @@ def build():
     source["measurement_plan"] = {"rate_hz": 20, "duration_s": 45,
                                   "required_channels": [name for name, _, _ in CHANNELS]}
     source["static_checks"] = ["exact source and case identity",
-                                "source-hashed Native public highway, exclusive lane, purpose and route",
+                                "source-hashed public authority, highway boundary, official devices and route",
                                 "900 original frame and four camera join"]
     source["termination_rules"] = ["900 consecutive original 20 Hz Native frames",
                                     "brake, destroy owned actors and restore world on every exit"]
-    source["mechanisms"] = ["reviewed Native controlled-access, purpose and route construction",
+    source["mechanisms"] = ["reviewed public authority, official notice and Native boundary route construction",
                             "per-frame physical vehicle controller and four camera acquisition",
                             "saved source measurement and independent delivery audit"]
     write(HERE / "construction.json", source)

@@ -1,0 +1,164 @@
+{
+  "assignment_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver",
+  "law_id": "NRS-484B-210-3",
+  "cell_id": "C182383",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed paved edge and two-vehicle pass corridor"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed paved edge and two-vehicle pass corridor"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed paved edge and two-vehicle pass corridor"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed paved edge and two-vehicle pass corridor"
+    }
+  ],
+  "supported_case_ids": [
+    "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement",
+    "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement",
+    "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement",
+    "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass"
+  ],
+  "case": {
+    "branch": "Right-side passing with the operative requires condition.",
+    "kind": "delivery",
+    "new_capture_selected": true,
+    "gap_ids": [
+      "unverified-law-coverage"
+    ],
+    "construction_status": "source_gated_native_bundle_cpu_preparation",
+    "required_original_packets": [
+      "frame_map",
+      "paved_portion_boundaries",
+      "ego_and_overtaken_body_envelopes",
+      "longitudinal_pass_event",
+      "original_pose",
+      "four_camera_video"
+    ],
+    "physical_risk": "Paved shoulder texture can be confused with the legal paved portion; source geometry and body envelope need readback and camera coverage.",
+    "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement",
+    "requested_zero_clearance_paved_fit": false,
+    "requested_right_pass": true,
+    "requested_off_pavement": true,
+    "measurement": "Original pavement and vehicle envelopes during right-side longitudinal overlap; distinguish actual departure from geometric necessity. No safety-clearance cutoff.",
+    "target_law_id": "NRS-484B-210-3",
+    "candidate_risk": {
+      "status": "physical",
+      "reason": "Paved shoulder texture can be confused with the legal paved portion; source geometry and body envelope need readback and camera coverage."
+    },
+    "recording_description": {
+      "channels": [
+        {
+          "name": "paved_surface_classification",
+          "unit": "source record",
+          "method": "independent classification of legal paved portion and adjacent surface",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-side pass or no-pass control",
+          "reference_frame": "source-surveyed Native road station/lateral frame",
+          "uncertainty": "Geometric zero-clearance fit is not a safe lawful alternative or legal necessity judgment"
+        },
+        {
+          "name": "paved_edge_geometry",
+          "unit": "road-frame metres",
+          "method": "surveyed paved boundaries along connected right-side pass corridor",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-side pass or no-pass control",
+          "reference_frame": "source-surveyed Native road station/lateral frame",
+          "uncertainty": "Geometric zero-clearance fit is not a safe lawful alternative or legal necessity judgment"
+        },
+        {
+          "name": "ego_and_overtaken_identity",
+          "unit": "source record",
+          "method": "two original Native vehicle actor identities",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-side pass or no-pass control",
+          "reference_frame": "source-surveyed Native road station/lateral frame",
+          "uncertainty": "Geometric zero-clearance fit is not a safe lawful alternative or legal necessity judgment"
+        },
+        {
+          "name": "ego_and_overtaken_body_envelopes",
+          "unit": "road-frame metres/frame",
+          "method": "original Native world body corners projected to surveyed road frame at 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-side pass or no-pass control",
+          "reference_frame": "source-surveyed Native road station/lateral frame",
+          "uncertainty": "Geometric zero-clearance fit is not a safe lawful alternative or legal necessity judgment"
+        },
+        {
+          "name": "right_side_pass_event",
+          "unit": "station/frame",
+          "method": "original longitudinal overlap, side relation and completion",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-side pass or no-pass control",
+          "reference_frame": "source-surveyed Native road station/lateral frame",
+          "uncertainty": "Geometric zero-clearance fit is not a safe lawful alternative or legal necessity judgment"
+        },
+        {
+          "name": "actual_off_pavement_travel",
+          "unit": "road-frame metres/frame",
+          "method": "original ego body extension beyond classified paved edge",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-side pass or no-pass control",
+          "reference_frame": "source-surveyed Native road station/lateral frame",
+          "uncertainty": "Geometric zero-clearance fit is not a safe lawful alternative or legal necessity judgment"
+        },
+        {
+          "name": "physical_necessity_review",
+          "unit": "source record",
+          "method": "zero-clearance geometric lower bound separate from safe lawful alternative review",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-side pass or no-pass control",
+          "reference_frame": "source-surveyed Native road station/lateral frame",
+          "uncertainty": "Geometric zero-clearance fit is not a safe lawful alternative or legal necessity judgment"
+        },
+        {
+          "name": "vehicle_motion",
+          "unit": "world metres/frame",
+          "method": "original Native pose, speed and controller history",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second right-side pass or no-pass control",
+          "reference_frame": "source-surveyed Native road station/lateral frame",
+          "uncertainty": "Geometric zero-clearance fit is not a safe lawful alternative or legal necessity judgment"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_paved_edge_site",
+          "unit": "source record",
+          "method": "sealed road surface classification, connected corridor, road frame, actors and route"
+        }
+      ],
+      "limitations": [
+        "Actual off-pavement travel and physical necessity are separate facts.",
+        "Road width alone does not establish a safe lawful alternative.",
+        "Synthetic diagnostics prove software behavior only."
+      ]
+    }
+  }
+}

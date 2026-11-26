@@ -93,9 +93,15 @@ def reference(site, case):
     return refs['intersection']
 
 
-def build_case(adapter, site, case):
+def build_case(adapter, site, case, engineering=None):
     """Create/read original CARLA actors; retain only locally owned actors."""
     stop_x = reference(site, case) + case.stop_offset_m
+    engineering = engineering or {'approach_speed_mps': 2.0, 'braking_buffer_m': 1.0}
+    need(finite(engineering.get('approach_speed_mps'))
+         and engineering['approach_speed_mps'] > 0
+         and finite(engineering.get('braking_buffer_m'))
+         and engineering['braking_buffer_m'] >= 0,
+         'reviewed controller tuning missing')
     owned = []
     try:
         if site['signal_support'] == 'spawned_prop':
@@ -136,6 +142,7 @@ def build_case(adapter, site, case):
              'physical heavy vehicle dimensions differ')
         adapter.set_route(ego, site['approach_waypoints'])
         adapter.set_flashing_red(signal, site['approach_id'])
+        adapter.set_controller_tuning(ego, engineering)
         adapter.set_stop_target(ego, stop_x)
         return {'ego': ego, 'signal': signal, 'occluder': occluder,
                 'target_front_m': stop_x, 'reference_m': reference(site, case),

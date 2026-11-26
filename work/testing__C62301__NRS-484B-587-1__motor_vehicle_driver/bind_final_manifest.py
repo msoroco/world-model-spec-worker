@@ -49,16 +49,16 @@ def run():
                                    "reviewed_packet_env_var": "C62301_REVIEWED_SITE",
                                    "adapter_module_env_var": "C62301_NATIVE_ADAPTER_MODULE"}
         channel_sources = {
-            "public_highway_and_lane_design": ("access.py", "source-sealed public highway and exclusive lane design"),
-            "vehicle_and_driver_identity": ("access_capture.py", "original Native vehicle and driver identity"),
-            "access_lane_occupancy": ("access_capture.py", "original Native road/lane ID readback at 20 Hz"),
-            "declared_maneuver_purpose": ("access.py", "separate purpose packet before lane entry"),
-            "connected_access_route": ("access.py", "surveyed connected right exit"),
-            "observed_departure_route": ("access_capture.py", "original Native route and pose history"),
-            "vehicle_motion": ("access_capture.py", "original position and speed history")}
+            "controlled_access_authority": ("access.py", "separate official public-authority determination"),
+            "public_highway_boundary": ("access.py", "surveyed public highway extent and boundary"),
+            "official_erected_devices": ("access.py", "official designation, erection and notice source"),
+            "designated_access_points": ("access.py", "source-surveyed indicated entrance and exit windows"),
+            "notice_visibility": ("access_capture.py", "original driver-view pixels plus independent source"),
+            "vehicle_boundary_crossing": ("access_capture.py", "original Native vehicle pose at 20 Hz"),
+            "vehicle_motion": ("access_capture.py", "original speed, position and controller history")}
         entry["acquisition"] = {name: {"entrypoint": channel_sources[name][0],
                                          "method": channel_sources[name][1],
-                                         "evidence": "original-source-receipt.json, right-turn-history.json and synchronized 900-frame cameras"}
+                                         "evidence": "original-source-receipt.json, access-history.json and synchronized 900-frame cameras"}
                                 for name, _, _ in CHANNELS}
     manifest["status"] = "physical_and_selected_cpu_proofs_bound_gpu_pending"
     (HERE / "execution-manifest.json").write_text(json.dumps(manifest, indent=2,

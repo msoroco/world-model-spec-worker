@@ -120,9 +120,12 @@ def construct(adapter, scene: Mapping, case: Case):
         raise
 
 
-def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
+def measure_original(rows: list[Mapping], scene: Mapping, case: Case,
+                     diagnostic_fixture=False):
     validate_scene(scene, case)
-    require(len(rows) == 900, 'original 900-frame capture missing')
+    required_frames = 9 if diagnostic_fixture else 900
+    require(len(rows) == required_frames,
+            'original frame count missing for selected capture profile')
     first = rows[0].get('original_frame')
     t0 = rows[0].get('time_s')
     require(type(first) is int and number(t0),

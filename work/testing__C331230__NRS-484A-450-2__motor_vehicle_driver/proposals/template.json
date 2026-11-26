@@ -1,0 +1,54 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484A-450-2",
+  "parameter_refs": [
+    {
+      "kind": "controller",
+      "name": "requested_brake_policy",
+      "range_or_domain": "halt or rolling probe"
+    },
+    {
+      "kind": "world_setup",
+      "name": "crosswalk_marked",
+      "range_or_domain": "marked or unmarked near-side crosswalk"
+    }
+  ],
+  "quote": "Every driver of a vehicle approaching a stop intersection indicated by a stop sign shall stop before entering the crosswalk on the near side of the intersection or, if there is no crosswalk, shall stop at a clearly marked stop line, or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection.",
+  "structure": {
+    "activation": {
+      "condition": "Driver of a vehicle approaches a stop intersection indicated by a governing stop sign.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "effect": "Use marked stop line hierarchy",
+        "replacement_obligation": "Stop at clearly marked stop line",
+        "source_clause": "or, if there is no crosswalk, shall stop at a clearly marked stop line",
+        "trigger": "No crosswalk"
+      },
+      {
+        "effect": "Use nearest view point",
+        "replacement_obligation": "Stop at nearest point with view before intersection",
+        "source_clause": "or if none, then at the point nearest the intersecting highway where the driver has a view of approaching traffic on the intersecting highway before entering the intersection",
+        "trigger": "No crosswalk or marked stop line"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "The no-crosswalk fallback's view point requires local geometry and traffic review; it is not exercised by selected crosswalk cases.",
+        "phrase": "view of approaching traffic"
+      }
+    ],
+    "law_id": "NRS-484A-450-2",
+    "obligation": {
+      "description": "Stop before entering the crosswalk on the near side of the intersection when that crosswalk exists.",
+      "numeric_conditions": [],
+      "type": "must"
+    },
+    "timing": {
+      "description": "Observe approach, cessation before near-side entry, and later crossing on original frames.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484A-450-2@motor_vehicle_driver"
+}

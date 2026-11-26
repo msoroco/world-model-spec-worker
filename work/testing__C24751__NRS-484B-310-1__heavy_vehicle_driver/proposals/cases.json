@@ -1,0 +1,617 @@
+{
+  "cell_id": "C24751",
+  "actor": "heavy_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "post_stop_applicable_rules",
+      "target_law_id": "NRS-484B-310-1",
+      "judgment_refs": [
+        {
+          "phrase": "official traffic-control device",
+          "note": "Review official device identity and which approach it governs."
+        },
+        {
+          "phrase": "nearest crosswalk in an intersection or at a limit line when marked, or, if none, then before entering the intersection",
+          "note": "Review the actual surveyed stop reference; do not infer an extra priority or numeric tolerance."
+        },
+        {
+          "phrase": "rules applicable after making a required stop",
+          "note": "Preserve incorporated post-stop rules for independent source review."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "joint",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "Exact physical references are prepared; original device authority and incorporated post-stop rules await source review.",
+      "missing_inputs": [
+        "reviewed official-device source and original packet",
+        "separate incorporated post-stop rules and original traffic history"
+      ],
+      "variable_assignments": {
+        "stop_reference_kind": {
+          "kind": "world_setup",
+          "value": "crosswalk",
+          "unit": "category"
+        },
+        "requested_stop_offset_m": {
+          "kind": "controller",
+          "value": -1.2,
+          "unit": "m"
+        },
+        "measured_front_at_stop_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_flash",
+            "unit": "boolean",
+            "method": "source-bound red lens illumination per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "front_position",
+            "unit": "metres",
+            "method": "heavy-vehicle front body coordinate",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "complete_cessation",
+            "unit": "boolean",
+            "method": "original zero-motion observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "stop_reference",
+            "unit": "surveyed coordinate",
+            "method": "selected physical reference alternative",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "occluder_source",
+            "unit": "source hash",
+            "method": "physical occluder and geometry readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Right to proceed after the stop requires separate applicable-rule review.",
+          "No numeric legal speed or stopping tolerance is inferred."
+        ]
+      }
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared flashing-red heavy-vehicle approach context without legal finding.",
+      "variable_assignments": {
+        "stop_reference_kind": {
+          "kind": "world_setup",
+          "value": "crosswalk",
+          "unit": "category"
+        },
+        "requested_stop_offset_m": {
+          "kind": "controller",
+          "value": -1.2,
+          "unit": "m"
+        },
+        "measured_front_at_stop_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "official traffic-control device",
+        "nearest crosswalk in an intersection or at a limit line when marked, or, if none, then before entering the intersection",
+        "rules applicable after making a required stop"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_flash",
+            "unit": "boolean",
+            "method": "source-bound red lens illumination per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "front_position",
+            "unit": "metres",
+            "method": "heavy-vehicle front body coordinate",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "complete_cessation",
+            "unit": "boolean",
+            "method": "original zero-motion observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "stop_reference",
+            "unit": "surveyed coordinate",
+            "method": "selected physical reference alternative",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "occluder_source",
+            "unit": "source hash",
+            "method": "physical occluder and geometry readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Right to proceed after the stop requires separate applicable-rule review.",
+          "No numeric legal speed or stopping tolerance is inferred."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__crosswalk_stop",
+      "target_law_id": "NRS-484B-310-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact physical stop-reference alternative and original front cessation; no legal verdict.",
+      "paired_probe_id": "flashing_red_stop_reference",
+      "deliberate_differences": [
+        "stop_reference_kind",
+        "requested_stop_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_offset_m",
+        "comparison_or_standard": "Compare original front position at complete cessation against surveyed reference.",
+        "target_value_or_branch": "crosswalk_stop"
+      },
+      "variable_assignments": {
+        "stop_reference_kind": {
+          "kind": "world_setup",
+          "value": "crosswalk",
+          "unit": "category"
+        },
+        "requested_stop_offset_m": {
+          "kind": "controller",
+          "value": -1.2,
+          "unit": "m"
+        },
+        "measured_front_at_stop_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "official traffic-control device",
+        "nearest crosswalk in an intersection or at a limit line when marked, or, if none, then before entering the intersection",
+        "rules applicable after making a required stop"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_flash",
+            "unit": "boolean",
+            "method": "source-bound red lens illumination per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "front_position",
+            "unit": "metres",
+            "method": "heavy-vehicle front body coordinate",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "complete_cessation",
+            "unit": "boolean",
+            "method": "original zero-motion observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "stop_reference",
+            "unit": "surveyed coordinate",
+            "method": "selected physical reference alternative",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "occluder_source",
+            "unit": "source hash",
+            "method": "physical occluder and geometry readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Right to proceed after the stop requires separate applicable-rule review.",
+          "No numeric legal speed or stopping tolerance is inferred."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__crosswalk_late_stop",
+      "target_law_id": "NRS-484B-310-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact physical stop-reference alternative and original front cessation; no legal verdict.",
+      "paired_probe_id": "flashing_red_stop_reference",
+      "deliberate_differences": [
+        "stop_reference_kind",
+        "requested_stop_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_offset_m",
+        "comparison_or_standard": "Compare original front position at complete cessation against surveyed reference.",
+        "target_value_or_branch": "crosswalk_late_stop"
+      },
+      "variable_assignments": {
+        "stop_reference_kind": {
+          "kind": "world_setup",
+          "value": "crosswalk",
+          "unit": "category"
+        },
+        "requested_stop_offset_m": {
+          "kind": "controller",
+          "value": 0.8,
+          "unit": "m"
+        },
+        "measured_front_at_stop_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "official traffic-control device",
+        "nearest crosswalk in an intersection or at a limit line when marked, or, if none, then before entering the intersection",
+        "rules applicable after making a required stop"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_flash",
+            "unit": "boolean",
+            "method": "source-bound red lens illumination per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "front_position",
+            "unit": "metres",
+            "method": "heavy-vehicle front body coordinate",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "complete_cessation",
+            "unit": "boolean",
+            "method": "original zero-motion observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "stop_reference",
+            "unit": "surveyed coordinate",
+            "method": "selected physical reference alternative",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "occluder_source",
+            "unit": "source hash",
+            "method": "physical occluder and geometry readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Right to proceed after the stop requires separate applicable-rule review.",
+          "No numeric legal speed or stopping tolerance is inferred."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__limit_line_stop",
+      "target_law_id": "NRS-484B-310-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact physical stop-reference alternative and original front cessation; no legal verdict.",
+      "paired_probe_id": "flashing_red_stop_reference",
+      "deliberate_differences": [
+        "stop_reference_kind",
+        "requested_stop_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_offset_m",
+        "comparison_or_standard": "Compare original front position at complete cessation against surveyed reference.",
+        "target_value_or_branch": "limit_line_stop"
+      },
+      "variable_assignments": {
+        "stop_reference_kind": {
+          "kind": "world_setup",
+          "value": "limit_line",
+          "unit": "category"
+        },
+        "requested_stop_offset_m": {
+          "kind": "controller",
+          "value": -1.2,
+          "unit": "m"
+        },
+        "measured_front_at_stop_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "official traffic-control device",
+        "nearest crosswalk in an intersection or at a limit line when marked, or, if none, then before entering the intersection",
+        "rules applicable after making a required stop"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_flash",
+            "unit": "boolean",
+            "method": "source-bound red lens illumination per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "front_position",
+            "unit": "metres",
+            "method": "heavy-vehicle front body coordinate",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "complete_cessation",
+            "unit": "boolean",
+            "method": "original zero-motion observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "stop_reference",
+            "unit": "surveyed coordinate",
+            "method": "selected physical reference alternative",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "occluder_source",
+            "unit": "source hash",
+            "method": "physical occluder and geometry readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Right to proceed after the stop requires separate applicable-rule review.",
+          "No numeric legal speed or stopping tolerance is inferred."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C24751__NRS-484B-310-1__heavy_vehicle_driver__intersection_stop",
+      "target_law_id": "NRS-484B-310-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact physical stop-reference alternative and original front cessation; no legal verdict.",
+      "paired_probe_id": "flashing_red_stop_reference",
+      "deliberate_differences": [
+        "stop_reference_kind",
+        "requested_stop_offset_m"
+      ],
+      "probe": {
+        "primary_variable": "requested_stop_offset_m",
+        "comparison_or_standard": "Compare original front position at complete cessation against surveyed reference.",
+        "target_value_or_branch": "intersection_stop"
+      },
+      "variable_assignments": {
+        "stop_reference_kind": {
+          "kind": "world_setup",
+          "value": "intersection",
+          "unit": "category"
+        },
+        "requested_stop_offset_m": {
+          "kind": "controller",
+          "value": -1.2,
+          "unit": "m"
+        },
+        "measured_front_at_stop_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "official traffic-control device",
+        "nearest crosswalk in an intersection or at a limit line when marked, or, if none, then before entering the intersection",
+        "rules applicable after making a required stop"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_flash",
+            "unit": "boolean",
+            "method": "source-bound red lens illumination per frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "front_position",
+            "unit": "metres",
+            "method": "heavy-vehicle front body coordinate",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "complete_cessation",
+            "unit": "boolean",
+            "method": "original zero-motion observation",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "stop_reference",
+            "unit": "surveyed coordinate",
+            "method": "selected physical reference alternative",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "occluder_source",
+            "unit": "source hash",
+            "method": "physical occluder and geometry readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame and reviewed map",
+            "uncertainty": "requested stop target does not prove physical or legal outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Right to proceed after the stop requires separate applicable-rule review.",
+          "No numeric legal speed or stopping tolerance is inferred."
+        ]
+      }
+    }
+  ]
+}

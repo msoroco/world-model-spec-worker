@@ -22,7 +22,10 @@ class Vehicle:
     id = 7
     type_id = 'vehicle.tesla.model3'
     is_alive = True
-    bounding_box = SimpleNamespace(extent=SimpleNamespace(x=1.0))
+    bounding_box = SimpleNamespace(extent=SimpleNamespace(x=1.0),
+        get_world_vertices=lambda transform: [SimpleNamespace(x=transform.location.x + dx,
+            y=transform.location.y + dy, z=0.0)
+            for dx, dy in ((-1., -1.), (-1., 1.), (1., -1.), (1., 1.))])
 
     def __init__(self, world):
         self.world = world
@@ -30,7 +33,7 @@ class Vehicle:
     def get_transform(self):
         i = self.world.index
         front = 1.0 if i < 200 else 9.0 if i < 300 else 15.0
-        return SimpleNamespace(location=SimpleNamespace(x=front - 1.0, y=10.0),
+        return SimpleNamespace(location=SimpleNamespace(x=front - 1.0, y=10.0, z=0.0),
                                get_forward_vector=lambda: SimpleNamespace(x=1.0, y=0.0))
 
     def get_velocity(self):

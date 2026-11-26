@@ -36,7 +36,7 @@ def description():
                 'No numeric legal speed or stopping tolerance is inferred.']}
 
 
-def make_config(case):
+def make_config(case, fallback=False):
     ids = [ASSIGNMENT + '__' + item.suffix for item in CASES]
     return {'assignment_id': ASSIGNMENT, 'law_id': 'NRS-484B-310-1',
             'cell_id': 'C24751', 'actor': 'heavy_vehicle_driver',
@@ -45,6 +45,8 @@ def make_config(case):
             'frame_count': 900, 'required_atoms': [], 'source_packets': [],
             'requested_reference': case.reference,
             'requested_stop_offset_m': case.stop_offset_m,
+            'engineering': {'approach_speed_mps': 1.2 if fallback else 2.0,
+                            'braking_buffer_m': 2.0 if fallback else 1.0},
             'cameras': [{'name': name, 'width': width, 'height': height,
                          'pose_strategy': 'reviewed original four-view site survey',
                          'fov_deg': 90} for name, width, height in VIEWS],
@@ -105,6 +107,12 @@ def build():
                            'heavy-vehicle route and stop target',
                            'four-camera Native capture with sealed original history']}
         write(HERE / ('construction-' + case.suffix + '.json'), construction)
+        fallback = dict(construction)
+        fallback['files'] = [dict(item) for item in files]
+        fallback_config = make_config(case, fallback=True)
+        fallback['files'][-2]['content'] = json.dumps(fallback_config, indent=2) + '\n'
+        fallback['measurement_plan'] = construction['measurement_plan'] + '; reduced approach speed and enlarged braking buffer'
+        write(HERE / ('construction-' + case.suffix + '-fallback1.json'), fallback)
         if index == 0:
             (HERE / 'config.json').write_text(config_text, encoding='utf-8')
             (HERE / 'tests/test_bundle.py').parent.mkdir(parents=True, exist_ok=True)

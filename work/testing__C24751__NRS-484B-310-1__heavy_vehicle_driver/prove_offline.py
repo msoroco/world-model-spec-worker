@@ -49,7 +49,15 @@ def proof():
                                             'occluder_source', 'camera_frame_identity')},
                         'candidate_risk': {'status': 'physical',
                             'reason': 'Heavy-vehicle stopping and flashing lens visibility need measured local fallback assessment.'},
-                        'candidates': []})
+                        'candidates': [{
+                            'id': 'fallback1',
+                            'construction': 'construction-' + name + '-fallback1.json',
+                            'construction_sha256': sha(HERE / ('construction-' + name + '-fallback1.json')),
+                            'trigger': {'source': 'original Native front-position/cessation history',
+                                'metric': 'absolute measured front stopping error from requested engineering target',
+                                'failure_condition': 'physical stop target misses source-surveyed engineering position by more than 0.25 m'},
+                            'changed_knobs': ['approach speed 1.2 m/s instead of 2.0 m/s',
+                                              'braking buffer 2.0 m instead of 1.0 m']} ]})
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': ASSIGNMENT,
                 'status': 'source_gated_draft',
                 'runtime_manifest_sha256': sha(ROOT / 'runtime/SOURCE-MANIFEST.json'),
@@ -81,6 +89,26 @@ def proof():
                             ' --output $OUTPUT --python $CPU_PYTHON',
                             'exit_code': 0, 'construction_sha256': entry['construction_sha256'],
                             'log': log_path.name, 'log_sha256': sha(log_path)}
+        fallback = entry['candidates'][0]
+        destination = SCRATCH / (name + '-fallback1')
+        if destination.exists():
+            shutil.rmtree(destination)
+        command = [sys.executable, str(ROOT / 'runtime.py'), 'offline',
+                   '--manifest', str(manifest_path), '--case', entry['case_id'],
+                   '--candidate', 'fallback1', '--output', str(destination),
+                   '--python', sys.executable]
+        process = subprocess.run(command, cwd=ROOT, env=environment,
+                                 capture_output=True, text=True, timeout=300)
+        log_path = HERE / ('cpu-offline-' + name + '-fallback1.log')
+        details = (destination / 'offline.log').read_text(encoding='utf-8') if (destination / 'offline.log').exists() else ''
+        log_path.write_text((details + process.stdout + process.stderr).rstrip() + '\n', encoding='utf-8')
+        if process.returncode:
+            raise RuntimeError('exact fallback offline failed: ' + name + ' (see ' + str(log_path) + ')')
+        fallback['offline'] = {'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' +
+            ASSIGNMENT + '/execution-manifest.json --case ' + entry['case_id'] +
+            ' --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON',
+            'exit_code': 0, 'construction_sha256': fallback['construction_sha256'],
+            'log': log_path.name, 'log_sha256': sha(log_path)}
         write(manifest_path, manifest)
         print('offline passed:', name)
     return manifest

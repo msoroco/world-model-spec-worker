@@ -59,7 +59,8 @@ def capture_original(adapter, packet_path, case_id, output_dir, *, pipeline_fact
     cameras_started = cameras_finished = False
     rows, joins = [], []
     try:
-        built = build_case(adapter, site, case)
+        config = json.loads((output / 'config.json').read_text(encoding='utf-8'))
+        built = build_case(adapter, site, case, config.get('engineering'))
         pipeline = pipeline_factory(adapter.pipeline_client(), built['ego'], output,
                                     case_id, required_observations=())
         adapter.start_cameras(output, cameras)

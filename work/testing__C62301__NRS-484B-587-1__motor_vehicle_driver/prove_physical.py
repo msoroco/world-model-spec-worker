@@ -63,7 +63,7 @@ def outcome(config, suffix, kind):
     write(root / "scenario_geometry.json", {"intersection_polygon_xy_m":
                                               [[-2, -2], [2, -2], [2, 2], [-2, 2]]})
     write(root / "signal_context.json", {"selected_facing_signal": "synthetic fixture"})
-    target = {"target": "original sampled right-pass route progress",
+    target = {"target": "original sampled access boundary route progress",
               "requested": "finite original motion", "measured": kind,
               "method": "source-shaped 900-frame CPU motion fixture", "tolerance": 0,
               "matched": kind == "complete_motion", "physical_cause_confirmed": False,
@@ -142,7 +142,7 @@ def run():
                     ("complete_motion", "incomplete_motion", "missing_evidence")]
         life = lifecycle(config, suffix)
         receipt_path = HERE / ("physical-" + suffix + "-receipt.json")
-        write(receipt_path, {"format": "right-turn-physical-preparation", "case_id": entry["case_id"],
+        write(receipt_path, {"format": "controlled-access-physical-preparation", "case_id": entry["case_id"],
                              "construction_sha256": entry["construction_sha256"],
                              "fixtures": fixtures, "lifecycle": life,
                              "legal_verdict": None, "physical_acceptance_claimed": False})

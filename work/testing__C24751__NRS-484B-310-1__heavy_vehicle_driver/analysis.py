@@ -135,7 +135,12 @@ def analyze(root):
                         - measured['surveyed_reference_m'],
             'method': '900 sealed original motion/signal rows' if is_original
                       else '900 synthetic motion/signal rows',
-            'tolerance': .25, 'matched': False, 'physical_cause_confirmed': False,
+            'tolerance': .25,
+            'matched': False if is_original else abs(
+                measured['stop_observations'][0]['front_m']
+                - measured['surveyed_reference_m']
+                - matches[0].stop_offset_m) <= .25,
+            'physical_cause_confirmed': False,
             'cause_evidence': source}],
         'setup_confirmed': False, 'behavior_attempted': False,
         'maneuver_completed': False, 'termination_reason': 'saved measurement pending physical review',

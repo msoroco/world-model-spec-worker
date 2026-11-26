@@ -12,7 +12,7 @@ from package_spec import AID, CAMERA_NAMES
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / ".runtime-work" / "c62301-owner-nov26" / "right-turn-delivery-diagnostic-v3"
+SCRATCH = ROOT / ".runtime-work" / "c62301-owner-nov26" / "controlled-access-delivery-diagnostic-v3"
 SCRIPT = HERE / "delivery_audit.py"
 
 
@@ -43,12 +43,12 @@ def run():
         views = {name: {"video_sha256": bindings[name + ".mkv"],
                         "reviewer": "CPU protocol fixture",
                         "samples": [{"frame": 100, "vehicle_visible": True,
-                                     "turn_lane_visible": True, "conflict_visible": True,
+                                     "device_visible": True, "conflict_visible": True,
                                      "decoded_rgb_sha256": hashlib.sha256((name + case_id).encode()).hexdigest()}]}
                  for name in CAMERA_NAMES}
         review = {"case_id": case_id, "capture_receipt_sha256": capture["receipt_sha256"],
-                  "views": views, "legal_lane_design": None,
-                  "legal_purpose_interpretation": None, "legal_turn_interpretation": None}
+                  "views": views, "legal_access_determination": None,
+                  "legal_device_designation": None, "legal_notice_interpretation": None}
         positive = root / "pixel-review.json"
         write(positive, review)
         negative = root / "pixel-review-missing-view.json"

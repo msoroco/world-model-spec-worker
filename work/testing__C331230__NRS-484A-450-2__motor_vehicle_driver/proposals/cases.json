@@ -1,0 +1,461 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__baseline",
+      "deliberate_differences": [
+        "requested_brake_policy",
+        "crosswalk_marked"
+      ],
+      "paired_probe_id": "baseline",
+      "probe": {
+        "comparison_or_standard": "original pre-entry cessation and front trajectory",
+        "primary_variable": "requested_brake_policy",
+        "target_value_or_branch": "halt"
+      },
+      "rationale": "Shared governed marked crosswalk stop-sign approach reference.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_front_position",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "physical_cessation",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "governing_stop_sign",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "near_side_crosswalk_boundary",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed intersection, sign and opposing sidewalk geometry",
+            "name": "reviewed_crosswalk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A cessation sample does not establish a minimum legal stop duration."
+        ]
+      },
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "view of approaching traffic"
+      ],
+      "variable_assignments": {
+        "crosswalk_marked": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "requested_brake_policy": {
+          "kind": "controller",
+          "value": "halt"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_halt",
+      "deliberate_differences": [
+        "requested_brake_policy"
+      ],
+      "paired_probe_id": "marked_crosswalk_cessation",
+      "probe": {
+        "comparison_or_standard": "physical cessation before near-side crosswalk entry",
+        "primary_variable": "requested_brake_policy",
+        "target_value_or_branch": "halt"
+      },
+      "rationale": "Measure original front, speed and crossing under reviewed sign/geometry without a preassigned legal outcome.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_front_position",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "physical_cessation",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "governing_stop_sign",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "near_side_crosswalk_boundary",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed intersection, sign and opposing sidewalk geometry",
+            "name": "reviewed_crosswalk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A cessation sample does not establish a minimum legal stop duration."
+        ]
+      },
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "view of approaching traffic"
+      ],
+      "variable_assignments": {
+        "crosswalk_marked": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "requested_brake_policy": {
+          "kind": "controller",
+          "value": "halt"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__marked_crosswalk_rolling",
+      "deliberate_differences": [
+        "requested_brake_policy"
+      ],
+      "paired_probe_id": "marked_crosswalk_cessation",
+      "probe": {
+        "comparison_or_standard": "physical cessation before near-side crosswalk entry",
+        "primary_variable": "requested_brake_policy",
+        "target_value_or_branch": "rolling"
+      },
+      "rationale": "Measure original front, speed and crossing under reviewed sign/geometry without a preassigned legal outcome.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_front_position",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "physical_cessation",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "governing_stop_sign",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "near_side_crosswalk_boundary",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed intersection, sign and opposing sidewalk geometry",
+            "name": "reviewed_crosswalk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A cessation sample does not establish a minimum legal stop duration."
+        ]
+      },
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "view of approaching traffic"
+      ],
+      "variable_assignments": {
+        "crosswalk_marked": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "requested_brake_policy": {
+          "kind": "controller",
+          "value": "rolling"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_halt",
+      "deliberate_differences": [
+        "requested_brake_policy"
+      ],
+      "paired_probe_id": "unmarked_crosswalk_cessation",
+      "probe": {
+        "comparison_or_standard": "physical cessation before near-side crosswalk entry",
+        "primary_variable": "requested_brake_policy",
+        "target_value_or_branch": "halt"
+      },
+      "rationale": "Measure original front, speed and crossing under reviewed sign/geometry without a preassigned legal outcome.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_front_position",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "physical_cessation",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "governing_stop_sign",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "near_side_crosswalk_boundary",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed intersection, sign and opposing sidewalk geometry",
+            "name": "reviewed_crosswalk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A cessation sample does not establish a minimum legal stop duration."
+        ]
+      },
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "view of approaching traffic"
+      ],
+      "variable_assignments": {
+        "crosswalk_marked": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "requested_brake_policy": {
+          "kind": "controller",
+          "value": "halt"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C331230__NRS-484A-450-2__motor_vehicle_driver__unmarked_crosswalk_rolling",
+      "deliberate_differences": [
+        "requested_brake_policy"
+      ],
+      "paired_probe_id": "unmarked_crosswalk_cessation",
+      "probe": {
+        "comparison_or_standard": "physical cessation before near-side crosswalk entry",
+        "primary_variable": "requested_brake_policy",
+        "target_value_or_branch": "rolling"
+      },
+      "rationale": "Measure original front, speed and crossing under reviewed sign/geometry without a preassigned legal outcome.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_front_position",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "physical_cessation",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "governing_stop_sign",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "near_side_crosswalk_boundary",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map and world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical cessation, geometry and camera realization pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed intersection, sign and opposing sidewalk geometry",
+            "name": "reviewed_crosswalk_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A cessation sample does not establish a minimum legal stop duration."
+        ]
+      },
+      "target_law_id": "NRS-484A-450-2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "view of approaching traffic"
+      ],
+      "variable_assignments": {
+        "crosswalk_marked": {
+          "kind": "world_setup",
+          "value": false
+        },
+        "requested_brake_policy": {
+          "kind": "controller",
+          "value": "rolling"
+        }
+      }
+    }
+  ],
+  "cell_id": "C331230",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "The no-crosswalk fallback's view point requires local geometry and traffic review; it is not exercised by selected crosswalk cases.",
+          "phrase": "view of approaching traffic"
+        }
+      ],
+      "missing_inputs": [
+        "Source-backed no-crosswalk/stop-line geometry and approaching-traffic view sweep."
+      ],
+      "rationale": "No-crosswalk fallback is not the assigned near-side crosswalk branch.",
+      "status": "incomplete",
+      "sweep_id": "nearest_view_point_not_selected",
+      "target_law_id": "NRS-484A-450-2"
+    }
+  ],
+  "sweeps_expanded": true
+}

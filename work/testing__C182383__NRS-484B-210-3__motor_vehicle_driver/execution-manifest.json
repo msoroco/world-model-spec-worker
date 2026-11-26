@@ -1,0 +1,612 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver",
+  "status": "physical_and_selected_cpu_proofs_bound_gpu_pending",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement",
+      "kind": "delivery",
+      "construction": "construction-selected-narrow_off_pavement.json",
+      "construction_sha256": "f74057f33773ab1d5b315b5211335ff64dde7d263e49b61f8147dba6b4109d53",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native ego may leave the surveyed right-side pass route, miss body overlap, or cross the surveyed paved edge unexpectedly; a modest lateral controller adjustment preserves source geometry, actors and sensors."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-narrow_off_pavement.json",
+          "construction_sha256": "fde1fff2ec6dc01c39d1aacdff5cd0ca0da77fd7354e9743b252ca412dd06127",
+          "trigger": {
+            "source": "original 900-frame body envelope and paved-edge readback",
+            "metric": "right-side pass body overlap and surveyed edge crossing",
+            "failure_condition": "vehicle misses the intended body overlap or departs the surveyed corridor"
+          },
+          "changed_knobs": [
+            "lateral controller gain: 0.07"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-fallback-offline-c182383-v1/narrow_off_pavement --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-narrow_off_pavement.log",
+            "log_sha256": "9228cff37807f55d7be4f60f50f1f0e3e98d2a8acbd380dd1cfac29ca812340d",
+            "construction_sha256": "fde1fff2ec6dc01c39d1aacdff5cd0ca0da77fd7354e9743b252ca412dd06127"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-narrow_off_pavement.json",
+            "sha256": "b7d56eca58765c458ab13d2ee45447bf1ba35729ff4f70e0c16f82b0860d3e62",
+            "log": "proof-fallback-analysis-narrow_off_pavement.log",
+            "negative_log": "proof-fallback-negative-narrow_off_pavement.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/diagnostics/narrow_off_pavement-recipe.json",
+      "measurement_contract": "diagnostics/narrow_off_pavement-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original body envelopes and independent paved-edge readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/selected-c182383-v1/offline/narrow_off_pavement --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-narrow_off_pavement.log",
+        "log_sha256": "b4cba18e4302c5b4bb0f001f938981af7504eeb76e6bb7682b5cef0cd10dfde1",
+        "construction_sha256": "f74057f33773ab1d5b315b5211335ff64dde7d263e49b61f8147dba6b4109d53"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-narrow_off_pavement.json",
+        "sha256": "8dddfd0733c771bbbbb8171ea3b4d1ff683f5a3079e488b70d3983c3832873a5",
+        "log": "proof-compat-analysis-narrow_off_pavement.log",
+        "negative_log": "proof-compat-negative-narrow_off_pavement.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-narrow_off_pavement.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-narrow_off_pavement-receipt.json",
+        "sha256": "5332eb9f4543a90ad7063201f9920bb5112756ef1795b7c71af9d5a27c1a4c2a"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-narrow_off_pavement.log",
+        "sha256": "5b8a00d024e7ea86aad89852ed8ee30393b945ccace87633a7356fc56e5216ce"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-narrow_off_pavement.log",
+        "test_log_sha256": "5b8a00d024e7ea86aad89852ed8ee30393b945ccace87633a7356fc56e5216ce"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/narrow_off_pavement --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/proofs/physical/narrow_off_pavement/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/narrow_off_pavement/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/narrow_off_pavement --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/proofs/physical/narrow_off_pavement/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/narrow_off_pavement/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "b3c73546740fbc2bec1fe2dabfc66fe60ea7cb5bad91bbd2cb7ad13430f0d731",
+        "test_log": "proof-delivery-positive-narrow_off_pavement.log",
+        "test_log_sha256": "6a0a7097ad3c983600d79c24dbc0b539b2ef202098a9532fa36591680e44a96f",
+        "negative_log": "proof-delivery-negative-narrow_off_pavement.log",
+        "negative_log_sha256": "85a1bf7419a5b119d65c4f81dd014077ca066b334cc46bdf63da3015d2596767",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C182383_REVIEWED_SITE",
+        "adapter_module_env_var": "C182383_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "paved_surface_classification": {
+          "entrypoint": "right_pass.py",
+          "method": "independently sourced public paved surface and adjacent classification",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "paved_edge_geometry": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "surveyed paved bounds and original body frame join",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "ego_and_overtaken_identity": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original Native two-actor identity",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "ego_and_overtaken_body_envelopes": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original world body corners projected to road frame",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "right_side_pass_event": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "original longitudinal overlap and side readback",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "actual_off_pavement_travel": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "measured ego body crossing classified paved edge",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "physical_necessity_review": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "zero-clearance lower bound with legal safe alternative unresolved",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_motion": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original Native position and speed history",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement",
+      "kind": "delivery",
+      "construction": "construction-selected-wide_on_pavement.json",
+      "construction_sha256": "0b0716f3d5029b777ff23a1a4f08c9e85abdf61ce35bedcb3f5d3671e34360ea",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native ego may leave the surveyed right-side pass route, miss body overlap, or cross the surveyed paved edge unexpectedly; a modest lateral controller adjustment preserves source geometry, actors and sensors."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-wide_on_pavement.json",
+          "construction_sha256": "c17211d2586315b587b3c4f74ded6053ea1d2549d51f57549cbbb1121e78e88e",
+          "trigger": {
+            "source": "original 900-frame body envelope and paved-edge readback",
+            "metric": "right-side pass body overlap and surveyed edge crossing",
+            "failure_condition": "vehicle misses the intended body overlap or departs the surveyed corridor"
+          },
+          "changed_knobs": [
+            "lateral controller gain: 0.07"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-fallback-offline-c182383-v1/wide_on_pavement --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-wide_on_pavement.log",
+            "log_sha256": "19fe4c66f50d6ec46e501b56d564e0461ef348138b8fcc98944a671026e9855a",
+            "construction_sha256": "c17211d2586315b587b3c4f74ded6053ea1d2549d51f57549cbbb1121e78e88e"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-wide_on_pavement.json",
+            "sha256": "376aa8962290bb844d614aef1a0995819dc98f5c26dee5c3c3bb85da90e878ec",
+            "log": "proof-fallback-analysis-wide_on_pavement.log",
+            "negative_log": "proof-fallback-negative-wide_on_pavement.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/diagnostics/wide_on_pavement-recipe.json",
+      "measurement_contract": "diagnostics/wide_on_pavement-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original body envelopes and independent paved-edge readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/selected-c182383-v1/offline/wide_on_pavement --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-wide_on_pavement.log",
+        "log_sha256": "a4c6d4d3c840dc239e1bd160c9b94b0f5e052351be20542722cb66b30f4e4203",
+        "construction_sha256": "0b0716f3d5029b777ff23a1a4f08c9e85abdf61ce35bedcb3f5d3671e34360ea"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-wide_on_pavement.json",
+        "sha256": "007eafc189c3bdbef8bdbbb27c6ecb514d9909a3caa7595d74bf50166514c5af",
+        "log": "proof-compat-analysis-wide_on_pavement.log",
+        "negative_log": "proof-compat-negative-wide_on_pavement.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-wide_on_pavement.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-wide_on_pavement-receipt.json",
+        "sha256": "ff9531898b25506619170133c408bbd20df9cb4583a48c249010bb2e24c9e6c0"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-wide_on_pavement.log",
+        "sha256": "fbed710d50d512c082095cfbccb263cd861fe3a0c5dc943bdb64c180c29129cf"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-wide_on_pavement.log",
+        "test_log_sha256": "fbed710d50d512c082095cfbccb263cd861fe3a0c5dc943bdb64c180c29129cf"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/wide_on_pavement --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/proofs/physical/wide_on_pavement/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/wide_on_pavement/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_on_pavement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/wide_on_pavement --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/proofs/physical/wide_on_pavement/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/wide_on_pavement/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "b3c73546740fbc2bec1fe2dabfc66fe60ea7cb5bad91bbd2cb7ad13430f0d731",
+        "test_log": "proof-delivery-positive-wide_on_pavement.log",
+        "test_log_sha256": "0b32fb9dc7ad43b24cb9b74649c3483361231fe88ed0127de61c4fe38282513f",
+        "negative_log": "proof-delivery-negative-wide_on_pavement.log",
+        "negative_log_sha256": "85a1bf7419a5b119d65c4f81dd014077ca066b334cc46bdf63da3015d2596767",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C182383_REVIEWED_SITE",
+        "adapter_module_env_var": "C182383_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "paved_surface_classification": {
+          "entrypoint": "right_pass.py",
+          "method": "independently sourced public paved surface and adjacent classification",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "paved_edge_geometry": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "surveyed paved bounds and original body frame join",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "ego_and_overtaken_identity": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original Native two-actor identity",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "ego_and_overtaken_body_envelopes": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original world body corners projected to road frame",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "right_side_pass_event": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "original longitudinal overlap and side readback",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "actual_off_pavement_travel": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "measured ego body crossing classified paved edge",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "physical_necessity_review": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "zero-clearance lower bound with legal safe alternative unresolved",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_motion": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original Native position and speed history",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement",
+      "kind": "delivery",
+      "construction": "construction-selected-wide_off_pavement.json",
+      "construction_sha256": "e1044b7f693e178b1b3a976b483ead3cc5aaacb9b19676bb9880f06b83cf1207",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native ego may leave the surveyed right-side pass route, miss body overlap, or cross the surveyed paved edge unexpectedly; a modest lateral controller adjustment preserves source geometry, actors and sensors."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-wide_off_pavement.json",
+          "construction_sha256": "b2efcd1a0e82cd9cb8feb14da1eb4d46dd2f56bc402c3a9134c78927374f8ef8",
+          "trigger": {
+            "source": "original 900-frame body envelope and paved-edge readback",
+            "metric": "right-side pass body overlap and surveyed edge crossing",
+            "failure_condition": "vehicle misses the intended body overlap or departs the surveyed corridor"
+          },
+          "changed_knobs": [
+            "lateral controller gain: 0.07"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-fallback-offline-c182383-v1/wide_off_pavement --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-wide_off_pavement.log",
+            "log_sha256": "0d49b78b3b9db42b53a2197a5d402f7117adecf2db2f4d14174770717a3a3777",
+            "construction_sha256": "b2efcd1a0e82cd9cb8feb14da1eb4d46dd2f56bc402c3a9134c78927374f8ef8"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-wide_off_pavement.json",
+            "sha256": "64350302ae2616b3a69d7bef33598520ea19aea9a48087dc8f02c2c0387802f4",
+            "log": "proof-fallback-analysis-wide_off_pavement.log",
+            "negative_log": "proof-fallback-negative-wide_off_pavement.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/diagnostics/wide_off_pavement-recipe.json",
+      "measurement_contract": "diagnostics/wide_off_pavement-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original body envelopes and independent paved-edge readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/selected-c182383-v1/offline/wide_off_pavement --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-wide_off_pavement.log",
+        "log_sha256": "546c90ea6dfef622b263eb0f2636a06b394e9b3baedddda7a1dd9643d1981942",
+        "construction_sha256": "e1044b7f693e178b1b3a976b483ead3cc5aaacb9b19676bb9880f06b83cf1207"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-wide_off_pavement.json",
+        "sha256": "0fe3c15fe6344a6dfabdc4b97a2c9c8abf4a19cdf1f604f2f3df5a865a94a246",
+        "log": "proof-compat-analysis-wide_off_pavement.log",
+        "negative_log": "proof-compat-negative-wide_off_pavement.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-wide_off_pavement.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-wide_off_pavement-receipt.json",
+        "sha256": "b4b8c5cfbd2d9874227dab4f0e1061fd52c6dd44d0a0f854f95368cd5066fedf"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-wide_off_pavement.log",
+        "sha256": "d90007abd6ebc73d8c5d343494687bd690f6c4fd8a866db242c9046d7c3db477"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-wide_off_pavement.log",
+        "test_log_sha256": "d90007abd6ebc73d8c5d343494687bd690f6c4fd8a866db242c9046d7c3db477"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/wide_off_pavement --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/proofs/physical/wide_off_pavement/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/wide_off_pavement/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__wide_off_pavement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/wide_off_pavement --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/proofs/physical/wide_off_pavement/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/wide_off_pavement/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "b3c73546740fbc2bec1fe2dabfc66fe60ea7cb5bad91bbd2cb7ad13430f0d731",
+        "test_log": "proof-delivery-positive-wide_off_pavement.log",
+        "test_log_sha256": "f822b612372101caea69dd98bfa5fde9b07fdac940a773becfe7a2ed10a9ce78",
+        "negative_log": "proof-delivery-negative-wide_off_pavement.log",
+        "negative_log_sha256": "85a1bf7419a5b119d65c4f81dd014077ca066b334cc46bdf63da3015d2596767",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C182383_REVIEWED_SITE",
+        "adapter_module_env_var": "C182383_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "paved_surface_classification": {
+          "entrypoint": "right_pass.py",
+          "method": "independently sourced public paved surface and adjacent classification",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "paved_edge_geometry": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "surveyed paved bounds and original body frame join",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "ego_and_overtaken_identity": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original Native two-actor identity",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "ego_and_overtaken_body_envelopes": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original world body corners projected to road frame",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "right_side_pass_event": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "original longitudinal overlap and side readback",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "actual_off_pavement_travel": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "measured ego body crossing classified paved edge",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "physical_necessity_review": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "zero-clearance lower bound with legal safe alternative unresolved",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_motion": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original Native position and speed history",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass",
+      "kind": "delivery",
+      "construction": "construction-selected-narrow_no_pass.json",
+      "construction_sha256": "4bbe3fd3cd3d2fccd252cec96427417cb8c26ba6e3a8dcd81d87ec3446cd3818",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native ego may leave the surveyed right-side pass route, miss body overlap, or cross the surveyed paved edge unexpectedly; a modest lateral controller adjustment preserves source geometry, actors and sensors."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-narrow_no_pass.json",
+          "construction_sha256": "e5c035eebd6aabde32b762dabac1d5091465d9daf8dc192bc1ab65a986261053",
+          "trigger": {
+            "source": "original 900-frame body envelope and paved-edge readback",
+            "metric": "right-side pass body overlap and surveyed edge crossing",
+            "failure_condition": "vehicle misses the intended body overlap or departs the surveyed corridor"
+          },
+          "changed_knobs": [
+            "lateral controller gain: 0.07"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-fallback-offline-c182383-v1/narrow_no_pass --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-narrow_no_pass.log",
+            "log_sha256": "6f6d9944949f55e7033dadaadbf8da6b1c2bc34d05d25ae4c2398648964a9266",
+            "construction_sha256": "e5c035eebd6aabde32b762dabac1d5091465d9daf8dc192bc1ab65a986261053"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-narrow_no_pass.json",
+            "sha256": "ff1a09874c7d26b951d3067db606b8e55da63cc18a0a2d7b7a1c71e26a776de1",
+            "log": "proof-fallback-analysis-narrow_no_pass.log",
+            "negative_log": "proof-fallback-negative-narrow_no_pass.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/diagnostics/narrow_no_pass-recipe.json",
+      "measurement_contract": "diagnostics/narrow_no_pass-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original body envelopes and independent paved-edge readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/selected-c182383-v1/offline/narrow_no_pass --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-narrow_no_pass.log",
+        "log_sha256": "b463ba1a39f306b76e2b16c23bb157424789501101ab57fcd38919312fc50615",
+        "construction_sha256": "4bbe3fd3cd3d2fccd252cec96427417cb8c26ba6e3a8dcd81d87ec3446cd3818"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-narrow_no_pass.json",
+        "sha256": "1ecbc07e41b23173fa81d6bd9d54e26e738d2ab537434c7948560c4d38c36d4b",
+        "log": "proof-compat-analysis-narrow_no_pass.log",
+        "negative_log": "proof-compat-negative-narrow_no_pass.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-narrow_no_pass.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-narrow_no_pass-receipt.json",
+        "sha256": "009332dac216460c9f31d2eb26820bbf529ec52ca3ca75aaa140611043f7d200"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-narrow_no_pass.log",
+        "sha256": "26795b74bc64524efd4e9c991d7cb7d56bf20bc76b82c65d1abd3cff50fcd9c7"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/execution-manifest.json --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-narrow_no_pass.log",
+        "test_log_sha256": "26795b74bc64524efd4e9c991d7cb7d56bf20bc76b82c65d1abd3cff50fcd9c7"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/narrow_no_pass --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/proofs/physical/narrow_no_pass/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/narrow_no_pass/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/delivery_audit.py --case testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_no_pass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/narrow_no_pass --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/proofs/physical/narrow_no_pass/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c182383-owner-nov26/paved-edge-delivery-c182383-v1/narrow_no_pass/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "b3c73546740fbc2bec1fe2dabfc66fe60ea7cb5bad91bbd2cb7ad13430f0d731",
+        "test_log": "proof-delivery-positive-narrow_no_pass.log",
+        "test_log_sha256": "9e00e284ebb341d70710c2b0fca13a6d7b232be66196bc0c103dff369ed9c55f",
+        "negative_log": "proof-delivery-negative-narrow_no_pass.log",
+        "negative_log_sha256": "85a1bf7419a5b119d65c4f81dd014077ca066b334cc46bdf63da3015d2596767",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C182383_REVIEWED_SITE",
+        "adapter_module_env_var": "C182383_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "paved_surface_classification": {
+          "entrypoint": "right_pass.py",
+          "method": "independently sourced public paved surface and adjacent classification",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "paved_edge_geometry": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "surveyed paved bounds and original body frame join",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "ego_and_overtaken_identity": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original Native two-actor identity",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "ego_and_overtaken_body_envelopes": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original world body corners projected to road frame",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "right_side_pass_event": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "original longitudinal overlap and side readback",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "actual_off_pavement_travel": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "measured ego body crossing classified paved edge",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "physical_necessity_review": {
+          "entrypoint": "right_pass_envelope.py",
+          "method": "zero-clearance lower bound with legal safe alternative unresolved",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        },
+        "vehicle_motion": {
+          "entrypoint": "right_pass_capture.py",
+          "method": "original Native position and speed history",
+          "evidence": "original-source-receipt.json, right-pass-history.json and synchronized 900-frame cameras"
+        }
+      }
+    }
+  ]
+}

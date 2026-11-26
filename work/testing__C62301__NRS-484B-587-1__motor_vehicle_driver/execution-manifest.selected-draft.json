@@ -11,9 +11,36 @@
       "construction_sha256": "c1241bcc93b38f9126b9e85dd77405e26524d1941d1081ca2aa8a41d2c0b6446",
       "candidate_risk": {
         "status": "physical",
-        "reason": "The Native vehicle may leave the designated boundary crossing or fail to show erected official notice, and original video may miss the device placement; a reviewed steering-gain fallback is reserved."
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-indicated_entry.json",
+          "construction_sha256": "8e91e90986e0ada6c54650e9e86accbfe20da7da0b79cfb9a208baf627421a34",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_entry --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/indicated_entry --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-indicated_entry.log",
+            "log_sha256": "6417113877792c9badda7e2788074570ccff9ee545bd4adde0e6a0265eb3e920",
+            "construction_sha256": "8e91e90986e0ada6c54650e9e86accbfe20da7da0b79cfb9a208baf627421a34"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-indicated_entry.json",
+            "sha256": "7dd7f95d97189d574f7e7269ae3334d4cab2366732bf2a91269cd63f4116b3ee",
+            "log": "proof-fallback-analysis-indicated_entry.log",
+            "negative_log": "proof-fallback-negative-indicated_entry.log"
+          }
+        }
+      ],
       "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/indicated_entry-recipe.json",
       "measurement_contract": "diagnostics/indicated_entry-measurement-contract.json",
       "measurement_procedure": {
@@ -35,9 +62,36 @@
       "construction_sha256": "f80515cb65f4e354e54dffe617beabf3568629bed48b36ce5aab0e8770c6d429",
       "candidate_risk": {
         "status": "physical",
-        "reason": "The Native vehicle may leave the designated boundary crossing or fail to show erected official notice, and original video may miss the device placement; a reviewed steering-gain fallback is reserved."
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-unindicated_entry.json",
+          "construction_sha256": "f63ea53f8d92aa1ccab28ce4a8a0a37b301b5740163779aac37876a1d13077cd",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_entry --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/unindicated_entry --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-unindicated_entry.log",
+            "log_sha256": "496e36c608abe5fc9ecc3602b1523d582c33c15a87b26aa65cefb6860c17ade5",
+            "construction_sha256": "f63ea53f8d92aa1ccab28ce4a8a0a37b301b5740163779aac37876a1d13077cd"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-unindicated_entry.json",
+            "sha256": "198a9d985b0cc3ee9851e84e7224e9580618c3b9a7223662aba1ae59d7f7c1ac",
+            "log": "proof-fallback-analysis-unindicated_entry.log",
+            "negative_log": "proof-fallback-negative-unindicated_entry.log"
+          }
+        }
+      ],
       "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/unindicated_entry-recipe.json",
       "measurement_contract": "diagnostics/unindicated_entry-measurement-contract.json",
       "measurement_procedure": {
@@ -59,14 +113,48 @@
       "construction_sha256": "77002498ea541ff4f44f5a4429370f6aebc23b363451eb8cd476f22eb5cf0cfd",
       "candidate_risk": {
         "status": "physical",
-        "reason": "The Native vehicle may leave the designated boundary crossing or fail to show erected official notice, and original video may miss the device placement; a reviewed steering-gain fallback is reserved."
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-notice_not_visible.json",
+          "construction_sha256": "27ecdb4fd7f3a656240ce6db910414cbc1dfc8303e9c20da81b77b3fa6699276",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/notice_not_visible --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-notice_not_visible.log",
+            "log_sha256": "a7a745f2363015eef16ee0a356295f830268c92609a8b4ec8e49bba5a36d1808",
+            "construction_sha256": "27ecdb4fd7f3a656240ce6db910414cbc1dfc8303e9c20da81b77b3fa6699276"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-notice_not_visible.json",
+            "sha256": "07793f2736de8e595c425ac9f4c1a7e6f83fc180e86f468853294fe4c5a07920",
+            "log": "proof-fallback-analysis-notice_not_visible.log",
+            "negative_log": "proof-fallback-negative-notice_not_visible.log"
+          }
+        }
+      ],
       "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/notice_not_visible-recipe.json",
       "measurement_contract": "diagnostics/notice_not_visible-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
         "method": "source-sealed Native boundary crossing and independently sourced official device readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__notice_not_visible --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/selected-v1/offline/notice_not_visible --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-notice_not_visible.log",
+        "log_sha256": "51c56c3c5ad8d072febb6092b57ae132fe878eff0ef2eb19d81e94b3c1e96bd2",
+        "construction_sha256": "77002498ea541ff4f44f5a4429370f6aebc23b363451eb8cd476f22eb5cf0cfd"
       }
     },
     {
@@ -76,14 +164,48 @@
       "construction_sha256": "680807915dd3e9762dd618c9dee0df64c5ff12c5fab35d47f4b85511322808a2",
       "candidate_risk": {
         "status": "physical",
-        "reason": "The Native vehicle may leave the designated boundary crossing or fail to show erected official notice, and original video may miss the device placement; a reviewed steering-gain fallback is reserved."
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-indicated_exit.json",
+          "construction_sha256": "9633c3457dcc2248aa84d3f9ab2b0c76c6345df27155a7d40ed4dbe1bf2c6825",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/indicated_exit --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-indicated_exit.log",
+            "log_sha256": "95f85b6321caefced91d4fa3694659abee9f754df8cd7c37bc50aa6fa25db3c3",
+            "construction_sha256": "9633c3457dcc2248aa84d3f9ab2b0c76c6345df27155a7d40ed4dbe1bf2c6825"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-indicated_exit.json",
+            "sha256": "79e89be4e2d30f1b32f540d895bc1ab53d2d86578f3cbeac61e5bd31f193533f",
+            "log": "proof-fallback-analysis-indicated_exit.log",
+            "negative_log": "proof-fallback-negative-indicated_exit.log"
+          }
+        }
+      ],
       "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/indicated_exit-recipe.json",
       "measurement_contract": "diagnostics/indicated_exit-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
         "method": "source-sealed Native boundary crossing and independently sourced official device readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__indicated_exit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/selected-v1/offline/indicated_exit --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-indicated_exit.log",
+        "log_sha256": "709c598b000fc1f6cf5a42cc4001c6e72a0df9b0b34550e525927a4694897d66",
+        "construction_sha256": "680807915dd3e9762dd618c9dee0df64c5ff12c5fab35d47f4b85511322808a2"
       }
     },
     {
@@ -93,14 +215,48 @@
       "construction_sha256": "f3b558376032dc2ce0273bbe8c1d2ce3feef1178b84218b6dfcb8975ff5e60c9",
       "candidate_risk": {
         "status": "physical",
-        "reason": "The Native vehicle may leave the designated boundary crossing or fail to show erected official notice, and original video may miss the device placement; a reviewed steering-gain fallback is reserved."
+        "reason": "Native vehicle may miss the source-designated boundary point; steering adjustment preserves official designation, requested crossing, route, source geometry and sensors."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-unindicated_exit.json",
+          "construction_sha256": "eb5d0be4cfb08b886e4bef38bce2d278d2b5b023fc7a4270dec6250d44c32ba2",
+          "trigger": {
+            "source": "original 900-frame Native position and boundary crossing readback",
+            "metric": "measured boundary crossing at requested source point",
+            "failure_condition": "vehicle fails to reach requested source-surveyed boundary point"
+          },
+          "changed_knobs": [
+            "controller steering gain: 0.035"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/right-turn-fallback-offline-v2/unindicated_exit --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-unindicated_exit.log",
+            "log_sha256": "a0cca910d9384ac72f87281fedce1d793a255c059f18a93e0cd4477f014792ff",
+            "construction_sha256": "eb5d0be4cfb08b886e4bef38bce2d278d2b5b023fc7a4270dec6250d44c32ba2"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-unindicated_exit.json",
+            "sha256": "99f6dd71bf77cfb9b226ac3ce3202ca3fb222fe33c4ed477d09d3b4a805323ca",
+            "log": "proof-fallback-analysis-unindicated_exit.log",
+            "negative_log": "proof-fallback-negative-unindicated_exit.log"
+          }
+        }
+      ],
       "fixture_recipe": "work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/diagnostics/unindicated_exit-recipe.json",
       "measurement_contract": "diagnostics/unindicated_exit-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
         "method": "source-sealed Native boundary crossing and independently sourced official device readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C62301__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C62301__NRS-484B-587-1__motor_vehicle_driver__unindicated_exit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c62301-owner-nov26/selected-v1/offline/unindicated_exit --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-unindicated_exit.log",
+        "log_sha256": "38cf5d15ddb736b6da24520b2cde78381cbcda1f47edca1a60a8bbe0ec236f0c",
+        "construction_sha256": "f3b558376032dc2ce0273bbe8c1d2ce3feef1178b84218b6dfcb8975ff5e60c9"
       }
     }
   ]

@@ -1,0 +1,57 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C182383__NRS-484B-210-3__motor_vehicle_driver__narrow_off_pavement",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "driver overtakes and passes another vehicle upon the right",
+      "source": "inputs/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/assignment.json",
+      "output_key": "right_side_pass_event",
+      "method": "source_sealed_paved_edge_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "right-pass-history.json",
+        "right-pass-envelope.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "paved portion of the public highway separately classified",
+      "source": "inputs/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/assignment.json",
+      "output_key": "paved_surface_classification",
+      "method": "source_sealed_paved_edge_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "right-pass-history.json",
+        "right-pass-envelope.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "movement requires driving off paved portion",
+      "source": "inputs/testing__C182383__NRS-484B-210-3__motor_vehicle_driver/assignment.json",
+      "output_key": "physical_necessity_review",
+      "method": "source_sealed_paved_edge_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "right-pass-history.json",
+        "right-pass-envelope.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "right-pass-envelope.json"
+    ],
+    "error_contains": "Missing required source: right-pass-envelope.json"
+  }
+}
