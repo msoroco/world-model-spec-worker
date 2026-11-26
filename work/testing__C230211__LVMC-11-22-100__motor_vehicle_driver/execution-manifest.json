@@ -1,0 +1,1058 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver",
+  "status": "physical_and_selected_cpu_proofs_bound_gpu_pending",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_cross",
+      "kind": "delivery",
+      "construction": "construction-selected-barrier_across_cross.json",
+      "construction_sha256": "ba17b0606fd8bb70bfada83b5325c21ba565ef30879e7960adf708e5888e2cd4",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route, physical warning visibility and 900-frame encounter may differ from planned geometry; slower approach increases observable frames without changing the selected statutory variable."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-barrier_across_cross.json",
+          "construction_sha256": "6277207a1f9e3b905b124976253e61a27045c5c37ae080bd66a994998ce95c29",
+          "trigger": {
+            "source": "original 900-frame warning, ego path and four-view audit",
+            "metric": "realized pavement encounter and warning visibility",
+            "failure_condition": "original route or warning visibility is not established"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_cross --candidate fallback1 --output .runtime-work/c230211-nov26/fallback-offline-v1/barrier_across_cross --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-barrier_across_cross.log",
+            "log_sha256": "b8fe945a2eb9dfccea43d634bf419a293d19d9c346f272216a9ce8c5ae61a726",
+            "construction_sha256": "6277207a1f9e3b905b124976253e61a27045c5c37ae080bd66a994998ce95c29"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-barrier_across_cross.json",
+            "sha256": "9aae482eb6a9f2be65ad09a740308cf4aafbb33133d398cfa6fddbc5306f2bce",
+            "log": "proof-fallback-analysis-barrier_across_cross.log",
+            "negative_log": "proof-fallback-negative-barrier_across_cross.log"
+          }
+        }
+      ],
+      "measurement_contract": "diagnostics/barrier_across_cross-measurement-contract.json",
+      "fixture_recipe": "work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/diagnostics/barrier_across_cross-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original pavement and warning readback"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230211_PAVEMENT_SITE"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_cross --output .runtime-work/c230211-nov26/selected-v2/offline/barrier_across_cross --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-barrier_across_cross.log",
+        "log_sha256": "77a2b7cd5ff9868a961c17d96a89dbb12aead81dfd93f7774a95ef1a8d11132d",
+        "construction_sha256": "ba17b0606fd8bb70bfada83b5325c21ba565ef30879e7960adf708e5888e2cd4"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-barrier_across_cross.json",
+        "sha256": "93c5978eed35b1b9f14cec9952bb1a6dac4869503e181651ce8125be041a788e",
+        "log": "proof-compat-analysis-barrier_across_cross.log",
+        "negative_log": "proof-compat-negative-barrier_across_cross.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-barrier_across_cross.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-barrier_across_cross-receipt.json",
+        "sha256": "9cef74c5095e2ac9e345c60042e0dcbd9622dd8709943f0259e52ec27835a243"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-barrier_across_cross.log",
+        "sha256": "e47c03324e67bb01fcb7b37dfe6c2a033c17a5b04021140a87b4bb1bfe8795a7"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_cross --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_cross --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-barrier_across_cross.log",
+        "test_log_sha256": "e47c03324e67bb01fcb7b37dfe6c2a033c17a5b04021140a87b4bb1bfe8795a7"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_across_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/barrier_across_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_across_cross/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_across_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/barrier_across_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_across_cross/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "777f666b05e093469243a918dda6c575112b6db995f11f4534c85982abaadd41",
+        "test_log": "proof-delivery-positive-barrier_across_cross.log",
+        "test_log_sha256": "83e70bab8695239b7dc5c5172385793d1fada0fee42b5138640e03b5a9c43a9f",
+        "negative_log": "proof-delivery-negative-barrier_across_cross.log",
+        "negative_log_sha256": "c36b29bf7d401558606f16895386313aa64a1c30573b52e7e37c61ded7509087",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "acquisition": {
+        "vehicle_motion": {
+          "entrypoint": "pavement_capture.py",
+          "method": "original ego body, position and speed",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_condition": {
+          "entrypoint": "pavement_protection.py",
+          "method": "sealed newly laid or repaired condition",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_extent": {
+          "entrypoint": "pavement_capture.py",
+          "method": "surveyed pavement bounds and body crossing",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_geometry": {
+          "entrypoint": "pavement_native.py",
+          "method": "spawned barrier/person/sign readback",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_placement_time": {
+          "entrypoint": "pavement_capture.py",
+          "method": "warning placement before approach",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "employment": {
+          "entrypoint": "runner.py",
+          "method": "driver employment and same-pavement identity",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "work_activity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "active paving or repair during passage",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "four synchronized camera streams",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_around_cross",
+      "kind": "delivery",
+      "construction": "construction-selected-barrier_around_cross.json",
+      "construction_sha256": "c7083f9ff7ed4eadec8c43ce80c0b402e9d50a2c549c3b46ce0ff2eef63ab8b5",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route, physical warning visibility and 900-frame encounter may differ from planned geometry; slower approach increases observable frames without changing the selected statutory variable."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-barrier_around_cross.json",
+          "construction_sha256": "9581532668d884fc83f06f7e14e9d48001d9f292ccdc061dfa17c799c9d698ab",
+          "trigger": {
+            "source": "original 900-frame warning, ego path and four-view audit",
+            "metric": "realized pavement encounter and warning visibility",
+            "failure_condition": "original route or warning visibility is not established"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_around_cross --candidate fallback1 --output .runtime-work/c230211-nov26/fallback-offline-v1/barrier_around_cross --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-barrier_around_cross.log",
+            "log_sha256": "6bda73ff410365af04fa0d576388bd6ee11d192e68e9a6389d11919d3515b6f1",
+            "construction_sha256": "9581532668d884fc83f06f7e14e9d48001d9f292ccdc061dfa17c799c9d698ab"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-barrier_around_cross.json",
+            "sha256": "9b6ad09be346a1a7504f98221d5532a44db4fb23c0a175fa7435ebe73bc3d710",
+            "log": "proof-fallback-analysis-barrier_around_cross.log",
+            "negative_log": "proof-fallback-negative-barrier_around_cross.log"
+          }
+        }
+      ],
+      "measurement_contract": "diagnostics/barrier_around_cross-measurement-contract.json",
+      "fixture_recipe": "work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/diagnostics/barrier_around_cross-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original pavement and warning readback"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230211_PAVEMENT_SITE"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_around_cross --output .runtime-work/c230211-nov26/selected-v2/offline/barrier_around_cross --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-barrier_around_cross.log",
+        "log_sha256": "6052da00c3abbe1f504bb5865f6fec5b92307aa740b9bc5da03ae00928e7f263",
+        "construction_sha256": "c7083f9ff7ed4eadec8c43ce80c0b402e9d50a2c549c3b46ce0ff2eef63ab8b5"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-barrier_around_cross.json",
+        "sha256": "d31b58f38eadd0a92fadff8344059fcf863de4c309150c5efcaa313b4a6562c9",
+        "log": "proof-compat-analysis-barrier_around_cross.log",
+        "negative_log": "proof-compat-negative-barrier_around_cross.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-barrier_around_cross.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-barrier_around_cross-receipt.json",
+        "sha256": "14de38174c9d30642255a7b866ff0b72f8d4176fcdabca89466cf83c211d3f6e"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-barrier_around_cross.log",
+        "sha256": "b3906b96c01791de64745f0f924be0442a9e825a58354f24cef9acd9229ca335"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_around_cross --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_around_cross --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-barrier_around_cross.log",
+        "test_log_sha256": "b3906b96c01791de64745f0f924be0442a9e825a58354f24cef9acd9229ca335"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_around_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_around_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_around_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/barrier_around_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_around_cross/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_around_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_around_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/barrier_around_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_around_cross/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "777f666b05e093469243a918dda6c575112b6db995f11f4534c85982abaadd41",
+        "test_log": "proof-delivery-positive-barrier_around_cross.log",
+        "test_log_sha256": "2e4bbeb0a722abce81e54e1a46989d65273c74fa6df3489a8c79f0a69ec66c6f",
+        "negative_log": "proof-delivery-negative-barrier_around_cross.log",
+        "negative_log_sha256": "c36b29bf7d401558606f16895386313aa64a1c30573b52e7e37c61ded7509087",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "acquisition": {
+        "vehicle_motion": {
+          "entrypoint": "pavement_capture.py",
+          "method": "original ego body, position and speed",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_condition": {
+          "entrypoint": "pavement_protection.py",
+          "method": "sealed newly laid or repaired condition",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_extent": {
+          "entrypoint": "pavement_capture.py",
+          "method": "surveyed pavement bounds and body crossing",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_geometry": {
+          "entrypoint": "pavement_native.py",
+          "method": "spawned barrier/person/sign readback",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_placement_time": {
+          "entrypoint": "pavement_capture.py",
+          "method": "warning placement before approach",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "employment": {
+          "entrypoint": "runner.py",
+          "method": "driver employment and same-pavement identity",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "work_activity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "active paving or repair during passage",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "four synchronized camera streams",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_bypass",
+      "kind": "delivery",
+      "construction": "construction-selected-barrier_across_bypass.json",
+      "construction_sha256": "f8726b609275f2ff75b0c3704f0265375f924854bb598708a6a25e300d95be20",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route, physical warning visibility and 900-frame encounter may differ from planned geometry; slower approach increases observable frames without changing the selected statutory variable."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-barrier_across_bypass.json",
+          "construction_sha256": "e39efdd1313182c6981119a5eaab2ee3469bf11de7620c28e03732e9b00c17ca",
+          "trigger": {
+            "source": "original 900-frame warning, ego path and four-view audit",
+            "metric": "realized pavement encounter and warning visibility",
+            "failure_condition": "original route or warning visibility is not established"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_bypass --candidate fallback1 --output .runtime-work/c230211-nov26/fallback-offline-v1/barrier_across_bypass --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-barrier_across_bypass.log",
+            "log_sha256": "74427e69b7f6ffae3b02e6d795de437f5026a8988dc79a87caf0d23b914a61ea",
+            "construction_sha256": "e39efdd1313182c6981119a5eaab2ee3469bf11de7620c28e03732e9b00c17ca"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-barrier_across_bypass.json",
+            "sha256": "d3b319819967eb95a859e53e1a25e1d4a24cb7181d7df7a77f29a41963912d08",
+            "log": "proof-fallback-analysis-barrier_across_bypass.log",
+            "negative_log": "proof-fallback-negative-barrier_across_bypass.log"
+          }
+        }
+      ],
+      "measurement_contract": "diagnostics/barrier_across_bypass-measurement-contract.json",
+      "fixture_recipe": "work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/diagnostics/barrier_across_bypass-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original pavement and warning readback"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230211_PAVEMENT_SITE"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_bypass --output .runtime-work/c230211-nov26/selected-v2/offline/barrier_across_bypass --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-barrier_across_bypass.log",
+        "log_sha256": "f00bc016444471c213cb290d52803086acf5f4258e1f2b3fe99f4e0c0cf31b76",
+        "construction_sha256": "f8726b609275f2ff75b0c3704f0265375f924854bb598708a6a25e300d95be20"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-barrier_across_bypass.json",
+        "sha256": "27179e6b673b82241f885f22d63b496e971b3a7fa58ce1a8dacf7502d11aa2be",
+        "log": "proof-compat-analysis-barrier_across_bypass.log",
+        "negative_log": "proof-compat-negative-barrier_across_bypass.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-barrier_across_bypass.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-barrier_across_bypass-receipt.json",
+        "sha256": "ff7d705c7f70b084d9ef78c83748ba88aeb5a8d5cd8fbc1b8612d9a9181328b3"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-barrier_across_bypass.log",
+        "sha256": "8b9d650d7fdf7970b5b4d869cedfc7e13fc2bbba26a13161e33ce6cf462d745b"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_bypass --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_bypass --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-barrier_across_bypass.log",
+        "test_log_sha256": "8b9d650d7fdf7970b5b4d869cedfc7e13fc2bbba26a13161e33ce6cf462d745b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_bypass",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_bypass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_across_bypass --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/barrier_across_bypass/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_across_bypass/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_across_bypass --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_across_bypass --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/barrier_across_bypass/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_across_bypass/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "777f666b05e093469243a918dda6c575112b6db995f11f4534c85982abaadd41",
+        "test_log": "proof-delivery-positive-barrier_across_bypass.log",
+        "test_log_sha256": "623e651dafdb9a491730c8102dac18f07f24455fc3b7c91240f5a0edb4b1b19b",
+        "negative_log": "proof-delivery-negative-barrier_across_bypass.log",
+        "negative_log_sha256": "c36b29bf7d401558606f16895386313aa64a1c30573b52e7e37c61ded7509087",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "acquisition": {
+        "vehicle_motion": {
+          "entrypoint": "pavement_capture.py",
+          "method": "original ego body, position and speed",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_condition": {
+          "entrypoint": "pavement_protection.py",
+          "method": "sealed newly laid or repaired condition",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_extent": {
+          "entrypoint": "pavement_capture.py",
+          "method": "surveyed pavement bounds and body crossing",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_geometry": {
+          "entrypoint": "pavement_native.py",
+          "method": "spawned barrier/person/sign readback",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_placement_time": {
+          "entrypoint": "pavement_capture.py",
+          "method": "warning placement before approach",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "employment": {
+          "entrypoint": "runner.py",
+          "method": "driver employment and same-pavement identity",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "work_activity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "active paving or repair during passage",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "four synchronized camera streams",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_person_cross",
+      "kind": "delivery",
+      "construction": "construction-selected-warning_person_cross.json",
+      "construction_sha256": "91ec4d92e0618b4c53b695767213429c7344f9389e65c6c664f4a8449291c359",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route, physical warning visibility and 900-frame encounter may differ from planned geometry; slower approach increases observable frames without changing the selected statutory variable."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-warning_person_cross.json",
+          "construction_sha256": "66ead4bdca9c2cfdd1cf5eb6a89fe9a9e78596f65191df5831368c7ef595f056",
+          "trigger": {
+            "source": "original 900-frame warning, ego path and four-view audit",
+            "metric": "realized pavement encounter and warning visibility",
+            "failure_condition": "original route or warning visibility is not established"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_person_cross --candidate fallback1 --output .runtime-work/c230211-nov26/fallback-offline-v1/warning_person_cross --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-warning_person_cross.log",
+            "log_sha256": "96aeb49f4b92949d3f66b8436ec37d4535eab6b69d909c65f1626a2593dbc8ac",
+            "construction_sha256": "66ead4bdca9c2cfdd1cf5eb6a89fe9a9e78596f65191df5831368c7ef595f056"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-warning_person_cross.json",
+            "sha256": "6b1fc22e57df5f7a223d4940d8bad7e2f93be72f26883cc2c281ff7d041981dd",
+            "log": "proof-fallback-analysis-warning_person_cross.log",
+            "negative_log": "proof-fallback-negative-warning_person_cross.log"
+          }
+        }
+      ],
+      "measurement_contract": "diagnostics/warning_person_cross-measurement-contract.json",
+      "fixture_recipe": "work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/diagnostics/warning_person_cross-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original pavement and warning readback"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230211_PAVEMENT_SITE"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_person_cross --output .runtime-work/c230211-nov26/selected-v2/offline/warning_person_cross --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-warning_person_cross.log",
+        "log_sha256": "d488b3434d048435c3d032c6924acc66dfd6c64bffb6921e0f4634e68baff53c",
+        "construction_sha256": "91ec4d92e0618b4c53b695767213429c7344f9389e65c6c664f4a8449291c359"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-warning_person_cross.json",
+        "sha256": "338027c0baae4697fe94c1233e0797f73a2443533075de3b268e5abe4b24085b",
+        "log": "proof-compat-analysis-warning_person_cross.log",
+        "negative_log": "proof-compat-negative-warning_person_cross.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-warning_person_cross.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-warning_person_cross-receipt.json",
+        "sha256": "11efd1271bc064753ae81ba00e42965b17775648e7cee836fad9c77fc14bb676"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-warning_person_cross.log",
+        "sha256": "1584444722e7a2a613d46e416bba7afb684b093348ad1dfc83b4008a1bc7b12d"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_person_cross --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_person_cross --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-warning_person_cross.log",
+        "test_log_sha256": "1584444722e7a2a613d46e416bba7afb684b093348ad1dfc83b4008a1bc7b12d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_person_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_person_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/warning_person_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/warning_person_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/warning_person_cross/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_person_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/warning_person_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/warning_person_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/warning_person_cross/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "777f666b05e093469243a918dda6c575112b6db995f11f4534c85982abaadd41",
+        "test_log": "proof-delivery-positive-warning_person_cross.log",
+        "test_log_sha256": "3f67d517c1d500a64f43369ced5c7c72eb6bdfb25b2e6d6554b8e4c878103023",
+        "negative_log": "proof-delivery-negative-warning_person_cross.log",
+        "negative_log_sha256": "c36b29bf7d401558606f16895386313aa64a1c30573b52e7e37c61ded7509087",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "acquisition": {
+        "vehicle_motion": {
+          "entrypoint": "pavement_capture.py",
+          "method": "original ego body, position and speed",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_condition": {
+          "entrypoint": "pavement_protection.py",
+          "method": "sealed newly laid or repaired condition",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_extent": {
+          "entrypoint": "pavement_capture.py",
+          "method": "surveyed pavement bounds and body crossing",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_geometry": {
+          "entrypoint": "pavement_native.py",
+          "method": "spawned barrier/person/sign readback",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_placement_time": {
+          "entrypoint": "pavement_capture.py",
+          "method": "warning placement before approach",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "employment": {
+          "entrypoint": "runner.py",
+          "method": "driver employment and same-pavement identity",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "work_activity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "active paving or repair during passage",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "four synchronized camera streams",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_sign_cross",
+      "kind": "delivery",
+      "construction": "construction-selected-warning_sign_cross.json",
+      "construction_sha256": "482aba738312c5e5626156fb03e158203392d4d4cb047a05d00bfeb60b8f3f4e",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route, physical warning visibility and 900-frame encounter may differ from planned geometry; slower approach increases observable frames without changing the selected statutory variable."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-warning_sign_cross.json",
+          "construction_sha256": "4f563c5c45581184d87cf5aaf8a2c433598017697fd08f96f9b2668d1e9cfdab",
+          "trigger": {
+            "source": "original 900-frame warning, ego path and four-view audit",
+            "metric": "realized pavement encounter and warning visibility",
+            "failure_condition": "original route or warning visibility is not established"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_sign_cross --candidate fallback1 --output .runtime-work/c230211-nov26/fallback-offline-v1/warning_sign_cross --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-warning_sign_cross.log",
+            "log_sha256": "e1a9494e963956dab0eaaf7e67a03a1fbd7fe698a3efe3513f48bb67f7a6f92b",
+            "construction_sha256": "4f563c5c45581184d87cf5aaf8a2c433598017697fd08f96f9b2668d1e9cfdab"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-warning_sign_cross.json",
+            "sha256": "a38a1595424fb317fc3b1d04a4efa4c2e2619543aa4686adf6ced3937ec81146",
+            "log": "proof-fallback-analysis-warning_sign_cross.log",
+            "negative_log": "proof-fallback-negative-warning_sign_cross.log"
+          }
+        }
+      ],
+      "measurement_contract": "diagnostics/warning_sign_cross-measurement-contract.json",
+      "fixture_recipe": "work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/diagnostics/warning_sign_cross-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original pavement and warning readback"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230211_PAVEMENT_SITE"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_sign_cross --output .runtime-work/c230211-nov26/selected-v2/offline/warning_sign_cross --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-warning_sign_cross.log",
+        "log_sha256": "12919ba735097bd18f6a4904df07ae3b1c6ade14f471dc27dfdcfbdf1ff1fa0a",
+        "construction_sha256": "482aba738312c5e5626156fb03e158203392d4d4cb047a05d00bfeb60b8f3f4e"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-warning_sign_cross.json",
+        "sha256": "d734ed03bd2ba2b55028e3612df9f2c8934ecda2f8473045b2cbc06c18e75a06",
+        "log": "proof-compat-analysis-warning_sign_cross.log",
+        "negative_log": "proof-compat-negative-warning_sign_cross.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-warning_sign_cross.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-warning_sign_cross-receipt.json",
+        "sha256": "bed779a73319e8c3684c77baf91e77b96f2d194db3ed8d93269074ba63fd9168"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-warning_sign_cross.log",
+        "sha256": "cd177248734e23ada1fb8b9b87c1022d01669e490d09be8ecf04ec64c35758c4"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_sign_cross --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_sign_cross --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-warning_sign_cross.log",
+        "test_log_sha256": "cd177248734e23ada1fb8b9b87c1022d01669e490d09be8ecf04ec64c35758c4"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_sign_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_sign_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/warning_sign_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/warning_sign_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/warning_sign_cross/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__warning_sign_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/warning_sign_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/warning_sign_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/warning_sign_cross/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "777f666b05e093469243a918dda6c575112b6db995f11f4534c85982abaadd41",
+        "test_log": "proof-delivery-positive-warning_sign_cross.log",
+        "test_log_sha256": "b19945435380d490709d1c112c4bc47f5d6a126b2276cc8f305899065b5fd04e",
+        "negative_log": "proof-delivery-negative-warning_sign_cross.log",
+        "negative_log_sha256": "c36b29bf7d401558606f16895386313aa64a1c30573b52e7e37c61ded7509087",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "acquisition": {
+        "vehicle_motion": {
+          "entrypoint": "pavement_capture.py",
+          "method": "original ego body, position and speed",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_condition": {
+          "entrypoint": "pavement_protection.py",
+          "method": "sealed newly laid or repaired condition",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_extent": {
+          "entrypoint": "pavement_capture.py",
+          "method": "surveyed pavement bounds and body crossing",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_geometry": {
+          "entrypoint": "pavement_native.py",
+          "method": "spawned barrier/person/sign readback",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_placement_time": {
+          "entrypoint": "pavement_capture.py",
+          "method": "warning placement before approach",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "employment": {
+          "entrypoint": "runner.py",
+          "method": "driver employment and same-pavement identity",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "work_activity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "active paving or repair during passage",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "four synchronized camera streams",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_cross",
+      "kind": "delivery",
+      "construction": "construction-selected-highway_closed_sign_cross.json",
+      "construction_sha256": "3c73f8fce445901d21ade1c447a16e17a5ce7eca76ff8fc45c19813a215246a2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route, physical warning visibility and 900-frame encounter may differ from planned geometry; slower approach increases observable frames without changing the selected statutory variable."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-highway_closed_sign_cross.json",
+          "construction_sha256": "8d4afc0285241a4449070074c06e73cfd7c826dba0b7319e664231f443b11f53",
+          "trigger": {
+            "source": "original 900-frame warning, ego path and four-view audit",
+            "metric": "realized pavement encounter and warning visibility",
+            "failure_condition": "original route or warning visibility is not established"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_cross --candidate fallback1 --output .runtime-work/c230211-nov26/fallback-offline-v1/highway_closed_sign_cross --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-highway_closed_sign_cross.log",
+            "log_sha256": "b26827daec3aaf3ff32886d639b97e0623f479ce1016c098f50db6058ff6b104",
+            "construction_sha256": "8d4afc0285241a4449070074c06e73cfd7c826dba0b7319e664231f443b11f53"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-highway_closed_sign_cross.json",
+            "sha256": "5fc3777d904f8865fdcd83d1f7dd73c77f3fe801061e8d06997bda078ce330d9",
+            "log": "proof-fallback-analysis-highway_closed_sign_cross.log",
+            "negative_log": "proof-fallback-negative-highway_closed_sign_cross.log"
+          }
+        }
+      ],
+      "measurement_contract": "diagnostics/highway_closed_sign_cross-measurement-contract.json",
+      "fixture_recipe": "work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/diagnostics/highway_closed_sign_cross-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original pavement and warning readback"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230211_PAVEMENT_SITE"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_cross --output .runtime-work/c230211-nov26/selected-v2/offline/highway_closed_sign_cross --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-highway_closed_sign_cross.log",
+        "log_sha256": "8433af06a0c467d892369fd6c0ad917b21649f44538729974fbcf43aa325226d",
+        "construction_sha256": "3c73f8fce445901d21ade1c447a16e17a5ce7eca76ff8fc45c19813a215246a2"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-highway_closed_sign_cross.json",
+        "sha256": "b1790ba72c634fc96d09a63d14cd8639f20a2cc3bff029bf68a250af307f694e",
+        "log": "proof-compat-analysis-highway_closed_sign_cross.log",
+        "negative_log": "proof-compat-negative-highway_closed_sign_cross.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-highway_closed_sign_cross.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-highway_closed_sign_cross-receipt.json",
+        "sha256": "8bc8c3d1babcde8dd15bf5963d29ecadb540493f57ea292a6817e3c3c82fbd61"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-highway_closed_sign_cross.log",
+        "sha256": "d41f7401ce8030e078d1e964947cda82e5f93b3683a32e74b76b5d98ff6282f9"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_cross --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_cross --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-highway_closed_sign_cross.log",
+        "test_log_sha256": "d41f7401ce8030e078d1e964947cda82e5f93b3683a32e74b76b5d98ff6282f9"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/highway_closed_sign_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/highway_closed_sign_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/highway_closed_sign_cross/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__highway_closed_sign_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/highway_closed_sign_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/highway_closed_sign_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/highway_closed_sign_cross/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "777f666b05e093469243a918dda6c575112b6db995f11f4534c85982abaadd41",
+        "test_log": "proof-delivery-positive-highway_closed_sign_cross.log",
+        "test_log_sha256": "0c9980952ce6fd09f708bb05b8ff6687f378ce0116fb8d26018ab6ad87f453a6",
+        "negative_log": "proof-delivery-negative-highway_closed_sign_cross.log",
+        "negative_log_sha256": "c36b29bf7d401558606f16895386313aa64a1c30573b52e7e37c61ded7509087",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "acquisition": {
+        "vehicle_motion": {
+          "entrypoint": "pavement_capture.py",
+          "method": "original ego body, position and speed",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_condition": {
+          "entrypoint": "pavement_protection.py",
+          "method": "sealed newly laid or repaired condition",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_extent": {
+          "entrypoint": "pavement_capture.py",
+          "method": "surveyed pavement bounds and body crossing",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_geometry": {
+          "entrypoint": "pavement_native.py",
+          "method": "spawned barrier/person/sign readback",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_placement_time": {
+          "entrypoint": "pavement_capture.py",
+          "method": "warning placement before approach",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "employment": {
+          "entrypoint": "runner.py",
+          "method": "driver employment and same-pavement identity",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "work_activity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "active paving or repair during passage",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "four synchronized camera streams",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_employee_cross",
+      "kind": "delivery",
+      "construction": "construction-selected-barrier_employee_cross.json",
+      "construction_sha256": "82e83d790789c22eef01f93afb514fd538e60bee8000bcc7118f0121327d6fb3",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native route, physical warning visibility and 900-frame encounter may differ from planned geometry; slower approach increases observable frames without changing the selected statutory variable."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-barrier_employee_cross.json",
+          "construction_sha256": "c1e2c5d517f4b4ea4547a39d2e5ea83f5305bd610a9e8504d560c6a0b227e60b",
+          "trigger": {
+            "source": "original 900-frame warning, ego path and four-view audit",
+            "metric": "realized pavement encounter and warning visibility",
+            "failure_condition": "original route or warning visibility is not established"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_employee_cross --candidate fallback1 --output .runtime-work/c230211-nov26/fallback-offline-v1/barrier_employee_cross --python .venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-barrier_employee_cross.log",
+            "log_sha256": "b27e9ec8906b6716519fcda1cee260bfdb648467a4e7b13878934fadfadd772f",
+            "construction_sha256": "c1e2c5d517f4b4ea4547a39d2e5ea83f5305bd610a9e8504d560c6a0b227e60b"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-barrier_employee_cross.json",
+            "sha256": "8e888fc4175aca93abf11167a8128ef62f4fa565fe26ec759675df3649449898",
+            "log": "proof-fallback-analysis-barrier_employee_cross.log",
+            "negative_log": "proof-fallback-negative-barrier_employee_cross.log"
+          }
+        }
+      ],
+      "measurement_contract": "diagnostics/barrier_employee_cross-measurement-contract.json",
+      "fixture_recipe": "work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/diagnostics/barrier_employee_cross-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original pavement and warning readback"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230211_PAVEMENT_SITE"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_employee_cross --output .runtime-work/c230211-nov26/selected-v2/offline/barrier_employee_cross --python .venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-barrier_employee_cross.log",
+        "log_sha256": "504a96650a1c559958c84b62acf495b8232da92b060fc5350f4eb3c7edc6829a",
+        "construction_sha256": "82e83d790789c22eef01f93afb514fd538e60bee8000bcc7118f0121327d6fb3"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-barrier_employee_cross.json",
+        "sha256": "7dfe0ff618c7a3ae405d06bdf768efe67c9f951957125009d199740a6cc7c32d",
+        "log": "proof-compat-analysis-barrier_employee_cross.log",
+        "negative_log": "proof-compat-negative-barrier_employee_cross.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-barrier_employee_cross.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-barrier_employee_cross-receipt.json",
+        "sha256": "61d89ec15f4517b78efe8728d30b33a8898d95e3dff5a81b346fbebf29154477"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-barrier_employee_cross.log",
+        "sha256": "66c5a04f06e2bb260e7a9897d1182c19c7d2809e5ee54606cd48b1deec8a3e13"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/execution-manifest.json --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_employee_cross --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_employee_cross --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-barrier_employee_cross.log",
+        "test_log_sha256": "66c5a04f06e2bb260e7a9897d1182c19c7d2809e5ee54606cd48b1deec8a3e13"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_employee_cross",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_employee_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_employee_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/barrier_employee_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_employee_cross/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-100__motor_vehicle_driver__barrier_employee_cross --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_employee_cross --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-100__motor_vehicle_driver/proofs/physical/barrier_employee_cross/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-nov26/delivery-diagnostic-v2/barrier_employee_cross/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "777f666b05e093469243a918dda6c575112b6db995f11f4534c85982abaadd41",
+        "test_log": "proof-delivery-positive-barrier_employee_cross.log",
+        "test_log_sha256": "6b7284c9dc8f581e3aa31aea7bd840fa56d47f3b16b51b47b0389ee6f0269d16",
+        "negative_log": "proof-delivery-negative-barrier_employee_cross.log",
+        "negative_log_sha256": "c36b29bf7d401558606f16895386313aa64a1c30573b52e7e37c61ded7509087",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "acquisition": {
+        "vehicle_motion": {
+          "entrypoint": "pavement_capture.py",
+          "method": "original ego body, position and speed",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_condition": {
+          "entrypoint": "pavement_protection.py",
+          "method": "sealed newly laid or repaired condition",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "pavement_extent": {
+          "entrypoint": "pavement_capture.py",
+          "method": "surveyed pavement bounds and body crossing",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_geometry": {
+          "entrypoint": "pavement_native.py",
+          "method": "spawned barrier/person/sign readback",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "protection_placement_time": {
+          "entrypoint": "pavement_capture.py",
+          "method": "warning placement before approach",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "employment": {
+          "entrypoint": "runner.py",
+          "method": "driver employment and same-pavement identity",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "work_activity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "active paving or repair during passage",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "pavement_capture.py",
+          "method": "four synchronized camera streams",
+          "evidence": "original-source-receipt.json, pavement-packet.json, trace.jsonl, video_frames.jsonl and four 900-frame cameras"
+        }
+      }
+    }
+  ]
+}

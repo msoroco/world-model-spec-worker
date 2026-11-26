@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from city_space import CASES, SOURCE_FIELDS, measure_original
+from physical_completion import assess
 from source_packet import ASSIGNMENT, sha
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -161,6 +162,13 @@ def analyze(root):
               'recording_description': description, 'recording_evidence': evidence,
               'realized_observables': {}, 'diagnostic_fixture': diagnostic,
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
+    if not diagnostic:
+        completion = assess(history, scene, case)
+        result['physical_checks']['maneuver']['status'] = completion['status']
+        result['maneuver_completed'] = completion['status'] == 'met'
+        result['behavior_attempted'] = completion['status'] != 'unverified'
+        result['setup_confirmed'] = completion['status'] == 'met'
+        result['realized_observables'] = completion.get('realized_observables', {})
     write_result(root, result)
     return {'format': 'worker-analysis-report', 'case_id': case_id,
             'analysis_complete': True, 'diagnostic_fixture': diagnostic,
