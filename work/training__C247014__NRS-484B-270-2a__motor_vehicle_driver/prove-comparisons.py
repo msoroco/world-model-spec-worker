@@ -21,7 +21,7 @@ def main():
     folder = HERE / "proofs" / "comparisons"
     folder.mkdir(parents=True, exist_ok=True)
     scratch = REPO / ".runtime-work" / "c247014-resume-v5"
-    for pair in ("witness", "exception"):
+    for pair in ("witness", "exception", "unsafe_available"):
         result = folder / (pair + "-positive.json")
         command = [sys.executable, "-B", str(SCRIPT), "--pair", pair,
                    "--output", str(result)]
@@ -30,7 +30,7 @@ def main():
             raise ValueError("Controlled comparison positive failed: " + pair + " " + run.stderr)
         positive = json.loads(result.read_text())
         if (positive["frames"] != 600 or positive["deliberate_difference"] not in
-                ("requested_lane_move", "left_lane_occupant_plan") or
+                ("requested_lane_move", "left_lane_occupant_plan", "closing_left_vehicle_context") or
                 positive["original_native_observed"]):
             raise ValueError("Controlled comparison made an unsupported claim")
         log = folder / (pair + "-positive.log")

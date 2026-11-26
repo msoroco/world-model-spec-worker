@@ -8,7 +8,7 @@ from runner import CAMERAS, check as runner_check, steering_command
 class SceneTest(unittest.TestCase):
     def test_four_case_geometry_and_order(self):
         proof = check()
-        self.assertEqual(len(proof["case_suffixes"]), 4)
+        self.assertEqual(len(proof["case_suffixes"]), 5)
         self.assertGreater(proof["pass_first_frame"], 260)
         for frame in range(proof["pass_first_frame"], proof["pass_last_frame"] + 1):
             self.assertEqual(target("witness_1", frame).ego_y_m, LEFT_CENTER_Y_M)
@@ -17,8 +17,8 @@ class SceneTest(unittest.TestCase):
     def test_exception_blocker_is_source_to_capture(self):
         for suffix in CASES:
             row = target(suffix, 200)
-            self.assertEqual(row.left_blocker_x_m is not None, suffix == "exception_1_2")
-            self.assertEqual(row.left_blocker_y_m, LEFT_CENTER_Y_M if suffix == "exception_1_2" else None)
+            self.assertEqual(row.left_blocker_x_m is not None, suffix in ("exception_1_2", "exception_unsafe_available"))
+            self.assertEqual(row.left_blocker_y_m, LEFT_CENTER_Y_M if suffix in ("exception_1_2", "exception_unsafe_available") else None)
 
     def test_bad_case_or_frame_rejects(self):
         for suffix, frame in (("other", 0), ("witness_1", -1), ("witness_1", 600)):

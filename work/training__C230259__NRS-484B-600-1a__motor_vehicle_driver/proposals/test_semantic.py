@@ -8,7 +8,7 @@ import sys
 output_root = Path(os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", "/nonexistent")).resolve()
 if not output_root.is_relative_to((Path.cwd() / ".runtime-work").resolve()):
     raise SystemExit("SCENARIO_PIPELINE_OUTPUT_ROOT must be under .runtime-work")
-sys.path.insert(0, str(Path("runtime/pipeline").resolve()))
+sys.path.insert(0, str(Path("runtime").resolve()))
 from scenario_pipeline.batch_pipeline import stages
 
 folder = Path(__file__).resolve().parent

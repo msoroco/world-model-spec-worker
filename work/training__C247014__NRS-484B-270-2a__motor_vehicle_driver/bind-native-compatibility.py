@@ -19,7 +19,8 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].split("__")[-1]
-        source = REPO / ".runtime-work" / ("c247014-compat-" + suffix + "-v4")
+        version = "-v6" if suffix == "exception_unsafe_available" else "-v4"
+        source = REPO / ".runtime-work" / ("c247014-compat-" + suffix + version)
         receipt = json.loads((source / "compatibility.json").read_text())
         if (receipt.get("case_id") != entry["case_id"] or
                 receipt.get("candidate_id") != "primary" or

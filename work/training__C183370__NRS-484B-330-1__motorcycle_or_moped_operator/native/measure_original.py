@@ -75,9 +75,9 @@ def measure(attempt, case_id):
                 row.get('native_frame') != frame or
                 mapping.get('video_frame') != index or
                 mapping.get('native_frame') != frame or
-                not isinstance(row.get('time_s'), (int, float)) or
+                type(row.get('time_s')) not in (int, float) or
                 not math.isfinite(row['time_s']) or
-                not isinstance(mapping.get('time_s'), (int, float)) or
+                type(mapping.get('time_s')) not in (int, float) or
                 not math.isfinite(mapping['time_s']) or
                 abs(row.get('time_s', -1) - (index + 1) / 20) > .001 or
                 abs(mapping.get('time_s', -1) - row['time_s']) > .001 or
@@ -111,14 +111,14 @@ def measure(attempt, case_id):
         xyz = row.get('motorcycle_xyz_m')
         body = row.get('motorcycle_body_vertices_m')
         if (not isinstance(xyz, list) or len(xyz) != 3 or
-                any(not isinstance(v, (int, float)) or not math.isfinite(v)
+                any(type(v) not in (int, float) or not math.isfinite(v)
                     for v in xyz) or
                 not isinstance(body, list) or len(body) != 8 or
                 any(not isinstance(vertex, list) or len(vertex) != 3 or
-                    any(not isinstance(v, (int, float)) or not math.isfinite(v)
+                    any(type(v) not in (int, float) or not math.isfinite(v)
                         for v in vertex)
                     for vertex in body) or
-                not isinstance(row.get('motorcycle_speed_mps'), (int, float)) or
+                type(row.get('motorcycle_speed_mps')) not in (int, float) or
                 not math.isfinite(row['motorcycle_speed_mps']) or
                 row['motorcycle_speed_mps'] < 0 or
                 abs(xyz[1] + 1.75) > 1.5):
@@ -161,3 +161,57 @@ def measure(attempt, case_id):
             'zone_designation_verified': False,
             'physical_completion': None,
             'legal_verdict': None}
+
+
+def measure_core_join(attempt, case_id):
+    """Join the sealed Native response to saved Core and sensor frames.
+
+    This checks identity and kinematics only. It does not review source authority,
+    visible flagger pixels, physical completion or a legal outcome.
+    """
+    attempt = Path(attempt)
+    observed = measure(attempt, case_id)
+    names = ('trace.jsonl', 'capture/evidence.jsonl', 'capture/native/frames.jsonl')
+    for name in names:
+        if not (attempt / name).is_file():
+            raise ValueError('Missing required source: ' + name)
+    native = [json.loads(line) for line in (attempt / 'native-rows.jsonl').read_text().splitlines()]
+    traces = [[json.loads(line) for line in (attempt / name).read_text().splitlines()]
+              for name in names]
+    if any(len(rows) != 600 for rows in traces):
+        raise ValueError('Original Core frame coverage incomplete')
+    for row, (trace, evidence, frame) in zip(native, zip(*traces)):
+        source_frame = row['native_frame']
+        time_s = row['time_s']
+        position = trace.get('position', {})
+        ego = evidence.get('ego', {})
+        ego_position = ego.get('position_m')
+        values = [position.get('x'), position.get('y'), trace.get('speed_mps'),
+                  ego.get('speed_mps')]
+        if (trace.get('frame') != source_frame or
+                evidence.get('original_frame') != source_frame or
+                frame.get('frame') != source_frame or
+                any(type(v) not in (int, float) or not math.isfinite(v)
+                    for v in values) or
+                not isinstance(ego_position, list) or len(ego_position) < 2 or
+                any(type(v) not in (int, float) or not math.isfinite(v)
+                    for v in ego_position[:2]) or
+                any(type(item.get(key)) not in (int, float) or
+                    not math.isfinite(item[key]) or abs(item[key] - time_s) > 1e-4
+                    for item, key in ((trace, 'time_s'),
+                                      (evidence, 'recording_time_s'),
+                                      (frame, 'time_s'))) or
+                abs(position['x'] - row['motorcycle_xyz_m'][0]) > 1e-3 or
+                abs(position['y'] - row['motorcycle_xyz_m'][1]) > 1e-3 or
+                abs(ego_position[0] - row['motorcycle_xyz_m'][0]) > 1e-3 or
+                abs(ego_position[1] - row['motorcycle_xyz_m'][1]) > 1e-3 or
+                abs(trace['speed_mps'] - row['motorcycle_speed_mps']) > 1e-3 or
+                abs(ego['speed_mps'] - row['motorcycle_speed_mps']) > 1e-3):
+            raise ValueError('Original motorcycle Native/Core source join differs')
+    observed['core_join'] = {
+        'frames': 600,
+        'source_sha256': {name: sha(attempt / name) for name in names},
+        'original_native_core_join_passed': True,
+        'physical_or_legal_outcome_claimed': False,
+    }
+    return observed

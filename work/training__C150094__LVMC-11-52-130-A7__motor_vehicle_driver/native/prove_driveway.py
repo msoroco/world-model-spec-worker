@@ -34,14 +34,14 @@ def main():
         root = Path(name)
         for camera in ('overview', 'approach', 'reference_corner', 'driver_reference'):
             subprocess.run(['ffmpeg', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=black:s=32x24:r=20',
-                            '-frames:v', str(COUNT), '-c:v', 'ffv1', '-y', str(root / ('camera_'+camera+'.mkv'))], check=True)
+                            '-frames:v', str(COUNT), '-c:v', 'ffv1', '-y', str(root / (camera+'.mkv'))], check=True)
         frames = [{'video_frame': i, 'native_frame': i+1000, 'time_s': round(i*.05, 3)} for i in range(COUNT)]
         trace = [{'video_frame': i, 'native_frame': i+1000, 'source_kind': 'synthetic_native_sample',
                   'ego_curb_station_m': 6.524, 'ego_half_length_m': 2.0,
                   'ego_speed_mps': 0.0, 'park_brake_engaged': True} for i in range(COUNT)]
         context = {'assignment_id': ASSIGNMENT, 'review_kind': 'synthetic_diagnostic',
                    'reviewer': 'synthetic CPU diagnostic',
-                   'camera_sha256': {p.name: sha(p) for p in root.glob('camera_*.mkv')},
+                   'camera_sha256': {p.name: sha(p) for p in root.glob('*.mkv')},
                    'driveway_boundary_source': 'synthetic curb fixture',
                    'vehicle_extent_source': 'synthetic Native bbox',
                    'parking_state_source': 'synthetic Native brake trace',
@@ -97,7 +97,7 @@ def main():
         assert directed['law_or_officer_or_device_direction_context']
         failures = {}
         bad = copy.deepcopy(context)
-        bad['camera_sha256']['camera_overview.mkv'] = '0'*64
+        bad['camera_sha256']['overview.mkv'] = '0'*64
         cp.write_text(json.dumps(bad))
         failures['unbound_camera'] = rejects(root, 'camera bytes')
         bad = copy.deepcopy(context)

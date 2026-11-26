@@ -186,7 +186,9 @@ def prove():
             seal_path.write_text(original_seal)
             for field, value, expected_error in (
                     ('motorcycle_speed_mps', float('nan'), 'supported motorcycle lane or motion'),
+                    ('motorcycle_speed_mps', True, 'supported motorcycle lane or motion'),
                     ('time_s', float('nan'), 'camera frame join differs'),
+                    ('time_s', True, 'camera frame join differs'),
                     ('flagger_actor_id', 999, 'actor identity changed')):
                 changed_rows = raw_rows.splitlines()
                 changed = json.loads(changed_rows[1])
@@ -207,6 +209,23 @@ def prove():
                 seal_path.write_text(original_seal)
             changed_rows = raw_rows.splitlines()
             changed = json.loads(changed_rows[1])
+            changed['motorcycle_xyz_m'][0] = True
+            changed_rows[1] = json.dumps(changed)
+            altered.write_text('\n'.join(changed_rows) + '\n')
+            sealed = json.loads(original_seal)
+            sealed['sha256']['native-rows.jsonl'] = sha(altered)
+            seal_path.write_text(json.dumps(sealed) + '\n')
+            try:
+                measure(path, case)
+            except ValueError as error:
+                if 'supported motorcycle lane or motion' not in str(error):
+                    raise
+            else:
+                raise AssertionError('Resealed boolean original coordinate accepted')
+            altered.write_text(raw_rows)
+            seal_path.write_text(original_seal)
+            changed_rows = raw_rows.splitlines()
+            changed = json.loads(changed_rows[1])
             changed['zone_entry_marker_actor_id'] = 999
             changed_rows[1] = json.dumps(changed)
             altered.write_text('\n'.join(changed_rows) + '\n')
@@ -224,7 +243,7 @@ def prove():
             seal_path.write_text(original_seal)
     return {'format': 'c183370-saved-source-shape-proof',
             'source_kind': 'synthetic_structural_fixture',
-            'positive_count': len(outcomes), 'negative_count': 10 * len(outcomes),
+            'positive_count': len(outcomes), 'negative_count': 13 * len(outcomes),
             'cases': outcomes, 'actual_video_decoded': False,
             'original_native_observed': False,
             'physical_or_legal_outcome_claimed': False}

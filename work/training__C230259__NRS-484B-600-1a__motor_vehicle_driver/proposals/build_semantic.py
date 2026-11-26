@@ -63,14 +63,13 @@ observable = {
             {"name": "surrounding_traffic", "unit": "structured", "description": "participant identity, position, velocity, interactions and occupancy joined by original frame"},
         ],
         "context_inputs": [
-            {"name": "road_surface_width_weather", "unit": "structured", "description": "surveyed surface and width and measured weather, visibility, friction and geometry"},
-            {"name": "traffic_configuration", "unit": "structured", "description": "authored participant and control setup; check actual realization"},
+            {"name": "four_source_cameras", "unit": "video", "description": "four original camera views with frame IDs and decode checks"},
         ],
         "sweep_dimensions": [{"name": "speed_controller_target_mps", "unit": "m/s", "description": "engineering speed request axis; actual speed is a separate observed channel"}],
         "landmarks": [],
         "recording_needs": [
-            {"name": "native_motion_and_participants", "unit": "structured", "description": "original Native frame map, ego and participant motion with join/readback"},
-            {"name": "source_camera_views", "unit": "video", "description": "four synchronized original source-camera videos and per-frame decode map"},
+            {"name": "measured_speed", "unit": "m/s", "description": "original Native ego velocity magnitude joined by frame"},
+            {"name": "speed_conditions", "unit": "structured", "description": "original traffic, lane, surface and weather sources joined by frame"},
         ],
         "limitations": ["The statute supplies no numeric boundary for reasonable or proper speed.",
                         "Requested controller speed cannot substitute for measured Native speed or legal judgment.",
@@ -93,26 +92,7 @@ bindings = {
 }
 write("bindings.json", bindings)
 
-channels = []
-for name, unit, method in [
-    ("ego_speed", "m/s", "original Native ego velocity magnitude, frame joined to controller and cameras"),
-    ("surrounding_traffic", "structured", "original Native participant pose, velocity and interactions"),
-    ("native_motion_and_participants", "structured", "original Native frame map and all participant readbacks"),
-    ("source_camera_views", "video", "four original synchronized source-camera videos, decoded with frame IDs"),
-]:
-    channels.append({"name": name, "unit": unit, "sampling_rate_hz": 20,
-                     "method": method, "time_window": "at least 30 s / at least 600 joined frames",
-                     "reference_frame": "original Native frame and surveyed map",
-                     "uncertainty": "50 ms sampling; original source integrity and physical readback pending"})
-recording = {
-    "channels": channels,
-    "context_inputs": [
-        {"name": "traffic_configuration", "unit": "structured", "method": "authored setup and original Native participant/control readback"},
-        {"name": "road_surface_width_weather", "unit": "structured", "method": "surveyed map and original Native weather/surface readback"},
-    ],
-    "limitations": ["No physical or legal outcome follows from the requested speed.",
-                    "Existing accepted recordings must be reviewed before requesting duplicate capture."],
-}
+recording = json.loads((ROOT / "work" / ASSIGNMENT_ID / "construction.json").read_text())["recording_description"]
 
 
 def assignments(target):

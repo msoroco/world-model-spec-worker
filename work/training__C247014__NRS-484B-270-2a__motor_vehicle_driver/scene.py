@@ -21,6 +21,7 @@ CASES = {
     "witness_2": (False, False),
     "exception_1_1": (False, False),
     "exception_1_2": (False, True),
+    "exception_unsafe_available": (False, True),
 }
 
 
@@ -78,7 +79,7 @@ def target(case_suffix, frame):
     phase = max(0.0, min(1.0, (frame - 180) / 80)) if move_left else 0.0
     smooth = phase * phase * (3 - 2 * phase)
     ego_y = RIGHT_CENTER_Y_M + smooth * (LEFT_CENTER_Y_M - RIGHT_CENTER_Y_M)
-    blocker_x = ego_x + 2 if block_left else None
+    blocker_x = (ego_x - 35 + 3 * t) if case_suffix == "exception_unsafe_available" else (ego_x + 2 if block_left else None)
     return Target(frame, ego_x, ego_y, cycle_x, RIGHT_CENTER_Y_M - 0.7,
                   blocker_x, LEFT_CENTER_Y_M if block_left else None)
 

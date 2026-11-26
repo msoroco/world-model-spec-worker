@@ -40,13 +40,15 @@
     {
       "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01",
       "target_law_id": "LVMC-11-52-130-A7",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "park beyond five feet of driveway frontage",
       "comparison_variable": "distance from driveway and exception status",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "offline_cpu_proven",
+      "construction": "native/selected-construction-probe_01.json",
+      "construction_sha256": "25e12bf83089d5d8cf07d68420ac8dca9e6d624f3028a5e38cb272342389ebdc"
     },
     {
       "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02",
@@ -57,40 +59,59 @@
       "comparison_variable": "distance from driveway and exception status",
       "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "offline_cpu_proven",
+      "construction_status": "offline_compatibility_and_saved_cpu_proven",
       "construction": "native/selected-primary-construction.json",
-      "construction_sha256": "9a0ee3b48a6749ac7969da3d7dd243fe51f074954ec6ef85586e9dc1075633bb"
+      "construction_sha256": "ad63b75580bb5ed3ebaf37c487e9e7e4899a1a18c1c01b6ea999eeabc3edf505"
     },
     {
       "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03",
       "target_law_id": "LVMC-11-52-130-A7",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "park within five feet with documented owner/invitee status",
       "comparison_variable": "distance from driveway and exception status",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "offline_cpu_proven",
+      "construction": "native/selected-construction-probe_03.json",
+      "construction_sha256": "a29bd2d07b5e4f98dc15dbb1fb974d64e37cc989de0dffbe3e53d0cbdb3f3b2a"
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__planned_comparison",
+      "comparison_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__distance_boundary",
       "case_ids": [
         "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01",
+        "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02"
+      ],
+      "deliberate_differences": [
+        "target body-footprint gap from driveway opening: 2.0 m versus 1.2 m"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "one-way route and private driveway",
+        "no owner or invitee authority",
+        "no USPS or compelled-stop exception",
+        "four-view camera plan",
+        "20 Hz and 30 s capture"
+      ]
+    },
+    {
+      "comparison_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__private_authority",
+      "case_ids": [
         "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02",
         "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03"
       ],
       "deliberate_differences": [
-        "distance from driveway and exception status"
+        "independently documented private-driveway owner or invitee authority"
       ],
       "fixed_conditions": [
         "frozen cell and actor",
-        "physical route topology",
-        "participant identities",
-        "camera policy",
-        "recording rate and duration",
-        "nonvariable context"
+        "one-way route and private driveway",
+        "1.2 m target body-footprint gap",
+        "no USPS or compelled-stop exception",
+        "four-view camera plan",
+        "20 Hz and 30 s capture"
       ]
     }
   ],
@@ -144,10 +165,9 @@
     "Private-driveway ownership/invitee, USPS official business and compelled-stop exceptions are nonvisual authority facts requiring declaration."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Selected cases need exact public/Core and recorded-only proofs before readiness",
+    "Canonical semantic stages and independent delivery/comparison audits remain",
+    "No original physical capture or accepted evidence is claimed"
   ],
   "observations": [
     {
@@ -198,12 +218,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "Private-driveway ownership/invitee, USPS official business and compelled-stop exceptions are nonvisual authority facts requiring declaration.",
-    "No CARLA execution or accepted recording is claimed."
+    "Selected cases need exact public/Core and recorded-only proofs before readiness",
+    "Canonical semantic stages and independent delivery/comparison audits remain",
+    "No original physical capture or accepted evidence is claimed"
   ],
   "requirement_dispositions": [
     {
@@ -216,14 +233,14 @@
         "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02",
         "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Three exact controlled cases selected; original physical capture and acceptance unverified."
     }
   ],
   "driveway_source_capture_checkpoint": {
     "measurement_script": "native/measure_driveway.py",
-    "measurement_script_sha256": "d07c4fd5a53ea71797e2b2af3e03f2c00b3887d8ae97c0304ebadc251ff4331d",
+    "measurement_script_sha256": "c1eca3bec25b34465373067d03f501892c270c2ee72c544e9b26d103d32ce757",
     "test_script": "native/prove_driveway.py",
-    "test_script_sha256": "028c88b7308e74c8f1d42e4d0fdb7cd29ac5b1be42b56f3083f8973b544d18e5",
+    "test_script_sha256": "cff05c0d219a0e7eed8fe9ee05af8038b804ed572cd1ee1a17aaf1cfbbaaf490",
     "test_log": "native/driveway-proof.log",
     "test_log_sha256": "d5dea6f0d7aa29c2c065f53d51a0c9ad87ea001989eef0e2b2bdb70d3b0b439b",
     "test_exit_code": 0,
@@ -236,16 +253,16 @@
   "selected_primary_offline_checkpoint": {
     "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02",
     "construction": "native/selected-primary-construction.json",
-    "construction_sha256": "9a0ee3b48a6749ac7969da3d7dd243fe51f074954ec6ef85586e9dc1075633bb",
+    "construction_sha256": "ad63b75580bb5ed3ebaf37c487e9e7e4899a1a18c1c01b6ea999eeabc3edf505",
     "manifest": "native/selected-offline-manifest.json",
-    "manifest_sha256": "0b488592b715677d6eca1aaa90e7b997d10b2cff93bf3a51bc94f94abcb566e2",
+    "manifest_sha256": "eadd796d4b699930dabb12b8f30e5b04865b27fc4e0c7e48bcc9d9a0d3522073",
     "builder": "native/build_selected.py",
-    "builder_sha256": "338f7aeb818214fbdf41bf145cda5254f1d576831bc0fc30a6c1477797338b4e",
-    "offline_command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/native/selected-offline-manifest.json --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02 --output .runtime-work/c150094-selected-primary-offline-v3",
+    "builder_sha256": "b0250975a3b971ff66c2bdc6dd04cfc81c6e46a1e8a27bbd55255a4d6944cde6",
+    "offline_command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver/native/selected-offline-manifest.json --case training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02 --output .runtime-work/c150094-owner/offline-probe-02-r7",
     "offline_log": "native/selected-primary-offline.log",
-    "offline_log_sha256": "88a5ec52bc22859759e3ef9e4e10dea785d12f320ac738d31de99e940443a4d6",
+    "offline_log_sha256": "09538597c0b7d51f08df5d144f9fcbbc6eb985b58e94ef78136e38855c64ea3a",
     "offline_tests_log": "native/selected-primary-tests.log",
-    "offline_tests_log_sha256": "65ef77b82dbb19c386e6c4674fd086cd4f1e93fd12a7483de1dc27f63ddf637e",
+    "offline_tests_log_sha256": "239573c1665ba0d20880d981ec7058ee3d44a42932e841724fdcee3ca672055d",
     "offline_exit_code": 0,
     "physical_execution_claimed": false
   },

@@ -123,7 +123,7 @@ def main():
         primary = ("closing_left_vehicle_context" if suffix == "exception_unsafe_available" else
                    ("left_lane_occupant_plan" if suffix.startswith("exception") else "requested_lane_move"))
         group = ("unsafe_available" if suffix == "exception_unsafe_available" else
-                 ("exception" if suffix.startswith("exception") else "witness"))
+                 ("exception_1" if suffix.startswith("exception") else "witness"))
         cases.append({
             "case_id": entry["case_id"], "target_law_id": LAW,
             "target_type": "boundary_probe",

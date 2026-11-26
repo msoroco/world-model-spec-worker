@@ -146,7 +146,7 @@ def execute(case_suffix, case_id, output, host, port):
                     steer=steering_command(lateral_error, observed["heading_deg"])))
                 cyclist.set_target_velocity(carla.Vector3D(x=1.5, y=0, z=0))
                 if blocker is not None:
-                    blocker.set_target_velocity(carla.Vector3D(x=3, y=0, z=0))
+                    blocker.set_target_velocity(carla.Vector3D(x=6 if case_suffix == "exception_unsafe_available" else 3, y=0, z=0))
                 frame = world.tick()
                 stamp = world.get_snapshot()
                 if stamp.frame != frame:

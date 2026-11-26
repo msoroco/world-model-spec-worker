@@ -1,12 +1,14 @@
 """Author a slower, earlier-lane-transition Native fallback for each exact case."""
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
-SUFFIXES = ("witness_1", "witness_2", "exception_1_1", "exception_1_2")
+SUFFIXES = ("witness_1", "witness_2", "exception_1_1", "exception_1_2",
+            "exception_unsafe_available")
 
 
 def sha(path):
@@ -19,9 +21,13 @@ def write(path, value):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--only", choices=SUFFIXES)
+    args = parser.parse_args()
     path = HERE / "selected-native-draft-manifest.json"
     manifest = json.loads(path.read_text())
-    for suffix in SUFFIXES:
+    selected_suffixes = (args.only,) if args.only else SUFFIXES
+    for suffix in selected_suffixes:
         case_id = HERE.name + "__" + suffix
         entry = next(e for e in manifest["cases"] if e["case_id"] == case_id)
         construction = json.loads((HERE / entry["construction"]).read_text())
@@ -56,7 +62,7 @@ def main():
             ],
         }]
     write(path, manifest)
-    print(json.dumps({"candidate_count": len(SUFFIXES), "manifest_sha256": sha(path)}, sort_keys=True))
+    print(json.dumps({"candidate_count": len(selected_suffixes), "manifest_sha256": sha(path)}, sort_keys=True))
 
 
 if __name__ == "__main__":

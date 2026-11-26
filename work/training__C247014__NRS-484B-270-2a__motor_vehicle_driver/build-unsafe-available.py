@@ -60,7 +60,7 @@ def main():
     source = source.replace('    "exception_1_2": (False, True),',
                             '    "exception_1_2": (False, True),\n    "exception_unsafe_available": (False, True),')
     source = source.replace('    blocker_x = ego_x + 2 if block_left else None',
-                            '    blocker_x = (ego_x - 25 + 3 * t) if case_suffix == "exception_unsafe_available" else (ego_x + 2 if block_left else None)')
+                            '    blocker_x = (ego_x - 35 + 3 * t) if case_suffix == "exception_unsafe_available" else (ego_x + 2 if block_left else None)')
     if source == scene["content"] or 'exception_unsafe_available' not in source:
         raise ValueError("Fifth-case scene source insertion failed")
     scene["content"] = source
@@ -77,7 +77,7 @@ def main():
                        .replace('suffix == "exception_1_2"',
                                 'suffix in ("exception_1_2", "exception_unsafe_available")'))
     primary["mechanisms"] = list(primary["mechanisms"]) + [
-        "closing left-lane original vehicle approaches from behind at planned 6 m/s while ego target is 3 m/s"]
+        "closing left-lane vehicle remains behind at the planned lane-change decision, then approaches at 6 m/s while ego target is 3 m/s"]
     primary["status"] = "unsafe_available_cpu_draft_original_unobserved"
     target = HERE / "selected-native-draft" / SUFFIX / "construction.json"
     write(target, primary)
@@ -91,7 +91,7 @@ def main():
     for i, line in enumerate((base_root / "participant-poses.jsonl").read_text().splitlines()):
         row = json.loads(line)
         blocker = row["left_blocker"]
-        blocker["center_xy_m"][0] = row["ego"]["center_xy_m"][0] - 25 + 3 * (i / 20)
+        blocker["center_xy_m"][0] = row["ego"]["center_xy_m"][0] - 35 + 3 * (i / 20)
         blocker["speed_mps"] = 6
         poses.append(json.dumps(row, separators=(",", ":")))
     (source_root / "participant-poses.jsonl").write_text("\n".join(poses) + "\n")
@@ -124,8 +124,12 @@ def main():
     }
     for manifest_path in (HERE / "selected-native-draft-manifest.json", HERE / "execution-manifest.json"):
         manifest = json.loads(manifest_path.read_text())
-        if CASE not in {e["case_id"] for e in manifest["cases"]}:
+        existing = next((e for e in manifest["cases"] if e["case_id"] == CASE), None)
+        if existing is None:
             manifest["cases"].append(entry)
+        else:
+            existing.clear()
+            existing.update(entry)
         write(manifest_path, manifest)
     print(json.dumps({"case_id": CASE, "construction_sha256": sha(target)}, sort_keys=True))
 

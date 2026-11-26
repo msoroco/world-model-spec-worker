@@ -9,7 +9,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 PAIRS = {"witness": ("witness_1", "witness_2"),
-         "exception": ("exception_1_1", "exception_1_2")}
+         "exception": ("exception_1_1", "exception_1_2"),
+         "unsafe_available": ("exception_1_1", "exception_unsafe_available")}
 
 
 def sha(path):
@@ -22,7 +23,9 @@ def rows(path):
 
 def inspect(pair, negative=False):
     left_name, right_name = PAIRS[pair]
-    paths = [REPO / ".runtime-work" / ("c247014-compat-" + name + "-v4") for name in (left_name, right_name)]
+    paths = [REPO / ".runtime-work" / ("c247014-compat-" + name +
+             ("-v6" if name == "exception_unsafe_available" else "-v4"))
+             for name in (left_name, right_name)]
     for path in paths:
         if not path.is_dir():
             raise ValueError("Missing exact public source: " + str(path))
@@ -54,13 +57,24 @@ def inspect(pair, negative=False):
         changed = [i for i, (a, b) in enumerate(zip(l, r)) if a["left_blocker"] != b["left_blocker"]]
         if not changed:
             raise ValueError("Exception pair lacks planned occupant contrast")
-        variable = "left_lane_occupant_plan"
+        if pair == "unsafe_available":
+            decision = 180
+            ego_x = r[decision]["ego"]["center_xy_m"][0]
+            blocker_x = r[decision]["left_blocker"]["center_xy_m"][0]
+            initial_gap = r[0]["ego"]["center_xy_m"][0] - r[0]["left_blocker"]["center_xy_m"][0]
+            decision_gap = ego_x - blocker_x
+            if not (0 < decision_gap < initial_gap):
+                raise ValueError("Closing vehicle must remain behind at the lane-change decision")
+        variable = ("closing_left_vehicle_context" if pair == "unsafe_available"
+                    else "left_lane_occupant_plan")
     return {"format": "c247014-independent-comparison-audit-v1", "pair": pair,
             "cases": [HERE.name + "__" + left_name, HERE.name + "__" + right_name],
             "frames": 600, "source_sha256": {
                 left_name: sha(paths[0] / "participant-poses.jsonl"),
                 right_name: sha(paths[1] / "participant-poses.jsonl")},
             "deliberate_difference": variable, "changed_frames": len(changed),
+            "closing_gap_m": {"initial": initial_gap, "lane_change_decision": decision_gap}
+            if pair == "unsafe_available" else None,
             "synthetic_fixture": True, "original_native_observed": False,
             "legal_judgment": None}
 

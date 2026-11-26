@@ -30,7 +30,8 @@ def main():
     for entry in manifest["cases"]:
         case = entry["case_id"]
         suffix = case.removeprefix(HERE.name + "__")
-        attempt = REPO / ".runtime-work" / ("c247014-compat-" + suffix + "-v4")
+        version = "-v6" if suffix == "exception_unsafe_available" else "-v4"
+        attempt = REPO / ".runtime-work" / ("c247014-compat-" + suffix + version)
         folder = HERE / "proofs" / "delivery" / suffix
         folder.mkdir(parents=True, exist_ok=True)
         positive = folder / "positive.json"

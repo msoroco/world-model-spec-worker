@@ -69,10 +69,25 @@ def finalize(attempt, output):
     channel_dir = attempt / 'channels'
     channel_dir.mkdir(exist_ok=True)
     channel_names = [c['name'] for c in config['recording_description']['channels']]
+    context = json.loads((attempt / 'driveway_context.json').read_text())
+    bounds = context['driveway_curb_interval_m']
     for name in channel_names:
-        (channel_dir / (name + '.json')).write_text(json.dumps({
-            'channel': name, 'observation': observation,
-            'source_sha256': hashes}, indent=2) + '\n')
+        stream = []
+        for frame, row in zip(frame_map, parking):
+            low = row['ego_curb_station_m'] - row['ego_half_length_m']
+            high = row['ego_curb_station_m'] + row['ego_half_length_m']
+            values = {
+                'st.driveway_or_alley_entrance': {'kind': context['driveway_kind'], 'curb_interval_m': bounds},
+                'rel.centre_distance': max(bounds[0] - high, low - bounds[1], 0.0),
+                'drv.standing_or_parked': {'speed_mps': row['ego_speed_mps'], 'park_brake_engaged': row['park_brake_engaged']},
+                'rel.occupies': low <= bounds[1] and high >= bounds[0],
+                'kin.extent': {'curb_low_m': low, 'curb_high_m': high},
+                'ru.official_vehicle': {'usps_vehicle': context['usps_vehicle'], 'official_business': context['usps_official_business']},
+                'dev.regulatory_sign': {'officer_direction': context['officer_direction'], 'traffic_device_direction': context['traffic_device_direction']},
+            }
+            stream.append({'time_s': frame['time_s'], 'value': values[name]})
+        (channel_dir / (name + '.jsonl')).write_text(''.join(json.dumps(row, allow_nan=False) + '\n' for row in stream))
+    (channel_dir / 'driveway_context.json').write_text(json.dumps({'driveway_context': context}, allow_nan=False) + '\n')
     result = {
         'case_id': config['case_id'], 'measured_values': observation,
         'target_checks': [{'target': 'driveway_footprint_distance',
@@ -92,9 +107,11 @@ def finalize(attempt, output):
         'video_references': [name + '.mkv' for name in CAMERAS],
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': config['recording_description'],
-        'recording_evidence': [{'name': name, 'unit': 'structured',
-                                'reference': 'channels/' + name + '.json'}
-                               for name in channel_names],
+        'recording_evidence': ([{'name': name, 'unit': 'structured',
+                                 'reference': 'channels/' + name + '.jsonl'}
+                                for name in channel_names] +
+                               [{'name': 'driveway_context', 'unit': 'structured',
+                                 'reference': 'channels/driveway_context.json'}]),
         'realized_observables': {'minimum_footprint_gap_m_at_rest': {
             'value': observation['minimum_footprint_gap_m_at_rest'], 'unit': 'm',
             'method': 'source-bound Native body footprint and reviewed curb opening',

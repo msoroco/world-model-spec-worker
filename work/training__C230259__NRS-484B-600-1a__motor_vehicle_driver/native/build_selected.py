@@ -49,6 +49,7 @@ def build():
     for speed, case_id in zip(SPEEDS, selected):
         config = {"assignment_id": AID, "case_id": case_id,
                   "selected_case_id": case_id, "supported_case_ids": selected,
+                  "case": {"case_id": case_id, "recording_description": description},
                   "law_id": "NRS-484B-600-1a", "cell_id": "C230259",
                   "actor": "motor_vehicle_driver", "candidate_id": "primary",
                   "requested_speed_mps": speed, "rate_hz": 20, "frames": 600,

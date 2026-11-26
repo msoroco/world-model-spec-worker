@@ -9,7 +9,8 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SUFFIXES = ("witness_1", "witness_2", "exception_1_1", "exception_1_2")
+SUFFIXES = ("witness_1", "witness_2", "exception_1_1", "exception_1_2",
+            "exception_unsafe_available")
 
 
 def sha(path):
@@ -30,7 +31,9 @@ def main():
     output = []
     for suffix in SUFFIXES:
         entry = entries[suffix]
-        versions = sorted((scratch / ("saved-" + suffix)).glob("v*/processing.json"))
+        case_scratch = (REPO / ".runtime-work" / "c247014-resume-v6"
+                        if suffix == "exception_unsafe_available" else scratch)
+        versions = sorted((case_scratch / ("saved-" + suffix)).glob("v*/processing.json"))
         receipts = [(path, json.loads(path.read_text())) for path in versions]
         passed = [(path, item) for path, item in receipts if item.get("passed") is True]
         if len(passed) != 1:
@@ -55,7 +58,7 @@ def main():
         target = dest / "processing.json"
         shutil.copyfile(path, target)
         log = dest / "saved.log"
-        source_log = scratch / ("saved-" + suffix + ".log")
+        source_log = case_scratch / ("saved-" + suffix + ".log")
         shutil.copyfile(source_log, log)
         output.append({"case_id": entry["case_id"], "receipt": str(target.relative_to(HERE)),
                        "receipt_sha256": sha(target), "log": str(log.relative_to(HERE)),

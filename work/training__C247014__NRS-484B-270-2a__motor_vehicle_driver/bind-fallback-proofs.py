@@ -22,7 +22,8 @@ def main():
         candidate = entry["candidates"][0]
         if candidate["id"] != "fallback1":
             raise ValueError("Missing exact fallback")
-        source = REPO / ".runtime-work" / ("c247014-fallback-compat-" + suffix)
+        version = "-v2" if suffix == "exception_unsafe_available" else ""
+        source = REPO / ".runtime-work" / ("c247014-fallback-compat-" + suffix + version)
         receipt = json.loads((source / "compatibility.json").read_text())
         if (receipt.get("case_id") != entry["case_id"] or
                 receipt.get("candidate_id") != "fallback1" or
