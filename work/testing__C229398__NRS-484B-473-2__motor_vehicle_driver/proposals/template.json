@@ -1,0 +1,77 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-473-2",
+  "parameter_refs": [
+    {
+      "kind": "controller",
+      "name": "lamp_mode",
+      "range_or_domain": "source-observed undimmed or dimmed displayed beam"
+    },
+    {
+      "kind": "controller",
+      "name": "auxiliary_lamp",
+      "range_or_domain": "source-observed none, cowl or parking lamp use"
+    },
+    {
+      "kind": "world_setup",
+      "name": "night",
+      "range_or_domain": "reviewed original nighttime or daytime context"
+    },
+    {
+      "kind": "world_setup",
+      "name": "lawful_park",
+      "range_or_domain": "reviewed original lawful or unlawful parking context"
+    },
+    {
+      "kind": "world_setup",
+      "name": "reviewed_site",
+      "range_or_domain": "one original reviewed C229398 highway site and OpenDRIVE map"
+    },
+    {
+      "kind": "world_setup",
+      "name": "capture_profile",
+      "range_or_domain": "four original cameras, 20 Hz, 900 frames"
+    }
+  ],
+  "quote": "Whenever lights are displayed upon a vehicle lawfully parked at nighttime upon any highway, such lights shall be depressed or dimmed, in the event cowl or parking lamps are not used.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "condition": "Lights displayed on a vehicle lawfully parked at nighttime upon a highway while cowl and parking lamps are not used.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "judgment_calls_needed": [
+      {
+        "note": "Displayed-light state requires original lamp telemetry.",
+        "phrase": "lights are displayed"
+      },
+      {
+        "note": "Parking lawfulness requires separate highway and parking context sources.",
+        "phrase": "lawfully parked"
+      },
+      {
+        "note": "Night and highway status require independent original sources.",
+        "phrase": "at nighttime upon any highway"
+      },
+      {
+        "note": "Beam state must be observed without inventing a numeric legal cutoff.",
+        "phrase": "depressed or dimmed"
+      },
+      {
+        "note": "Auxiliary lamp use is separate from displayed beam state.",
+        "phrase": "cowl or parking lamps are not used"
+      }
+    ],
+    "obligation": {
+      "description": "Displayed lights shall be depressed or dimmed in the stated conditions.",
+      "numeric_conditions": [],
+      "type": "comply"
+    },
+    "timing": {
+      "description": "Original parked interval and lamp-state history.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-473-2@motor_vehicle_driver"
+}

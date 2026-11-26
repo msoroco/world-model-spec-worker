@@ -1,4 +1,4 @@
-"""Independent original U-turn source and four-view full-decode audit."""
+"""Independent original right-lane source and four-view full-decode audit."""
 from __future__ import annotations
 
 import argparse
@@ -76,7 +76,7 @@ def audit(attempt, case_id, plan):
     fixture = (attempt / "fixture-provenance.json").is_file()
     if not fixture and (not joined or len(mapping) != 900):
         raise ValueError("original Native source/video frame join incomplete")
-    return {"format": "c133321-independent-u-turn-delivery-audit-v1",
+    return {"format": "c240647-independent-right-lane-delivery-audit-v1",
             "case_id": case_id, "inventory_sha256": _sha(inventory_path),
             "source_measurement": measured, "capture_frames": len(mapping),
             "packet_frames": len(source_frames), "source_video_join": joined,

@@ -13,7 +13,7 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 MANIFEST = HERE / "execution-manifest.json"
 PYTHON = str(REPO / ".venv-cpu/bin/python")
-SCRATCH = REPO / ".runtime-work/c133321-owner-nov26"
+SCRATCH = REPO / ".runtime-work/c240647-owner-final"
 VALIDATOR = REPO / ".runtime-work/c110969-decoder/.lake/build/bin/adapterCheck"
 
 
@@ -96,7 +96,7 @@ def prove():
         ncmd[ncmd.index("--output") + 1] = str(negative)
         failure = json.loads(call(ncmd))
         if not failure["missing_evidence"] or "history.json" not in (negative / "v0001/feedback.json").read_text():
-            raise ValueError("missing original U-turn history source not classified: " + kind)
+            raise ValueError("missing original right-lane roundabout history source not classified: " + kind)
         neglog = HERE / ("cpu-saved-" + kind + "-missing.log")
         neglog.write_text(json.dumps(failure, sort_keys=True, indent=2) + "\n")
         entry["post_capture"] = {"command": " ".join(cmd), "feedback_command": " ".join(ncmd),

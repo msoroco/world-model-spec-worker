@@ -1,0 +1,962 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__baseline",
+      "deliberate_differences": [],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "reviewed allocated right lane and actual exit connector",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "right"
+      },
+      "rationale": "Shared source map and operator reference for the exact selected controls.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {}
+    },
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__right_intent_right_lane",
+      "deliberate_differences": [
+        "operator_intent_request",
+        "roundabout_lane_request",
+        "actual_exit_request"
+      ],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "source-bound intended, requested and observed roundabout operation",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "right"
+      },
+      "rationale": "Measure independent operator intent, original circular lane and actual connector without prelabeling compliance.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {
+        "actual_exit_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "operator_intent_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "roundabout_lane_request": {
+          "kind": "world_setup",
+          "value": "right"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__right_intent_left_lane",
+      "deliberate_differences": [
+        "operator_intent_request",
+        "roundabout_lane_request",
+        "actual_exit_request"
+      ],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "source-bound intended, requested and observed roundabout operation",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "left"
+      },
+      "rationale": "Measure independent operator intent, original circular lane and actual connector without prelabeling compliance.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {
+        "actual_exit_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "operator_intent_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "roundabout_lane_request": {
+          "kind": "world_setup",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__right_intent_left_to_right",
+      "deliberate_differences": [
+        "operator_intent_request",
+        "roundabout_lane_request",
+        "actual_exit_request"
+      ],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "source-bound intended, requested and observed roundabout operation",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "left_then_right"
+      },
+      "rationale": "Measure independent operator intent, original circular lane and actual connector without prelabeling compliance.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {
+        "actual_exit_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "operator_intent_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "roundabout_lane_request": {
+          "kind": "world_setup",
+          "value": "left_then_right"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__right_intent_right_to_left",
+      "deliberate_differences": [
+        "operator_intent_request",
+        "roundabout_lane_request",
+        "actual_exit_request"
+      ],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "source-bound intended, requested and observed roundabout operation",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "right_then_left"
+      },
+      "rationale": "Measure independent operator intent, original circular lane and actual connector without prelabeling compliance.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {
+        "actual_exit_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "operator_intent_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "roundabout_lane_request": {
+          "kind": "world_setup",
+          "value": "right_then_left"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__through_intent_right_lane",
+      "deliberate_differences": [
+        "operator_intent_request",
+        "roundabout_lane_request",
+        "actual_exit_request"
+      ],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "source-bound intended, requested and observed roundabout operation",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "right"
+      },
+      "rationale": "Measure independent operator intent, original circular lane and actual connector without prelabeling compliance.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {
+        "actual_exit_request": {
+          "kind": "participant_behavior",
+          "value": "through_exit"
+        },
+        "operator_intent_request": {
+          "kind": "participant_behavior",
+          "value": "through"
+        },
+        "roundabout_lane_request": {
+          "kind": "world_setup",
+          "value": "right"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__through_intent_left_lane",
+      "deliberate_differences": [
+        "operator_intent_request",
+        "roundabout_lane_request",
+        "actual_exit_request"
+      ],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "source-bound intended, requested and observed roundabout operation",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "left"
+      },
+      "rationale": "Measure independent operator intent, original circular lane and actual connector without prelabeling compliance.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {
+        "actual_exit_request": {
+          "kind": "participant_behavior",
+          "value": "through_exit"
+        },
+        "operator_intent_request": {
+          "kind": "participant_behavior",
+          "value": "through"
+        },
+        "roundabout_lane_request": {
+          "kind": "world_setup",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__right_intent_right_lane_no_exit",
+      "deliberate_differences": [
+        "operator_intent_request",
+        "roundabout_lane_request",
+        "actual_exit_request"
+      ],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "source-bound intended, requested and observed roundabout operation",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "right"
+      },
+      "rationale": "Measure independent operator intent, original circular lane and actual connector without prelabeling compliance.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {
+        "actual_exit_request": {
+          "kind": "participant_behavior",
+          "value": "no_exit"
+        },
+        "operator_intent_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "roundabout_lane_request": {
+          "kind": "world_setup",
+          "value": "right"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__right_intent_right_lane_wrong_exit",
+      "deliberate_differences": [
+        "operator_intent_request",
+        "roundabout_lane_request",
+        "actual_exit_request"
+      ],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "source-bound intended, requested and observed roundabout operation",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "right"
+      },
+      "rationale": "Measure independent operator intent, original circular lane and actual connector without prelabeling compliance.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {
+        "actual_exit_request": {
+          "kind": "participant_behavior",
+          "value": "through_exit"
+        },
+        "operator_intent_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "roundabout_lane_request": {
+          "kind": "world_setup",
+          "value": "right"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver__single_lane_right_exit",
+      "deliberate_differences": [
+        "operator_intent_request",
+        "roundabout_lane_request",
+        "actual_exit_request"
+      ],
+      "paired_probe_id": "roundabout_right_lane_controls",
+      "probe": {
+        "comparison_or_standard": "source-bound intended, requested and observed roundabout operation",
+        "primary_variable": "roundabout_lane_request",
+        "target_value_or_branch": "single_right"
+      },
+      "rationale": "Measure independent operator intent, original circular lane and actual connector without prelabeling compliance.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_roundabout_topology",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "independent_operator_intent",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_ring_lane_history",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "actual_exit_connector",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-sealed original Native readback",
+            "name": "original_four_camera_pixels",
+            "reference_frame": "original CARLA map/world",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 ticks",
+            "uncertainty": "physical capture pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed original OpenDRIVE and lane/connector survey",
+            "name": "reviewed_roundabout_map",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Intent is independently sourced; actual lane and exit require original actor readback.",
+          "Right-turn and right-lane legal judgments remain unresolved."
+        ]
+      },
+      "target_law_id": "LVMC-11-43-010-C2",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "right lane",
+        "turn right"
+      ],
+      "variable_assignments": {
+        "actual_exit_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "operator_intent_request": {
+          "kind": "participant_behavior",
+          "value": "right_exit"
+        },
+        "roundabout_lane_request": {
+          "kind": "world_setup",
+          "value": "single_right"
+        }
+      }
+    }
+  ],
+  "cell_id": "C240647",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "The source map must identify the allocated right circulating lane; original actor use is measured.",
+          "phrase": "right lane"
+        },
+        {
+          "note": "The independently intended exit and first observed source connector remain distinct.",
+          "phrase": "turn right"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native map allocation, intent record and local legal review."
+      ],
+      "rationale": "Source lane and connector identity is categorical; no legal numeric cutoff exists.",
+      "status": "incomplete",
+      "sweep_id": "mapped_right_lane_review",
+      "target_law_id": "LVMC-11-43-010-C2"
+    }
+  ],
+  "sweeps_expanded": true
+}

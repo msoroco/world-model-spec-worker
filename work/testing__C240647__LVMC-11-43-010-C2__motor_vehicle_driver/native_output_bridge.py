@@ -1,4 +1,4 @@
-"""Publish restored original U-turn packets as a sealed Core capture."""
+"""Publish restored original C240647 lane and exit packets as a Core capture."""
 from __future__ import annotations
 
 import hashlib
@@ -70,14 +70,16 @@ def publish(root, *, map_bytes, restored):
     history = load_sealed_json(root / "history.json", refs["history"]["sha256"])
     if map_packet.get("map_sha256") != hashlib.sha256(map_bytes).hexdigest():
         raise ValueError("loaded OpenDRIVE source differs from sealed map")
-    role = "left" if history["case_id"].endswith("__left_lane_u_turn") else "outer"
-    topology = verify_topology(map_packet, role)
-    measured = verify_original_history(history, topology, history["case_id"], strict_geometry=True)
-    if not measured["requested_lane_observed"] or not measured["opposite_departure_observed"]:
-        raise ValueError("original U-turn route physically incomplete")
+    from pathlib import Path as _Path
+    plan = json.loads((_Path(__file__).with_name("case-plan.json")).read_text())
+    case = next((row for row in plan["cases"] if row["case_id"] == history["case_id"]), None)
+    if case is None:
+        raise ValueError("unknown exact right-lane case")
+    topology = verify_topology(map_packet, case)
+    measured = verify_original_history(history, topology, history["case_id"])
     frames = history["frames"]
     if len(frames) != FRAME_COUNT:
-        raise ValueError("original U-turn history frame count incomplete")
+        raise ValueError("original right-lane history frame count incomplete")
     road = root / "road.xodr"
     if road.exists():
         raise ValueError("original OpenDRIVE output already exists")
@@ -115,6 +117,8 @@ def publish(root, *, map_bytes, restored):
                   "rgb_sensors": [{"view": name, "source": "original_native_callback_rgb"} for name in VIEWS],
                   "roundabout_observation": {"section": row["section"],
                                              "lane_id": row["lane_id"],
+                                             "exit_connector_id": row.get("exit_connector_id"),
+                                             "operator_intended_exit_role": history["operator_intended_exit_role"],
                                              "map_sha256": map_packet["map_sha256"]}}
         graph = nx.DiGraph()
         graph.graph.update(frame=number, time_s=row["time_s"], observed_evidence=packet)

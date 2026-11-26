@@ -1,74 +1,73 @@
-"""Reopen both original U-turn attempts and audit lane-only differences."""
+"""Reopen both original attempts for one exact controlled roundabout comparison."""
 from __future__ import annotations
-
 import argparse
 import hashlib
 import json
 from pathlib import Path
-
 from analysis import measure
-from roundabout import compare
 
-ASSIGNMENT = "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver"
-COMPARISON = "u_turn_left_vs_outer_lane"
+ASSIGNMENT="testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver"
 
-
-def _sha(path):
+def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
-
-def audit(left, outer, plan):
-    plan = json.loads(Path(plan).read_text())
-    target = next((row for row in plan["comparisons"]
-                   if row["comparison_id"] == COMPARISON), None)
-    if target is None or target["case_ids"] != [ASSIGNMENT + "__left_lane_u_turn",
-                                                    ASSIGNMENT + "__outer_lane_u_turn"]:
-        raise ValueError("exact U-turn comparison plan differs")
-    a, b = measure(left), measure(outer)
-    if [a["case_id"], b["case_id"]] != target["case_ids"]:
-        raise ValueError("comparison attempt identities differ")
-    fixture = (Path(left) / "fixture-provenance.json").is_file()
-    if fixture != (Path(outer) / "fixture-provenance.json").is_file():
+def audit(first,second,plan_path,comparison):
+    plan=json.loads(Path(plan_path).read_text())
+    target=next((row for row in plan["comparisons"] if row.get("comparison_id")==comparison),None)
+    if target is None or len(target.get("case_ids",[]))!=2:
+        raise ValueError("exact comparison missing")
+    a,b=measure(first),measure(second)
+    if [a["case_id"],b["case_id"]]!=target["case_ids"] or any(
+            not case.startswith(ASSIGNMENT+"__") for case in target["case_ids"]):
+        raise ValueError("comparison attempt identity differs")
+    fixture=(Path(first)/"fixture-provenance.json").is_file()
+    if fixture!=(Path(second)/"fixture-provenance.json").is_file():
         raise ValueError("comparison source profiles differ")
-    result = compare(a, b, expected_frames=9 if fixture else 900)
-    if _sha(Path(left) / "map.json") != _sha(Path(outer) / "map.json"):
-        raise ValueError("comparison source map changed")
-    if a["requested_lane_observed"] is not True or b["requested_lane_observed"] is not True:
-        raise ValueError("one requested allocated lane was not observed")
-    if a["other_ring_lane_observed"] or b["other_ring_lane_observed"]:
-        raise ValueError("original ring lane changed during a comparison member")
-    if result["both_departures_observed"] is not True:
-        raise ValueError("both opposite-direction U-turn departures not observed")
-    return {"format": "c133321-independent-u-turn-comparison-v1",
-            "comparison_id": COMPARISON, "case_ids": result["case_ids"],
-            "fixed_conditions": target["fixed_conditions"],
-            "deliberate_differences": target["deliberate_differences"],
-            "measured": result,
-            "source_hashes": {"left_map": _sha(Path(left) / "map.json"),
-                              "left_history": _sha(Path(left) / "history.json"),
-                              "outer_map": _sha(Path(outer) / "map.json"),
-                              "outer_history": _sha(Path(outer) / "history.json")},
-            "diagnostic_fixture": fixture,
-            "physical_acceptance": False, "legal_lane_judgment": "unresolved"}
-
+    expected_frames=9 if fixture else 900
+    if a["source_frame_count"] != expected_frames or b["source_frame_count"] != expected_frames:
+        raise ValueError("comparison original histories incomplete")
+    cases={row["case_id"]:row for row in plan["cases"]}
+    ca,cb=cases[a["case_id"]],cases[b["case_id"]]
+    changed=[key for key in ("operator_intent_request","roundabout_lane_request","actual_exit_request")
+             if ca[key]!=cb[key]]
+    if not changed:
+        raise ValueError("comparison has no exact controlled difference")
+    single="single_right" in (ca["roundabout_lane_request"],cb["roundabout_lane_request"])
+    if not single and a["map_id"]!=b["map_id"]:
+        raise ValueError("comparison map identity changed")
+    for key in ("vehicle_blueprint","entry_id","controller_sha256","weather_sha256","camera_plan_sha256"):
+        if a["fixed_conditions"][key]!=b["fixed_conditions"][key]:
+            raise ValueError("comparison fixed source changed: "+key)
+    evidence={"first_map":sha(Path(first)/"map.json"),"first_history":sha(Path(first)/"history.json"),
+              "second_map":sha(Path(second)/"map.json"),"second_history":sha(Path(second)/"history.json")}
+    return {"format":"c240647-independent-controlled-comparison-v1",
+            "comparison_id":comparison,"case_ids":target["case_ids"],
+            "fixed_conditions":target["fixed_conditions"],
+            "deliberate_differences":target["deliberate_differences"],
+            "changed_control_fields":changed,"source_hashes":evidence,
+            "measured":{"independent_operator_intents":[a["operator_intended_exit_role"],b["operator_intended_exit_role"]],
+                        "occupied_circular_lanes":[a["occupied_ring_lane_ids"],b["occupied_ring_lane_ids"]],
+                        "first_actual_connectors":[a["first_observed_exit_connector_id"],b["first_observed_exit_connector_id"]],
+                        "right_lane_throughout":[a["all_circulating_frames_right_lane"],b["all_circulating_frames_right_lane"]]},
+            "diagnostic_fixture":fixture,"physical_acceptance":False,
+            "legal_lane_judgment":"unresolved"}
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--left", type=Path, required=True)
-    parser.add_argument("--outer", type=Path, required=True)
-    parser.add_argument("--comparison", default=COMPARISON)
-    parser.add_argument("--comparison-id", default=ASSIGNMENT + "__" + COMPARISON)
-    parser.add_argument("--plan", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
-    args = parser.parse_args()
-    if args.comparison != COMPARISON or args.comparison_id != ASSIGNMENT + "__" + COMPARISON:
-        raise ValueError("exact U-turn comparison identity differs")
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--first",type=Path,required=True)
+    parser.add_argument("--second",type=Path,required=True)
+    parser.add_argument("--comparison",required=True)
+    parser.add_argument("--comparison-id",required=True)
+    parser.add_argument("--plan",type=Path,required=True)
+    parser.add_argument("--output",type=Path,required=True)
+    args=parser.parse_args()
+    if args.comparison_id!=ASSIGNMENT+"__"+args.comparison:
+        raise ValueError("exact comparison identity differs")
     if args.output.exists():
         raise ValueError("refusing to overwrite independent comparison audit")
-    result = audit(args.left, args.outer, args.plan)
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
-
+    result=audit(args.first,args.second,args.plan,args.comparison)
+    args.output.parent.mkdir(parents=True,exist_ok=True)
+    args.output.write_text(json.dumps(result,sort_keys=True,indent=2)+"\n")
 
 if __name__ == "__main__":
     main()

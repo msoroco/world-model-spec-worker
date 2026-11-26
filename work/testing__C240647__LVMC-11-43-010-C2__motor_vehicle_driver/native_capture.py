@@ -1,4 +1,4 @@
-"""Reviewed-map Native acquisition for the two C133321 U-turn routes.
+"""Reviewed-map Native acquisition for nine C240647 right-turn controls.
 
 The local operator supplies a CARLA world and source readers. This module
 requires original readback on every tick and writes packets only to a local
@@ -14,15 +14,15 @@ import math
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ASSIGNMENT = "testing__C133321__LVMC-11-43-010-C1__motor_vehicle_driver"
-CASES = {"left_lane_u_turn": "left", "outer_lane_u_turn": "outer"}
+ASSIGNMENT = "testing__C240647__LVMC-11-43-010-C2__motor_vehicle_driver"
+CASES = {row["case_id"]: row for row in json.loads((HERE / "case-plan.json").read_text())["cases"]}
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 RATE_HZ = 20
 FRAME_COUNT = 900
 
 
 def _module(name):
-    spec = importlib.util.spec_from_file_location("c133321_" + name, HERE / (name + ".py"))
+    spec = importlib.util.spec_from_file_location("c240647_" + name, HERE / (name + ".py"))
     value = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(value)
     return value
@@ -52,15 +52,17 @@ def _actor_id(actor):
     return str(value)
 
 
-def _validate_review(review, case_id, role):
+def _validate_review(review, case):
+    case_id = case["case_id"]
     if review.get("source_kind") != "reviewed_original_native_roundabout":
         raise ValueError("reviewed Native roundabout survey required")
-    if review.get("assignment_id") != ASSIGNMENT or review.get("cell_id") != "C133321":
+    if review.get("assignment_id") != ASSIGNMENT or review.get("cell_id") != "C240647":
         raise ValueError("reviewed assignment and cell mismatch")
     if review.get("jurisdiction") != "Las Vegas, Nevada":
         raise ValueError("roundabout jurisdiction review missing")
-    if review.get("intended_departure") != "opposite_direction":
-        raise ValueError("opposite-direction operator intention missing")
+    intent = review.get("independent_operator_intent", {})
+    if intent.get("case_id") != case_id or intent.get("requested_exit_role") != case["operator_intent_request"] or not intent.get("source_sha256"):
+        raise ValueError("independent source-bound operator intention missing")
     if review.get("entry_id") is None or review.get("exit_id") is None:
         raise ValueError("reviewed entry and exit identities missing")
     if review.get("vehicle_blueprint") is None:
@@ -68,15 +70,13 @@ def _validate_review(review, case_id, role):
     for name in ("map_sha256", "controller_sha256", "weather_sha256", "camera_plan_sha256"):
         if not isinstance(review.get(name), str) or len(review[name]) != 64:
             raise ValueError("reviewed source hash missing: " + name)
-    if review.get("lane_roles") != ["left", "outer"]:
-        raise ValueError("both source-surveyed allocated lanes required")
-    if review.get("case_ids") != [ASSIGNMENT + "__" + name for name in CASES]:
+    if review.get("case_ids") != list(CASES):
         raise ValueError("reviewed exact case IDs missing")
-    if role not in CASES.values() or case_id != ASSIGNMENT + "__" + next(k for k, v in CASES.items() if v == role):
-        raise ValueError("unknown exact U-turn case")
+    if case_id not in CASES:
+        raise ValueError("unknown exact right-lane case")
 
 
-def capture(world, *, case_id, survey_path, survey_sha256, output, operator, throttle=0.35):
+def capture(world, *, case, survey_path, survey_sha256, output, operator, throttle=0.35):
     """Run a complete source-gated, four-view Native capture and restore world.
 
     The operator implements map_bytes, readback_map, spawn_vehicle,
@@ -84,12 +84,11 @@ def capture(world, *, case_id, survey_path, survey_sha256, output, operator, thr
     original actor's map lane/section and heading after each world tick.
     `cameras` returns four frame-indexed PNG callbacks and owned sensors.
     """
-    role = case_id.removeprefix(ASSIGNMENT + "__")
-    if role not in CASES:
-        raise ValueError("unknown exact U-turn case")
-    lane_role = CASES[role]
+    case_id = case["case_id"]
+    if case_id not in CASES or case != CASES[case_id]:
+        raise ValueError("unknown exact right-lane case")
     review = _read_review(survey_path, survey_sha256)
-    _validate_review(review, case_id, lane_role)
+    _validate_review(review, case)
     if hashlib.sha256((HERE / "runner.py").read_bytes()).hexdigest() != review["controller_sha256"]:
         raise ValueError("reviewed route controller source hash mismatch")
     for name in ("map_bytes", "readback_map", "spawn_vehicle", "actor_state",
@@ -105,7 +104,7 @@ def capture(world, *, case_id, survey_path, survey_sha256, output, operator, thr
     if map_packet.get("jurisdiction") != review["jurisdiction"]:
         raise ValueError("Native map jurisdiction differs from survey")
     route = _module("roundabout")
-    topology = route.verify_topology(map_packet, lane_role)
+    topology = route.verify_topology(map_packet, case)
     output = Path(output)
     if output.exists() and any(output.iterdir()):
         raise ValueError("original attempt directory already populated")
@@ -171,7 +170,7 @@ def capture(world, *, case_id, survey_path, survey_sha256, output, operator, thr
                     raise ValueError("original actor readback missing")
                 if str(row.get("actor_id")) != self.actor_id:
                     raise ValueError("original actor identity mismatch")
-                if row.get("section") not in ("entry", "ring", "exit"):
+                if row.get("section") not in ("approach", "circulating", "exit"):
                     raise ValueError("original map section missing")
                 if type(row.get("lane_id")) is not str or not row["lane_id"]:
                     raise ValueError("original allocated lane ID missing")
@@ -195,6 +194,7 @@ def capture(world, *, case_id, survey_path, survey_sha256, output, operator, thr
                     folder.mkdir(parents=True, exist_ok=True)
                     (folder / f"{native_frame:06d}.png").write_bytes(image)
                 frame = {"frame": index, "source_frame_id": native_frame,
+                         "exit_connector_id": row.get("exit_connector_id"),
                          "time_s": round(index / RATE_HZ, 5), "section": row["section"],
                          "lane_id": row["lane_id"], "actor_id": self.actor_id,
                          "x": float(row["x"]), "y": float(row["y"]), "z": float(row["z"]),
@@ -213,7 +213,8 @@ def capture(world, *, case_id, survey_path, survey_sha256, output, operator, thr
                 packet = {"source_kind": "sealed_native_original_history", "case_id": exact_case,
                           "map_id": topo["map_id"], "map_sha256": topo["map_sha256"],
                           "actor_role": "motor_vehicle_driver", "actor_id": self.actor_id,
-                          "intended_departure": review["intended_departure"],
+                          "operator_intended_exit_role": case["operator_intent_request"],
+                          "independent_operator_intent_source_sha256": review["independent_operator_intent"]["source_sha256"],
                           "vehicle_blueprint": vehicle.type_id, "entry_id": review["entry_id"],
                           "exit_id": review["exit_id"],
                           "controller_sha256": review["controller_sha256"],
@@ -230,11 +231,25 @@ def capture(world, *, case_id, survey_path, survey_sha256, output, operator, thr
             def destroy(self, actor):
                 actor.destroy()
 
-        result = _module("runner").execute(Adapter(), case_id, lane_role, throttle=throttle)
+        result = _module("runner").execute(Adapter(), case, throttle=throttle)
         packet = json.loads((output / "history.json").read_text())
-        result = route.verify_original_history(packet, topology, case_id, strict_geometry=True)
-        if not result["requested_lane_observed"] or not result["opposite_departure_observed"]:
-            raise ValueError("physical route did not realize requested U-turn")
+        result = route.verify_original_history(packet, topology, case_id)
+        observed_roles = []
+        for frame in packet["frames"]:
+            if frame["section"] != "circulating":
+                continue
+            role = ("right" if frame["lane_id"] == topology["right_lane_id"] else
+                    "left" if frame["lane_id"] == topology["left_lane_id"] else "unmapped")
+            if not observed_roles or observed_roles[-1] != role:
+                observed_roles.append(role)
+        requested_roles = {"right": ["right"], "left": ["left"],
+                           "left_then_right": ["left", "right"],
+                           "right_then_left": ["right", "left"],
+                           "single_right": ["right"]}[case["roundabout_lane_request"]]
+        expected_connector = (None if case["actual_exit_request"] == "no_exit" else
+                              topology[case["actual_exit_request"] + "_connector_id"])
+        if observed_roles != requested_roles or result["first_observed_exit_connector_id"] != expected_connector:
+            raise ValueError("physical route did not realize requested lane sequence and exit connector")
         return result
     finally:
         for sensor in reversed(sensors):

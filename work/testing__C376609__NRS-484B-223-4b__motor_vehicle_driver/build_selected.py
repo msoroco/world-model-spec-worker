@@ -41,19 +41,23 @@ def build():
                                      'method': 'independent reviewed source hashes and Native map identity'}],
                  'limitations': ['Blind sightline does not change the exact turn-lane prohibition.',
                                  'Synthetic diagnostics cannot establish original travel through or legal verdict.']}
+    prior_path = HERE / 'execution-manifest.json'
+    prior = {x['case_id']: x for x in json.loads(prior_path.read_text()).get('cases', [])} if prior_path.exists() else {}
     entries = []
     runner = (HERE / 'native_runner.py').read_text()
+    analysis = (HERE / 'analysis.py').read_text()
     measure = (HERE / 'turn_lane_observations.py').read_text()
     for case in plan['cases']:
         suffix = case['case_id'].removeprefix(AID + '__')
         config = {'assignment_id': AID, 'law_id': plan['law_id'], 'cell_id': plan['cell_id'],
-                  'actor': plan['actor'], 'selected_case_id': case['case_id'], 'case': case,
+                  'actor': plan['actor'], 'selected_case_id': case['case_id'], 'case': {**case, 'recording_description': recording},
                   'duration_s': 45, 'rate_hz': 20, 'supported_case_ids': ids,
                   'required_atoms': [], 'source_packets': [], 'cameras': cameras,
                   'source_gate': 'reviewed original highway, lane design, intersection, route and Native map',
                   'control_profile': {'steer_gain': .025}}
         files = [{'path': 'runner.py', 'content': runner},
                  {'path': 'turn_lane_observations.py', 'content': measure},
+                 {'path': 'analysis.py', 'content': analysis},
                  {'path': 'tests/test_bundle.py', 'content': (HERE / 'bundle_test.py').read_text()},
                  {'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'}]
         construction = {'law_id': plan['law_id'], 'cell_id': plan['cell_id'], 'actor': plan['actor'],
@@ -67,7 +71,7 @@ def build():
         fallback = {**construction, 'files': fallback_files}
         fallback_path = HERE / ('construction-fallback1-' + suffix + '.json')
         write(fallback_path, fallback)
-        entries.append({'case_id': case['case_id'], 'kind': 'delivery',
+        entries.append({**prior.get(case['case_id'], {}), 'case_id': case['case_id'], 'kind': 'delivery',
                         'status': 'source_pending', 'construction': path.name,
                         'construction_sha256': sha(path),
                         'candidates': [{'id': 'fallback1', 'construction': fallback_path.name,

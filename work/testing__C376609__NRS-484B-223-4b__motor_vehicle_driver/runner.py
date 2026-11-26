@@ -70,9 +70,8 @@ def capture(site, case, host, port, output):
     import carla
     from PIL import Image
     output = Path(output).resolve()
-    if output.exists() or '.runtime-work' not in output.parts:
-        raise ValueError('fresh original output under .runtime-work required')
-    output.parent.mkdir(parents=True, exist_ok=True)
+    if not output.is_dir() or '.runtime-work' not in output.parts or (output / 'capture-seal.json').exists():
+        raise ValueError('materialized unsealed attempt under .runtime-work required')
     stage = Path(tempfile.mkdtemp(prefix='c376609-native-', dir=output.parent))
     client = carla.Client(host, int(port))
     client.set_timeout(20)
@@ -137,9 +136,9 @@ def capture(site, case, host, port, output):
             if wp is None:
                 raise ValueError('original lane waypoint absent')
             station = (loc.x - site['station_origin_xy'][0]) * site['station_axis_xy'][0] + (loc.y - site['station_origin_xy'][1]) * site['station_axis_xy'][1]
-            row = {'frame': i, 'native_frame': frame, 'time_s': i / 20, 'lane_id': str(wp.lane_id),
+            row = {'frame': frame, 'native_frame': frame, 'time_s': i / 20, 'lane_id': str(wp.lane_id),
                    'ego_station_m': station, 'speed_mps': speed, 'connected_route': site['route_request'] if site['route_request'] != 'stop_before' else 'none',
-                   'position_xyz_m': [loc.x, loc.y, loc.z], 'road_id': wp.road_id,
+                   'position_xyz_m': [loc.x, loc.y, loc.z], 'position_m': [loc.x, loc.y], 'road_id': wp.road_id,
                    'junction_id': wp.get_junction().id if wp.is_junction else None}
             rows.append(row)
             hashes = {}
@@ -151,7 +150,7 @@ def capture(site, case, host, port, output):
                 frame_path = stage / ('frames-' + name) / f'{i:04d}.png'
                 rgba.convert('RGB').save(frame_path)
                 hashes[name] = sha(frame_path)
-            frame_map.append({'frame': i, 'native_frame': frame, 'time_s': i / 20, 'camera_png_sha256': hashes})
+            frame_map.append({'video_frame': i, 'carla_frame': frame, 'native_frame': frame, 'time_s': i / 20, 'camera_png_sha256': hashes})
         context = dict(site['source_context'])
         context.update({'case_id': case, 'map_sha256': site['map_sha256'], 'lane_design': site['lane_design'],
                         'intersection_type': site['intersection_type'], 'independent_route_intent': site['route_request'],
@@ -160,20 +159,33 @@ def capture(site, case, host, port, output):
                         'intersection_exit_station_m': site['intersection_exit_station_m']})
         (stage / 'context.json').write_text(json.dumps(context, sort_keys=True) + '\n')
         (stage / 'original-trace.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows))
-        (stage / 'video-frames.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in frame_map))
+        (stage / 'trace.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in rows))
+        (stage / 'video_frames.jsonl').write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in frame_map))
         videos = {}
         for name in CAMERAS:
             video = stage / (name + '.mkv')
             subprocess.run(['ffmpeg', '-v', 'error', '-nostdin', '-framerate', '20', '-i', str(stage / ('frames-' + name) / '%04d.png'), '-frames:v', '900', '-c:v', 'ffv1', str(video)], check=True)
             videos[name] = {'path': video.name, 'sha256': sha(video), 'frame_count': 900}
             shutil.rmtree(stage / ('frames-' + name))
+        subprocess.run(['ffmpeg', '-v', 'error', '-nostdin', '-i', str(stage / 'overview.mkv'),
+                        '-i', str(stage / 'approach.mkv'), '-i', str(stage / 'reference_corner.mkv'),
+                        '-i', str(stage / 'driver_reference.mkv'), '-filter_complex',
+                        '[0:v]scale=960:540[a];[1:v]scale=960:540[b];[2:v]scale=960:540[c];[3:v]scale=960:540[d];'
+                        '[a][b][c][d]xstack=inputs=4:layout=0_0|960_0|0_540|960_540[v]',
+                        '-map', '[v]', '-frames:v', '900', '-c:v', 'ffv1', str(stage / 'raw.mkv')], check=True)
         receipt = {'assignment_id': AID, 'case_id': case, 'source_kind': 'original_native_capture',
                    'diagnostic_fixture': False, 'fps': 20, 'frame_count': 900,
                    'context_sha256': sha(stage / 'context.json'), 'trace_sha256': sha(stage / 'original-trace.jsonl'),
-                   'frame_map_sha256': sha(stage / 'video-frames.jsonl'), 'reviewed_site_sha256': site['site_sha256'],
+                   'frame_map_sha256': sha(stage / 'video_frames.jsonl'), 'reviewed_site_sha256': site['site_sha256'],
                    'cameras': videos, 'physical_acceptance': False, 'legal_verdict': None}
         (stage / 'receipt.json').write_text(json.dumps(receipt, sort_keys=True) + '\n')
-        os.replace(stage, output)
+        (stage / 'acquisition-provenance.json').write_text(json.dumps({'provenance_kind': 'native', 'diagnostic_fixture': False}, sort_keys=True) + '\n')
+        for source in stage.iterdir():
+            destination = output / source.name
+            if destination.exists():
+                raise ValueError('capture output collision: ' + source.name)
+            os.replace(source, destination)
+        stage.rmdir()
     except BaseException:
         shutil.rmtree(stage, ignore_errors=True)
         raise
@@ -189,6 +201,9 @@ def capture(site, case, host, port, output):
             except Exception:
                 pass
         world.apply_settings(original_settings)
+    from worker_exchange.native_output import seal_capture
+    seal_capture(output, frames=900, restoration={'restored': True}, errors=[],
+                 encoder_exit_codes={name: 0 for name in CAMERAS})
 
 
 def main():
