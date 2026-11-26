@@ -165,9 +165,9 @@ class ProductionRunnerTest(unittest.TestCase):
 
     def test_saved_finalizer_rejects_missing_original(self):
         (self.root / "config.json").write_text(json.dumps(self.config))
-        with self.assertRaisesRegex(ValueError, "Missing required source: road.xodr"):
+        with self.assertRaisesRegex(ValueError, "Missing required source: site-context.json"):
             finalize_original(self.root)
-        with self.assertRaisesRegex(ValueError, "Missing required source: road.xodr"):
+        with self.assertRaisesRegex(ValueError, "Missing required source: site-context.json"):
             measure_case(self.root)
 
     def test_upstream_fallback_changes_actual_rider_route(self):

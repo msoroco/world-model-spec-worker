@@ -1,0 +1,154 @@
+{
+  "assignment_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver",
+  "selected_case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park",
+  "supported_case_ids": [
+    "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
+    "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park",
+    "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park",
+    "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop",
+    "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel"
+  ],
+  "law_id": "LVMC-11-52-136",
+  "cell_id": "C150072",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed marked aisle, adjacent space and vehicle body",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed one-way approach and terminal activity",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed aisle/space boundary and vehicle body",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "vehicle mounted forward approach view",
+      "fov_deg": 90
+    }
+  ],
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 4,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true
+  },
+  "case": {
+    "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park",
+    "requested_footprint": "adjacent_space",
+    "requested_activity": "park",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "site_source",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original Native frame acquisition and saved-only extraction",
+          "time_window": "approach through terminal activity",
+          "reference_frame": "original frame/time and CARLA world",
+          "uncertainty": "20 Hz sampling and vehicle body geometry"
+        },
+        {
+          "name": "aisle_polygon",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original Native frame acquisition and saved-only extraction",
+          "time_window": "approach through terminal activity",
+          "reference_frame": "original frame/time and CARLA world",
+          "uncertainty": "20 Hz sampling and vehicle body geometry"
+        },
+        {
+          "name": "adjacent_space_polygon",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original Native frame acquisition and saved-only extraction",
+          "time_window": "approach through terminal activity",
+          "reference_frame": "original frame/time and CARLA world",
+          "uncertainty": "20 Hz sampling and vehicle body geometry"
+        },
+        {
+          "name": "body_footprint_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original Native frame acquisition and saved-only extraction",
+          "time_window": "approach through terminal activity",
+          "reference_frame": "original frame/time and CARLA world",
+          "uncertainty": "20 Hz sampling and vehicle body geometry"
+        },
+        {
+          "name": "ego_speed_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original Native frame acquisition and saved-only extraction",
+          "time_window": "approach through terminal activity",
+          "reference_frame": "original frame/time and CARLA world",
+          "uncertainty": "20 Hz sampling and vehicle body geometry"
+        },
+        {
+          "name": "activity_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original Native frame acquisition and saved-only extraction",
+          "time_window": "approach through terminal activity",
+          "reference_frame": "original frame/time and CARLA world",
+          "uncertainty": "20 Hz sampling and vehicle body geometry"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original Native frame acquisition and saved-only extraction",
+          "time_window": "approach through terminal activity",
+          "reference_frame": "original frame/time and CARLA world",
+          "uncertainty": "20 Hz sampling and vehicle body geometry"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "jurisdiction",
+          "unit": "source packet",
+          "method": "Reviewed original site and activity source binding"
+        },
+        {
+          "name": "qualifying_aisle_markings",
+          "unit": "source packet",
+          "method": "Reviewed original site and activity source binding"
+        },
+        {
+          "name": "accessible_route_design",
+          "unit": "source packet",
+          "method": "Reviewed original site and activity source binding"
+        },
+        {
+          "name": "activity_purpose",
+          "unit": "source packet",
+          "method": "Reviewed original site and activity source binding"
+        }
+      ],
+      "limitations": [
+        "Legal status of the aisle and parking activity require original source review.",
+        "Actual body overlap and camera visibility require local Native review."
+      ]
+    }
+  }
+}

@@ -134,6 +134,10 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
     else:
         require(relative[-1] <= 0, 'abort case completed pass')
     return {'case_id': case.case_id, 'frame_count': 900,
+            'cycle_kind': case.cycle_kind,
+            'requested_lateral_offset_m': case.lateral_offset_m,
+            'pass_policy': case.pass_policy,
+            'road_geometry_source_sha256': scene['road_geometry_source_sha256'],
             'initial_relative_station_m': relative[0],
             'terminal_relative_station_m': relative[-1],
             'minimum_surface_clearance_m': min(clearances),

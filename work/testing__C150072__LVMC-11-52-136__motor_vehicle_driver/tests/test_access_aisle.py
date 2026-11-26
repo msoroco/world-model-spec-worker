@@ -96,7 +96,7 @@ class AccessAisleTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'frame/time'):
             measure_original(original, data, case)
         original = rows(data, case)
-        original[10]['observed_activity'] = 'loading_stop'
+        original[-10]['observed_activity'] = 'loading_stop'
         with self.assertRaisesRegex(ValueError, 'activity differs'):
             measure_original(original, data, case)
         original = rows(data, case)

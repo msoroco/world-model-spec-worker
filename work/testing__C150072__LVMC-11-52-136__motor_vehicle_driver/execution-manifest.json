@@ -1,0 +1,573 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "d9bbdc45c07db5c963319426c8f33cb8fc5573d3d39d6d4c24f1440e736f724b",
+      "fixture_recipe": "work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/diagnostic-aisle_full_park-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original jurisdiction, qualifying access aisle and actual activity source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "aisle_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-aisle_polygon.jsonl"
+        },
+        "adjacent_space_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-adjacent_space_polygon.jsonl"
+        },
+        "body_footprint_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-body_footprint_history.jsonl"
+        },
+        "ego_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-ego_speed_history.jsonl"
+        },
+        "activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-activity_history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed route and aisle targets are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "d9bbdc45c07db5c963319426c8f33cb8fc5573d3d39d6d4c24f1440e736f724b",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park --output .runtime-work/c150072/offline-final2-aisle_full_park",
+        "exit_code": 0,
+        "log": "cpu-offline-aisle_full_park.log",
+        "log_sha256": "e421eb954836d65fe407adc3bfe1a1e02f4ed2c4c733aef8f6f001540c1f7593"
+      },
+      "compatibility": {
+        "receipt": "proofs/aisle_full_park/receipt.json",
+        "sha256": "1ff9e5112d52723ff82105a6dd441de901fc119bfa943856f935ba93e25c208c",
+        "log": "proofs/aisle_full_park/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/aisle_full_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-aisle_full_park-receipt.json",
+        "sha256": "3e29b4470b1fa7428995a7cb109dd6d9eb4646e3b2729e345cc598da840873b7"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-aisle_full_park.log",
+        "test_log_sha256": "69216d7b1fd24a0d84c5ebb862a17e299cc739bfaec3f3cab69dafbd518fb807",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original aisle and legal review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3344dc989f7c4292950ea1472576e3ece5157936566b9903bbc96de8f3a51512",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park --attempt .runtime-work/c150072/compat-final2-aisle_full_park --saved-root .runtime-work/c150072/saved-final2-aisle_full_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-aisle_full_park-positive.log",
+        "test_log_sha256": "55f60e633d76006252ad72a72a869eee3bf58617b95d689f55e2325e56dedef2",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_full_park --attempt .runtime-work/c150072/compat-final2-aisle_full_park --saved-root .runtime-work/c150072/saved-final2-aisle_full_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: access-aisle-site.json",
+        "negative_log": "delivery-aisle_full_park-missing_source.log",
+        "negative_log_sha256": "77f506ee7a5d87a19e6ace33858934757deedc1b67d28ebecd7892fb159f473b"
+      }
+    },
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park",
+      "kind": "delivery",
+      "construction": "cases/aisle_partial_park/construction.json",
+      "construction_sha256": "2c8c10e5ed423c8c4da0a6198a07d458d36d44bbf20c1ba4c12be763ea672d0f",
+      "fixture_recipe": "work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/diagnostic-aisle_partial_park-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original jurisdiction, qualifying access aisle and actual activity source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "aisle_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-aisle_polygon.jsonl"
+        },
+        "adjacent_space_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-adjacent_space_polygon.jsonl"
+        },
+        "body_footprint_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-body_footprint_history.jsonl"
+        },
+        "ego_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-ego_speed_history.jsonl"
+        },
+        "activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-activity_history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed route and aisle targets are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "2c8c10e5ed423c8c4da0a6198a07d458d36d44bbf20c1ba4c12be763ea672d0f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park --output .runtime-work/c150072/offline-final2-aisle_partial_park",
+        "exit_code": 0,
+        "log": "cpu-offline-aisle_partial_park.log",
+        "log_sha256": "e85d4fb342dad31d3cd09cd833fb3a291ca26edebf1721e6bd1ad82ed4973dea"
+      },
+      "compatibility": {
+        "receipt": "proofs/aisle_partial_park/receipt.json",
+        "sha256": "dc5677fb51ea72928d917374c36ad5dbbf158cf31e45f7365b15e61ef6fd566d",
+        "log": "proofs/aisle_partial_park/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/aisle_partial_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-aisle_partial_park-receipt.json",
+        "sha256": "d84418352eb61d6694fd66a048fb8e7673749b01ff3effddebec43439fa54687"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-aisle_partial_park.log",
+        "test_log_sha256": "5969ea31059bda7baa4666729db351453e2684729987c3d6a334ed75e23e1e10",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original aisle and legal review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3344dc989f7c4292950ea1472576e3ece5157936566b9903bbc96de8f3a51512",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park --attempt .runtime-work/c150072/compat-final2-aisle_partial_park --saved-root .runtime-work/c150072/saved-final2-aisle_partial_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-aisle_partial_park-positive.log",
+        "test_log_sha256": "babe5b33e9e40d2cb7249dabd29826bd8c0d1258765d63635743d8bde38e1677",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_partial_park --attempt .runtime-work/c150072/compat-final2-aisle_partial_park --saved-root .runtime-work/c150072/saved-final2-aisle_partial_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: access-aisle-site.json",
+        "negative_log": "delivery-aisle_partial_park-missing_source.log",
+        "negative_log_sha256": "77f506ee7a5d87a19e6ace33858934757deedc1b67d28ebecd7892fb159f473b"
+      }
+    },
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park",
+      "kind": "delivery",
+      "construction": "cases/adjacent_space_park/construction.json",
+      "construction_sha256": "0880d22397caaa7558b8e4cd57c8810c8e6a0f6a36b37d8c1ef3cec9eb12ad81",
+      "fixture_recipe": "work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/diagnostic-adjacent_space_park-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original jurisdiction, qualifying access aisle and actual activity source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "aisle_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-aisle_polygon.jsonl"
+        },
+        "adjacent_space_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-adjacent_space_polygon.jsonl"
+        },
+        "body_footprint_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-body_footprint_history.jsonl"
+        },
+        "ego_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-ego_speed_history.jsonl"
+        },
+        "activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-activity_history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed route and aisle targets are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "0880d22397caaa7558b8e4cd57c8810c8e6a0f6a36b37d8c1ef3cec9eb12ad81",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park --output .runtime-work/c150072/offline-final2-adjacent_space_park",
+        "exit_code": 0,
+        "log": "cpu-offline-adjacent_space_park.log",
+        "log_sha256": "c64153248192929b1979280110be6c544bf527487f28ea8a874fb4d07ef600af"
+      },
+      "compatibility": {
+        "receipt": "proofs/adjacent_space_park/receipt.json",
+        "sha256": "921bba99ec6e02e77274c1af534cd31148701f9818f4e79100e8ffc2475dd72f",
+        "log": "proofs/adjacent_space_park/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/adjacent_space_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-adjacent_space_park-receipt.json",
+        "sha256": "8b8078e0ddd02a4f1b00b048e01fe5a8adb1c327f14b45b3703995b01062e22d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-adjacent_space_park.log",
+        "test_log_sha256": "8e7371c4a75a8fd10f9f5ebca4593d304941646e686a4c0bcc7dcd2619387f57",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original aisle and legal review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3344dc989f7c4292950ea1472576e3ece5157936566b9903bbc96de8f3a51512",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park --attempt .runtime-work/c150072/compat-final2-adjacent_space_park --saved-root .runtime-work/c150072/saved-final2-adjacent_space_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-adjacent_space_park-positive.log",
+        "test_log_sha256": "4e27dc45db176a997dd4189abbadc9a4e582163773147379520c16f694fd568f",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__adjacent_space_park --attempt .runtime-work/c150072/compat-final2-adjacent_space_park --saved-root .runtime-work/c150072/saved-final2-adjacent_space_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: access-aisle-site.json",
+        "negative_log": "delivery-adjacent_space_park-missing_source.log",
+        "negative_log_sha256": "77f506ee7a5d87a19e6ace33858934757deedc1b67d28ebecd7892fb159f473b"
+      }
+    },
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop",
+      "kind": "delivery",
+      "construction": "cases/aisle_loading_stop/construction.json",
+      "construction_sha256": "3c2ca60a77e976644b83b123bdbf225b0a7a3e622823d6dd7e4d0249ddc03230",
+      "fixture_recipe": "work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/diagnostic-aisle_loading_stop-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original jurisdiction, qualifying access aisle and actual activity source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "aisle_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-aisle_polygon.jsonl"
+        },
+        "adjacent_space_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-adjacent_space_polygon.jsonl"
+        },
+        "body_footprint_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-body_footprint_history.jsonl"
+        },
+        "ego_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-ego_speed_history.jsonl"
+        },
+        "activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-activity_history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed route and aisle targets are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "3c2ca60a77e976644b83b123bdbf225b0a7a3e622823d6dd7e4d0249ddc03230",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop --output .runtime-work/c150072/offline-final2-aisle_loading_stop",
+        "exit_code": 0,
+        "log": "cpu-offline-aisle_loading_stop.log",
+        "log_sha256": "1c9a7e7f78558bb7a72a32e8a16c43c6356aa68c32564fa826ecc9f103659ac7"
+      },
+      "compatibility": {
+        "receipt": "proofs/aisle_loading_stop/receipt.json",
+        "sha256": "2cf2b72d0533f70f3ba5328f4bd1e30332e4766a52006ca5575a61bfffd99797",
+        "log": "proofs/aisle_loading_stop/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/aisle_loading_stop/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-aisle_loading_stop-receipt.json",
+        "sha256": "24f36a771db6af7f71543a3cc73e632cfe7321ab2bee23dfa61fd25885803697"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-aisle_loading_stop.log",
+        "test_log_sha256": "70817ef48607c3fe065de1cb47a1de79d6e042b5c8dc086ddae9ef6ecc0fbeb6",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original aisle and legal review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3344dc989f7c4292950ea1472576e3ece5157936566b9903bbc96de8f3a51512",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop --attempt .runtime-work/c150072/compat-final2-aisle_loading_stop --saved-root .runtime-work/c150072/saved-final2-aisle_loading_stop --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-aisle_loading_stop-positive.log",
+        "test_log_sha256": "4ee8c1142a2003be72d86b1baeac291c357b4f44410a049fe9be6a44d33cc4b9",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_loading_stop --attempt .runtime-work/c150072/compat-final2-aisle_loading_stop --saved-root .runtime-work/c150072/saved-final2-aisle_loading_stop --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: access-aisle-site.json",
+        "negative_log": "delivery-aisle_loading_stop-missing_source.log",
+        "negative_log_sha256": "77f506ee7a5d87a19e6ace33858934757deedc1b67d28ebecd7892fb159f473b"
+      }
+    },
+    {
+      "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel",
+      "kind": "delivery",
+      "construction": "cases/aisle_travel/construction.json",
+      "construction_sha256": "3323ab9f71fabc7f31bebc8cbbcabfc7b9c64edabadb6c755053dbfba4afad18",
+      "fixture_recipe": "work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/diagnostic-aisle_travel-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original jurisdiction, qualifying access aisle and actual activity source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "aisle_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-aisle_polygon.jsonl"
+        },
+        "adjacent_space_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-adjacent_space_polygon.jsonl"
+        },
+        "body_footprint_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-body_footprint_history.jsonl"
+        },
+        "ego_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-ego_speed_history.jsonl"
+        },
+        "activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-activity_history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body and activity readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed route and aisle targets are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "3323ab9f71fabc7f31bebc8cbbcabfc7b9c64edabadb6c755053dbfba4afad18",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel --output .runtime-work/c150072/offline-final2-aisle_travel",
+        "exit_code": 0,
+        "log": "cpu-offline-aisle_travel.log",
+        "log_sha256": "64618a998adf7973490a4fd5847cfc8810f6f0585fead08c738f03944207449e"
+      },
+      "compatibility": {
+        "receipt": "proofs/aisle_travel/receipt.json",
+        "sha256": "61b0404268938a96a78bfa85e7c5676e8b778ca7c10f8ae2b088c4e2f3ffab25",
+        "log": "proofs/aisle_travel/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/aisle_travel/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-aisle_travel-receipt.json",
+        "sha256": "44012f279eadd407b631e1c9a959ebeb22334953cf16804128ad671bb9b3e72f"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/execution-manifest.json --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-aisle_travel.log",
+        "test_log_sha256": "cc4236e1151ff2f06ac52289c41e27b34d652da6f61e43a1f6f8d2eeb01a438a",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original aisle and legal review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3344dc989f7c4292950ea1472576e3ece5157936566b9903bbc96de8f3a51512",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel --attempt .runtime-work/c150072/compat-final2-aisle_travel --saved-root .runtime-work/c150072/saved-final2-aisle_travel --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-aisle_travel-positive.log",
+        "test_log_sha256": "440663065dcf4e272dc545de211756be18e05fda0f09d8e111b3277c45077591",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150072/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C150072__LVMC-11-52-136__motor_vehicle_driver/delivery_probe.py --case testing__C150072__LVMC-11-52-136__motor_vehicle_driver__aisle_travel --attempt .runtime-work/c150072/compat-final2-aisle_travel --saved-root .runtime-work/c150072/saved-final2-aisle_travel --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: access-aisle-site.json",
+        "negative_log": "delivery-aisle_travel-missing_source.log",
+        "negative_log_sha256": "77f506ee7a5d87a19e6ace33858934757deedc1b67d28ebecd7892fb159f473b"
+      }
+    }
+  ]
+}

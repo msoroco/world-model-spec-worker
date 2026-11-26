@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "No person shall park a vehicle in an access aisle.",
+      "source": "LVMC 11.52.136",
+      "output_key": "access_aisle_footprint_activity",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "access-aisle-history.jsonl",
+        "access-aisle-site.json",
+        "video_frames.jsonl",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "access-aisle-site.json"
+    ],
+    "error_contains": "Missing required source: access-aisle-site.json"
+  }
+}

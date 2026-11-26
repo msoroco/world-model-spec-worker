@@ -170,12 +170,14 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case) -> dict:
         require(type(speed) in (int, float) and isfinite(speed) and speed >= 0,
                 "original ego speed missing")
         speeds.append(speed)
-        require(row.get("observed_activity") == case.requested_activity,
-                "observed activity differs from case")
+        require(row.get("observed_activity") in ("approach", "park", "loading_stop", "travel"),
+                "original activity readback missing")
         activity_sources.add(row["activity_source_sha256"])
         overlaps.append(intersection_area(row.get("vehicle_body_polygon_xy"),
                                           site["aisle_polygon_xy"]))
     terminal = sum(overlaps[-20:]) / 20
+    require(all(row["observed_activity"] == case.requested_activity for row in rows[-20:]),
+            "observed terminal activity differs from case")
     if case.target == "adjacent_space":
         require(terminal == 0, "adjacent-space case overlaps access aisle")
     else:
@@ -188,6 +190,7 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case) -> dict:
             "first_original_frame": first, "last_original_frame": first + 899,
             "maximum_aisle_body_overlap_m2": max(overlaps),
             "terminal_mean_aisle_body_overlap_m2": terminal,
+            "terminal_max_speed_mps": max(speeds[-20:]),
             "observed_activity": case.requested_activity,
             "activity_source_sha256": sorted(activity_sources),
             "parking_judgment": "unresolved", "legal_judgment": None}
