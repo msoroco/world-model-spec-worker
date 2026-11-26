@@ -232,3 +232,7 @@ The pinned `semantic_delivery.validate` now passes: 22 stages, 24 selected seman
 ## 2026-11-25 ready-path source and camera mapping
 
 The root 24-second diagnostic configuration now has a matching four-view `camera_plan`; selected 30-second cases retain their own selected configurations. All 13 frozen source observation terms map to existing selected synthetic source packet files in `case-plan.json`. Five universal root streams remain mandatory; eight case-specific packet terms are marked nonmandatory for the universal root stream and retain their case-specific source references. A local static check confirmed exact source-term coverage, existing references, camera duration equality and mandatory root channels. This is construction bookkeeping only, not original Native observation or legal qualification.
+
+## 2026-11-25 selected delivery and comparison reproof
+
+All 24 selected delivery-audit positive and negative CPU self-tests pass after the disposition-output changes. Independent positive and negative source-bound comparisons pass for rider bicycle, electric bicycle, electric scooter, pedestrian, exceptions B, C, D and F (8 of 12 pairs). The remaining comparisons follow their exact current-runtime compatibility receipts. These tests use selected synthetic source packets and do not attest an original Native capture or legal outcome.

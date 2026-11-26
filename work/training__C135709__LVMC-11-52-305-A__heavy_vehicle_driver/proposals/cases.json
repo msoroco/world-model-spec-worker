@@ -1,0 +1,228 @@
+{
+  "cell_id": "C135709",
+  "actor": "heavy_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "public-park-parking-review",
+      "target_law_id": "LVMC-11-52-305-A",
+      "judgment_refs": [
+        {
+          "phrase": "public park",
+          "note": "Official park frontage designation, contrasting marking or paving, adjacent designated accessible space, ingress/egress and route connectivity require independent sources; conditional 11.52.135(A) sign route requires sign details."
+        },
+        {
+          "phrase": "stand, park or store",
+          "note": "Vehicle, responsible person, occupancy, loading purpose and actual activity require independent review; no invented duration cutoff."
+        },
+        {
+          "phrase": "permitted by posted sign",
+          "note": "Public-access jurisdiction and premises context require independent original review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Synthetic diagnostics preserve source joins while official designation, public-access jurisdiction and parked classification remain open.",
+      "missing_inputs": [
+        "Independent original premises, designation and parking sources."
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Observe premises context without targeting parking activity.",
+      "variable_assignments": {
+        "park_frontage_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "target_station_beside_park": {
+          "kind": "controller",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "public park",
+        "stand, park or store",
+        "permitted by posted sign"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_pose_and_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor pose, velocity and bounding box",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed narrow road and original Native frame",
+            "uncertainty": "50 ms sampling; public-park status and vehicle class unverified",
+            "source": "channels/vehicle_pose_and_speed.jsonl"
+          },
+          {
+            "name": "park_frontage_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "authored bounds and Native lane survey",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed narrow road and original Native frame",
+            "uncertainty": "50 ms sampling; public-park status and vehicle class unverified",
+            "source": "channels/park_frontage_geometry.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "four original RGB streams joined to Native frames",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed narrow road and original Native frame",
+            "uncertainty": "50 ms sampling; public-park status and vehicle class unverified",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "limitations": [
+          "Public-park designation, posted permission, commercial vehicle specifications, loading and service exceptions need independent source review"
+        ],
+        "context_inputs": []
+      }
+    },
+    {
+      "case_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "access_park frontage_footprint",
+      "rationale": "Request outside park frontage parking and measure original stationary full-body overlap without a legal label.",
+      "deliberate_differences": [
+        "target_station_beside_park"
+      ],
+      "variable_assignments": {
+        "park_frontage_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "target_station_beside_park": {
+          "kind": "controller",
+          "value": false
+        }
+      },
+      "unresolved_judgment_calls": [
+        "public park",
+        "stand, park or store",
+        "permitted by posted sign"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_pose_and_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor pose, velocity and bounding box",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed narrow road and original Native frame",
+            "uncertainty": "50 ms sampling; public-park status and vehicle class unverified",
+            "source": "channels/vehicle_pose_and_speed.jsonl"
+          },
+          {
+            "name": "park_frontage_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "authored bounds and Native lane survey",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed narrow road and original Native frame",
+            "uncertainty": "50 ms sampling; public-park status and vehicle class unverified",
+            "source": "channels/park_frontage_geometry.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "four original RGB streams joined to Native frames",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed narrow road and original Native frame",
+            "uncertainty": "50 ms sampling; public-park status and vehicle class unverified",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "limitations": [
+          "Public-park designation, posted permission, commercial vehicle specifications, loading and service exceptions need independent source review"
+        ],
+        "context_inputs": []
+      },
+      "probe": {
+        "primary_variable": "park_frontage_overlap",
+        "comparison_or_standard": "source-reviewed qualifying access-park frontage extent",
+        "target_value_or_branch": "outside"
+      }
+    },
+    {
+      "case_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "access_park frontage_footprint",
+      "rationale": "Request inside park frontage parking and measure original stationary full-body overlap without a legal label.",
+      "deliberate_differences": [
+        "target_station_beside_park"
+      ],
+      "variable_assignments": {
+        "park_frontage_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "target_station_beside_park": {
+          "kind": "controller",
+          "value": true
+        }
+      },
+      "unresolved_judgment_calls": [
+        "public park",
+        "stand, park or store",
+        "permitted by posted sign"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_pose_and_speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor pose, velocity and bounding box",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed narrow road and original Native frame",
+            "uncertainty": "50 ms sampling; public-park status and vehicle class unverified",
+            "source": "channels/vehicle_pose_and_speed.jsonl"
+          },
+          {
+            "name": "park_frontage_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "authored bounds and Native lane survey",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed narrow road and original Native frame",
+            "uncertainty": "50 ms sampling; public-park status and vehicle class unverified",
+            "source": "channels/park_frontage_geometry.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "four original RGB streams joined to Native frames",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed narrow road and original Native frame",
+            "uncertainty": "50 ms sampling; public-park status and vehicle class unverified",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "limitations": [
+          "Public-park designation, posted permission, commercial vehicle specifications, loading and service exceptions need independent source review"
+        ],
+        "context_inputs": []
+      },
+      "probe": {
+        "primary_variable": "park_frontage_overlap",
+        "comparison_or_standard": "source-reviewed qualifying access-park frontage extent",
+        "target_value_or_branch": "inside"
+      }
+    }
+  ]
+}

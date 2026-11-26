@@ -13,11 +13,11 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def check_saved(attempt, output):
+def check_saved(attempt, output, expected_case=None):
     attempt = Path(attempt).resolve()
     seal = json.loads((attempt / "saved-source.json").read_text())
     require(seal.get("assignment_id") == EXPECTED_ID, "saved assignment mismatch")
-    require(seal.get("case_id") == EXPECTED_ID + "__reference",
+    require(seal.get("case_id") == (expected_case or EXPECTED_ID + "__reference"),
             "saved case mismatch")
     require(seal.get("duration_s") == 30 and seal.get("frame_rate_hz") == 20,
             "saved duration mismatch")

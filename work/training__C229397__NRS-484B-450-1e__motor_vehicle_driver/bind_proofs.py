@@ -57,7 +57,7 @@ def bind():
         pos_cmd = f'.venv-cpu/bin/python -B work/{assignment}/{script} --case {case} --self-test'
         neg_cmd = pos_cmd + ' --negative'
         entry['delivery_acceptance'] = {'case_id': case,
-            'sets': ['demo-train', 'full-train'],
+            'sets': ['full-train'],
             'checks': ['native_source', 'all_participants', 'time_join',
                        'full_video_decode', 'actual_pixels', 'physical_completion'],
             'script': script, 'script_sha256': sha(FOLDER / script),

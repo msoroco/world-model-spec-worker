@@ -12,6 +12,7 @@ from pathlib import Path
 
 from saved_source import CAMERAS
 from sight_speed_measure import EXPECTED_ID, require
+from ray_inventory import sample_approaches, original_rays, xyz
 
 
 def choose_route(mapping, junction_id):
@@ -83,6 +84,7 @@ def capture(config, output, host, port, junction_id=None):
                              "exit_road_id": exit_waypoint.road_id,
                              "exit_lane_id": exit_waypoint.lane_id})
         require(len(entering) >= 2, "entering Native driving approaches missing")
+        approach_samples = sample_approaches(junction.get_junction(), carla.LaneType.Driving)
         signal_actors = []
         for actor in world.get_actors():
             if actor.type_id.startswith("traffic.traffic_light"):
@@ -99,6 +101,7 @@ def capture(config, output, host, port, junction_id=None):
                  "boundary_waypoint_xyz_m": [junction.transform.location.x, junction.transform.location.y, junction.transform.location.z],
                  "departure_waypoint_xyz_m": [after.transform.location.x, after.transform.location.y, after.transform.location.z],
                  "native_entering_driving_lanes": entering,
+                 "entering_approach_ray_targets": approach_samples,
                  "nearby_native_signal_actors": signal_actors,
                  "intersection_sight_reviewed": False, "all_entering_traffic_visibility_reviewed": False,
                  "through_street_exception_reviewed": False, "traffic_control_exception_reviewed": False,
@@ -111,7 +114,7 @@ def capture(config, output, host, port, junction_id=None):
         spawn = before.transform
         spawn.location.z += 0.5
         vehicle_bp = world.get_blueprint_library().find("vehicle.lincoln.mkz_2020")
-        vehicle_bp.set_attribute("role_name", "c24758_lvmc_11_16_040_reference_ego")
+        vehicle_bp.set_attribute("role_name", "c24758_lvmc_11_16_040_" + config["case_id"].rsplit("__", 1)[-1] + "_ego")
         ego = world.spawn_actor(vehicle_bp, spawn)
         owned.append(ego)
         specs = camera_specs(carla, ego, junction)
@@ -137,7 +140,7 @@ def capture(config, output, host, port, junction_id=None):
                 "-an", "-c:v", "ffv1", str(output / f"{name}.mkv")],
                 stdin=subprocess.PIPE, stderr=log)
         initial = world.get_snapshot().timestamp.elapsed_seconds
-        target_speed = 6.2
+        target_speed = config["target_speed_mps"]
         for i in range(600):
             speed = ego.get_velocity().length()
             error_speed = target_speed - speed
@@ -148,6 +151,17 @@ def capture(config, output, host, port, junction_id=None):
             stamp = world.get_snapshot().timestamp.elapsed_seconds - initial
             pose = ego.get_transform()
             velocity = ego.get_velocity()
+            current_lane = mapping.get_waypoint(pose.location, project_to_road=True,
+                                                lane_type=carla.LaneType.Driving)
+            current_junction = current_lane.get_junction() if current_lane and current_lane.is_junction else None
+            eye = pose.transform(carla.Location(x=0.5, z=1.6))
+            sight_targets = [{"target": "intersection", "xyz_m": xyz(junction.transform.location)}]
+            for approach_id, points in approach_samples.items():
+                for point in points:
+                    sight_targets.append({"target": approach_id,
+                                          "distance_from_intersection_ft": point["distance_from_intersection_ft"],
+                                          "xyz_m": point["xyz_m"]})
+            ray_hits = original_rays(world, carla, eye, [target["xyz_m"] for target in sight_targets])
             camera_hashes = {}
             for name in CAMERAS:
                 image = queues[name].get(timeout=30)
@@ -164,10 +178,15 @@ def capture(config, output, host, port, junction_id=None):
                         "ego_xyz_m": [pose.location.x, pose.location.y, pose.location.z],
                         "ego_yaw_deg": pose.rotation.yaw,
                         "ego_velocity_xyz_mps": [velocity.x, velocity.y, velocity.z],
-                        "ego_speed_mps": speed,
+                        "ego_speed_mps": velocity.length(),
+                        "distance_to_boundary_euclidean_m": pose.location.distance(junction.transform.location),
+                        "ego_native_junction_id": current_junction.id if current_junction else None,
                         "ego_traffic_light_state": str(ego.get_traffic_light_state()) if ego.is_at_traffic_light() else None,
-                        "driver_eye_sight_original": None,
-                        "entering_approach_visibility_original": None})
+                        "driver_eye_xyz_m": xyz(eye),
+                        "sight_targets": sight_targets,
+                        "original_native_sight_rays": ray_hits,
+                        "driver_eye_sight_reviewed": False,
+                        "entering_approach_visibility_reviewed": False})
         require(len(frames) == 600, "incomplete Native frame count")
         (output / "frame-map.json").write_text(json.dumps(frames) + "\n")
         with (output / "native-ego-readback.jsonl").open("x") as f:

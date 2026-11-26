@@ -2,37 +2,79 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver",
   "runtime_manifest_sha256": "ade64f2acdaf6d4b653c38f49b71f8c4bd2cf4a985cab7313f160b97b06c3d90",
-  "status": "partial_native_draft",
+  "status": "selected_cpu_preparation",
   "cases": [
     {
       "case_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_1",
       "kind": "delivery",
       "construction": "draft-exact/probe_1/primary/construction.json",
-      "construction_sha256": "82e811cf30558811aafd4652a1a3e51eeb62fbaa35e24a4353aa7091bd14120a",
+      "construction_sha256": "de86b54e758ec98a28bf7f2efa2415d106dc50cb60ce8c70a0ea347eb228ff70",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native heavy-vehicle dimensions, parking motion and frontage view require review"
+        "reason": "Controller stopping gain may place the heavy vehicle short of the requested park frontage; original rest interval and footprint need inspection"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_1/fallback1/construction.json",
+          "construction_sha256": "71d459643ec10b7a4a39f6493289281dd1063bcfcc65f7f7546451ccfa6b9537",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "stationary footprint at requested frontage station",
+            "failure_condition": "five-second rest interval missing or parked footprint disagrees with requested away/beside target after source completeness checks"
+          },
+          "changed_knobs": [
+            "initial vehicle spawn x from -80 m to -78 m in both linked cases; controller and all observation contracts fixed"
+          ]
+        }
+      ],
       "measurement_procedure": {
-        "entrypoint": "measure_parking.py"
+        "entrypoint": "finalize.py"
       },
-      "preparation_status": "incomplete"
+      "preparation_status": "incomplete",
+      "measurement_contract": "draft-exact/probe_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver/diagnostic-probe_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver__probe_2",
       "kind": "delivery",
       "construction": "draft-exact/probe_2/primary/construction.json",
-      "construction_sha256": "4bcb8ff593651a49274699e568f6afb8a7427aaa1d63bb19f61bc13b726a36be",
+      "construction_sha256": "934140e9d9d86324eed6baac3ec612e2c026cb8ad97911aaa4a51c6213e583de",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native heavy-vehicle dimensions, parking motion and frontage view require review"
+        "reason": "Controller stopping gain may place the heavy vehicle short of the requested park frontage; original rest interval and footprint need inspection"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_2/fallback1/construction.json",
+          "construction_sha256": "17277c5eee6bbfb488d3ec9e9ef3f8461ed5d5b56724f1f34e8a42cb1c16506f",
+          "trigger": {
+            "source": "original Native vehicle-poses.jsonl and result.json",
+            "metric": "stationary footprint at requested frontage station",
+            "failure_condition": "five-second rest interval missing or parked footprint disagrees with requested away/beside target after source completeness checks"
+          },
+          "changed_knobs": [
+            "initial vehicle spawn x from -80 m to -78 m in both linked cases; controller and all observation contracts fixed"
+          ]
+        }
+      ],
       "measurement_procedure": {
-        "entrypoint": "measure_parking.py"
+        "entrypoint": "finalize.py"
       },
-      "preparation_status": "incomplete"
+      "preparation_status": "incomplete",
+      "measurement_contract": "draft-exact/probe_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C135709__LVMC-11-52-305-A__heavy_vehicle_driver/diagnostic-probe_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     }
   ]
 }
