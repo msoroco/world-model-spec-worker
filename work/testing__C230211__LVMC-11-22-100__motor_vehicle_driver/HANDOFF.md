@@ -1,25 +1,17 @@
-# C230211 protected pavement checkpoint
+# C230211 protected pavement handoff
 
-Status: partial. Exact scoped strict gate exits 1 because this result remains partial.
+Status: partial. The exact scoped strict delivery gate has not passed.
 
-## Constructed CPU scope
+Seven selected cases and six comparisons cover barrier across, barrier around, bypass, warning person, warning sign, highway closed sign, and the active same-pavement employee exception. The frozen inventory has no accepted Native recordings. Actual pavement condition, warning effect, employee activity, vehicle motion, and four-view pixels require original GPU capture and independent review.
 
-`pavement_protection.py` source-gates jurisdiction, driver/vehicle, newly laid/repaired pavement, protection geometry and timing, route, and same-pavement active employee work. It constructs actual barrier or warning person/sign and vehicle route with actor cleanup. Its 900-frame original finalizer detects physical crossing versus bypass from source-linked positions; legal effect stays unresolved.
+## Construction
 
-Seven exact cases and six controlled comparisons in `case-plan.json` cover across/around barrier, bypass, warning person/sign, closed-highway sign and active employee exception. Frozen evidence inventory has no accepted recording. The cell selects a motor vehicle driver; horse riding is a law alternative outside that actor scope.
+`runner.py` accepts only an exact reviewed site with source-hashed map, jurisdiction, driver, vehicle, pavement, warning geometry and placement time, route, employment, and work activity. It checks the exact case and 900-frame four-camera profile before lazy CARLA import. `pavement_native.py` owns and restores actors and world settings. `pavement_capture.py` preserves the materialized attempt, captures 900 consecutive original frames and four FFV1 streams, and writes a source receipt. After successful restoration, the runner seals Native provenance and calls `analysis.py` to write a source-bound result. The finalizer detects crossing or bypass from original positions and leaves legal judgment unresolved.
 
-## CPU proof receipts
+Seven primary and seven slower physical fallback constructions were rebuilt after fixing the Native attempt and result lifecycle. Their current hashes are in `execution-manifest.selected-draft.json`; each fallback changes only the controller speed scale. No selected or fallback is considered ready from a synthetic diagnostic alone.
 
-- `case-plan.json` SHA256 `bde329130c1591a7dd9bad9eed9a7bc88da8b35e60a2a0e8670fce7089049d34`
-- `pavement_protection.py` SHA256 `8af918ec8597f9ab55d585c1fa88bb7fb5b93565ac66f0d1f3851b19361c840c`
-- `tests/test_pavement_protection.py` SHA256 `c65bbf10301234c6863b8fb2d2b462d23802edd6753b9b2349094774c9ae6354`
-- `cpu-tests.log` SHA256 `c41663a5c53eaa21e04f52adfd4ce5eca720c48ab11f707e2f88372b12ee8e41`
-- `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`
-- `cpu-static-check.log` SHA256 `2ded6905989fdd32fa4c3a9ed477bfd6b13f5f6095724655ae7f8925297b5c01`
-- `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+## CPU progress
 
-Focused unittest exit 0 (3 tests); pinned `runtime.py preflight` exit 0; scoped static `worker_check.py --assignment testing__C230211__LVMC-11-22-100__motor_vehicle_driver` exit 0; same exact scoped strict with `--complete --require-delivery-ready` exit 1 on truthful partial. `result.json.tests` includes only passing commands with package-relative logs and SHA256.
+The current pinned CPU preflight passed. Four focused tests passed. All seven fallback offline checks passed. The first 900-frame primary compatibility attempt passed positive conversion, Lean decoding, four-view processing, and negative missing-source rejection. That attempt predates the final Native lifecycle source change and is diagnostic history only. Current-hash primary and fallback compatibility runs are in progress under `.runtime-work/c230211-nov26/`. Six independent comparison definitions passed synthetic positive and negative protocol checks; `comparison-proposal.json` records no Native acceptance.
 
-## Remaining CPU work
-
-Create canonical selected-case runtime bundles, source-bound positive/negative compatibility, saved-only processing, semantic proposals, and independent delivery/comparison audits. Establish physical placement timing in original captured data. Then rerun scoped strict. Actual CARLA motion and camera coverage remain physical review after CPU readiness.
+The diagnostic generator retains 900 joined capture, trace, frame-index, packet, and graph records, with each returned generator under 2 MiB. Its provenance is explicitly synthetic. Physical outcome, capture lifecycle, saved-only processing, and independent delivery proofs remain to finish for every case before marking `result.json` ready and running the exact scoped strict gate.

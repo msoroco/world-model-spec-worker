@@ -45,6 +45,22 @@ def inside(point_xy, bounds):
     return bounds[0] <= point_xy[0] <= bounds[2] and bounds[1] <= point_xy[1] <= bounds[3]
 
 
+def footprint_relation(footprint, governed):
+    """Preserve complete body geometry; a center point cannot prove parking position."""
+    require(rectangle(footprint) and rectangle(governed),
+            'original parking footprint or governed space missing')
+    left = max(footprint[0], governed[0])
+    right = min(footprint[2], governed[2])
+    bottom = max(footprint[1], governed[1])
+    top = min(footprint[3], governed[3])
+    overlap = max(0., right - left) * max(0., top - bottom)
+    return {'overlap_area_m2': overlap,
+            'fully_inside': (footprint[0] >= governed[0] and
+                             footprint[1] >= governed[1] and
+                             footprint[2] <= governed[2] and
+                             footprint[3] <= governed[3])}
+
+
 SOURCE_FIELDS = ('vehicle_identity', 'city_vehicle_authority', 'city_location',
                  'council_designation', 'posted_or_marked_authority',
                  'device_exact_instruction', 'governed_space',
@@ -101,14 +117,20 @@ def construct(adapter, scene: Mapping, case: Case):
         raise
 
 
-def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
+def measure_original(rows: list[Mapping], scene: Mapping, case: Case,
+                     *, diagnostic_frames=None):
     validate_scene(scene, case)
-    require(len(rows) == 900, 'original 900-frame capture missing')
+    if diagnostic_frames is None:
+        require(len(rows) == 900, 'original 900-frame capture missing')
+    else:
+        require(3 <= diagnostic_frames <= 9 and len(rows) == diagnostic_frames,
+                'synthetic diagnostic frame count differs')
     first = rows[0].get('original_frame')
     t0 = rows[0].get('time_s')
     require(type(first) is int and number(t0), 'original frame/time missing')
     parked = []
     in_space = []
+    footprint_overlaps = []
     for i, row in enumerate(rows):
         require(row.get('original_frame') == first + i and
                 number(row.get('time_s')) and
@@ -126,17 +148,22 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
             require(row.get(key) is getattr(case, key),
                     'original prerequisite changed: ' + key)
         require(point(row.get('vehicle_center_xy')) and
+                rectangle(row.get('vehicle_footprint_rect_m')) and
                 number(row.get('speed_mps')) and row['speed_mps'] >= 0,
-                'original parking motion missing')
-        if first + i >= scene['park_start_frame']:
+                'original parking motion or footprint missing')
+        if i >= scene['park_start_frame']:
             parked.append(row['speed_mps'] <= .1)
             in_space.append(inside(row['vehicle_center_xy'],
                                    scene['governed_space_rect_m']))
+            relation = footprint_relation(row['vehicle_footprint_rect_m'],
+                                          scene['governed_space_rect_m'])
+            footprint_overlaps.append(relation['overlap_area_m2'] > 0)
     require(parked and all(parked), 'vehicle not parked throughout interval')
-    require(all(in_space) if case.inside_space else not any(in_space),
-            'governed-space occupancy wrong')
+    require(all(footprint_overlaps) if case.inside_space else not any(footprint_overlaps),
+            'governed-space footprint occupancy wrong')
     return {'case_id': case.name, 'parked_frames': len(parked),
             'all_centers_inside_governed_space': all(in_space),
+            'all_footprints_overlap_governed_space': all(footprint_overlaps),
             'city_vehicle': case.city_vehicle,
             'official_posting': case.posted,
             'council_designated': case.designated,

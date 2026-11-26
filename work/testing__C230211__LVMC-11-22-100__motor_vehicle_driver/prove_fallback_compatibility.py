@@ -53,13 +53,13 @@ def run():
         for source, target in (("compatibility.json", "proof-fallback-receipt-" + suffix + ".json"),
                                ("compatibility-analysis.log", "proof-fallback-analysis-" + suffix + ".log"),
                                ("negative-analysis.log", "proof-fallback-negative-" + suffix + ".log")):
-            (HERE / target).write_text((destination / source).read_text().rstrip() + "\n")
+            raw = (destination / source).read_text()
+            (HERE / target).write_text(raw.rstrip() + "\n" if raw.strip() else "")
         receipt_path = HERE / ("proof-fallback-receipt-" + suffix + ".json")
         candidate["compatibility"] = {
             "receipt": receipt_path.name, "sha256": sha(receipt_path),
             "log": "proof-fallback-analysis-" + suffix + ".log",
             "negative_log": "proof-fallback-negative-" + suffix + ".log"}
-    MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
     return len(manifest["cases"])
 
 

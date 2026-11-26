@@ -1,0 +1,101 @@
+"""Run exact positive and negative saved source and comparison audits on CPU."""
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+REPO = ROOT.parents[1]
+SCRATCH = REPO / ".runtime-work/c145696"
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+
+
+def run(command, log, expected_code, expected_text=None):
+    environment = dict(os.environ, PYTHONDONTWRITEBYTECODE="1",
+                       TMPDIR=str(SCRATCH),
+                       SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH / "pipeline"))
+    completed = subprocess.run(command, cwd=REPO, env=environment,
+                               capture_output=True, text=True)
+    content = (completed.stdout + completed.stderr).rstrip() + "\n"
+    log.write_text(content, encoding="utf-8")
+    if completed.returncode != expected_code or (expected_text and expected_text not in content):
+        raise ValueError("CPU audit differed: " + str(log) + " code=" + str(completed.returncode))
+    return sha(log)
+
+
+def attempt_for(suffix):
+    return (SCRATCH / "compat7-both_stationary" if suffix == "both_stationary"
+            else SCRATCH / "compatall" / (suffix + "-primary"))
+
+
+def main():
+    manifest_path = ROOT / "execution-manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    script = ROOT / "delivery_audit.py"
+    for entry in manifest["cases"]:
+        cid = entry["case_id"]
+        suffix = cid.split("__")[-1]
+        attempt = attempt_for(suffix)
+        if not (attempt / "compatibility.json").is_file():
+            raise ValueError("Missing exact compatibility source: " + cid)
+        positive_log = ROOT / f"cpu-delivery-positive-{suffix}.log"
+        negative_log = ROOT / f"cpu-delivery-negative-{suffix}.log"
+        positive = [sys.executable, str(script), "--attempt", str(attempt), "--case", cid]
+        negative = positive + ["--require-original"]
+        positive_hash = run(positive, positive_log, 0, '"native_source": false')
+        negative_hash = run(negative, negative_log, 1,
+                            "Diagnostic source cannot satisfy original Native delivery")
+        entry["delivery_acceptance"] = {
+            "case_id": cid, "sets": ["full-test"],
+            "checks": ["native_source", "all_participants", "time_join",
+                       "full_video_decode", "actual_pixels", "physical_completion"],
+            "script": script.name, "script_sha256": sha(script),
+            "command": " ".join(positive), "negative_command": " ".join(negative),
+            "test_exit_code": 0, "negative_exit_code": 1,
+            "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+            "test_log": positive_log.name, "test_log_sha256": positive_hash,
+            "negative_log": negative_log.name, "negative_log_sha256": negative_hash,
+            "scope": "CPU diagnostic integrity and original-only rejection; original visual and physical review awaits GPU"}
+        print(suffix, "delivery positive/negative passed", flush=True)
+    write(manifest_path, manifest)
+    plan = json.loads((ROOT / "case-plan.json").read_text())
+    specs = []
+    script = ROOT / "comparison_audit.py"
+    for item in plan["comparisons"]:
+        cid_left, cid_right = item["case_ids"]
+        left = attempt_for(cid_left.split("__")[-1])
+        right = attempt_for(cid_right.split("__")[-1])
+        comparison = item["comparison_id"]
+        positive = [sys.executable, str(script), "--comparison", comparison,
+                    "--left", str(left), "--right", str(right)]
+        negative = [sys.executable, str(script), "--comparison", comparison,
+                    "--left", str(left), "--right", str(left)]
+        positive_log = ROOT / f"cpu-comparison-positive-{comparison}.log"
+        negative_log = ROOT / f"cpu-comparison-negative-{comparison}.log"
+        positive_hash = run(positive, positive_log, 0, '"fixed_conditions_checked": true')
+        negative_hash = run(negative, negative_log, 1, "Exact attempt identity")
+        specs.append({"comparison_id": comparison, "case_ids": item["case_ids"],
+                      "script": script.name, "script_sha256": sha(script),
+                      "command": " ".join(positive), "negative_command": " ".join(negative),
+                      "test_exit_code": 0, "negative_exit_code": 1,
+                      "positive_log": positive_log.name, "positive_log_sha256": positive_hash,
+                      "negative_log": negative_log.name, "negative_log_sha256": negative_hash,
+                      "scope": "Source-bound diagnostic contrast only; no legal verdict"})
+        print(comparison, "comparison positive/negative passed", flush=True)
+    write(ROOT / "comparison-audit-specs.json", {"format": "worker-comparison-audit-specs",
+                                                 "assignment_id": ROOT.name, "comparisons": specs})
+
+
+if __name__ == "__main__":
+    main()

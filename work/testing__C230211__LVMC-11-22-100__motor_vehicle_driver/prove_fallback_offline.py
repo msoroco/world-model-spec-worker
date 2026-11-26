@@ -48,7 +48,6 @@ def run():
         candidate["offline"] = {"command": " ".join(command), "exit_code": 0,
                                 "log": log.name, "log_sha256": sha(log),
                                 "construction_sha256": candidate["construction_sha256"]}
-    MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
     return len(manifest["cases"])
 
 

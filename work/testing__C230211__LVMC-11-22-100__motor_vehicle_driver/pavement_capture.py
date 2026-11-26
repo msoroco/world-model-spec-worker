@@ -114,6 +114,10 @@ def capture(adapter, site, scene, case, case_id, destination):
             "measurement_sha256": sha(stage / "pavement-measurement.json"),
             "cameras": videos, "physical_acceptance": False,
             "legal_verdict": None})
+        write(stage / "acquisition-provenance.json", {
+            "provenance_kind": "native", "diagnostic_fixture": False,
+            "source_kind": "original_native_capture", "case_id": case_id,
+            "physical_acceptance_claimed": False})
         for source in stage.iterdir():
             target = destination / source.name
             need(not target.exists(), "retain prior original source: " + source.name)

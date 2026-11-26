@@ -66,14 +66,15 @@ def main():
             frame = 38033 + i
             time_s = round((i + 1) / 20, 10)
             replay_s = round(13.517531131161, 10) + time_s
+            observed_packet = {"frame": frame, "time_s": time_s,
+                               "participants": [],
+                               "rgb_sensors": [{"actor_id": 10,
+                                                "blueprint": "sensor.camera.rgb"}],
+                               "world_settings": {"no_rendering_mode": False}}
             spec["graphs"].append({"path": f"capture/native/graphs/base/{frame:08d}.adapter.json",
                                    "attributes": {"frame": frame, "simulation_time_s": replay_s,
                                                   "units": {"position": "m", "carla_speed": "m/s"},
-                                                  "observed_evidence": {
-                                                      "frame": frame, "time_s": time_s,
-                                                      "participants": [],
-                                                      "rgb_sensors": [{"id": "synthetic-diagnostic-rgb"}],
-                                                      "world_settings": {"no_rendering_mode": False}}},
+                                                  "observed_evidence": observed_packet},
                                    "nodes": [], "edges": []})
             left_speed = 2.5 if params["left_motion"] == "moving" else 0.0
             right_speed = 2.5 if params["right_motion"] == "moving" else 0.0
@@ -105,11 +106,7 @@ def main():
                                      "speed_provenance": "synthetic_native_sample",
                                      "body_vertices_m": box},
                              "world": {"weather": {}},
-                             "original_observations": {
-                                 "participants": [],
-                                 "rgb_sensors": [{"actor_id": 10,
-                                                  "blueprint": "sensor.camera.rgb"}],
-                                 "world_settings": {"no_rendering_mode": False}}})
+                             "original_observations": observed_packet})
             frames.append({"frame": frame, "simulation_time": replay_s,
                            "abstract": None, "base": None, "nodes": 0, "edges": 0,
                            "extraction_seconds": 0.0, "capture_seconds": 0.0,

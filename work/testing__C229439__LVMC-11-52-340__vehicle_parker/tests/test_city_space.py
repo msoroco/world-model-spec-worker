@@ -38,6 +38,8 @@ def rows(case):
              'city_vehicle': case.city_vehicle, 'designated': case.designated,
              'posted': case.posted,
              'vehicle_center_xy': [1., 1.] if case.inside_space else [8., 8.],
+             'vehicle_footprint_rect_m': [.2, .2, 2., 4.] if case.inside_space
+             else [7., 7., 9., 9.],
              'speed_mps': 1. if i < 100 else 0.}
         r.update({f + '_source_sha256': s[f + '_source_sha256']
                   for f in mod.SOURCE_FIELDS})
@@ -79,6 +81,8 @@ class CitySpaceTests(unittest.TestCase):
                 self.assertEqual(result['parked_frames'], 800)
                 self.assertEqual(result['all_centers_inside_governed_space'],
                                  case.inside_space)
+                self.assertEqual(result['all_footprints_overlap_governed_space'],
+                                 case.inside_space)
                 self.assertIsNone(result['legal_judgment'])
 
     def test_authority_and_context_sources_required(self):
@@ -106,11 +110,18 @@ class CitySpaceTests(unittest.TestCase):
         case = mod.CASES[0]
         for key, value in (('council_designation_source_sha256', 'wrong'),
                            ('speed_mps', 1.),
-                           ('vehicle_center_xy', [8., 8.])):
+                           ('vehicle_footprint_rect_m', [8., 8., 9., 9.])):
             original = rows(case)
             original[200][key] = value
             with self.subTest(key=key), self.assertRaises(ValueError):
                 mod.measure_original(original, scene(case), case)
+
+    def test_center_outside_does_not_hide_footprint_overlap(self):
+        case = mod.CASES[-1]
+        original = rows(case)
+        original[200]['vehicle_footprint_rect_m'] = [2.9, .2, 4., 4.]
+        with self.assertRaisesRegex(ValueError, 'footprint occupancy'):
+            mod.measure_original(original, scene(case), case)
 
     def test_failed_route_cleans_both_owned_actors(self):
         case = mod.CASES[0]

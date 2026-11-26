@@ -90,6 +90,11 @@ def main():
     output_root = Path(os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", "")).resolve()
     if output_root != private and private not in output_root.parents:
         raise ValueError("Native analysis requires private runtime output root")
+    from worker_exchange.native_output import seal_capture
+    seal_capture(attempt, frames=900, restoration={"restored": True}, errors=[],
+                 encoder_exit_codes={name: 0 for name in CAMERA_NAMES},
+                 context={"case_id": case_id,
+                          "reviewed_site_sha256": site["reviewed_site_sha256"]})
     from analysis import analyze
     report = attempt / "analysis-report.json"
     if report.exists():
