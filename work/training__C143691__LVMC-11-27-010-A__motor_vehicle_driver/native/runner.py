@@ -1,5 +1,6 @@
 """Original Native trail-access acquisition draft; administrative facts need sources."""
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -9,7 +10,30 @@ import subprocess
 from geometry import check as geometry_check, open_drive
 from route import CASE_LATERAL_M, FRAMES, RATE_HZ, target
 
-CAMERAS = ('overview', 'ego_front', 'barrier', 'trail_side')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+
+
+def select_subject_blueprint(library, exception_kind):
+    """Choose a Native asset without treating its role name as legal identity."""
+    patterns = {
+        'none': ('vehicle.*',),
+        'emergency_vehicle': ('vehicle.*ambulance*', 'vehicle.*firetruck*'),
+        'right_of_way_maintenance': ('vehicle.*utility*', 'vehicle.*truck*'),
+        'mobility_device': ('vehicle.*wheelchair*', 'vehicle.*mobility*'),
+    }
+    for pattern in patterns[exception_kind]:
+        matches = sorted(library.filter(pattern), key=lambda item: item.id)
+        if matches:
+            return matches[0]
+    raise RuntimeError('Native subject blueprint unavailable for ' + exception_kind)
+
+
+def select_sign_blueprint(library):
+    """A visible prop is a marker; its wording/authority needs independent review."""
+    matches = sorted(library.filter('static.prop.*sign*'), key=lambda item: item.id)
+    if not matches:
+        raise RuntimeError('Native sign marker blueprint unavailable')
+    return matches[0]
 
 
 def check(config):
@@ -17,8 +41,17 @@ def check(config):
     if (config['cell_id'], config['law_id'], config['actor']) != (
             'C143691', 'LVMC-11-27-010-A', 'motor_vehicle_driver'):
         raise ValueError('exact assignment identity changed')
-    if config['route_case'] not in CASE_LATERAL_M or config['case_id'].rsplit('__', 1)[-1] not in ('probe_1', 'probe_2'):
+    variants = {'outside', 'all_present', 'no_designation', 'no_dedication',
+                'no_posting', 'emergency', 'maintenance', 'mobility_device'}
+    if config['route_case'] not in CASE_LATERAL_M or config['case_id'].rsplit('__', 1)[-1] not in variants:
         raise ValueError('unknown trail route case')
+    source = config.get('source_context_request', {})
+    if set(source) != {'official_designation', 'city_dedication',
+                       'appropriate_posting', 'exception_kind'}:
+        raise ValueError('trail prerequisite and exception request absent')
+    if source['exception_kind'] not in {'none', 'emergency_vehicle',
+                                        'right_of_way_maintenance', 'mobility_device'}:
+        raise ValueError('unsupported trail exception request')
     if config['rate_hz'] != RATE_HZ or config['duration_s'] != FRAMES / RATE_HZ:
         raise ValueError('30-second 20-Hz recording required')
     if tuple(c['name'] for c in config['cameras']) != CAMERAS:
@@ -56,7 +89,9 @@ def control(config, frame, location, velocity):
 
 def execute(config, output_dir, host, port):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
+    from worker_exchange.saved_processing import record_native_exit
     from worker_exchange.world_restore import snapshot, restore
 
     check(config)
@@ -71,6 +106,8 @@ def execute(config, output_dir, host, port):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in prior_world.get_actors()):
         raise RuntimeError('exclusive idle Native world required')
     owned, encoders, camera_queues = [], {}, {}
+    encoder_exits = {}
+    capture = None
     changed = False
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
@@ -93,14 +130,27 @@ def execute(config, output_dir, host, port):
             'trail_right_of_way_m': geometry_check()['trail_right_of_way_m'],
             'official_trails_plan_source': None, 'city_dedication_source': None,
             'posted_prohibition_source': None, 'exception_source': None,
-            'administrative_prerequisites_verified': False}, indent=2) + '\n')
+            'administrative_prerequisites_verified': False,
+            'source_context_request': config['source_context_request']}, indent=2) + '\n')
         library = world.get_blueprint_library()
-        bp = sorted(library.filter('vehicle.*'), key=lambda b: b.id)[0]
+        source_request = config['source_context_request']
+        bp = select_subject_blueprint(library, source_request['exception_kind'])
         bp.set_attribute('role_name', 'c143691_motorized_subject')
         initial_y = CASE_LATERAL_M[config['route_case']]
         vehicle = world.spawn_actor(bp, carla.Transform(
             carla.Location(x=-50, y=initial_y, z=2), carla.Rotation(yaw=0)))
         owned.append(vehicle)
+        if source_request['appropriate_posting']:
+            sign_bp = select_sign_blueprint(library)
+            sign = world.spawn_actor(sign_bp, carla.Transform(
+                carla.Location(x=-6, y=2.6, z=1.1), carla.Rotation(yaw=180)))
+            owned.append(sign)
+            inventory = json.loads((output / 'trail-inventory.json').read_text())
+            inventory['sign_marker_actor_id'] = sign.id
+            inventory['sign_marker_blueprint_id'] = sign_bp.id
+            inventory['sign_marker_native_readback'] = True
+            inventory['sign_wording_and_authority_verified'] = False
+            (output / 'trail-inventory.json').write_text(json.dumps(inventory, indent=2) + '\n')
         barrier_choices = sorted(library.filter('static.prop.streetbarrier*'), key=lambda item: item.id)
         if not barrier_choices:
             raise RuntimeError('Native street-barrier prop blueprint unavailable')
@@ -122,9 +172,23 @@ def execute(config, output_dir, host, port):
         inventory['barrier_clear_gap_m'] = measured_gap
         inventory['vehicle_width_m'] = vehicle_width
         inventory['barrier_gap_native_readback'] = True
+        inventory['subject_blueprint_id'] = bp.id
         (output / 'trail-inventory.json').write_text(json.dumps(inventory, indent=2) + '\n')
-        mounts = {'overview': (8, -26, 24, -35), 'ego_front': (-22, -8, 8, -15),
-                  'barrier': (9, -12, 10, -15), 'trail_side': (25, 11, 10, -20)}
+        (output / 'trail-authority-context.json').write_text(json.dumps({
+            'source_kind': 'original_native', 'request': source_request,
+            'official_record_reviewed': False, 'official_plan_source': None,
+            'city_record_reviewed': False, 'city_dedication_source': None,
+            'sign_wording_and_authority_reviewed': False,
+            'emergency_identity_reviewed': False,
+            'this_right_of_way_use_reviewed': False, 'maintenance_source': None,
+            'device_design_reviewed': False,
+            'impaired_person_use_reviewed': False,
+            'original_documents_attached': False,
+            'legal_verdict_claimed': False}, indent=2) + '\n')
+        mounts = {'overview': (8, -26, 24, -35),
+                  'approach': (-22, -8, 8, -15),
+                  'reference_corner': (9, -12, 10, -15),
+                  'driver_reference': (25, 11, 10, -20)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
             spec = next(c for c in config['cameras'] if c['name'] == name)
@@ -145,8 +209,11 @@ def execute(config, output_dir, host, port):
                 '-frames:v', str(FRAMES), '-c:v', 'ffv1', '-level', '1',
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE)
+        capture = PipelineCapture(client, vehicle, output, config['case_id'],
+                                  required_observations=[])
         with FrameMap(output / 'video_frames.jsonl') as frame_map, \
-                (output / 'vehicle-poses.jsonl').open('x') as poses:
+                (output / 'vehicle-poses.jsonl').open('x') as poses, \
+                (output / 'camera-frames.jsonl').open('x') as image_rows:
             initial_time = None
             for index in range(FRAMES):
                 vt, vv = vehicle.get_transform(), vehicle.get_velocity()
@@ -169,26 +236,38 @@ def execute(config, output_dir, host, port):
                         raise RuntimeError('source camera/frame mismatch: ' + name)
                     encoders[name].stdin.write(image.raw_data)
                     camera_frames[name] = image.frame
+                    image_rows.write(json.dumps({'frame': index, 'camera': name,
+                        'native_frame': native_frame,
+                        'rgb_sha256': hashlib.sha256(image.raw_data).hexdigest()}) + '\n')
                 frame_map.append(native_frame, time_s, camera_native_frames=camera_frames)
                 vt, vv = vehicle.get_transform(), vehicle.get_velocity()
                 extent = vehicle.bounding_box.extent
                 poses.write(json.dumps({'video_frame': index, 'native_frame': native_frame,
                     'time_s': time_s, 'vehicle_id': vehicle.id,
+                    'vehicle_blueprint_id': vehicle.type_id,
                     'vehicle_xyz_m': [vt.location.x, vt.location.y, vt.location.z],
                     'vehicle_yaw_deg': vt.rotation.yaw,
                     'bbox_half_length_m': extent.x, 'bbox_half_width_m': extent.y,
                     'observed_speed_mps': math.hypot(vv.x, vv.y),
                     'requested_control': request, 'camera_native_frames': camera_frames,
                     'barrier_physical_clearance_verified': False}) + '\n')
+                capture.capture(native_frame, time_s, extra={'c143691_trail': {
+                    'vehicle_id': vehicle.id, 'source_context_request': source_request,
+                    'camera_native_frames': camera_frames}})
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
-            if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
+            encoder_exits[name] = process.wait(timeout=180)
+            if encoder_exits[name] or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('source video encoding failed: ' + name + ': ' + stderr.decode()[-300:])
+        capture.close(confirmed=True)
+        capture = None
         return {'frames': FRAMES, 'source_cameras': list(CAMERAS),
                 'administrative_prerequisites_verified': False,
                 'physical_acceptance_claimed': False}
     finally:
+        if capture is not None:
+            capture.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -201,7 +280,12 @@ def execute(config, output_dir, host, port):
             except Exception:
                 pass
         if changed:
-            restore(client, saved)
+            restored = restore(client, saved)
+            if capture is None and len(encoder_exits) == len(CAMERAS):
+                seal_capture(output, frames=FRAMES, restoration=restored, errors=[],
+                             encoder_exit_codes=encoder_exits,
+                             context={'case_id': config['case_id']})
+                record_native_exit(output)
 
 
 if __name__ == '__main__':

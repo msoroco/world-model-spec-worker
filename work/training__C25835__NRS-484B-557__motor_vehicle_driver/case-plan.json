@@ -34,8 +34,9 @@
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4",
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5"
       ],
-      "evidence_or_gap": "Controlled source-bound requests; selected Native execution and original administrative/physical review remain pending.",
-      "disposition_index": 0
+      "evidence_or_gap": "Original rail-trace.jsonl, video_frames.jsonl, road and occluder review join; no synthetic physical verdict.",
+      "disposition_index": 0,
+      "source_clause": "stop followed by proceeding with obstructed sight lines"
     },
     {
       "requirement": "NRS-484B-557",
@@ -49,8 +50,9 @@
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4",
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5"
       ],
-      "evidence_or_gap": "Controlled source-bound requests; selected Native execution and original administrative/physical review remain pending.",
-      "disposition_index": 1
+      "evidence_or_gap": "Original front, centre and rear vehicle reference distances retained for 10/15/25 and 25/50/50.5 ft requested sweeps; statute selects no vehicle point.",
+      "disposition_index": 1,
+      "source_clause": "stop within 50 feet but not less than 15 feet from nearest track"
     },
     {
       "requirement": "NRS-484B-557",
@@ -64,8 +66,9 @@
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4",
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5"
       ],
-      "evidence_or_gap": "Controlled source-bound requests; selected Native execution and original administrative/physical review remain pending.",
-      "disposition_index": 2
+      "evidence_or_gap": "Original administrative designation source and independently bound designation review required.",
+      "disposition_index": 2,
+      "source_clause": "DOT or approved local dangerous-crossing designation"
     },
     {
       "requirement": "NRS-484B-557",
@@ -79,8 +82,9 @@
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4",
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5"
       ],
-      "evidence_or_gap": "Controlled source-bound requests; selected Native execution and original administrative/physical review remain pending.",
-      "disposition_index": 3
+      "evidence_or_gap": "Separate original installed-sign authority, sign-governance and pixel source review required.",
+      "disposition_index": 3,
+      "source_clause": "official stop sign erected at the crossing"
     },
     {
       "requirement": "NRS-484B-557",
@@ -94,8 +98,9 @@
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4",
         "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5"
       ],
-      "evidence_or_gap": "Controlled source-bound requests; selected Native execution and original administrative/physical review remain pending.",
-      "disposition_index": 4
+      "evidence_or_gap": "Original motion, visibility, occluder and train-state observations retained; no invented due-care cutoff or verdict.",
+      "disposition_index": 4,
+      "source_clause": "afterward proceed only upon exercising due care"
     }
   ],
   "neutral_baseline": {
@@ -106,9 +111,9 @@
     {
       "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484B-557",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "inside_15_to_50_ft",
-      "physical_target": "full stop 25 ft before nearest rail then proceed with due care",
+      "physical_target": "Request complete stop with vehicle centre 25 ft before nearest rail, then proceed; measure front, centre and rear separately",
       "comparison_variable": "stop_distance_from_nearest_track_ft",
       "source_branch": "Stop followed by proceeding with obstructed sight lines",
       "requested_not_measured": true,
@@ -117,14 +122,45 @@
       ],
       "gap_ids": [
         "uncovered-distance-boundaries"
+      ],
+      "requested_stop_center_ft": 25,
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "blind_rail_crossing",
+          "maneuver": "cross_railway",
+          "control": "stop_sign"
+        },
+        "activation_conditions_to_verify": [
+          "dangerous highway railroad grade crossing administratively designated by DOT or local authority with approval",
+          "official stop sign erected and governing this approach"
+        ],
+        "authority": "requires_separate_original_review"
+      },
+      "controller": {
+        "requested_behavior": "stop then proceed after source-observed clearance",
+        "requested_stop_center_ft": 25,
+        "brake_gain_primary": 0.7,
+        "brake_gain_fallback": 0.9
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "official administrative designation",
+        "official sign authority and governance",
+        "statutory vehicle reference point",
+        "due care after cessation",
+        "physical realization and pixels"
       ]
     },
     {
       "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-557",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "below_15_ft",
-      "physical_target": "full stop 10 ft before nearest rail then proceed",
+      "physical_target": "Request complete stop with vehicle centre 10 ft before nearest rail, then proceed; measure front, centre and rear separately",
       "comparison_variable": "stop_distance_from_nearest_track_ft",
       "source_branch": "Stop followed by proceeding with obstructed sight lines",
       "requested_not_measured": true,
@@ -133,14 +169,45 @@
       ],
       "gap_ids": [
         "uncovered-distance-boundaries"
+      ],
+      "requested_stop_center_ft": 10,
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "blind_rail_crossing",
+          "maneuver": "cross_railway",
+          "control": "stop_sign"
+        },
+        "activation_conditions_to_verify": [
+          "dangerous highway railroad grade crossing administratively designated by DOT or local authority with approval",
+          "official stop sign erected and governing this approach"
+        ],
+        "authority": "requires_separate_original_review"
+      },
+      "controller": {
+        "requested_behavior": "stop then proceed after source-observed clearance",
+        "requested_stop_center_ft": 10,
+        "brake_gain_primary": 0.7,
+        "brake_gain_fallback": 0.9
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "official administrative designation",
+        "official sign authority and governance",
+        "statutory vehicle reference point",
+        "due care after cessation",
+        "physical realization and pixels"
       ]
     },
     {
       "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3",
       "target_law_id": "NRS-484B-557",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "at_15_ft",
-      "physical_target": "full stop requested with vehicle centre 15 ft before nearest rail then proceed; actual front/centre/rear measured separately",
+      "physical_target": "Request complete stop with vehicle centre 15 ft before nearest rail, then proceed; measure front, centre and rear separately",
       "comparison_variable": "stop_distance_from_nearest_track_ft",
       "source_branch": "Stop followed by proceeding with obstructed sight lines",
       "requested_not_measured": true,
@@ -149,14 +216,45 @@
       ],
       "gap_ids": [
         "uncovered-distance-boundaries"
+      ],
+      "requested_stop_center_ft": 15,
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "blind_rail_crossing",
+          "maneuver": "cross_railway",
+          "control": "stop_sign"
+        },
+        "activation_conditions_to_verify": [
+          "dangerous highway railroad grade crossing administratively designated by DOT or local authority with approval",
+          "official stop sign erected and governing this approach"
+        ],
+        "authority": "requires_separate_original_review"
+      },
+      "controller": {
+        "requested_behavior": "stop then proceed after source-observed clearance",
+        "requested_stop_center_ft": 15,
+        "brake_gain_primary": 0.7,
+        "brake_gain_fallback": 0.9
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "official administrative designation",
+        "official sign authority and governance",
+        "statutory vehicle reference point",
+        "due care after cessation",
+        "physical realization and pixels"
       ]
     },
     {
       "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4",
       "target_law_id": "NRS-484B-557",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "at_50_ft",
-      "physical_target": "full stop requested with vehicle centre 50 ft before nearest rail then proceed; actual front/centre/rear measured separately",
+      "physical_target": "Request complete stop with vehicle centre 50 ft before nearest rail, then proceed; measure front, centre and rear separately",
       "comparison_variable": "stop_distance_from_nearest_track_ft",
       "source_branch": "Stop followed by proceeding with obstructed sight lines",
       "requested_not_measured": true,
@@ -165,14 +263,45 @@
       ],
       "gap_ids": [
         "uncovered-distance-boundaries"
+      ],
+      "requested_stop_center_ft": 50,
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "blind_rail_crossing",
+          "maneuver": "cross_railway",
+          "control": "stop_sign"
+        },
+        "activation_conditions_to_verify": [
+          "dangerous highway railroad grade crossing administratively designated by DOT or local authority with approval",
+          "official stop sign erected and governing this approach"
+        ],
+        "authority": "requires_separate_original_review"
+      },
+      "controller": {
+        "requested_behavior": "stop then proceed after source-observed clearance",
+        "requested_stop_center_ft": 50,
+        "brake_gain_primary": 0.7,
+        "brake_gain_fallback": 0.9
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "official administrative designation",
+        "official sign authority and governance",
+        "statutory vehicle reference point",
+        "due care after cessation",
+        "physical realization and pixels"
       ]
     },
     {
       "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5",
       "target_law_id": "NRS-484B-557",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "above_50_ft",
-      "physical_target": "full stop requested with vehicle centre 50.5 ft before nearest rail then proceed; actual front/centre/rear measured separately",
+      "physical_target": "Request complete stop with vehicle centre 50.5 ft before nearest rail, then proceed; measure front, centre and rear separately",
       "comparison_variable": "stop_distance_from_nearest_track_ft",
       "source_branch": "Stop followed by proceeding with obstructed sight lines",
       "requested_not_measured": true,
@@ -181,6 +310,37 @@
       ],
       "gap_ids": [
         "uncovered-distance-boundaries"
+      ],
+      "requested_stop_center_ft": 50.5,
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "blind_rail_crossing",
+          "maneuver": "cross_railway",
+          "control": "stop_sign"
+        },
+        "activation_conditions_to_verify": [
+          "dangerous highway railroad grade crossing administratively designated by DOT or local authority with approval",
+          "official stop sign erected and governing this approach"
+        ],
+        "authority": "requires_separate_original_review"
+      },
+      "controller": {
+        "requested_behavior": "stop then proceed after source-observed clearance",
+        "requested_stop_center_ft": 50.5,
+        "brake_gain_primary": 0.7,
+        "brake_gain_fallback": 0.9
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "official administrative designation",
+        "official sign authority and governance",
+        "statutory vehicle reference point",
+        "due care after cessation",
+        "physical realization and pixels"
       ]
     }
   ],
@@ -197,7 +357,19 @@
       ],
       "fixed_conditions": [
         "same crossing, designation-source requirement, sign-source requirement, occluder, vehicle, controller policy, 20 Hz and four cameras"
-      ]
+      ],
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "0792c57cd2adf9ab529dcf11f695de933003eeb29ca590d4de9d77a25d840f48",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/comparison_audit.py --comparison training__C25835__NRS-484B-557__motor_vehicle_driver__lower_boundary --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_1-v1/v0001/processing.json --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_2-v1/v0001/processing.json --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_3-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/comparison-lower_boundary.json",
+        "test_log": "proofs/comparison-lower_boundary-positive.log",
+        "test_log_sha256": "9d4fef73517e3753ab6df33d88d1dd3aded48411291646d43267b5b8338b06f5",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/comparison_audit.py --comparison training__C25835__NRS-484B-557__motor_vehicle_driver__lower_boundary --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_1-v1/v0001/processing.json --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_2-v1/v0001/processing.json --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_3-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/comparison-lower_boundary.json --omit-case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3",
+        "negative_log": "proofs/comparison-lower_boundary-negative.log",
+        "negative_log_sha256": "ec72ffe52d33cea2983e2937f15fea7a7dabe89d949dd5cd561d2b71999ef14a",
+        "negative_exit_code": 1
+      }
     },
     {
       "comparison_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__upper_boundary",
@@ -211,7 +383,19 @@
       ],
       "fixed_conditions": [
         "same crossing, designation-source requirement, sign-source requirement, occluder, vehicle, controller policy, 20 Hz and four cameras"
-      ]
+      ],
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "0792c57cd2adf9ab529dcf11f695de933003eeb29ca590d4de9d77a25d840f48",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/comparison_audit.py --comparison training__C25835__NRS-484B-557__motor_vehicle_driver__upper_boundary --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_1-v1/v0001/processing.json --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_4-v1/v0001/processing.json --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_5-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/comparison-upper_boundary.json",
+        "test_log": "proofs/comparison-upper_boundary-positive.log",
+        "test_log_sha256": "20752332bd1b74cf830d698803d21f6f6762f8ef13d461d44765c08f705ab7b4",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/comparison_audit.py --comparison training__C25835__NRS-484B-557__motor_vehicle_driver__upper_boundary --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_1-v1/v0001/processing.json --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_4-v1/v0001/processing.json --processing training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_5-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/comparison-upper_boundary.json --omit-case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5",
+        "negative_log": "proofs/comparison-upper_boundary-negative.log",
+        "negative_log_sha256": "51961c9f43d1bda003a7b4a6223f7e6171fce593e0631ed31480c46b80be77a7",
+        "negative_exit_code": 1
+      }
     }
   ],
   "mandatory_observation_terms": [
@@ -269,9 +453,7 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction"
   ],
-  "blockers": [
-    "Selected Native and public/saved/audit proof chain remains to be constructed; original designation, sign authority and physical outcome require independent review."
-  ],
+  "blockers": [],
   "selected_branch": "Stop followed by proceeding with obstructed sight lines",
   "observations": [
     {
@@ -325,98 +507,90 @@
     "dev.stop_sign": {
       "measurement": "official_sign_source_sha256 and source sign identity",
       "channels": [
-        "original_native_trace",
-        "original_source_camera_join"
+        "dev.stop_sign"
       ],
       "source_refs": [
         "inputs/training__C25835__NRS-484B-557__motor_vehicle_driver/assignment.json",
-        "rail-stop-measurement-contract.json"
+        "work/training__C25835__NRS-484B-557__motor_vehicle_driver/draft-native/probe_1/measurement-contract.json"
       ],
-      "evidence": "CPU source-shaped contract and proof only; original Native acquisition pending"
+      "evidence": "Exact Native source channel and selected finalizer output; synthetic compatibility exercises software joins only, original physical and legal status unresolved."
     },
     "dev.governs": {
       "measurement": "sign_governs rail_crossing_approach",
       "channels": [
-        "original_native_trace",
-        "original_source_camera_join"
+        "dev.governs"
       ],
       "source_refs": [
         "inputs/training__C25835__NRS-484B-557__motor_vehicle_driver/assignment.json",
-        "rail-stop-measurement-contract.json"
+        "work/training__C25835__NRS-484B-557__motor_vehicle_driver/draft-native/probe_1/measurement-contract.json"
       ],
-      "evidence": "CPU source-shaped contract and proof only; original Native acquisition pending"
+      "evidence": "Exact Native source channel and selected finalizer output; synthetic compatibility exercises software joins only, original physical and legal status unresolved."
     },
     "st.railway_crossing": {
       "measurement": "highway_rail_at_grade and nearest-track geometry source",
       "channels": [
-        "original_native_trace",
-        "original_source_camera_join"
+        "st.railway_crossing"
       ],
       "source_refs": [
         "inputs/training__C25835__NRS-484B-557__motor_vehicle_driver/assignment.json",
-        "rail-stop-measurement-contract.json"
+        "work/training__C25835__NRS-484B-557__motor_vehicle_driver/draft-native/probe_1/measurement-contract.json"
       ],
-      "evidence": "CPU source-shaped contract and proof only; original Native acquisition pending"
+      "evidence": "Exact Native source channel and selected finalizer output; synthetic compatibility exercises software joins only, original physical and legal status unresolved."
     },
     "rel.centre_distance": {
       "measurement": "front, centre and rear feet from nearest track at observed stop",
       "channels": [
-        "original_native_trace",
-        "original_source_camera_join"
+        "rel.centre_distance"
       ],
       "source_refs": [
         "inputs/training__C25835__NRS-484B-557__motor_vehicle_driver/assignment.json",
-        "rail-stop-measurement-contract.json"
+        "work/training__C25835__NRS-484B-557__motor_vehicle_driver/draft-native/probe_1/measurement-contract.json"
       ],
-      "evidence": "CPU source-shaped contract and proof only; original Native acquisition pending"
+      "evidence": "Exact Native source channel and selected finalizer output; synthetic compatibility exercises software joins only, original physical and legal status unresolved."
     },
     "drv.stopped": {
       "measurement": "observed Native speed history and source-linked cessation interval",
       "channels": [
-        "original_native_trace",
-        "original_source_camera_join"
+        "drv.stopped"
       ],
       "source_refs": [
         "inputs/training__C25835__NRS-484B-557__motor_vehicle_driver/assignment.json",
-        "rail-stop-measurement-contract.json"
+        "work/training__C25835__NRS-484B-557__motor_vehicle_driver/draft-native/probe_1/measurement-contract.json"
       ],
-      "evidence": "CPU source-shaped contract and proof only; original Native acquisition pending"
+      "evidence": "Exact Native source channel and selected finalizer output; synthetic compatibility exercises software joins only, original physical and legal status unresolved."
     },
     "drv.approaching": {
       "measurement": "measured motion before cessation",
       "channels": [
-        "original_native_trace",
-        "original_source_camera_join"
+        "drv.approaching"
       ],
       "source_refs": [
         "inputs/training__C25835__NRS-484B-557__motor_vehicle_driver/assignment.json",
-        "rail-stop-measurement-contract.json"
+        "work/training__C25835__NRS-484B-557__motor_vehicle_driver/draft-native/probe_1/measurement-contract.json"
       ],
-      "evidence": "CPU source-shaped contract and proof only; original Native acquisition pending"
+      "evidence": "Exact Native source channel and selected finalizer output; synthetic compatibility exercises software joins only, original physical and legal status unresolved."
     },
     "drv.time_to_conflict": {
       "measurement": "not used as a due-care cutoff; train state and visibility retained for review",
       "channels": [
-        "original_native_trace",
-        "original_source_camera_join"
+        "drv.time_to_conflict"
       ],
       "source_refs": [
         "inputs/training__C25835__NRS-484B-557__motor_vehicle_driver/assignment.json",
-        "rail-stop-measurement-contract.json"
+        "work/training__C25835__NRS-484B-557__motor_vehicle_driver/draft-native/probe_1/measurement-contract.json"
       ],
-      "evidence": "CPU source-shaped contract and proof only; original Native acquisition pending"
+      "evidence": "Exact Native source channel and selected finalizer output; synthetic compatibility exercises software joins only, original physical and legal status unresolved."
     },
     "ru.rail_vehicle": {
       "measurement": "observed train state retained when present; presence not required for activation",
       "channels": [
-        "original_native_trace",
-        "original_source_camera_join"
+        "ru.rail_vehicle"
       ],
       "source_refs": [
         "inputs/training__C25835__NRS-484B-557__motor_vehicle_driver/assignment.json",
-        "rail-stop-measurement-contract.json"
+        "work/training__C25835__NRS-484B-557__motor_vehicle_driver/draft-native/probe_1/measurement-contract.json"
       ],
-      "evidence": "CPU source-shaped contract and proof only; original Native acquisition pending"
+      "evidence": "Exact Native source channel and selected finalizer output; synthetic compatibility exercises software joins only, original physical and legal status unresolved."
     }
   },
   "measurement_contract": "rail-stop-measurement-contract.json",
@@ -431,6 +605,53 @@
         "source": "NRS 484B.557; frozen assignment law text",
         "why_existing_insufficient": "No accepted recording IDs are supplied."
       }
+    ]
+  },
+  "activation_conditions": [
+    "administratively designated dangerous highway railroad grade crossing",
+    "erected official stop sign directing stop and governing subject approach",
+    "subject motor-vehicle driver approaches crossing"
+  ],
+  "timing_requirements": [
+    "complete cessation before subsequent proceeding; no statutory minimum stop duration"
+  ],
+  "unresolved_judgment_calls": [
+    "official designation",
+    "official sign governance",
+    "vehicle reference point",
+    "due care"
+  ],
+  "readiness_limitation": "CPU proofs establish software compatibility only. Original Native physical realization, administrative authority, sign governance, due care and legal outcome require independent local review.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "rate_hz": 20,
+    "frames": 600,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "vehicle body, sign, occluder and both rails",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "approach and observed cessation before nearest rail",
+        "interval": "approach through stop"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "nearest track and vehicle body reference positions",
+        "interval": "approach through crossing"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "occluder, sign governance and crossing movement",
+        "interval": "stop through end"
+      }
+    ],
+    "limitations": [
+      "Actual pixels, crossing authority, visibility and legal due care remain unverified until original local review."
     ]
   }
 }

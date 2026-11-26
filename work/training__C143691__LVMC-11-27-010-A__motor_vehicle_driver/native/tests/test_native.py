@@ -4,7 +4,7 @@ import unittest
 
 from geometry import check as geometry_check
 from route import CASE_LATERAL_M, check_scene
-from runner import CAMERAS, check, control, survey
+from runner import CAMERAS, check, control, survey, select_subject_blueprint, select_sign_blueprint
 
 
 class FakeCarla:
@@ -28,6 +28,27 @@ class FakeMap:
 
 
 class NativeDraft(unittest.TestCase):
+    def test_source_specific_native_assets(self):
+        class Library:
+            def filter(self, pattern):
+                assets = {
+                    'vehicle.*': ['vehicle.tesla.model3'],
+                    'vehicle.*ambulance*': ['vehicle.ford.ambulance'],
+                    'vehicle.*truck*': ['vehicle.utility.truck'],
+                    'static.prop.*sign*': ['static.prop.streetsign'],
+                }
+                return [type('BP', (), {'id': item})() for item in assets.get(pattern, [])]
+        library = Library()
+        self.assertEqual(select_subject_blueprint(library, 'none').id,
+                         'vehicle.tesla.model3')
+        self.assertEqual(select_subject_blueprint(library, 'emergency_vehicle').id,
+                         'vehicle.ford.ambulance')
+        self.assertEqual(select_subject_blueprint(library, 'right_of_way_maintenance').id,
+                         'vehicle.utility.truck')
+        self.assertEqual(select_sign_blueprint(library).id, 'static.prop.streetsign')
+        with self.assertRaisesRegex(RuntimeError, 'blueprint unavailable'):
+            select_subject_blueprint(library, 'mobility_device')
+
     def test_geometry_route_and_camera_contract(self):
         config = json.loads(Path('config.json').read_text())
         self.assertEqual(check(config)['frames'], 600)

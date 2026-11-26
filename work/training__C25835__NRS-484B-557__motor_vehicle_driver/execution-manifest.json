@@ -1,0 +1,898 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C25835__NRS-484B-557__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_pending_original_rail_authority_and_physical_review",
+  "cases": [
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1",
+      "kind": "delivery",
+      "construction": "draft-native/probe_1/primary/construction.json",
+      "construction_sha256": "8eca4ac97791949a17cbfe1c2b11f64e6782ee4419ea8a6d799ab1fbad6cb7e8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle inertia may overshoot the requested stop station, especially at the 15-ft inner boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-native/probe_1/fallback1/construction.json",
+          "construction_sha256": "c58e02fd5ce841a82dffc6a071c3cbc3868f3ae7e2c08ee0273f4ca3550cec03",
+          "trigger": {
+            "source": "original rail-trace.jsonl and result.json",
+            "metric": "observed first cessation centre distance from source-identified nearest rail",
+            "failure_condition": "vehicle overshoots requested station or does not reach complete cessation on the original 600-frame trace"
+          },
+          "changed_knobs": [
+            "same controller across all linked cases; braking gain 0.7 to 0.9 only"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "c58e02fd5ce841a82dffc6a071c3cbc3868f3ae7e2c08ee0273f4ca3550cec03",
+            "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1 --candidate fallback1",
+            "log": "proofs/probe_1/fallback1-offline.log",
+            "log_sha256": "c1633f8e770d57582212e5320c294dab723c26d13a0644572d3e1a4f63e172b3"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_1/fallback1-compatibility.json",
+            "sha256": "c1dd5c259a89150fbc4c01e25798c639890623d32923349faf14dbb522a95af8",
+            "log": "proofs/probe_1/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_1/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-native/probe_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C25835__NRS-484B-557__motor_vehicle_driver/diagnostic-probe_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "8eca4ac97791949a17cbfe1c2b11f64e6782ee4419ea8a6d799ab1fbad6cb7e8",
+        "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1 --candidate primary",
+        "log": "proofs/probe_1/primary-offline.log",
+        "log_sha256": "c1633f8e770d57582212e5320c294dab723c26d13a0644572d3e1a4f63e172b3"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_1/primary-compatibility.json",
+        "sha256": "12af4494fafc44e4e89844e0082d08bfc302a9cc631c7111ad1920f92e4c23b0",
+        "log": "proofs/probe_1/primary-compatibility-analysis.log",
+        "negative_log": "proofs/probe_1/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_1/primary-negative-analysis.log",
+        "log_sha256": "c0958accab6725bb5eab16827b138c4c743df5726c30b5a726e51ba354ab7a25"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C25835__NRS-484B-557__motor_vehicle_driver/execution-manifest.json --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1 --attempt ATTEMPT --output OUTPUT --library runtime/library --validator VALIDATOR",
+        "feedback_command": "cat OUTPUT/feedback.json",
+        "test_log": "proofs/probe_1/saved.log",
+        "test_log_sha256": "a07b14f65e3776f05f01a4af1d9ee7b4b6179d2210eea924ba90af8cf3ac394f",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_1/physical-preparation.json",
+        "sha256": "c96f7f5f021002c9d08e90dea7f796f86ca512fb8ee4d3b307f8149072a76d55"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-authority.txt",
+            "sign-review.json",
+            "overview.mkv",
+            "rail-inventory.json"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-review.json",
+            "road.xodr",
+            "rail-inventory.json",
+            "overview.mkv"
+          ]
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "road.xodr",
+            "rail-inventory.json",
+            "designation-authority.txt",
+            "designation-review.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-inventory.json",
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "occluder-review.json",
+            "overview.mkv"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "overview.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_designation_sign_and_occluder_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c2757e41ffba26ecdf599fc18eb5718413b52ad18bc0a50ed8451954f9008125",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_1-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_1-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_1-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_1/delivery-positive.log",
+        "test_log_sha256": "50ae70fb5734d100da9acb585aa3b6a098506abe504c73b666c00c188703a026",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_1-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_1-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_1-positive.json --diagnostic --omit-source designation-authority.txt",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: designation-authority.txt",
+        "negative_log": "proofs/probe_1/delivery-negative.log",
+        "negative_log_sha256": "9256f4611b05256e1de38594d07d9618d959303c5b7cf9fe775dafdb234004ad"
+      }
+    },
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2",
+      "kind": "delivery",
+      "construction": "draft-native/probe_2/primary/construction.json",
+      "construction_sha256": "9c298b833ea710e5304463d17c331cf27edfe60d53302a768afbd105e6bdb311",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle inertia may overshoot the requested stop station, especially at the 15-ft inner boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-native/probe_2/fallback1/construction.json",
+          "construction_sha256": "b449cf23cf243f4217637b7f00ef055c8b6df3084da5511a1072dcdae05aefb8",
+          "trigger": {
+            "source": "original rail-trace.jsonl and result.json",
+            "metric": "observed first cessation centre distance from source-identified nearest rail",
+            "failure_condition": "vehicle overshoots requested station or does not reach complete cessation on the original 600-frame trace"
+          },
+          "changed_knobs": [
+            "same controller across all linked cases; braking gain 0.7 to 0.9 only"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "b449cf23cf243f4217637b7f00ef055c8b6df3084da5511a1072dcdae05aefb8",
+            "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2 --candidate fallback1",
+            "log": "proofs/probe_2/fallback1-offline.log",
+            "log_sha256": "8d24448f2cef055133acecccfcf0e7af12149cd5540783ffc5e4226b05108869"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_2/fallback1-compatibility.json",
+            "sha256": "e71c967525c6539f62ce860d806eac1a984f6d0a5ed57b145ef7a09877223be0",
+            "log": "proofs/probe_2/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_2/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-native/probe_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C25835__NRS-484B-557__motor_vehicle_driver/diagnostic-probe_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "9c298b833ea710e5304463d17c331cf27edfe60d53302a768afbd105e6bdb311",
+        "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2 --candidate primary",
+        "log": "proofs/probe_2/primary-offline.log",
+        "log_sha256": "8d24448f2cef055133acecccfcf0e7af12149cd5540783ffc5e4226b05108869"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_2/primary-compatibility.json",
+        "sha256": "11019a13715ba33d2390424eab224d26fc5da572779c2d08bff091b9df2d92ce",
+        "log": "proofs/probe_2/primary-compatibility-analysis.log",
+        "negative_log": "proofs/probe_2/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_2/primary-negative-analysis.log",
+        "log_sha256": "52e392bc59b85d6be8d0604c65ebdfe3fef52e704e6a296d8d88a3a116c1b236"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C25835__NRS-484B-557__motor_vehicle_driver/execution-manifest.json --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2 --attempt ATTEMPT --output OUTPUT --library runtime/library --validator VALIDATOR",
+        "feedback_command": "cat OUTPUT/feedback.json",
+        "test_log": "proofs/probe_2/saved.log",
+        "test_log_sha256": "c7f7d9ab951c7ab1ef637552d942ddc77d235d639da3a5b5e700c08281d78dda",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_2/physical-preparation.json",
+        "sha256": "df64f47701679ec5ae564257a7a31ccc60c0e4ded674c021d31ec5685487b073"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-authority.txt",
+            "sign-review.json",
+            "overview.mkv",
+            "rail-inventory.json"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-review.json",
+            "road.xodr",
+            "rail-inventory.json",
+            "overview.mkv"
+          ]
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "road.xodr",
+            "rail-inventory.json",
+            "designation-authority.txt",
+            "designation-review.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-inventory.json",
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "occluder-review.json",
+            "overview.mkv"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "overview.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_designation_sign_and_occluder_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c2757e41ffba26ecdf599fc18eb5718413b52ad18bc0a50ed8451954f9008125",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_2-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_2-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_2-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_2/delivery-positive.log",
+        "test_log_sha256": "2b74cc46ba1f8a9b202364cc3345525c37632eceaf27a612c67e3338acf287e4",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_2-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_2-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_2-positive.json --diagnostic --omit-source designation-authority.txt",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: designation-authority.txt",
+        "negative_log": "proofs/probe_2/delivery-negative.log",
+        "negative_log_sha256": "9256f4611b05256e1de38594d07d9618d959303c5b7cf9fe775dafdb234004ad"
+      }
+    },
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3",
+      "kind": "delivery",
+      "construction": "draft-native/probe_3/primary/construction.json",
+      "construction_sha256": "ede6a2b9366acee2849a03784188b0ad2ab5103f0676238378e80b6bc49b8618",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle inertia may overshoot the requested stop station, especially at the 15-ft inner boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-native/probe_3/fallback1/construction.json",
+          "construction_sha256": "10b3b799e5220b290b05a31479e3f15082793a60ee431a1a7a75686aafb3aae7",
+          "trigger": {
+            "source": "original rail-trace.jsonl and result.json",
+            "metric": "observed first cessation centre distance from source-identified nearest rail",
+            "failure_condition": "vehicle overshoots requested station or does not reach complete cessation on the original 600-frame trace"
+          },
+          "changed_knobs": [
+            "same controller across all linked cases; braking gain 0.7 to 0.9 only"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "10b3b799e5220b290b05a31479e3f15082793a60ee431a1a7a75686aafb3aae7",
+            "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3 --candidate fallback1",
+            "log": "proofs/probe_3/fallback1-offline.log",
+            "log_sha256": "59a8fba9dc1b437118e19332586b149a8a5ee6a9434be5b83e53bc9435f08eac"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_3/fallback1-compatibility.json",
+            "sha256": "fe2842dfc1c1c3344293e7796da2aad4436ac744459696905b4908a20975ce84",
+            "log": "proofs/probe_3/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_3/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-native/probe_3/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C25835__NRS-484B-557__motor_vehicle_driver/diagnostic-probe_3-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "ede6a2b9366acee2849a03784188b0ad2ab5103f0676238378e80b6bc49b8618",
+        "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3 --candidate primary",
+        "log": "proofs/probe_3/primary-offline.log",
+        "log_sha256": "59a8fba9dc1b437118e19332586b149a8a5ee6a9434be5b83e53bc9435f08eac"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_3/primary-compatibility.json",
+        "sha256": "dd180154e735f4671860b8af1a6383ad4dca981c55154b70726e6246837d8db5",
+        "log": "proofs/probe_3/primary-compatibility-analysis.log",
+        "negative_log": "proofs/probe_3/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_3/primary-negative-analysis.log",
+        "log_sha256": "13db9b984eea088e0ed4ebfb4c3f6a888f54f14e8560a7a0bb977bd47defb828"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C25835__NRS-484B-557__motor_vehicle_driver/execution-manifest.json --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3 --attempt ATTEMPT --output OUTPUT --library runtime/library --validator VALIDATOR",
+        "feedback_command": "cat OUTPUT/feedback.json",
+        "test_log": "proofs/probe_3/saved.log",
+        "test_log_sha256": "8d3d65a59bd848c42d6bbf044a0c6a52d00b68bc1c257dc92dbc6162f1f7a617",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_3/physical-preparation.json",
+        "sha256": "ce8df4018c0a23b13e14ccbfb939eccd0b1b0976551ceb908f7cbf931a2576ae"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-authority.txt",
+            "sign-review.json",
+            "overview.mkv",
+            "rail-inventory.json"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-review.json",
+            "road.xodr",
+            "rail-inventory.json",
+            "overview.mkv"
+          ]
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "road.xodr",
+            "rail-inventory.json",
+            "designation-authority.txt",
+            "designation-review.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-inventory.json",
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "occluder-review.json",
+            "overview.mkv"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "overview.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_designation_sign_and_occluder_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c2757e41ffba26ecdf599fc18eb5718413b52ad18bc0a50ed8451954f9008125",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_3-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_3-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_3-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_3/delivery-positive.log",
+        "test_log_sha256": "e87687a28cb49252959f45e8942146b3103fcd233518a3ebfee4efc637469890",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_3 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_3-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_3-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_3-positive.json --diagnostic --omit-source designation-authority.txt",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: designation-authority.txt",
+        "negative_log": "proofs/probe_3/delivery-negative.log",
+        "negative_log_sha256": "9256f4611b05256e1de38594d07d9618d959303c5b7cf9fe775dafdb234004ad"
+      }
+    },
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4",
+      "kind": "delivery",
+      "construction": "draft-native/probe_4/primary/construction.json",
+      "construction_sha256": "c9b57246b5e4bd8bffb18bf8389100ff01a6c28589f8f3a5011ad18a7ab2a9fc",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle inertia may overshoot the requested stop station, especially at the 15-ft inner boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-native/probe_4/fallback1/construction.json",
+          "construction_sha256": "3397f798eea06c4f02b5de698f1b2f5dc2876ca4e02318de2eef109ba7b9b138",
+          "trigger": {
+            "source": "original rail-trace.jsonl and result.json",
+            "metric": "observed first cessation centre distance from source-identified nearest rail",
+            "failure_condition": "vehicle overshoots requested station or does not reach complete cessation on the original 600-frame trace"
+          },
+          "changed_knobs": [
+            "same controller across all linked cases; braking gain 0.7 to 0.9 only"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "3397f798eea06c4f02b5de698f1b2f5dc2876ca4e02318de2eef109ba7b9b138",
+            "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4 --candidate fallback1",
+            "log": "proofs/probe_4/fallback1-offline.log",
+            "log_sha256": "a4cad9da9c34ad4eef4977171da843a728b122813bce823799961f1a4022a19b"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_4/fallback1-compatibility.json",
+            "sha256": "83013438862e62b1fd7d8f07910c2a6bbac99f77dba5e94899306c04ed835610",
+            "log": "proofs/probe_4/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_4/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-native/probe_4/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C25835__NRS-484B-557__motor_vehicle_driver/diagnostic-probe_4-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "c9b57246b5e4bd8bffb18bf8389100ff01a6c28589f8f3a5011ad18a7ab2a9fc",
+        "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4 --candidate primary",
+        "log": "proofs/probe_4/primary-offline.log",
+        "log_sha256": "a4cad9da9c34ad4eef4977171da843a728b122813bce823799961f1a4022a19b"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_4/primary-compatibility.json",
+        "sha256": "0222f90fc35f4db3fbc8f7958c568b0f34eb7ea271e5a2a09bf5f58201a0621c",
+        "log": "proofs/probe_4/primary-compatibility-analysis.log",
+        "negative_log": "proofs/probe_4/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_4/primary-negative-analysis.log",
+        "log_sha256": "e8bd6bf0bebda68edacf03d60e1aa09017868e73db38cb30ddbf4e06ce4ec61d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C25835__NRS-484B-557__motor_vehicle_driver/execution-manifest.json --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4 --attempt ATTEMPT --output OUTPUT --library runtime/library --validator VALIDATOR",
+        "feedback_command": "cat OUTPUT/feedback.json",
+        "test_log": "proofs/probe_4/saved.log",
+        "test_log_sha256": "789d4ad1b25c17941efbc6f9f2e78c70429202c4b851693a36123dde51663bff",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_4/physical-preparation.json",
+        "sha256": "d1a7e1b9b86fd1be198f59ec5257881ed2ed9025c90809c9ecde4ad688867cb9"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-authority.txt",
+            "sign-review.json",
+            "overview.mkv",
+            "rail-inventory.json"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-review.json",
+            "road.xodr",
+            "rail-inventory.json",
+            "overview.mkv"
+          ]
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "road.xodr",
+            "rail-inventory.json",
+            "designation-authority.txt",
+            "designation-review.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-inventory.json",
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "occluder-review.json",
+            "overview.mkv"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "overview.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_designation_sign_and_occluder_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c2757e41ffba26ecdf599fc18eb5718413b52ad18bc0a50ed8451954f9008125",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_4-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_4-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_4-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_4/delivery-positive.log",
+        "test_log_sha256": "4d5e94fcf1021ce6ff63197b8dd05012f29793472f668eec95d3b3e7f1898ad9",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_4 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_4-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_4-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_4-positive.json --diagnostic --omit-source designation-authority.txt",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: designation-authority.txt",
+        "negative_log": "proofs/probe_4/delivery-negative.log",
+        "negative_log_sha256": "9256f4611b05256e1de38594d07d9618d959303c5b7cf9fe775dafdb234004ad"
+      }
+    },
+    {
+      "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5",
+      "kind": "delivery",
+      "construction": "draft-native/probe_5/primary/construction.json",
+      "construction_sha256": "10b3853c4daf600c56b4bafe059845a47743b6b8b0ca21192f2ce363933feee2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle inertia may overshoot the requested stop station, especially at the 15-ft inner boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-native/probe_5/fallback1/construction.json",
+          "construction_sha256": "1a1ed4e6a010f54ed7bb550842363508fba785541ff2cccc0cd0b6d6e9f6dc7a",
+          "trigger": {
+            "source": "original rail-trace.jsonl and result.json",
+            "metric": "observed first cessation centre distance from source-identified nearest rail",
+            "failure_condition": "vehicle overshoots requested station or does not reach complete cessation on the original 600-frame trace"
+          },
+          "changed_knobs": [
+            "same controller across all linked cases; braking gain 0.7 to 0.9 only"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "1a1ed4e6a010f54ed7bb550842363508fba785541ff2cccc0cd0b6d6e9f6dc7a",
+            "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5 --candidate fallback1",
+            "log": "proofs/probe_5/fallback1-offline.log",
+            "log_sha256": "6c00c82575fba8a156442144d91baffec7262831491f0b2b31a7c87ba64759f2"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_5/fallback1-compatibility.json",
+            "sha256": "149c3d98effeabf2116f70f99f08e6ef4997ceed5ad3b03b8142246481c39000",
+            "log": "proofs/probe_5/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_5/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-native/probe_5/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C25835__NRS-484B-557__motor_vehicle_driver/diagnostic-probe_5-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "10b3853c4daf600c56b4bafe059845a47743b6b8b0ca21192f2ce363933feee2",
+        "command": "runtime.py offline --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5 --candidate primary",
+        "log": "proofs/probe_5/primary-offline.log",
+        "log_sha256": "6c00c82575fba8a156442144d91baffec7262831491f0b2b31a7c87ba64759f2"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_5/primary-compatibility.json",
+        "sha256": "3ae93e2d468f2728354d249a9559a428a35e756d2dc553b6140223a86ff357e1",
+        "log": "proofs/probe_5/primary-compatibility-analysis.log",
+        "negative_log": "proofs/probe_5/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_5/primary-negative-analysis.log",
+        "log_sha256": "106e33f9b9521467c1cdff9b880e28e4054541eca1a1986d15bfcbede23064ff"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C25835__NRS-484B-557__motor_vehicle_driver/execution-manifest.json --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5 --attempt ATTEMPT --output OUTPUT --library runtime/library --validator VALIDATOR",
+        "feedback_command": "cat OUTPUT/feedback.json",
+        "test_log": "proofs/probe_5/saved.log",
+        "test_log_sha256": "b1d5c4e5b5fc09c7de33cf76798d775fbeeb696861584ac77c232e53f1a46e91",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "proofs/probe_5/physical-preparation.json",
+        "sha256": "928ee0f96b1d73ea42eb855f0c5a65a637ee5185f24b707e66f002570b439813"
+      },
+      "acquisition": {
+        "dev.stop_sign": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-authority.txt",
+            "sign-review.json",
+            "overview.mkv",
+            "rail-inventory.json"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "sign-review.json",
+            "road.xodr",
+            "rail-inventory.json",
+            "overview.mkv"
+          ]
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "road.xodr",
+            "rail-inventory.json",
+            "designation-authority.txt",
+            "designation-review.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-inventory.json",
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "occluder-review.json",
+            "overview.mkv"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "finalize.py",
+          "method": "original Native rail/vehicle/frame/pixel join and separately reviewed administrative designation, official sign and occluder",
+          "evidence": [
+            "rail-trace.jsonl",
+            "overview.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_designation_sign_and_occluder_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "c2757e41ffba26ecdf599fc18eb5718413b52ad18bc0a50ed8451954f9008125",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_5-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_5-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_5-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_5/delivery-positive.log",
+        "test_log_sha256": "0d4e39581510d8dea39fb1fb5da9bd69aff23dce668f88b3cbca59494eee6919",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C25835__NRS-484B-557__motor_vehicle_driver/delivery_audit.py --case training__C25835__NRS-484B-557__motor_vehicle_driver__probe_5 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/public/probe_5-primary-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/saved/output-probe_5-v1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c25835-owner/audits/delivery-probe_5-positive.json --diagnostic --omit-source designation-authority.txt",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: designation-authority.txt",
+        "negative_log": "proofs/probe_5/delivery-negative.log",
+        "negative_log_sha256": "9256f4611b05256e1de38594d07d9618d959303c5b7cf9fe775dafdb234004ad"
+      }
+    }
+  ]
+}

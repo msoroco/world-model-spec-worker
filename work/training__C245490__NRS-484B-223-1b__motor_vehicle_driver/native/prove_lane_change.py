@@ -26,11 +26,26 @@ def fixture(name):
             'same_direction_marked_lane_count': 2 if name != 'one_lane' else 1,
             'occupied_lane_half_width_m': 1.75, 'ego_body_half_width_m': 0.9,
             'ego_lateral_offset_from_occupied_lane_center_m': offset,
-            'target_direction_indicator_on': i >= (100 if name != 'late_signal' else 260),
-            'target_lane_min_surface_gap_m': (4.0 if name == 'small_gap' else 24.0) if departing else 30.0,
+            'target_direction_indicator_requested_on': i >= (100 if name != 'late_signal' else 260),
+            'target_direction_indicator_observed_on': i >= (101 if name != 'late_signal' else 261),
+            'target_lane_min_surface_gap_m': 4.0 if name == 'small_gap' else (24.0 if departing else 30.0),
             'target_lane_closing_speed_mps': 8.0 if departing else 0.0,
         })
     return rows
+
+
+def check_fixture(name, rows):
+    frame = 170
+    action = 'skipped' if name == 'no_check' else 'evaluated'
+    return [{
+        'source_kind': 'synthetic_native_sample',
+        'native_frame': rows[frame]['native_frame'], 'video_frame': frame,
+        'action': action,
+        'sampled_target_lane_gap_m': rows[frame]['target_lane_min_surface_gap_m'] if action == 'evaluated' else None,
+        'engineering_rule_id': 'controller-gap-check-v1' if action == 'evaluated' else None,
+        'decision_to_depart': (name != 'small_gap') if action == 'evaluated' else None,
+        'legal_threshold_claimed': False,
+    }]
 
 
 def main():
@@ -40,28 +55,47 @@ def main():
     out = HERE / 'diagnostics'
     out.mkdir(exist_ok=True)
     observations = {}
-    for name in ('early_signal', 'late_signal', 'small_gap', 'one_lane'):
+    for name in ('early_signal', 'late_signal', 'small_gap', 'one_lane', 'no_check'):
         trace = out / (name + '.jsonl')
         trace.write_text(''.join(json.dumps(r, sort_keys=True) + '\n' for r in fixture(name)))
-        result = measure(read_trace(trace), 'synthetic_native_sample')
-        observations[name] = dict(result, trace_path=str(trace.relative_to(PACKAGE)), trace_sha256=sha(trace))
+        check_path = out / (name + '-check.jsonl')
+        check_path.write_text(''.join(json.dumps(r, sort_keys=True) + '\n' for r in check_fixture(name, read_trace(trace))))
+        result = measure(read_trace(trace), 'synthetic_native_sample', read_trace(check_path))
+        observations[name] = dict(result, trace_path=str(trace.relative_to(PACKAGE)),
+                                  trace_sha256=sha(trace), check_path=str(check_path.relative_to(PACKAGE)),
+                                  check_sha256=sha(check_path))
     assert observations['early_signal']['signal_precedes_departure']
     assert not observations['late_signal']['signal_precedes_departure']
     assert observations['early_signal']['activation_observed']
     assert not observations['one_lane']['activation_observed']
     assert observations['small_gap']['gap_at_departure_m'] < observations['early_signal']['gap_at_departure_m']
+    assert observations['small_gap']['controller_decision_to_depart'] is False
+    assert observations['early_signal']['controller_decision_to_depart'] is True
+    assert observations['no_check']['controller_check_action'] == 'skipped'
     assert all(o['driver_safety_ascertainment'] == 'unobserved' for o in observations.values())
     rejected = []
-    for defect in ('missing_frame', 'missing_gap', 'shifted_time'):
+    for defect in ('missing_frame', 'missing_gap', 'shifted_time',
+                   'missing_check', 'stale_check', 'requested_not_observed'):
         rows = fixture('early_signal')
+        check_rows = check_fixture('early_signal', rows)
         if defect == 'missing_frame':
             rows.pop()
         elif defect == 'missing_gap':
             del rows[250]['target_lane_min_surface_gap_m']
-        else:
+        elif defect == 'shifted_time':
             rows[250]['time_s'] += 0.05
+        elif defect == 'missing_check':
+            check_rows = []
+        elif defect == 'stale_check':
+            check_rows[0]['native_frame'] += 1
+        else:
+            for row in rows:
+                row['target_direction_indicator_observed_on'] = False
         try:
-            measure(rows, 'synthetic_native_sample')
+            observed = measure(rows, 'synthetic_native_sample', check_rows)
+            if defect == 'requested_not_observed' and observed['signal_precedes_departure'] is False:
+                rejected.append({'defect': defect, 'error': 'Observed signal absent despite request'})
+                continue
         except ValueError as e:
             rejected.append({'defect': defect, 'error': str(e)})
         else:

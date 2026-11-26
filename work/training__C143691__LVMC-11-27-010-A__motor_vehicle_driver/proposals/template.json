@@ -1,0 +1,81 @@
+{
+  "template_id": "LVMC-11-27-010-A@motor_vehicle_driver",
+  "law_id": "LVMC-11-27-010-A",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Except as otherwise provided in Subsection (B), it is unlawful to operate a motorized vehicle upon or within a right-of-way that: (1) Has been designated on an official trails plan as an equestrian trail, multi-use trail, or other trail not intended for use by motorized vehicles; (2) Has been dedicated to the City for use as such a trail; and (3) Has been posted with appropriate signs to indicate that motorized vehicles are prohibited. The provisions of Subsection (A) do not apply to: (1) An emergency vehicle; (2) Any vehicle that is being used in connection with maintenance of the right-of-way; or (3) Any motorized wheelchair or other device that is designed for and used by a mobility-impaired person.",
+  "structure": {
+    "law_id": "LVMC-11-27-010-A",
+    "activation": {
+      "condition": "Motorized vehicle operates upon or within a right-of-way meeting all three subsection A prerequisites.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not operate the motorized vehicle there when subsection A applies.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      "emergency vehicle",
+      "vehicle used in maintenance of this right-of-way",
+      "motorized wheelchair or device designed for and used by a mobility-impaired person"
+    ],
+    "timing": {
+      "description": "Occupancy assessed throughout the original recorded interval.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "official trails plan designation",
+        "note": "Plan status is an administrative source fact, not inferred from OpenDRIVE lane type."
+      },
+      {
+        "phrase": "dedicated to the City",
+        "note": "City dedication needs an independent original record."
+      },
+      {
+        "phrase": "appropriate signs",
+        "note": "A visible prop does not establish sign wording or legal authority."
+      },
+      {
+        "phrase": "emergency vehicle",
+        "note": "Vehicle blueprint/role is insufficient to establish emergency status."
+      },
+      {
+        "phrase": "maintenance of the right-of-way",
+        "note": "The particular right-of-way and use must be sourced."
+      },
+      {
+        "phrase": "designed for and used by a mobility-impaired person",
+        "note": "Actor/asset eligibility remains unresolved in the frozen motor_vehicle_driver cell."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "route_case",
+      "kind": "controller",
+      "range_or_domain": "outside or within the source corridor"
+    },
+    {
+      "name": "official_designation",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed status, separate from requested value"
+    },
+    {
+      "name": "city_dedication",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed status, separate from requested value"
+    },
+    {
+      "name": "appropriate_posting",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed sign content and pixels"
+    },
+    {
+      "name": "exception_kind",
+      "kind": "world_setup",
+      "range_or_domain": "none, emergency, right-of-way maintenance; mobility unresolved"
+    }
+  ]
+}

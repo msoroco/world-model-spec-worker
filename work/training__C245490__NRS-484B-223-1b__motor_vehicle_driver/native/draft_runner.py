@@ -1,4 +1,4 @@
-"""Unselected original-source C230222 curbside driving capture proposal."""
+"""Original-source marked-lane change capture proposal; no legal verdict."""
 import argparse
 import json
 import math
@@ -9,12 +9,14 @@ from pathlib import Path
 FRAMES = 600
 RATE = 20
 PREFIX = 'training__C245490__NRS-484B-223-1b__motor_vehicle_driver__'
-VIEWS = ('overview', 'approach', 'target_lane', 'driver_reference')
+VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def check(config):
     case = config.get('case_id')
-    if (case not in (PREFIX + 'signal_before_draft', PREFIX + 'signal_after_draft') or
+    if (case not in tuple(PREFIX + suffix for suffix in
+                          ('signal_before_safe', 'signal_after_safe',
+                           'signal_before_unsafe', 'signal_before_no_check')) or
             config.get('selected_case_id') != case or
             config.get('law_id') != 'NRS-484B-223-1b' or
             config.get('cell_id') != 'C245490' or
@@ -27,6 +29,11 @@ def check(config):
             not 0 <= config['signal_start_frame'] < FRAMES or
             type(config.get('target_vehicle_ahead_m')) not in (int, float) or
             not 5 <= config['target_vehicle_ahead_m'] <= 100 or
+            type(config.get('target_vehicle_behind_m')) not in (int, float) or
+            not 4 <= config['target_vehicle_behind_m'] <= 100 or
+            config.get('check_action') not in ('evaluated', 'skipped') or
+            type(config.get('check_frame')) is not int or
+            not 0 <= config['check_frame'] < 180 or
             type(config.get('spawn_point_index')) is not int or
             config['spawn_point_index'] < 0):
         raise ValueError('Exact draft Native identity or duration differs')
@@ -106,15 +113,30 @@ def execute(config, output, host, port):
         spawns = world.get_map().get_spawn_points()
         if len(spawns) <= config['spawn_point_index']:
             raise RuntimeError('Requested spawn unavailable')
+        selected_spawn = None
+        occupied_lane = None
+        target_lane = None
+        for pose in spawns[config['spawn_point_index']:]:
+            lane = world.get_map().get_waypoint(pose.location)
+            adjacent = lane.get_left_lane() if lane is not None else None
+            if (lane is None or adjacent is None or
+                    lane.lane_type != carla.LaneType.Driving or
+                    adjacent.lane_type != carla.LaneType.Driving or
+                    adjacent.lane_id * lane.lane_id <= 0 or
+                    lane.left_lane_marking is None or
+                    adjacent.right_lane_marking is None or
+                    not adjacent.next(config['target_vehicle_ahead_m']) or
+                    not adjacent.previous(config['target_vehicle_behind_m'])):
+                continue
+            selected_spawn, occupied_lane, target_lane = pose, lane, adjacent
+            break
+        if selected_spawn is None:
+            raise RuntimeError('No marked same-direction lane-change spawn found')
         blueprint = world.get_blueprint_library().find(config['vehicle_blueprint'])
-        ego = world.try_spawn_actor(blueprint, spawns[config['spawn_point_index']])
+        ego = world.try_spawn_actor(blueprint, selected_spawn)
         if ego is None:
             raise RuntimeError('Requested spawn occupied')
         actors.append(ego)
-        occupied_lane = world.get_map().get_waypoint(ego.get_location())
-        target_lane = occupied_lane.get_left_lane()
-        if target_lane is None or target_lane.lane_id * occupied_lane.lane_id <= 0:
-            raise RuntimeError('A marked same-direction target lane is required')
         target_future = target_lane.next(config['target_vehicle_ahead_m'])
         if not target_future:
             raise RuntimeError('Target lane lacks planned vehicle position')
@@ -122,6 +144,13 @@ def execute(config, output, host, port):
         if target_vehicle is None:
             raise RuntimeError('Target-lane vehicle spawn occupied')
         actors.append(target_vehicle)
+        target_previous = target_lane.previous(config['target_vehicle_behind_m'])
+        if not target_previous:
+            raise RuntimeError('Target lane lacks planned rear vehicle position')
+        rear_vehicle = world.try_spawn_actor(blueprint, target_previous[0].transform)
+        if rear_vehicle is None:
+            raise RuntimeError('Target-lane rear vehicle spawn occupied')
+        actors.append(rear_vehicle)
         for camera in config['cameras']:
             bp = world.get_blueprint_library().find('sensor.camera.rgb')
             bp.set_attribute('image_size_x', str(camera['width']))
@@ -140,15 +169,21 @@ def execute(config, output, host, port):
             'source_kind': 'original_native', 'cell_id': 'C245490',
             'law_id': 'NRS-484B-223-1b', 'actor': 'motor_vehicle_driver',
             'map_name': world.get_map().name, 'vehicle_id': str(ego.id),
+            'target_front_id': str(target_vehicle.id),
+            'target_rear_id': str(rear_vehicle.id),
+            'controller_gap_rule_m': 12.0,
+            'controller_gap_rule_is_legal_threshold': False,
             'highway_in_city_evidence': None, 'legal_verdict': None,
             'camera_sources': {view: view + '.mkv' for view in VIEWS}}, indent=2) + '\n')
         with PipelineCapture(client, ego, output, config['case_id'],
                              required_observations=config['required_atoms']) as capture, \
                 FrameMap(output / 'video_frames.jsonl') as frame_map, \
-                (output / 'native-ego-frames.jsonl').open('x', buffering=1) as motion:
+                (output / 'native-ego-frames.jsonl').open('x', buffering=1) as motion, \
+                (output / 'native-driver-checks.jsonl').open('x', buffering=1) as checks:
             for index in range(FRAMES):
                 phase = phase_at(config, index)
                 target_vehicle.apply_control(carla.VehicleControl(throttle=0, brake=1))
+                rear_vehicle.apply_control(carla.VehicleControl(throttle=0, brake=1))
                 signal_on = index >= config['signal_start_frame']
                 ego.set_light_state(carla.VehicleLightState.LeftBlinker if signal_on
                                     else carla.VehicleLightState.NONE)
@@ -180,13 +215,33 @@ def execute(config, output, host, port):
                 lateral = pose.location - occupied_center
                 offset = lateral.x * occupied_right.x + lateral.y * occupied_right.y
                 target_delta = target_vehicle.get_location() - pose.location
+                rear_delta = rear_vehicle.get_location() - pose.location
                 target_axis = occupied_lane.transform.get_forward_vector()
-                center_distance = (target_delta.x ** 2 + target_delta.y ** 2) ** 0.5
-                surface_gap = max(0, center_distance - ego.bounding_box.extent.x -
-                                  target_vehicle.bounding_box.extent.x)
-                relative_velocity = ego.get_velocity() - target_vehicle.get_velocity()
-                closing_speed = max(0, relative_velocity.x * target_axis.x +
-                                    relative_velocity.y * target_axis.y)
+                front_distance = target_delta.x * target_axis.x + target_delta.y * target_axis.y
+                rear_distance = -(rear_delta.x * target_axis.x + rear_delta.y * target_axis.y)
+                if front_distance <= 0 or rear_distance <= 0:
+                    raise RuntimeError('Target-lane front/rear actor ordering changed')
+                front_gap = max(0, front_distance - ego.bounding_box.extent.x -
+                                target_vehicle.bounding_box.extent.x)
+                rear_gap = max(0, rear_distance - ego.bounding_box.extent.x -
+                               rear_vehicle.bounding_box.extent.x)
+                surface_gap = min(front_gap, rear_gap)
+                nearest_vehicle = target_vehicle if front_gap <= rear_gap else rear_vehicle
+                relative_velocity = ego.get_velocity() - nearest_vehicle.get_velocity()
+                axial_relative = relative_velocity.x * target_axis.x + relative_velocity.y * target_axis.y
+                closing_speed = max(0, axial_relative if nearest_vehicle is target_vehicle
+                                    else -axial_relative)
+                if index == config['check_frame']:
+                    evaluated = config['check_action'] == 'evaluated'
+                    checks.write(json.dumps({
+                        'source_kind': 'original_native', 'native_frame': native,
+                        'video_frame': index, 'action': config['check_action'],
+                        'sampled_target_lane_gap_m': surface_gap if evaluated else None,
+                        'engineering_rule_id': 'controller-gap-check-v1' if evaluated else None,
+                        'decision_to_depart': surface_gap >= 12.0 if evaluated else None,
+                        'legal_threshold_claimed': False,
+                        'source_actor_ids': [str(target_vehicle.id), str(rear_vehicle.id)],
+                    }) + '\n')
                 marked_same_direction = [occupied_lane]
                 candidate = occupied_lane.get_left_lane()
                 while candidate is not None and candidate.lane_type == carla.LaneType.Driving:
@@ -207,7 +262,13 @@ def execute(config, output, host, port):
                     'occupied_lane_half_width_m': occupied_half_width,
                     'ego_body_half_width_m': ego.bounding_box.extent.y,
                     'ego_lateral_offset_from_occupied_lane_center_m': offset,
-                    'target_direction_indicator_on': signal_on,
+                    'target_direction_indicator_requested_on': signal_on,
+                    'target_direction_indicator_observed_on': bool(
+                        ego.get_light_state() & carla.VehicleLightState.LeftBlinker),
+                    'target_front_position_m': xyz(target_vehicle.get_location()),
+                    'target_rear_position_m': xyz(rear_vehicle.get_location()),
+                    'target_front_surface_gap_m': front_gap,
+                    'target_rear_surface_gap_m': rear_gap,
                     'target_lane_min_surface_gap_m': surface_gap,
                     'target_lane_closing_speed_mps': closing_speed,
                     'driver_safety_ascertainment': None}) + '\n')
