@@ -8,7 +8,7 @@
       "case_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
       "kind": "delivery",
       "construction": "selected-constructions/probe_01-primary.json",
-      "construction_sha256": "2d6a43cd3d061b4c49cda6f2604509b7f5e8e14399739769a19f8acac37b58f3",
+      "construction_sha256": "fa5e5ec03d1731be741bbda626436bd7892481b63257ee50f0ce0d553c186713",
       "candidate_risk": {
         "status": "none",
         "reason": "No distinct construction risk identified beyond ordinary physical review."
@@ -25,18 +25,75 @@
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --candidate primary --output .runtime-work/c245490-offline-v6-probe_01-primary --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "2d6a43cd3d061b4c49cda6f2604509b7f5e8e14399739769a19f8acac37b58f3",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --candidate primary --output .runtime-work/c245490-offline-v8-probe_01-primary --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "fa5e5ec03d1731be741bbda626436bd7892481b63257ee50f0ce0d553c186713",
         "exit_code": 0,
         "log": "selected-proofs/probe_01-primary/offline.log",
-        "log_sha256": "df5746dcd0507d23842b2e4b382f3da06a013fcd01e576b444d9964e2eda25b1"
+        "log_sha256": "b95368ac026f8dc54af4cfb3de85cb53503cb77a326c76c81406da93e705d83e"
+      },
+      "acquisition": {
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original post-tick three-axis Native vehicle velocity and frame/actor identity",
+          "evidence": [
+            "speed-lane-history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "original velocity vector norm converted to mph at every frame",
+          "evidence": [
+            "speed-lane-history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor ID and vehicle blueprint with saved pixel review",
+          "evidence": [
+            "speed-lane-history.jsonl",
+            "road-context.json",
+            "overview.mkv"
+          ]
+        }
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/probe_01/physical-preparation.json",
+        "sha256": "d527a07ee9119f5e46abf033f9e7fb284561f7c38e358482a08df8a7e216ef54"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_01-primary/compatibility.json",
+        "sha256": "435c222894d79bcc2e229a1439e42dda5656a0681acd95e5f86639cd8ef3bcae",
+        "log": "selected-proofs/probe_01-primary/public-analysis.log",
+        "negative_log": "selected-proofs/probe_01-primary/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/probe_01-primary/processing.json",
+        "sha256": "8dfc174d63a0c092486112e2d86e7bfdc0c395c124f95f2a286e3ca22d464c20",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/probe_01-primary/saved.log",
+        "log_sha256": "03ed91007ef7f27e69101dc6092fc48d94898d436f7ae8b86999f3823cf09cc8"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_01-primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_01-primary/saved.log",
+        "test_log_sha256": "03ed91007ef7f27e69101dc6092fc48d94898d436f7ae8b86999f3823cf09cc8"
       }
     },
     {
       "case_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
       "kind": "delivery",
       "construction": "selected-constructions/probe_02-primary.json",
-      "construction_sha256": "fab2d1390737a06db2d9bc254b38c58ba49d1c4027da9961aa40f030274addcb",
+      "construction_sha256": "5887430c4d13a712d569c4fe44170d1ac84276d3cbcb81b5f72cf6c9f2aeead6",
       "candidate_risk": {
         "status": "none",
         "reason": "No distinct construction risk identified beyond ordinary physical review."
@@ -53,18 +110,75 @@
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --candidate primary --output .runtime-work/c245490-offline-v6-probe_02-primary --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "fab2d1390737a06db2d9bc254b38c58ba49d1c4027da9961aa40f030274addcb",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --candidate primary --output .runtime-work/c245490-offline-v8-probe_02-primary --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "5887430c4d13a712d569c4fe44170d1ac84276d3cbcb81b5f72cf6c9f2aeead6",
         "exit_code": 0,
         "log": "selected-proofs/probe_02-primary/offline.log",
-        "log_sha256": "df5746dcd0507d23842b2e4b382f3da06a013fcd01e576b444d9964e2eda25b1"
+        "log_sha256": "b95368ac026f8dc54af4cfb3de85cb53503cb77a326c76c81406da93e705d83e"
+      },
+      "acquisition": {
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original post-tick three-axis Native vehicle velocity and frame/actor identity",
+          "evidence": [
+            "speed-lane-history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "original velocity vector norm converted to mph at every frame",
+          "evidence": [
+            "speed-lane-history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor ID and vehicle blueprint with saved pixel review",
+          "evidence": [
+            "speed-lane-history.jsonl",
+            "road-context.json",
+            "overview.mkv"
+          ]
+        }
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/probe_02/physical-preparation.json",
+        "sha256": "9eedca415dc0c93df072c20e28acd4b417b0396549cbba854893a5c9e59347dd"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_02-primary/compatibility.json",
+        "sha256": "aadf209c08f1f81a42717ab43f7383bfcd7df1d1da7d6a64a77010381b36547e",
+        "log": "selected-proofs/probe_02-primary/public-analysis.log",
+        "negative_log": "selected-proofs/probe_02-primary/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/probe_02-primary/processing.json",
+        "sha256": "e5b3aa6ae59943c604a028696e7f4d533f7fc23a5c220a103961cca04b840430",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/probe_02-primary/saved.log",
+        "log_sha256": "cff2f4d60140701f7010c3e8de174d53c0fe3ea6a310acc5bab4650f8f2d0871"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_02-primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_02-primary/saved.log",
+        "test_log_sha256": "cff2f4d60140701f7010c3e8de174d53c0fe3ea6a310acc5bab4650f8f2d0871"
       }
     },
     {
       "case_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
       "kind": "delivery",
       "construction": "selected-constructions/probe_03-primary.json",
-      "construction_sha256": "897b83c3986abf7dfa61b2f5306a740adf07e41663d81ead5312d13df1748c92",
+      "construction_sha256": "bc519e51d6baa660b643010866ceab7d34bfb2579d45cee05a88551427cc86ba",
       "candidate_risk": {
         "status": "physical",
         "reason": "At the above-80 request, lateral motion may not finish on the original road; read original speed/lane traces."
@@ -73,7 +187,7 @@
         {
           "id": "fallback1",
           "construction": "selected-constructions/probe_03-fallback1.json",
-          "construction_sha256": "e384e551bd5541b8a986e25f3a2399a2ba0eb186ef136351b75dd64b63c23156",
+          "construction_sha256": "a9082f47bfe1551b425355c776b280f45ae26763d8c9449b8f2db26ccfcf42bd",
           "changed_knobs": [
             "lane transition length from 200 m to 260 m"
           ],
@@ -83,11 +197,25 @@
             "failure_condition": "original Native source has no destination lane entry or fails to exceed the 80 mph boundary"
           },
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate fallback1 --output .runtime-work/c245490-offline-v6-probe_03-fallback1 --python $PWD/.venv-cpu/bin/python",
-            "construction_sha256": "e384e551bd5541b8a986e25f3a2399a2ba0eb186ef136351b75dd64b63c23156",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate fallback1 --output .runtime-work/c245490-offline-v8-probe_03-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "a9082f47bfe1551b425355c776b280f45ae26763d8c9449b8f2db26ccfcf42bd",
             "exit_code": 0,
             "log": "selected-proofs/probe_03-fallback1/offline.log",
-            "log_sha256": "df5746dcd0507d23842b2e4b382f3da06a013fcd01e576b444d9964e2eda25b1"
+            "log_sha256": "b95368ac026f8dc54af4cfb3de85cb53503cb77a326c76c81406da93e705d83e"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/probe_03-fallback1/compatibility.json",
+            "sha256": "b1aac434be835a517599afa519fba5a8f781e247202d883b4dc3c18d15420cd5",
+            "log": "selected-proofs/probe_03-fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/probe_03-fallback1/negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "selected-proofs/probe_03-fallback1/processing.json",
+            "sha256": "ce1320364f4e33ef3f5d5d6b269c78d83c6c84bd8a50fe7b61049b633f019161",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "log": "selected-proofs/probe_03-fallback1/saved.log",
+            "log_sha256": "383653eec0c2ee29d95fe5e88c1f57536272e22f0d6e19a85534c4a5fb40120e"
           }
         }
       ],
@@ -102,11 +230,68 @@
         "port_env_var": "CARLA_PORT"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate primary --output .runtime-work/c245490-offline-v6-probe_03-primary --python $PWD/.venv-cpu/bin/python",
-        "construction_sha256": "897b83c3986abf7dfa61b2f5306a740adf07e41663d81ead5312d13df1748c92",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate primary --output .runtime-work/c245490-offline-v8-probe_03-primary --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "bc519e51d6baa660b643010866ceab7d34bfb2579d45cee05a88551427cc86ba",
         "exit_code": 0,
         "log": "selected-proofs/probe_03-primary/offline.log",
-        "log_sha256": "df5746dcd0507d23842b2e4b382f3da06a013fcd01e576b444d9964e2eda25b1"
+        "log_sha256": "b95368ac026f8dc54af4cfb3de85cb53503cb77a326c76c81406da93e705d83e"
+      },
+      "acquisition": {
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "original post-tick three-axis Native vehicle velocity and frame/actor identity",
+          "evidence": [
+            "speed-lane-history.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "original velocity vector norm converted to mph at every frame",
+          "evidence": [
+            "speed-lane-history.jsonl",
+            "video_frames.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor ID and vehicle blueprint with saved pixel review",
+          "evidence": [
+            "speed-lane-history.jsonl",
+            "road-context.json",
+            "overview.mkv"
+          ]
+        }
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/probe_03/physical-preparation.json",
+        "sha256": "2b804bf723d7166c607612efc284abb752cc6614850ba63c4465abedc443fd81"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_03-primary/compatibility.json",
+        "sha256": "05be50691f8aa0a807a84c75a97b8c7e59cc472cd60e0d78b33ae5d00e8525c4",
+        "log": "selected-proofs/probe_03-primary/public-analysis.log",
+        "negative_log": "selected-proofs/probe_03-primary/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/probe_03-primary/processing.json",
+        "sha256": "0261bb8808d78215ea9f1a1d95a855ec016e2d829b1bc025fb8746558a54ef05",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/probe_03-primary/saved.log",
+        "log_sha256": "f8e79f271ac8a1b54d2fb8e4c02dec21683a751fc29c27c87118e0d9e456c6e5"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_03-primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_03-primary/saved.log",
+        "test_log_sha256": "f8e79f271ac8a1b54d2fb8e4c02dec21683a751fc29c27c87118e0d9e456c6e5"
       }
     }
   ],

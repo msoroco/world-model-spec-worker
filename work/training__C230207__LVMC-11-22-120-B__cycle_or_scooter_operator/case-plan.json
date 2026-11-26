@@ -40,13 +40,18 @@
     {
       "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01",
       "target_law_id": "LVMC-11-22-120-B",
-      "kind": "planned_only",
+      "kind": "delivery_draft",
       "target_type": "controlled_attempt",
       "physical_target": "rider follows restriction off roadway",
       "comparison_variable": "roadway use against sign",
-      "selection_status": "not_selected",
+      "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "two_case_survey_gated_native_offline_and_saved_finalizer_cpu_checked",
+      "construction": "draft-signed-roadway/probe_01/primary/construction.json",
+      "construction_sha256": "d15c3c667f24fa18c69bce37c9ff81ed44fa56e20d5cd8f3f007abf93f6cc717",
+      "gap_ids": [
+        "signed_bicycle_roadway_uncovered"
+      ]
     },
     {
       "case_id": "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02",
@@ -57,9 +62,12 @@
       "comparison_variable": "roadway use against sign",
       "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
       "expected_label": null,
-      "construction_status": "survey_gated_native_capture_cpu_offline_passed_physical_unverified",
-      "construction": "draft-signed-roadway/signed_bicycle_roadway/primary/construction.json",
-      "construction_sha256": "d0dcb757a27e8f4415c8347df6a0c390341053a1547523536d230dcedf101644"
+      "construction_status": "two_case_survey_gated_native_offline_and_saved_finalizer_cpu_checked",
+      "construction": "draft-signed-roadway/probe_02/primary/construction.json",
+      "construction_sha256": "45fd8f739166a4f361aa7985e4e93f689a5e6da5adf3cadd5321c35a47da4404",
+      "gap_ids": [
+        "signed_bicycle_roadway_uncovered"
+      ]
     }
   ],
   "comparisons": [
@@ -90,7 +98,7 @@
   "source_observation_terms": [
     {
       "term": "dev.regulatory_sign",
-      "note": "codes bicycles_prohibited, nonmotorized_prohibited \u2014 the signs erected"
+      "note": "codes bicycles_prohibited, nonmotorized_prohibited — the signs erected"
     },
     {
       "term": "dev.governs",
@@ -145,7 +153,7 @@
     {
       "name": "dev.regulatory_sign",
       "mandatory": true,
-      "reason": "codes bicycles_prohibited, nonmotorized_prohibited \u2014 the signs erected"
+      "reason": "codes bicycles_prohibited, nonmotorized_prohibited — the signs erected"
     },
     {
       "name": "dev.governs",
@@ -159,18 +167,18 @@
     },
     {
       "name": "ru.moped",
-      "mandatory": true,
-      "reason": "motor-driven cycles"
+      "mandatory": false,
+      "reason": "Statutory alternative retained for law review; this assignment selects a bicycle operator only."
     },
     {
       "name": "ru.animal_or_animal_drawn",
-      "mandatory": true,
-      "reason": "horse-drawn vehicles"
+      "mandatory": false,
+      "reason": "Statutory alternative retained for law review; this assignment selects a bicycle operator only."
     },
     {
       "name": "ru.other_conveyance",
-      "mandatory": true,
-      "reason": "other nonmotorized traffic"
+      "mandatory": false,
+      "reason": "Statutory alternative retained for law review; this assignment selects a bicycle operator only."
     },
     {
       "name": "st.roadway",
@@ -212,8 +220,117 @@
         "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_01",
         "training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator__probe_02"
       ],
-      "evidence_or_gap": "Signed bicycle roadway probe_02 has CPU-tested Native capture and source-shaped measurement positives/negatives; official designation, physical sign/readback and full saved processing remain unverified."
+      "evidence_or_gap": "Both exact bicycle surface comparison constructions pass current-runtime offline; saved source join positives and missing-source negatives pass. Sign pixels, wheel subtype and City Traffic Engineer designation are not verified."
     }
   ],
-  "source_law_review": "Exact LVMC 11.22.120(B) reviewed: City Traffic Engineer designation of heavily traveled street, erected sign giving notice, restriction actually stated on sign, and disobedience by named class are distinct. Human-propelled bicycle is expressly named; scooter or motor-driven cycle status is not inferred. No invented traffic-volume or sign-adequacy threshold."
+  "source_law_review": "Exact LVMC 11.22.120(B) reviewed: City Traffic Engineer designation of heavily traveled street, erected sign giving notice, restriction actually stated on sign, and disobedience by named class are distinct. Human-propelled bicycle is expressly named; scooter or motor-driven cycle status is not inferred. No invented traffic-volume or sign-adequacy threshold.",
+  "evidence_review": {
+    "reviewer": "worker assignment owner",
+    "method": "Frozen assignment full-train membership and witnesses reviewed; no accepted recordings or evidence.json were exported for this assignment. No original equivalence or reuse can be established.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "signed_bicycle_roadway_uncovered",
+        "requirement": "LVMC-11-22-120-B signed bicycle roadway restriction",
+        "source": "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/witnesses.json",
+        "why_existing_insufficient": "No accepted recording/source inventory was supplied for this exact assignment."
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "bicycle body, sign and road extent",
+        "interval": "approach through 30-second signed segment",
+        "view": "overview"
+      },
+      {
+        "subject": "approaching bicycle and advance sign",
+        "interval": "before sign through passage",
+        "view": "approach"
+      },
+      {
+        "subject": "sign face, exact wording and direction",
+        "interval": "before and at sign passage",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "rider surface use after sign",
+        "interval": "sign passage through end",
+        "view": "driver_reference"
+      }
+    ],
+    "physical_visibility_unverified": true
+  },
+  "source_observation_mapping": {
+    "dev.regulatory_sign": {
+      "evidence": "sign ID/text and survey; actual sign face awaits physical review",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "sign orientation and segment survey; City Traffic Engineer designation awaits independent authority review",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.bicycle": {
+      "evidence": "original crossbike blueprint and rider pose; wheel subtype awaits physical review",
+      "channels": [
+        "ru.bicycle"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.moped": {
+      "evidence": "Statutory class retained in source checklist; selected cell actor is a human-propelled bicycle. No capture or applicability claim for this other class.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.animal_or_animal_drawn": {
+      "evidence": "Statutory class retained in source checklist; selected cell actor is a human-propelled bicycle. No capture or applicability claim for this other class.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.other_conveyance": {
+      "evidence": "Statutory class retained in source checklist; selected cell actor is a human-propelled bicycle. No capture or applicability claim for this other class.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "original OpenDRIVE lane survey and polygon",
+      "channels": [
+        "st.roadway"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "original rider pose joined to surveyed roadway polygon",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-22-120-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    }
+  }
 }

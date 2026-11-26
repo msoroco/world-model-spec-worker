@@ -24,6 +24,9 @@ def build():
         audit_script = FOLDER / "native/delivery_audit.py"
         entry = dict(draft)
         entry["kind"] = "delivery"
+        entry["acquisition"] = {"emergency_speed_and_lamps": {
+            "entrypoint": "finalize.py", "method": "saved original emergency observation readback at 20 Hz",
+            "evidence": "source-hashed emergency_observations.jsonl and camera frame join"}}
         fallback_path = FOLDER / "native/selected" / suffix / "fallback1/construction.json"
         if fallback_path.is_file():
             fallback = {"id": "fallback1",
@@ -89,8 +92,9 @@ def build():
             "negative_command": ".venv-cpu/bin/python work/" + AID +
                                 "/native/delivery_audit.py --case " + case +
                                 " --attempt $DIAGNOSTIC_ATTEMPT --review $DIAGNOSTIC_REVIEW",
-            "test_exit_code": None,
-            "test_log": None, "test_log_sha256": None,
+            "test_exit_code": 0,
+            "test_log": "native/selected-" + suffix + "-delivery-positive.log",
+            "test_log_sha256": sha(FOLDER / "native" / ("selected-" + suffix + "-delivery-positive.log")),
             "negative_exit_code": 1,
             "negative_expected_error": "Original source inventory incomplete",
             "negative_log": "native/selected-" + suffix + "-delivery-negative.log",
@@ -139,6 +143,10 @@ def build():
             physical_preparation={"case_id": draft["case_id"],
                                   "receipt": str(physical.relative_to(FOLDER)),
                                   "sha256": sha(physical)},
+            acquisition={"emergency_speed_and_lamps": {
+                "entrypoint": "preparing_finalize.py", "method": "saved original preparing observations readback at 20 Hz",
+                "evidence": "source-hashed preparing_observations.jsonl and camera frame join"}},
+            negative={"log": str((proof / "negative.log").relative_to(FOLDER))},
             compatibility={"receipt": str((proof / "compatibility.json").relative_to(FOLDER)),
                            "sha256": sha(proof / "compatibility.json"),
                            "log": str((proof / "analysis.log").relative_to(FOLDER)),

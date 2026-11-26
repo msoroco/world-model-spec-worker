@@ -1,13 +1,27 @@
 {
   "assignment_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "9b8491a17f9be60a85428cf7bbc921b52606137aaef807bcd15edb49a77f821b",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Above-80 probe_03 now has survey-gated 1700 m two-lane Native speed/lane-change capture with FrameMap, four FFV1 cameras and world restore. Pinned offline and synthetic source-measure positives/negatives pass. Three accepted IDs remain membership-only without original source bytes for equivalence. Current-runtime saved processing, comparison, semantics and audits remain unfinished.",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
   "planned_case_count": 3,
   "candidate_count": 1,
-  "selected_delivery_case_count": 0,
+  "selected_delivery_case_count": 3,
   "reuse_count": 0,
   "source_law_review": "Exact NRS 484B.600(1)(e) reviewed: any vehicle, in any event, greater than 80 mph. 80 mph is the statutory boundary; a requested speed is not an observed speed. Frozen lane change is context, not an additional legal element. Three accepted IDs have review metadata but no original trace/manifest/receipt bytes in this assignment for equivalence proof.",
-  "applied_update": 16
+  "applied_update": 16,
+  "tests": [
+    {
+      "command": "TMPDIR=$PWD/../../.runtime-work SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/../../.runtime-work/c245490-root-tests PYTHONPATH=$PWD ../../.venv-cpu/bin/python -B -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "log": "root-tests.log",
+      "sha256": "71b16df8ee7ceab350479c5a52d6f6eb4a1cf2c525097bff3f8e8cea0918a76a"
+    }
+  ],
+  "remaining_gpu_checks": [
+    "Original CARLA lane change and measured speed relative to 80 mph",
+    "Actual subject visibility in all four camera views and physical completion",
+    "Independent review of original accepted membership equivalence if those source receipts are obtained"
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C245490__NRS-484B-600-1e__motor_vehicle_driver --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

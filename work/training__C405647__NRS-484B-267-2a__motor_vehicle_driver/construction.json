@@ -1,0 +1,182 @@
+{
+  "actor": "motor_vehicle_driver",
+  "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_a",
+  "cell_id": "C405647",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "content": "\"\"\"Dispatch an exact selected Native construction from the four-case package.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\nimport subprocess\nimport sys\nimport tempfile\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--case\", required=True)\n    parser.add_argument(\"--check\", action=\"store_true\")\n    parser.add_argument(\"--output-dir\")\n    parser.add_argument(\"--site-survey\")\n    parser.add_argument(\"--host\", default=\"127.0.0.1\")\n    parser.add_argument(\"--port\", type=int, default=2000)\n    args = parser.parse_args()\n    folder = Path(__file__).resolve().parent\n    manifest = json.loads((folder / \"execution-manifest.json\").read_text())\n    matches = [entry for entry in manifest[\"cases\"] if entry[\"case_id\"] == args.case]\n    if len(matches) != 1:\n        raise ValueError(\"Exact selected case is absent from the execution manifest\")\n    entry = matches[0]\n    construction = json.loads((folder / entry[\"construction\"]).read_text())\n    if construction[\"case_id\"] != args.case:\n        raise ValueError(\"Selected construction case differs\")\n    if not args.check and not args.output_dir:\n        raise ValueError(\"Native attempt output required\")\n    scratch = folder.parents[1] / \".runtime-work\"\n    scratch.mkdir(exist_ok=True)\n    with tempfile.TemporaryDirectory(prefix=\"c405647-dispatch-\", dir=scratch) as temporary:\n        bundle = Path(temporary)\n        for item in construction[\"files\"]:\n            path = bundle / item[\"path\"]\n            path.parent.mkdir(parents=True, exist_ok=True)\n            path.write_text(item[\"content\"])\n        command = [sys.executable, \"-B\", \"runner.py\"]\n        if args.check:\n            command.append(\"--check\")\n        else:\n            command.extend((\"--output-dir\", str(Path(args.output_dir).resolve()),\n                            \"--host\", args.host, \"--port\", str(args.port)))\n            if args.site_survey:\n                command.extend((\"--site-survey\", args.site_survey))\n        subprocess.run(command, cwd=bundle, check=True)\n\n\nif __name__ == \"__main__\":\n    main()\n",
+      "path": "runner.py"
+    },
+    {
+      "content": "{\n  \"actor\": \"motor_vehicle_driver\",\n  \"cameras\": [\n    {\n      \"fov_deg\": 90,\n      \"fps\": 20,\n      \"height\": 1080,\n      \"name\": \"overview\",\n      \"pose_strategy\": \"source_bound_actor_and_road_context\",\n      \"width\": 1920\n    },\n    {\n      \"fov_deg\": 90,\n      \"fps\": 20,\n      \"height\": 720,\n      \"name\": \"approach\",\n      \"pose_strategy\": \"source_bound_actor_and_road_context\",\n      \"width\": 1280\n    },\n    {\n      \"fov_deg\": 90,\n      \"fps\": 20,\n      \"height\": 720,\n      \"name\": \"reference_corner\",\n      \"pose_strategy\": \"source_bound_actor_and_road_context\",\n      \"width\": 1280\n    },\n    {\n      \"fov_deg\": 90,\n      \"fps\": 20,\n      \"height\": 720,\n      \"name\": \"driver_reference\",\n      \"pose_strategy\": \"source_bound_actor_and_road_context\",\n      \"width\": 1280\n    }\n  ],\n  \"case\": {\n    \"case_id\": \"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_a\"\n  },\n  \"case_id\": \"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_a\",\n  \"cell_id\": \"C405647\",\n  \"condition\": \"reduce_speed\",\n  \"duration_frames\": 600,\n  \"duration_s\": 30,\n  \"ego_initial_speed_mps\": 14,\n  \"ego_target_speed_mps\": 7,\n  \"law_id\": \"NRS-484B-267-2a\",\n  \"legal_verdict\": null,\n  \"officer_direction\": null,\n  \"other_vehicle_kind\": \"authorized_emergency_vehicle\",\n  \"other_vehicle_speed_mps\": 2,\n  \"physical_verified\": false,\n  \"posted_limit_mps\": 15,\n  \"rate_hz\": 20,\n  \"required_atoms\": [],\n  \"selected_case_id\": \"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_a\",\n  \"source_packets\": [],\n  \"supported_case_ids\": [\n    \"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_a\",\n    \"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_b\",\n    \"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_vehicle_movement\",\n    \"training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_driver_hand_signal\"\n  ],\n  \"visibility_m\": 200,\n  \"warning_lamps\": \"qualifying_flashing_request\",\n  \"wet_road\": false\n}\n",
+      "path": "config.json"
+    }
+  ],
+  "law_id": "NRS-484B-267-2a",
+  "measurement_plan": {
+    "entrypoint": "native/observed_speed.py and native/preparing_finalize.py",
+    "legal_result": null,
+    "sources": [
+      "original emergency or preparing observations",
+      "four original camera streams",
+      "source-hashed video frame map"
+    ]
+  },
+  "mechanisms": [
+    "source-bound emergency vehicle and branch indication",
+    "four-camera original Native capture",
+    "recorded-only finalization"
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "method": "Saved Native actor velocities, lamp readback and frame/time join",
+        "name": "emergency_speed_and_lamps",
+        "reference_frame": "original Native frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "50 ms frame bracket; visual and legal qualification separate",
+        "unit": "structured"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: the vehicle approached",
+        "name": "ru.emergency_vehicle",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: or a regulatory-agency vehicle",
+        "name": "ru.official_vehicle",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: its flashing lights",
+        "name": "sig.warning_lamp",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: it is moving or preparing to move",
+        "name": "kin.velocity",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: 'preparing to move' by the driver's hand signals",
+        "name": "sig.hand_signal",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: the subject approaches it",
+        "name": "drv.approaching",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: the emergency or official vehicle, and the indication that it is preparing to move, are in the subject's line of sight \u2014 'visible to an approaching driver'",
+        "name": "rel.visible",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: the subject's speed before and after",
+        "name": "kin.speed",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: the decrease itself",
+        "name": "kin.accel_longitudinal",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: the posted limit the reasonable-and-proper criteria start from",
+        "name": "dev.speed_limit_sign",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: a criterion of the reasonable-and-proper speed rule",
+        "name": "env.visibility",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: the same",
+        "name": "env.wet_road",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      },
+      {
+        "method": "Prospective original Native actor/frame observation and four-view pixel review: the officer exception",
+        "name": "dev.human_direction",
+        "reference_frame": "original Native frame and source review",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 frames",
+        "uncertainty": "Physical and legal qualification deferred to original independent review",
+        "unit": "source observation"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Original site survey and pixels not available to CPU worker",
+      "Flashing-light qualification and reasonable speed require original review",
+      "Required observation labels are prospective; no original physical acquisition has occurred"
+    ]
+  },
+  "static_checks": {
+    "duration_frames": 600,
+    "rate_hz": 20,
+    "selected_case_ids": [
+      "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_a",
+      "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_b",
+      "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_vehicle_movement",
+      "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_driver_hand_signal"
+    ]
+  },
+  "status": "prospective_delivery",
+  "termination_rules": {
+    "duration_frames": 600,
+    "restoration_required": true
+  }
+}

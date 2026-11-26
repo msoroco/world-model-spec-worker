@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 AID = ROOT.name
 SOURCE = Path('work/training__C230259__NRS-484B-600-1e__motor_vehicle_driver/proposals/cases.json')
-TARGETS = {'probe_01': 30.0, 'probe_02': 35.5397, 'probe_03': 36.5}
+TARGETS = {'probe_01': 30.0, 'probe_02': 35.7632, 'probe_03': 36.5}
 
 
 def sha(path):
@@ -29,9 +29,9 @@ def main():
         suffix = row['case_id'].rsplit('__',1)[-1]
         if suffix in TARGETS:
             row['variable_assignments']['commanded_approach_speed']['value'] = TARGETS[suffix]
-            row['probe']['test_value'] = TARGETS[suffix]*2.2369362921
+            row['probe']['test_value'] = 80 if suffix == 'probe_02' else TARGETS[suffix]*2.2369362921
             row['probe']['comparison_or_standard'] = 'Request a distinct controller speed during the same lane change; original Native velocity determines relation to 80 mph.'
-            row['deliberate_differences'] = ['requested longitudinal speed; measured speed is original readback']
+            row['deliberate_differences'] = ['commanded_approach_speed']
     write(ROOT/'proposals/cases.json', proposal)
     manifest_path = ROOT/'selected-draft-execution-manifest.json'
     manifest = json.loads(manifest_path.read_text())
@@ -58,7 +58,7 @@ def main():
             name = candidate.get('id','primary')
             log = ROOT/'selected-proofs'/f'{suffix}-{name}'/'offline.log'
             candidate['offline'] = {
-                'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{AID}/selected-draft-execution-manifest.json --case {entry["case_id"]} --candidate {name} --output .runtime-work/c245490-offline-v6-{suffix}-{name} --python $PWD/.venv-cpu/bin/python',
+                'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{AID}/selected-draft-execution-manifest.json --case {entry["case_id"]} --candidate {name} --output .runtime-work/c245490-offline-v8-{suffix}-{name} --python $PWD/.venv-cpu/bin/python',
                 'construction_sha256':candidate['construction_sha256'],
                 'exit_code':0,'log':str(log.relative_to(ROOT)),
                 'log_sha256':sha(log)}

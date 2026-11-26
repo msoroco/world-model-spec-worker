@@ -16,7 +16,7 @@ CAMERAS = (
     ('reference_corner', 1280, 720, 0, -10, 10, -25, False),
     ('driver_reference', 1280, 720, -12, 0, 6, -12, True),
 )
-TARGET_MPS = {'probe_01': 30.0, 'probe_02': 35.5397, 'probe_03': 36.5}
+TARGET_MPS = {'probe_01': 30.0, 'probe_02': 35.7632, 'probe_03': 36.5}
 
 
 def target(case_id, x, transition_m=200):
@@ -33,7 +33,7 @@ def check():
     road = geometry_check()
     if FRAMES/RATE != 30 or len(CAMERAS) != 4 or len({c[0] for c in CAMERAS}) != 4:
         raise ValueError('four cameras and 30-second capture required')
-    if not (TARGET_MPS['probe_01'] < TARGET_MPS['probe_02'] < 35.7632 < TARGET_MPS['probe_03']):
+    if not (TARGET_MPS['probe_01'] < TARGET_MPS['probe_02'] == 35.7632 < TARGET_MPS['probe_03']):
         raise ValueError('speed probe requests differ')
     assert target('x__probe_03', -200)[1] < 0
     return {'passed':True, 'frames':FRAMES, 'rate_hz':RATE, 'cameras':[c[0] for c in CAMERAS],

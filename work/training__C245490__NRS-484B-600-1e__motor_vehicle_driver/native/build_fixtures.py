@@ -8,7 +8,7 @@ from runner import target
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = 'training__C245490__NRS-484B-600-1e__motor_vehicle_driver'
-TARGETS = {'probe_01': 30.0, 'probe_02': 35.5397, 'probe_03': 36.5}
+TARGETS = {'probe_01': 30.0, 'probe_02': 35.7632, 'probe_03': 36.5}
 RATE = 20
 FRAMES = 600
 

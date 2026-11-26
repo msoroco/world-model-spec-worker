@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 AID = ROOT.name
-TARGETS = {'probe_01': 30.0, 'probe_02': 35.5397, 'probe_03': 36.5}
+TARGETS = {'probe_01': 30.0, 'probe_02': 35.7632, 'probe_03': 36.5}
 CAMERAS = (('overview', 1920, 1080), ('approach', 1280, 720),
            ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))
 

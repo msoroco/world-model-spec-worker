@@ -20,23 +20,35 @@ def request(frame, case_id):
             'signal_indication_request':'green_down_arrow'}
 
 
-def source_row(index, native_frame, elapsed_s, actor, signal_state, signal_inventory, waypoint):
+def source_row(index, native_frame, elapsed_s, actor, signal_state, signal_inventory, waypoint, proposed_lane_id):
     if type(index) is not int or not 0 <= index < 600 or type(native_frame) is not int:
         raise ValueError('original frame identity required')
     if actor is None or signal_state is None or signal_inventory is None or waypoint is None:
         raise ValueError('post-tick Native source packets required')
+    if signal_inventory.get('authority_source') != 'map_signal_inventory' or not signal_inventory.get('authority_verified'):
+        raise ValueError('official signal inventory and verification required')
+    if signal_inventory.get('mount_source') != 'map_signal_transform':
+        raise ValueError('signal mount must come from the Native map')
+    if signal_state.get('source') != 'native_signal_state' or signal_state.get('signal_id') != signal_inventory.get('id'):
+        raise ValueError('original indication state does not join the governed signal')
+    if proposed_lane_id not in (-1,-2):
+        raise ValueError('proposed lane absent')
     pose=actor.get_transform()
     vertices=actor.bounding_box.get_world_vertices(pose)
     if len(vertices)!=8:
         raise ValueError('actor body vertices missing')
     return {'frame':index,'native_frame':native_frame,'time_s':elapsed_s,
-            'actor_id':actor.id,'actor_blueprint':actor.type_id,
-            'actor_yaw_deg':pose.rotation.yaw,'actor_body_vertices_m':[[v.x,v.y,v.z] for v in vertices],
-            'occupied_lane_id':waypoint.lane_id,'lane_source':'map_waypoint_projection',
-            'signal_id':signal_inventory['id'],'signal_lane_id':signal_inventory['lane_id'],
-            'signal_mount_m':signal_inventory['mount_m'],'signal_authority_source':signal_inventory['authority_source'],
-            'signal_indication':signal_state['indication'],'signal_facing_yaw_deg':signal_inventory['facing_yaw_deg'],
-            'source':'native_post_tick'}
+            'source':'native_post_tick',
+            'vehicle':{'source':'native_actor_pose','lane_source':'map_waypoint_projection',
+                       'actor_id':actor.id,'actor_blueprint':actor.type_id,
+                       'yaw_deg':pose.rotation.yaw,'body_vertices_m':[[v.x,v.y,v.z] for v in vertices],
+                       'lane_id':waypoint.lane_id,'proposed_lane_id':proposed_lane_id},
+            'signal':{'id':signal_inventory['id'],'source':'native_signal_state',
+                      'authority_source':'map_signal_inventory','authority_verified':True,
+                      'mount_source':'map_signal_transform','mount_m':signal_inventory['mount_m'],
+                      'lane_id':signal_inventory['lane_id'],'mount_lane_id':signal_inventory['mount_lane_id'],
+                      'indication':signal_state['indication'],
+                      'facing_yaw_deg':signal_inventory['facing_yaw_deg']}}
 
 
 def check(config):

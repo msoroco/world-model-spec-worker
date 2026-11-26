@@ -24,12 +24,16 @@ def measure(pose_path, context_path):
         raise ValueError('nonmonotonic Native frame identities')
     if not all(abs(r['time_s'] - i / 20) < .005 for i, r in enumerate(rows)):
         raise ValueError('missing original 20 Hz timing')
-    if c.get('rider_class') != 'human_propelled_bicycle' or not c.get('wheel_characteristics_reviewed'):
-        raise ValueError('sourced bicycle subtype missing')
+    if c.get('rider_class') != 'human_propelled_bicycle' or not c.get('blueprint_id'):
+        raise ValueError('original bicycle actor source missing')
     if c.get('sign_text') != 'BICYCLES PROHIBITED ON ROADWAY' or c.get('sign_id') != '100':
         raise ValueError('exact bicycle sign source missing')
-    if not c.get('native_sign_survey') or not c.get('native_roadway_survey'):
+    if not c.get('native_sign_survey') or not c.get('native_roadway_survey') or not c.get('native_shoulder_survey'):
         raise ValueError('Native sign or roadway survey source missing')
+    if c.get('target_surface') not in ('roadway', 'shoulder') or c.get('case_id', '').rsplit('__', 1)[-1] not in ('probe_01', 'probe_02'):
+        raise ValueError('exact case and surface source missing')
+    if (c['target_surface'] == 'roadway') != c['case_id'].endswith('__probe_02'):
+        raise ValueError('case surface source mismatch')
     polygon = c['roadway_xy_m']
     points = [r['rider_xy_m'] for r in rows]
     if any(len(p) != 2 or not all(math.isfinite(v) for v in p) for p in points):
@@ -40,7 +44,10 @@ def measure(pose_path, context_path):
             'roadway_occupied_after_sign_frames': sum(v and p[0] >= c['sign_x_m'] for v, p in zip(occupied, points)),
             'path_length_m': path, 'longitudinal_displacement_m': points[-1][0]-points[0][0],
             'lateral_displacement_m': points[-1][1]-points[0][1],
-            'legal_conclusion': None, 'official_designation_verified': False,
+            'target_surface': c['target_surface'],
+            'wheel_characteristics_reviewed': bool(c.get('wheel_characteristics_reviewed')),
+            'physical_sign_pixels_verified': bool(c.get('physical_sign_pixels_verified')),
+            'legal_conclusion': None, 'official_designation_verified': bool(c.get('city_traffic_engineer_designation_verified')),
             'physical_review_required': True}
 
 

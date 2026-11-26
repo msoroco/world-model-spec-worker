@@ -4,10 +4,10 @@
   "counts": {
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 0,
-    "candidates_proven": 0,
-    "comparisons_planned": 1,
-    "delivery_cases_prepared": 0,
-    "selected_comparison_cases_planned": 2,
+    "candidates_proven": 8,
+    "comparisons_planned": 3,
+    "delivery_cases_prepared": 4,
+    "selected_comparison_cases_planned": 4,
     "source_topics": 6
   },
   "current_cpu_proof": {
@@ -16,6 +16,8 @@
     "comparison_audit": "native/compare_speed.py",
     "compatibility_scope": "synthetic diagnostic software compatibility only",
     "diagnostic": "native/emergency-approach-proof.json",
+    "four_case_execution_manifest": "execution-manifest.json",
+    "four_case_execution_manifest_sha256": "131822a8918e75c0d9c9234c814ac4907d00d19baa679002bfec5b44b5468e6f",
     "independent_diagnostic_audit": "selected-diagnostic-audit.json",
     "native_executed": false,
     "observed_speed_meter": "native/observed_speed.py",
@@ -28,14 +30,14 @@
     "positive_delivery_structure_harness": "native/delivery-positive-cpu-harness.json",
     "preparing_alternative_plan": "native/preparing-alternative-plan.json",
     "preparing_exact_cpu_manifest": "native/preparing-cpu-manifest.json",
-    "preparing_exact_cpu_manifest_sha256": "015a703de0b82763a9909d349010a16d88b23d689066e014bc34d299c4cbe9d0",
-    "preparing_finalize_sha256": "8946eeb4ca5808f31c7e34e811c5c1add4f4296ac04e18aa8889d046078dc267",
+    "preparing_exact_cpu_manifest_sha256": "7e493560e1580428e16b607c5b2991a43eb3a8cdedc75973360b21bf7fe10d2e",
+    "preparing_finalize_sha256": "c6a6e6ac79beb0216e6db1cd8830194a07704881e8279ba650a9646b6be2094b",
     "preparing_hand_capture": "native/preparing_hand_capture.py",
-    "preparing_hand_capture_sha256": "44b49c636f43101c899676cdd54c6e40df5d77ed3d8f2eaa18738fc976abaedc",
+    "preparing_hand_capture_sha256": "c57fa9a71dc7a1a0fed2f6c1913fdd4dd5df31c5c78b111bdac036d9e3fa5ed5",
     "preparing_hand_signal_rig": "native/preparing_hand_signal_rig.py",
     "preparing_hand_signal_rig_sha256": "93bc530d5e16e755f1095f2717d39d9a3baa9383456460d0a5b92c0ff3b4b6ad",
     "preparing_movement_capture": "native/preparing_movement_capture.py",
-    "preparing_movement_capture_sha256": "574b093e7fc64707efdab4464093e4c32f175356cf7ec4375830b8a884437470",
+    "preparing_movement_capture_sha256": "dab7e20b3df3c7676b9dff62f9ef7473403d95bc5a1d75ba7e2cda06f61c557b",
     "preparing_original_source_audit": "native/preparing_source_audit.py",
     "preparing_original_source_audit_sha256": "23f36055066811498b0e0ecec216488816a8d519661c23e68bfefdbcefb1ae83",
     "preparing_recorded_only_finalizer": "native/preparing_finalize.py",
@@ -50,19 +52,23 @@
     "selected_draft_manifest": "native/selected-draft-manifest.json",
     "synthetic_physical_preparation": "native/physical-proof"
   },
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C405647__NRS-484B-267-2a__motor_vehicle_driver --case training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "e48130254a74184b9a4c34974af9a6dabc8dba08756e82bd00e00d3f71401af2",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Two selected moving cases retain current-runtime offline, public compatibility, recorded-only and independent 600-frame comparison proofs. Both exact preparing alternatives now have source-guarded prospective four-camera Native acquisition, recorded-only finalization and independent original-source/pixel audit code. The movement capture requests a stationary prelude followed by measured motion; the hand capture requests a driver skeletal pose while leaving actual pixel visibility unconfirmed. Both pass exact offline and fake Native source-shape tests; 57 CPU tests pass. The alternatives remain unselected while exact public compatibility, semantic binding, selected delivery and controlled comparison proofs are unfinished. Original motion, pixels, physical completion and legal qualification are not claimed.",
-  "status": "partial",
+  "readiness_kind": "delivery_prepared",
+  "reason": "Four selected exact cases and four timing fallbacks have current-runtime CPU offline, compatibility, saved-only, semantic, delivery-harness, physical-preparation, and comparison proofs. Native physical delivery and independent original-pixel acceptance remain local GPU checks.",
+  "status": "ready",
   "tests": [
-    "Both exact selected CPU bundles pass runtime.py offline using current runtime; see native/selected-{a,b}-offline.log",
-    "Both selected cases pass public runtime.py compatibility with full positive and missing-case-source negative; see native/selected-{a,b}-proof/compatibility.json",
-    "Both retained synthetic attempts pass public runtime.py process-saved with originals preserved; see native/selected-{a,b}-proof/processing.json",
-    "Independent 600-frame fixed-condition comparison and source hash audit passed; see selected-diagnostic-audit.json",
-    "Assignment-scoped worker_check.py --complete passed static checks; strict ready gate remains unmet",
-    "Paired fallback1 cases pass current-runtime offline and positive/negative public compatibility; see native/selected/{a,b}/fallback1/proof",
-    "Two exact prospective preparing alternatives pass runtime.py offline with five source-guard tests each; see native/preparing/<branch>/offline.log",
-    "Both selected cases pass the synthetic positive delivery-audit structure harness while production audit rejects synthetic review mode; see native/delivery-positive-cpu-harness.json",
-    "57 Native/branch/source-audit/finalizer/delivery/comparison CPU tests pass; native/native-cpu-tests.log SHA256 567609a4f68d3360e3b8aedef1ab080d158223463162f7e33a9f18df3ac485f2"
+    {
+      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647 .venv-cpu/bin/python -B -m unittest discover -s work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/native/tests -v",
+      "exit_code": 0,
+      "log": "native/native-cpu-tests.log",
+      "sha256": "ffc8d56afcf4cf273f3ed403b5cc55eb57bde0c1abe90c9295dbfd359d129120"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647 .venv-cpu/bin/python -B -m unittest discover -s work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "tests/dispatch-tests.log",
+      "sha256": "d0a38118b76cacf94b218c9acdf539dc523d30c1daa0c82741700fd811cb047e"
+    }
   ]
 }

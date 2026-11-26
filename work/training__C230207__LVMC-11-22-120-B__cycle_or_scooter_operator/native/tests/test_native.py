@@ -6,6 +6,7 @@ from runner import check as runner_check, survey
 class FakeCarla:
     class LaneType:
         Driving = 'driving'
+        Shoulder = 'shoulder'
 
     class Location:
         def __init__(self, x, y, z):
@@ -27,6 +28,8 @@ class FakeMap:
         return open_drive().replace(SIGN_NAME, 'SCOOTERS ONLY') if self.wrong_sign else open_drive()
 
     def get_waypoint(self, location, project_to_road, lane_type):
+        if lane_type == FakeCarla.LaneType.Shoulder:
+            return FakeWaypoint(location.x, location.y, -1 if self.wrong_lane else -2)
         return FakeWaypoint(location.x, location.y, -2 if self.wrong_lane else -1)
 
 
@@ -43,10 +46,13 @@ class NativeDraft(unittest.TestCase):
         self.assertEqual(geometry_check()['sign_text'], SIGN_NAME)
         self.assertEqual(runner_check()['frames'], 600)
         self.assertEqual(len(runner_check()['cameras']), 4)
+        self.assertEqual(runner_check()['case_variants']['probe_01']['y_m'], -4.75)
+        self.assertEqual(runner_check()['case_variants']['probe_02']['y_m'], -1.75)
 
     def test_sign_and_lane_survey(self):
         good = survey(FakeWorld(), FakeCarla)
         self.assertEqual(len(good['roadway']), 3)
+        self.assertEqual(len(good['shoulder']), 3)
         with self.assertRaisesRegex(RuntimeError, 'signed bicycle restriction'):
             survey(FakeWorld(wrong_sign=True), FakeCarla)
         with self.assertRaisesRegex(RuntimeError, 'governed roadway'):

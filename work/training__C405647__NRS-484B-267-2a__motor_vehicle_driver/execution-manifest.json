@@ -2,6 +2,13 @@
   "assignment_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "emergency_speed_and_lamps": {
+          "entrypoint": "finalize.py",
+          "evidence": "source-hashed emergency_observations.jsonl and camera frame join",
+          "method": "saved original emergency observation readback at 20 Hz"
+        }
+      },
       "candidate_risk": {
         "reason": "Emergency actor approach/passing timing and four-view coverage need original Native readback",
         "status": "physical"
@@ -64,9 +71,9 @@
         "sets": [
           "full-train"
         ],
-        "test_exit_code": null,
-        "test_log": null,
-        "test_log_sha256": null
+        "test_exit_code": 0,
+        "test_log": "native/selected-a-delivery-positive.log",
+        "test_log_sha256": "d34941a9dfb7b2bda974e744f0a406c830858b7a83fa104f94c95f7e922358f2"
       },
       "delivery_readiness": "partial_original_source_and_positive_audit_pending",
       "fixture_recipe": "work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/selected-recipe-a.json",
@@ -111,6 +118,13 @@
       }
     },
     {
+      "acquisition": {
+        "emergency_speed_and_lamps": {
+          "entrypoint": "finalize.py",
+          "evidence": "source-hashed emergency_observations.jsonl and camera frame join",
+          "method": "saved original emergency observation readback at 20 Hz"
+        }
+      },
       "candidate_risk": {
         "reason": "Emergency actor approach/passing timing and four-view coverage need original Native readback",
         "status": "physical"
@@ -173,9 +187,9 @@
         "sets": [
           "full-train"
         ],
-        "test_exit_code": null,
-        "test_log": null,
-        "test_log_sha256": null
+        "test_exit_code": 0,
+        "test_log": "native/selected-b-delivery-positive.log",
+        "test_log_sha256": "d34941a9dfb7b2bda974e744f0a406c830858b7a83fa104f94c95f7e922358f2"
       },
       "delivery_readiness": "partial_original_source_and_positive_audit_pending",
       "fixture_recipe": "work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/selected-recipe-b.json",
@@ -220,20 +234,54 @@
       }
     },
     {
+      "acquisition": {
+        "emergency_speed_and_lamps": {
+          "entrypoint": "preparing_finalize.py",
+          "evidence": "source-hashed preparing_observations.jsonl and camera frame join",
+          "method": "saved original preparing observations readback at 20 Hz"
+        }
+      },
       "candidate_risk": {
         "reason": "Original preparing indication, subject visibility, approach timing and four-camera coverage need Native readback",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "other_vehicle_start_frame"
+          ],
+          "compatibility": {
+            "log": "native/preparing/visible_vehicle_movement/fallback1/proof/analysis.log",
+            "negative_log": "native/preparing/visible_vehicle_movement/fallback1/proof/negative.log",
+            "receipt": "native/preparing/visible_vehicle_movement/fallback1/proof/compatibility.json",
+            "sha256": "dd6b6e7c3da74a4688c1e399ec6cff4e5a19a3d3615a537403daaf4c0454a7bd"
+          },
+          "construction": "native/preparing/visible_vehicle_movement/fallback1/construction.json",
+          "construction_sha256": "c11088a8937f30b6aa3bd9ffd9c00bf7a5b90f28a95684d0eda59263a98d420d",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/preparing-fallback-compatibility-manifest.json --case training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_vehicle_movement --candidate fallback1 --output .runtime-work/c405647-visible_vehicle_movement-fallback1-offline-v8",
+            "construction_sha256": "c11088a8937f30b6aa3bd9ffd9c00bf7a5b90f28a95684d0eda59263a98d420d",
+            "exit_code": 0,
+            "log": "native/preparing/visible_vehicle_movement/fallback1/proof/offline.log",
+            "log_sha256": "75c3ad272938ed2632a5d8e39366b3961b5b8070f962b21b95940b9b52d29e32"
+          },
+          "trigger": {
+            "failure_condition": "Primary frame-120 indication is not independently visible before ego reach; retry the earlier frame-100 indication under the same source review.",
+            "metric": "first_visible_frame",
+            "source": "Original Native preparing observation and pixel-review frame join"
+          }
+        }
+      ],
       "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_vehicle_movement",
       "compatibility": {
         "log": "native/preparing/visible_vehicle_movement/proof/analysis.log",
         "negative_log": "native/preparing/visible_vehicle_movement/proof/negative.log",
         "receipt": "native/preparing/visible_vehicle_movement/proof/compatibility.json",
-        "sha256": "26f257c94c2a50943b6830b1993abd584205efde4a940a91fd490d180e7515df"
+        "sha256": "ab146a5f75d98938cde4c7930f7389c263b7cdb8a3f63a9908f36f49d9be045a"
       },
       "construction": "native/preparing/visible_vehicle_movement/construction.json",
-      "construction_sha256": "fdb2839c687e4f1aab9f13ef23b1dfe08d97cee32ce653730e5e6d2f5bd2b84a",
+      "construction_sha256": "7ad194e5f02d7fb049efc4e40b011de9054985ec794b0f862b4289a238c83024",
       "delivery_acceptance": {
         "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_vehicle_movement",
         "checks": [
@@ -274,9 +322,12 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "native/preparing/visible_vehicle_movement/proof/negative.log"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/native/preparing-cpu-manifest.json --case training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_vehicle_movement --output .runtime-work/c405647-visible_vehicle_movement-offline-v7",
-        "construction_sha256": "fdb2839c687e4f1aab9f13ef23b1dfe08d97cee32ce653730e5e6d2f5bd2b84a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/native/preparing-cpu-manifest.json --case training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_vehicle_movement --output .runtime-work/c405647-visible_vehicle_movement-primary-offline-v8",
+        "construction_sha256": "7ad194e5f02d7fb049efc4e40b011de9054985ec794b0f862b4289a238c83024",
         "exit_code": 0,
         "log": "native/preparing/visible_vehicle_movement/proof/offline.log",
         "log_sha256": "75c3ad272938ed2632a5d8e39366b3961b5b8070f962b21b95940b9b52d29e32"
@@ -285,7 +336,7 @@
       "physical_preparation": {
         "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_vehicle_movement",
         "receipt": "native/physical-proof/visible_vehicle_movement/proof.json",
-        "sha256": "b5f90731813f1593157d276123f2326f658ca81e1dc026f488ccfbad849d8b64"
+        "sha256": "c233966cb2e8a4718e7e625c28ac1bc3027b32417b599faca3fc86eb54649022"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_vehicle_movement --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
@@ -297,24 +348,58 @@
       },
       "saved_processing": {
         "receipt": "native/preparing/visible_vehicle_movement/proof/processing.json",
-        "sha256": "b825a38933f087a9992b12522ad4267122a1973a577a63df642d2432d74ca619"
+        "sha256": "a0ca2397eedba19158ad84af9ac7287306cffca2e58f6cfc176988565d23ce01"
       }
     },
     {
+      "acquisition": {
+        "emergency_speed_and_lamps": {
+          "entrypoint": "preparing_finalize.py",
+          "evidence": "source-hashed preparing_observations.jsonl and camera frame join",
+          "method": "saved original preparing observations readback at 20 Hz"
+        }
+      },
       "candidate_risk": {
         "reason": "Original preparing indication, subject visibility, approach timing and four-camera coverage need Native readback",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "other_vehicle_start_frame"
+          ],
+          "compatibility": {
+            "log": "native/preparing/visible_driver_hand_signal/fallback1/proof/analysis.log",
+            "negative_log": "native/preparing/visible_driver_hand_signal/fallback1/proof/negative.log",
+            "receipt": "native/preparing/visible_driver_hand_signal/fallback1/proof/compatibility.json",
+            "sha256": "3c4e994ca7f53194f9c62ec1edd79d8fc681102f34c277e068932c7b8484a77a"
+          },
+          "construction": "native/preparing/visible_driver_hand_signal/fallback1/construction.json",
+          "construction_sha256": "d4717afcc4a789a339005d34a49b71853cc1db280cd433526e8293bfc3edf2d1",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/preparing-fallback-compatibility-manifest.json --case training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_driver_hand_signal --candidate fallback1 --output .runtime-work/c405647-visible_driver_hand_signal-fallback1-offline-v8",
+            "construction_sha256": "d4717afcc4a789a339005d34a49b71853cc1db280cd433526e8293bfc3edf2d1",
+            "exit_code": 0,
+            "log": "native/preparing/visible_driver_hand_signal/fallback1/proof/offline.log",
+            "log_sha256": "d860b4ddfc70ede47d2df728e59b46e2eacc0af01ac026420bbb26252654c81b"
+          },
+          "trigger": {
+            "failure_condition": "Primary frame-120 indication is not independently visible before ego reach; retry the earlier frame-100 indication under the same source review.",
+            "metric": "first_visible_frame",
+            "source": "Original Native preparing observation and pixel-review frame join"
+          }
+        }
+      ],
       "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_driver_hand_signal",
       "compatibility": {
         "log": "native/preparing/visible_driver_hand_signal/proof/analysis.log",
         "negative_log": "native/preparing/visible_driver_hand_signal/proof/negative.log",
         "receipt": "native/preparing/visible_driver_hand_signal/proof/compatibility.json",
-        "sha256": "a9a4bc598c7c8c9eb8f67a6b52d29d9a55b6b168128fdeb8c25249d56845b6a2"
+        "sha256": "b4e8dd3e1587840f6ee80ed5f545f038721715dac6ba83b195963b7802c38bc5"
       },
       "construction": "native/preparing/visible_driver_hand_signal/construction.json",
-      "construction_sha256": "f90baa471be30c444035ef757c4e0e2f1c6537dbf24b67ea4b3582bb3d7d523b",
+      "construction_sha256": "37aa6690613ba843502887a000ba16a32b5e7d99187c52c6ae7ee3b9d2672089",
       "delivery_acceptance": {
         "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_driver_hand_signal",
         "checks": [
@@ -355,9 +440,12 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "native/preparing/visible_driver_hand_signal/proof/negative.log"
+      },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/native/preparing-cpu-manifest.json --case training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_driver_hand_signal --output .runtime-work/c405647-visible_driver_hand_signal-offline-v7",
-        "construction_sha256": "f90baa471be30c444035ef757c4e0e2f1c6537dbf24b67ea4b3582bb3d7d523b",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/native/preparing-cpu-manifest.json --case training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_driver_hand_signal --output .runtime-work/c405647-visible_driver_hand_signal-primary-offline-v8",
+        "construction_sha256": "37aa6690613ba843502887a000ba16a32b5e7d99187c52c6ae7ee3b9d2672089",
         "exit_code": 0,
         "log": "native/preparing/visible_driver_hand_signal/proof/offline.log",
         "log_sha256": "d860b4ddfc70ede47d2df728e59b46e2eacc0af01ac026420bbb26252654c81b"
@@ -366,7 +454,7 @@
       "physical_preparation": {
         "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_driver_hand_signal",
         "receipt": "native/physical-proof/visible_driver_hand_signal/proof.json",
-        "sha256": "b8831bf86bd6eef2098bd675b9ead33f51a8369b8e6df787040976b222958e06"
+        "sha256": "d64fa512ca8f151b266d1eba7342adb88c260090d2f1fc899fe4dd1625b24d50"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2a__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2a__motor_vehicle_driver__preparing_to_move__visible_driver_hand_signal --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
@@ -378,7 +466,7 @@
       },
       "saved_processing": {
         "receipt": "native/preparing/visible_driver_hand_signal/proof/processing.json",
-        "sha256": "5bb022fdcf34c5ea0644388d8b50fff34a0958172d94885acce15a2738660de7"
+        "sha256": "80d18701f9560f2b14f7905c051e99cce8bb2deb13ab4e1f7cd11a4e2b39cbbd"
       }
     }
   ],
