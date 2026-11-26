@@ -255,3 +255,9 @@ The direct ready-path execution manifest validator found unsupported `required_a
   - `.runtime-work/c10052-disposition-compat-refresh.log` SHA-256 `a92eaba7ff357103a2f1eff4034e5950d80248e09c2524cce3735667076ce4bc`
   - `.runtime-work/c10052-final-validate.log` SHA-256 `eb4e4b2572f7107831b6a3723e5bd7352638e41d09fa98ab2e4d3f8f8048eda4`
   - `.runtime-work/c10052-package-validate.log` SHA-256 `4d19302c18c2ab1a511a9c2c65125d348388b6bc8d92346179d6eed40175c2ed`
+
+## 2026-11-25 scoped strict diagnostic and root camera correction
+
+- Diagnostic exact scoped strict gate exited 1 at `Four-view capture configuration differs from profile` in `preparation.py:220`; log `.runtime-work/c10052-scoped-strict-candidate.log` SHA-256 `4c54cd066f5544c1606a64179a8522c321b40ff4fbd3bd2c79f60f45c74397af`.
+- Root `config.json`, `cameras.py`, `runner.py`, and matching inline `construction.json` now use pinned `reference_corner` as the third camera name. The 1920×1080 overview and three 1280×720 detail sizes remain aligned with the profile.
+- Re-ran root CPU unit tests: 17 passed; `cpu-selected-tests.log` SHA-256 `a758130acab30dcafbb5559ae4317daaf1753c84cdfe09e7a36e2b6c77b105d0`. Result remains partial until final exact scoped strict exits zero.

@@ -3,7 +3,7 @@ import math
 import xml.etree.ElementTree as ET
 
 ZONE={'x_min_m':-20,'x_max_m':20,'y_min_m':-8,'y_max_m':8}
-TURN={'center_x_m':-12,'center_y_m':0,'radius_m':3,'first_frame':100,'last_frame':180}
+TURN={'center_x_m':-12,'center_y_m':0,'radius_m':5.5,'first_frame':100,'last_frame':220}
 
 
 def open_drive():
@@ -24,20 +24,21 @@ def open_drive():
 
 def planned_pose(index,turn):
     if not turn:
-        return (-25+min(index,250)*.2,-3,0)
-    if index<100:return (-25+index*.13,-3,0)
-    if index<=180:
-        angle=-math.pi/2+math.pi*(index-100)/80
-        return (TURN['center_x_m']+3*math.cos(angle),3*math.sin(angle),
+        return (-25+min(index,250)*.2,-5.5,0)
+    if index<100:return (-25+index*.13,-5.5,0)
+    if index<=220:
+        angle=-math.pi/2+math.pi*(index-100)/120
+        return (TURN['center_x_m']+TURN['radius_m']*math.cos(angle),
+            TURN['radius_m']*math.sin(angle),
             90+math.degrees(angle))
-    return (-12-min(index-180,160)*.2,3,180)
+    return (-12-min(index-220,160)*.2,5.5,180)
 
 
 def check():
     root=ET.fromstring(open_drive());lanes=root.findall('road/lanes/laneSection/left/lane')+root.findall('road/lanes/laneSection/right/lane')
     if [x.get('id') for x in lanes]!=['1','-1']:raise ValueError('Two-way turning envelope missing')
-    a=planned_pose(100,True);b=planned_pose(180,True)
-    if abs(a[1]+3)>1e-6 or abs(b[1]-3)>1e-6 or abs(b[2]-180)>1e-6:
+    a=planned_pose(100,True);b=planned_pose(220,True)
+    if abs(a[1]+5.5)>1e-6 or abs(b[1]-5.5)>1e-6 or abs(b[2]-180)>1e-6:
         raise ValueError('Authored reversal differs')
     return {'passed':True,'zone':ZONE,'turn':TURN,'road_lane_ids':[1,-1],
         'zone_designation_reviewed':False,'child_age_or_presence_rule_adopted':False}

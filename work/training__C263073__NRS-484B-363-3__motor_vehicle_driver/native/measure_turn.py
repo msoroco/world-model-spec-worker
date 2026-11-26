@@ -7,7 +7,7 @@ from pathlib import Path
 from review_context import verified_sources
 
 FRAMES=600
-CAMERAS=('overview','zone_entry','turn_side','child_area')
+CAMERAS=('overview','approach','reference_corner','driver_reference')
 
 
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -39,6 +39,8 @@ def measure(attempt):
     context=json.loads(context_path.read_text());zone=context.get('zone')
     if context.get('source_kind')!='original_native':
         raise ValueError('Original school-zone context missing')
+    if context.get('path_is_kinematic') is not False:
+        raise ValueError('Physically driven original path required')
     review=verified_sources(attempt,context)
     if not isinstance(zone,dict) or any(type(zone.get(k)) not in (int,float) for k in ('x_min_m','x_max_m','y_min_m','y_max_m')):
         raise ValueError('Original zone extent missing')
@@ -54,6 +56,11 @@ def measure(attempt):
         if frame.get('camera_native_frames')!={name:native for name in CAMERAS}:
             raise ValueError('Original four-camera join differs')
         ego=row.get('ego',{});person=row.get('other_person',{})
+        control=row.get('control')
+        if row.get('kinematic_path_only') is not False or not isinstance(control,dict) or any(
+            type(control.get(key)) not in (int,float) or not math.isfinite(control[key])
+            for key in ('steer','throttle','brake')):
+            raise ValueError('Original physical vehicle control missing')
         point=xy(ego);person_point=xy(person);heading=ego.get('heading_deg')
         if type(heading) not in (int,float) or not math.isfinite(heading):
             raise ValueError('Original heading missing')

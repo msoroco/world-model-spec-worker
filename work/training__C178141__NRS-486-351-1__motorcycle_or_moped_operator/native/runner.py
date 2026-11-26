@@ -9,7 +9,7 @@ import subprocess
 from geometry import check as geometry_check, open_drive
 from route import FRAMES, RATE_HZ, LATERAL_M, target
 
-CAMERAS = ('overview', 'subject_front', 'lane_side', 'traffic_rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def check(config):
@@ -64,7 +64,8 @@ def control(config, frame, subject):
 
 def execute(config, output_dir, host, port):
     import carla
-    from worker_exchange.native_output import FrameMap
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
 
     check(config)
@@ -79,7 +80,8 @@ def execute(config, output_dir, host, port):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in prior_world.get_actors()):
         raise RuntimeError('exclusive idle Native world required')
     owned, encoders, camera_queues = [], {}, {}
-    changed = False
+    capture = None
+    changed = complete = False
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
             vertex_distance=.5, max_road_length=25, wall_height=0, additional_width=0,
@@ -95,6 +97,9 @@ def execute(config, output_dir, host, port):
         world.apply_settings(settings)
         readback = survey(carla, world.get_map())
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
+        (output / 'acquisition-provenance.json').write_text(json.dumps({
+            'provenance_kind': 'native', 'diagnostic_fixture': False,
+            'physical_acceptance_claimed': False}, indent=2) + '\n')
         library = world.get_blueprint_library()
         motorcycles = library.filter('vehicle.kawasaki.ninja')
         if not motorcycles:
@@ -105,6 +110,8 @@ def execute(config, output_dir, host, port):
             carla.Location(x=-30, y=LATERAL_M[config['split_case']], z=2),
             carla.Rotation(yaw=0)))
         owned.append(subject)
+        capture = PipelineCapture(client, subject, output, config['case_id'],
+                                  visibility=False, required_observations=config.get('required_atoms', []))
         other_bp = sorted(library.filter('vehicle.*'), key=lambda b: b.id)[0]
         others = []
         for y, label in ((1.5, 'lower_lane'), (4.5, 'upper_lane')):
@@ -118,9 +125,10 @@ def execute(config, output_dir, host, port):
             'source_kind': 'native_saved_sample', 'cell_id': 'C178141',
             'lane_survey': readback, 'subject_blueprint_id': subject.type_id,
             'other_vehicle_ids': [car.id for car in others],
+            'subject_kind': 'motorcycle', 'other_vehicle_lane_ids': [-2, -1],
             'police_duty_source': None, 'physical_collision_clearance_verified': False}, indent=2) + '\n')
-        mounts = {'overview': (0, -22, 24, -35), 'subject_front': (-13, -8, 8, -15),
-                  'lane_side': (0, 12, 10, -20), 'traffic_rear': (-22, 12, 10, -20)}
+        mounts = {'overview': (0, -22, 24, -35), 'approach': (-13, -8, 8, -15),
+                  'reference_corner': (0, 12, 10, -20), 'driver_reference': (-22, 12, 10, -20)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
             spec = next(c for c in config['cameras'] if c['name'] == name)
@@ -128,6 +136,7 @@ def execute(config, output_dir, host, port):
             cbp.set_attribute('image_size_x', str(spec['width']))
             cbp.set_attribute('image_size_y', str(spec['height']))
             cbp.set_attribute('sensor_tick', str(1 / RATE_HZ))
+            cbp.set_attribute('fov', str(spec['fov_deg']))
             camera = world.spawn_actor(cbp, carla.Transform(
                 carla.Location(x=x, y=y, z=z), carla.Rotation(pitch=pitch)))
             owned.append(camera)
@@ -142,7 +151,8 @@ def execute(config, output_dir, host, port):
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         with FrameMap(output / 'video_frames.jsonl') as frame_map, \
-                (output / 'actor-poses.jsonl').open('x') as poses:
+                (output / 'actor-poses.jsonl').open('x') as poses, \
+                (output / 'trace.jsonl').open('x') as trace:
             initial_time = None
             for index in range(FRAMES):
                 request = control(config, index, subject)
@@ -155,6 +165,7 @@ def execute(config, output_dir, host, port):
                 if initial_time is None:
                     initial_time = snap.timestamp.elapsed_seconds
                 time_s = snap.timestamp.elapsed_seconds - initial_time
+                capture.capture(native_frame, time_s)
                 camera_frames = {}
                 for name, q in camera_queues.items():
                     image = q.get(timeout=30)
@@ -166,6 +177,12 @@ def execute(config, output_dir, host, port):
                     camera_frames[name] = image.frame
                 frame_map.append(native_frame, time_s, camera_native_frames=camera_frames)
                 vt = subject.get_transform()
+                vv = subject.get_velocity()
+                trace.write(json.dumps({'frame': native_frame, 'time_s': time_s,
+                    'position': {'x': vt.location.x, 'y': vt.location.y, 'z': vt.location.z},
+                    'position_m': [vt.location.x, vt.location.y, vt.location.z],
+                    'heading_deg': vt.rotation.yaw,
+                    'speed_mps': math.sqrt(vv.x * vv.x + vv.y * vv.y + vv.z * vv.z)}) + '\n')
                 speeds = [math.hypot(car.get_velocity().x, car.get_velocity().y) for car in others]
                 poses.write(json.dumps({'video_frame': index, 'native_frame': native_frame,
                     'time_s': time_s, 'subject_id': subject.id,
@@ -181,9 +198,12 @@ def execute(config, output_dir, host, port):
             stderr = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('source video encoding failed: ' + name + ': ' + stderr.decode()[-300:])
+        complete = True
         return {'frames': FRAMES, 'source_cameras': list(CAMERAS),
                 'physical_collision_clearance_verified': False, 'legal_outcome_claimed': False}
     finally:
+        if capture is not None:
+            capture.close(confirmed=complete)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -195,8 +215,13 @@ def execute(config, output_dir, host, port):
                 actor.destroy()
             except Exception:
                 pass
-        if changed:
-            restore(client, saved)
+        restoration = restore(client, saved) if changed else {'restored': True, 'world_unchanged': True}
+        if complete:
+            seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                encoder_exit_codes={name: process.returncode for name, process in encoders.items()},
+                context={'case_id': config['case_id'],
+                         'candidate_id': config.get('candidate_id', 'primary'),
+                         'classification_and_duty_external_review': 'pending'})
 
 
 if __name__ == '__main__':

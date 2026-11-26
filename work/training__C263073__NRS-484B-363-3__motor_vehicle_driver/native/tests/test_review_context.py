@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from review_context import EXCEPTIONS, EXCEPTION_TOPICS, REQUIRED, verified_sources
+from review_context import EXCEPTIONS, EXCEPTION_TOPICS, REQUIRED, attach_original_review, verified_sources
 
 
 class IndependentSchoolSourceTests(unittest.TestCase):
@@ -53,3 +53,15 @@ class IndependentSchoolSourceTests(unittest.TestCase):
             review['independent_review']['records']['zone_sign']['path'] = '../zone_sign.json'
             with self.assertRaisesRegex(ValueError, 'file missing: zone_sign'):
                 verified_sources(root, review)
+
+    def test_seals_review_sources_before_saved_processing(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            source = root / 'independent'
+            source.mkdir()
+            review = self.make_review(source)
+            (source / 'review.json').write_text(json.dumps(review) + '\n')
+            attempt = root / 'original-attempt'
+            sealed = attach_original_review(attempt, source)
+            self.assertEqual(set(verified_sources(attempt, {'independent_review': sealed})['records']), set(REQUIRED))
+            self.assertTrue(all(item['path'].startswith('review-sources/') for item in sealed['records'].values()))

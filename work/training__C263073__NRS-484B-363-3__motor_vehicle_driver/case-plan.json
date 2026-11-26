@@ -13,7 +13,7 @@
   ],
   "source_law": {
     "source": "NRS 484B.363(3); with 484B.363(9)",
-    "text": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone except: (a) When there are no children present; (b) On a day on which school is not in session; (c) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (d) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (e) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect. As used in this section, \u201cspeed limit beacon\u201d means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
+    "text": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone except: (a) When there are no children present; (b) On a day on which school is not in session; (c) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (d) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (e) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
     "sha256": "c20b0a21740b67777751b5668ffae09708eb909edecc77fc75e2e304fe993713",
     "text_sha256": "c20b0a21740b67777751b5668ffae09708eb909edecc77fc75e2e304fe993713"
   },
@@ -32,15 +32,62 @@
         "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
         "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2"
       ],
-      "evidence_or_gap": "Selected original Native CPU drafts and pinned offline checks pass for both school-zone cases; synthetic saved-shape diagnostics show 0 versus 180 degrees of cumulative heading change and reject unreviewed zone context/missing camera. Four distinct candidates, physically driven U-turn, official school-zone designation, child identity/presence, school session/civil-time/beacon/sign facts for all five exceptions, accepted measurements, independent audit and strict ready gate remain incomplete."
+      "evidence_or_gap": "Two physically simulated Native controller constructions and two matched vehicle-blueprint fallbacks pass pinned offline CPU checks; original motion, official zone and child records, source review, public/saved proofs and audits remain unverified."
     },
     {
       "requirement": "NRS-484B-363-3",
       "source": "NRS 484B.363(3); with 484B.363(9)",
-      "branch": "Textual exceptions, alternatives, or dependencies: except, when there are no children",
+      "branch": "(a) no children present",
       "status": "exception_pending",
-      "case_ids": [],
-      "evidence_or_gap": "All five exceptions remain source-review pending: no children present; school not in session; half-hour operation interval; operational beacon/class hours/nonflashing condition; or sign indication without operational beacon."
+      "case_ids": [
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "child_identity and child_location records; presence remains a source judgment; no independent original review or public compatibility receipt yet"
+    },
+    {
+      "requirement": "NRS-484B-363-3",
+      "source": "NRS 484B.363(3); with 484B.363(9)",
+      "branch": "(b) school not in session",
+      "status": "exception_pending",
+      "case_ids": [
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "school_session and civil_time records; no independent original review or public compatibility receipt yet"
+    },
+    {
+      "requirement": "NRS-484B-363-3",
+      "source": "NRS 484B.363(3); with 484B.363(9)",
+      "branch": "(c) half-hour operation interval",
+      "status": "exception_pending",
+      "case_ids": [
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "school_operation and civil_time records; exact statutory half-hour boundaries preserved; no independent original review or public compatibility receipt yet"
+    },
+    {
+      "requirement": "NRS-484B-363-3",
+      "source": "NRS 484B.363(3); with 484B.363(9)",
+      "branch": "(d) operational beacon, class hours, nonflashing yellow lights",
+      "status": "exception_pending",
+      "case_ids": [
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "beacon_configuration, beacon_lights, class_hours and civil_time records; no independent original review or public compatibility receipt yet"
+    },
+    {
+      "requirement": "NRS-484B-363-3",
+      "source": "NRS 484B.363(3); with 484B.363(9)",
+      "branch": "(e) no operational beacon, sign indicates limit not in effect",
+      "status": "exception_pending",
+      "case_ids": [
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_1",
+        "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2"
+      ],
+      "evidence_or_gap": "beacon_configuration, zone_sign and civil_time records; no independent original review or public compatibility receipt yet"
     }
   ],
   "neutral_baseline": {
@@ -60,7 +107,14 @@
         "full-train"
       ],
       "construction": "native/bundles/controlled_1/construction.json",
-      "offline_passed": true
+      "offline_passed": true,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Driven turn may not track the authored envelope; matched fallback uses a compact vehicle for both compared cases"
+      },
+      "candidates": [
+        "fallback1"
+      ]
     },
     {
       "case_id": "training__C263073__NRS-484B-363-3__motor_vehicle_driver__controlled_2",
@@ -74,7 +128,14 @@
         "full-train"
       ],
       "construction": "native/bundles/controlled_2/construction.json",
-      "offline_passed": true
+      "offline_passed": true,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Driven turn may not track the authored envelope; matched fallback uses a compact vehicle for both compared cases"
+      },
+      "candidates": [
+        "fallback1"
+      ]
     }
   ],
   "comparisons": [
@@ -191,10 +252,9 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "Selected original Native CPU drafts and pinned offline checks pass for both school-zone cases; synthetic saved-shape diagnostics show 0 versus 180 degrees of cumulative heading change and reject unreviewed zone context/missing camera. Four distinct candidates, physically driven U-turn, official school-zone designation, child identity/presence, school session/civil-time/beacon/sign facts for all five exceptions, accepted measurements, independent audit and strict ready gate remain incomplete.",
-    "No CARLA execution or accepted recording is claimed.",
-    "The draft reversal is kinematic and does not prove a physically driven U-turn.",
-    "Generic walker blueprint does not establish child identity, age or legal presence; diagnostic zone outline does not establish official designation."
+    "Original Native driving controller and matched fallback passed offline checks only; CARLA motion and all physical/official context remain unverified.",
+    "Independent source review shape covers all five exceptions, but original local records and legal applicability are unresolved.",
+    "Public compatibility, saved-only processing, semantic proposals, physical/delivery/comparison audits and exact strict gate remain pending."
   ],
   "unverified_physical_assumptions": [
     "Frozen cell can physically realize required law context",
@@ -202,7 +262,108 @@
     "Decisive physical distinction can be seen by retained cameras"
   ],
   "blockers": [
-    "Selected original Native CPU drafts and pinned offline checks pass for both school-zone cases; synthetic saved-shape diagnostics show 0 versus 180 degrees of cumulative heading change and reject unreviewed zone context/missing camera. Four distinct candidates, physically driven U-turn, official school-zone designation, child identity/presence, school session/civil-time/beacon/sign facts for all five exceptions, accepted measurements, independent audit and strict ready gate remain incomplete."
+    "CPU preparation incomplete: public compatibility positive/negative, saved-only, semantic, physical/delivery/comparison audits and exact strict gate remain."
   ],
-  "source_context_review": "Official zone designation/bounds, school adjacency, child identity and location, and independent session, civil-time, class-hour, beacon/sign facts must support absence of all five exceptions. No age cutoff, presence radius or heading threshold adopted."
+  "source_context_review": "Official zone designation/bounds, school adjacency, child identity and location, and independent session, civil-time, class-hour, beacon/sign facts must support absence of all five exceptions. No age cutoff, presence radius or heading threshold adopted.",
+  "source_observation_mapping": {
+    "dev.zone_sign": {
+      "evidence": "independent zone designation and sign record; no legal cutoff inferred from CPU fixture",
+      "channels": [
+        "dev.zone_sign"
+      ],
+      "source_refs": [
+        "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.within_signed_zone": {
+      "evidence": "original ego body positions against reviewed zone bounds; no legal cutoff inferred from CPU fixture",
+      "channels": [
+        "drv.within_signed_zone"
+      ],
+      "source_refs": [
+        "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.u_turn": {
+      "evidence": "original heading and body trajectory over complete maneuver; no legal cutoff inferred from CPU fixture",
+      "channels": [
+        "drv.u_turn"
+      ],
+      "source_refs": [
+        "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "original per-frame vehicle heading in Native source; no legal cutoff inferred from CPU fixture",
+      "channels": [
+        "kin.heading"
+      ],
+      "source_refs": [
+        "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.child": {
+      "evidence": "independent child identity and location records joined to original person track; no legal cutoff inferred from CPU fixture",
+      "channels": [
+        "ru.child"
+      ],
+      "source_refs": [
+        "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "dev.speed_limit_beacon": {
+      "evidence": "independent operational status and yellow-light record; no legal cutoff inferred from CPU fixture",
+      "channels": [
+        "dev.speed_limit_beacon"
+      ],
+      "source_refs": [
+        "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.condition_in_effect": {
+      "evidence": "independent five-exception source review, unresolved until local review; no legal cutoff inferred from CPU fixture",
+      "channels": [
+        "drv.condition_in_effect"
+      ],
+      "source_refs": [
+        "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "env.civil_time": {
+      "evidence": "independent local civil-time packet joined to maneuver frames; no legal cutoff inferred from CPU fixture",
+      "channels": [
+        "env.civil_time"
+      ],
+      "source_refs": [
+        "inputs/training__C263073__NRS-484B-363-3__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full U-turn envelope, school-zone outline and other person",
+        "interval": "all 600 Native frames"
+      },
+      {
+        "view": "approach",
+        "subject": "ego entry into authored zone and approach context",
+        "interval": "before and through turn entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "other person, zone sign review location and turning vehicle",
+        "interval": "approach through full turn"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego-relative forward view of route and visible zone context",
+        "interval": "all 600 Native frames"
+      }
+    ]
+  }
 }

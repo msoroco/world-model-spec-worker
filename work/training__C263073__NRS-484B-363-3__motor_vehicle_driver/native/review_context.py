@@ -1,11 +1,13 @@
 """Check provenance of independent school-zone facts, without legal conclusions."""
 import hashlib
 import json
+import shutil
 from pathlib import Path
 
 
 REQUIRED = (
     'zone_designation', 'zone_boundaries', 'school_adjacency', 'highway_status',
+    'driver_identity', 'driver_control', 'vehicle_classification',
     'child_identity', 'child_location', 'school_session', 'school_operation',
     'class_hours', 'civil_time', 'beacon_configuration', 'beacon_lights',
     'zone_sign',
@@ -65,3 +67,24 @@ def verified_sources(attempt, context):
         if not isinstance(item.get('reason'), str) or not item['reason'].strip():
             raise ValueError('Exception review reason missing: ' + exception)
     return {'records': bound, 'exception_dispositions': dispositions}
+
+
+def attach_original_review(output, source_dir):
+    """Seal independently supplied records into the original Native acquisition."""
+    source_dir = Path(source_dir).resolve()
+    packet = source_dir / 'review.json'
+    if not packet.is_file():
+        raise ValueError('Independent review packet missing before Native capture')
+    context = json.loads(packet.read_text())
+    verified_sources(source_dir, context)
+    output = Path(output).resolve()
+    target_dir = output / 'review-sources'
+    target_dir.mkdir(parents=True, exist_ok=False)
+    for topic in REQUIRED:
+        record = context['independent_review']['records'][topic]
+        source = (source_dir / record['path']).resolve()
+        target = target_dir / (topic + '.json')
+        shutil.copyfile(source, target)
+        record['path'] = str(target.relative_to(output))
+    verified_sources(output, context)
+    return context['independent_review']
