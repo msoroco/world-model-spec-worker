@@ -203,7 +203,10 @@ def execute(config, output_dir, host, port):
                     'position': {'x': pedestrian_pose.location.x, 'y': pedestrian_pose.location.y, 'z': pedestrian_pose.location.z},
                     'position_m': [pedestrian_pose.location.x, pedestrian_pose.location.y, pedestrian_pose.location.z],
                     'heading_deg': pedestrian_pose.rotation.yaw,
-                    'speed_mps': math.sqrt(pedestrian_velocity.x**2 + pedestrian_velocity.y**2 + pedestrian_velocity.z**2)}) + '\n')
+                    'speed_mps': math.sqrt(pedestrian_velocity.x**2 + pedestrian_velocity.y**2 + pedestrian_velocity.z**2),
+                    'speed_mph': math.sqrt(pedestrian_velocity.x**2 + pedestrian_velocity.y**2 + pedestrian_velocity.z**2) / .44704,
+                    'velocity_mps': [pedestrian_velocity.x, pedestrian_velocity.y, pedestrian_velocity.z],
+                    'control': {}}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()

@@ -32,6 +32,7 @@ def main():
     road = (SOURCE/'taxi-road.xodr').read_text()
     runner = (SOURCE/'runner.py').read_text()
     meter = (SOURCE/'taxi_loading.py').read_text()
+    finalizer = (SOURCE/'finalize_original.py').read_text()
     cases = []
     for suffix, activity in (('probe_a','passenger_loading'),
                              ('probe_b','merchandise_loading')):
@@ -67,6 +68,7 @@ def main():
                         'entrypoint':'runner.py',
                         'files':[{'path':'runner.py','content':runner},
                                  {'path':'taxi_loading.py','content':meter},
+                                 {'path':'finalize_original.py','content':finalizer},
                                  {'path':'taxi-road.xodr','content':road},
                                  {'path':'requested-track.jsonl','content':track},
                                  {'path':'config.json','content':json.dumps(config,indent=2)+'\n'},

@@ -8,10 +8,12 @@ import queue
 import subprocess
 import xml.etree.ElementTree as ET
 
-from draft_runner import ASSIGNMENT, CAMERAS, capture_row, request
+from draft_runner import ASSIGNMENT, capture_row, request
+from sidewalk_occupancy import measure_frame
 
 FRAMES = 600
 RATE = 20
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def check(config):
@@ -29,7 +31,7 @@ def check(config):
     if engineering.get('lateral_gain') not in (0.18, 0.24) or \
             engineering.get('brake_start_x_m') not in (27, 31):
         raise ValueError('declared engineering profile required')
-    road = ET.fromstring((Path(__file__).resolve().parent / 'road.xodr').read_text())
+    road = ET.fromstring((Path(__file__).resolve().parent / 'authored-road.xodr').read_text())
     sidewalk = road.find(".//lane[@id='-2']")
     if sidewalk is None or sidewalk.get('type') != 'sidewalk':
         raise ValueError('authored sidewalk lane missing')
@@ -147,7 +149,7 @@ def execute(config, output_dir, host, port):
     changed = False
     completed = False
     try:
-        world = client.generate_opendrive_world((Path(__file__).resolve().parent / 'road.xodr').read_text(),
+        world = client.generate_opendrive_world((Path(__file__).resolve().parent / 'authored-road.xodr').read_text(),
             carla.OpendriveGenerationParameters(vertex_distance=.5,
                 max_road_length=25, wall_height=0, additional_width=0,
                 smooth_junctions=False, enable_mesh_visibility=True,
@@ -161,9 +163,14 @@ def execute(config, output_dir, host, port):
         settings.max_substeps = 10
         world.apply_settings(settings)
         survey_rows = survey(carla, world)
-        (output / 'native-road.xodr').write_text(world.get_map().to_opendrive())
-        (output / 'map-packet.json').write_text(json.dumps(
-            polygon_from_lane(carla, world), sort_keys=True) + '\n')
+        original_road = world.get_map().to_opendrive()
+        (output / 'native-road.xodr').write_text(original_road)
+        (output / 'road.xodr').write_text(original_road)
+        map_packet = polygon_from_lane(carla, world)
+        map_packet['sidewalk_map_context'] = {
+            'source': 'original Native map survey',
+            'legal_status_independently_verified': False}
+        (output / 'map-packet.json').write_text(json.dumps(map_packet, sort_keys=True) + '\n')
         (output / 'road-survey.json').write_text(json.dumps(
             {'source_kind': 'original_native', 'lane_survey': survey_rows,
              'legal_highway_boundary_verified': False}, sort_keys=True) + '\n')
@@ -173,7 +180,10 @@ def execute(config, output_dir, host, port):
             'other_law_authority': None,
             'officer_direction': None,
             'official_device_direction': None,
-            'exception_independently_verified': False}, sort_keys=True) + '\n')
+            'exception_independently_verified': False,
+            'exception_authority_context': {
+                'source': 'original Native request and authority review pending',
+                'independently_verified': False}}, sort_keys=True) + '\n')
         library = world.get_blueprint_library()
         vehicle_bp = sorted(library.filter('vehicle.*'), key=lambda b: b.id)[0]
         vehicle_bp.set_attribute('role_name', 'c229977_subject')
@@ -182,7 +192,7 @@ def execute(config, output_dir, host, port):
         owned.append(vehicle)
         mounts = {'overview': (32, 14, 28, -35),
                   'approach': (8, 5, 12, -18),
-                  'sidewalk_boundary': (40, -10, 10, -20),
+                  'reference_corner': (40, -10, 10, -20),
                   'driver_reference': (42, 8, 7, -12)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
@@ -235,6 +245,12 @@ def execute(config, output_dir, host, port):
                 frame_map.append(native_frame, time_s, camera_native_frames=images)
                 row = capture_row(index, native_frame, time_s, vehicle)
                 row['vehicle_footprint_m'] = footprint(row['body_vertices_m'])
+                row['sidewalk_overlap_area_m2'] = measure_frame(
+                    row['vehicle_footprint_m'], map_packet['sidewalk_polygon_m'])[
+                        'sidewalk_overlap_area_m2']
+                row['value'] = {'vehicle_body_pose': row['body_vertices_m'],
+                                'vehicle_speed': row['speed_mps'],
+                                'sidewalk_overlap': row['sidewalk_overlap_area_m2']}
                 row.update(requested)
                 trace.write(json.dumps(row, sort_keys=True) + '\n')
                 capture.capture(native_frame, time_s, extra={'sidewalk_stop': {

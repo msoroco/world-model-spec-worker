@@ -18,6 +18,23 @@ def dump(path, obj):
 
 
 entries = []
+recording_description = {
+    'channels': [{
+        'name': name, 'unit': unit, 'sampling_rate_hz': 20,
+        'method': method, 'time_window': '600 original 20 Hz frames',
+        'reference_frame': 'original Native frame and acquired map coordinates',
+        'uncertainty': '50 ms sampling; physical surface and legal status require independent review'}
+        for name, unit, method in (
+            ('vehicle_body_pose', 'structured', 'original post-tick 8-vertex body'),
+            ('vehicle_speed', 'm/s', 'original post-tick velocity norm'),
+            ('sidewalk_overlap', 'm2', 'source-joined footprint and map polygon overlap'))],
+    'context_inputs': [
+        {'name': 'sidewalk_map_context', 'unit': 'structured',
+         'method': 'original Native map survey with legal boundary source status'},
+        {'name': 'exception_authority_context', 'unit': 'structured',
+         'method': 'original Native control request and independent authority review'}],
+    'limitations': ['Synthetic fixtures prove software path only; actual Native motion, '
+                    'sidewalk legal status, exceptions and pixels remain unverified']}
 disposition = json.loads((FOLDER / 'case-plan.json').read_text())['requirement_dispositions'][0]
 measurement_contract = {
     'format': 'worker-measurement-contract',
@@ -41,15 +58,19 @@ for n in (1, 2):
     original_config = json.loads(next(item['content'] for item in draft['files']
                                       if item['path'] == 'config.json'))
     original_config['status'] = 'selected_native_construction'
+    original_config['recording_description'] = recording_description
+    for camera in original_config['cameras']:
+        if camera['name'] == 'sidewalk_boundary':
+            camera['name'] = 'reference_corner'
     original_config['engineering'] = {'lateral_gain': 0.18,
                                       'brake_start_x_m': 31}
-    original_config['source_packets'] = [
-        'native-road.xodr', 'map-packet.json', 'vehicle-trace.jsonl',
-        'video_frames.jsonl', 'authority-context.json']
+    # Core packet names are reserved for adapter-supported packet classes.
+    # Case-specific sources are declared by the measurement contract instead.
+    original_config['source_packets'] = []
     files = [
         {'path': 'runner.py', 'content': (HERE / 'selected_runner.py').read_text()},
         {'path': 'draft_runner.py', 'content': (HERE / 'draft_runner.py').read_text()},
-        {'path': 'road.xodr', 'content': (HERE / 'draft_road.xodr').read_text()},
+        {'path': 'authored-road.xodr', 'content': (HERE / 'draft_road.xodr').read_text()},
         {'path': 'finalize_sidewalk.py', 'content': (HERE / 'finalize_sidewalk.py').read_text()},
         {'path': 'sidewalk_occupancy.py', 'content': (HERE / 'sidewalk_occupancy.py').read_text()},
         {'path': 'measurement-contract.json', 'content': json.dumps(measurement_contract, sort_keys=True) + '\n'},
@@ -58,7 +79,7 @@ for n in (1, 2):
     ]
     shared = {'case_id': case_id, 'law_id': 'NRS-484B-450-1a',
               'cell_id': 'C229977', 'actor': 'motor_vehicle_driver',
-              'entrypoint': 'runner.py', 'recording_description': draft['recording_description'],
+              'entrypoint': 'runner.py', 'recording_description': recording_description,
               'files': files, 'status': 'selected_native_construction'}
     primary_path = FOLDER / f'selected-probe-{n}' / 'construction.json'
     primary_path.parent.mkdir(exist_ok=True)

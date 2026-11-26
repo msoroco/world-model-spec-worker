@@ -10,7 +10,7 @@
       "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_01",
       "kind": "delivery",
       "construction": "selected-probe_01-construction.json",
-      "construction_sha256": "99367382ab1368d5c7cfb4f0932adcd0bde4ca43a1cc98e629cdc125e4e7d3e7",
+      "construction_sha256": "e728d21962ef30588be63d22084ee1ea8ec0682ce58ed87d1acfedb390360a5c",
       "measurement_contract": "selected-probe_01-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -24,14 +24,28 @@
         "status": "physical",
         "reason": "Original walker spawn or roadway vehicle timing may fail; use source-measured failure before changing spawn or timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-probe_01-fallback1-construction.json",
+          "construction_sha256": "dbc1982fb48e22e976877e7586df2441a95de57e3eb5b2573cddf93d450ec915",
+          "trigger": {
+            "source": "original post-tick.jsonl",
+            "metric": "pedestrian roadway entry frame and vehicle conflict frame",
+            "failure_condition": "Original walker enters before a safe vehicle passage is source-confirmed or fails roadway occupancy"
+          },
+          "changed_knobs": [
+            "pedestrian_departure_frame +10 frames"
+          ]
+        }
+      ],
       "fixture_recipe": "work/training__C230259__LVMC-11-30-060-A__pedestrian/native/diagnostic/probe_01/fixture-recipe.json"
     },
     {
       "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_02",
       "kind": "delivery",
       "construction": "selected-probe_02-construction.json",
-      "construction_sha256": "12050eec4a6b61508f3451bf7f556220811b61508f367dbbb74fe8ce052c7879",
+      "construction_sha256": "7d7c7265fab60eddc54307ff8cc14e277b6c52689a0d12c9aed9f447878eda5c",
       "measurement_contract": "selected-probe_02-measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -45,7 +59,21 @@
         "status": "physical",
         "reason": "Original walker spawn or roadway vehicle timing may fail; use source-measured failure before changing spawn or timing."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-probe_02-fallback1-construction.json",
+          "construction_sha256": "058c881387efd38e85b66afe213d450b7acb2c20f24d0ca88f991080e25c7260",
+          "trigger": {
+            "source": "original post-tick.jsonl",
+            "metric": "pedestrian roadway entry frame and vehicle conflict frame",
+            "failure_condition": "Original walker enters before a safe vehicle passage is source-confirmed or fails roadway occupancy"
+          },
+          "changed_knobs": [
+            "pedestrian_departure_frame +10 frames"
+          ]
+        }
+      ],
       "fixture_recipe": "work/training__C230259__LVMC-11-30-060-A__pedestrian/native/diagnostic/probe_02/fixture-recipe.json"
     }
   ]

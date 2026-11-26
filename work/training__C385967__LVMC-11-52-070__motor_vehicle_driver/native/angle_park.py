@@ -14,7 +14,7 @@ def check_config(config,road_text):
      or config.get('law_id')!='LVMC-11-52-070'
      or config.get('cell_id')!='C385967' or config.get('actor')!='motor_vehicle_driver'
      or config.get('duration_s')!=30 or config.get('rate_hz')!=HZ
-     or config.get('frames')!=FRAMES or config.get('physical_completion') is not False
+     or config.get('frames')!=FRAMES or config.get('physical_completion') != {}
      or config.get('legal_verdict') is not None):
   raise ValueError('C385967 exact scope or duration differs')
  if tuple(c.get('name') for c in config.get('cameras',()))!=VIEWS:

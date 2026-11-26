@@ -29,7 +29,7 @@ def main():
         construction=json.loads((HERE/item['construction']).read_text())
         description=construction['recording_description']
         proposals.append({'case_id':case,'target_law_id':'LVMC-11-52-070',
-            'target_type':'boundary_probe',
+            'target_type':'compliant_attempt' if suffix=='a' else 'violating_attempt',
             'rationale':'Compare parked front relative to lawful one-way traffic with separate City permission source',
             'variable_assignments':{
                 'requested_front_yaw_deg':{'kind':'controller','value':yaw,'unit':'deg'},
@@ -68,7 +68,7 @@ def main():
                 'failure_condition':'observed at-rest speed exceeds engineering 0.1 m/s diagnostic',
                 'source':'original Native native_samples.jsonl ego_speed_mps'},
             'changed_knobs':['parking_brake_mode'],
-            'offline':{'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{FOLDER.name}/native/selected-draft-manifest.json --case {case} --candidate fallback1 --output .runtime-work/c385967-offline3-{suffix}-fallback1',
+            'offline':{'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{FOLDER.name}/native/selected-draft-manifest.json --case {case} --candidate fallback1 --output .runtime-work/c385967-offline6-{suffix}-fallback1',
                 'exit_code':0,'construction_sha256':fall['construction_sha256'],
                 'log':f'native/selected-{suffix}-fallback1-offline.log',
                 'log_sha256':sha(HERE/f'selected-{suffix}-fallback1-offline.log')},
@@ -85,7 +85,7 @@ def main():
             'fixture_recipe':f'work/{FOLDER.name}/native/selected-{suffix}-fixture-recipe.json',
             'physical_preparation':{'receipt':f'native/{physical.name}',
                 'sha256':sha(physical),'scope':'synthetic CPU triad; original unverified'},
-            'offline':{'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{FOLDER.name}/native/selected-draft-manifest.json --case {case} --candidate primary --output .runtime-work/c385967-offline3-{suffix}-primary',
+            'offline':{'command':f'.venv-cpu/bin/python runtime.py offline --manifest work/{FOLDER.name}/native/selected-draft-manifest.json --case {case} --candidate primary --output .runtime-work/c385967-offline6-{suffix}-primary',
                 'exit_code':0,'construction_sha256':item['construction_sha256'],
                 'log':f'native/selected-{suffix}-primary-offline.log',
                 'log_sha256':sha(HERE/f'selected-{suffix}-primary-offline.log')},

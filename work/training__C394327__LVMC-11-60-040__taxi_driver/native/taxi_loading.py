@@ -1,5 +1,6 @@
 """Source-bound taxi passenger/merchandise draft request checks."""
 import json
+import math
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -67,6 +68,12 @@ def measure(rows, source_kind):
                                 'designation_review_path', 'designation_review_sha256',
                                 'other_regulations_review_path', 'other_regulations_review_sha256')):
                 raise ValueError('Original taxi, participant, designation and regulation sources missing')
+            if any(len(source[key]) != 64 or any(
+                    digit not in '0123456789abcdef' for digit in source[key])
+                    for key in ('native_capture_sha256', 'participant_review_sha256',
+                                'designation_review_sha256',
+                                'other_regulations_review_sha256')):
+                raise ValueError('Original source hashes must be SHA-256 hex')
             if (row.get('observed_taxi_identity') is not True or
                     row.get('observed_stand_location') != 'outside_designated_stand'):
                 raise ValueError('Observed taxi identity or outside-stand location missing')
@@ -82,7 +89,12 @@ def measure(rows, source_kind):
             door = row.get('requested_door_open')
             count = row.get('requested_occupant_count')
             activity = row.get('requested_activity')
-        if speed != 0 or door not in (True, False):
+        if source_kind == 'original_native':
+            stopped = (type(speed) in (int, float) and math.isfinite(speed)
+                       and 0 <= speed <= .1)
+        else:
+            stopped = speed == 0
+        if not stopped or door not in (True, False):
             raise ValueError('Stopped taxi or door source missing')
         if not isinstance(count, int) or isinstance(count, bool) or count < 1:
             raise ValueError('Occupant count missing')

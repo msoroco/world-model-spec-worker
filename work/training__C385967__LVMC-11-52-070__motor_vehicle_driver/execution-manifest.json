@@ -9,7 +9,7 @@
       "kind": "delivery",
       "id": "primary",
       "construction": "native/condition_a-primary-construction.json",
-      "construction_sha256": "1ae59c7af34e24aa365f7ef4f82eb08af467cca53401b176f43ff2884d8ebca8",
+      "construction_sha256": "bd3aa9d3150aa11f1a0bc3997efa6ef368c8951426541ff566ff239cc445cb2d",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original Native parked body containment and at-rest speed require measurement"
@@ -18,7 +18,7 @@
         {
           "id": "fallback1",
           "construction": "native/condition_a-fallback1-construction.json",
-          "construction_sha256": "2fe2b9ad61c47f9109da4ab10888efb0187c43c45533d230350d564267b94912",
+          "construction_sha256": "7d3e07f9a3ea597aa9bf0bf9bc18cc6f4bcf6c2dc043fd9d42a2409489a8388f",
           "trigger": {
             "metric": "maximum_original_parking_speed_mps",
             "failure_condition": "observed at-rest speed exceeds engineering 0.1 m/s diagnostic",
@@ -28,13 +28,18 @@
             "parking_brake_mode"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c385967-offline3-a-fallback1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c385967-offline6-a-fallback1",
             "exit_code": 0,
-            "construction_sha256": "2fe2b9ad61c47f9109da4ab10888efb0187c43c45533d230350d564267b94912",
+            "construction_sha256": "7d3e07f9a3ea597aa9bf0bf9bc18cc6f4bcf6c2dc043fd9d42a2409489a8388f",
             "log": "native/selected-a-fallback1-offline.log",
             "log_sha256": "d0c4c035c83676b52fc61f9d38652e5f069b8ec997d9ba5110f12c758affeb4f"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "native/selected-a-fallback1-compatibility.json",
+            "sha256": "3dda2b3af1044c80f668972f7c6d8bd25932213948174c7b5efe263f360e5c51",
+            "log": "native/selected-a-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-a-fallback1-negative.log"
+          }
         }
       ],
       "measurement_contract": "native/selected-a-measurement-contract.json",
@@ -45,13 +50,13 @@
       "fixture_recipe": "work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-a-fixture-recipe.json",
       "physical_preparation": {
         "receipt": "native/physical-a-receipt.json",
-        "sha256": "7826aa0f461f1d8055d3955fa9d537bb9920e1a9388384f70d98284d03f39264",
+        "sha256": "69365483b88406670e956ebd61caa6d501a32c720e8aea3afe7ef84bf37db9af",
         "scope": "synthetic CPU triad; original unverified"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c385967-offline3-a-primary",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c385967-offline6-a-primary",
         "exit_code": 0,
-        "construction_sha256": "1ae59c7af34e24aa365f7ef4f82eb08af467cca53401b176f43ff2884d8ebca8",
+        "construction_sha256": "bd3aa9d3150aa11f1a0bc3997efa6ef368c8951426541ff566ff239cc445cb2d",
         "log": "native/selected-a-primary-offline.log",
         "log_sha256": "d0c4c035c83676b52fc61f9d38652e5f069b8ec997d9ba5110f12c758affeb4f"
       },
@@ -115,16 +120,58 @@
       "negative": {
         "log": "native/selected-a-primary-negative.log"
       },
-      "compatibility": {},
-      "delivery_acceptance": {},
-      "post_capture": {}
+      "compatibility": {
+        "receipt": "native/selected-a-primary-compatibility.json",
+        "sha256": "9a6ce02573d0d89b3b5ec9e8d853e9d0424dd22e1e847dcc190ae38c37943db3",
+        "log": "native/selected-a-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-a-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "66b2681485f5718a6e4ceed911e764dd91bf01b1458822753457b2197acb64bd",
+        "command": ".venv-cpu/bin/python work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-a-positive.log",
+        "test_log_sha256": "670a83559235f70154ebf079f275a28a2275bc7fa4584911d833feb42d81f0fb",
+        "negative_command": ".venv-cpu/bin/python work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-a-negative.log",
+        "negative_log_sha256": "5076b2529f62cec9e1b1da26d93355df293fbc3d97615b5af35ce0365fe9f900",
+        "scope": "synthetic CPU mechanics; original City authority and source review remain"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_a",
+        "test_exit_code": 0,
+        "test_log": "native/selected-a-saved-test.log",
+        "test_log_sha256": "e41c404b26156416badb2d41d4993cc86c7ccdb12b27dcc1d070bb93b08ee906",
+        "positive_processing_receipt": "native/selected-a-saved-processing.json",
+        "positive_processing_sha256": "e1757bcb4e73b48d12c7daf6006b8d5e982480f4431f949f3cefb274789f35b9",
+        "missing_source_feedback": "native/selected-a-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "62b6c6313d6536b5d8d95b382182b5ef7aa6e5e9e0ba969cff3875e55ff7998c",
+        "scope": "source-shaped synthetic saved positive and missing-permission-source negative; original physical recording unverified"
+      }
     },
     {
       "case_id": "training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b",
       "kind": "delivery",
       "id": "primary",
       "construction": "native/condition_b-primary-construction.json",
-      "construction_sha256": "4c6186792ab130af3db423a1b7eb07ffbb07a113e2ee45ca12fd9991a15f4e1a",
+      "construction_sha256": "bb43272722630a165c995a31dc2546abb93cfc943fbbebadc73f85c29c3f7005",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original Native parked body containment and at-rest speed require measurement"
@@ -133,7 +180,7 @@
         {
           "id": "fallback1",
           "construction": "native/condition_b-fallback1-construction.json",
-          "construction_sha256": "85a68f4e3e3ab04070df2ff1158d0e4997a110e9e5a36a33dd8ac334986fb6e3",
+          "construction_sha256": "539ac359d86afdbf9400c04d00c2b8a0d6d7cff08a4bde9bcdd5ebf61ac4d45e",
           "trigger": {
             "metric": "maximum_original_parking_speed_mps",
             "failure_condition": "observed at-rest speed exceeds engineering 0.1 m/s diagnostic",
@@ -143,13 +190,18 @@
             "parking_brake_mode"
           ],
           "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c385967-offline3-b-fallback1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c385967-offline6-b-fallback1",
             "exit_code": 0,
-            "construction_sha256": "85a68f4e3e3ab04070df2ff1158d0e4997a110e9e5a36a33dd8ac334986fb6e3",
+            "construction_sha256": "539ac359d86afdbf9400c04d00c2b8a0d6d7cff08a4bde9bcdd5ebf61ac4d45e",
             "log": "native/selected-b-fallback1-offline.log",
             "log_sha256": "5ed961be12d900224da66e2e5237d92f7093fd9c1cf61da993b35cb032ac9f7e"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "native/selected-b-fallback1-compatibility.json",
+            "sha256": "4d6a0237a6ab54038454644683cefc99a9daa173396653c54edc3064ea2a0551",
+            "log": "native/selected-b-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-b-fallback1-negative.log"
+          }
         }
       ],
       "measurement_contract": "native/selected-b-measurement-contract.json",
@@ -160,13 +212,13 @@
       "fixture_recipe": "work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-b-fixture-recipe.json",
       "physical_preparation": {
         "receipt": "native/physical-b-receipt.json",
-        "sha256": "b0a8971e0ddac121d7972a8755cd18b6af2bfc2daa059355f1863d9cf9d1d386",
+        "sha256": "fc68711e2886a995826829762e30fad0007a823efb458def17dfaff6039f62d6",
         "scope": "synthetic CPU triad; original unverified"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c385967-offline3-b-primary",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/selected-draft-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c385967-offline6-b-primary",
         "exit_code": 0,
-        "construction_sha256": "4c6186792ab130af3db423a1b7eb07ffbb07a113e2ee45ca12fd9991a15f4e1a",
+        "construction_sha256": "bb43272722630a165c995a31dc2546abb93cfc943fbbebadc73f85c29c3f7005",
         "log": "native/selected-b-primary-offline.log",
         "log_sha256": "5ed961be12d900224da66e2e5237d92f7093fd9c1cf61da993b35cb032ac9f7e"
       },
@@ -230,9 +282,51 @@
       "negative": {
         "log": "native/selected-b-primary-negative.log"
       },
-      "compatibility": {},
-      "delivery_acceptance": {},
-      "post_capture": {}
+      "compatibility": {
+        "receipt": "native/selected-b-primary-compatibility.json",
+        "sha256": "5dbc277a27af6dd694c6a475cf957f8cbaf695d7b887a499155d2d3f43541879",
+        "log": "native/selected-b-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-b-primary-negative.log"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "66b2681485f5718a6e4ceed911e764dd91bf01b1458822753457b2197acb64bd",
+        "command": ".venv-cpu/bin/python work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-b-positive.log",
+        "test_log_sha256": "24b364b74bcd87524e821e9d1fde6290db0bd6bcc195e6f8e203ec2ae96b933f",
+        "negative_command": ".venv-cpu/bin/python work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/native/delivery_audit.py --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b --negative-selftest",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Reviewed pixel box exceeds source video",
+        "negative_log": "native/delivery-b-negative.log",
+        "negative_log_sha256": "5076b2529f62cec9e1b1da26d93355df293fbc3d97615b5af35ce0365fe9f900",
+        "scope": "synthetic CPU mechanics; original City authority and source review remain"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C385967__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $OUTPUT/v0001/feedback.json # training__C385967__LVMC-11-52-070__motor_vehicle_driver__probe_b",
+        "test_exit_code": 0,
+        "test_log": "native/selected-b-saved-test.log",
+        "test_log_sha256": "864858fdc6abc3eba8011d1a2f63456c92f1f2ac3fb655ab2faa04689e81fb18",
+        "positive_processing_receipt": "native/selected-b-saved-processing.json",
+        "positive_processing_sha256": "13cf42b053fe0af043f83f2cdffb208556fd32c84884b0878caf8595fb9423fa",
+        "missing_source_feedback": "native/selected-b-saved-negative-feedback.json",
+        "missing_source_feedback_sha256": "5e0d5eebc8efe7652ae76b48ac6c8ba0bca1d97beb2d1365afc8ece351fc6f19",
+        "scope": "source-shaped synthetic saved positive and missing-permission-source negative; original physical recording unverified"
+      }
     }
   ]
 }

@@ -59,6 +59,8 @@ def derive_channels(attempt, description, samples, mapping):
     folder.mkdir(exist_ok=True)
     geometry = json.loads((attempt / 'road_geometry.json').read_text())
     permission = json.loads((attempt / 'permission_authority.json').read_text())
+    (folder / 'context.json').write_text(json.dumps({'permission_authority': permission},
+                                              indent=2, allow_nan=False) + '\n')
     for channel in description['channels']:
         name = channel['name']
         values = []
@@ -118,7 +120,7 @@ def finalize(attempt, output):
     refs = [{'name': c['name'], 'unit': c['unit'],
              'reference': 'channels/'+c['name']+'.jsonl'} for c in description['channels']]
     refs += [{'name': c['name'], 'unit': c['unit'],
-              'reference': 'permission_authority.json'} for c in description['context_inputs']]
+              'reference': 'channels/context.json'} for c in description['context_inputs']]
     direction = joined['measurement']['direction']
     expected = 'front_with_lawful_flow' if config['requested_front_yaw_deg'] == 45 else 'front_against_lawful_flow'
     target = {'target': 'sampled parked-front direction relative to one-way lawful flow',
@@ -141,11 +143,7 @@ def finalize(attempt, output):
         'video_references': list(video_counts),
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': description, 'recording_evidence': refs,
-        'realized_observables': {'sampled_front_direction': {
-            'value': direction, 'unit': 'categorical',
-            'method': 'saved original yaw against lawful road direction',
-            'reference': 'native_samples.jsonl', 'time_window': 'full 600 frames',
-            'statistic': 'sign of front projection'}},
+        'realized_observables': {},
         'physical_checks': {'maneuver': physical_result},
         'provenance_kind': 'synthetic_cpu_fixture' if fixture else 'native',
         'accepted': False, 'legal_verdict_claimed': False}

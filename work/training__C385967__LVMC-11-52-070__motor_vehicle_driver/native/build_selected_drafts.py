@@ -32,9 +32,8 @@ def main():
             'time_window': 'all 600 frames / 30 seconds',
             'reference_frame': 'original Native frame and time',
             'uncertainty': 'City authorization, marking and actual activity require independent review'})
-    description = {'duration_s': 30, 'rate_hz': 20,
-        'source_cameras': [c['name'] for c in cameras], 'channels': channels,
-        'context_inputs': [{'name': 'City Traffic Engineer street designation',
+    description = {'channels': channels,
+        'context_inputs': [{'name': 'permission_authority',
             'unit': 'document', 'method': 'Separate external document with SHA-256; never inferred from authored sign'}],
         'limitations': ['No legal conclusion from offline or synthetic data',
                         'City permission and actual Native parked pose require independent review']}
@@ -58,7 +57,7 @@ def main():
                 'original_activity_source_required': True,
                 'required_atoms': ['kin.heading', 'kin.speed'],
                 'source_packets': [], 'cameras': cameras,
-                'physical_completion': False, 'legal_verdict': None,
+                'physical_completion': {}, 'legal_verdict': None,
                 'recording_description': description,
                 'supported_case_ids': [FOLDER.name+'__probe_a', FOLDER.name+'__probe_b'],
                 'case': {'case_id': case, 'recording_description': description}}

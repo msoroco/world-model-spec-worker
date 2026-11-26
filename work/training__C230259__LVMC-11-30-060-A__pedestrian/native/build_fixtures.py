@@ -45,11 +45,15 @@ def build(suffix, departure):
         trace.append({'frame': frame, 'time_s': time,
                       'position': {'x': x, 'y': y, 'z': .5},
                       'position_m': [x, y, .5], 'heading_deg': 0,
-                      'speed_mps': 1.2 if index >= departure else 0})
+                      'speed_mps': 1.2 if index >= departure else 0,
+                      'speed_mph': (1.2 if index >= departure else 0) / .44704,
+                      'velocity_mps': [1.2 if index >= departure else 0, 0, 0],
+                      'control': {}})
         evidence.append({'actor_id': 5, 'original_frame': frame, 'replay_frame': frame,
                          'recording_time_s': time, 'replay_simulation_time_s': time,
                          'ego': {'position_m': [x, y, .5], 'body_vertices_m': body(x,y),
                                  'heading_deg': 0, 'speed_mps': 1.2 if index >= departure else 0,
+                                 'speed_provenance': 'synthetic_native_sample',
                                  'synthetic_diagnostic': True},
                          'other_actors': [{'actor_id': 9, 'position_m': [-1.75, vehicle_y, .5],
                                            'body_vertices_m': body(-1.75,vehicle_y)}],
@@ -88,7 +92,8 @@ def build(suffix, departure):
         'limitations': ['Synthetic diagnostic only; no original motion or legal applicability']})
     write(sources / 'capture/manifest.json', {'extraction_confirmed': True,
           'frames': 600, 'synthetic_diagnostic': True,
-          'sources': {'post-tick.jsonl': sha(sources / 'post-tick.jsonl'),
+          'sources': {'road.xodr': sha(sources / 'road.xodr'),
+                      'post-tick.jsonl': sha(sources / 'post-tick.jsonl'),
                       'trace.jsonl': sha(sources / 'trace.jsonl')}})
     spec = {'files': {'capture/native/frames.jsonl': lines(native),
                       'capture/recorder_info.txt': 'Synthetic diagnostic; no Native recording.\nCreate 5: walker.pedestrian.0001 (0)\nCreate 9: vehicle.tesla.model3 (0)\n'},

@@ -31,7 +31,7 @@ def main():
     for suffix in ('a','b'):
         case=FOLDER.name+'__probe_'+suffix
         for candidate in ('primary','fallback1'):
-            source=ROOT/f'.runtime-work/c385967-offline4-{suffix}-{candidate}/offline.log'
+            source=ROOT/f'.runtime-work/c385967-offline6-{suffix}-{candidate}/offline.log'
             if not source.is_file(): raise ValueError('Missing current selected offline proof')
             save(HERE/f'selected-{suffix}-{candidate}-offline.log',source.read_text())
         for negative in (False,True):

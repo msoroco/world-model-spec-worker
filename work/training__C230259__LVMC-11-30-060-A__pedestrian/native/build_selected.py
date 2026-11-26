@@ -55,7 +55,11 @@ def main():
                   'cameras': [{'name': name, 'width': width, 'height': height,
                                'fov_deg': 85, 'pose_strategy': pose}
                               for name, width, height, pose in CAMERAS],
-                  'case': {'case_id': case}, 'physical_completion': {},
+                  'case': {'case_id': case},
+                  'physical_completion': {'criterion': 'travel_progress',
+                                          'minimum_progress_m': 7,
+                                          'direction_xy': [1, 0],
+                                          'completion_goal_method': 'Cross the authored 7 m roadway width by original pedestrian displacement; engineering completion criterion, not legal yield.'},
                   'physical_acceptance_claimed': False,
                   'recording_description': description}
         write(folder / 'config.json', config)
