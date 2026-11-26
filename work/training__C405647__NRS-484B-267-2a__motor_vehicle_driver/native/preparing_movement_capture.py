@@ -44,7 +44,7 @@ def check_config(config):
     require(config.get("activation_branch") == CONDITIONS[case]
             and config.get("ego_initial_speed_mps") == 14
             and config.get("ego_target_speed_mps") == 7
-            and config.get("other_vehicle_start_frame") == 120
+            and config.get("other_vehicle_start_frame") in (100, 120)
             and config.get("other_vehicle_speed_mps") == 1,
             "Visible vehicle movement intervention changed")
     return {"case_id": config["case_id"], "frames": FRAMES, "views": list(VIEWS),

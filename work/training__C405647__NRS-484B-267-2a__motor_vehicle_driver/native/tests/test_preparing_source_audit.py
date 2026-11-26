@@ -39,6 +39,7 @@ class PreparingSourceAuditTest(unittest.TestCase):
                                                         "road_x_m": 70 + (
                                                             max(index - 120, 0) / 20
                                                             if branch == BRANCHES[0] else 0),
+                                                        "flashing_state": index % 20 < 10,
                                                         "speed_mps": 1 if branch == BRANCHES[0]
                                                         and index >= 120 else 0},
                                  "hand_signal_driver_actor_id": 43

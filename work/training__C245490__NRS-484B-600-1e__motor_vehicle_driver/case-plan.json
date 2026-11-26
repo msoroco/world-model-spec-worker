@@ -63,24 +63,38 @@
     {
       "case_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
       "target_law_id": "NRS-484B-600-1e",
-      "kind": "planned_only",
+      "kind": "delivery_draft",
       "target_type": "controlled_attempt",
       "physical_target": "lane change below 80 mph",
       "comparison_variable": "measured speed while driving",
-      "selection_status": "not_selected",
+      "selection_status": "selected_for_cpu_proof_not_delivery_prepared",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "exact_offline_passed_public_compatibility_pending",
+      "construction": "selected-constructions/probe_01-primary.json",
+      "construction_sha256": "4d8e5f4d6d17b2f8000742b4068e7ff4559f184da4e9761ae4e8f9ee0631c621",
+      "gap_ids": [
+        "g1",
+        "g2",
+        "g3"
+      ]
     },
     {
       "case_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
       "target_law_id": "NRS-484B-600-1e",
-      "kind": "planned_only",
+      "kind": "delivery_draft",
       "target_type": "controlled_attempt",
       "physical_target": "lane change at 79.5 mph",
       "comparison_variable": "measured speed while driving",
-      "selection_status": "not_selected",
+      "selection_status": "selected_for_cpu_proof_not_delivery_prepared",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "exact_offline_passed_public_compatibility_pending",
+      "construction": "selected-constructions/probe_02-primary.json",
+      "construction_sha256": "31544873f1ab0a9236d84be2719f5045eda1b3d57b5a4e4be469bb65f464afd4",
+      "gap_ids": [
+        "g1",
+        "g2",
+        "g3"
+      ]
     },
     {
       "case_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
@@ -89,11 +103,16 @@
       "target_type": "controlled_attempt",
       "physical_target": "lane change above 80 mph",
       "comparison_variable": "measured speed while driving",
-      "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
+      "selection_status": "selected_for_cpu_proof_not_delivery_prepared",
       "expected_label": null,
-      "construction_status": "survey_gated_native_capture_cpu_offline_passed_physical_unverified",
-      "construction": "draft-speed/above_80_lane_change/primary/construction.json",
-      "construction_sha256": "9db8d80c479ba8d565b53b92337e1ba1e4e09fc47202a0752c1e5b52ecf5e73f"
+      "construction_status": "exact_offline_passed_public_compatibility_pending",
+      "construction": "selected-constructions/probe_03-primary.json",
+      "construction_sha256": "64ad42f380a5b030b5f6d64887be295cf661ec02a29a9fbac6e11e6c868a439e",
+      "gap_ids": [
+        "g1",
+        "g2",
+        "g3"
+      ]
     }
   ],
   "comparisons": [
@@ -133,7 +152,7 @@
     },
     {
       "term": "ru.subject",
-      "note": "the vehicle judged \u2014 any kind"
+      "note": "the vehicle judged — any kind"
     }
   ],
   "source_dependencies": [
@@ -150,9 +169,9 @@
     "Requested 36.5 m/s and smooth lateral-velocity path may not be physically achieved by vehicle.audi.tt; actual original velocity and lane readback are measured and no legal or physical conclusion is claimed."
   ],
   "runtime_gaps": [
-    "Current accepted-recording trace/manifest/receipt bytes are absent; equivalence remains unverified.",
-    "Native 1700 m two-lane road and >80 mph lane transition have not run in CARLA; original speed, lane transition and four camera pixels remain unverified.",
-    "Below/at-80 exact-case constructions and comparison, current-runtime saved processing/Core mapping, semantic proposals, independent audits and risk fallbacks remain unfinished."
+    "Three exact primary constructions and one high-speed fallback pass current-runtime pinned offline checks; public compatibility, saved-only, semantic, physical/delivery/comparison audits remain CPU work.",
+    "Accepted membership source bytes are absent; no original equivalence or replay claim.",
+    "CARLA physical speed, lane transition and source pixels remain unverified."
   ],
   "observations": [
     {
@@ -168,7 +187,7 @@
     {
       "name": "ru.subject",
       "mandatory": true,
-      "reason": "the vehicle judged \u2014 any kind"
+      "reason": "the vehicle judged — any kind"
     }
   ],
   "sources": [
@@ -209,7 +228,7 @@
   "requirement_dispositions": [
     {
       "requirement": "NRS-484B-600-1e",
-      "source": "preserved_accepted_membership",
+      "source": "NRS 484B.600(1)(e)",
       "branch": "absolute 80 mph limit during lane change",
       "status": "selected_required",
       "case_ids": [
@@ -279,5 +298,62 @@
         "why_existing_insufficient": "Membership and request descriptions do not establish original measured mph and lane-change equivalence."
       }
     ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "subject lane change and both lanes",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "approach and lane transition",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "destination lane and subject",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject-forward roadway",
+        "interval": "0-30 s"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "kin.speed": {
+      "evidence": "original post-tick three-axis speed history converted to mph",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "speed-lane-history.jsonl"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "original post-tick three-axis actor velocity",
+      "channels": [
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "speed-lane-history.jsonl"
+      ]
+    },
+    "ru.subject": {
+      "evidence": "original actor ID, blueprint and four-view pixel review",
+      "channels": [
+        "ru.subject"
+      ],
+      "source_refs": [
+        "speed-lane-history.jsonl",
+        "road-context.json"
+      ]
+    }
   }
 }

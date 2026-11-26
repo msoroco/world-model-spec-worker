@@ -5,6 +5,7 @@ establish physical motion, or decide a legal reasonable speed.
 """
 import argparse
 import json
+import os
 from pathlib import Path
 
 from branch_alternatives import classify
@@ -46,12 +47,26 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--evidence")
+    parser.add_argument("--output-dir")
+    parser.add_argument("--site-survey")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
     config = json.loads(Path("config.json").read_text())
     if args.check:
         print(json.dumps(check_config(config), sort_keys=True))
-    else:
-        if not args.evidence:
-            raise ValueError("Original source-bound evidence required")
+    elif args.evidence:
         print(json.dumps(classify_exact(config, json.loads(Path(args.evidence).read_text())),
                          indent=2, sort_keys=True))
+    else:
+        if not args.output_dir:
+            raise ValueError("Native output path required")
+        survey_path = args.site_survey or os.environ.get("SCENARIO_EMERGENCY_SITE_SURVEY")
+        if not survey_path:
+            raise ValueError("Original same-cell emergency site survey required")
+        survey = json.loads(Path(survey_path).read_text())
+        if config["activation_branch"] == "visible_vehicle_movement":
+            from preparing_movement_capture import execute
+        else:
+            from preparing_hand_capture import execute
+        execute(config, survey, args.output_dir, args.host, args.port)

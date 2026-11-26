@@ -115,10 +115,19 @@ def finalize(attempt, output):
     hashes = {name: digest(attempt / name) for name in ORIGINALS}
     observations = [json.loads(line) for line in
                     (attempt / "preparing_observations.jsonl").read_text().splitlines()]
-    stream = attempt / "preparing_stream.jsonl"
-    stream.write_text("".join(json.dumps({"time_s": row["time_s"], "value": row},
-                                       separators=(",", ":")) + "\n"
-                              for row in observations))
+    stream = attempt / "emergency_speed_and_lamps.jsonl"
+    expected_stream = "".join(json.dumps({
+        "time_s": row["time_s"],
+        "value": {"ego_speed_mps": row["ego"]["speed_mps"],
+                  "emergency_speed_mps": row["qualifying_vehicle"]["speed_mps"],
+                  "flashing_state": row["qualifying_vehicle"]["flashing_state"]}},
+        separators=(",", ":")) + "\n" for row in observations)
+    if stream.exists():
+        require(stream.read_text() == expected_stream,
+                "Saved derived channel differs from original observations")
+    else:
+        with stream.open("x") as output_stream:
+            output_stream.write(expected_stream)
     mapping = [json.loads(line) for line in
                (attempt / "video_frames.jsonl").read_text().splitlines()]
     value = measure(observations, mapping, config["case_id"])
@@ -150,8 +159,8 @@ def finalize(attempt, output):
               "trace_reference": "trace.jsonl", "video_references": [view + ".mkv" for view in VIEWS],
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": construction["recording_description"],
-              "recording_evidence": [{"name": "preparing_observations", "unit": "structured",
-                                      "reference": "preparing_stream.jsonl"}],
+              "recording_evidence": [{"name": "emergency_speed_and_lamps", "unit": "structured",
+                                      "reference": "emergency_speed_and_lamps.jsonl"}],
               "realized_observables": {},
               "provenance_kind": "synthetic_local_diagnostic" if synthetic else "original_native"}
     from worker_exchange.native_output import write_result

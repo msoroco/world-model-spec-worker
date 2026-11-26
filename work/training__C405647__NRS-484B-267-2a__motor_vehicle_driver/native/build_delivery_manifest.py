@@ -97,6 +97,84 @@ def build():
             "negative_log_sha256": sha(negative) if negative.is_file() else None}
         entry["delivery_readiness"] = "partial_original_source_and_positive_audit_pending"
         cases.append(entry)
+    preparing = json.loads((FOLDER / "preparing-compatibility-manifest.json").read_text())
+    for draft in preparing["cases"]:
+        branch = draft["case_id"].split("__preparing_to_move__", 1)[1]
+        proof = FOLDER / "native/preparing" / branch / "proof"
+        construction = FOLDER / draft["construction"]
+        physical = FOLDER / "native/physical-proof" / branch / "proof.json"
+        audit_script = FOLDER / "native/preparing_source_audit.py"
+        fallback_source = draft["candidates"][0]
+        fallback_proof = FOLDER / "native/preparing" / branch / "fallback1/proof"
+        alternate = dict(fallback_source)
+        alternate.update(trigger={
+            "source": "Original Native preparing observation and pixel-review frame join",
+            "metric": "first_visible_frame",
+            "failure_condition": "Primary frame-120 indication is not independently visible before ego reach; retry the earlier frame-100 indication under the same source review."},
+            changed_knobs=["other_vehicle_start_frame"],
+            offline={"command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + AID +
+                     "/preparing-fallback-compatibility-manifest.json --case " + draft["case_id"] +
+                     " --candidate fallback1 --output .runtime-work/c405647-" + branch +
+                     "-fallback1-offline-v8", "exit_code": 0,
+                     "construction_sha256": fallback_source["construction_sha256"],
+                     "log": str((fallback_proof / "offline.log").relative_to(FOLDER)),
+                     "log_sha256": sha(fallback_proof / "offline.log")},
+            compatibility={"receipt": str((fallback_proof / "compatibility.json").relative_to(FOLDER)),
+                           "sha256": sha(fallback_proof / "compatibility.json"),
+                           "log": str((fallback_proof / "analysis.log").relative_to(FOLDER)),
+                           "negative_log": str((fallback_proof / "negative.log").relative_to(FOLDER))})
+        entry = dict(draft)
+        entry.update(kind="delivery", candidate_risk={
+            "status": "physical",
+            "reason": "Original preparing indication, subject visibility, approach timing and four-camera coverage need Native readback"},
+            candidates=[alternate],
+            offline={"command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + AID +
+                     "/native/preparing-cpu-manifest.json --case " + draft["case_id"] +
+                     " --output .runtime-work/c405647-" + branch + "-primary-offline-v8",
+                     "exit_code": 0, "construction_sha256": sha(construction),
+                     "log": str((proof / "offline.log").relative_to(FOLDER)),
+                     "log_sha256": sha(proof / "offline.log")},
+            native_handoff={"python_env_var": "CARLA_PYTHON",
+                            "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
+            physical_preparation={"case_id": draft["case_id"],
+                                  "receipt": str(physical.relative_to(FOLDER)),
+                                  "sha256": sha(physical)},
+            compatibility={"receipt": str((proof / "compatibility.json").relative_to(FOLDER)),
+                           "sha256": sha(proof / "compatibility.json"),
+                           "log": str((proof / "analysis.log").relative_to(FOLDER)),
+                           "negative_log": str((proof / "negative.log").relative_to(FOLDER))},
+            saved_processing={"receipt": str((proof / "processing.json").relative_to(FOLDER)),
+                              "sha256": sha(proof / "processing.json")},
+            post_capture={"recorded_only": True,
+                          "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/" + AID +
+                          "/execution-manifest.json --case " + draft["case_id"] +
+                          " --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+                          "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/" + AID +
+                          "/execution-manifest.json --case " + draft["case_id"] +
+                          " --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+                          "test_exit_code": 0,
+                          "test_log": str((proof / "saved-analysis.log").relative_to(FOLDER)),
+                          "test_log_sha256": sha(proof / "saved-analysis.log")},
+            delivery_acceptance={"case_id": draft["case_id"], "sets": ["full-train"],
+                                 "checks": ["native_source", "all_participants", "time_join",
+                                            "full_video_decode", "actual_pixels", "physical_completion"],
+                                 "script": str(audit_script.relative_to(FOLDER)),
+                                 "script_sha256": sha(audit_script),
+                                 "command": ".venv-cpu/bin/python work/" + AID +
+                                 "/native/preparing_source_audit.py --case " + draft["case_id"] +
+                                 " --attempt $ATTEMPT --review $INDEPENDENT_REVIEW",
+                                 "negative_command": ".venv-cpu/bin/python work/" + AID +
+                                 "/native/preparing_source_audit.py --case " + draft["case_id"] +
+                                 " --attempt $DIAGNOSTIC_ATTEMPT --review $DIAGNOSTIC_REVIEW",
+                                 "test_exit_code": 0,
+                                 "test_log": str((proof / "delivery-positive.log").relative_to(FOLDER)),
+                                 "test_log_sha256": sha(proof / "delivery-positive.log"),
+                                 "negative_exit_code": 1,
+                                 "negative_expected_error": "Native capture seal does not verify original acquisition",
+                                 "negative_log": str((proof / "delivery-negative.log").relative_to(FOLDER)),
+                                 "negative_log_sha256": sha(proof / "delivery-negative.log")},
+            delivery_readiness="partial_original_source_and_independent_pixel_review_pending")
+        cases.append(entry)
     manifest = {"format": "worker-execution-manifest", "assignment_id": AID,
                 "runtime_manifest_sha256": sha(REPO / "runtime/SOURCE-MANIFEST.json"),
                 "status": "partial", "delivery_ready": False,

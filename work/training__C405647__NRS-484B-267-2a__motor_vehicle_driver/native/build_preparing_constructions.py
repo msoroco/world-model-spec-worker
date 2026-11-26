@@ -40,6 +40,7 @@ class ExactPreparingCase(unittest.TestCase):
 
     def test_exact_contract(self):
         self.assertFalse(check_config(self.config)["physical_completion_claimed"])
+        self.assertIn(self.config["other_vehicle_start_frame"], (100, 120))
 
     def test_positive_source_classification(self):
         self.assertEqual(classify_exact(self.config, self.row)["observed_activation_branches"], [self.branch])
@@ -122,8 +123,8 @@ def build():
                                              "sources": config["original_source_requirements"],
                                              "legal_result": None},
                         "recording_description": {"channels": [{
-                            "name": "preparing_observations", "unit": "structured",
-                            "method": "Saved original Native actor velocities, lamp and pose readback, and frame/time join",
+                            "name": "emergency_speed_and_lamps", "unit": "structured",
+                            "method": "Saved original Native actor velocities, lamp readback, and frame/time join",
                             "sampling_rate_hz": 20, "time_window": "all 600 frames",
                             "reference_frame": "original Native frame",
                             "uncertainty": "50 ms frame bracket; visual and legal qualification require separate original pixel review"
@@ -133,6 +134,14 @@ def build():
         path = HERE / "preparing" / branch / "construction.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(construction, indent=2, sort_keys=True) + "\n")
+        fallback = json.loads(json.dumps(construction))
+        fallback_config = dict(config, other_vehicle_start_frame=100)
+        next(file for file in fallback["files"] if file["path"] == "config.json")["content"] = (
+            json.dumps(fallback_config, indent=2) + "\n")
+        fallback["status"] = "source_guarded_earlier_indication_timing_fallback"
+        fallback_path = path.parent / "fallback1/construction.json"
+        fallback_path.parent.mkdir(parents=True, exist_ok=True)
+        fallback_path.write_text(json.dumps(fallback, indent=2, sort_keys=True) + "\n")
         contract = {"format": "worker-measurement-contract", "requirements": [
             {"disposition_index": index, "requirement": disposition["requirement"],
              "source": disposition["source"], "output_key": method_by_requirement[disposition["requirement"]][0],
@@ -149,6 +158,9 @@ def build():
         cases.append({"case_id": case, "kind": "prospective_preparing_cpu",
                       "id": "primary", "construction": str(path.relative_to(HERE)),
                       "construction_sha256": sha(path),
+                      "candidates": [{"id": "fallback1",
+                                      "construction": str(fallback_path.relative_to(HERE)),
+                                      "construction_sha256": sha(fallback_path)}],
                       "post_capture": "preparing_finalize.py",
                       "independent_source_audit": "preparing_source_audit.py",
                       "measurement_procedure": {"entrypoint": "preparing_finalize.py",
@@ -167,10 +179,20 @@ def build():
         public = dict(entry)
         public["construction"] = "native/" + entry["construction"]
         public["measurement_contract"] = "native/" + entry["measurement_contract"]
+        public["candidates"] = [dict(candidate, construction="native/" + candidate["construction"])
+                                for candidate in entry["candidates"]]
         public_entries.append(public)
     public_manifest = {**manifest, "cases": public_entries}
     (FOLDER / "preparing-compatibility-manifest.json").write_text(
         json.dumps(public_manifest, indent=2, sort_keys=True) + "\n")
+    alternate_entries = []
+    for entry in public_entries:
+        alternate = dict(entry)
+        alternate["fixture_recipe"] = "work/" + AID + "/preparing-recipe-" + (
+            entry["case_id"].split("__preparing_to_move__", 1)[1]) + "-fallback1.json"
+        alternate_entries.append(alternate)
+    (FOLDER / "preparing-fallback-compatibility-manifest.json").write_text(
+        json.dumps({**manifest, "cases": alternate_entries}, indent=2, sort_keys=True) + "\n")
     return {"cases": len(cases), "manifest_sha256": sha(output)}
 
 

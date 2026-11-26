@@ -1,0 +1,115 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_proofs_pending",
+  "cases": [
+    {
+      "case_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+      "kind": "delivery",
+      "construction": "selected-constructions/probe_01-primary.json",
+      "construction_sha256": "2d6a43cd3d061b4c49cda6f2604509b7f5e8e14399739769a19f8acac37b58f3",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No distinct construction risk identified beyond ordinary physical review."
+      },
+      "candidates": [],
+      "fixture_recipe": "work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/native/diagnostic/probe_01/fixture-recipe.json",
+      "measurement_contract": "selected-contracts/probe_01.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --candidate primary --output .runtime-work/c245490-offline-v6-probe_01-primary --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "2d6a43cd3d061b4c49cda6f2604509b7f5e8e14399739769a19f8acac37b58f3",
+        "exit_code": 0,
+        "log": "selected-proofs/probe_01-primary/offline.log",
+        "log_sha256": "df5746dcd0507d23842b2e4b382f3da06a013fcd01e576b444d9964e2eda25b1"
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+      "kind": "delivery",
+      "construction": "selected-constructions/probe_02-primary.json",
+      "construction_sha256": "fab2d1390737a06db2d9bc254b38c58ba49d1c4027da9961aa40f030274addcb",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No distinct construction risk identified beyond ordinary physical review."
+      },
+      "candidates": [],
+      "fixture_recipe": "work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/native/diagnostic/probe_02/fixture-recipe.json",
+      "measurement_contract": "selected-contracts/probe_02.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --candidate primary --output .runtime-work/c245490-offline-v6-probe_02-primary --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "fab2d1390737a06db2d9bc254b38c58ba49d1c4027da9961aa40f030274addcb",
+        "exit_code": 0,
+        "log": "selected-proofs/probe_02-primary/offline.log",
+        "log_sha256": "df5746dcd0507d23842b2e4b382f3da06a013fcd01e576b444d9964e2eda25b1"
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
+      "kind": "delivery",
+      "construction": "selected-constructions/probe_03-primary.json",
+      "construction_sha256": "897b83c3986abf7dfa61b2f5306a740adf07e41663d81ead5312d13df1748c92",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "At the above-80 request, lateral motion may not finish on the original road; read original speed/lane traces."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-constructions/probe_03-fallback1.json",
+          "construction_sha256": "e384e551bd5541b8a986e25f3a2399a2ba0eb186ef136351b75dd64b63c23156",
+          "changed_knobs": [
+            "lane transition length from 200 m to 260 m"
+          ],
+          "trigger": {
+            "source": "speed-lane-history.jsonl",
+            "metric": "destination_lane_entry_and_original_maximum_mph",
+            "failure_condition": "original Native source has no destination lane entry or fails to exceed the 80 mph boundary"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate fallback1 --output .runtime-work/c245490-offline-v6-probe_03-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "e384e551bd5541b8a986e25f3a2399a2ba0eb186ef136351b75dd64b63c23156",
+            "exit_code": 0,
+            "log": "selected-proofs/probe_03-fallback1/offline.log",
+            "log_sha256": "df5746dcd0507d23842b2e4b382f3da06a013fcd01e576b444d9964e2eda25b1"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/native/diagnostic/probe_03/fixture-recipe.json",
+      "measurement_contract": "selected-contracts/probe_03.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C245490__NRS-484B-600-1e__motor_vehicle_driver/selected-draft-execution-manifest.json --case training__C245490__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate primary --output .runtime-work/c245490-offline-v6-probe_03-primary --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "897b83c3986abf7dfa61b2f5306a740adf07e41663d81ead5312d13df1748c92",
+        "exit_code": 0,
+        "log": "selected-proofs/probe_03-primary/offline.log",
+        "log_sha256": "df5746dcd0507d23842b2e4b382f3da06a013fcd01e576b444d9964e2eda25b1"
+      }
+    }
+  ],
+  "original_native_observed": false,
+  "delivery_ready": false
+}

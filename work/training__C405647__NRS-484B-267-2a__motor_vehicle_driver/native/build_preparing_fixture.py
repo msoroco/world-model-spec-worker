@@ -25,17 +25,17 @@ def write_rows(path, rows):
                             for row in rows))
 
 
-def build(branch):
+def build(branch, *, start_frame=120, suffix=""):
     case = BASE + branch
-    root = ASSIGNMENT / "preparing-fixture-sources" / branch
+    root = ASSIGNMENT / "preparing-fixture-sources" / (branch + suffix)
     root.mkdir(parents=True, exist_ok=True)
     observations, mapping, trace, evidence, native, graphs = [], [], [], [], [], []
-    ego_x, other_x = -150.0, 70.0
+    ego_x, other_x = -100.0, 100.1
     for i in range(600):
         time_s, frame = i / 20, 3000 + i
         ego_speed = 14.0 if i < 160 else max(7.0, 14.0 - .175 * (i - 160))
         ego_x += ego_speed / 20
-        other_speed = 1.0 if branch == "visible_vehicle_movement" and i >= 120 else 0.0
+        other_speed = 1.0 if branch == "visible_vehicle_movement" and i >= start_frame else 0.0
         other_x += other_speed / 20
         lamp = (i // 10) % 2 == 0
         observation = {"case_id": case, "source_kind": "synthetic_cpu_fixture",
@@ -53,11 +53,11 @@ def build(branch):
                        "road_context_source_id": "synthetic-road", "weather_context_source_id": "synthetic-weather",
                        "posted_limit_mps": 15, "wet_road": False, "visibility_m": 200,
                        "already_moving": False,
-                       "visible_vehicle_movement": branch == "visible_vehicle_movement" and i >= 120,
+                       "visible_vehicle_movement": branch == "visible_vehicle_movement" and i >= start_frame,
                        "visible_driver_hand_signal": False,
-                       "hand_signal_pose_requested": branch == "visible_driver_hand_signal" and i >= 120,
+                       "hand_signal_pose_requested": branch == "visible_driver_hand_signal" and i >= start_frame,
                        "hand_signal_driver_actor_id": 109 if branch == "visible_driver_hand_signal"
-                       and i >= 120 else None,
+                       and i >= start_frame else None,
                        "camera_frames": {name: frame for name in CAMERAS}}
         observations.append(observation)
         mapping.append({"video_frame": i, "carla_frame": frame, "native_frame": frame,
@@ -146,12 +146,12 @@ def build(branch):
                         ("approach", 1280, 720, "red"),
                         ("reference_corner", 1280, 720, "green"),
                         ("driver_reference", 1280, 720, "white"))]}
-    spec_path = ASSIGNMENT / ("preparing-diagnostic-" + branch + ".json")
+    spec_path = ASSIGNMENT / ("preparing-diagnostic-" + branch + suffix + ".json")
     write_json(spec_path, spec)
     recipe = {"format": "worker-fixture-recipe", "sources": files,
               "generator": {"source": spec_path.relative_to(REPO).as_posix(),
                             "sha256": sha(spec_path)}}
-    recipe_path = ASSIGNMENT / ("preparing-recipe-" + branch + ".json")
+    recipe_path = ASSIGNMENT / ("preparing-recipe-" + branch + suffix + ".json")
     recipe_path.write_text(json.dumps(recipe, indent=2) + "\n")
     return {"case": case, "recipe": recipe_path.relative_to(REPO).as_posix(),
             "recipe_sha256": sha(recipe_path), "spec_sha256": sha(spec_path)}
@@ -160,3 +160,4 @@ def build(branch):
 if __name__ == "__main__":
     for branch in ("visible_vehicle_movement", "visible_driver_hand_signal"):
         print(json.dumps(build(branch), sort_keys=True))
+        print(json.dumps(build(branch, start_frame=100, suffix="-fallback1"), sort_keys=True))
