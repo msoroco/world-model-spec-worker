@@ -1,0 +1,139 @@
+{
+  "law_id": "LVMC-11-60-030-A4",
+  "cell_id": "C149470",
+  "actor": "bus_driver",
+  "selected_case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0001",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed bus, curb, stopped loading and separate traffic route"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed bus, curb, stopped loading and separate traffic route"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed bus, curb, stopped loading and separate traffic route"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed bus, curb, stopped loading and separate traffic route"
+    }
+  ],
+  "case": {
+    "kind": "parallel_source_review-0001",
+    "case_id": "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0001",
+    "heading_request_deg": 4.0,
+    "traffic_lateral_request_m": 3.0,
+    "location_kind": "bus_stop",
+    "activity": "passenger_loading",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "right_front_wheel_curb",
+          "unit": "m with uncertainty",
+          "method": "right-front-wheel XY point to reviewed curb segment, 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "stopped loading frames",
+          "reference_frame": "original frame/time",
+          "uncertainty": "wheel localization"
+        },
+        {
+          "name": "stopped_loading",
+          "unit": "structured original observation",
+          "method": "bus speed and actual loading actor state, 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "reference_frame": "original frame/time",
+          "uncertainty": "actor activity review"
+        },
+        {
+          "name": "other_traffic",
+          "unit": "m/s",
+          "method": "separate vehicular traffic speed, 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "reference_frame": "original frame/time",
+          "uncertainty": "traffic route review"
+        },
+        {
+          "name": "traffic_speed_mps",
+          "unit": "m/s",
+          "method": "source-sealed separate vehicle speed, 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "stopped loading frames",
+          "reference_frame": "original frame/time",
+          "uncertainty": "traffic actor and route review"
+        },
+        {
+          "name": "bus_curb_angle_deg",
+          "unit": "deg",
+          "method": "source-sealed bus heading relative to reviewed curb tangent, 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "stopped loading frames",
+          "reference_frame": "original frame/time",
+          "uncertainty": "body and curb geometry review"
+        },
+        {
+          "name": "camera_frame_identity",
+          "unit": "frame ID",
+          "method": "four synchronized cameras, 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "reference_frame": "original frame/time",
+          "uncertainty": "pixel visibility review"
+        }
+      ],
+      "context_inputs": [],
+      "limitations": [
+        "Approximately parallel and unduly impede remain unresolved judgments.",
+        "Synthetic fixture is software diagnostic only."
+      ]
+    },
+    "sweep_measurements": [
+      {
+        "variable": "heading_request_deg",
+        "observable": "bus_curb_angle_deg",
+        "unit": "deg",
+        "measurement": {
+          "method": "Original source-sealed stopped-loading bus heading relative to curb or separate vehicular traffic speed",
+          "time_window": "original 20 Hz stopped loading interval",
+          "statistic": "max"
+        }
+      }
+    ]
+  },
+  "supported_case_ids": [
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_below",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_at",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stop_above",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__bus_stand_baggage",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__passenger_zone_unload",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__origin_point_load",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__destination_point_unload",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0000",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0001",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__parallel_source_review-0002",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0000",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0001",
+    "testing__C149470__LVMC-11-60-030-A4__bus_driver__traffic_impediment_source_review-0002"
+  ]
+}

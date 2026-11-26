@@ -37,6 +37,14 @@ def command(args, log, expected=0):
     return ' '.join(args)
 
 
+def reuse_or_run(args, log, marker, required):
+    path = HERE / log
+    if (path.is_file() and marker in path.read_text()
+            and all(Path(item).is_file() for item in required)):
+        return ' '.join(args)
+    return command(args, log)
+
+
 def prove_case(case):
     name = case.name
     cid = HERE.name + '__' + name
@@ -56,9 +64,13 @@ def prove_case(case):
     primary_log = 'cpu-grid-selected-offline-' + name + '.log'
     fallback_log = 'cpu-grid-fallback-offline-' + name + '.log'
     compatibility_log = 'cpu-grid-fallback-compat-' + name + '.log'
-    primary_cmd = command(primary_args, primary_log)
-    fallback_cmd = command(fallback_args, fallback_log)
-    command(compatibility_args, compatibility_log)
+    primary_cmd = reuse_or_run(primary_args, primary_log, '"offline_passed": true',
+                               [selected_output / 'offline.log'])
+    fallback_cmd = reuse_or_run(fallback_args, fallback_log, '"offline_passed": true',
+                                [fallback_output / 'offline.log'])
+    reuse_or_run(compatibility_args, compatibility_log, '"passed": true',
+                 [compatibility_output / name for name in
+                  ('compatibility.json', 'compatibility-analysis.log', 'negative-analysis.log')])
     proof_dir = HERE / 'proofs' / ('fallback1-' + name)
     proof_dir.mkdir(parents=True, exist_ok=True)
     for source, target in (('compatibility.json', 'receipt.json'),

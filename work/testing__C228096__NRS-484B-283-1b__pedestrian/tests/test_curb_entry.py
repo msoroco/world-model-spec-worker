@@ -18,7 +18,8 @@ def scene(case):
            route_kind=case.route_kind,road_rect_m=[-10,-2,10,2],
            vehicle_path_rect_m=[-10,-.5,10,.5],
            curb_start_xy=[0,-3],departure_frame=100,
-           pedestrian_route_xy=[[0,-3],[0,0]],
+           pedestrian_route_xy=[[0,-3],[1,-3] if case.route_kind=='curb' else
+                                [0,-1] if case.route_kind=='road_only' else [0,0]],
            vehicle_route_xy=[[-10,0],[10,0]],
            vehicle_id='car',driver_id='driver')
     for field in ('pedestrian_identity','curb_safety','road_boundary',
@@ -90,6 +91,19 @@ class EntryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'vehicle spawn failed'):
             probe.construct(a,scene(case),case)
         self.assertEqual(a.calls[-1][0],'destroy')
+
+    def test_case_routes_are_physically_distinct(self):
+        for case in probe.CASES:
+            s=scene(case)
+            self.assertEqual(probe.validate_scene(s,case)['case_id'],case.name)
+        wrong=scene(probe.CASES[3])
+        wrong['pedestrian_route_xy']=[[0,-3],[0,0]]
+        with self.assertRaisesRegex(ValueError,'road-only route enters vehicle path'):
+            probe.validate_scene(wrong,probe.CASES[3])
+        wrong=scene(probe.CASES[4])
+        wrong['pedestrian_route_xy']=[[0,-3],[0,-1]]
+        with self.assertRaisesRegex(ValueError,'curb-stay route leaves'):
+            probe.validate_scene(wrong,probe.CASES[4])
 
 
 if __name__=='__main__':unittest.main()

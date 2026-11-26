@@ -74,6 +74,21 @@ def validate_scene(scene: Mapping, case: Case):
                 all(point(p) for p in route), field + ' missing')
     require(scene.get('pedestrian_route_xy')[0] == scene.get('curb_start_xy'),
             'pedestrian must depart curb source')
+    route = scene['pedestrian_route_xy']
+    in_road = [inside(p, scene['road_rect_m']) for p in route]
+    in_path = [inside(p, scene['vehicle_path_rect_m']) for p in route]
+    if case.route_kind == 'path':
+        require(any(in_road) and any(in_path) and in_path[-1],
+                'requested vehicle-path route not constructed')
+    elif case.route_kind == 'road_only':
+        require(any(in_road) and not any(in_path),
+                'road-only route enters vehicle path or misses road')
+    else:
+        require(not any(in_road) and not any(in_path),
+                'curb-stay route leaves place of safety')
+    require(type(scene.get('departure_frame')) is int and
+            0 < scene['departure_frame'] < 900,
+            'source-reviewed departure frame missing')
     require(scene.get('vehicle_id') and scene.get('driver_id'),
             'control vehicle/driver identity missing')
     return {'case_id':case.name,'suddenness_judgment':None,

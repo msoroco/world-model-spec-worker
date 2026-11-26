@@ -50,9 +50,9 @@ class IndependentAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'measurements missing or collapsed'):
             audit_comparisons(reports)
 
-    def test_changed_site_rejected(self):
+    def test_changed_zone_source_rejected(self):
         reports = self.reports()
-        reports[ASSIGNMENT + '__load_prompt']['comparison_record']['site_sha256'] = 'changed'
+        reports[ASSIGNMENT + '__load_prompt']['comparison_record']['zone_source_sha256'] = 'changed'
         with self.assertRaisesRegex(ValueError, 'fixed comparison condition changed'):
             audit_comparisons(reports)
 

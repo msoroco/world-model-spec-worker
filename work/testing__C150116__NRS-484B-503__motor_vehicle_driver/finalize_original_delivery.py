@@ -66,7 +66,7 @@ def finalize(attempt, case_id):
             not provenance.get('citation') or not provenance.get('reviewer')):
         raise ValueError('reviewed original site provenance missing')
     site = read(reviewed_site)
-    if site.get('source_kind') != 'reviewed_original_site':
+    if site.get('source_kind') != 'reviewed_original_site' or site.get('case_id') != case_id:
         raise ValueError('reviewed original site missing')
     site['source_kind'] = 'original_native_capture'
     validate_site(site, case)
@@ -95,8 +95,9 @@ def finalize(attempt, case_id):
     seal_path, result_path = attempt / 'saved-seal.json', attempt / 'saved-result.json'
     write(seal_path, seal)
     write(result_path, result)
-    sources = ['site-context.json', 'original-history.jsonl', 'saved-seal.json',
-               'saved-result.json', *[name + '.mkv' for name in CAMERAS]]
+    sources = ['site-context.json', 'original-history.jsonl', 'capture-seal.json', 'saved-seal.json',
+               'saved-result.json', 'camera-frame-map.jsonl', 'video_frames.jsonl',
+               *[name + '.mkv' for name in CAMERAS]]
     manifest = {'case_id': case_id, 'source_kind': 'original_native_capture',
                 'diagnostic_fixture': False, 'reviewer': provenance['reviewer'],
                 'reviewed_manifest_sha256': sha(reviewed_manifest),

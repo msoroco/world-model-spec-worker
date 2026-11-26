@@ -5,12 +5,14 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parents[1]
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 from source_deferred_runner import CAMERAS, capture_original
 from finalize_original_delivery import finalize
+from delivery_audit import audit_attempt
 
 
 class Adapter:
@@ -172,6 +174,10 @@ class SourceDeferredRunnerTests(unittest.TestCase):
             finalized = finalize(attempt, case_id)
             self.assertEqual(finalized['case_id'], case_id)
             self.assertTrue((attempt / 'source-manifest.json').is_file())
+            with patch('delivery_audit.decode_camera', return_value={'frames': 900, 'fps': 20}):
+                independent = audit_attempt(attempt, case_id)
+            self.assertEqual(independent['measurement']['frame_count'], 900)
+            self.assertFalse(independent['physical_acceptance'])
             broken_attempt = root / 'broken-attempt'
             broken_attempt.mkdir()
             for name in ('construction.json', 'runner.py', 'config.json'):

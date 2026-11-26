@@ -17,12 +17,12 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         name = case.removeprefix(HERE.name + '__')
-        source = SCRATCH / ('saved-v3-' + name) / 'v0001' / 'processing.json'
+        source = SCRATCH / ('saved-v4-' + name) / 'v0001' / 'processing.json'
         receipt = json.loads(source.read_text())
         if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True
                 or receipt.get('candidate_id') != 'primary'):
             raise ValueError(name + ': saved recorded-only replay failed')
-        log = HERE / ('cpu-nov25-saved-' + name + '.log')
+        log = HERE / ('cpu-nov26-saved-' + name + '.log')
         log.write_text(json.dumps({key: receipt[key] for key in
                                    ('format', 'case_id', 'passed', 'recorded_only', 'candidate_id',
                                     'native_revision', 'analysis_revision', 'missing_evidence',

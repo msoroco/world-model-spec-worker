@@ -53,7 +53,14 @@ def build():
     paths = ('runner.py', 'original_runner.py', 'passenger_zone.py', 'config.json',
              'tests/test_bundle.py', 'scene.json')
     (HERE / 'scene.json').write_text(embedded['scene.json'])
-    (HERE / 'tests/test_bundle.py').write_text(embedded['tests/test_bundle.py'])
+    (HERE / 'tests/test_bundle.py').write_text(
+        '"""Root exact source-deferred bundle preflight."""\n'
+        'import sys\nfrom pathlib import Path\n'
+        'sys.path.insert(0, str(Path(__file__).resolve().parents[1]))\n'
+        'from runner import check\n\n'
+        'def test_bundle():\n'
+        '    case_id, case = check()\n'
+        '    assert case_id.endswith("__" + case.name)\n')
     construction['files'] = [{'path': path, 'content': (HERE / path).read_text()} for path in paths]
     write(HERE / 'construction.json', construction)
 

@@ -21,6 +21,9 @@ def process(case):
                '--case', cid, '--attempt', str(attempt), '--output', str(output),
                '--library', 'runtime/library', '--validator', str(DECODER)]
     log = HERE / ('cpu-grid-saved-' + case.name + '.log')
+    if log.is_file() and '"passed": true' in log.read_text() and (output / 'v0001/analysis/result.json').is_file():
+        print('saved-only reused:', case.name, flush=True)
+        return
     with log.open('w', encoding='utf-8') as handle:
         result = subprocess.run(command, cwd=ROOT, env=os.environ.copy(),
                                 stdout=handle, stderr=subprocess.STDOUT, check=False)

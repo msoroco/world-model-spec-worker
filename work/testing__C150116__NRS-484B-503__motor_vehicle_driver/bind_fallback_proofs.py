@@ -30,13 +30,13 @@ def main():
                                          ('compatibility-analysis.log', 'analysis.log'),
                                          ('negative-analysis.log', 'negative.log')]:
             shutil.copyfile(source / source_name, target / target_name)
-        offline_log = HERE / ('cpu-nov25-fallback-offline-' + name + '.log')
+        offline_log = HERE / ('cpu-nov26-fallback-offline-' + name + '.log')
         if not offline_log.exists() or offline_log.stat().st_size == 0:
             raise ValueError(name + ': offline log missing')
         candidate['offline'] = {
             'command': '.venv-cpu/bin/python runtime.py offline --manifest work/' + HERE.name +
                        '/execution-manifest.json --case ' + entry['case_id'] +
-                       ' --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-' + name,
+                       ' --candidate fallback1 --output .runtime-work/c150116-new/fallback-offline-' + name + '-v8',
             'exit_code': 0,
             'construction_sha256': candidate['construction_sha256'],
             'log': offline_log.name,

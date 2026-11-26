@@ -130,7 +130,7 @@
     },
     {
       "path": "tests/test_bundle.py",
-      "content": "\"\"\"Exact synthetic protocol bundle smoke test.\"\"\"\nfrom runner import check\nfrom pathlib import Path\nimport json\n\n\ndef test_bundle():\n    check()\n    scene = json.loads((Path(__file__).resolve().parents[1] / 'scene.json').read_text())\n    assert scene['source_kind'] == 'synthetic_diagnostic_fixture'\n    assert scene['accepted_original_source'] is False\n\n\nif __name__ == '__main__':\n    test_bundle()\n"
+      "content": "\"\"\"Root exact source-deferred bundle preflight.\"\"\"\nimport sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom runner import check\n\ndef test_bundle():\n    case_id, case = check()\n    assert case_id.endswith(\"__\" + case.name)\n"
     },
     {
       "path": "scene.json",

@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from passenger_zone import CASES, audit_pair, measure_history, validate_site
+from passenger_zone import CASES, measure_history, validate_site
 from saved_audit import audit_original_history
 
 HERE = Path(__file__).resolve().parent
@@ -53,6 +53,26 @@ def decode_camera(path, size):
     return {'frames': 900, 'fps': 20, 'size': size}
 
 
+def audit_original_pair(left, right, difference):
+    need(left.get('case_id') != right.get('case_id'), 'duplicate comparison case')
+    for item in (left, right):
+        need(item.get('frame_count') == 900 and item.get('original_history_sha256') and
+             item.get('site_sha256'), 'comparison history or site source missing')
+    for key in ('road_source_sha256', 'zone_source_sha256', 'regulations_source_sha256',
+                'effective_hours_source_sha256', 'camera_plan_sha256',
+                'vehicle_blueprint', 'passenger_blueprint', 'clock_source_sha256',
+                'civil_time_iso'):
+        need(left.get(key) and left[key] == right.get(key),
+             'fixed comparison condition changed: ' + key)
+    need(difference in ('conduct', 'passenger_action', 'release_delay_s'),
+         'unsupported original comparison difference')
+    need(left.get(difference) != right.get(difference), 'deliberate difference absent')
+    need(left.get('regulations_effective') is True and
+         right.get('regulations_effective') is True, 'comparison hours changed')
+    return {'left': left['case_id'], 'right': right['case_id'],
+            'difference': difference, 'legal_judgment': None}
+
+
 def audit_attempt(attempt, case_id):
     need(case_id.startswith(ASSIGNMENT + '__'), 'wrong exact passenger-zone case')
     supplied = Path(attempt)
@@ -66,12 +86,47 @@ def audit_attempt(attempt, case_id):
          'reviewed original source identity missing')
     site_path = source(root, manifest, 'site-context.json')
     history_path = source(root, manifest, 'original-history.jsonl')
+    capture_seal_path = source(root, manifest, 'capture-seal.json')
+    map_path = source(root, manifest, 'camera-frame-map.jsonl')
+    video_map_path = source(root, manifest, 'video_frames.jsonl')
     seal_path = source(root, manifest, 'saved-seal.json')
     result_path = source(root, manifest, 'saved-result.json')
     site, seal, saved = read(site_path), read(seal_path), read(result_path)
+    capture_seal = read(capture_seal_path)
+    need(manifest.get('capture_seal_sha256') == sha(capture_seal_path) and
+         capture_seal.get('case_id') == case_id and
+         capture_seal.get('provenance_kind') == 'native' and
+         capture_seal.get('diagnostic_fixture') is False and
+         capture_seal.get('frames') == 900,
+         'original Native capture seal changed')
+    for name, digest in capture_seal.get('sources', {}).items():
+        relative = Path(name)
+        candidate = root / relative
+        need(not relative.is_absolute() and '..' not in relative.parts and
+             candidate.is_file() and not candidate.is_symlink() and sha(candidate) == digest,
+             'original Native capture source changed: ' + name)
+    reviewed_manifest_path = root / 'reviewed-site/source-manifest.json'
+    reviewed_site_path = root / 'reviewed-site/site-context.json'
+    need(reviewed_manifest_path.is_file() and reviewed_site_path.is_file() and
+         not reviewed_manifest_path.is_symlink() and not reviewed_site_path.is_symlink() and
+         capture_seal.get('reviewed_manifest_sha256') == sha(reviewed_manifest_path) and
+         capture_seal.get('reviewed_site_sha256') == sha(reviewed_site_path),
+         'reviewed original site packet changed')
+    reviewed_manifest = read(reviewed_manifest_path)
+    reviewed_site = read(reviewed_site_path)
+    provenance = reviewed_manifest.get('source_provenance', {})
+    need(reviewed_manifest.get('source_kind') == 'reviewed_original_site' and
+         reviewed_manifest.get('diagnostic_fixture') is False and
+         provenance.get('kind') == 'original_reviewed_site' and
+         provenance.get('diagnostic_fixture') is False and
+         provenance.get('reviewer') and provenance.get('citation'),
+         'original reviewed site provenance changed')
+    reviewed_site['source_kind'] = 'original_native_capture'
+    need(site == reviewed_site, 'finalized original site differs from reviewed source')
     short = case_id.removeprefix(ASSIGNMENT + '__')
     case = next((item for item in CASES if item.name == short), None)
-    need(case is not None and site.get('source_kind') == 'original_native_capture' and site.get('reviewer'),
+    need(case is not None and site.get('source_kind') == 'original_native_capture' and
+         site.get('case_id') == case_id and site.get('reviewer'),
          'reviewed original passenger-zone site missing')
     validate_site(site, case)
     need(site['zone'].get('passenger_anchor_source_sha256'), 'original passenger anchor source missing')
@@ -79,10 +134,24 @@ def audit_attempt(attempt, case_id):
                                    site['zone']['boundary_source_sha256'], site['regulations']['source_sha256'])
     rows = [json.loads(line) for line in history_path.read_text().splitlines() if line]
     measured = measure_history(rows, case, site)
+    camera_rows = [json.loads(line) for line in map_path.read_text().splitlines() if line]
+    video_rows = [json.loads(line) for line in video_map_path.read_text().splitlines() if line]
+    need(len(camera_rows) == len(video_rows) == len(rows) == 900,
+         'original camera/Native frame count differs')
+    for index, (history_row, camera_row, video_row) in enumerate(zip(rows, camera_rows, video_rows)):
+        frame = history_row['original_frame']
+        need(camera_row.get('original_frame') == frame and
+             camera_row.get('time_s') == history_row['elapsed_s'] and
+             camera_row.get('camera_frames') == {name: frame for name in CAMERAS} and
+             video_row.get('video_frame') == index and
+             video_row.get('carla_frame') == frame and video_row.get('native_frame') == frame and
+             video_row.get('time_s') == history_row['elapsed_s'],
+             'original camera/Native same-tick join differs')
     need(seal.get('case_id') == short and seal.get('site_sha256') == sha(site_path) and
          seal.get('original_history_sha256') == sha(history_path), 'saved seal changed')
     need(saved.get('case_id') == short and saved.get('site_sha256') == sha(site_path) and
-         saved.get('original_history_sha256') == sha(history_path) and saved.get('measurement') == measured,
+         saved.get('original_history_sha256') == sha(history_path) and
+         saved.get('measurement') == json.loads(json.dumps(measured)),
          'saved result differs from original history')
     need(saved.get('delivery_audit') == audit and saved.get('legal_judgment') is None,
          'saved independent history audit or judgment changed')
@@ -180,7 +249,7 @@ def audit_comparisons(reports):
                      right.get('regulations_effective') is False,
                      'sourced effective-hours difference absent')
             else:
-                audit_pair(left, right, difference)
+                audit_original_pair(left, right, difference)
         out.append({'comparison_id': comparison['comparison_id'], 'case_ids': cid_list,
                     'measured_difference': difference, 'legal_status': 'unresolved',
                     'physical_acceptance': False})
