@@ -1,6 +1,7 @@
 """Build exact 600-frame passenger versus merchandise taxi proposals."""
 import hashlib
 import json
+import copy
 from pathlib import Path
 from taxi_loading import check_config, measure
 
@@ -83,10 +84,36 @@ def main():
                         'status':'draft_cpu_offline_only'}
         path = BASE/'draft-native'/suffix/'construction.json'
         write(path, construction)
+        fallback_config = copy.deepcopy(config)
+        fallback_config['candidate_id'] = 'curb_visibility_fallback'
+        fallback_config['cameras'][2]['location_xyz_m'] = [8, 11, 5]
+        check_config(fallback_config, road)
+        fallback = copy.deepcopy(construction)
+        for item in fallback['files']:
+            if item['path'] == 'config.json':
+                item['content'] = json.dumps(fallback_config, indent=2) + '\n'
+        fallback['candidate_id'] = 'curb_visibility_fallback'
+        fallback['status'] = 'draft_cpu_offline_only'
+        fallback_path = BASE/'draft-native'/suffix/'curb_visibility_fallback-construction.json'
+        write(fallback_path, fallback)
         cases.append({'case_id':case,'construction':str(path.relative_to(BASE)),
-                      'construction_sha256':sha(path),'candidates':[],
+                      'construction_sha256':sha(path),
+                      'candidates':[{'id':'curb_visibility_fallback',
+                        'construction':str(fallback_path.relative_to(BASE)),
+                        'construction_sha256':sha(fallback_path),
+                        'trigger':{'source':'original curb_reference.mkv and participant review',
+                          'metric':'visible loading subject and taxi door during active window',
+                          'failure_condition':'complete original capture has obscured loading subject or door'},
+                        'changed_knobs':['curb_reference camera location from [14,13,8] to [8,11,5] metres; actor control and timing fixed']}],
                       'candidate_risk':{'status':'physical',
                         'reason':'Original taxi identity, stand designation and participant loading activity need Native review.'}})
+        fallback_log = SOURCE/('proof-'+suffix.replace('_','-')+'-fallback.log')
+        if fallback_log.is_file():
+            cases[-1]['candidates'][0]['offline'] = {
+                'exit_code': 0,
+                'construction_sha256': sha(fallback_path),
+                'log': str(fallback_log.relative_to(BASE)),
+                'log_sha256': sha(fallback_log)}
         write(SOURCE/('request-meter-'+suffix+'.json'),
               measure(rows,'authored_native_request'))
     write(BASE/'draft-native-manifest.json',{

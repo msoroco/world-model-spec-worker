@@ -14,3 +14,9 @@ The frozen cell is `road` / `travel` / `other_vehicle`, pedestrian subject. Exac
 ## Open work
 
 Run original Native capture and inspect geometry, all vehicle/pedestrian motion and four-camera pixels. Determine whether Section 11.30.070 excludes the crossing using source evidence. Complete current-runtime positive/negative compatibility and saved processing, Core mapping, semantic proposals, independent delivery/comparison audits and selected fallback constructions. Keep partial until all CPU proofs and strict scoped ready gate pass.
+
+## 2026-11-26 selected delivery preparation
+
+Two exact 30-second, 600-frame, four-camera Native capture bundles are selected. Both primaries and measured ten-frame departure-delay fallbacks passed pinned offline checks, source-bound positive and missing-post-tick negative public compatibility, and recorded-only saved processing with original diagnostic sources preserved. The independent comparison diagnostic confirms a fixed road, actor inventory, camera policy and frame rate while requested pedestrian departure changes from frame 320 to 140; its missing-source negative rejects. The independent six-check original-source delivery auditor rejects synthetic fixtures in its negative test. Both physical/lifecycle CPU proof suites and canonical semantic stages passed. The exact assignment strict gate passed after these bindings.
+
+Actual CARLA walker and roadway vehicle movement, original camera pixels, roadway participant census, physical crossing completion, and the Section 11.30.070 designated-place exclusion require original-source delivery review. No legal verdict or accepted recording is claimed from the CPU diagnostics. The original-source delivery audit requires the Section 11.30.070 exclusion to be resolved false before acceptance.

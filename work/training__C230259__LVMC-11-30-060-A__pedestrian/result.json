@@ -1,13 +1,46 @@
 {
   "assignment_id": "training__C230259__LVMC-11-30-060-A__pedestrian",
   "input_sha256": "ecd8522149e285a4f5d5cf3823040264b703c23af3f1f3e2902136aa246f825c",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Source-bound 600-frame crossing meter passed prior three positive/four negative CPU checks. Both exact 30-second/four-camera survey-gated Native capture constructions now pass pinned offline checks with controller, FrameMap, FFV1 cameras and world restore. CARLA original motion/pixels, Section 11.30.070 applicability, current-runtime saved processing, fallbacks and independent audits remain unverified or unfinished.",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
   "planned_case_count": 2,
-  "candidate_count": 2,
-  "selected_delivery_case_count": 0,
+  "candidate_count": 4,
+  "selected_delivery_case_count": 2,
   "reuse_count": 0,
   "source_law_review": "Exact LVMC 11.30.060(A) reviewed: outside marked/unmarked intersection crosswalk crossing, yield to all vehicles upon roadway, and Section 11.30.070 designated-place exclusion are separate. Probe_02 is chosen as a CPU draft; actual crossing and applicability remain unverified.",
-  "applied_update": 16
+  "applied_update": 16,
+  "remaining_gpu_checks": [
+    "Original CARLA roadway/walker motion and full participant inventory",
+    "Four source-camera pixels and independent visibility review",
+    "Section 11.30.070 designated-place exclusion from original sources",
+    "Original-source comparison and canonical acceptance"
+  ],
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --assignment training__C230259__LVMC-11-30-060-A__pedestrian --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_01 --job $JOB_ID --db $DB --run $RUN --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/selected-draft-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_01 --candidate primary",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_01-primary/offline.log",
+      "sha256": "8dd07542d64e2e8216e25388d8142a8ffaf454bf965853526557d5e7bffcd1ca"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/selected-draft-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_01 --candidate fallback1",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_01-fallback1/offline.log",
+      "sha256": "8dd07542d64e2e8216e25388d8142a8ffaf454bf965853526557d5e7bffcd1ca"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/selected-draft-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_02 --candidate primary",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_02-primary/offline.log",
+      "sha256": "0f5d913fc2ebad42c247b2b71566bc0fa1ea942023ecbff64da80f0915874297"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/selected-draft-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_02 --candidate fallback1",
+      "exit_code": 0,
+      "log": "selected-proofs/probe_02-fallback1/offline.log",
+      "sha256": "0f5d913fc2ebad42c247b2b71566bc0fa1ea942023ecbff64da80f0915874297"
+    }
+  ]
 }

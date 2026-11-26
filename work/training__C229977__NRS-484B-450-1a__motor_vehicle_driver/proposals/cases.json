@@ -1,10 +1,27 @@
 {
-  "actor": "motor_vehicle_driver",
+  "status": "draft",
   "assignment_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1a",
+  "cell_id": "C229977",
+  "actor": "motor_vehicle_driver",
   "cases": [
     {
-      "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_1",
-      "rationale": "Source-joined sidewalk occupancy contrast; no legal conclusion",
+      "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected frozen-cell neutral reference.",
+      "variable_assignments": {
+        "sidewalk_vehicle_occupancy": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "on a sidewalk",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law or the directions of a police officer or official traffic-control device",
+        "does not impede the normal and reasonable movement of pedestrians"
+      ],
       "recording_description": {
         "channels": [
           {
@@ -50,19 +67,34 @@
         "limitations": [
           "Synthetic fixtures prove software path only; actual Native motion, sidewalk legal status, exceptions and pixels remain unverified"
         ]
-      },
+      }
+    },
+    {
+      "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484B-450-1a",
-      "target_type": "below",
+      "target_type": "boundary_probe",
+      "rationale": "Source-joined sidewalk occupancy contrast; no legal outcome label.",
       "variable_assignments": {
         "sidewalk_vehicle_occupancy": {
           "kind": "world_setup",
           "value": false
         }
-      }
-    },
-    {
-      "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_2",
-      "rationale": "Source-joined sidewalk occupancy contrast; no legal conclusion",
+      },
+      "unresolved_judgment_calls": [
+        "on a sidewalk",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law or the directions of a police officer or official traffic-control device",
+        "does not impede the normal and reasonable movement of pedestrians"
+      ],
+      "paired_probe_id": "sidewalk-stop-location",
+      "deliberate_differences": [
+        "sidewalk_vehicle_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "sidewalk_vehicle_occupancy",
+        "comparison_or_standard": "Original body and surface source comparison without a legal cutoff",
+        "target_value_or_branch": "requested off-sidewalk stop"
+      },
       "recording_description": {
         "channels": [
           {
@@ -108,18 +140,143 @@
         "limitations": [
           "Synthetic fixtures prove software path only; actual Native motion, sidewalk legal status, exceptions and pixels remain unverified"
         ]
-      },
+      }
+    },
+    {
+      "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-450-1a",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
+      "rationale": "Source-joined sidewalk occupancy contrast; no legal outcome label.",
       "variable_assignments": {
         "sidewalk_vehicle_occupancy": {
           "kind": "world_setup",
           "value": true
         }
+      },
+      "unresolved_judgment_calls": [
+        "on a sidewalk",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law or the directions of a police officer or official traffic-control device",
+        "does not impede the normal and reasonable movement of pedestrians"
+      ],
+      "paired_probe_id": "sidewalk-stop-location",
+      "deliberate_differences": [
+        "sidewalk_vehicle_occupancy"
+      ],
+      "probe": {
+        "primary_variable": "sidewalk_vehicle_occupancy",
+        "comparison_or_standard": "Original body and surface source comparison without a legal cutoff",
+        "target_value_or_branch": "requested sidewalk occupancy"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original post-tick 8-vertex body",
+            "name": "vehicle_body_pose",
+            "reference_frame": "original Native frame and acquired map coordinates",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original 20 Hz frames",
+            "uncertainty": "50 ms sampling; physical surface and legal status require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original post-tick velocity norm",
+            "name": "vehicle_speed",
+            "reference_frame": "original Native frame and acquired map coordinates",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original 20 Hz frames",
+            "uncertainty": "50 ms sampling; physical surface and legal status require independent review",
+            "unit": "m/s"
+          },
+          {
+            "method": "source-joined footprint and map polygon overlap",
+            "name": "sidewalk_overlap",
+            "reference_frame": "original Native frame and acquired map coordinates",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original 20 Hz frames",
+            "uncertainty": "50 ms sampling; physical surface and legal status require independent review",
+            "unit": "m2"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "original Native map survey with legal boundary source status",
+            "name": "sidewalk_map_context",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native control request and independent authority review",
+            "name": "exception_authority_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixtures prove software path only; actual Native motion, sidewalk legal status, exceptions and pixels remain unverified"
+        ]
       }
     }
   ],
-  "cell_id": "C229977",
-  "law_id": "NRS-484B-450-1a",
-  "status": "draft"
+  "sweep_specs": [
+    {
+      "sweep_id": "c229977-judgment-1",
+      "target_law_id": "NRS-484B-450-1a",
+      "judgment_refs": [
+        {
+          "phrase": "on a sidewalk",
+          "note": "Native map sidewalk lane alone does not establish the legal surface; acquire highway, property and pedestrian-use sources."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original source, physical range and actor-compatible branch binding remain unavailable.",
+      "missing_inputs": [
+        "Original authority, surface and actor-compatible source review for on a sidewalk"
+      ]
+    },
+    {
+      "sweep_id": "c229977-judgment-2",
+      "target_law_id": "NRS-484B-450-1a",
+      "judgment_refs": [
+        {
+          "phrase": "necessary to avoid conflict with other traffic",
+          "note": "Observed traffic history and necessity must be reviewed without a numeric legal cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original source, physical range and actor-compatible branch binding remain unavailable.",
+      "missing_inputs": [
+        "Original authority, surface and actor-compatible source review for necessary to avoid conflict with other traffic"
+      ]
+    },
+    {
+      "sweep_id": "c229977-judgment-3",
+      "target_law_id": "NRS-484B-450-1a",
+      "judgment_refs": [
+        {
+          "phrase": "in compliance with law or the directions of a police officer or official traffic-control device",
+          "note": "Identify governing authority and observe its direction and compliance from original sources."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original source, physical range and actor-compatible branch binding remain unavailable.",
+      "missing_inputs": [
+        "Original authority, surface and actor-compatible source review for in compliance with law or the directions of a police officer or official traffic-control device"
+      ]
+    },
+    {
+      "sweep_id": "c229977-judgment-4",
+      "target_law_id": "NRS-484B-450-1a",
+      "judgment_refs": [
+        {
+          "phrase": "does not impede the normal and reasonable movement of pedestrians",
+          "note": "Subsection 3 applies to a bicycle, electric bicycle or electric scooter, outside this motor-vehicle actor; do not infer a width cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original source, physical range and actor-compatible branch binding remain unavailable.",
+      "missing_inputs": [
+        "Original authority, surface and actor-compatible source review for does not impede the normal and reasonable movement of pedestrians"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

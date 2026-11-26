@@ -1,6 +1,7 @@
 """Exact source-bound parked lamp meter; no low-beam legal shortcut."""
 import json
 import math
+import re
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -52,6 +53,9 @@ def measure(rows, source_kind):
     if len(rows) != FRAMES:
         raise ValueError('Full 600-frame lamp source required')
     states = set()
+    observed_states = set()
+    parked_frames = 0
+    reviewed_frames = 0
     for i,row in enumerate(rows):
         if (row.get('frame') != i or
                 abs(row.get('time_s',-1) - (i+1)/HZ) > 1e-8 or
@@ -73,13 +77,44 @@ def measure(rows, source_kind):
         if source_kind == 'original_native':
             if not isinstance(row.get('observed_light_state_bits'),int):
                 raise ValueError('Original CARLA light-state readback missing')
+            observed = row.get('observed_beam_state')
+            if observed not in ('low_beam','high_beam','off','unknown'):
+                raise ValueError('Original beam state readback missing')
+            observed_states.add(observed)
             if not isinstance(row.get('beam_pixel_review'),dict):
                 raise ValueError('Original beam aim/intensity pixel review missing')
+            review = row['beam_pixel_review']
+            if review.get('status') not in ('pending','reviewed'):
+                raise ValueError('Beam pixel review status missing')
+            if review['status'] == 'reviewed':
+                if not isinstance(review.get('source_path'),str) or not review['source_path']:
+                    raise ValueError('Beam pixel source missing')
+                if not re.fullmatch('[0-9a-f]{64}',review.get('source_sha256','')):
+                    raise ValueError('Beam pixel source hash missing')
+                if not all(isinstance(review.get(k),(int,float)) and math.isfinite(review[k])
+                           for k in ('aim_elevation_deg','relative_intensity')):
+                    raise ValueError('Measured beam aim/intensity missing')
+                reviewed_frames += 1
+            if row.get('observed_parking_activity') not in ('parked','loading','unloading','unknown'):
+                raise ValueError('Original parking activity missing')
+            if row['observed_parking_activity'] == 'parked':
+                parked_frames += 1
+            footprint = row.get('observed_footprint_xyz_m')
+            if not isinstance(footprint,list) or len(footprint) < 4 or any(
+                    not isinstance(v,list) or len(v)!=3 or not all(
+                        isinstance(x,(int,float)) and math.isfinite(x) for x in v)
+                    for v in footprint):
+                raise ValueError('Original vehicle footprint missing')
+            if not isinstance(row.get('observed_curb_lane_id'),int):
+                raise ValueError('Original curb lane readback missing')
     if len(states)!=1:
         raise ValueError('Beam request changed within parked window')
     return {'format':'c276263-parked-headlamp-meter-v1',
             'source_kind':source_kind,'frames':FRAMES,'requested_beam_state':states.pop(),
-            'actual_parking_observed':False,
+            'observed_beam_states':sorted(observed_states),
+            'parked_activity_frames':parked_frames,
+            'beam_pixel_reviewed_frames':reviewed_frames,
+            'actual_parking_observed':source_kind=='original_native' and parked_frames==FRAMES,
             'beam_depressed_or_dimmed_observed':False,
             'legal_verdict':None,'original_native_observed':source_kind=='original_native'}
 

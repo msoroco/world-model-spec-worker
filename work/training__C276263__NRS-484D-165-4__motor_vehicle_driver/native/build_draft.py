@@ -9,12 +9,16 @@ SOURCE=Path(__file__).resolve().parent
 PREFIX=BASE.name
 CAMERAS=[
  {'name':'overview','width':1920,'height':1080,'fps':20,'fov_deg':90,
+  'pose_strategy':'fixed elevated view of parked body, grade and beam projection',
   'location_xyz_m':[15,-20,30],'rotation_pyr_deg':[-45,0,90]},
  {'name':'approach','width':1280,'height':720,'fps':20,'fov_deg':85,
+  'pose_strategy':'fixed approach view of headlamp beam relative to sloped road',
   'location_xyz_m':[6,-20,7],'rotation_pyr_deg':[-15,0,90]},
  {'name':'reference_corner','width':1280,'height':720,'fps':20,'fov_deg':75,
+  'pose_strategy':'fixed curb corner reference for aim and parked footprint',
   'location_xyz_m':[16,18,4],'rotation_pyr_deg':[0,0,220]},
  {'name':'driver_reference','width':1280,'height':720,'fps':20,'fov_deg':85,
+  'pose_strategy':'subject attached driver reference light and parked context',
   'location_xyz_m':[1,0,1.5],'rotation_pyr_deg':[0,0,0]},
 ]
 
@@ -33,6 +37,7 @@ def request(state):
 def main():
  runner=(SOURCE/'runner.py').read_text()
  meter=(SOURCE/'parked_lamps.py').read_text()
+ finalizer=(SOURCE/'finalize_original.py').read_text()
  road=(SOURCE/'sloped-curb-road.xodr').read_text()
  cases=[]
  for suffix,state in (('probe_a','low_beam'),('probe_b','high_beam')):
@@ -42,6 +47,10 @@ def main():
   if measured['requested_beam_state']!=state:raise ValueError('Request differs')
   config={'case_id':case_id,'law_id':'NRS-484D-165-4','cell_id':'C276263',
           'actor':'motor_vehicle_driver','duration_s':30,'rate_hz':20,'frames':600,
+          'assignment_id':PREFIX,'selected_case_id':case_id,
+          'supported_case_ids':[PREFIX+'__probe_a',PREFIX+'__probe_b'],
+          'required_atoms':['kin.position','kin.velocity','sig.headlamp'],
+          'source_packets':[],
           'road_sha256':sha(SOURCE/'sloped-curb-road.xodr'),
           'requested_beam_state':state,'original_beam_pixel_review_required':True,
           'original_parking_context_required':True,'cameras':CAMERAS,
@@ -54,16 +63,29 @@ def main():
                 'entrypoint':'runner.py',
                 'files':[{'path':'runner.py','content':runner},
                          {'path':'parked_lamps.py','content':meter},
+                         {'path':'finalize_original.py','content':finalizer},
                          {'path':'sloped-curb-road.xodr','content':road},
                          {'path':'requested-track.jsonl','content':track},
                          {'path':'config.json','content':json.dumps(config,indent=2)+'\n'},
                          {'path':'tests/test_offline.py','content':test}],
                 'recording_description':{'duration_s':30,'rate_hz':20,
                     'source_cameras':[c['name'] for c in CAMERAS],
+                    'channels':[{'name':'drv.standing_or_parked','unit':'state'},
+                                {'name':'sig.headlamp','unit':'state'},
+                                {'name':'kin.velocity','unit':'m/s'},
+                                {'name':'rel.occupies','unit':'state'}],
                     'original_headlamp_light_state_readback_required':True,
                     'pixel_beam_elevation_and_intensity_review_required':True,
                     'actual_parking_context_and_road_grade_unverified':True,
                     'legal_verdict':None},
+                'measurement_plan':{'parked_window_frames':600,
+                    'headlamp_observations':['original light-state readback',
+                        'source-hashed beam aim and intensity pixel review']},
+                'static_checks':['road grade and curb parking lane',
+                                 'exact 30-second four-camera capture'],
+                'termination_rules':['600 joined frames or fail without seal'],
+                'mechanisms':['handbrake stationary controller',
+                              'original light-state and camera readback'],
                 'status':'draft_cpu_offline_only'}
   path=BASE/'draft-native'/suffix/'construction.json';write(path,construction)
   cases.append({'case_id':case_id,'construction':str(path.relative_to(BASE)),

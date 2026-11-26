@@ -59,6 +59,7 @@ for n in (1, 2):
                                       if item['path'] == 'config.json'))
     original_config['status'] = 'selected_native_construction'
     original_config['recording_description'] = recording_description
+    original_config['case']['recording_description'] = recording_description
     for camera in original_config['cameras']:
         if camera['name'] == 'sidewalk_boundary':
             camera['name'] = 'reference_corner'

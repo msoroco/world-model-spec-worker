@@ -1,0 +1,482 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230259__LVMC-11-30-060-A__pedestrian",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_proofs_passed",
+  "original_native_observed": false,
+  "delivery_ready": false,
+  "cases": [
+    {
+      "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_01",
+      "kind": "delivery",
+      "construction": "selected-probe_01-construction.json",
+      "construction_sha256": "e728d21962ef30588be63d22084ee1ea8ec0682ce58ed87d1acfedb390360a5c",
+      "measurement_contract": "selected-probe_01-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker spawn or roadway vehicle timing may fail; use source-measured failure before changing spawn or timing."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-probe_01-fallback1-construction.json",
+          "construction_sha256": "dbc1982fb48e22e976877e7586df2441a95de57e3eb5b2573cddf93d450ec915",
+          "trigger": {
+            "source": "original post-tick.jsonl",
+            "metric": "pedestrian roadway entry frame and vehicle conflict frame",
+            "failure_condition": "Original walker enters before a safe vehicle passage is source-confirmed or fails roadway occupancy"
+          },
+          "changed_knobs": [
+            "pedestrian_departure_frame +10 frames"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/selected-draft-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_01 --candidate fallback1 --output .runtime-work/c230259-selected-offline-01-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "dbc1982fb48e22e976877e7586df2441a95de57e3eb5b2573cddf93d450ec915",
+            "exit_code": 0,
+            "log": "selected-proofs/probe_01-fallback1/offline.log",
+            "log_sha256": "8dd07542d64e2e8216e25388d8142a8ffaf454bf965853526557d5e7bffcd1ca"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/probe_01-fallback1/compatibility.json",
+            "sha256": "97fe91da291b2536f0c8db4496763e6fc555d202eeafa17d2b90577512a05e3a",
+            "log": "selected-proofs/probe_01-fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/probe_01-fallback1/negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "selected-proofs/probe_01-fallback1/processing.json",
+            "sha256": "fb75315f65ebc745e34d5c95bab6bf1b7c8b299b367975fac72bfe82fb52cfb4",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "log": "selected-proofs/probe_01-fallback1/saved.log",
+            "log_sha256": "dc95b560ab2d42f3b99eabf433b3223729918954ced43d7fe4bccdcf1c5b1e56"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C230259__LVMC-11-30-060-A__pedestrian/native/diagnostic/probe_01/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/selected-draft-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_01 --candidate primary --output .runtime-work/c230259-selected-offline-01-v3 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "e728d21962ef30588be63d22084ee1ea8ec0682ce58ed87d1acfedb390360a5c",
+        "exit_code": 0,
+        "log": "selected-proofs/probe_01-primary/offline.log",
+        "log_sha256": "8dd07542d64e2e8216e25388d8142a8ffaf454bf965853526557d5e7bffcd1ca"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_01-primary/compatibility.json",
+        "sha256": "c58966004004ee61fa564b801ae74050d5832d7b7726b96a0161811db7ea8e2d",
+        "log": "selected-proofs/probe_01-primary/public-analysis.log",
+        "negative_log": "selected-proofs/probe_01-primary/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/probe_01-primary/processing.json",
+        "sha256": "25d867715c469d85d70d227b6f470c30c1a0380b5fbe0844f3ec7f94eb1d5a3c",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/probe_01-primary/saved.log",
+        "log_sha256": "fdf0c4b8f40e1ef260546f46d1c999e4abe56356c63eee3e9e339196702f71ea"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_01-primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/execution-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/execution-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_01-primary/saved.log",
+        "test_log_sha256": "fdf0c4b8f40e1ef260546f46d1c999e4abe56356c63eee3e9e339196702f71ea"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/probe_01/physical-preparation.json",
+        "sha256": "0689f7399fa4a4eae27f27be99ddf1eb4a306383b4f729b06ada69f2b0e7b54d"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.yields_to": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.arrival_order": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "1f37921082d02ed6a0d14de72cc27ef274e5fcf1ec1ca70731acc6013771d8bc",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-delivery-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230259__LVMC-11-30-060-A__pedestrian/delivery_audit.py --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_01 --selftest",
+        "test_exit_code": 0,
+        "test_log": "selected-physical/probe_01/delivery-positive.log",
+        "test_log_sha256": "8c008df5194657e414fd91c2362dec3acccb26c53dba69ac1e3bbf570ba5054e",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-delivery-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230259__LVMC-11-30-060-A__pedestrian/delivery_audit.py --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_01 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "selected-physical/probe_01/delivery-negative.log",
+        "negative_log_sha256": "11c103cc6ad1b33bff5848bfc7a7799c98b504724eda5da2c0917e2a25c12423"
+      }
+    },
+    {
+      "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_02",
+      "kind": "delivery",
+      "construction": "selected-probe_02-construction.json",
+      "construction_sha256": "7d7c7265fab60eddc54307ff8cc14e277b6c52689a0d12c9aed9f447878eda5c",
+      "measurement_contract": "selected-probe_02-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker spawn or roadway vehicle timing may fail; use source-measured failure before changing spawn or timing."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-probe_02-fallback1-construction.json",
+          "construction_sha256": "058c881387efd38e85b66afe213d450b7acb2c20f24d0ca88f991080e25c7260",
+          "trigger": {
+            "source": "original post-tick.jsonl",
+            "metric": "pedestrian roadway entry frame and vehicle conflict frame",
+            "failure_condition": "Original walker enters before a safe vehicle passage is source-confirmed or fails roadway occupancy"
+          },
+          "changed_knobs": [
+            "pedestrian_departure_frame +10 frames"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/selected-draft-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_02 --candidate fallback1 --output .runtime-work/c230259-selected-offline-02-fallback1-v2 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "058c881387efd38e85b66afe213d450b7acb2c20f24d0ca88f991080e25c7260",
+            "exit_code": 0,
+            "log": "selected-proofs/probe_02-fallback1/offline.log",
+            "log_sha256": "0f5d913fc2ebad42c247b2b71566bc0fa1ea942023ecbff64da80f0915874297"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/probe_02-fallback1/compatibility.json",
+            "sha256": "7366441a3a01ef309d105f975fdc5bbf94f854185f0287fbb552f9e94ded945c",
+            "log": "selected-proofs/probe_02-fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/probe_02-fallback1/negative-analysis.log"
+          },
+          "saved_processing": {
+            "receipt": "selected-proofs/probe_02-fallback1/processing.json",
+            "sha256": "dc9a6c43444365217e5db8735fe5112de4fcd0687fac5d30cf3ad445c1b7907c",
+            "recorded_only": true,
+            "originals_preserved": true,
+            "log": "selected-proofs/probe_02-fallback1/saved.log",
+            "log_sha256": "5f1ab4e5a29f25449c8dc8611f70a101f0265be038e079f34506b29e972cd76b"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C230259__LVMC-11-30-060-A__pedestrian/native/diagnostic/probe_02/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/selected-draft-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_02 --candidate primary --output .runtime-work/c230259-selected-offline-02-v3 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "7d7c7265fab60eddc54307ff8cc14e277b6c52689a0d12c9aed9f447878eda5c",
+        "exit_code": 0,
+        "log": "selected-proofs/probe_02-primary/offline.log",
+        "log_sha256": "0f5d913fc2ebad42c247b2b71566bc0fa1ea942023ecbff64da80f0915874297"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_02-primary/compatibility.json",
+        "sha256": "64beae05e9b04fd762179eb3c4345230701937958120e920ff81f0f86f39dbf5",
+        "log": "selected-proofs/probe_02-primary/public-analysis.log",
+        "negative_log": "selected-proofs/probe_02-primary/negative-analysis.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/probe_02-primary/processing.json",
+        "sha256": "7c1605fba07dd682f553c10b7c2368a01996f1ede00150e612c499abf59c2ad9",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/probe_02-primary/saved.log",
+        "log_sha256": "578ad3c2b214ef1c0cf40bf86ea583ba5ede56723a1638882d08c555b02a7672"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_02-primary/negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/execution-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230259__LVMC-11-30-060-A__pedestrian/execution-manifest.json --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_02-primary/saved.log",
+        "test_log_sha256": "578ad3c2b214ef1c0cf40bf86ea583ba5ede56723a1638882d08c555b02a7672"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/probe_02/physical-preparation.json",
+        "sha256": "74865ba642e5a2e7c14a039523b9bff9f539b873ab5c56f8cfb6783ee80f7cce"
+      },
+      "acquisition": {
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.yields_to": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.arrival_order": {
+          "entrypoint": "runner.py",
+          "method": "original Native post-tick pedestrian and full vehicle inventory joined to surveyed road, frame and four source cameras; legal applicability reviewed separately",
+          "evidence": [
+            "post-tick.jsonl",
+            "crossing-context.json",
+            "video_frames.jsonl",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "1f37921082d02ed6a0d14de72cc27ef274e5fcf1ec1ca70731acc6013771d8bc",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-delivery-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230259__LVMC-11-30-060-A__pedestrian/delivery_audit.py --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_02 --selftest",
+        "test_exit_code": 0,
+        "test_log": "selected-physical/probe_02/delivery-positive.log",
+        "test_log_sha256": "8c008df5194657e414fd91c2362dec3acccb26c53dba69ac1e3bbf570ba5054e",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230259-delivery-audit-output PYTHONPATH=$PWD/runtime/scenario_pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230259__LVMC-11-30-060-A__pedestrian/delivery_audit.py --case training__C230259__LVMC-11-30-060-A__pedestrian__probe_02 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "selected-physical/probe_02/delivery-negative.log",
+        "negative_log_sha256": "11c103cc6ad1b33bff5848bfc7a7799c98b504724eda5da2c0917e2a25c12423"
+      }
+    }
+  ]
+}

@@ -5,7 +5,7 @@
   "actor": "pedestrian",
   "source_law_text": "Every pedestrian crossing a roadway at any point other than within a marked crosswalk or within an unmarked crosswalk at an intersection shall yield the right-of-way to all vehicles upon the roadway. The foregoing rules in this Section shall have no application under the conditions stated in Section 11.30.070 when pedestrians are prohibited from crossing at certain designated places.",
   "source_law_citation": "LVMC 11.30.060(A); with 11.30.060(C)",
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "delivery_prepared_cpu_proofs",
   "selected_branch": "outside-crosswalk crossing",
   "cell_fixed_facts": {
     "layout": "road",
@@ -40,28 +40,28 @@
     {
       "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_01",
       "target_law_id": "LVMC-11-30-060-A",
-      "kind": "comparison_draft",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "outside crosswalk: pedestrian waits for vehicle",
       "comparison_variable": "yield to roadway vehicles",
-      "selection_status": "comparison_cpu_draft",
+      "selection_status": "selected_delivery_cpu_proved",
       "expected_label": null,
-      "construction_status": "native_capture_cpu_offline_passed_physical_unverified",
-      "construction": "draft-probe-01/construction.json",
-      "construction_sha256": "d1b3f9b557e5d0e24fcf8413b8659ae2a9348fcd9a6da15e85c642be6d17ec46"
+      "construction_status": "offline_public_saved_physical_cpu_passed_native_unobserved",
+      "construction": "selected-probe_01-construction.json",
+      "construction_sha256": "e728d21962ef30588be63d22084ee1ea8ec0682ce58ed87d1acfedb390360a5c"
     },
     {
       "case_id": "training__C230259__LVMC-11-30-060-A__pedestrian__probe_02",
       "target_law_id": "LVMC-11-30-060-A",
-      "kind": "delivery_draft",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "same crossing with pedestrian entering conflict before vehicle passes",
       "comparison_variable": "yield to roadway vehicles",
-      "selection_status": "draft_selected_for_cpu_proof_not_delivery_prepared",
+      "selection_status": "selected_delivery_cpu_proved",
       "expected_label": null,
-      "construction_status": "native_capture_cpu_offline_passed_physical_unverified",
-      "construction": "draft-probe-02/construction.json",
-      "construction_sha256": "5ba99d56c3528a1b6f9539928991731694291150e29bbab00f489c88789ee6a7"
+      "construction_status": "offline_public_saved_physical_cpu_passed_native_unobserved",
+      "construction": "selected-probe_02-construction.json",
+      "construction_sha256": "7d7c7265fab60eddc54307ff8cc14e277b6c52689a0d12c9aed9f447878eda5c"
     }
   ],
   "comparisons": [
@@ -72,7 +72,7 @@
         "training__C230259__LVMC-11-30-060-A__pedestrian__probe_02"
       ],
       "deliberate_differences": [
-        "yield to roadway vehicles"
+        "pedestrian requested departure frame 320 versus 140"
       ],
       "fixed_conditions": [
         "frozen cell and actor",
@@ -81,7 +81,18 @@
         "camera policy",
         "recording rate and duration",
         "nonvariable context"
-      ]
+      ],
+      "source_bound_cpu_audit": {
+        "positive": "comparison-diagnostic.json",
+        "positive_sha256": "550b6e367bf96e98e4021965135b282495b4c1aa8231b23e33fa8604415cf56a",
+        "negative": "comparison-negative.log",
+        "negative_sha256": "ee20acd5e5d3f8da41966cebb0bdc64485f1b4c76b8cda7c3685f5bd21f7a120",
+        "scope": "synthetic diagnostic comparison only; original source and legal applicability pending",
+        "source_cases": [
+          "probe_01",
+          "probe_02"
+        ]
+      }
     }
   ],
   "mandatory_observation_targets": [
@@ -120,7 +131,7 @@
     },
     {
       "term": "drv.hard_deceleration",
-      "note": "a vehicle forced to brake \u2014 the evidence the yield failed"
+      "note": "a vehicle forced to brake — the evidence the yield failed"
     },
     {
       "term": "drv.arrival_order",
@@ -141,9 +152,7 @@
     "Native generated OpenDRIVE topology, walker crossing and vehicle conflict require CARLA survey and original capture; Section 11.30.070 designated-place prohibition remains unreviewed."
   ],
   "runtime_gaps": [
-    "Original Native map/actor/camera capture has not run; actual crossing, precedence and pixels remain unverified.",
-    "Current-runtime positive/negative compatibility and saved processing, Core mapping, semantic proposals and independent audits remain unfinished.",
-    "Selected fallback constructions and exact strict ready gate remain unfinished."
+    "Original Native motion/pixels, four-camera visual review and Section 11.30.070 designated-place applicability remain for delivery."
   ],
   "observations": [
     {
@@ -184,7 +193,7 @@
     {
       "name": "drv.hard_deceleration",
       "mandatory": true,
-      "reason": "a vehicle forced to brake \u2014 the evidence the yield failed"
+      "reason": "a vehicle forced to brake — the evidence the yield failed"
     },
     {
       "name": "drv.arrival_order",
@@ -204,12 +213,7 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "Section 11.30.070 exclusion must be checked before activation; fixed cell travel requires a supported crossing phase.",
-    "No CARLA execution or accepted recording is claimed."
+    "Original CARLA actor motion, camera pixels, roadway participant census and Section 11.30.070 designated-place applicability remain unverified."
   ],
   "requirement_dispositions": [
     {
@@ -221,125 +225,110 @@
         "training__C230259__LVMC-11-30-060-A__pedestrian__probe_01",
         "training__C230259__LVMC-11-30-060-A__pedestrian__probe_02"
       ],
-      "evidence_or_gap": "Two CPU offline Native constructions and source-meter tests passed; probe_02 selected as CPU draft only. CARLA, Section 11.30.070 applicability and saved processing remain unverified."
+      "evidence_or_gap": "Two exact selected constructions, measured fallback plans, 600-frame positive/missing-source diagnostic compatibility, recorded-only saved processing and physical/lifecycle CPU proofs pass. Original Native motion/pixels, independent four-camera review and Section 11.30.070 applicability remain original-source delivery checks."
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "ru.subject",
-      "measurement_or_context": "pedestrian identity in original post-tick rows",
+  "source_observation_mapping": {
+    "ru.subject": {
+      "evidence": "pedestrian identity in original post-tick rows",
       "channels": [
-        "pedestrian_id"
+        "ru.subject"
       ],
       "source_refs": [
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/assignment.json",
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/witnesses.json"
       ],
-      "physical_evidence_status": "unobserved"
+      "physical_evidence_status": "pending_original_native_capture"
     },
-    {
-      "term": "st.crosswalk",
-      "measurement_or_context": "source survey of marked crossing and unmarked intersection crossing extents",
+    "st.crosswalk": {
+      "evidence": "source survey of marked crossing and unmarked intersection crossing extents",
       "channels": [
-        "marked_crosswalk_intervals_y_m",
-        "intersection_intervals_y_m"
+        "st.crosswalk"
       ],
       "source_refs": [
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/assignment.json",
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/witnesses.json"
       ],
-      "physical_evidence_status": "unobserved"
+      "physical_evidence_status": "pending_original_native_capture"
     },
-    {
-      "term": "st.intersection",
-      "measurement_or_context": "source survey of intersection interval and topology",
+    "st.intersection": {
+      "evidence": "source survey of intersection interval and topology",
       "channels": [
-        "intersection_intervals_y_m"
+        "st.intersection"
       ],
       "source_refs": [
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/assignment.json",
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/witnesses.json"
       ],
-      "physical_evidence_status": "unobserved"
+      "physical_evidence_status": "pending_original_native_capture"
     },
-    {
-      "term": "st.roadway",
-      "measurement_or_context": "source roadway geometry and pedestrian footprint overlap",
+    "st.roadway": {
+      "evidence": "source roadway geometry and pedestrian footprint overlap",
       "channels": [
-        "pedestrian_footprint_xy_m",
-        "road geometry"
+        "st.roadway"
       ],
       "source_refs": [
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/assignment.json",
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/witnesses.json"
       ],
-      "physical_evidence_status": "unobserved"
+      "physical_evidence_status": "pending_original_native_capture"
     },
-    {
-      "term": "rel.occupies",
-      "measurement_or_context": "first and last body footprint occupancy at original frames",
+    "rel.occupies": {
+      "evidence": "first and last body footprint occupancy at original frames",
       "channels": [
-        "pedestrian_footprint_xy_m",
-        "native_frame"
+        "rel.occupies"
       ],
       "source_refs": [
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/assignment.json",
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/witnesses.json"
       ],
-      "physical_evidence_status": "unobserved"
+      "physical_evidence_status": "pending_original_native_capture"
     },
-    {
-      "term": "drv.approaching",
-      "measurement_or_context": "all inventoried roadway vehicle source poses and speeds",
+    "drv.approaching": {
+      "evidence": "all inventoried roadway vehicle source poses and speeds",
       "channels": [
-        "vehicles"
+        "drv.approaching"
       ],
       "source_refs": [
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/assignment.json",
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/witnesses.json"
       ],
-      "physical_evidence_status": "unobserved"
+      "physical_evidence_status": "pending_original_native_capture"
     },
-    {
-      "term": "drv.yields_to",
-      "measurement_or_context": "measured original precedence; legal yield requires separate review",
+    "drv.yields_to": {
+      "evidence": "measured original precedence; legal yield requires separate review",
       "channels": [
-        "vehicles",
-        "native_frame"
+        "drv.yields_to"
       ],
       "source_refs": [
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/assignment.json",
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/witnesses.json"
       ],
-      "physical_evidence_status": "unobserved"
+      "physical_evidence_status": "pending_original_native_capture"
     },
-    {
-      "term": "drv.hard_deceleration",
-      "measurement_or_context": "vehicle speed trend from original post-tick rows; no legal cutoff",
+    "drv.hard_deceleration": {
+      "evidence": "vehicle speed trend from original post-tick rows; no legal cutoff",
       "channels": [
-        "vehicles",
-        "time_s"
+        "drv.hard_deceleration"
       ],
       "source_refs": [
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/assignment.json",
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/witnesses.json"
       ],
-      "physical_evidence_status": "unobserved"
+      "physical_evidence_status": "pending_original_native_capture"
     },
-    {
-      "term": "drv.arrival_order",
-      "measurement_or_context": "vehicle conflict passage frame relative to pedestrian roadway entry",
+    "drv.arrival_order": {
+      "evidence": "vehicle conflict passage frame relative to pedestrian roadway entry",
       "channels": [
-        "vehicles",
-        "native_frame"
+        "drv.arrival_order"
       ],
       "source_refs": [
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/assignment.json",
         "inputs/training__C230259__LVMC-11-30-060-A__pedestrian/witnesses.json"
       ],
-      "physical_evidence_status": "unobserved"
+      "physical_evidence_status": "pending_original_native_capture"
     }
-  ],
+  },
   "draft_construction_checkpoint": {
     "status": "one_selected_cpu_draft_one_comparison_draft",
     "manifest": "draft-manifest.json",
@@ -356,5 +345,32 @@
       "Current-runtime saved processing and independent audits unfinished"
     ]
   },
-  "source_law_review": "Exact LVMC 11.30.060(A) reviewed: outside marked/unmarked intersection crosswalk crossing, yield to all vehicles upon roadway, and Section 11.30.070 designated-place exclusion are separate. Probe_02 is chosen as a CPU draft; actual crossing and applicability remain unverified."
+  "source_law_review": "Exact LVMC 11.30.060(A) reviewed: outside marked/unmarked intersection crosswalk crossing, yield to all vehicles upon roadway, and Section 11.30.070 designated-place exclusion are separate. Probe_02 is chosen as a CPU draft; actual crossing and applicability remain unverified.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "pedestrian and roadway vehicle crossing order",
+        "interval": "600 original frames at 20 Hz"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian and roadway vehicle crossing order",
+        "interval": "600 original frames at 20 Hz"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "pedestrian and roadway vehicle crossing order",
+        "interval": "600 original frames at 20 Hz"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "pedestrian and roadway vehicle crossing order",
+        "interval": "600 original frames at 20 Hz"
+      }
+    ]
+  }
 }

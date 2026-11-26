@@ -1,0 +1,80 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C190398__LVMC-11-30-060-B__pedestrian",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_cpu_proofs_pending",
+  "original_native_observed": false,
+  "delivery_ready": false,
+  "cases": [
+    {
+      "case_id": "training__C190398__LVMC-11-30-060-B__pedestrian__yield",
+      "kind": "delivery",
+      "construction": "selected-yield-construction.json",
+      "construction_sha256": "581330ef7f4410a11ca062610e4ac056379e9c8ef19bf5c388f90f12c7809856",
+      "measurement_contract": "selected-yield-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker spawn, elevated crossing mesh or roadway vehicle timing may fail; use source-measured failure before changing spawn or timing."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-yield-fallback1-construction.json",
+          "construction_sha256": "4fbd977ed5bad0b0eb9f0bf2706c241483f8d7867fba6b97b7614377369f434a",
+          "trigger": {
+            "source": "original post-tick.jsonl",
+            "metric": "pedestrian roadway entry frame and vehicle conflict frame",
+            "failure_condition": "Original walker enters before a safe vehicle passage is source-confirmed or fails roadway occupancy"
+          },
+          "changed_knobs": [
+            "pedestrian_departure_frame +10 frames"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C190398__LVMC-11-30-060-B__pedestrian/native/diagnostic/yield/fixture-recipe.json"
+    },
+    {
+      "case_id": "training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead",
+      "kind": "delivery",
+      "construction": "selected-enter_ahead-construction.json",
+      "construction_sha256": "defc9a34ac36202e63b226ff45484f2f4e43b395d560086154556853d8ab1738",
+      "measurement_contract": "selected-enter_ahead-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original walker spawn, elevated crossing mesh or roadway vehicle timing may fail; use source-measured failure before changing spawn or timing."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-enter_ahead-fallback1-construction.json",
+          "construction_sha256": "c6b0e479edf8b6882eab117f4e756413c622f2ce95ae8b2948aa4f5fbb7af664",
+          "trigger": {
+            "source": "original post-tick.jsonl",
+            "metric": "pedestrian roadway entry frame and vehicle conflict frame",
+            "failure_condition": "Original walker enters before a safe vehicle passage is source-confirmed or fails roadway occupancy"
+          },
+          "changed_knobs": [
+            "pedestrian_departure_frame +10 frames"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C190398__LVMC-11-30-060-B__pedestrian/native/diagnostic/enter_ahead/fixture-recipe.json"
+    }
+  ]
+}

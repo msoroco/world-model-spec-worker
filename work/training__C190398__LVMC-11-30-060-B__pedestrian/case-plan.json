@@ -3,7 +3,7 @@
   "actor": "pedestrian",
   "cell_id": "C190398",
   "law_id": "LVMC-11-30-060-B",
-  "selected_branch": null,
+  "selected_branch": "Straight pedestrian roadway crossing at an overhead crossing.",
   "scope_branches": [
     {
       "law_id": "LVMC-11-30-060-B",
@@ -22,14 +22,14 @@
   ],
   "source_law_text": "Any pedestrian crossing a roadway at a point where a pedestrian tunnel or overhead pedestrian crossing has been provided shall yield the right-of-way to all vehicles upon the roadway. The foregoing rules in this Section shall have no application under the conditions stated in Section 11.30.070 when pedestrians are prohibited from crossing at certain designated places.",
   "source_law_citation": "LVMC 11.30.060(B); with 11.30.060(C)",
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "source_reviewed_delivery_in_progress",
   "summary_conflicts": "Do not adopt summary or witness as legal authority; exact law controls. Unreviewed historical summaries remain provisional.",
   "requirement_dispositions": [
     {
       "requirement": "text-0",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "statutory_text: Any pedestrian crossing a roadway at a point where a pedestrian tunnel or overhead pedestrian crossing has been provided shall yield the right-of-way to all vehicles upon the roadway. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "evidence_or_gap": "statutory_text: Any pedestrian crossing a roadway at a point where a pedestrian tunnel or overhead pedestrian crossing has been provided shall yield the right-of-way to all vehicles upon the roadway. | Selected two-case Native construction and source-bound CPU proofs in progress; original physical and legal review pending.",
       "case_ids": [
         "training__C190398__LVMC-11-30-060-B__pedestrian__yield",
         "training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead"
@@ -39,7 +39,7 @@
       "requirement": "text-1",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "statutory_text: The foregoing rules in this Section shall have no application under the conditions stated in Section 11.30.070 when pedestrians are prohibited from crossing at certain designated places. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "evidence_or_gap": "statutory_text: The foregoing rules in this Section shall have no application under the conditions stated in Section 11.30.070 when pedestrians are prohibited from crossing at certain designated places. | Selected two-case Native construction and source-bound CPU proofs in progress; original physical and legal review pending.",
       "case_ids": [
         "training__C190398__LVMC-11-30-060-B__pedestrian__yield",
         "training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead"
@@ -49,7 +49,7 @@
       "requirement": "reviewed-scope-0",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "reviewed_scope: Straight pedestrian roadway crossing at an overhead crossing. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "evidence_or_gap": "reviewed_scope: Straight pedestrian roadway crossing at an overhead crossing. | Selected two-case Native construction and source-bound CPU proofs in progress; original physical and legal review pending.",
       "case_ids": [
         "training__C190398__LVMC-11-30-060-B__pedestrian__yield",
         "training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead"
@@ -60,7 +60,7 @@
     {
       "case_id": "training__C190398__LVMC-11-30-060-B__pedestrian__yield",
       "target_law_id": "LVMC-11-30-060-B",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_cpu_proof_in_progress",
       "target_type": "attempt",
       "comparison_variable": "pedestrian_yield_to_roadway_vehicle",
       "comparison_unit": "category",
@@ -73,12 +73,16 @@
         "text-1",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": true,
+      "kind": "delivery",
+      "construction": "selected-yield-construction.json",
+      "construction_sha256": "6c4921ab818903c41e8bf1b31658097c5b9408b136cd73db85c3e521136f978e",
+      "expected_label": null
     },
     {
       "case_id": "training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead",
       "target_law_id": "LVMC-11-30-060-B",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_cpu_proof_in_progress",
       "target_type": "attempt",
       "comparison_variable": "pedestrian_yield_to_roadway_vehicle",
       "comparison_unit": "category",
@@ -91,7 +95,11 @@
         "text-1",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": true,
+      "kind": "delivery",
+      "construction": "selected-enter_ahead-construction.json",
+      "construction_sha256": "68696fed6968d80c89b170914d431629c20a7f276b2fdfb5eba8ecee079dcdc5",
+      "expected_label": null
     }
   ],
   "comparisons": [
@@ -102,7 +110,7 @@
         "training__C190398__LVMC-11-30-060-B__pedestrian__enter_ahead"
       ],
       "deliberate_differences": [
-        "pedestrian_yield_to_roadway_vehicle"
+        "pedestrian_departure_frame 320 versus 140"
       ],
       "fixed_conditions": [
         "cell geometry",
@@ -114,30 +122,57 @@
         "controller behavior except comparison variable",
         "capture profile"
       ],
-      "status": "planned_unverified",
+      "status": "source_bound_cpu_proof_in_progress",
       "measurement_method": "Measure physical overhead crossing, road entry, vehicle approach and pedestrian yielding."
     }
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "ru.subject",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "Original post-tick and surveyed overhead crossing source evidence"
     },
     {
-      "name": "pedestrian_yield_to_roadway_vehicle",
-      "unit": "category",
+      "name": "st.pedestrian_grade_separation",
       "mandatory": true,
-      "purpose": "Measure physical overhead crossing, road entry, vehicle approach and pedestrian yielding."
+      "purpose": "Original post-tick and surveyed overhead crossing source evidence"
+    },
+    {
+      "name": "st.roadway",
+      "mandatory": true,
+      "purpose": "Original post-tick and surveyed overhead crossing source evidence"
+    },
+    {
+      "name": "rel.occupies",
+      "mandatory": true,
+      "purpose": "Original post-tick and surveyed overhead crossing source evidence"
+    },
+    {
+      "name": "drv.approaching",
+      "mandatory": true,
+      "purpose": "Original post-tick and surveyed overhead crossing source evidence"
+    },
+    {
+      "name": "drv.yields_to",
+      "mandatory": true,
+      "purpose": "Original post-tick and surveyed overhead crossing source evidence"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "purpose": "Original post-tick and surveyed overhead crossing source evidence"
+    },
+    {
+      "name": "drv.hard_deceleration",
+      "mandatory": true,
+      "purpose": "Original post-tick and surveyed overhead crossing source evidence"
     }
   ],
   "source_observation_mapping": {
     "ru.subject": {
-      "evidence": "Draft original-source measurement requirement from the seven pinned semantic stage instances; no Native observation or legal finding.",
+      "evidence": "Original Native post-tick pedestrian and full roadway vehicle history, surveyed ground roadway and elevated provided crossing at the same point; legal applicability and Section 11.30.070 reviewed separately.",
       "channels": [
-        "pedestrian_pose",
-        "pedestrian_roadway_occupancy"
+        "ru.subject"
       ],
       "source_refs": [
         "inputs/training__C190398__LVMC-11-30-060-B__pedestrian/assignment.json",
@@ -145,10 +180,9 @@
       ]
     },
     "st.pedestrian_grade_separation": {
-      "evidence": "Draft original-source measurement requirement from the seven pinned semantic stage instances; no Native observation or legal finding.",
+      "evidence": "Original Native post-tick pedestrian and full roadway vehicle history, surveyed ground roadway and elevated provided crossing at the same point; legal applicability and Section 11.30.070 reviewed separately.",
       "channels": [
-        "grade_separation_footprint",
-        "crossing_point"
+        "st.pedestrian_grade_separation"
       ],
       "source_refs": [
         "inputs/training__C190398__LVMC-11-30-060-B__pedestrian/assignment.json",
@@ -156,10 +190,9 @@
       ]
     },
     "st.roadway": {
-      "evidence": "Draft original-source measurement requirement from the seven pinned semantic stage instances; no Native observation or legal finding.",
+      "evidence": "Original Native post-tick pedestrian and full roadway vehicle history, surveyed ground roadway and elevated provided crossing at the same point; legal applicability and Section 11.30.070 reviewed separately.",
       "channels": [
-        "roadway_polygon",
-        "pedestrian_roadway_occupancy"
+        "st.roadway"
       ],
       "source_refs": [
         "inputs/training__C190398__LVMC-11-30-060-B__pedestrian/assignment.json",
@@ -167,10 +200,9 @@
       ]
     },
     "rel.occupies": {
-      "evidence": "Draft original-source measurement requirement from the seven pinned semantic stage instances; no Native observation or legal finding.",
+      "evidence": "Original Native post-tick pedestrian and full roadway vehicle history, surveyed ground roadway and elevated provided crossing at the same point; legal applicability and Section 11.30.070 reviewed separately.",
       "channels": [
-        "pedestrian_roadway_occupancy",
-        "pedestrian_pose"
+        "rel.occupies"
       ],
       "source_refs": [
         "inputs/training__C190398__LVMC-11-30-060-B__pedestrian/assignment.json",
@@ -178,10 +210,9 @@
       ]
     },
     "drv.approaching": {
-      "evidence": "Draft original-source measurement requirement from the seven pinned semantic stage instances; no Native observation or legal finding.",
+      "evidence": "Original Native post-tick pedestrian and full roadway vehicle history, surveyed ground roadway and elevated provided crossing at the same point; legal applicability and Section 11.30.070 reviewed separately.",
       "channels": [
-        "roadway_vehicle_inventory",
-        "vehicle_pedestrian_interaction"
+        "drv.approaching"
       ],
       "source_refs": [
         "inputs/training__C190398__LVMC-11-30-060-B__pedestrian/assignment.json",
@@ -189,10 +220,9 @@
       ]
     },
     "drv.yields_to": {
-      "evidence": "Draft original-source measurement requirement from the seven pinned semantic stage instances; no Native observation or legal finding.",
+      "evidence": "Original Native post-tick pedestrian and full roadway vehicle history, surveyed ground roadway and elevated provided crossing at the same point; legal applicability and Section 11.30.070 reviewed separately.",
       "channels": [
-        "vehicle_pedestrian_interaction",
-        "priority_context"
+        "drv.yields_to"
       ],
       "source_refs": [
         "inputs/training__C190398__LVMC-11-30-060-B__pedestrian/assignment.json",
@@ -200,10 +230,9 @@
       ]
     },
     "kin.position": {
-      "evidence": "Draft original-source measurement requirement from the seven pinned semantic stage instances; no Native observation or legal finding.",
+      "evidence": "Original Native post-tick pedestrian and full roadway vehicle history, surveyed ground roadway and elevated provided crossing at the same point; legal applicability and Section 11.30.070 reviewed separately.",
       "channels": [
-        "crossing_point",
-        "pedestrian_pose"
+        "kin.position"
       ],
       "source_refs": [
         "inputs/training__C190398__LVMC-11-30-060-B__pedestrian/assignment.json",
@@ -211,10 +240,9 @@
       ]
     },
     "drv.hard_deceleration": {
-      "evidence": "Draft original-source measurement requirement from the seven pinned semantic stage instances; no Native observation or legal finding.",
+      "evidence": "Original Native post-tick pedestrian and full roadway vehicle history, surveyed ground roadway and elevated provided crossing at the same point; legal applicability and Section 11.30.070 reviewed separately.",
       "channels": [
-        "vehicle_pedestrian_interaction",
-        "vehicle_speed"
+        "drv.hard_deceleration"
       ],
       "source_refs": [
         "inputs/training__C190398__LVMC-11-30-060-B__pedestrian/assignment.json",
@@ -245,13 +273,36 @@
     }
   ],
   "runtime_uncertainties": [
-    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
-    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
-    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
-    "Cell maneuver straight on overpass may not entail roadway crossing; Section 11.30.070 exception needs separate review.",
-    "Seven source-bound semantic stage instances passed pinned validation; exact cases, Native constructions and saved-processing remain unbuilt."
+    "Original CARLA overpass mesh and pedestrian access, actor movement, camera pixels, full roadway vehicle inventory and Section 11.30.070 applicability remain unverified."
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "pedestrian road crossing, roadway vehicles and elevated overhead crossing",
+        "interval": "600 original frames at 20 Hz"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian road crossing, roadway vehicles and elevated overhead crossing",
+        "interval": "600 original frames at 20 Hz"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "pedestrian road crossing, roadway vehicles and elevated overhead crossing",
+        "interval": "600 original frames at 20 Hz"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "pedestrian road crossing, roadway vehicles and elevated overhead crossing",
+        "interval": "600 original frames at 20 Hz"
+      }
+    ]
+  }
 }

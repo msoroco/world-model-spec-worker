@@ -17,9 +17,9 @@ def bind():
     for index, entry in enumerate(manifest['cases'], 1):
         for variant, selected in [('primary', entry)] + [
                 (candidate['id'], candidate) for candidate in entry['candidates']]:
-            version = 'v6' if index == 1 and variant == 'primary' else 'v1'
+            version = 'v9'
             source = REPO / '.runtime-work' / (
-                f'c229977-public-probe{index}-{variant}-{version}')
+                f'c229977-public-probe_{index}-{variant}-{version}')
             receipt = json.loads((source / 'compatibility.json').read_text())
             if not receipt['passed'] or receipt['construction_sha256'] != selected['construction_sha256']:
                 raise ValueError('Public proof is not selected and passing')

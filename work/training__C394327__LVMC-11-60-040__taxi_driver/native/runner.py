@@ -125,8 +125,10 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
                 if snap.frame != native_frame:
                     raise RuntimeError('Native frame/snapshot mismatch')
                 if first_time is None:
-                    first_time = snap.timestamp.elapsed_seconds
-                time_s = snap.timestamp.elapsed_seconds - first_time
+                    first_time = snap.timestamp.elapsed_seconds - .05
+                time_s = (index + 1) / 20
+                if abs(snap.timestamp.elapsed_seconds - first_time - time_s) > .001:
+                    raise RuntimeError('Native fixed-step timestamp differs')
                 pipeline.capture(native_frame, time_s)
                 camera_frames = {}
                 for name, camera_queue in cameras.items():

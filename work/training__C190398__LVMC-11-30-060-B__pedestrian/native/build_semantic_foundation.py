@@ -63,6 +63,7 @@ def main():
             {'name': 'roadway_vehicle_context', 'kind': 'world_setup', 'range_or_domain': 'all vehicles upon the roadway during the crossing'},
             {'name': 'pedestrian_yield_behavior', 'kind': 'subject_behavior', 'range_or_domain': 'original crossing and interactions, never preassigned'},
             {'name': 'section_070_prohibition_context', 'kind': 'world_setup', 'range_or_domain': 'municipal prohibition conditions and original designated-place facts'},
+            {'name': 'pedestrian_departure_frame', 'kind': 'controller', 'range_or_domain': [140, 320]},
         ],
     }
     observables = [

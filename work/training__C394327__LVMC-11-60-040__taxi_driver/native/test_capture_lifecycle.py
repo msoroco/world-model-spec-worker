@@ -201,6 +201,10 @@ class CaptureLifecycle(unittest.TestCase):
                       (attempt / 'video_frames.jsonl').read_text().splitlines()]
             self.assertEqual(len(rows), 600)
             self.assertEqual(len(frames), 600)
+            self.assertEqual(rows[0]['time_s'], .05)
+            self.assertEqual(rows[-1]['time_s'], 30)
+            self.assertEqual(frames[0]['time_s'], .05)
+            self.assertEqual(frames[-1]['time_s'], 30)
             self.assertEqual(result['frames'], 600)
             self.assertFalse(result['taxi_and_stand_authority_verified'])
             self.assertEqual(len(seals), 1)

@@ -1,0 +1,49 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C190398__LVMC-11-30-060-B__pedestrian__yield",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "crossing_measurement",
+      "method": "crossing_measurement",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "post-tick.jsonl",
+        "crossing-context.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "section_070_review",
+      "method": "section_070_review",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "inputs": [
+        "crossing-context.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "grade_measurement",
+      "method": "grade_measurement",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "crossing-context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "crossing-context.json"
+    ],
+    "error_contains": "Missing required source: crossing-context.json"
+  }
+}
