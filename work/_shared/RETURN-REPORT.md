@@ -2,6 +2,39 @@
 
 ## 2026-11-26 C32014 and C230247 newly ready on current runtime
 
+C228817 now has four selected primary and four same-case physical fallback constructions passing current-runtime offline/public positive and missing-source negative compatibility. All four recorded-only positive/missing-source checks pass. Eight-stage semantic, physical/lifecycle, independent delivery selftest, canonical four-camera root package, root CPU tests and direct evidence/manifest/semantic/delivery/identity validators pass. The owner refreshed its partial reason and is running complete receipt recheck and the exact scoped strict gate; it is not marked ready yet.
+
+
+C230259 checkpoint now has all eight primary/fallback offline and public compatibility checks, four physical/lifecycle receipts, four independent delivery-audit selftests, the semantic chain and both comparison positive/negative proofs passing. The first primary recorded-only replay passes. Seven remaining candidate saved-only replays, final hash binding and exact strict gate are CPU work; result and HANDOFF remain partial with these precise gaps.
+
+
+C394563 now passes both exact construction offline checks and both full current-runtime public positive/missing-source negative compatibility chains, including Native, Core/Lean and decoded selected measurements. Its six-stage semantic chain and source-shaped physical met/not_met/unverified plus lifecycle-ordering CPU probes pass. The owner refreshed the truthful partial HANDOFF/result and is completing recorded-only, independent audits and manifest binding before strict. Original City authorization, sign/pedestrian pixels and legal result remain unverified.
+
+
+C394563 now passes current-runtime `semantic_delivery.validate` for a canonical six-stage chain on both selected school-crossing cases. Its controlled comparison changes requested ego entry frame 240 versus 320 while keeping sign, crosswalk, person trajectory and camera policy fixed; these frames are engineering probes, not a legal time cutoff. Exact public compatibility is being rerun after final construction binding, and the package remains partial.
+
+
+The school-crossing owner aligned both exact case-plan entries to selected `kind=delivery` with canonical violation/contrast proposal targets and is rerunning construction-bound offline/public receipts before physical, semantic and independent audits. C228817's fallback receipts are being bound into its manifest; C230259 has produced independent witness/exception comparison proof files. No new ready package is claimed from these in-progress proofs.
+
+
+C228817 has authored four same-case fallback1 construction files in response to its declared physical risk. They have not yet been accepted as proof-bound candidates; the owner is running exact offline/public and saved checks and updating manifest hashes. The distinction between authored fallback and qualified selected candidate is retained; package remains partial.
+
+
+C394563's exact school-crossing case A now passes current-runtime full 600-frame selected public compatibility: Native validation, four-camera decode, Core conversion, Lean decode, final render/decode and selected measurements, with a missing-road-geometry negative rejection. The owner is binding stable receipts and running case B; status remains partial until both exact cases, saved-only, semantic, physical/lifecycle, independent audit and strict gate pass. These synthetic results do not assert original sign or crossing-person pixels.
+
+
+The lead scanned 924 shared and active-owner files for UTF-8, returned-file limits, trailing whitespace, blank EOF, exact conflict markers and temporary directories under work; no issue was found. C228817's semantic proposals use `judgment_sweep` with no numeric legal cutoff; its owner is adding measured-trigger same-case physical fallbacks before rerunning construction-hash-bound proofs.
+
+
+C230259 source-bound route package now validates an eight-stage semantic chain for all four selected cases. Current-runtime public compatibility receipts cover witness_1 primary and fallback1 plus witness_2 primary; the remaining selected candidates are still processing. HANDOFF and result remain truthful partial; no original controlled-access, impeding-traffic or alternate-route conclusion is claimed.
+
+
+C228817 owner milestone on 2026-11-26: all four source-shaped physical outcome/lifecycle receipts pass the current runtime validator, and an eight-stage exact-law semantic chain passes `semantic_delivery.validate` for four selected cases and two door-schedule comparisons. Runner provenance and capture sealing changed construction hashes, so the owner is rerunning bound offline, public and recorded-only proofs before final strict. A lead review also flagged four `candidate_risk.status=physical` declarations with no bound fallback yet; the owner is addressing the risk/proof consistency. Result remains partial.
+
+
+Owner continuation on 2026-11-26: C230259 has current-runtime public primary and fallback compatibility for its first exact route witness while the other six selected candidates process; eight offline checks pass, and the source-bound Native runner/reducer retains 900 frames and four cameras. C394563 repaired exact recording and trace joins, built a 600-frame source-shaped diagnostic fixture, and now reaches Core conversion in public compatibility. Both remain partial while their remaining selected, semantic, physical/lifecycle and independent audit proofs are constructed. Original route impediment/availability and school sign/crossing observations remain unverified.
+
+
 `training__C32014__NRS-484B-633-2__motor_vehicle_driver` is newly ready. Its owner passed the final exact scoped strict gate, then the lead independently reran `.venv-cpu/bin/python -B worker_check.py --assignment training__C32014__NRS-484B-633-2__motor_vehicle_driver --complete --require-delivery-ready`; it exited 0 with `static_checks_passed: true`. Two exact selected below/above authored-posting bridge cases and a visibility fallback per case have current-runtime offline, full public positive/missing-source negative, fresh recorded-only 600-frame, six semantic stages, physical/lifecycle and independent delivery/comparison CPU proofs. The 25 mph posting is an engineering fixture, not a verified Department declaration. Original Department structure-safe maximum, sign authority/positions/pixels, bridge occupancy and realized speed remain for Native review. Final execution-manifest SHA-256 `39ef6493b37a1cc3d0df53d9953a59f830e1db73ff5bf697d04a65afde899c25`; result SHA-256 `fe5e73d4cf8d52b9f3a96a0ac85d0c0d5ad07c8550dce0cd9992f4cdd2528130`.
 
 `training__C230247__NRS-484B-307-12a__motor_vehicle_driver` is newly ready. Its owner passed the final exact scoped strict gate, then the lead independently reran `.venv-cpu/bin/python -B worker_check.py --assignment training__C230247__NRS-484B-307-12a__motor_vehicle_driver --complete --require-delivery-ready`; it exited 0 with `static_checks_passed: true`. Two selected lane-specific downward-green-arrow conditions bind current-runtime offline/public positive/missing-source negative, recorded-only, six semantic stages, physical/lifecycle and independent delivery/comparison CPU proofs. Original green-arrow face, lane governance, driver facing/occupancy and legal outcome remain for Native review. Final execution-manifest SHA-256 `ba1289882122b59e272f6dcbc9bf9fe293aa361cb040a570df8d4c676e34eb9b`; result SHA-256 `b9bc1d4922139a0092e6365489f14e5f582ceaee9a4beb9fe51e27c8f8d91006`.

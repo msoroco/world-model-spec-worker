@@ -59,7 +59,7 @@
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Vehicle entry at signed school crossing",
       "status": "selected_required",
-      "evidence_or_gap": "Two exact source-bound Native draft cases compare person occupation at vehicle entry; selected compatibility, independent audits and physical source review remain pending.",
+      "evidence_or_gap": "Two exact source-bound Native draft cases compare person occupation at vehicle entry; selected compatibility and independent CPU audits are being finalized; physical source review remains for local delivery.",
       "case_ids": [
         "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a",
         "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b"
@@ -70,8 +70,8 @@
     {
       "case_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a",
       "target_law_id": "LVMC-11-18-020",
-      "target_type": "planned_delivery_comparison",
-      "planning_status": "unverified",
+      "target_type": "boundary_probe",
+      "planning_status": "selected_for_cpu_proof",
       "source_branch": "Vehicle entry at signed school crossing",
       "comparison_variable": "same_side_person_occupancy_at_vehicle_entry",
       "condition_index": 0,
@@ -87,13 +87,14 @@
         ]
       },
       "source_text": "The City Traffic Engineer is authorized to mark and maintain with yellow paint or road buttons crosswalks approximately twelve feet in width at intersections in the vicinity of schools where in the opinion of the City Traffic Engineer crossing the roadway by schoolchildren is unsafe. The City Traffic Engineer, if necessary, is further authorized to mark and maintain with a distinguishing color or road buttons upon the pavement or by signs erected along the curb in a conspicuous manner, the words \"School-Xing,\" not less than one hundred feet in advance of each crosswalk established, and it shall be unlawful for the operator of any vehicle to drive into a crosswalk where there is displayed a sign with the words \"School-Xing,\" when there is in the crosswalk upon the side of the roadway on which said vehicle is coming any person attempting to cross the street.",
-      "claim": "No legal outcome or physical execution is asserted."
+      "claim": "Source-bound selected comparison; synthetic compatibility is diagnostic, with physical sign display, City marking authority, and person intent reserved for Native/local review.",
+      "kind": "delivery"
     },
     {
       "case_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b",
       "target_law_id": "LVMC-11-18-020",
-      "target_type": "planned_delivery_comparison",
-      "planning_status": "unverified",
+      "target_type": "boundary_probe",
+      "planning_status": "selected_for_cpu_proof",
       "source_branch": "Vehicle entry at signed school crossing",
       "comparison_variable": "same_side_person_occupancy_at_vehicle_entry",
       "condition_index": 1,
@@ -109,7 +110,8 @@
         ]
       },
       "source_text": "The City Traffic Engineer is authorized to mark and maintain with yellow paint or road buttons crosswalks approximately twelve feet in width at intersections in the vicinity of schools where in the opinion of the City Traffic Engineer crossing the roadway by schoolchildren is unsafe. The City Traffic Engineer, if necessary, is further authorized to mark and maintain with a distinguishing color or road buttons upon the pavement or by signs erected along the curb in a conspicuous manner, the words \"School-Xing,\" not less than one hundred feet in advance of each crosswalk established, and it shall be unlawful for the operator of any vehicle to drive into a crosswalk where there is displayed a sign with the words \"School-Xing,\" when there is in the crosswalk upon the side of the roadway on which said vehicle is coming any person attempting to cross the street.",
-      "claim": "No legal outcome or physical execution is asserted."
+      "claim": "Source-bound selected comparison; synthetic compatibility is diagnostic, with physical sign display, City marking authority, and person intent reserved for Native/local review.",
+      "kind": "delivery"
     }
   ],
   "comparisons": [
@@ -120,21 +122,16 @@
         "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b"
       ],
       "deliberate_differences": [
-        "same_side_person_occupancy_at_vehicle_entry"
+        "ego_entry_frame"
       ],
-      "fixed_conditions": {
-        "cell_id": "C394563",
-        "layout": "road",
-        "maneuver": "travel",
-        "control": "school_crosswalk",
-        "actor": "motor_vehicle_driver",
-        "law_id": "LVMC-11-18-020",
-        "selection_targets": [
-          "full-train"
-        ]
-      },
+      "fixed_conditions": [
+        "same source-law school crossing, surveyed yellow marking and School-Xing sign geometry",
+        "same person trajectory and identity; only controlled ego front-entry frame changes",
+        "same 600 original frames at 20 Hz and synchronized four-view camera plan"
+      ],
       "status": "planned_only",
-      "audit_gap": "Independent source meter authored; selected compatibility and complete independent saved comparison audit remain pending."
+      "audit_gap": "Independent source meter authored; selected compatibility and complete independent saved comparison audit remain pending.",
+      "comparison_variable": "same_side_person_occupancy_at_vehicle_entry"
     }
   ],
   "observations": [
@@ -319,5 +316,32 @@
   "legal_analysis_note": "The source joins named School-Xing sign, advance geometry, an approach-side person attempting to cross and vehicle entry. The City authorization clause is context, and the operative offense says any person. Native and synthetic source probes do not prove official authority, legible pixels, intent or a legal verdict.",
   "readiness": "planning_only",
   "physical_prerequisites": "Prove the crosswalk is the marked school-area crossing addressed by the source, display a physical School-Xing sign, show a person attempting to cross within the approach-side half of the crosswalk, and measure the vehicle front footprint entering it. Record original sign/crosswalk/person pixels and source geometry; synthetic labels alone cannot establish official marking.",
-  "legal_interpretation_limit": "The City Traffic Engineer authorization in text-0 is context. The text-1 vehicle prohibition applies only with the displayed School-Xing sign and a person attempting to cross on the approach side when the vehicle drives into the crosswalk. The source says person, so do not narrow this element to a schoolchild."
+  "legal_interpretation_limit": "The City Traffic Engineer authorization in text-0 is context. The text-1 vehicle prohibition applies only with the displayed School-Xing sign and a person attempting to cross on the approach side when the vehicle drives into the crosswalk. The source says person, so do not narrow this element to a schoolchild.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "vehicle, person, crosswalk and sign context",
+        "interval": "0-30 s full source capture"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle front entry, crossing and yellow marking",
+        "interval": "0-30 s full source capture"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "person occupation on vehicle approach side",
+        "interval": "0-30 s full source capture"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "advance School-Xing sign and crosswalk approach",
+        "interval": "0-30 s full source capture"
+      }
+    ]
+  }
 }

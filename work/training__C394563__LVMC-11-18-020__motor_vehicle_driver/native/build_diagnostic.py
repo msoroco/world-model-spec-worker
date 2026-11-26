@@ -64,7 +64,8 @@ def build(suffix: str) -> dict:
                       "position_m": [front - 2, -1.75, 0],
                       "position": {"x": front - 2, "y": -1.75, "z": 0},
                       "heading_deg": 0.0, "speed_mps": 1.0,
-                      "speed_mph": 1.0 / .44704})
+                      "speed_mph": 1.0 / .44704,
+                      "velocity_mps": [1, 0, 0], "control": {}})
         body.append({"frame": frame, "time_s": t,
                      "body_vertices_m": corners, "pedestrian_actor_id": 11})
         vehicle = {"actor_id": 10, "blueprint": "vehicle.tesla.model3",
@@ -104,15 +105,11 @@ def build(suffix: str) -> dict:
                             "adapter_graph": graph_path})
         graphs.append({"path": "capture/native/" + graph_path,
                        "attributes": {"frame": frame, "simulation_time_s": t,
-                                      "observed_evidence": {"frame": frame,
-                                                            "time_s": t,
-                                                            "participants": [],
-                                                            "relations": []},
+                                      "observed_evidence": original,
                                       "units": {"position": "m", "carla_speed": "m/s"}},
                        "nodes": [{"id": "ego", "attributes": {
                            "vertex": vehicle["position_m"], "sem_class": "ego",
-                           "entity_id": 10, "carla_speed": 1,
-                           "original_observation": vehicle}}],
+                           "entity_id": 10, "carla_speed": 1}}],
                        "edges": []})
     road = open_drive()
     trace_text = lines(trace)

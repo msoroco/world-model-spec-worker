@@ -1,0 +1,1771 @@
+{
+  "case_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a",
+  "measured_values": {
+    "school_marking": {
+      "crosswalk_width_m": 3.6576,
+      "sign_advance_m": 35.0,
+      "native_map_object_present": true,
+      "city_authority_verified": false,
+      "actual_marking_pixels_verified": false
+    },
+    "signed_entry": {
+      "entry": {
+        "native_frame": 10240,
+        "video_frame": 240,
+        "time_s": 12.0,
+        "ego_front_x_m": 0.0,
+        "person_in_crosswalk": true,
+        "person_on_approach_side": true,
+        "person_approach_motion_observed": true,
+        "person_actor_id": 11
+      },
+      "ego_rear_cleared_crosswalk": true,
+      "intent_from_motion_only": true,
+      "actual_sign_pixels_verified": false
+    },
+    "reviewed_scope": {
+      "original_vehicle_entry_frame": 10240,
+      "person_in_crosswalk_on_approach_side": true,
+      "legal_outcome_claimed": false
+    }
+  },
+  "target_checks": [
+    {
+      "target": "same_side_person_present_at_entry",
+      "requested": true,
+      "measured": true,
+      "method": "saved original front-footprint and pedestrian frame join",
+      "tolerance": 0,
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "road_geometry.json",
+        "native_samples.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": true,
+  "maneuver_completed": false,
+  "termination_reason": "Saved evidence assessed; maneuver not_met; legal judgments remain separate",
+  "physical_failure_flags": [
+    "sign_pixels_city_authority_and_person_intent_require_independent_review"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_front_entry",
+        "method": "original actor footprint and transform",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "source state",
+        "reference_frame": "original Native frame and surveyed road geometry",
+        "uncertainty": "50 ms event bracket; sign pixels and intent await review"
+      },
+      {
+        "name": "person_crosswalk_sign",
+        "method": "original person transform and school crossing/sign geometry",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "source state",
+        "reference_frame": "original Native frame and surveyed road geometry",
+        "uncertainty": "50 ms event bracket; sign pixels and intent await review"
+      },
+      {
+        "name": "four_camera_video",
+        "method": "four named original source streams",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "source state",
+        "reference_frame": "original Native frame and surveyed road geometry",
+        "uncertainty": "50 ms event bracket; sign pixels and intent await review"
+      }
+    ],
+    "limitations": [
+      "Native marking, sign authority, person intention and original pixels unverified"
+    ],
+    "context_inputs": []
+  },
+  "recording_evidence": [
+    {
+      "name": "ego_front_entry",
+      "unit": "source state",
+      "reference": "channels/ego_front_entry.jsonl"
+    },
+    {
+      "name": "person_crosswalk_sign",
+      "unit": "source state",
+      "reference": "channels/person_crosswalk_sign.jsonl"
+    },
+    {
+      "name": "four_camera_video",
+      "unit": "source state",
+      "reference": "channels/four_camera_video.jsonl"
+    }
+  ],
+  "realized_observables": {
+    "sampled_path_m": {
+      "value": 8.950000000000001,
+      "unit": "m",
+      "statistic": "sum of consecutive body-center distances",
+      "method": "original timestamp-joined sampled body geometry",
+      "time_window": "recorded original motion interval",
+      "reference": "body_history.jsonl"
+    },
+    "displacement_m": {
+      "value": 8.950000000000001,
+      "unit": "m",
+      "statistic": "first-to-last body-center distance",
+      "method": "original timestamp-joined sampled body geometry",
+      "time_window": "recorded original motion interval",
+      "reference": "body_history.jsonl"
+    }
+  },
+  "provenance_kind": "synthetic_fixture",
+  "accepted": false,
+  "legal_verdict_claimed": false,
+  "physical_checks": {
+    "setup": {
+      "status": "not_met",
+      "method": "source identity/timestamp joins plus full planned recording count and duration",
+      "intervals": [
+        {
+          "first_frame": 10000,
+          "last_frame": 10179,
+          "first_time_s": 0.0,
+          "last_time_s": 8.95
+        }
+      ],
+      "sources": {
+        "config.json": "6c486c73e57657e83867052c772cbe0ef6c6ac2b06a9a65d6a66fc3b443f2e7a",
+        "video_frames.jsonl": "e3e30a8588fa3250bdc7a631b1dc42f8a7bddf79103847a4bdda4b351c4b5f22",
+        "trace.jsonl": "25057670d8942aaf25ac3625418c2af8888eefca94353d4289d82ca1e1a6d2aa",
+        "body_history.jsonl": "7446c91649cbc815c01492fe5a1cef67d60701194b9cd77777652bdc41c15313",
+        "road_geometry.json": "3ab8ab6707c56e7519c3ed4d251e7d1a14c43364260a349ff5e9d7e5debc4205"
+      },
+      "details": {
+        "joined_motion_samples": 180,
+        "planned_frame_count": 600,
+        "observed_frame_count": 600,
+        "planned_observation_span_s": 29.95,
+        "observed_observation_span_s": 29.95,
+        "legal_scope_not_accepted": true
+      },
+      "missing_evidence": [],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "target": {
+      "status": "met",
+      "method": "selected analyzer measured target matching; no causation inference",
+      "intervals": [
+        {
+          "first_frame": 10000,
+          "last_frame": 10179,
+          "first_time_s": 0.0,
+          "last_time_s": 8.95
+        }
+      ],
+      "sources": {
+        "config.json": "6c486c73e57657e83867052c772cbe0ef6c6ac2b06a9a65d6a66fc3b443f2e7a",
+        "video_frames.jsonl": "e3e30a8588fa3250bdc7a631b1dc42f8a7bddf79103847a4bdda4b351c4b5f22",
+        "trace.jsonl": "25057670d8942aaf25ac3625418c2af8888eefca94353d4289d82ca1e1a6d2aa",
+        "body_history.jsonl": "7446c91649cbc815c01492fe5a1cef67d60701194b9cd77777652bdc41c15313",
+        "road_geometry.json": "3ab8ab6707c56e7519c3ed4d251e7d1a14c43364260a349ff5e9d7e5debc4205"
+      },
+      "details": {
+        "checks": [
+          {
+            "target": "same_side_person_present_at_entry",
+            "requested": true,
+            "measured": true,
+            "method": "saved original front-footprint and pedestrian frame join",
+            "tolerance": 0,
+            "matched": true,
+            "physical_cause_confirmed": false,
+            "cause_evidence": [
+              "road_geometry.json",
+              "native_samples.jsonl",
+              "video_frames.jsonl"
+            ]
+          }
+        ]
+      },
+      "missing_evidence": [],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "maneuver": {
+      "status": "not_met",
+      "method": "original sampled intersection_clearance",
+      "intervals": [
+        {
+          "first_frame": 10000,
+          "last_frame": 10179,
+          "first_time_s": 0.0,
+          "last_time_s": 8.95
+        }
+      ],
+      "sources": {
+        "config.json": "6c486c73e57657e83867052c772cbe0ef6c6ac2b06a9a65d6a66fc3b443f2e7a",
+        "video_frames.jsonl": "e3e30a8588fa3250bdc7a631b1dc42f8a7bddf79103847a4bdda4b351c4b5f22",
+        "trace.jsonl": "25057670d8942aaf25ac3625418c2af8888eefca94353d4289d82ca1e1a6d2aa",
+        "body_history.jsonl": "7446c91649cbc815c01492fe5a1cef67d60701194b9cd77777652bdc41c15313",
+        "road_geometry.json": "3ab8ab6707c56e7519c3ed4d251e7d1a14c43364260a349ff5e9d7e5debc4205"
+      },
+      "details": {
+        "criterion": "intersection_clearance",
+        "sample_count": 180,
+        "displacement_m": 8.950000000000001,
+        "sampled_path_m": 8.950000000000001,
+        "engineering_minimum_progress_m": 5.0,
+        "not_a_legal_threshold": true,
+        "intersection_polygon_xy_m": [
+          [
+            0,
+            -3.5
+          ],
+          [
+            3.6576,
+            -3.5
+          ],
+          [
+            3.6576,
+            3.5
+          ],
+          [
+            0,
+            3.5
+          ]
+        ],
+        "body_overlap_by_frame": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "entry_frame": null,
+        "clearance_frame": null,
+        "departure_clear_by_frame": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "missing_evidence": [],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "attempt": {
+      "status": "met",
+      "method": "observed finite original motion; separate from target success",
+      "intervals": [
+        {
+          "first_frame": 10000,
+          "last_frame": 10179,
+          "first_time_s": 0.0,
+          "last_time_s": 8.95
+        }
+      ],
+      "sources": {
+        "config.json": "6c486c73e57657e83867052c772cbe0ef6c6ac2b06a9a65d6a66fc3b443f2e7a",
+        "video_frames.jsonl": "e3e30a8588fa3250bdc7a631b1dc42f8a7bddf79103847a4bdda4b351c4b5f22",
+        "trace.jsonl": "25057670d8942aaf25ac3625418c2af8888eefca94353d4289d82ca1e1a6d2aa",
+        "body_history.jsonl": "7446c91649cbc815c01492fe5a1cef67d60701194b9cd77777652bdc41c15313",
+        "road_geometry.json": "3ab8ab6707c56e7519c3ed4d251e7d1a14c43364260a349ff5e9d7e5debc4205"
+      },
+      "physical_causation_claimed": false
+    }
+  },
+  "physical_observations": {
+    "original_motion": {
+      "frames": [
+        10000,
+        10001,
+        10002,
+        10003,
+        10004,
+        10005,
+        10006,
+        10007,
+        10008,
+        10009,
+        10010,
+        10011,
+        10012,
+        10013,
+        10014,
+        10015,
+        10016,
+        10017,
+        10018,
+        10019,
+        10020,
+        10021,
+        10022,
+        10023,
+        10024,
+        10025,
+        10026,
+        10027,
+        10028,
+        10029,
+        10030,
+        10031,
+        10032,
+        10033,
+        10034,
+        10035,
+        10036,
+        10037,
+        10038,
+        10039,
+        10040,
+        10041,
+        10042,
+        10043,
+        10044,
+        10045,
+        10046,
+        10047,
+        10048,
+        10049,
+        10050,
+        10051,
+        10052,
+        10053,
+        10054,
+        10055,
+        10056,
+        10057,
+        10058,
+        10059,
+        10060,
+        10061,
+        10062,
+        10063,
+        10064,
+        10065,
+        10066,
+        10067,
+        10068,
+        10069,
+        10070,
+        10071,
+        10072,
+        10073,
+        10074,
+        10075,
+        10076,
+        10077,
+        10078,
+        10079,
+        10080,
+        10081,
+        10082,
+        10083,
+        10084,
+        10085,
+        10086,
+        10087,
+        10088,
+        10089,
+        10090,
+        10091,
+        10092,
+        10093,
+        10094,
+        10095,
+        10096,
+        10097,
+        10098,
+        10099,
+        10100,
+        10101,
+        10102,
+        10103,
+        10104,
+        10105,
+        10106,
+        10107,
+        10108,
+        10109,
+        10110,
+        10111,
+        10112,
+        10113,
+        10114,
+        10115,
+        10116,
+        10117,
+        10118,
+        10119,
+        10120,
+        10121,
+        10122,
+        10123,
+        10124,
+        10125,
+        10126,
+        10127,
+        10128,
+        10129,
+        10130,
+        10131,
+        10132,
+        10133,
+        10134,
+        10135,
+        10136,
+        10137,
+        10138,
+        10139,
+        10140,
+        10141,
+        10142,
+        10143,
+        10144,
+        10145,
+        10146,
+        10147,
+        10148,
+        10149,
+        10150,
+        10151,
+        10152,
+        10153,
+        10154,
+        10155,
+        10156,
+        10157,
+        10158,
+        10159,
+        10160,
+        10161,
+        10162,
+        10163,
+        10164,
+        10165,
+        10166,
+        10167,
+        10168,
+        10169,
+        10170,
+        10171,
+        10172,
+        10173,
+        10174,
+        10175,
+        10176,
+        10177,
+        10178,
+        10179
+      ],
+      "times_s": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95,
+        1.0,
+        1.05,
+        1.1,
+        1.15,
+        1.2,
+        1.25,
+        1.3,
+        1.35,
+        1.4,
+        1.45,
+        1.5,
+        1.55,
+        1.6,
+        1.65,
+        1.7,
+        1.75,
+        1.8,
+        1.85,
+        1.9,
+        1.95,
+        2.0,
+        2.05,
+        2.1,
+        2.15,
+        2.2,
+        2.25,
+        2.3,
+        2.35,
+        2.4,
+        2.45,
+        2.5,
+        2.55,
+        2.6,
+        2.65,
+        2.7,
+        2.75,
+        2.8,
+        2.85,
+        2.9,
+        2.95,
+        3.0,
+        3.05,
+        3.1,
+        3.15,
+        3.2,
+        3.25,
+        3.3,
+        3.35,
+        3.4,
+        3.45,
+        3.5,
+        3.55,
+        3.6,
+        3.65,
+        3.7,
+        3.75,
+        3.8,
+        3.85,
+        3.9,
+        3.95,
+        4.0,
+        4.05,
+        4.1,
+        4.15,
+        4.2,
+        4.25,
+        4.3,
+        4.35,
+        4.4,
+        4.45,
+        4.5,
+        4.55,
+        4.6,
+        4.65,
+        4.7,
+        4.75,
+        4.8,
+        4.85,
+        4.9,
+        4.95,
+        5.0,
+        5.05,
+        5.1,
+        5.15,
+        5.2,
+        5.25,
+        5.3,
+        5.35,
+        5.4,
+        5.45,
+        5.5,
+        5.55,
+        5.6,
+        5.65,
+        5.7,
+        5.75,
+        5.8,
+        5.85,
+        5.9,
+        5.95,
+        6.0,
+        6.05,
+        6.1,
+        6.15,
+        6.2,
+        6.25,
+        6.3,
+        6.35,
+        6.4,
+        6.45,
+        6.5,
+        6.55,
+        6.6,
+        6.65,
+        6.7,
+        6.75,
+        6.8,
+        6.85,
+        6.9,
+        6.95,
+        7.0,
+        7.05,
+        7.1,
+        7.15,
+        7.2,
+        7.25,
+        7.3,
+        7.35,
+        7.4,
+        7.45,
+        7.5,
+        7.55,
+        7.6,
+        7.65,
+        7.7,
+        7.75,
+        7.8,
+        7.85,
+        7.9,
+        7.95,
+        8.0,
+        8.05,
+        8.1,
+        8.15,
+        8.2,
+        8.25,
+        8.3,
+        8.35,
+        8.4,
+        8.45,
+        8.5,
+        8.55,
+        8.6,
+        8.65,
+        8.7,
+        8.75,
+        8.8,
+        8.85,
+        8.9,
+        8.95
+      ],
+      "body_centers_xy_m": [
+        [
+          -14.0,
+          -1.75
+        ],
+        [
+          -13.95,
+          -1.75
+        ],
+        [
+          -13.9,
+          -1.75
+        ],
+        [
+          -13.85,
+          -1.75
+        ],
+        [
+          -13.8,
+          -1.75
+        ],
+        [
+          -13.75,
+          -1.75
+        ],
+        [
+          -13.7,
+          -1.75
+        ],
+        [
+          -13.65,
+          -1.75
+        ],
+        [
+          -13.6,
+          -1.75
+        ],
+        [
+          -13.55,
+          -1.75
+        ],
+        [
+          -13.5,
+          -1.75
+        ],
+        [
+          -13.45,
+          -1.75
+        ],
+        [
+          -13.4,
+          -1.75
+        ],
+        [
+          -13.35,
+          -1.75
+        ],
+        [
+          -13.3,
+          -1.75
+        ],
+        [
+          -13.25,
+          -1.75
+        ],
+        [
+          -13.2,
+          -1.75
+        ],
+        [
+          -13.15,
+          -1.75
+        ],
+        [
+          -13.1,
+          -1.75
+        ],
+        [
+          -13.05,
+          -1.75
+        ],
+        [
+          -13.0,
+          -1.75
+        ],
+        [
+          -12.95,
+          -1.75
+        ],
+        [
+          -12.9,
+          -1.75
+        ],
+        [
+          -12.85,
+          -1.75
+        ],
+        [
+          -12.8,
+          -1.75
+        ],
+        [
+          -12.75,
+          -1.75
+        ],
+        [
+          -12.7,
+          -1.75
+        ],
+        [
+          -12.65,
+          -1.75
+        ],
+        [
+          -12.6,
+          -1.75
+        ],
+        [
+          -12.55,
+          -1.75
+        ],
+        [
+          -12.5,
+          -1.75
+        ],
+        [
+          -12.45,
+          -1.75
+        ],
+        [
+          -12.4,
+          -1.75
+        ],
+        [
+          -12.35,
+          -1.75
+        ],
+        [
+          -12.3,
+          -1.75
+        ],
+        [
+          -12.25,
+          -1.75
+        ],
+        [
+          -12.2,
+          -1.75
+        ],
+        [
+          -12.15,
+          -1.75
+        ],
+        [
+          -12.1,
+          -1.75
+        ],
+        [
+          -12.05,
+          -1.75
+        ],
+        [
+          -12.0,
+          -1.75
+        ],
+        [
+          -11.95,
+          -1.75
+        ],
+        [
+          -11.9,
+          -1.75
+        ],
+        [
+          -11.85,
+          -1.75
+        ],
+        [
+          -11.8,
+          -1.75
+        ],
+        [
+          -11.75,
+          -1.75
+        ],
+        [
+          -11.7,
+          -1.75
+        ],
+        [
+          -11.65,
+          -1.75
+        ],
+        [
+          -11.6,
+          -1.75
+        ],
+        [
+          -11.55,
+          -1.75
+        ],
+        [
+          -11.5,
+          -1.75
+        ],
+        [
+          -11.45,
+          -1.75
+        ],
+        [
+          -11.4,
+          -1.75
+        ],
+        [
+          -11.35,
+          -1.75
+        ],
+        [
+          -11.3,
+          -1.75
+        ],
+        [
+          -11.25,
+          -1.75
+        ],
+        [
+          -11.2,
+          -1.75
+        ],
+        [
+          -11.15,
+          -1.75
+        ],
+        [
+          -11.1,
+          -1.75
+        ],
+        [
+          -11.05,
+          -1.75
+        ],
+        [
+          -11.0,
+          -1.75
+        ],
+        [
+          -10.95,
+          -1.75
+        ],
+        [
+          -10.9,
+          -1.75
+        ],
+        [
+          -10.85,
+          -1.75
+        ],
+        [
+          -10.8,
+          -1.75
+        ],
+        [
+          -10.75,
+          -1.75
+        ],
+        [
+          -10.7,
+          -1.75
+        ],
+        [
+          -10.65,
+          -1.75
+        ],
+        [
+          -10.6,
+          -1.75
+        ],
+        [
+          -10.55,
+          -1.75
+        ],
+        [
+          -10.5,
+          -1.75
+        ],
+        [
+          -10.45,
+          -1.75
+        ],
+        [
+          -10.4,
+          -1.75
+        ],
+        [
+          -10.35,
+          -1.75
+        ],
+        [
+          -10.3,
+          -1.75
+        ],
+        [
+          -10.25,
+          -1.75
+        ],
+        [
+          -10.2,
+          -1.75
+        ],
+        [
+          -10.15,
+          -1.75
+        ],
+        [
+          -10.1,
+          -1.75
+        ],
+        [
+          -10.05,
+          -1.75
+        ],
+        [
+          -10.0,
+          -1.75
+        ],
+        [
+          -9.95,
+          -1.75
+        ],
+        [
+          -9.899999999999999,
+          -1.75
+        ],
+        [
+          -9.85,
+          -1.75
+        ],
+        [
+          -9.8,
+          -1.75
+        ],
+        [
+          -9.75,
+          -1.75
+        ],
+        [
+          -9.7,
+          -1.75
+        ],
+        [
+          -9.649999999999999,
+          -1.75
+        ],
+        [
+          -9.6,
+          -1.75
+        ],
+        [
+          -9.55,
+          -1.75
+        ],
+        [
+          -9.5,
+          -1.75
+        ],
+        [
+          -9.45,
+          -1.75
+        ],
+        [
+          -9.399999999999999,
+          -1.75
+        ],
+        [
+          -9.35,
+          -1.75
+        ],
+        [
+          -9.3,
+          -1.75
+        ],
+        [
+          -9.25,
+          -1.75
+        ],
+        [
+          -9.2,
+          -1.75
+        ],
+        [
+          -9.149999999999999,
+          -1.75
+        ],
+        [
+          -9.1,
+          -1.75
+        ],
+        [
+          -9.05,
+          -1.75
+        ],
+        [
+          -9.0,
+          -1.75
+        ],
+        [
+          -8.95,
+          -1.75
+        ],
+        [
+          -8.899999999999999,
+          -1.75
+        ],
+        [
+          -8.85,
+          -1.75
+        ],
+        [
+          -8.8,
+          -1.75
+        ],
+        [
+          -8.75,
+          -1.75
+        ],
+        [
+          -8.7,
+          -1.75
+        ],
+        [
+          -8.649999999999999,
+          -1.75
+        ],
+        [
+          -8.6,
+          -1.75
+        ],
+        [
+          -8.55,
+          -1.75
+        ],
+        [
+          -8.5,
+          -1.75
+        ],
+        [
+          -8.45,
+          -1.75
+        ],
+        [
+          -8.399999999999999,
+          -1.75
+        ],
+        [
+          -8.35,
+          -1.75
+        ],
+        [
+          -8.3,
+          -1.75
+        ],
+        [
+          -8.25,
+          -1.75
+        ],
+        [
+          -8.2,
+          -1.75
+        ],
+        [
+          -8.149999999999999,
+          -1.75
+        ],
+        [
+          -8.1,
+          -1.75
+        ],
+        [
+          -8.05,
+          -1.75
+        ],
+        [
+          -8.0,
+          -1.75
+        ],
+        [
+          -7.949999999999999,
+          -1.75
+        ],
+        [
+          -7.899999999999999,
+          -1.75
+        ],
+        [
+          -7.85,
+          -1.75
+        ],
+        [
+          -7.800000000000001,
+          -1.75
+        ],
+        [
+          -7.75,
+          -1.75
+        ],
+        [
+          -7.699999999999999,
+          -1.75
+        ],
+        [
+          -7.649999999999999,
+          -1.75
+        ],
+        [
+          -7.6,
+          -1.75
+        ],
+        [
+          -7.550000000000001,
+          -1.75
+        ],
+        [
+          -7.5,
+          -1.75
+        ],
+        [
+          -7.449999999999999,
+          -1.75
+        ],
+        [
+          -7.399999999999999,
+          -1.75
+        ],
+        [
+          -7.35,
+          -1.75
+        ],
+        [
+          -7.300000000000001,
+          -1.75
+        ],
+        [
+          -7.25,
+          -1.75
+        ],
+        [
+          -7.199999999999999,
+          -1.75
+        ],
+        [
+          -7.149999999999999,
+          -1.75
+        ],
+        [
+          -7.1,
+          -1.75
+        ],
+        [
+          -7.050000000000001,
+          -1.75
+        ],
+        [
+          -7.0,
+          -1.75
+        ],
+        [
+          -6.949999999999999,
+          -1.75
+        ],
+        [
+          -6.899999999999999,
+          -1.75
+        ],
+        [
+          -6.85,
+          -1.75
+        ],
+        [
+          -6.800000000000001,
+          -1.75
+        ],
+        [
+          -6.75,
+          -1.75
+        ],
+        [
+          -6.699999999999999,
+          -1.75
+        ],
+        [
+          -6.649999999999999,
+          -1.75
+        ],
+        [
+          -6.6,
+          -1.75
+        ],
+        [
+          -6.550000000000001,
+          -1.75
+        ],
+        [
+          -6.5,
+          -1.75
+        ],
+        [
+          -6.449999999999999,
+          -1.75
+        ],
+        [
+          -6.399999999999999,
+          -1.75
+        ],
+        [
+          -6.35,
+          -1.75
+        ],
+        [
+          -6.300000000000001,
+          -1.75
+        ],
+        [
+          -6.25,
+          -1.75
+        ],
+        [
+          -6.199999999999999,
+          -1.75
+        ],
+        [
+          -6.149999999999999,
+          -1.75
+        ],
+        [
+          -6.1,
+          -1.75
+        ],
+        [
+          -6.050000000000001,
+          -1.75
+        ],
+        [
+          -6.0,
+          -1.75
+        ],
+        [
+          -5.949999999999999,
+          -1.75
+        ],
+        [
+          -5.9,
+          -1.75
+        ],
+        [
+          -5.85,
+          -1.75
+        ],
+        [
+          -5.799999999999999,
+          -1.75
+        ],
+        [
+          -5.75,
+          -1.75
+        ],
+        [
+          -5.699999999999999,
+          -1.75
+        ],
+        [
+          -5.65,
+          -1.75
+        ],
+        [
+          -5.6,
+          -1.75
+        ],
+        [
+          -5.549999999999999,
+          -1.75
+        ],
+        [
+          -5.5,
+          -1.75
+        ],
+        [
+          -5.449999999999999,
+          -1.75
+        ],
+        [
+          -5.4,
+          -1.75
+        ],
+        [
+          -5.35,
+          -1.75
+        ],
+        [
+          -5.299999999999999,
+          -1.75
+        ],
+        [
+          -5.25,
+          -1.75
+        ],
+        [
+          -5.199999999999999,
+          -1.75
+        ],
+        [
+          -5.15,
+          -1.75
+        ],
+        [
+          -5.1,
+          -1.75
+        ],
+        [
+          -5.049999999999999,
+          -1.75
+        ]
+      ],
+      "sampled_path_m": 8.950000000000001,
+      "displacement_m": 8.950000000000001
+    },
+    "completion_criterion": {
+      "format": "worker-physical-completion-criteria",
+      "criterion": "intersection_clearance",
+      "motion_source": "body_history.jsonl",
+      "position_key": "position_m",
+      "minimum_progress_m": 5.0,
+      "minimum_samples": 2,
+      "engineering_tolerances_not_legal": true,
+      "context_sources": [
+        "road_geometry.json"
+      ],
+      "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold.",
+      "body_key": "body_vertices_m",
+      "intersection_polygon_xy_m": [
+        [
+          0,
+          -3.5
+        ],
+        [
+          3.6576,
+          -3.5
+        ],
+        [
+          3.6576,
+          3.5
+        ],
+        [
+          0,
+          3.5
+        ]
+      ],
+      "exit_axis": 0,
+      "exit_sign": 1
+    }
+  },
+  "diagnostic_fixture": true,
+  "scope": "Source protocol provenance, not physical or legal acceptance",
+  "physical_acceptance_claimed": false
+}

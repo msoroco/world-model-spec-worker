@@ -8,12 +8,39 @@
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1",
       "kind": "delivery",
       "construction": "native/probe-1-construction.json",
-      "construction_sha256": "5124a9488c6d656e9ae6678a9c02f56c86b63fac0861706bfde4f4c15c86eadd",
+      "construction_sha256": "eb3883aaee536990b8b665347c11804c87f64b7f5e3ff4fce1dbe17135522009",
       "candidate_risk": {
         "status": "physical",
         "reason": "Door motion, passing side, and transfer visibility require original CARLA readback"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/probe-1-fallback1-construction.json",
+          "construction_sha256": "7255943f70b1f1f581bdbb0539d643706a15745a2ce81bbb792d79791fd9012c",
+          "trigger": {
+            "source": "independent original four-camera pixel review",
+            "metric": "reviewed transfer event visible with actor identity and timestamp",
+            "failure_condition": "original source pixels do not resolve transfer actor and event"
+          },
+          "changed_knobs": [
+            "walker commanded speed during frames 190-225: 0.8 to 0.6 m/s"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "7255943f70b1f1f581bdbb0539d643706a15745a2ce81bbb792d79791fd9012c",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1 --candidate fallback1 --output .runtime-work/c228817-resume/fallback-offline-1-v1",
+            "log": "native/proofs/probe-1/fallback1/offline.log",
+            "log_sha256": "283ce9a95699066ade71bfd97dd882c1b067aa17fd54796c0923389b7938dd80"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/probe-1/fallback1/compatibility.json",
+            "sha256": "0bf4b16f7f355642dfdcf1db10506592c9951ac7b4c5e570a6918e53aa41ee9a",
+            "log": "native/proofs/probe-1/fallback1/compat-analysis.log",
+            "negative_log": "native/proofs/probe-1/fallback1/negative-analysis.log"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
@@ -27,20 +54,10 @@
       },
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "5124a9488c6d656e9ae6678a9c02f56c86b63fac0861706bfde4f4c15c86eadd",
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1 --output .runtime-work/c228817-resume/selected-offline-1-v2",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1 --output .runtime-work/c228817-resume/selected-offline-1-v3",
         "log": "native/proofs/probe-1/offline.log",
-        "log_sha256": "de575f3228dcfd6a50e2db7e8640751242fa2de14daabae586fcfeb05c360797"
-      },
-      "compatibility": {
-        "receipt": "native/proofs/probe-1/compatibility.json",
-        "sha256": "c7eec1e319d595b3a17305a193aa10d1f9f945936bdb803e26fccaa98d2173d2",
-        "log": "native/proofs/probe-1/compat-analysis.log",
-        "negative_log": "native/proofs/probe-1/negative-analysis.log"
-      },
-      "negative": {
-        "log": "native/proofs/probe-1/negative-analysis.log",
-        "log_sha256": "02b1d51be01728e304d9f451efd9fe60db21731fa79ccf5b068b4da34d4b55cf"
+        "log_sha256": "90439ced11bd1164b2e94d3c001c1790fdedd1723b8763b9a1f5054b215eb5dd",
+        "construction_sha256": "eb3883aaee536990b8b665347c11804c87f64b7f5e3ff4fce1dbe17135522009"
       },
       "acquisition": {
         "sig.door_open": {
@@ -106,24 +123,86 @@
         "test_log_sha256": "18e92ce050d7d40503960b25305812e0f9bd7d21357cf284459af84b8bae1633",
         "test_exit_code": 0,
         "missing_source_test_log": "native/proofs/probe-1/saved-missing.log",
-        "missing_source_test_log_sha256": "748368f562b54f9c8c7689ed5f5117a2b16134800f0799111ffed6386efe0400",
+        "missing_source_test_log_sha256": "800b799effdcdacea8ffade47ec2d43c59f3f5c7fb697e35f4aa1b9152b7c965",
         "missing_source_test_exit_code": 0
+      },
+      "compatibility": {
+        "receipt": "native/proofs/probe-1/compatibility.json",
+        "sha256": "43ea422d274814ea9a4fc0c0a942c549107b9406eda6ea0f2fb24db4fcf3edbb",
+        "log": "native/proofs/probe-1/compat-analysis.log",
+        "negative_log": "native/proofs/probe-1/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/proofs/probe-1/negative-analysis.log",
+        "log_sha256": "c14880151879204f5ad9d867f28fbfe703124063d0da9e1742062b4b115fd52a"
       },
       "physical_preparation": {
         "receipt": "native/proofs/probe-1/physical/proof.json",
-        "sha256": "ef2d2b9c4da8bf3726f92e3feee6ac8d687c692c8dac26a772005e98a5db8702"
+        "sha256": "851dc80305a00bcb70eaaa3b85d06e17e93a42a9c13f9d1a7b7e94b36627bb4b"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "fa61afa5c96ba63021891fefcc94a2bb92e6b75193b09584eb8f181609ed2538",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/delivery_audit.py --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe-1/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/delivery_audit.py --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe-1/delivery/negative.log",
+        "negative_log_sha256": "d385e40df4bccb677c2ebb193a64e06ff404abd3088bdd9fab90468414456fd6"
       }
     },
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2",
       "kind": "delivery",
       "construction": "native/probe-2-construction.json",
-      "construction_sha256": "3f1c60fd4c7e9b676dc95f9f4b30a827ebfb8c9d0076c3475c8522217c21cb88",
+      "construction_sha256": "2135529a8b824537e6ec1ebb722daf0aa237c2d32f60dd1124736374c22ee9ac",
       "candidate_risk": {
         "status": "physical",
         "reason": "Door motion, passing side, and transfer visibility require original CARLA readback"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/probe-2-fallback1-construction.json",
+          "construction_sha256": "60f499a00153338d47c9fad4c4e00693fb0adba2781bebf088152d30f837111b",
+          "trigger": {
+            "source": "independent original four-camera pixel review",
+            "metric": "reviewed transfer event visible with actor identity and timestamp",
+            "failure_condition": "original source pixels do not resolve transfer actor and event"
+          },
+          "changed_knobs": [
+            "walker commanded speed during frames 190-225: 0.8 to 0.6 m/s"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "60f499a00153338d47c9fad4c4e00693fb0adba2781bebf088152d30f837111b",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2 --candidate fallback1 --output .runtime-work/c228817-resume/fallback-offline-2-v1",
+            "log": "native/proofs/probe-2/fallback1/offline.log",
+            "log_sha256": "c31896dc0a045af80eaad2e8c9021e578bcf9acc81495f7ddc5908e41c26ba13"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/probe-2/fallback1/compatibility.json",
+            "sha256": "dfc2543fb88c3fadb0dcba816d799b82c482fd5d3a8b589e58218214cc5304b6",
+            "log": "native/proofs/probe-2/fallback1/compat-analysis.log",
+            "negative_log": "native/proofs/probe-2/fallback1/negative-analysis.log"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
@@ -137,20 +216,10 @@
       },
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "3f1c60fd4c7e9b676dc95f9f4b30a827ebfb8c9d0076c3475c8522217c21cb88",
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2 --output .runtime-work/c228817-resume/selected-offline-2-v2",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2 --output .runtime-work/c228817-resume/selected-offline-2-v3",
         "log": "native/proofs/probe-2/offline.log",
-        "log_sha256": "c5cfd932e40493e581b671222f9fbe39de342ae5a13f9f7a83a2544242ef999a"
-      },
-      "compatibility": {
-        "receipt": "native/proofs/probe-2/compatibility.json",
-        "sha256": "1655d2159a6d9ae1dc9bd2dae2698843bee4ef627987263c2b41d29ddfa02270",
-        "log": "native/proofs/probe-2/compat-analysis.log",
-        "negative_log": "native/proofs/probe-2/negative-analysis.log"
-      },
-      "negative": {
-        "log": "native/proofs/probe-2/negative-analysis.log",
-        "log_sha256": "df69316e836b136a8fbf002d7fc0b891043c9cd5fc8d4398989b84f3967dab2c"
+        "log_sha256": "7f62b1ade05456aaf312ca7afc2aed16443236a8b4d3bfb51fd0e83401d12f24",
+        "construction_sha256": "2135529a8b824537e6ec1ebb722daf0aa237c2d32f60dd1124736374c22ee9ac"
       },
       "acquisition": {
         "sig.door_open": {
@@ -216,24 +285,86 @@
         "test_log_sha256": "498f9176bada896b470376339d542720ec08acf86f65d8621fe5d543d190a57e",
         "test_exit_code": 0,
         "missing_source_test_log": "native/proofs/probe-2/saved-missing.log",
-        "missing_source_test_log_sha256": "898f516af6453837e45505d62ff087165a0af6eebdeea438691b9ec71e39043e",
+        "missing_source_test_log_sha256": "8c488f4f5e78a0e7575e1d55ad3b7387ad13e9b2e92cef17370e2597f52aaf33",
         "missing_source_test_exit_code": 0
+      },
+      "compatibility": {
+        "receipt": "native/proofs/probe-2/compatibility.json",
+        "sha256": "b4f3b3b7d00c21f6d0b8b08881026f1ab889e903b728d3b11e690b3d3e0daea7",
+        "log": "native/proofs/probe-2/compat-analysis.log",
+        "negative_log": "native/proofs/probe-2/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/proofs/probe-2/negative-analysis.log",
+        "log_sha256": "c7cff089c562f8467dae60eb43bf5d928b58dd05c2d32f8307e9b56baf5ffc56"
       },
       "physical_preparation": {
         "receipt": "native/proofs/probe-2/physical/proof.json",
-        "sha256": "b6bd892a1d2fc752b2b7ad3338611cbfa0607c4f45acdf13fc04ffd91b5a563e"
+        "sha256": "dcffcce489dc1c1a9a88d644660dc59cc628241aaa07cd5a10c365ddabdd7be5"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "fa61afa5c96ba63021891fefcc94a2bb92e6b75193b09584eb8f181609ed2538",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/delivery_audit.py --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe-2/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/delivery_audit.py --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe-2/delivery/negative.log",
+        "negative_log_sha256": "d385e40df4bccb677c2ebb193a64e06ff404abd3088bdd9fab90468414456fd6"
       }
     },
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
       "kind": "delivery",
       "construction": "native/probe-3-construction.json",
-      "construction_sha256": "dbe5abbdb80546c795e71a86899953a563b6680b837c2e1feae4e00e6855da77",
+      "construction_sha256": "d269639317d0b284c5d04303e3fe1b0bf0beeb631868d531a7f7927cdb617b29",
       "candidate_risk": {
         "status": "physical",
         "reason": "Door motion, passing side, and transfer visibility require original CARLA readback"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/probe-3-fallback1-construction.json",
+          "construction_sha256": "a8787652f23225b867511d7ebcead2b9b57f07059b60695d742e09b33bf409d7",
+          "trigger": {
+            "source": "independent original four-camera pixel review",
+            "metric": "reviewed transfer event visible with actor identity and timestamp",
+            "failure_condition": "original source pixels do not resolve transfer actor and event"
+          },
+          "changed_knobs": [
+            "walker commanded speed during frames 190-225: 0.8 to 0.6 m/s"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "a8787652f23225b867511d7ebcead2b9b57f07059b60695d742e09b33bf409d7",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3 --candidate fallback1 --output .runtime-work/c228817-resume/fallback-offline-3-v1",
+            "log": "native/proofs/probe-3/fallback1/offline.log",
+            "log_sha256": "0212718eb209fa980adbb020c0de1a9ed9d4273632cce07a42ed2d9aa3c875ad"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/probe-3/fallback1/compatibility.json",
+            "sha256": "4dc22e4ac84bca8b497bdc306961ff87db5d3ff0cfcfce12b174a307f24d6c2e",
+            "log": "native/proofs/probe-3/fallback1/compat-analysis.log",
+            "negative_log": "native/proofs/probe-3/fallback1/negative-analysis.log"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
@@ -247,20 +378,10 @@
       },
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "dbe5abbdb80546c795e71a86899953a563b6680b837c2e1feae4e00e6855da77",
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3 --output .runtime-work/c228817-resume/selected-offline-3-v2",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3 --output .runtime-work/c228817-resume/selected-offline-3-v3",
         "log": "native/proofs/probe-3/offline.log",
-        "log_sha256": "51f8ad28cf67c1a091e7166a7dfeacab35baca324bc58c7ba779aeb4c56cb7a1"
-      },
-      "compatibility": {
-        "receipt": "native/proofs/probe-3/compatibility.json",
-        "sha256": "a924b06733083e73745c205bf24412ffadc001fef93f4362e16e84ac46b7797b",
-        "log": "native/proofs/probe-3/compat-analysis.log",
-        "negative_log": "native/proofs/probe-3/negative-analysis.log"
-      },
-      "negative": {
-        "log": "native/proofs/probe-3/negative-analysis.log",
-        "log_sha256": "e15d031a2aedadccfbe5eb59ff5cd17b44d93d85e186615cddb9916f1d6f83da"
+        "log_sha256": "144317ae8d66a4a513d8b0f44601fcc597b56a9620d6795225fa3f23b697307d",
+        "construction_sha256": "d269639317d0b284c5d04303e3fe1b0bf0beeb631868d531a7f7927cdb617b29"
       },
       "acquisition": {
         "sig.door_open": {
@@ -326,24 +447,86 @@
         "test_log_sha256": "8f2e4a9e93bc3db97d1303f5a59f15b0fe691779fe57a7c05fd37b014d5d71c2",
         "test_exit_code": 0,
         "missing_source_test_log": "native/proofs/probe-3/saved-missing.log",
-        "missing_source_test_log_sha256": "fa1fc77a33981231ff5d98e8bd597fe7ac58a9fd1aa44b96d283d895f4f1a8c7",
+        "missing_source_test_log_sha256": "b17ceef44f13e5b251787e09a4170248d81ada747b87ec4ca92f2d9bd3adeb76",
         "missing_source_test_exit_code": 0
+      },
+      "compatibility": {
+        "receipt": "native/proofs/probe-3/compatibility.json",
+        "sha256": "ff8c8e265652c3e3329aad363c2a8afdfe0e4dfd7f8f1c056cbe4887b2429f2a",
+        "log": "native/proofs/probe-3/compat-analysis.log",
+        "negative_log": "native/proofs/probe-3/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/proofs/probe-3/negative-analysis.log",
+        "log_sha256": "0287e14ca1b2e6e256de1b1e166ff332c41b411c1d3a88e80e5e0a38b25ccccc"
       },
       "physical_preparation": {
         "receipt": "native/proofs/probe-3/physical/proof.json",
-        "sha256": "1963badbd4bccc4a80ce011018816ba91952013342ef38f5d24b0515c183e5d3"
+        "sha256": "ef2bbc39d5ada4c2abe53606654af39802d2e528506dfa286af4a2302735de63"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "fa61afa5c96ba63021891fefcc94a2bb92e6b75193b09584eb8f181609ed2538",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/delivery_audit.py --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe-3/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/delivery_audit.py --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe-3/delivery/negative.log",
+        "negative_log_sha256": "d385e40df4bccb677c2ebb193a64e06ff404abd3088bdd9fab90468414456fd6"
       }
     },
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4",
       "kind": "delivery",
       "construction": "native/probe-4-construction.json",
-      "construction_sha256": "8a4f19f95ac5188606f0f0e31a06c903c4d8a4d5f451e9016cffdde170409710",
+      "construction_sha256": "4588d62be29f5075516738eff6fce751846ed6394d333872c390bc56df1c77b1",
       "candidate_risk": {
         "status": "physical",
         "reason": "Door motion, passing side, and transfer visibility require original CARLA readback"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/probe-4-fallback1-construction.json",
+          "construction_sha256": "ff43f02a469df4423ea189f701da5592bc141843e01b20c992384cfff191dc1d",
+          "trigger": {
+            "source": "independent original four-camera pixel review",
+            "metric": "reviewed transfer event visible with actor identity and timestamp",
+            "failure_condition": "original source pixels do not resolve transfer actor and event"
+          },
+          "changed_knobs": [
+            "walker commanded speed during frames 190-225: 0.8 to 0.6 m/s"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "ff43f02a469df4423ea189f701da5592bc141843e01b20c992384cfff191dc1d",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4 --candidate fallback1 --output .runtime-work/c228817-resume/fallback-offline-4-v1",
+            "log": "native/proofs/probe-4/fallback1/offline.log",
+            "log_sha256": "271bb7939be7e08c6cbb2acddbbc0bbb239be0d2866e82761b193074c96fd2b8"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/probe-4/fallback1/compatibility.json",
+            "sha256": "23d12b465d07b055c17c7e31f9a5ba0d0a8ec938fed8396c432ba8699a5f7087",
+            "log": "native/proofs/probe-4/fallback1/compat-analysis.log",
+            "negative_log": "native/proofs/probe-4/fallback1/negative-analysis.log"
+          }
+        }
+      ],
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
@@ -357,20 +540,10 @@
       },
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "8a4f19f95ac5188606f0f0e31a06c903c4d8a4d5f451e9016cffdde170409710",
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4 --output .runtime-work/c228817-resume/selected-offline-4-v2",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/execution-manifest.json --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4 --output .runtime-work/c228817-resume/selected-offline-4-v3",
         "log": "native/proofs/probe-4/offline.log",
-        "log_sha256": "85c4919aa0e51e5f030f9c92f514a9e99ab5244561360dc6f6b65f2cc60e8363"
-      },
-      "compatibility": {
-        "receipt": "native/proofs/probe-4/compatibility.json",
-        "sha256": "f350e9107be706a1c58f370be051ac56133e663b7476bbd67da518fee504fef8",
-        "log": "native/proofs/probe-4/compat-analysis.log",
-        "negative_log": "native/proofs/probe-4/negative-analysis.log"
-      },
-      "negative": {
-        "log": "native/proofs/probe-4/negative-analysis.log",
-        "log_sha256": "9a3aabc374825ac978c49f4e192bf0290a5317bbebf4224e43372f179020eec0"
+        "log_sha256": "d80f5d5ea5282e47ae3b8267b1182949fe2c571a9f85d51c92a6e81a7a3405ce",
+        "construction_sha256": "4588d62be29f5075516738eff6fce751846ed6394d333872c390bc56df1c77b1"
       },
       "acquisition": {
         "sig.door_open": {
@@ -436,12 +609,47 @@
         "test_log_sha256": "9eddac3a73a3a9332489a653eaba45641c79b3bcaebf0fc479cf7f91d82ff54b",
         "test_exit_code": 0,
         "missing_source_test_log": "native/proofs/probe-4/saved-missing.log",
-        "missing_source_test_log_sha256": "ea1890ecde9e3f40147111a757af49795bb3300ad5e2b111dada09af31c03c35",
+        "missing_source_test_log_sha256": "c8141689eba3271a9b8904cf3645af3079fe725eae5af96d6560ae364ce3641f",
         "missing_source_test_exit_code": 0
+      },
+      "compatibility": {
+        "receipt": "native/proofs/probe-4/compatibility.json",
+        "sha256": "b504223115508cb76cd454bb467901ebbf663b0ce85cb254f0f002bf48d5602a",
+        "log": "native/proofs/probe-4/compat-analysis.log",
+        "negative_log": "native/proofs/probe-4/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/proofs/probe-4/negative-analysis.log",
+        "log_sha256": "b034eaf24f0eb226c00db9106f851261ccbd3ed544ca25ee0cb09ad8dbb95158"
       },
       "physical_preparation": {
         "receipt": "native/proofs/probe-4/physical/proof.json",
-        "sha256": "040b4190d3729503b1294fd466c035c9fe51cc99c341ccb77df695c458cf3643"
+        "sha256": "b3330f1fbf8028acc7aa1541784d661aa0e74092eb60dc4b2340600b7f105fb4"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "fa61afa5c96ba63021891fefcc94a2bb92e6b75193b09584eb8f181609ed2538",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/delivery_audit.py --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe-4/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228817__NRS-484B-153-3__motor_vehicle_driver/delivery_audit.py --case training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe-4/delivery/negative.log",
+        "negative_log_sha256": "d385e40df4bccb677c2ebb193a64e06ff404abd3088bdd9fab90468414456fd6"
       }
     }
   ]

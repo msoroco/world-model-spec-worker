@@ -1,163 +1,338 @@
 {
   "cell_id": "C230259",
   "actor": "motor_vehicle_driver",
-  "status": "source-shaped CPU construction",
+  "status": "draft",
   "cases": [
+    {
+      "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__baseline",
+      "target_law_id": "NRS-484B-627-1c",
+      "target_type": "baseline",
+      "rationale": "Unselected neutral route context; no simulated baseline.",
+      "paired_probe_id": null,
+      "deliberate_differences": [],
+      "probe": {
+        "primary_variable": "requested_alternate_route",
+        "comparison_or_standard": "source-shaped physical route comparison; no legal threshold",
+        "target_value_or_branch": {
+          "possible": true,
+          "take": false
+        }
+      },
+      "variable_assignments": {
+        "requested_alternate_route": {
+          "kind": "controller",
+          "value": null
+        },
+        "alternate_route_possible": {
+          "kind": "world_setup",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-tick Native participant positions, road IDs and velocities",
+            "time_window": "900 frames",
+            "reference_frame": "authored route graph",
+            "uncertainty": "50 ms frame interval; intended speed differs from observed speed"
+          },
+          {
+            "name": "route_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint road IDs joined to participant and camera frames",
+            "time_window": "900 frames",
+            "reference_frame": "original OpenDRIVE road IDs",
+            "uncertainty": "waypoint projection and route availability require local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored connectivity is not legal or practical route availability",
+          "Controlled-access designation and actual impediment require independent review",
+          "Physical route completion and pixels remain unverified"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator",
+        "the highway is a controlled-access highway",
+        "use alternate routes whenever possible"
+      ]
+    },
     {
       "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484B-627-1c",
-      "kind": "delivery",
-      "target_type": "controlled_attempt",
-      "physical_target": "slow driver takes available alternate route at usable exit",
-      "comparison_variable": "slow_vehicle_alternate_route",
-      "source_branch": "Alternate-route duty on a road established separately as controlled access.",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "judgment_sweep",
+      "rationale": "Physical route-choice coverage with legal judgments unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_comparison",
+      "deliberate_differences": [
+        "requested_alternate_route"
       ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "road",
-          "maneuver": "travel",
-          "control": "other_vehicle"
+      "probe": {
+        "primary_variable": "requested_alternate_route",
+        "comparison_or_standard": "source-shaped physical route comparison; no legal threshold",
+        "target_value_or_branch": {
+          "possible": true,
+          "take": true
+        }
+      },
+      "variable_assignments": {
+        "requested_alternate_route": {
+          "kind": "controller",
+          "value": true
         },
-        "activation_conditions_to_verify": [
-          "the subject drives so slowly as to impede the traffic behind",
-          "the highway is a controlled-access highway",
-          "an alternate route is possible"
+        "alternate_route_possible": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-tick Native participant positions, road IDs and velocities",
+            "time_window": "900 frames",
+            "reference_frame": "authored route graph",
+            "uncertainty": "50 ms frame interval; intended speed differs from observed speed"
+          },
+          {
+            "name": "route_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint road IDs joined to participant and camera frames",
+            "time_window": "900 frames",
+            "reference_frame": "original OpenDRIVE road IDs",
+            "uncertainty": "waypoint projection and route availability require local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored connectivity is not legal or practical route availability",
+          "Controlled-access designation and actual impediment require independent review",
+          "Physical route completion and pixels remain unverified"
         ]
       },
-      "controller": {
-        "requested_behavior": "slow driver takes available alternate route at usable exit"
-      },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
-      "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "what counts as an available alternate route is a map and journey question, not a scene observation"
-      ],
-      "gap_ids": [
-        "unobserved_route_context"
+        "speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator",
+        "the highway is a controlled-access highway",
+        "use alternate routes whenever possible"
       ]
     },
     {
       "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484B-627-1c",
-      "kind": "delivery",
-      "target_type": "controlled_attempt",
-      "physical_target": "slow driver passes available exit and remains on controlled-access road",
-      "comparison_variable": "slow_vehicle_alternate_route",
-      "source_branch": "Alternate-route duty on a road established separately as controlled access.",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "judgment_sweep",
+      "rationale": "Physical route-choice coverage with legal judgments unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_comparison",
+      "deliberate_differences": [
+        "requested_alternate_route"
       ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "road",
-          "maneuver": "travel",
-          "control": "other_vehicle"
+      "probe": {
+        "primary_variable": "requested_alternate_route",
+        "comparison_or_standard": "source-shaped physical route comparison; no legal threshold",
+        "target_value_or_branch": {
+          "possible": true,
+          "take": false
+        }
+      },
+      "variable_assignments": {
+        "requested_alternate_route": {
+          "kind": "controller",
+          "value": false
         },
-        "activation_conditions_to_verify": [
-          "the subject drives so slowly as to impede the traffic behind",
-          "the highway is a controlled-access highway",
-          "an alternate route is possible"
+        "alternate_route_possible": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-tick Native participant positions, road IDs and velocities",
+            "time_window": "900 frames",
+            "reference_frame": "authored route graph",
+            "uncertainty": "50 ms frame interval; intended speed differs from observed speed"
+          },
+          {
+            "name": "route_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint road IDs joined to participant and camera frames",
+            "time_window": "900 frames",
+            "reference_frame": "original OpenDRIVE road IDs",
+            "uncertainty": "waypoint projection and route availability require local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored connectivity is not legal or practical route availability",
+          "Controlled-access designation and actual impediment require independent review",
+          "Physical route completion and pixels remain unverified"
         ]
       },
-      "controller": {
-        "requested_behavior": "slow driver passes available exit and remains on controlled-access road"
-      },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
-      "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "what counts as an available alternate route is a map and journey question, not a scene observation"
-      ],
-      "gap_ids": [
-        "unobserved_route_context"
+        "speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator",
+        "the highway is a controlled-access highway",
+        "use alternate routes whenever possible"
       ]
     },
     {
       "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_1",
       "target_law_id": "NRS-484B-627-1c",
-      "kind": "delivery",
-      "target_type": "controlled_attempt",
-      "physical_target": "hold selected activation with where no alternate route is possible absent",
-      "comparison_variable": "exception_1_applicability",
-      "source_branch": "where no alternate route is possible",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "judgment_sweep",
+      "rationale": "Physical route-choice coverage with legal judgments unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_comparison",
+      "deliberate_differences": [
+        "alternate_route_possible"
       ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "road",
-          "maneuver": "travel",
-          "control": "other_vehicle"
+      "probe": {
+        "primary_variable": "alternate_route_possible",
+        "comparison_or_standard": "source-shaped physical route comparison; no legal threshold",
+        "target_value_or_branch": {
+          "possible": true,
+          "take": false
+        }
+      },
+      "variable_assignments": {
+        "requested_alternate_route": {
+          "kind": "controller",
+          "value": false
         },
-        "activation_conditions_to_verify": [
-          "the subject drives so slowly as to impede the traffic behind",
-          "the highway is a controlled-access highway",
-          "an alternate route is possible"
+        "alternate_route_possible": {
+          "kind": "world_setup",
+          "value": true
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-tick Native participant positions, road IDs and velocities",
+            "time_window": "900 frames",
+            "reference_frame": "authored route graph",
+            "uncertainty": "50 ms frame interval; intended speed differs from observed speed"
+          },
+          {
+            "name": "route_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint road IDs joined to participant and camera frames",
+            "time_window": "900 frames",
+            "reference_frame": "original OpenDRIVE road IDs",
+            "uncertainty": "waypoint projection and route availability require local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored connectivity is not legal or practical route availability",
+          "Controlled-access designation and actual impediment require independent review",
+          "Physical route completion and pixels remain unverified"
         ]
       },
-      "controller": {
-        "requested_behavior": "hold selected activation with where no alternate route is possible absent"
-      },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
-      "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "what counts as an available alternate route is a map and journey question, not a scene observation"
-      ],
-      "gap_ids": [
-        "unobserved_route_context"
+        "speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator",
+        "the highway is a controlled-access highway",
+        "use alternate routes whenever possible"
       ]
     },
     {
       "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_2",
       "target_law_id": "NRS-484B-627-1c",
-      "kind": "delivery",
-      "target_type": "controlled_attempt",
-      "physical_target": "hold selected activation with where no alternate route is possible present",
-      "comparison_variable": "exception_1_applicability",
-      "source_branch": "where no alternate route is possible",
-      "requested_not_measured": true,
-      "selection_targets": [
-        "full-train"
+      "target_type": "judgment_sweep",
+      "rationale": "Physical route-choice coverage with legal judgments unresolved.",
+      "paired_probe_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_comparison",
+      "deliberate_differences": [
+        "alternate_route_possible"
       ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "road",
-          "maneuver": "travel",
-          "control": "other_vehicle"
+      "probe": {
+        "primary_variable": "alternate_route_possible",
+        "comparison_or_standard": "source-shaped physical route comparison; no legal threshold",
+        "target_value_or_branch": {
+          "possible": false,
+          "take": false
+        }
+      },
+      "variable_assignments": {
+        "requested_alternate_route": {
+          "kind": "controller",
+          "value": false
         },
-        "activation_conditions_to_verify": [
-          "the subject drives so slowly as to impede the traffic behind",
-          "the highway is a controlled-access highway",
-          "an alternate route is possible"
+        "alternate_route_possible": {
+          "kind": "world_setup",
+          "value": false
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "participant_motion",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original same-tick Native participant positions, road IDs and velocities",
+            "time_window": "900 frames",
+            "reference_frame": "authored route graph",
+            "uncertainty": "50 ms frame interval; intended speed differs from observed speed"
+          },
+          {
+            "name": "route_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map waypoint road IDs joined to participant and camera frames",
+            "time_window": "900 frames",
+            "reference_frame": "original OpenDRIVE road IDs",
+            "uncertainty": "waypoint projection and route availability require local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Authored connectivity is not legal or practical route availability",
+          "Controlled-access designation and actual impediment require independent review",
+          "Physical route completion and pixels remain unverified"
         ]
       },
-      "controller": {
-        "requested_behavior": "hold selected activation with where no alternate route is possible present"
-      },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
-      "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "what counts as an available alternate route is a map and journey question, not a scene observation"
-      ],
-      "gap_ids": [
-        "unobserved_route_context"
+        "speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator",
+        "the highway is a controlled-access highway",
+        "use alternate routes whenever possible"
       ]
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c230259-627-1c-legal-source-review",
+      "target_law_id": "NRS-484B-627-1c",
+      "judgment_refs": [
+        {
+          "phrase": "speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator",
+          "note": "Original same-frame immediately following traffic needs physical and legal review."
+        },
+        {
+          "phrase": "the highway is a controlled-access highway",
+          "note": "A road designation must be established independently of the authored OpenDRIVE geometry."
+        },
+        {
+          "phrase": "use alternate routes whenever possible",
+          "note": "Original map connectivity and actual practical route availability need review."
+        }
+      ],
+      "rationale": "The three statutory conditions need original traffic, designation and usable-route evidence.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Accepted original recording of immediately following traffic",
+        "Independent controlled-access designation source",
+        "Independent practical alternate-route availability review"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

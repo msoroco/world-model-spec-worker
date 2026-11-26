@@ -33,7 +33,7 @@
         "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
         "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4"
       ],
-      "evidence_or_gap": "Two exact door-command constructions and 600-frame original-source saved finalizer have CPU offline and synthetic source-join proof. Public runtime compatibility, selected manifest and semantic/delivery/physical proofs are incomplete; actual door movement and necessity remain unverified."
+      "evidence_or_gap": "Four selected source-hashed CPU constructions, public compatibility, recorded-only and synthetic physical/lifecycle checks pass. Actual Native traffic-side door pose, transfer activity and contextual necessity remain for local source review."
     },
     {
       "requirement": "NRS-484B-153-3",
@@ -46,7 +46,7 @@
         "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
         "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4"
       ],
-      "evidence_or_gap": "Four planned exact passenger/cargo door-duration cases carry this observable; selected delivery and original physical review remain pending."
+      "evidence_or_gap": "Four selected source-hashed CPU constructions, public compatibility, recorded-only and synthetic physical/lifecycle checks pass. Actual Native traffic-side door pose, transfer activity and contextual necessity remain for local source review."
     },
     {
       "requirement": "NRS-484B-153-3",
@@ -59,7 +59,7 @@
         "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
         "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4"
       ],
-      "evidence_or_gap": "Four planned exact passenger/cargo door-duration cases carry this observable; selected delivery and original physical review remain pending."
+      "evidence_or_gap": "Four selected source-hashed CPU constructions, public compatibility, recorded-only and synthetic physical/lifecycle checks pass. Actual Native traffic-side door pose, transfer activity and contextual necessity remain for local source review."
     },
     {
       "requirement": "NRS-484B-153-3",
@@ -72,7 +72,7 @@
         "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
         "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4"
       ],
-      "evidence_or_gap": "Four planned exact passenger/cargo door-duration cases carry this observable; selected delivery and original physical review remain pending."
+      "evidence_or_gap": "Four selected source-hashed CPU constructions, public compatibility, recorded-only and synthetic physical/lifecycle checks pass. Actual Native traffic-side door pose, transfer activity and contextual necessity remain for local source review."
     }
   ],
   "neutral_baseline": {
@@ -83,54 +83,58 @@
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484B-153-3",
-      "kind": "planned_only",
-      "target_type": "below",
+      "kind": "delivery",
+      "target_type": "judgment_sweep",
       "physical_target": "traffic-side door closes when immediate loading ends",
       "comparison_variable": "traffic_side_door_open_duration",
       "source_branch": "Traffic-side door left open during loading or unloading",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "unresolved_legal_necessity": true
     },
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-153-3",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
+      "kind": "delivery",
+      "target_type": "judgment_sweep",
       "physical_target": "same door remains open after immediate loading ends",
       "comparison_variable": "traffic_side_door_open_duration",
       "source_branch": "Traffic-side door left open during loading or unloading",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "unresolved_legal_necessity": true
     },
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
       "target_law_id": "NRS-484B-153-3",
-      "kind": "planned_only",
-      "target_type": "cargo_controlled_attempt",
+      "kind": "delivery",
+      "target_type": "judgment_sweep",
       "physical_target": "identified cargo loaded; traffic-side door closes after transfer",
       "comparison_variable": "traffic_side_door_open_duration",
       "source_branch": "Traffic-side door left open during loading or unloading",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "unresolved_legal_necessity": true
     },
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4",
       "target_law_id": "NRS-484B-153-3",
-      "kind": "planned_only",
-      "target_type": "cargo_controlled_attempt",
+      "kind": "delivery",
+      "target_type": "judgment_sweep",
       "physical_target": "identified cargo loaded; traffic-side door remains open after transfer",
       "comparison_variable": "traffic_side_door_open_duration",
       "source_branch": "Traffic-side door left open during loading or unloading",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "unresolved_legal_necessity": true
     }
   ],
   "comparisons": [
@@ -301,65 +305,69 @@
   ],
   "source_observation_mapping": {
     "sig.door_open": {
-      "evidence": "Continuous sourced door state, hinge side and driver operator identity in Native trace; original pixel check pending.",
+      "evidence": "Original Native actor/frame joins plus independently reviewed four-camera pixels; actual source capture pending",
       "channels": [
-        "door_open",
-        "door_side",
-        "door_operator_actor_id"
+        "sig.door_open"
       ],
       "source_refs": [
-        "native/measure_door.py",
-        "native/measurement-contract.json"
+        "native-door-trace.jsonl",
+        "door-pixel-review.json",
+        "video_frames.jsonl"
       ]
     },
     "kin.time": {
-      "evidence": "Contiguous original Native frame/time join at 20 Hz; elapsed open interval is descriptive only.",
+      "evidence": "Original Native actor/frame joins plus independently reviewed four-camera pixels; actual source capture pending",
       "channels": [
-        "native_frame",
-        "native_time_s"
+        "kin.time"
       ],
       "source_refs": [
-        "native/measure_door.py"
+        "native-door-trace.jsonl",
+        "door-pixel-review.json",
+        "video_frames.jsonl"
       ]
     },
     "drv.standing_or_parked": {
-      "evidence": "Finite measured ego speed during the door-open interval; parking purpose remains contextual.",
+      "evidence": "Original Native actor/frame joins plus independently reviewed four-camera pixels; actual source capture pending",
       "channels": [
-        "ego_speed_mps"
+        "drv.standing_or_parked"
       ],
       "source_refs": [
-        "native/measure_door.py"
+        "native-door-trace.jsonl",
+        "door-pixel-review.json",
+        "video_frames.jsonl"
       ]
     },
     "ru.occupant_count": {
-      "evidence": "Passenger event requires sourced occupancy delta and pedestrian ID; Native actor and pixel confirmation pending.",
+      "evidence": "Original Native actor/frame joins plus independently reviewed four-camera pixels; actual source capture pending",
       "channels": [
-        "occupancy_delta",
-        "transfer_events"
+        "ru.occupant_count"
       ],
       "source_refs": [
-        "native/measure_door.py"
+        "native-door-trace.jsonl",
+        "door-pixel-review.json",
+        "video_frames.jsonl"
       ]
     },
     "ru.pedestrian": {
-      "evidence": "Sourced pedestrian identity joined to passenger transfer frame; real trajectory and pixel review pending.",
+      "evidence": "Original Native actor/frame joins plus independently reviewed four-camera pixels; actual source capture pending",
       "channels": [
-        "pedestrian_actor_id",
-        "transfer_events"
+        "ru.pedestrian"
       ],
       "source_refs": [
-        "native/measure_door.py"
+        "native-door-trace.jsonl",
+        "door-pixel-review.json",
+        "video_frames.jsonl"
       ]
     },
     "st.lane": {
-      "evidence": "Passing trajectory lateral offsets determine traffic side; full Native road/lane and pixel readback pending.",
+      "evidence": "Original Native actor/frame joins plus independently reviewed four-camera pixels; actual source capture pending",
       "channels": [
-        "lateral_offsets_m",
-        "transit_frames",
-        "door_side"
+        "st.lane"
       ],
       "source_refs": [
-        "native/measure_door.py"
+        "native-door-trace.jsonl",
+        "door-pixel-review.json",
+        "video_frames.jsonl"
       ]
     }
   },
@@ -375,5 +383,32 @@
     "cargo_alternative_guard_tested": true,
     "door_commands_are_observations": false,
     "original_door_pose_and_pixels_pending": true
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "driver, traffic-side door and passing vehicle",
+        "interval": "full 600-frame capture"
+      },
+      {
+        "view": "approach",
+        "subject": "passing vehicle trajectory and road traffic side",
+        "interval": "full 600-frame capture"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "door hinge side and passenger/cargo transfer",
+        "interval": "full 600-frame capture"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver, door operation and transfer actor",
+        "interval": "full 600-frame capture"
+      }
+    ]
   }
 }

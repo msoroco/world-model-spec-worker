@@ -129,7 +129,7 @@ def execute(config, output_dir, review_path, host, port):
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
-    from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import restore, snapshot
 
     destination = Path(output_dir)
@@ -145,6 +145,8 @@ def execute(config, output_dir, review_path, host, port):
     original_world = snapshot(client)
     actors, sensors, encoders, logs = [], [], {}, {}
     packets = queue.Queue()
+    encoder_exit_codes = {}
+    restoration = None
     try:
         _require(world.get_map().name == source["map_name"],
                  "Original map source differs from CARLA world")
@@ -255,7 +257,8 @@ def execute(config, output_dir, review_path, host, port):
         for name, encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                if encoder.wait(timeout=120) != 0:
+                encoder_exit_codes[name] = encoder.wait(timeout=120)
+                if encoder_exit_codes[name] != 0:
                     failures.append("encoder failed: " + name)
             except BaseException as exc:
                 failures.append("encoder close: " + str(exc))
@@ -267,11 +270,20 @@ def execute(config, output_dir, review_path, host, port):
             except BaseException as exc:
                 failures.append("actor destroy: " + str(exc))
         try:
-            restore(client, original_world)
+            restoration = restore(client, original_world)
         except BaseException as exc:
             failures.append("world restore: " + str(exc))
         if failures:
             raise RuntimeError("; ".join(failures))
+    (destination / "acquisition-provenance.json").write_text(json.dumps({
+        "provenance_kind": "original_native", "diagnostic_fixture": False,
+        "case_id": config["case_id"], "source": "owned CARLA execution and four source RGB cameras"
+    }, indent=2) + "\n")
+    seal_capture(destination, frames=FRAMES, restoration=restoration,
+                 errors=[], encoder_exit_codes=encoder_exit_codes,
+                 context={"case_id": config["case_id"],
+                          "door_state_observed_by_command": False,
+                          "physical_acceptance_claimed": False})
     return {"case_id": config["case_id"], "native_frames_requested": FRAMES,
             "door_state_observed": False, "physical_verified": False,
             "legal_verdict": None, "checked": checked}
