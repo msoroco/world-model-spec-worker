@@ -54,8 +54,8 @@ class EncounterTests(unittest.TestCase):
 
     def test_plan_contains_hov_and_core_controls(self):
         plan = json.loads((PACKAGE / "case-plan.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(plan["cases"]), 9)
-        self.assertEqual(len(plan["comparisons"]), 8)
+        self.assertEqual(len(plan["cases"]), 18)
+        self.assertEqual(len(plan["comparisons"]), 11)
 
     def test_source_bound_encounter_keeps_legal_judgments_open(self):
         result = self.measure()

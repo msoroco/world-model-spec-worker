@@ -1,42 +1,23 @@
-# testing__C177008__NRS-484B-413-2__motor_vehicle_driver
+# C177008 NRS 484B.413(2) delivery handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: ready for original source review and GPU delivery. Exact scoped CPU strict gate passed on 2026-11-26; this is a prepared package, not an accepted physical capture.
 
-Exact law: NRS 484B.413(2) — A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.
-Assigned branch(es): Business-district right-turn signaling.
-Cell: C177008 (paved_road, change_lane, other_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 2. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The frozen assignment targets business-district right-turn signaling for motor_vehicle_driver in C177008 (`paved_road/change_lane/other_vehicle`). The plan retains the source cell identity and requires a reviewed physical right turn, sourced district/frontage classification, sourced other vehicle and driver/vehicle, an actual signal controller, and 20 Hz synchronized four-view Native capture. The two frozen accepted recordings are reviewed at metadata level only and do not establish law-specific original coverage. The accepted-evidence fact bindings cite only frozen accepted metadata; the separate review context remains background.
 
-## Next CPU actions
+Five selected cases cover sufficient 35 m business signaling, short 20 m business signaling, an interruption in a 35 m approach, a 35 m other-area contrast, and rain invariance. Four pairwise comparisons isolate lead distance, continuity, district threshold and weather. The legal references remain exactly 100 ft (30.48 m) and 300 ft (91.44 m); case distances are engineering requests. The selected Native handoff has source gates before CARLA import and original 20 Hz frame/time/pixel/signal checks. Fallback1 adds a second sampled controller lead for onset drift, with physical risk retained.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C177008__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+CPU proofs: 20 unit tests; five primary and five fallback offline checks; ten positive/negative compatibility receipts; five recorded-only saved processing receipts; five physical preparation/lifecycle receipts; five independent diagnostic delivery positive/negative receipts for both `demo-test` and `full-test`; and four saved-source comparison receipts with stale-source rejection. The semantic index has five selected stages. The exact scoped `worker_check.py --assignment testing__C177008__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0 and reported `static_checks_passed: true`.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. Frozen `review-context/review.json` and README were read; their case descriptions are authored settings, not measured coverage.
-
-## 2026-11-23 CPU checkpoint
-
-The full law requires continuously signaling for the last 100 ft in a business or residential district and 300 ft elsewhere, before a turn or other departure from direct course, regardless of weather. The assigned branch is business-district right-turn signaling. `case-plan.json` adds two accepted-source review candidates and five unselected controlled constructions with four isolated comparisons for lead distance, continuity, district and weather. The source cell is annotated lane change; construction must prove a physical right turn or other specified rightward course change and a sourced district classification.
-
-`continuous_signal.py` binds original source SHA256, validates 20 Hz pose/signal samples and district provenance, finds first course-change bracket, measures original planar path distance over the last uninterrupted sole-right API signal run and applies exact 30.48 m/91.44 m statutory distance. Five synthetic CPU tests cover sufficient business signaling, interruption, other area, wrong signal and missing district source. No accepted original trace is yet reviewed.
+The queue proposal is `gpu-queue-proposal.json`. First GPU dispatch is `result.json.first_gpu_delivery_command`. Before any physical delivery, obtain and review the original right-turn site/route, business or other-area district facts, other-vehicle blueprint and spawn, signal-controller capability, original camera visibility and all original physical outcome evidence. Do not substitute the diagnostic fixtures for those sources. Independent local acceptance remains after capture.
 
 | File | SHA256 |
 | --- | --- |
-| `case-plan.json` | `c7c57cde0d1c57d1558f92ac2c8b8782fc2e04dec7c350d99449522946d3f9c0` |
-| `continuous_signal.py` | `6a50618aaa4986e94815d9a4d9a8b3bae68229e36bb932027bef3a46ff0f6f2e` |
-| `tests/test_continuous_signal.py` | `c178841866bd42c5e2eaf00cf46d6f18bfeeae4b8c30228fe81a1bfa191e3330` |
-| `preflight.log` | `90e6d9115a70db608fb92c566190ebb7ef858256d42b329258976e74eee4734d` |
-| `unittest.log` | `a3f077636758e429f18703c17bbe40a2573bc178d75aa6e6a52d21db95ca0e70` |
-| `static.log` | `f8c181254d86e6c1ce23cb72cb518b6dcbd394fe00c463d27bf232e0f63fdb54` |
-| `strict.log` | `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a` |
-
-Preflight exit 0; five tests exit 0; scoped static exit 0; exact scoped strict exit 1 because package status remains partial. Command bindings are in `result.json`.
-
-Next CPU work: review two accepted original traces/video; construct sourced business-district right course change and signal controller, original pose/signal capture and saved finalizer; run exact offline and positive/negative compatibility plus independent delivery/comparison audits. CARLA physical motion and camera quality follow CPU readiness.
+| `case-plan.json` | `6a5e3f2ecf36e8d874aa8e810afbe4da491e1609f150f73cc9ea483d2147f288` |
+| `execution-manifest.json` | `ed7c6bb8382ec3e45a8876cdb021fb66ca07315928e26cec1b8ad34a3e84bd6c` |
+| `gpu-queue-proposal.json` | `11325aa65ad9a1ee4d80d344b3e38fdef29ab9df6780554e131e3b5623283ece` |
+| `result.json` | `a2dbbca92bdff22400822031aa309b3c8d81a6021d756445d592629a1a9df95e` |
+| `unittest.log` | `962778bafc98f8572ee748384c246d8d6444dbcb2bcd903204719688d9524945` |
+| `strict-ready.log` | `f8c181254d86e6c1ce23cb72cb518b6dcbd394fe00c463d27bf232e0f63fdb54` |
+| `delivery-audit-receipts.json` | `38eca86d06ce9c4db6499128dcc245a7067d5dc7aec4ae97d9ecdfce17d5dbd6` |
+| `comparison-audit-receipts.json` | `30d6f2ddb99b1501294807f3da776b8cdf9d865fd7685625475d362e764867d8` |
+| `saved-processing-receipts.json` | `6c4e5a9fb5b83d11f5963fad9bf98029fc4b6fa3558c47b4e1b19db23d0f0a5d` |

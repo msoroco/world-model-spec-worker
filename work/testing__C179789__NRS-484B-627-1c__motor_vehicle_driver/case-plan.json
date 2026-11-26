@@ -1,135 +1,1605 @@
 {
-  "assignment_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C179789",
-  "law_id": "NRS-484B-627-1c",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-627-1c",
-      "cell_id": "C179789",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-627-1c",
-      "branch": "Controlled-access alternate-route duty with paved-road context.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 473,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway is a controlled-access highway, use alternate routes whenever possible.",
-  "law_source": "NRS 484B.627(1)(c)",
-  "topic_inventory": {
-    "exact-text": "If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway is a controlled-access highway, use alternate routes whenever possible."
+  "assignment_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "common approach through terminal route",
+        "subject": "reviewed highway and route divergence",
+        "view": "overview"
+      },
+      {
+        "interval": "startup through divergence",
+        "subject": "ego and immediate follower on shared segment",
+        "view": "approach"
+      },
+      {
+        "interval": "approach through route selection",
+        "subject": "alternate junction and main-road continuation",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "startup through terminal observation",
+        "subject": "ego route and following context",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "limitations": "Prospective views; original pixels and route visibility require local review.",
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
+      "alternate_declared": true,
+      "branch": "controlled-access alternate-route duty with follower behind",
       "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_selected",
-      "target_law_id": "NRS-484B-627-1c",
-      "branch": "controlled-access alternate-route duty with follower behind",
+      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
+      "controlled_access": true,
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
+      "measurement": "alternate_route.measure_original: 900 original frame route choice, gap, relative motion and map context",
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original route divergence, controlled-access classification, follower relation and camera coverage require readback.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
       "route_choice": "alternate",
-      "alternate_declared": true,
-      "controlled_access": true,
-      "gap_ids": [
-        "no-accepted-recording"
-      ],
-      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
-      "measurement": "alternate_route.measure_original: 900 original frame route choice, gap, relative motion and map context",
-      "physical_risk": "actual controlled-access classification, follower motion and feasible alternate junction require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "target": {
+        "alternate_declared": true,
+        "controlled_access": true,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "alternate"
+      },
+      "target_law_id": "NRS-484B-627-1c"
     },
     {
+      "alternate_declared": true,
+      "branch": "controlled-access alternate-route duty with follower behind",
       "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected",
-      "target_law_id": "NRS-484B-627-1c",
-      "branch": "controlled-access alternate-route duty with follower behind",
-      "route_choice": "main",
-      "alternate_declared": true,
+      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
       "controlled_access": true,
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
       "measurement": "alternate_route.measure_original: 900 original frame route choice, gap, relative motion and map context",
-      "physical_risk": "actual controlled-access classification, follower motion and feasible alternate junction require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original route divergence, controlled-access classification, follower relation and camera coverage require readback.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
+      "route_choice": "main",
+      "target": {
+        "alternate_declared": true,
+        "controlled_access": true,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "main"
+      },
+      "target_law_id": "NRS-484B-627-1c"
     },
     {
-      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_restricted",
-      "target_law_id": "NRS-484B-627-1c",
-      "branch": "controlled-access alternate-route duty with follower behind",
-      "route_choice": "main",
       "alternate_declared": false,
+      "branch": "controlled-access alternate-route duty with follower behind",
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_restricted",
+      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
       "controlled_access": true,
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
       "measurement": "alternate_route.measure_original: 900 original frame route choice, gap, relative motion and map context",
-      "physical_risk": "actual controlled-access classification, follower motion and feasible alternate junction require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original route divergence, controlled-access classification, follower relation and camera coverage require readback.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
+      "route_choice": "main",
+      "target": {
+        "alternate_declared": false,
+        "controlled_access": true,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "main"
+      },
+      "target_law_id": "NRS-484B-627-1c"
     },
     {
-      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__ordinary_road_contrast",
-      "target_law_id": "NRS-484B-627-1c",
-      "branch": "controlled-access alternate-route duty with follower behind",
-      "route_choice": "main",
       "alternate_declared": true,
+      "branch": "controlled-access alternate-route duty with follower behind",
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__ordinary_road_contrast",
+      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
       "controlled_access": false,
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction": "alternate_route.construct: common paved approach, route divergence, ego/follower pair",
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
       "measurement": "alternate_route.measure_original: 900 original frame route choice, gap, relative motion and map context",
-      "physical_risk": "actual controlled-access classification, follower motion and feasible alternate junction require CARLA/original review",
-      "legal_judgment": "unresolved"
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original route divergence, controlled-access classification, follower relation and camera coverage require readback.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
+      "route_choice": "main",
+      "target": {
+        "alternate_declared": true,
+        "controlled_access": false,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "main"
+      },
+      "target_law_id": "NRS-484B-627-1c"
+    },
+    {
+      "branch": "Controlled-access alternate-route duty with paved-road context.",
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0000",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original map opportunity, follower relation, controller readback and camera coverage require review.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
+      "target": {
+        "alternate_declared": true,
+        "alternate_entry_lead_m": null,
+        "controlled_access": true,
+        "ego_speed_mps": 4.0,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "main"
+      },
+      "target_law_id": "NRS-484B-627-1c"
+    },
+    {
+      "branch": "Controlled-access alternate-route duty with paved-road context.",
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0001",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original map opportunity, follower relation, controller readback and camera coverage require review.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
+      "target": {
+        "alternate_declared": true,
+        "alternate_entry_lead_m": null,
+        "controlled_access": true,
+        "ego_speed_mps": 6.0,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "main"
+      },
+      "target_law_id": "NRS-484B-627-1c"
+    },
+    {
+      "branch": "Controlled-access alternate-route duty with paved-road context.",
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0002",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original map opportunity, follower relation, controller readback and camera coverage require review.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
+      "target": {
+        "alternate_declared": true,
+        "alternate_entry_lead_m": null,
+        "controlled_access": true,
+        "ego_speed_mps": 5.0,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "main"
+      },
+      "target_law_id": "NRS-484B-627-1c"
+    },
+    {
+      "branch": "Controlled-access alternate-route duty with paved-road context.",
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0000",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original map opportunity, follower relation, controller readback and camera coverage require review.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
+      "target": {
+        "alternate_declared": true,
+        "alternate_entry_lead_m": 40.0,
+        "controlled_access": true,
+        "ego_speed_mps": null,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "alternate"
+      },
+      "target_law_id": "NRS-484B-627-1c"
+    },
+    {
+      "branch": "Controlled-access alternate-route duty with paved-road context.",
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0001",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original map opportunity, follower relation, controller readback and camera coverage require review.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
+      "target": {
+        "alternate_declared": true,
+        "alternate_entry_lead_m": 80.0,
+        "controlled_access": true,
+        "ego_speed_mps": null,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "alternate"
+      },
+      "target_law_id": "NRS-484B-627-1c"
+    },
+    {
+      "branch": "Controlled-access alternate-route duty with paved-road context.",
+      "case_id": "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0002",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery",
+      "legal_judgment": "unresolved",
+      "new_capture_selected": true,
+      "physical_risk": {
+        "reason": "Original map opportunity, follower relation, controller readback and camera coverage require review.",
+        "status": "physical"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native tick identity",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
+          },
+          {
+            "method": "original ego transform and speed",
+            "name": "ego_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original follower transform, gap, and speed",
+            "name": "follower_motion",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m and m/s"
+          },
+          {
+            "method": "original route station and terminal selection",
+            "name": "route_choice",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "categorical"
+          },
+          {
+            "method": "reviewed map and legal access source",
+            "name": "map_classification",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "reviewed destination and route restriction",
+            "name": "journey_context",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "source record"
+          },
+          {
+            "method": "synchronized original four-view sources",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "native pixels"
+          },
+          {
+            "method": "original ego speed readback",
+            "name": "ego_speed_mps",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m/s"
+          },
+          {
+            "method": "original station distance to alternate entry",
+            "name": "alternate_entry_lead_m",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second attempt",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "m"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "highway",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "controlled_access",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "driver_and_vehicle",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound reviewed original site and restriction packet",
+            "name": "alternate_restriction",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested route is not observed route.",
+          "Open alternate does not decide legal possibility or impediment."
+        ]
+      },
+      "target": {
+        "alternate_declared": true,
+        "alternate_entry_lead_m": 60.0,
+        "controlled_access": true,
+        "ego_speed_mps": null,
+        "engineering_request_not_legal_judgment": true,
+        "requested_duration_s": 45,
+        "route_choice": "alternate"
+      },
+      "target_law_id": "NRS-484B-627-1c"
     }
   ],
+  "cell_id": "C179789",
   "comparisons": [
     {
-      "comparison_id": "alternate_choice",
       "case_ids": [
         "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_selected",
         "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected"
       ],
-      "fixed_conditions": "same journey destination, shared approach segment, vehicles, 900-frame capture and following context",
+      "comparison_id": "alternate_choice",
       "deliberate_differences": [
         "actual alternate versus main route"
+      ],
+      "fixed_conditions": [
+        "same journey destination, shared approach segment, vehicles, 900-frame capture and following context"
       ]
     },
     {
-      "comparison_id": "alternate_restriction",
       "case_ids": [
         "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected",
         "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_restricted"
       ],
-      "fixed_conditions": "same journey destination, shared approach segment, vehicles, 900-frame capture and following context",
+      "comparison_id": "alternate_restriction",
       "deliberate_differences": [
         "documented alternate restriction"
+      ],
+      "fixed_conditions": [
+        "same journey destination, shared approach segment, vehicles, 900-frame capture and following context"
       ]
     },
     {
-      "comparison_id": "controlled_access",
       "case_ids": [
         "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected",
         "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__ordinary_road_contrast"
       ],
-      "fixed_conditions": "same journey destination, shared approach segment, vehicles, 900-frame capture and following context",
+      "comparison_id": "controlled_access",
       "deliberate_differences": [
         "controlled-access classification"
+      ],
+      "fixed_conditions": [
+        "same journey destination, shared approach segment, vehicles, 900-frame capture and following context"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0000",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0001",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0002"
+      ],
+      "comparison_id": "impediment_sweep",
+      "deliberate_differences": [
+        "requested engineering impediment station only"
+      ],
+      "fixed_conditions": [
+        "same reviewed journey, route context, actors, capture profile and non-axis controls"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0000",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0001",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0002"
+      ],
+      "comparison_id": "route_possibility_sweep",
+      "deliberate_differences": [
+        "requested engineering route_possibility station only"
+      ],
+      "fixed_conditions": [
+        "same reviewed journey, route context, actors, capture profile and non-axis controls"
       ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "original controlled-access route and following-motion evidence",
+        "source": "inputs/testing__C179789__NRS-484B-627-1c__motor_vehicle_driver/evidence.json",
+        "source_sha256": "0d1beafb9baa881471f1b7442705b846a0d2a37b30e0acc0ba1bf2aedd929e9b",
+        "why_existing_insufficient": "Frozen inventory has zero accepted recordings."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-627-1c",
+  "law_source": "NRS 484B.627(1)(c)",
+  "law_text": "If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway is a controlled-access highway, use alternate routes whenever possible.",
   "observations": [
-    "legal highway and controlled-access source classification distinct from paved road",
-    "qualifying vehicle and driver control",
-    "ego/follower routes and common immediately-behind segment",
-    "original following gap, both speeds, progression and impediment context",
-    "journey destination, alternate junction and restrictions",
-    "actual route selection from original route observations",
-    "so-slow, immediately-behind and possibility reserved for legal review"
+    {
+      "mandatory": true,
+      "name": "native_frame",
+      "source": "original CARLA tick identity"
+    },
+    {
+      "mandatory": true,
+      "name": "ego_motion",
+      "source": "original ego transform and speed"
+    },
+    {
+      "mandatory": true,
+      "name": "follower_motion",
+      "source": "original follower transform, speed and gap"
+    },
+    {
+      "mandatory": true,
+      "name": "route_choice",
+      "source": "original route station and terminal selection"
+    },
+    {
+      "mandatory": true,
+      "name": "map_classification",
+      "source": "reviewed map and legal access source"
+    },
+    {
+      "mandatory": true,
+      "name": "journey_context",
+      "source": "reviewed destination and alternate restriction source"
+    },
+    {
+      "mandatory": true,
+      "name": "four_camera_frames",
+      "source": "four synchronized original camera streams"
+    }
   ],
+  "planning_status": "selected_source_gated_alternate_route_cpu_construction",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_selected",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_restricted",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__ordinary_road_contrast",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0000",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0001",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0002",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0000",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0001",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0002"
+      ],
+      "evidence_or_gap": "source-reviewed original vehicle, driver, highway and route packet required",
+      "requirement": "Qualifying motor vehicle and driver or operator on a source-reviewed highway",
+      "source": "NRS 484B.627(1)(c)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_selected",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_restricted",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__ordinary_road_contrast",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0000",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0001",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0002",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0000",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0001",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0002"
+      ],
+      "evidence_or_gap": "original synchronized ego and follower motion, spacing, route and progress; legal judgment unresolved",
+      "requirement": "Speed so slow as to impede traffic proceeding immediately behind",
+      "source": "NRS 484B.627(1)(c)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_selected",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_not_selected",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__alternate_restricted",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__ordinary_road_contrast",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0000",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0001",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__impediment-0002",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0000",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0001",
+        "testing__C179789__NRS-484B-627-1c__motor_vehicle_driver__route_possibility-0002"
+      ],
+      "evidence_or_gap": "reviewed controlled-access status, actual route, destination and restriction source; possibility judgment unresolved",
+      "requirement": "Controlled-access highway and alternate routes whenever possible",
+      "source": "NRS 484B.627(1)(c)",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "A paved-road cell does not by itself establish legal highway or controlled-access status.",
+    "Fixture route choices and following motion are synthetic, not original physical evidence.",
+    "Original route restriction and possibility judgments require reviewed journey-specific evidence; open route status is not a legal verdict.",
+    "Original Native capture, saved processing, independent delivery and comparison acceptance remain unverified until physical review."
+  ],
+  "selected_branch": "Controlled-access alternate-route duty with paved-road context.",
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Controlled-access alternate-route duty with paved-road context.",
+      "cell_id": "C179789",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-627-1c",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-627-1c",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 473,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C179789__NRS-484B-627-1c__motor_vehicle_driver/assignment.json",
@@ -152,36 +1622,15 @@
       "sha256": "475fe0153d6e756b46af88ad0717dae3f0a4481f0a000334a11110a28bfe304d"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "A paved-road cell does not by itself establish legal highway or controlled-access status.",
-    "Fixture route choices and following motion are synthetic, not original physical evidence.",
-    "Canonical capture/offline/compatibility, semantic and saved delivery/comparison audits remain CPU work."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no-accepted-recording",
-        "requirement": "original controlled-access route and following-motion evidence",
-        "source": "inputs/testing__C179789__NRS-484B-627-1c__motor_vehicle_driver/evidence.json",
-        "source_sha256": "0d1beafb9baa881471f1b7442705b846a0d2a37b30e0acc0ba1bf2aedd929e9b",
-        "why_existing_insufficient": "Frozen inventory has zero accepted recordings."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "If any driver or operator of a motor vehicle drives or operates a motor vehicle at a speed so slow as to impede the forward movement of traffic proceeding immediately behind the driver or operator, the driver or operator shall: If the highway is a controlled-access highway, use alternate routes whenever possible."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_exact_alternate_route_cpu_probes",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 473,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Controlled-access alternate-route duty with paved-road context.",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "A paved road can also be controlled access, and its travel task permits route-level observation without fixing the exit or alternate route.",
       "required_context": [
         "Construct the other vehicle immediately behind on the relevant segment.",
         "Establish each actor's route and the separate other vehicle's position, movement and purpose; do not presume a common paved segment.",
@@ -194,7 +1643,9 @@
         "Supply journey context, alternate-route restrictions and actual route observations.",
         "Supply journey-level alternate-route opportunities, restrictions and actual route observations without deciding possibility."
       ],
-      "reason": "A paved road can also be controlled access, and its travel task permits route-level observation without fixing the exit or alternate route."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 473,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

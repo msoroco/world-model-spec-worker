@@ -36,8 +36,10 @@ def selected_schedule(case_id, posted_limit_mps):
         raise ValueError("rear approach request outside bounded engineering range")
     if not isinstance(onset, (int, float)) or not 0 <= onset <= 12:
         raise ValueError("sign onset request outside bounded engineering range")
-    if not isinstance(occupancy, int) or not 1 <= occupancy <= 4:
+    if (not isinstance(occupancy, (int, float)) or isinstance(occupancy, bool) or
+            int(occupancy) != occupancy or not 1 <= occupancy <= 4):
         raise ValueError("occupancy request outside bounded engineering range")
+    occupancy = int(occupancy)
     ego = posted_limit_mps if speed_request == "at_limit" else max(2.0, posted_limit_mps - 3.0)
     rear = ego if rear_request == "same_speed_rear" else ego + float(delta)
     return {"case_id": case_id, "ego_target_speed_mps": ego,

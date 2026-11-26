@@ -31,7 +31,7 @@ def _camera_image(reader, frame, dimensions):
 
 def capture(world, ego, packet_path, packet_sha, case_id, output_dir, control,
             body_reader, brake, *, ticks=900, camera_readers, after_tick=None,
-            control_readback=None):
+            control_readback=None, before_tick=None, traffic_readback=None):
     packet_path = Path(packet_path)
     if sha(packet_path) != packet_sha:
         raise ValueError("original yield site packet changed")
@@ -39,8 +39,9 @@ def capture(world, ego, packet_path, packet_sha, case_id, output_dir, control,
     select_stop_reference(packet_path)
     if packet.get("case_id") != case_id:
         raise ValueError("original yield case mismatch")
-    if type(ticks) is not int or ticks != 900 or not all(callable(fn) for fn in
-            (control, body_reader, brake, control_readback)) or set(camera_readers) != set(CAMERAS):
+    if (type(ticks) is not int or ticks != 900 or not all(callable(fn) for fn in
+            (control, body_reader, brake, control_readback, before_tick, traffic_readback)) or
+            set(camera_readers) != set(CAMERAS)):
         raise ValueError("complete 900-tick original acquisition callbacks required")
     settings = world.get_settings()
     if not settings.synchronous_mode or abs(settings.fixed_delta_seconds - .05) > 1e-9:
@@ -60,6 +61,7 @@ def capture(world, ego, packet_path, packet_sha, case_id, output_dir, control,
     try:
         for index in range(ticks):
             control(ego, index)
+            before_tick(index)
             tick_frame = world.tick()
             snap = world.get_snapshot()
             frame, time_s = snap.frame, float(snap.timestamp.elapsed_seconds)
@@ -88,10 +90,17 @@ def capture(world, ego, packet_path, packet_sha, case_id, output_dir, control,
                     source_control.get("control") != "yield_sign" or
                     not source_control.get("live_actor_id")):
                 raise ValueError("original live yield-sign control readback differs")
+            traffic = traffic_readback(frame)
+            if (not isinstance(traffic, list) or len(traffic) != len(packet["approaching_traffic_points"]) or
+                    any(not item.get("actor_id") or item.get("source_frame_id") != frame or
+                        not item.get("position_xy_m") or not item.get("velocity_xy_mps")
+                        for item in traffic)):
+                raise ValueError("original approaching traffic actor readback differs")
             row = {"frame": frame, "time_s": time_s, "ego_actor_id": ego.id,
                    "ego_center_xy_m": center, "ego_lane_id": lane_id,
                    "ego_vertices": vertices, "ego_speed_mps": speed,
-                   "yield_control_readback": source_control, "camera_frames": {}}
+                   "yield_control_readback": source_control,
+                   "approaching_traffic_readback": traffic, "camera_frames": {}}
             for name in CAMERAS:
                 payload = _camera_image(camera_readers[name], frame, DIMENSIONS[name])
                 member = f"{frame:08d}.png"

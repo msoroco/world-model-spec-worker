@@ -75,6 +75,22 @@ def load_reviewed(path, case_id):
     sign = site.get("yield_sign_actor_spec")
     if not isinstance(sign, dict) or not sign.get("blueprint") or not isinstance(sign.get("transform"), dict):
         raise ValueError("source-selected original yield-sign actor construction required")
+    traffic = site.get("approaching_traffic_actor_specs")
+    if (not isinstance(traffic, list) or not traffic or
+            len(traffic) != len(site["approaching_traffic_points"])):
+        raise ValueError("source-selected approaching traffic actors required")
+    for spec, point in zip(traffic, site["approaching_traffic_points"]):
+        spawn = spec.get("transform")
+        velocity = spec.get("target_velocity_xyz_mps")
+        if (not str(spec.get("blueprint", "")).startswith("vehicle.") or
+                not isinstance(spawn, dict) or
+                not isinstance(velocity, list) or len(velocity) != 3 or
+                any(type(v) not in (int, float) or not math.isfinite(v) for v in velocity) or
+                math.hypot(velocity[0], velocity[1]) <= .1 or
+                any(type(spawn.get(axis)) not in (int, float) or
+                    not math.isfinite(spawn[axis]) for axis in ("x", "y")) or
+                math.dist((spawn["x"], spawn["y"]), point) > 2):
+            raise ValueError("original approaching traffic spawn and motion source differ")
     route = site.get("ego_route")
     if not isinstance(route, list) or len(route) < 3:
         raise ValueError("source-selected original ego route required")

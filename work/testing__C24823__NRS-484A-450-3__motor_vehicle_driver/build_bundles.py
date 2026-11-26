@@ -53,6 +53,7 @@ def build():
              "reference_frame": "reviewed Native yield-site map XY",
              "uncertainty": "original view, physical stopping and legal safety review pending"}
             for name in ("original_body_polygon", "original_speed", "yield_control_readback",
+                         "approaching_traffic_readback",
                          "original_view_geometry", "four_camera_frames")],
             "context_inputs": [{"name": "reviewed_yield_context", "unit": "source",
                 "method": "independently reviewed original yield sign, crossing inventory, occluder, driver viewpoint, traffic and safety source"}],
@@ -93,7 +94,7 @@ def build():
                     "bounded source-selected stop reference and original route",
                     "20 Hz four-camera original frame join"],
                 "mechanisms": ["SHA-sealed independently reviewed original yield-site, map and camera sources",
-                    "physical occluder actor construction or reviewed map-geometry readback",
+                    "physical yield sign, occluder and approaching traffic actor construction with readback",
                     "bounded Native route and stop controller with original body/speed readback",
                     "900 synchronized original 20 Hz body, control and four-camera frames"],
                 "termination_rules": {"duration_s": 45,
@@ -113,6 +114,7 @@ def build():
                         "evidence": ["original-yield-site.json", "original-yield-trace.jsonl",
                                      "original-yield-receipt.json", "trace.jsonl", "video_frames.jsonl"]}
                         for name in ("original_body_polygon", "original_speed", "yield_control_readback",
+                                     "approaching_traffic_readback",
                                      "original_view_geometry", "four_camera_frames")},
                     "candidate_risk": {"status": "physical",
                         "reason": "Reviewed blind-approach route braking and four-camera synchronization can fail at the selected reference"},

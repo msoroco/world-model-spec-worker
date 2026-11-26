@@ -1,0 +1,67 @@
+"""Exact source-gated NRS 484B.208(1) Native capture entrypoint."""
+
+import argparse
+import json
+import os
+from pathlib import Path
+
+from hov_controls import selected_schedule
+from package_contract import ACTOR, CAMERAS, CELL, LAW
+from reviewed_site import plan
+
+HERE = Path(__file__).resolve().parent
+
+
+def selected_ids():
+    proposal = json.loads((HERE / "proposals/cases.json").read_text(encoding="utf-8"))
+    return {c["case_id"] for c in proposal["cases"] if c.get("target_law_id") == LAW}
+
+
+def check_config(config):
+    if (config.get("law_id"), config.get("cell_id"), config.get("actor")) != (LAW, CELL, ACTOR):
+        raise ValueError("exact C380107 identity differs")
+    case_id = config.get("selected_case_id")
+    if case_id not in selected_ids():
+        raise ValueError("unselected C380107 case")
+    if (config.get("diagnostic_only") is not True or config.get("rate_hz") != 20 or
+            config.get("duration_s") != 45 or config.get("cameras") != CAMERAS):
+        raise ValueError("four-camera 900-frame original capture contract differs")
+    return True
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--host", default="localhost")
+    parser.add_argument("--port", type=int, default=2000)
+    parser.add_argument("--output-dir", type=Path)
+    args = parser.parse_args()
+    config = json.loads(Path("config.json").read_text(encoding="utf-8"))
+    check_config(config)
+    if args.check:
+        print("exact C380107 Native construction contract passed")
+        return
+    if args.output_dir is None or not args.output_dir.is_dir():
+        raise ValueError("fresh original Native attempt directory required")
+    if any(args.output_dir.iterdir()):
+        raise ValueError("fresh original Native attempt directory must be empty")
+    root = os.environ.get("C380107_AUTHORITY_ROOT")
+    site_ref_path = os.environ.get("C380107_SITE_REF")
+    if not root or not site_ref_path:
+        raise ValueError("reviewed original highway/HOV site source required")
+    site_ref = json.loads(Path(site_ref_path).read_text(encoding="utf-8"))
+    scene = plan(Path(root), site_ref, config["selected_case_id"])
+    selected_schedule(config["selected_case_id"], scene["posted_limit_mps"])
+    from native_adapter import NativeAdapter
+    adapter = NativeAdapter(args.host, args.port, args.output_dir, scene)
+    try:
+        adapter.open_map()
+        adapter.construct()
+        for frame in range(900):
+            adapter.tick_and_capture(frame)
+    finally:
+        adapter.close()
+
+
+if __name__ == "__main__":
+    main()

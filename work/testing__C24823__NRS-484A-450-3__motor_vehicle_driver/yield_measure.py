@@ -46,6 +46,7 @@ def measure(root, case_id):
         raise ValueError("original stop trace frame count mismatch")
     previous_frame = previous_time = None
     stops = []
+    traffic_first = traffic_last = None
     for index, row in enumerate(rows):
         frame, time = row.get("frame"), row.get("time_s")
         if type(frame) is not int or type(time) not in (int, float) or not math.isfinite(time):
@@ -69,6 +70,16 @@ def measure(root, case_id):
         if not receipt.get("diagnostic_fixture") and (not control.get("live_actor_id") or
                 set(row["camera_frames"]) != {"overview", "approach", "reference_corner", "driver_reference"}):
             raise ValueError("original sign actor or four-camera source missing")
+        traffic = row.get("approaching_traffic_readback")
+        if (not isinstance(traffic, list) or len(traffic) != len(site["approaching_traffic_points"]) or
+                any(not item.get("actor_id") or not isinstance(item.get("position_xy_m"), list) or
+                    len(item["position_xy_m"]) != 2 or any(
+                        type(v) not in (float, int) or not math.isfinite(v)
+                        for v in item["position_xy_m"]) for item in traffic)):
+            raise ValueError("original approaching traffic actor readback missing")
+        if traffic_first is None:
+            traffic_first = traffic
+        traffic_last = traffic
         vertices = row.get("ego_vertices")
         if (not isinstance(vertices, list) or len(vertices) != 8 or any(
                 not isinstance(vertex, list) or len(vertex) != 3 or any(
@@ -81,8 +92,13 @@ def measure(root, case_id):
                           "distance_to_reference_m": math.dist(position, reference["reference_position"]),
                           "leading_body_x_minus_reference_x_m": max(vertex[0] for vertex in vertices) -
                               reference["reference_position"][0]})
+    traffic_progress = [math.dist(a["position_xy_m"], b["position_xy_m"])
+                        for a, b in zip(traffic_first, traffic_last)]
+    if not receipt.get("diagnostic_fixture") and any(distance < 1 for distance in traffic_progress):
+        raise ValueError("original approaching traffic motion not demonstrated")
     return {"case_id": case_id, "reference": reference,
             "original_stop_samples": stops, "original_sample_count": len(rows),
+            "approaching_traffic_displacement_m": traffic_progress,
             "source_bindings": {name: digest(root / name) for name in
                 ("original-yield-site.json", "original-yield-trace.jsonl", "original-yield-receipt.json")},
             "safety_necessity_source": site.get("safety_necessity_source"),

@@ -156,6 +156,14 @@ def run_native(reviewed, case_id, output_dir, *, host="127.0.0.1", port=2000, th
             if any(abs(a - b) > 1 for a, b in zip(actual, spec["expected_rectangle_xy_m"])):
                 raise RuntimeError("original occluder physical readback differs from reviewed geometry")
             actors["occluder_" + str(index)] = occluder
+        traffic = []
+        for index, spec in enumerate(site["approaching_traffic_actor_specs"]):
+            bp = world.get_blueprint_library().find(spec["blueprint"])
+            vehicle = world.try_spawn_actor(bp, _transform(carla, spec["transform"]))
+            if vehicle is None or not vehicle.is_alive or not vehicle.type_id.startswith("vehicle."):
+                raise RuntimeError("source-selected approaching traffic actor failed to spawn")
+            actors["traffic_" + str(index)] = vehicle
+            traffic.append((vehicle, spec))
         bridge = CameraFrames()
         sensors = _cameras(world, carla, reviewed["placement"], bridge)
         graph = PipelineCapture(client, ego, output, case_id)
@@ -176,7 +184,13 @@ def run_native(reviewed, case_id, output_dir, *, host="127.0.0.1", port=2000, th
             camera_readers=bridge.readers(), after_tick=after_tick,
             control_readback=lambda frame: {"yield_sign_id": site["yield_sign_id"],
                 "control": "yield_sign", "live_actor_id": sign.id,
-                "live_actor_type": sign.type_id, "source_frame_id": frame})
+                "live_actor_type": sign.type_id, "source_frame_id": frame},
+            before_tick=lambda index: [vehicle.set_target_velocity(carla.Vector3D(*spec["target_velocity_xyz_mps"]))
+                                       for vehicle, spec in traffic],
+            traffic_readback=lambda frame: [{"actor_id": vehicle.id, "source_frame_id": frame,
+                "position_xy_m": [float(vehicle.get_location().x), float(vehicle.get_location().y)],
+                "velocity_xy_mps": [float(vehicle.get_velocity().x), float(vehicle.get_velocity().y)]}
+                for vehicle, _ in traffic])
     except BaseException as error:
         failure = error
     finally:

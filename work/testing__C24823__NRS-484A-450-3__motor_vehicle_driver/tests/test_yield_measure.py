@@ -36,6 +36,8 @@ class YieldMeasureTests(unittest.TestCase):
                  "ego_vertices": [[-2+i*.5+dx,dy,z] for z in (-.4,.4)
                      for dx in (-.4,.4) for dy in (-.4,.4)],
                  "yield_control_readback": {"control": "yield_sign", "yield_sign_id": "diagnostic-yield"},
+                 "approaching_traffic_readback": [{"actor_id": 2,
+                     "position_xy_m": [2, 6-i*.2], "velocity_xy_mps": [0, -4]}],
                  "camera_frames": {"overview": {"frame": 100+i}}} for i in range(4)]
         (root / "original-yield-trace.jsonl").write_text("".join(json.dumps(x) + "\n" for x in rows))
         receipt = {"case_id": case, "frame_count": 4, "ego_actor_id": "diagnostic-ego",

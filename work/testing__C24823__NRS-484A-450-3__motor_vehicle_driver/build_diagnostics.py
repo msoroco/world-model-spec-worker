@@ -39,6 +39,7 @@ def build():
         ("original_body_polygon", "original CARLA eight world-space body vertices and center at 20 Hz", "full body relative to governing stop reference"),
         ("original_speed", "original CARLA ego velocity at 20 Hz", "sampled stop speed"),
         ("yield_control_readback", "original yield sign and live approach lane/map readback", "governing control and approach identity"),
+        ("approaching_traffic_readback", "original source-selected approaching motor vehicle actors at 20 Hz", "traffic presence and motion, independently from sight assumption"),
         ("original_view_geometry", "source-sealed original occluder, driver-viewpoint and approaching traffic packets", "geometric candidate sight ray; driver perception unresolved"),
         ("four_camera_frames", "four original synchronized Native RGB cameras", "frame identity, full decode and actual pixel review"),
     )
@@ -100,6 +101,8 @@ def build():
                 "ego_actor_id": 1, "ego_center_xy_m": [x, 0], "ego_speed_mps": speed,
                 "ego_vertices": [[x+dx,dy,z] for z in (-.4,.4) for dx in (-.4,.4) for dy in (-.4,.4)],
                 "yield_control_readback": {"yield_sign_id": "synthetic-yield", "control": "yield_sign"},
+                "approaching_traffic_readback": [{"actor_id": 2, "source_frame_id": mapped["carla_frame"],
+                    "position_xy_m": [2, 6-index*.2], "velocity_xy_mps": [0, -4]}],
                 "camera_frames": {}})
         trace_text = "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows)
         receipt = {"assignment_id": ROOT.name, "case_id": cid, "diagnostic_fixture": True,

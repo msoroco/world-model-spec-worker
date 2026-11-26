@@ -30,6 +30,7 @@ def measure_reference_hierarchy(root, data):
 def measure_original_view(root, data):
     return _record("measure_original_view", {
         "geometric_view_candidate": data["reference"]["selected_candidate_id"],
+        "original_approaching_traffic_displacement_m": data["approaching_traffic_displacement_m"],
         "original_driver_view_confirmed": False,
         "source": data["source_bindings"]["original-yield-site.json"]}, root)
 
@@ -70,6 +71,7 @@ def analyze(root, output):
         "original_body_polygon": lambda row: row["ego_vertices"],
         "original_speed": lambda row: row["ego_speed_mps"],
         "yield_control_readback": lambda row: row.get("yield_control_readback", {}),
+        "approaching_traffic_readback": lambda row: row["approaching_traffic_readback"],
         "original_view_geometry": lambda row: {"reference": data["reference"],
             "actual_driver_view_confirmed": False},
         "four_camera_frames": lambda row: row["camera_frames"]}

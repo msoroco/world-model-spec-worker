@@ -20,3 +20,7 @@ NRS 484B.208(1), with subsection 2, addresses continued operation below the post
 ## Remaining CPU and physical work
 
 Build and prove exact Native scene/controller, full original 20 Hz four-camera capture, source-bound finalizer and semantic proposal, saved compatibility/processing, and delivery/comparison audits for all variants. Resolve applicable HOV requirements including NRS 484B.323(1) before any legal exception determination. Actual CARLA motion, lane markings, HOV signs and camera visibility remain physical checks after CPU preparation. No dependency or missing-tool blocker is asserted.
+
+## 2026-11-26 construction checkpoint
+
+Canonical semantic draft validates with 18 selected exact cases and 11 comparisons. SHA-gated original highway, HOV authority, actor and camera Native construction has been written; diagnostic fixtures are explicitly synthetic. Eleven focused CPU tests and 18/18 pinned offline construction proofs passed. Saved compatibility, delivery and comparison proofs remain in progress; result status is partial.
