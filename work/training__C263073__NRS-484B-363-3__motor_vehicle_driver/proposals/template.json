@@ -1,0 +1,98 @@
+{
+  "template_id": "NRS-484B-363-3@motor_vehicle_driver",
+  "law_id": "NRS-484B-363-3",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone except: (a) When there are no children present; (b) On a day on which school is not in session; (c) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (d) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (e) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect. As used in this section, \u201cspeed limit beacon\u201d means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
+  "structure": {
+    "activation": {
+      "condition": "Vehicle driver makes a U-turn inside an officially designated school zone or school crossing zone.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Driver shall not make a U-turn in the designated zone unless a statutory exception applies.",
+      "type": "must_not",
+      "source_clause": "The driver of a vehicle shall not make a U-turn in an area designated as a school zone or school crossing zone",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "When there are no children present",
+        "trigger": "Independent child-presence review supports this exception.",
+        "effect": "The section permits this U-turn when this exception applies.",
+        "replacement_obligation": "Review all remaining applicable traffic duties separately."
+      },
+      {
+        "source_clause": "On a day on which school is not in session",
+        "trigger": "Independent session-day review supports this exception.",
+        "effect": "The section permits this U-turn when this exception applies.",
+        "replacement_obligation": "Review all remaining applicable traffic duties separately."
+      },
+      {
+        "source_clause": "During the period from a half hour after school is no longer in operation to a half hour before school is next in operation",
+        "trigger": "Original operation and civil-time records support this exception.",
+        "effect": "The section permits this U-turn when this exception applies.",
+        "replacement_obligation": "Review all remaining applicable traffic duties separately."
+      },
+      {
+        "source_clause": "If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect",
+        "trigger": "Original beacon, class-hour and light records support this exception.",
+        "effect": "The section permits this U-turn when this exception applies.",
+        "replacement_obligation": "Review all remaining applicable traffic duties separately."
+      },
+      {
+        "source_clause": "If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect",
+        "trigger": "Original beacon and sign records support this exception.",
+        "effect": "The section permits this U-turn when this exception applies.",
+        "replacement_obligation": "Review all remaining applicable traffic duties separately."
+      }
+    ],
+    "timing": {
+      "description": "Retain civil time, school session and operation, class hours, beacon lights and sign schedule across the attempt.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "area designated as a school zone or school crossing zone",
+        "note": "Official designation and boundaries require independent source review."
+      },
+      {
+        "phrase": "children present",
+        "note": "Identity and presence require independent original-source review."
+      },
+      {
+        "phrase": "school is not in session",
+        "note": "Session day requires independent school records and civil time."
+      },
+      {
+        "phrase": "school is no longer in operation",
+        "note": "Operation interval and statutory half hours require source review."
+      },
+      {
+        "phrase": "operational speed limit beacon",
+        "note": "Beacon configuration, class hours and flashing state require source review."
+      },
+      {
+        "phrase": "speed limit is not in effect",
+        "note": "Sign schedule and beacon condition require source review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "u_turn_request",
+      "kind": "subject_behavior",
+      "range_or_domain": "requested turn versus continuation; observed trajectory remains separate"
+    },
+    {
+      "name": "commanded_turn_path",
+      "kind": "controller",
+      "range_or_domain": "authored physical path target, not a legal conclusion"
+    },
+    {
+      "name": "school_zone_context",
+      "kind": "world_setup",
+      "range_or_domain": "official designation, child and school records, beacon and sign state"
+    }
+  ]
+}

@@ -249,7 +249,7 @@ The direct ready-path execution manifest validator found unsupported `required_a
 - Rebuilt the eight changed physical fixtures and reran positive/negative source-bound pair audits for electric bicycle, electric scooter, exception C, and exception F. These are diagnostic CPU findings; original Native physical and legal outcomes remain unclaimed.
 - Added 34 measurable failure conditions to existing fallback trigger metrics, based on the source engineering trigger functions. Added four `ru.vehicle` acquisition bindings for exception C/F channels already emitted by the selected runner.
 - Pinned execution manifest validates 24 cases; semantic delivery validates 22 stages and 24 cases; delivery handoff validates 24 cases; package compatibility receipt validator passes 24 cases.
-- Exact scoped strict delivery gate is running as a diagnostic; status remains partial until a final-file strict run exits zero.
+- Exact scoped strict diagnostic gate found a root camera naming mismatch, which was corrected; see the final gate section below.
 - Scratch proof logs (all under `.runtime-work/`):
   - `.runtime-work/c10052-disposition-offline-refresh.log` SHA-256 `6e32c99112181fa7ece9142734b0a9c2a22b4edb80944bf9c245f4c61ddc4be8`
   - `.runtime-work/c10052-disposition-compat-refresh.log` SHA-256 `a92eaba7ff357103a2f1eff4034e5950d80248e09c2524cce3735667076ce4bc`
@@ -260,4 +260,11 @@ The direct ready-path execution manifest validator found unsupported `required_a
 
 - Diagnostic exact scoped strict gate exited 1 at `Four-view capture configuration differs from profile` in `preparation.py:220`; log `.runtime-work/c10052-scoped-strict-candidate.log` SHA-256 `4c54cd066f5544c1606a64179a8522c321b40ff4fbd3bd2c79f60f45c74397af`.
 - Root `config.json`, `cameras.py`, `runner.py`, and matching inline `construction.json` now use pinned `reference_corner` as the third camera name. The 1920×1080 overview and three 1280×720 detail sizes remain aligned with the profile.
-- Re-ran root CPU unit tests: 17 passed; `cpu-selected-tests.log` SHA-256 `a758130acab30dcafbb5559ae4317daaf1753c84cdfe09e7a36e2b6c77b105d0`. Result remains partial until final exact scoped strict exits zero.
+- Re-ran root CPU unit tests: 17 passed; `cpu-selected-tests.log` SHA-256 `a758130acab30dcafbb5559ae4317daaf1753c84cdfe09e7a36e2b6c77b105d0`. After the root correction, the exact scoped strict delivery gate exited zero; see final gate section below.
+
+## 2026-11-25 exact scoped strict delivery gate
+
+- `.venv-cpu/bin/python worker_check.py --assignment training__C10052__NRS-484B-270-3__motor_vehicle_driver --complete --require-delivery-ready` exited 0 and reported `static_checks_passed: true` for this assignment.
+- Gate log: `.runtime-work/c10052-scoped-strict-final.log` SHA-256 `19ae6fa74a29798449ebff96dd221711efde4250197aabd9c6cbff56bfd6db4c`. Selected execution manifest SHA-256 `a4f62c238b471aa6e55b8893448db672395017f2de243db5b6852fbc73b103ea`.
+- This is a CPU delivery-preparation result. Original Native recording, physical acceptance, exception facts, and legal judgment remain pending after GPU delivery.
+- Result and handoff wording were refreshed after that pass; a final-file repeat of the exact scoped strict gate is scheduled before owner handoff.

@@ -31,23 +31,40 @@
         "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_1",
         "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2"
       ],
-      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+      "evidence_or_gap": "No accepted recording; original adjacent-lane and stationary-vehicle body evidence required."
     },
     {
       "requirement": "NRS-486-351-1",
       "source": "NRS 486.351(1)",
       "branch": "moving or stationary vehicles",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2",
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_3"
+      ],
+      "evidence_or_gap": "Stationary and moving vehicle alternatives measured from separate original velocity/body sources; synthetic requests do not establish physical speed."
     },
     {
       "requirement": "NRS-486-351-1",
       "source": "NRS 486.351(1)",
-      "branch": "police duty exception",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "branch": "police officer in performance of duty exception",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2",
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_5"
+      ],
+      "evidence_or_gap": "Police officer identity and performance of duty require separate independently reviewed sources; synthetic role cannot establish exception or legal outcome."
+    },
+    {
+      "requirement": "NRS-486-351-1",
+      "source": "NRS 486.351(1)",
+      "branch": "motorcycle or moped classification",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2",
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_4"
+      ],
+      "evidence_or_gap": "Motorcycle and moped alternatives require separate independently reviewed machine classification; NRS 482.0295, NRS 482.029 and autocycle applicability remain unavailable in frozen inputs."
     }
   ],
   "neutral_baseline": {
@@ -58,7 +75,7 @@
     {
       "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_1",
       "target_law_id": "NRS-486-351-1",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "below",
       "physical_target": "motorcycle remains in occupied lane beside adjacent vehicles",
       "comparison_variable": "between_adjacent_vehicles",
@@ -66,12 +83,15 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
+      ],
+      "gap_ids": [
+        "stationary_split_original"
       ]
     },
     {
       "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2",
       "target_law_id": "NRS-486-351-1",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "motorcycle rides between vehicles occupying adjacent lanes",
       "comparison_variable": "between_adjacent_vehicles",
@@ -79,22 +99,120 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
+      ],
+      "gap_ids": [
+        "stationary_split_original"
+      ]
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_3",
+      "target_law_id": "NRS-486-351-1",
+      "kind": "delivery",
+      "target_type": "controlled_attempt",
+      "physical_target": "motorcycle between moving adjacent vehicles",
+      "comparison_variable": "surrounding_vehicle_motion",
+      "source_branch": "Stationary surrounding vehicles",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "gap_ids": [
+        "moving_vehicle_alternative"
+      ]
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_4",
+      "target_law_id": "NRS-486-351-1",
+      "kind": "delivery",
+      "target_type": "controlled_attempt",
+      "physical_target": "moped candidate between stationary adjacent vehicles",
+      "comparison_variable": "machine_classification",
+      "source_branch": "Stationary surrounding vehicles",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "gap_ids": [
+        "moped_classification_alternative"
+      ]
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_5",
+      "target_law_id": "NRS-486-351-1",
+      "kind": "delivery",
+      "target_type": "controlled_attempt",
+      "physical_target": "police-duty candidate between stationary adjacent vehicles",
+      "comparison_variable": "police_duty_context",
+      "source_branch": "Stationary surrounding vehicles",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "gap_ids": [
+        "police_duty_exception"
       ]
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__comparison",
+      "comparison_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__stationary_position",
       "case_ids": [
         "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_1",
         "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2"
       ],
       "deliberate_differences": [
-        "between_adjacent_vehicles"
+        "requested motorcycle lateral path"
       ],
       "fixed_conditions": [
-        "frozen cell, actor and physical road context",
-        "other participants, controller policy and camera policy except law-relevant target"
+        "same adjacent paved lanes",
+        "same two stationary motorcycle lane occupants",
+        "same subject machine class and civilian duty context",
+        "same 20 Hz duration and four cameras"
+      ]
+    },
+    {
+      "comparison_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__moving_alternative",
+      "case_ids": [
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2",
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_3"
+      ],
+      "deliberate_differences": [
+        "surrounding vehicles requested stationary versus moving"
+      ],
+      "fixed_conditions": [
+        "same adjacent paved lanes",
+        "same between route and subject class",
+        "same civilian duty context, cameras and duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__moped_alternative",
+      "case_ids": [
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2",
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_4"
+      ],
+      "deliberate_differences": [
+        "subject machine candidate motorcycle versus moped"
+      ],
+      "fixed_conditions": [
+        "same adjacent paved lanes",
+        "same between route",
+        "same stationary surrounding lane occupants, civilian duty context, cameras and duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__police_duty_exception",
+      "case_ids": [
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2",
+        "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_5"
+      ],
+      "deliberate_differences": [
+        "requested police officer and performance-of-duty context for independent review"
+      ],
+      "fixed_conditions": [
+        "same adjacent paved lanes",
+        "same between route and motorcycle candidate",
+        "same stationary surrounding lane occupants, cameras and duration"
       ]
     }
   ],
@@ -102,52 +220,52 @@
     {
       "term": "ru.subject",
       "purpose": "the rider judged",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_native_channel_prepared"
     },
     {
       "term": "ru.motorcycle",
       "purpose": "the machine",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_native_channel_prepared"
     },
     {
       "term": "ru.moped",
       "purpose": "or a moped",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_native_channel_prepared"
     },
     {
       "term": "st.lane_adjacency",
       "purpose": "the adjacent traffic lanes",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_native_channel_prepared"
     },
     {
       "term": "rel.occupies",
       "purpose": "the machine's position between the lanes",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_native_channel_prepared"
     },
     {
       "term": "drv.straddles_marking",
       "purpose": "riding on the line between them",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_native_channel_prepared"
     },
     {
       "term": "rel.bearing",
       "purpose": "vehicles on either side",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_native_channel_prepared"
     },
     {
       "term": "rel.longitudinal_overlap",
       "purpose": "the machine drawing level with them",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_native_channel_prepared"
     },
     {
       "term": "ru.motor_vehicle",
       "purpose": "the vehicles occupying those lanes",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_native_channel_prepared"
     },
     {
       "term": "kin.velocity",
-      "purpose": "moving or stationary — both are covered",
-      "status": "measurement_mapping_pending"
+      "purpose": "moving or stationary \u2014 both are covered",
+      "status": "source_bound_native_channel_prepared"
     }
   ],
   "candidate_plans": [],
@@ -164,9 +282,9 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Original Native motion, chapter-specific machine classification and police-duty exception remain unverified until local capture and independent source review; CPU proofs still in construction."
   ],
-  "selected_branch": null,
+  "selected_branch": "Stationary surrounding vehicles",
   "observations": [
     {
       "name": "ru.subject",
@@ -216,7 +334,7 @@
     {
       "name": "kin.velocity",
       "mandatory": true,
-      "reason": "moving or stationary — both are covered"
+      "reason": "moving or stationary \u2014 both are covered"
     }
   ],
   "runtime_uncertainties": [
@@ -224,5 +342,195 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "all three vehicles and adjacent lanes",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "subject arrival and forward body",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "lane boundary and body clearance",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject and two surrounding vehicle histories",
+        "interval": "all 600 original frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "ru.subject": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "ru.subject"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "ru.motorcycle": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "ru.motorcycle"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "ru.moped": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "ru.moped"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "st.lane_adjacency"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "drv.straddles_marking": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "drv.straddles_marking"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "rel.bearing": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "rel.bearing"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "rel.longitudinal_overlap": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "rel.longitudinal_overlap"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "ru.motor_vehicle": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "ru.motor_vehicle"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Original Native body/map/velocity frame join and independently reviewed machine and duty context; observation is not a legal finding.",
+      "channels": [
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "lane-inventory.json",
+        "split-review.json",
+        "actor-poses.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  },
+  "evidence_review": {
+    "reviewer": "worker C178141",
+    "method": "Read frozen assignment membership and witness; no accepted recording IDs exist, so no equivalent original can be reused.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "stationary_split_original",
+        "requirement": "Stationary surrounding vehicles with motorcycle beside/between comparison",
+        "source": "NRS 486.351(1); frozen witness index 219",
+        "why_existing_insufficient": "No accepted recording membership is listed."
+      },
+      {
+        "id": "moving_vehicle_alternative",
+        "requirement": "Moving surrounding vehicles occupying adjacent lanes",
+        "source": "NRS 486.351(1)",
+        "why_existing_insufficient": "No accepted original moving-lane occupant recording is listed."
+      },
+      {
+        "id": "moped_classification_alternative",
+        "requirement": "Moped classification alternative with original body history",
+        "source": "NRS 486.351(1)",
+        "why_existing_insufficient": "No accepted original moped recording or chapter-definition source is listed."
+      },
+      {
+        "id": "police_duty_exception",
+        "requirement": "Separate police-officer identity and performance-of-duty context",
+        "source": "NRS 486.351(1)",
+        "why_existing_insufficient": "No accepted original with independent officer and duty context is listed."
+      }
+    ]
+  }
 }

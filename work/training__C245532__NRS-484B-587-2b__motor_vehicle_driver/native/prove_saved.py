@@ -37,9 +37,14 @@ def main():
         assert a['body_straddle_frame_count']==0 and a['first_traffic_side_center_frame'] is None
         assert b['body_straddle_frame_count']>0 and b['first_traffic_side_center_frame'] is not None
         assert b['native_lane_ids_seen']==[-2,-1] and b['crossing_verdict']=='unresolved'
+        pending=measure(unreviewed)
+        assert pending['source_context_review_pending'] and pending['crossing_verdict']=='unresolved'
+        context_path=unreviewed/'separator-context.json'
+        context=json.loads(context_path.read_text());context.pop('official_line_reviewed')
+        context_path.write_text(json.dumps(context)+'\n')
         try:measure(unreviewed)
-        except ValueError as error:assert 'unreviewed' in str(error)
-        else:raise AssertionError('Unreviewed controlled access accepted')
+        except ValueError as error:assert 'review status missing' in str(error)
+        else:raise AssertionError('Missing original review status accepted')
         (cross/'traffic_view.mkv').unlink()
         try:measure(cross)
         except ValueError as error:assert 'Missing required source' in str(error)
@@ -48,7 +53,8 @@ def main():
             'stay_straddle_frames':a['body_straddle_frame_count'],
             'cross_straddle_frames':b['body_straddle_frame_count'],
             'cross_first_traffic_center_frame':b['first_traffic_side_center_frame'],
-            'unreviewed_controlled_access_rejected':True,'missing_camera_rejected':True,
+            'unreviewed_controlled_access_retained_as_pending':True,
+            'missing_review_status_rejected':True,'missing_camera_rejected':True,
             'statutory_crossing_cutoff_adopted':False,'physical_acceptance_claimed':False}))
 
 

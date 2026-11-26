@@ -2,37 +2,234 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "partial_native_draft",
+  "status": "partial_selected_preparation",
   "cases": [
     {
       "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_1",
       "kind": "delivery",
       "construction": "draft-exact/probe_1/primary/construction.json",
-      "construction_sha256": "4b5e94b8b344d71aaa9f86877166f9be976806687f12be0f5e811d6eefa7645e",
+      "construction_sha256": "7e38353c92142f82199079a992ac366114372bf9e0130327e6226d992a3511a9",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native lateral tracking and vehicle clearance require original review"
+        "reason": "Original lateral tracking may oscillate near occupied adjacent-lane bodies, reducing physical clearance or losing the between/ beside target."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_1/fallback1/construction.json",
+          "construction_sha256": "6289545d72509451b0a20210e38868d2f7aebbdd79bc7928bad0f74f6d000c05",
+          "trigger": {
+            "source": "original actor-poses.jsonl, trace.jsonl and result.json",
+            "metric": "sampled lateral error, body clearance and selected between-vehicle target",
+            "failure_condition": "original body contact/insufficient clearance, unstable lateral oscillation, or target mismatch after source completeness review"
+          },
+          "changed_knobs": [
+            "common subject steering feedback gain 0.10 to 0.07 in every linked case; route, participants, cameras, duration and comparison variable fixed"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "6289545d72509451b0a20210e38868d2f7aebbdd79bc7928bad0f74f6d000c05",
+            "command": "runtime.py offline --case training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_1 --candidate fallback1",
+            "log": "proofs/probe_1/fallback1-offline.log",
+            "log_sha256": "63e0dadd81a6ec170382ea033adde22296a267cbf23e86dfc64c8f9f1809f799"
+          },
+          "compatibility": {
+            "receipt": "proofs/probe_1/fallback1-compatibility.json",
+            "sha256": "75ecab0060da679c34d030f65e0046b1320362cc9068a439b95d063e3f80e7fd",
+            "log": "proofs/probe_1/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/probe_1/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_1/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "measure_split.py"
+        "entrypoint": "finalize.py"
       },
-      "preparation_status": "incomplete"
+      "fixture_recipe": "work/training__C178141__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-probe_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "7e38353c92142f82199079a992ac366114372bf9e0130327e6226d992a3511a9",
+        "command": "runtime.py offline --case training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_1 --candidate primary",
+        "log": "proofs/probe_1/primary-offline.log",
+        "log_sha256": "63e0dadd81a6ec170382ea033adde22296a267cbf23e86dfc64c8f9f1809f799"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_1/primary-compatibility.json",
+        "sha256": "ce5f12eddf404f024e309b80017fb58455f0afbb145ce7d7767beab602715b42",
+        "log": "proofs/probe_1/primary-compatibility-analysis.log",
+        "negative_log": "proofs/probe_1/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_1/primary-negative-analysis.log",
+        "log_sha256": "e00fc7c32074df7d4b10c290bb907ecd315e5ed1a2dc28f47c3e7f46095d905b"
+      }
     },
     {
       "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2",
       "kind": "delivery",
       "construction": "draft-exact/probe_2/primary/construction.json",
-      "construction_sha256": "604c35ff7302211736d3797475b91e57cec7441d90d5117fd5c0eb5ac2671f65",
+      "construction_sha256": "428842da9df67e39b86357650aeb38eeb5cb20cd215d9e4d3b87b65e7d3d801c",
       "candidate_risk": {
         "status": "physical",
-        "reason": "Native lateral tracking and vehicle clearance require original review"
+        "reason": "Original lateral tracking may oscillate near occupied adjacent-lane bodies, reducing physical clearance or losing the between/ beside target."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_2/fallback1/construction.json",
+          "construction_sha256": "07f14ac29455197f8f99826190ea62970f1048ecccf88abacb42b15a62f74ce2",
+          "trigger": {
+            "source": "original actor-poses.jsonl, trace.jsonl and result.json",
+            "metric": "sampled lateral error, body clearance and selected between-vehicle target",
+            "failure_condition": "original body contact/insufficient clearance, unstable lateral oscillation, or target mismatch after source completeness review"
+          },
+          "changed_knobs": [
+            "common subject steering feedback gain 0.10 to 0.07 in every linked case; route, participants, cameras, duration and comparison variable fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_2/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "measure_split.py"
+        "entrypoint": "finalize.py"
       },
-      "preparation_status": "incomplete"
+      "fixture_recipe": "work/training__C178141__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-probe_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "428842da9df67e39b86357650aeb38eeb5cb20cd215d9e4d3b87b65e7d3d801c",
+        "command": "runtime.py offline --case training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2 --candidate primary",
+        "log": "proofs/probe_2/primary-offline.log",
+        "log_sha256": "63e0dadd81a6ec170382ea033adde22296a267cbf23e86dfc64c8f9f1809f799"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_2/primary-compatibility.json",
+        "sha256": "1125395e5dccab7675ff4167f6fa5e6748e29001edca012200dece501bbd1b5e",
+        "log": "proofs/probe_2/primary-compatibility-analysis.log",
+        "negative_log": "proofs/probe_2/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_2/primary-negative-analysis.log",
+        "log_sha256": "706eb0a7d58fc0785858281f4fe4c5261d7f5eeb012581b15a028f975040c54a"
+      }
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_3",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_3/primary/construction.json",
+      "construction_sha256": "3b1ae8f7d71453b8ac8c30c25dc0077988d42ac8b9fd3440a955a07aa403cbc4",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original lateral tracking may oscillate near occupied adjacent-lane bodies, reducing physical clearance or losing the between/ beside target."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_3/fallback1/construction.json",
+          "construction_sha256": "1dd5ecf22428e0051a09fa52f3c68bcf9b6cc120c7b41d0649ad627db7999d02",
+          "trigger": {
+            "source": "original actor-poses.jsonl, trace.jsonl and result.json",
+            "metric": "sampled lateral error, body clearance and selected between-vehicle target",
+            "failure_condition": "original body contact/insufficient clearance, unstable lateral oscillation, or target mismatch after source completeness review"
+          },
+          "changed_knobs": [
+            "common subject steering feedback gain 0.10 to 0.07 in every linked case; route, participants, cameras, duration and comparison variable fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_3/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C178141__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-probe_3-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation"
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_4",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_4/primary/construction.json",
+      "construction_sha256": "1814fa77a174511a4b9d9d8f3c85cfe12ca9b51b56c7558f0d60e3c2f0da1983",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original lateral tracking may oscillate near occupied adjacent-lane bodies, reducing physical clearance or losing the between/ beside target."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_4/fallback1/construction.json",
+          "construction_sha256": "973a92e2cb95d24af9a5485f390485d6572106c1529c8a0b2884d857966ca4cf",
+          "trigger": {
+            "source": "original actor-poses.jsonl, trace.jsonl and result.json",
+            "metric": "sampled lateral error, body clearance and selected between-vehicle target",
+            "failure_condition": "original body contact/insufficient clearance, unstable lateral oscillation, or target mismatch after source completeness review"
+          },
+          "changed_knobs": [
+            "common subject steering feedback gain 0.10 to 0.07 in every linked case; route, participants, cameras, duration and comparison variable fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_4/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C178141__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-probe_4-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation"
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_5",
+      "kind": "delivery",
+      "construction": "draft-exact/probe_5/primary/construction.json",
+      "construction_sha256": "47093debe1fcec271fdf593f9c7243cfe51b09254bf8058d4458c166dfc9bca2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original lateral tracking may oscillate near occupied adjacent-lane bodies, reducing physical clearance or losing the between/ beside target."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/probe_5/fallback1/construction.json",
+          "construction_sha256": "7fa47bf926b2eab6d71977cc650c57783f1eba7e38a29830db607d2877053b5d",
+          "trigger": {
+            "source": "original actor-poses.jsonl, trace.jsonl and result.json",
+            "metric": "sampled lateral error, body clearance and selected between-vehicle target",
+            "failure_condition": "original body contact/insufficient clearance, unstable lateral oscillation, or target mismatch after source completeness review"
+          },
+          "changed_knobs": [
+            "common subject steering feedback gain 0.10 to 0.07 in every linked case; route, participants, cameras, duration and comparison variable fixed"
+          ]
+        }
+      ],
+      "measurement_contract": "draft-exact/probe_5/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C178141__NRS-486-351-1__motorcycle_or_moped_operator/diagnostic-probe_5-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation"
     }
   ]
 }

@@ -32,9 +32,12 @@ def measure(attempt):
     for path in (context_path,motion_path,frames_path):
         if not path.is_file():raise ValueError('Missing required source: '+path.name)
     context=json.loads(context_path.read_text());sep=context.get('separator')
-    if context.get('source_kind')!='original_native' or any(context.get(key) is not True for key in
-        ('public_highway_reviewed','legal_controlled_access_reviewed','entrance_lane_function_reviewed','official_line_reviewed')):
-        raise ValueError('Original controlled-access line and lane functions unreviewed')
+    if context.get('source_kind')!='original_native' or context.get('cell_id')!='C245532':
+        raise ValueError('Original controlled-access source identity differs')
+    review_keys=('public_highway_reviewed','legal_controlled_access_reviewed',
+        'entrance_lane_function_reviewed','official_line_reviewed')
+    if any(type(context.get(key)) is not bool for key in review_keys):
+        raise ValueError('Original controlled-access review status missing')
     if not isinstance(sep,dict) or sep.get('form')!='solid' or sep.get('color')!='white' or type(sep.get('y_m')) not in (int,float):
         raise ValueError('Original solid-white separator missing')
     motion,frames=rows(motion_path),rows(frames_path)
@@ -61,10 +64,13 @@ def measure(attempt):
     for name in CAMERAS:
         if not (attempt/(name+'.mkv')).is_file():raise ValueError('Missing required source: '+name+'.mkv')
     return {'format':'c245532-solid-white-separator-raw-geometry-v1','frame_count':FRAMES,
-        'rate_hz':20,'first_body_straddle_frame':straddle[0] if straddle else None,
+        'rate_hz':20,'separator':sep,
+        'first_body_straddle_frame':straddle[0] if straddle else None,
         'body_straddle_frame_count':len(straddle),
         'first_traffic_side_center_frame':traffic_centers[0] if traffic_centers else None,
         'last_outer_lane_frame':last_outer,'native_lane_ids_seen':sorted(lane_ids),
+        'source_context_review_pending':any(context[key] is False for key in review_keys),
+        'source_context_review':{key:context[key] for key in review_keys},
         'vehicle_driver_scope_reviewed':context.get('vehicle_driver_scope_reviewed') is True,
         'emergency_necessity_reviewed':context.get('emergency_necessity_reviewed') is True,
         'subsection_3_conditions_reviewed':context.get('subsection_3_conditions_reviewed') is True,

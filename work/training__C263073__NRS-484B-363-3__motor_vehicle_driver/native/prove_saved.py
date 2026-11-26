@@ -24,10 +24,11 @@ def fixture(path,turn,reviewed=True):
         'path_is_kinematic':False,'fixture_kind':'synthetic_diagnostic_only'}
     if reviewed:
         records={}
+        (path/'review-sources').mkdir()
         for topic in REQUIRED:
-            source=path/(topic+'.json')
+            source=path/'review-sources'/(topic+'.json')
             source.write_text(json.dumps({'topic':topic,'synthetic_fixture':True})+'\n')
-            records[topic]={'topic':topic,'path':source.name,
+            records[topic]={'topic':topic,'path':str(source.relative_to(path)),
                 'sha256':hashlib.sha256(source.read_bytes()).hexdigest(),
                 'reviewer':'synthetic-test','observation':'Synthetic shape fixture only'}
         context['independent_review']={'format':'c263073-source-review-v1','records':records,

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from measure_turn import CAMERAS, FRAMES, measure
-from review_context import EXCEPTIONS
+from review_context import EXCEPTIONS, EXCEPTION_TOPICS
 
 
 def sha(path):
@@ -21,6 +21,21 @@ def measure_school_turn(attempt):
             'exception_review_states': {key: raw['independent_source_review']['exception_dispositions'][key]['status']
                                         for key in EXCEPTIONS},
             'legal_u_turn_status': 'unresolved'}
+
+
+def measure_exception(attempt, context, key):
+    """Expose one exact statutory exception's source review without deciding it."""
+    review = context['independent_review']
+    item = review['exception_dispositions'][key]
+    topics = sorted(EXCEPTION_TOPICS[key])
+    sources = {'school-context.json': sha(attempt / 'school-context.json')}
+    for topic in topics:
+        record = review['records'][topic]
+        sources[record['path']] = sha(attempt / record['path'])
+    return {'method': 'measure_exception',
+            'value': {'status': item['status'], 'reason': item['reason'],
+                      'source_topics': topics, 'legal_verdict': 'unresolved'},
+            'sources': sources}
 
 
 def emit(path, values):
@@ -89,9 +104,12 @@ def run(attempt, output):
     (attempt / 'result.json').write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')
     sources = {name: sha(attempt / name) for name in
                ('native-motion.jsonl', 'school-context.json', 'video_frames.jsonl')}
+    measurements = {'school_zone_turn_observation': {
+        'method': 'measure_school_turn', 'value': observed, 'sources': sources}}
+    for key in EXCEPTIONS:
+        measurements['exception_' + key] = measure_exception(attempt, context, key)
     report = {'format': 'worker-analysis-report', 'case_id': case,
-              'measurements': {'school_zone_turn_observation': {
-                  'method': 'measure_school_turn', 'value': observed, 'sources': sources}},
+              'measurements': measurements,
               'physical_checks': result['physical_checks'],
               'realized_observables': result['realized_observables'],
               'limitations': ['No legal U-turn, child-presence or exception verdict from CPU fixtures.']}

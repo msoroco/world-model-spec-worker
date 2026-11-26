@@ -6,6 +6,7 @@ from pathlib import Path
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SOURCES = ('road.xodr', 'lane-inventory.json', 'split-review.json',
+           'classification-review.json', 'duty-review.json',
            'actor-poses.jsonl', 'video_frames.jsonl', 'overview.mkv')
 CHANNELS = ('ru.subject', 'ru.motorcycle', 'ru.moped', 'st.lane_adjacency',
             'rel.occupies', 'drv.straddles_marking', 'rel.bearing',
@@ -42,10 +43,15 @@ def split_observation(root):
         required(root, camera + '.mkv')
     inventory = json.loads(files['lane-inventory.json'].read_text())
     review = json.loads(files['split-review.json'].read_text())
+    classification = json.loads(files['classification-review.json'].read_text())
+    duty = json.loads(files['duty-review.json'].read_text())
     diagnostic = (root / 'fixture-provenance.json').is_file()
     expected = 'synthetic_diagnostic' if diagnostic else 'independently_reviewed'
-    if review.get('review_status') != expected or not review.get('reviewer'):
-        raise ValueError('Independent split context review required')
+    for item in (review, classification, duty):
+        if item.get('review_status') != expected or not item.get('reviewer') or not item.get('source'):
+            raise ValueError('Independent split, classification and duty context reviews required')
+    if len({item['source'] for item in (review, classification, duty)}) != 3:
+        raise ValueError('Split, classification and duty sources must be separate')
     if review.get('road_sha256') != sha(files['road.xodr']) or review.get('pose_sha256') != sha(files['actor-poses.jsonl']):
         raise ValueError('Split review source binding differs')
     if review.get('overview_sha256') != sha(files['overview.mkv']) and not (diagnostic and review.get('overview_sha256') == 'synthetic_rgb_source'):
@@ -54,14 +60,18 @@ def split_observation(root):
         raise ValueError('Original Native lane and actor inventory absent')
     if len(inventory.get('lane_survey', [])) != 10 or len(inventory.get('other_vehicle_ids', [])) != 2:
         raise ValueError('Original adjacent lane or participant readback absent')
-    if review.get('subject_kind') not in ('motorcycle', 'moped') or review.get('subject_is_police_officer') not in (True, False) or review.get('subject_performing_police_duty') not in (True, False):
-        raise ValueError('Machine classification or police duty context source absent')
-    if review['subject_performing_police_duty'] and not review['subject_is_police_officer']:
+    if classification.get('pose_sha256') != sha(files['actor-poses.jsonl']) or classification.get('subject_kind') not in ('motorcycle', 'moped'):
+        raise ValueError('Machine classification source absent or stale')
+    if duty.get('pose_sha256') != sha(files['actor-poses.jsonl']) or type(duty.get('subject_is_police_officer')) is not bool or type(duty.get('subject_performing_police_duty')) is not bool:
+        raise ValueError('Police duty context source absent or stale')
+    if not duty.get('officer_identity_source') or not duty.get('performance_of_duty_source') or duty['officer_identity_source'] == duty['performance_of_duty_source']:
+        raise ValueError('Officer identity and duty performance require separate sources')
+    if duty['subject_performing_police_duty'] and not duty['subject_is_police_officer']:
         raise ValueError('Police duty context inconsistent with officer identity')
     poses, mapping = rows(files['actor-poses.jsonl']), rows(files['video_frames.jsonl'])
     if len(poses) != 600 or len(mapping) != 600:
         raise ValueError('Incomplete original 600-frame source join')
-    between, channels = [], {name: [] for name in CHANNELS}
+    between, speed_samples, channels = [], [], {name: [] for name in CHANNELS}
     previous = -1
     for index, (pose, frame) in enumerate(zip(poses, mapping)):
         native = pose.get('native_frame')
@@ -87,12 +97,13 @@ def split_observation(root):
                 raise ValueError('Original finite body footprint invalid')
         if any(type(speed) not in (float, int) or speed < 0 for speed in speeds):
             raise ValueError('Original surrounding vehicle speed invalid')
+        speed_samples.append(speeds)
         lo, hi = sorted(others, key=midpoint)
         active = midpoint(lo) < midpoint(subject) < midpoint(hi) and overlap(subject, lo) and overlap(subject, hi)
         between.append(active)
         values = {'ru.subject': {'actor_id': pose['subject_id'], 'footprint_m': subject},
-                  'ru.motorcycle': {'classification': review['subject_kind'], 'motorcycle_source': review['source']},
-                  'ru.moped': {'classification': review['subject_kind'], 'moped_alternative': review['subject_kind'] == 'moped'},
+                  'ru.motorcycle': {'classification': classification['subject_kind'], 'motorcycle_source': review['source']},
+                  'ru.moped': {'classification': classification['subject_kind'], 'moped_alternative': classification['subject_kind'] == 'moped'},
                   'st.lane_adjacency': {'lane_survey': inventory['lane_survey'], 'review_source': review['source']},
                   'rel.occupies': {'between_body_order_and_overlap': active, 'lane_occupancy': review['lane_occupancy']},
                   'drv.straddles_marking': {'subject_footprint_m': subject, 'marking_source': review.get('marking_source')},
@@ -111,9 +122,14 @@ def split_observation(root):
             intervals.append([start, index - 1])
             start = None
     value = {'between_vehicle_frames': sum(between), 'between_vehicle_intervals': intervals,
-             'subject_kind_source_claim': review['subject_kind'],
-             'police_officer_source_claim': review['subject_is_police_officer'],
-             'performance_of_duty_source_claim': review['subject_performing_police_duty'],
+             'left_vehicle_speed_mps_range': [min(row[0] for row in speed_samples), max(row[0] for row in speed_samples)],
+             'right_vehicle_speed_mps_range': [min(row[1] for row in speed_samples), max(row[1] for row in speed_samples)],
+             'subject_kind_source_claim': classification['subject_kind'],
+             'classification_reference_status': classification.get('chapter_definition_status'),
+             'police_officer_source_claim': duty['subject_is_police_officer'],
+             'performance_of_duty_source_claim': duty['subject_performing_police_duty'],
+             'officer_identity_source': duty['officer_identity_source'],
+             'performance_of_duty_source': duty['performance_of_duty_source'],
              'police_duty_exception': 'requires_independent_legal_review',
              'adjacent_lane_occupancy_source_claim': review['lane_occupancy'],
              'source_sha256': {name: sha(path) for name, path in files.items()},
@@ -131,18 +147,23 @@ def position_observation(root):
 
 def classification_observation(root):
     value, _ = split_observation(root)
-    return {'subject_kind_source_claim': value['subject_kind_source_claim']}
+    return {'subject_kind_source_claim': value['subject_kind_source_claim'],
+            'classification_reference_status': value['classification_reference_status']}
 
 
 def duty_observation(root):
     value, _ = split_observation(root)
     return {'police_officer_source_claim': value['police_officer_source_claim'],
-            'performance_of_duty_source_claim': value['performance_of_duty_source_claim']}
+            'performance_of_duty_source_claim': value['performance_of_duty_source_claim'],
+            'officer_identity_source': value['officer_identity_source'],
+            'performance_of_duty_source': value['performance_of_duty_source']}
 
 
 def lane_observation(root):
     value, _ = split_observation(root)
-    return {'adjacent_lane_occupancy_source_claim': value['adjacent_lane_occupancy_source_claim']}
+    return {'adjacent_lane_occupancy_source_claim': value['adjacent_lane_occupancy_source_claim'],
+            'left_vehicle_speed_mps_range': value['left_vehicle_speed_mps_range'],
+            'right_vehicle_speed_mps_range': value['right_vehicle_speed_mps_range']}
 
 
 def report(root):

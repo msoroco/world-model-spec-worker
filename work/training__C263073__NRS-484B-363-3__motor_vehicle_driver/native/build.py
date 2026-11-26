@@ -15,8 +15,7 @@ def build():
     entries=[]
     for suffix in ('controlled_1','controlled_2'):
         case_id=ASSIGNMENT+'__'+suffix
-        description={'rate_hz':20,'duration_s':30,'cameras_required':CAMERAS,
-            'channels':[{'name':name,'unit':'structured' if name not in ('kin.heading','drv.within_signed_zone') else
+        description={'channels':[{'name':name,'unit':'structured' if name not in ('kin.heading','drv.within_signed_zone') else
                          ('deg' if name=='kin.heading' else 'boolean'),
                          'sampling_rate_hz':20,'method':'original Native motion plus independent source review',
                          'time_window':'full 30-second attempt','reference_frame':'Native frame',
@@ -24,9 +23,6 @@ def build():
                         for name in ('dev.zone_sign','drv.within_signed_zone','drv.u_turn','kin.heading',
                                      'ru.child','dev.speed_limit_beacon','drv.condition_in_effect','env.civil_time')],
             'context_inputs':[],
-            'required_original_sources':['Native vehicle trajectory and heading','school-zone designation and boundary',
-                'child identities and locations','session, operation, class-hour and civil-time records',
-                'beacon and sign-state record','all five exception dispositions','four synchronized original cameras'],
             'limitations':['Driven path remains physically unconfirmed until CARLA and original pixel review',
                 'Generic walker blueprint does not establish child identity or legal presence',
                 'Diagnostic zone outline is not official designation',

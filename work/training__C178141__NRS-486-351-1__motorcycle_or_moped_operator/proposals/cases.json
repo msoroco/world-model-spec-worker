@@ -1,0 +1,893 @@
+{
+  "cell_id": "C178141",
+  "actor": "motorcycle_or_moped_operator",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "adjacent-vehicle-source-review",
+      "target_law_id": "NRS-486-351-1",
+      "judgment_refs": [
+        {
+          "phrase": "motorcycle or moped",
+          "note": "Original blueprint and chapter-specific classification need separate review; unavailable NRS 482.0295 and 482.029 references and autocycle applicability remain unresolved."
+        },
+        {
+          "phrase": "between moving or stationary vehicles occupying adjacent traffic lanes",
+          "note": "Measure original subject and two occupant footprints, lane readback and velocity without an invented persistence or overlap cutoff."
+        },
+        {
+          "phrase": "except a police officer in the performance of his or her duty",
+          "note": "Officer identity and performance of duty require separate independent sources; authored roles or synthetic pixels do not establish exception applicability."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Synthetic diagnostics retain source joins while original classification, duty and legal meaning remain open.",
+      "missing_inputs": [
+        "Independent original machine classification, lane occupancy and police-duty sources."
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Observe adjacent lanes without a selected between-vehicle target.",
+      "variable_assignments": {
+        "between_adjacent_vehicles": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "motorcycle or moped",
+        "between moving or stationary vehicles occupying adjacent traffic lanes",
+        "except a police officer in the performance of his or her duty"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.motorcycle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motorcycle.jsonl"
+          },
+          {
+            "name": "ru.moped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.moped.jsonl"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/st.lane_adjacency.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.straddles_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/drv.straddles_marking.jsonl"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.bearing.jsonl"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.longitudinal_overlap.jsonl"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motor_vehicle.jsonl"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/kin.velocity.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic pixels and authored roles do not establish motorcycle or moped legal classification, police duty, or legal outcome."
+        ]
+      }
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_1",
+      "target_law_id": "NRS-486-351-1",
+      "target_type": "controlled_attempt",
+      "paired_probe_id": "adjacent_vehicle_split",
+      "rationale": "Request original motorcycle body beside stationary adjacent-lane occupants; source-review duty context separately.",
+      "deliberate_differences": [
+        "between_adjacent_vehicles",
+        "surrounding_vehicle_motion",
+        "machine_and_duty_context"
+      ],
+      "variable_assignments": {
+        "between_adjacent_vehicles": {
+          "kind": "subject_behavior",
+          "value": false
+        },
+        "surrounding_vehicle_motion": {
+          "kind": "world_setup",
+          "value": "stationary"
+        },
+        "machine_and_duty_context": {
+          "kind": "world_setup",
+          "value": {
+            "machine_candidate": "motorcycle",
+            "police_duty_requested": false
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        "motorcycle or moped",
+        "between moving or stationary vehicles occupying adjacent traffic lanes",
+        "except a police officer in the performance of his or her duty"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.motorcycle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motorcycle.jsonl"
+          },
+          {
+            "name": "ru.moped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.moped.jsonl"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/st.lane_adjacency.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.straddles_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/drv.straddles_marking.jsonl"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.bearing.jsonl"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.longitudinal_overlap.jsonl"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motor_vehicle.jsonl"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/kin.velocity.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic pixels and authored roles do not establish motorcycle or moped legal classification, police duty, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "between_adjacent_vehicles",
+        "comparison_or_standard": "original adjacent-lane occupants, independent classification and duty review",
+        "target_value_or_branch": "probe_1"
+      }
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_2",
+      "target_law_id": "NRS-486-351-1",
+      "target_type": "controlled_attempt",
+      "paired_probe_id": "adjacent_vehicle_split",
+      "rationale": "Request original motorcycle body between stationary adjacent-lane occupants; source-review duty context separately.",
+      "deliberate_differences": [
+        "between_adjacent_vehicles",
+        "surrounding_vehicle_motion",
+        "machine_and_duty_context"
+      ],
+      "variable_assignments": {
+        "between_adjacent_vehicles": {
+          "kind": "subject_behavior",
+          "value": true
+        },
+        "surrounding_vehicle_motion": {
+          "kind": "world_setup",
+          "value": "stationary"
+        },
+        "machine_and_duty_context": {
+          "kind": "world_setup",
+          "value": {
+            "machine_candidate": "motorcycle",
+            "police_duty_requested": false
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        "motorcycle or moped",
+        "between moving or stationary vehicles occupying adjacent traffic lanes",
+        "except a police officer in the performance of his or her duty"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.motorcycle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motorcycle.jsonl"
+          },
+          {
+            "name": "ru.moped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.moped.jsonl"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/st.lane_adjacency.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.straddles_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/drv.straddles_marking.jsonl"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.bearing.jsonl"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.longitudinal_overlap.jsonl"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motor_vehicle.jsonl"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/kin.velocity.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic pixels and authored roles do not establish motorcycle or moped legal classification, police duty, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "between_adjacent_vehicles",
+        "comparison_or_standard": "original adjacent-lane occupants, independent classification and duty review",
+        "target_value_or_branch": "probe_2"
+      }
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_3",
+      "target_law_id": "NRS-486-351-1",
+      "target_type": "controlled_attempt",
+      "paired_probe_id": "adjacent_vehicle_split",
+      "rationale": "Request original motorcycle body between moving adjacent-lane occupants; source-review duty context separately.",
+      "deliberate_differences": [
+        "between_adjacent_vehicles",
+        "surrounding_vehicle_motion",
+        "machine_and_duty_context"
+      ],
+      "variable_assignments": {
+        "between_adjacent_vehicles": {
+          "kind": "subject_behavior",
+          "value": true
+        },
+        "surrounding_vehicle_motion": {
+          "kind": "world_setup",
+          "value": "moving"
+        },
+        "machine_and_duty_context": {
+          "kind": "world_setup",
+          "value": {
+            "machine_candidate": "motorcycle",
+            "police_duty_requested": false
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        "motorcycle or moped",
+        "between moving or stationary vehicles occupying adjacent traffic lanes",
+        "except a police officer in the performance of his or her duty"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.motorcycle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motorcycle.jsonl"
+          },
+          {
+            "name": "ru.moped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.moped.jsonl"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/st.lane_adjacency.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.straddles_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/drv.straddles_marking.jsonl"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.bearing.jsonl"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.longitudinal_overlap.jsonl"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motor_vehicle.jsonl"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/kin.velocity.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic pixels and authored roles do not establish motorcycle or moped legal classification, police duty, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "between_adjacent_vehicles",
+        "comparison_or_standard": "original adjacent-lane occupants, independent classification and duty review",
+        "target_value_or_branch": "probe_3"
+      }
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_4",
+      "target_law_id": "NRS-486-351-1",
+      "target_type": "controlled_attempt",
+      "paired_probe_id": "adjacent_vehicle_split",
+      "rationale": "Request original moped body between stationary adjacent-lane occupants; source-review duty context separately.",
+      "deliberate_differences": [
+        "between_adjacent_vehicles",
+        "surrounding_vehicle_motion",
+        "machine_and_duty_context"
+      ],
+      "variable_assignments": {
+        "between_adjacent_vehicles": {
+          "kind": "subject_behavior",
+          "value": true
+        },
+        "surrounding_vehicle_motion": {
+          "kind": "world_setup",
+          "value": "stationary"
+        },
+        "machine_and_duty_context": {
+          "kind": "world_setup",
+          "value": {
+            "machine_candidate": "moped",
+            "police_duty_requested": false
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        "motorcycle or moped",
+        "between moving or stationary vehicles occupying adjacent traffic lanes",
+        "except a police officer in the performance of his or her duty"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.motorcycle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motorcycle.jsonl"
+          },
+          {
+            "name": "ru.moped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.moped.jsonl"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/st.lane_adjacency.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.straddles_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/drv.straddles_marking.jsonl"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.bearing.jsonl"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.longitudinal_overlap.jsonl"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motor_vehicle.jsonl"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/kin.velocity.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic pixels and authored roles do not establish motorcycle or moped legal classification, police duty, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "between_adjacent_vehicles",
+        "comparison_or_standard": "original adjacent-lane occupants, independent classification and duty review",
+        "target_value_or_branch": "probe_4"
+      }
+    },
+    {
+      "case_id": "training__C178141__NRS-486-351-1__motorcycle_or_moped_operator__probe_5",
+      "target_law_id": "NRS-486-351-1",
+      "target_type": "controlled_attempt",
+      "paired_probe_id": "adjacent_vehicle_split",
+      "rationale": "Request original motorcycle body between stationary adjacent-lane occupants; source-review duty context separately.",
+      "deliberate_differences": [
+        "between_adjacent_vehicles",
+        "surrounding_vehicle_motion",
+        "machine_and_duty_context"
+      ],
+      "variable_assignments": {
+        "between_adjacent_vehicles": {
+          "kind": "subject_behavior",
+          "value": true
+        },
+        "surrounding_vehicle_motion": {
+          "kind": "world_setup",
+          "value": "stationary"
+        },
+        "machine_and_duty_context": {
+          "kind": "world_setup",
+          "value": {
+            "machine_candidate": "motorcycle",
+            "police_duty_requested": true
+          }
+        }
+      },
+      "unresolved_judgment_calls": [
+        "motorcycle or moped",
+        "between moving or stationary vehicles occupying adjacent traffic lanes",
+        "except a police officer in the performance of his or her duty"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.subject.jsonl"
+          },
+          {
+            "name": "ru.motorcycle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motorcycle.jsonl"
+          },
+          {
+            "name": "ru.moped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.moped.jsonl"
+          },
+          {
+            "name": "st.lane_adjacency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/st.lane_adjacency.jsonl"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.occupies.jsonl"
+          },
+          {
+            "name": "drv.straddles_marking",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/drv.straddles_marking.jsonl"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.bearing.jsonl"
+          },
+          {
+            "name": "rel.longitudinal_overlap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/rel.longitudinal_overlap.jsonl"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/ru.motor_vehicle.jsonl"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native body/road/frame join and separately reviewed classification and duty context",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed adjacent lanes and Native frame",
+            "uncertainty": "50 ms sampling; original physical/legal status requires independent review",
+            "source": "channels/kin.velocity.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic pixels and authored roles do not establish motorcycle or moped legal classification, police duty, or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "between_adjacent_vehicles",
+        "comparison_or_standard": "original adjacent-lane occupants, independent classification and duty review",
+        "target_value_or_branch": "probe_5"
+      }
+    }
+  ]
+}

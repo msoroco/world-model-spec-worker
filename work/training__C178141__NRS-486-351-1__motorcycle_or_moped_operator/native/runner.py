@@ -17,8 +17,10 @@ def check(config):
     if (config['cell_id'], config['law_id'], config['actor']) != (
             'C178141', 'NRS-486-351-1', 'motorcycle_or_moped_operator'):
         raise ValueError('exact assignment identity changed')
-    if config['split_case'] not in LATERAL_M or config['case_id'].rsplit('__', 1)[-1] not in ('probe_1', 'probe_2'):
+    if config['split_case'] not in LATERAL_M or config['case_id'].rsplit('__', 1)[-1] not in ('probe_1', 'probe_2', 'probe_3', 'probe_4', 'probe_5'):
         raise ValueError('unknown exact split case')
+    if config.get('surrounding_mode') not in ('stationary', 'moving') or config.get('machine_candidate') not in ('motorcycle', 'moped') or type(config.get('police_duty_requested')) is not bool:
+        raise ValueError('source-review mode declaration missing')
     if config['rate_hz'] != RATE_HZ or config['duration_s'] != FRAMES / RATE_HZ:
         raise ValueError('30-second 20-Hz recording required')
     if tuple(c['name'] for c in config['cameras']) != CAMERAS:
@@ -56,7 +58,7 @@ def control(config, frame, subject):
     lateral_error = request['y_m'] - pose.location.y
     throttle = max(0.0, min(.35, .2 + .1 * (request['target_speed_mps'] - speed)))
     brake = .2 if speed > request['target_speed_mps'] + .5 else 0.0
-    steer = max(-.25, min(.25, .1 * lateral_error))
+    steer = max(-.25, min(.25, config.get('steer_gain', .1) * lateral_error))
     return {'throttle': throttle, 'brake': brake, 'steer': steer,
             'requested_x_m': request['x_m'], 'requested_y_m': request['y_m'],
             'requested_speed_mps': request['target_speed_mps']}
@@ -101,10 +103,11 @@ def execute(config, output_dir, host, port):
             'provenance_kind': 'native', 'diagnostic_fixture': False,
             'physical_acceptance_claimed': False}, indent=2) + '\n')
         library = world.get_blueprint_library()
-        motorcycles = library.filter('vehicle.kawasaki.ninja')
-        if not motorcycles:
-            raise RuntimeError('Exact Native motorcycle blueprint unavailable')
-        motorcycle_bp = motorcycles[0]
+        machine_pattern = 'vehicle.vespa.zx125' if config['machine_candidate'] == 'moped' else 'vehicle.kawasaki.ninja'
+        machines = library.filter(machine_pattern)
+        if not machines:
+            raise RuntimeError('Exact Native machine candidate blueprint unavailable: ' + machine_pattern)
+        motorcycle_bp = machines[0]
         motorcycle_bp.set_attribute('role_name', 'c178141_motorcycle_subject')
         subject = world.spawn_actor(motorcycle_bp, carla.Transform(
             carla.Location(x=-30, y=LATERAL_M[config['split_case']], z=2),
@@ -112,20 +115,28 @@ def execute(config, output_dir, host, port):
         owned.append(subject)
         capture = PipelineCapture(client, subject, output, config['case_id'],
                                   visibility=False, required_observations=config.get('required_atoms', []))
-        other_bp = sorted(library.filter('vehicle.*'), key=lambda b: b.id)[0]
+        surrounding = library.filter('vehicle.kawasaki.ninja')
+        if not surrounding:
+            raise RuntimeError('Exact narrow surrounding vehicle blueprint unavailable')
+        other_bp = surrounding[0]
         others = []
         for y, label in ((1.5, 'lower_lane'), (4.5, 'upper_lane')):
             other_bp.set_attribute('role_name', 'c178141_' + label)
             car = world.spawn_actor(other_bp, carla.Transform(
                 carla.Location(x=0, y=y, z=2), carla.Rotation(yaw=0)))
-            car.apply_control(carla.VehicleControl(brake=1, hand_brake=True))
+            if config['surrounding_mode'] == 'stationary':
+                car.apply_control(carla.VehicleControl(brake=1, hand_brake=True))
+            else:
+                car.apply_control(carla.VehicleControl(throttle=.2))
             owned.append(car)
             others.append(car)
         (output / 'lane-inventory.json').write_text(json.dumps({
             'source_kind': 'native_saved_sample', 'cell_id': 'C178141',
             'lane_survey': readback, 'subject_blueprint_id': subject.type_id,
             'other_vehicle_ids': [car.id for car in others],
-            'subject_kind': 'motorcycle', 'other_vehicle_lane_ids': [-2, -1],
+            'subject_kind_candidate': config['machine_candidate'], 'other_vehicle_lane_ids': [-2, -1],
+            'surrounding_mode_request': config['surrounding_mode'],
+            'police_duty_requested': config['police_duty_requested'],
             'police_duty_source': None, 'physical_collision_clearance_verified': False}, indent=2) + '\n')
         mounts = {'overview': (0, -22, 24, -35), 'approach': (-13, -8, 8, -15),
                   'reference_corner': (0, 12, 10, -20), 'driver_reference': (-22, 12, 10, -20)}
@@ -158,6 +169,9 @@ def execute(config, output_dir, host, port):
                 request = control(config, index, subject)
                 subject.apply_control(carla.VehicleControl(
                     throttle=request['throttle'], brake=request['brake'], steer=request['steer']))
+                if config['surrounding_mode'] == 'moving':
+                    for car in others:
+                        car.set_target_velocity(carla.Vector3D(x=1.0, y=0.0, z=0.0))
                 native_frame = world.tick()
                 snap = world.get_snapshot()
                 if snap.frame != native_frame:
