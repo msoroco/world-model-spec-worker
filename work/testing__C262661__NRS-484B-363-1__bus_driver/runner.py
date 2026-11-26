@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 
 from native_capture import capture
+from native_output_bridge import publish
 from school_scene_construction import ASSIGNMENT, construct, load_case, validate_site
 
 ROOT = Path(__file__).resolve().parent
@@ -75,11 +76,15 @@ def main():
     client = carla.Client(args.host, args.port)
     client.set_timeout(30)
     world = client.get_world()
+    map_bytes = world.get_map().to_opendrive().encode("utf-8")
+    if hashlib.sha256(map_bytes).hexdigest() != site["map_sha256"]:
+        raise ValueError("loaded original OpenDRIVE map differs from reviewed source")
     adapter = operator.make_adapter(world, site, case_id)
     try:
         built = construct(adapter, site_path, case_id)
         site["vehicle_id"] = built["vehicle_id"]
         capture(world, adapter, site, case_id, args.output_dir, site_hash)
+        publish(args.output_dir, map_bytes=map_bytes, restored=True)
     finally:
         for actor in reversed(adapter.owned_actors()):
             adapter.destroy(actor)

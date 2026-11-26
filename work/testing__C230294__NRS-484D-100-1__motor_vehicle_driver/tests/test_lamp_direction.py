@@ -254,7 +254,10 @@ class LampTests(unittest.TestCase):
             report = finalize_original.finalize(attempt, case.name)
             self.assertEqual(report['measurements']['required_lamp_states']['value']['on_frame_counts']['headlamp_left'], 900)
             self.assertIsNone(report['legal_verdict'])
-            (attempt / 'config.json').write_text((path.parent / 'config.json').read_text())
+            fixture_config = json.loads((path.parent / 'config.json').read_text())
+            fixture_config['selected_case_id'] = source_packet.ASSIGNMENT + '__' + case.name
+            fixture_config['case']['lamps_on'] = case.lamps_on
+            (attempt / 'config.json').write_text(json.dumps(fixture_config) + '\n')
             (attempt / 'construction.json').write_text((path.parent / 'construction.json').read_text())
             (attempt / 'trace.jsonl').write_text(''.join(json.dumps({
                 'frame': row['original_frame'], 'time_s': row['time_s'],

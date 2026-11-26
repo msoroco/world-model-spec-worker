@@ -458,12 +458,26 @@
     }
   ],
   "observations": [
-    "source-backed school-zone boundaries, school property and bus route",
-    "original driver, bus and children identities and locations",
-    "original 20 Hz bus speed and inside-zone history",
-    "independent civil date, school session calendar, operation end/next start and class hours",
-    "source-backed beacon designation/operability/two-yellow-light alternating states or sign active periods",
-    "four synchronized camera streams"
+    {
+      "name": "bus_body_speed_and_zone",
+      "mandatory": true
+    },
+    {
+      "name": "children_positions",
+      "mandatory": true
+    },
+    {
+      "name": "school_calendar_and_clock",
+      "mandatory": true
+    },
+    {
+      "name": "beacon_lamps_and_sign",
+      "mandatory": true
+    },
+    {
+      "name": "original_four_camera_pixels",
+      "mandatory": true
+    }
   ],
   "sources": [
     {
@@ -521,5 +535,109 @@
       "reason": "A motor bus can travel within the fixed school zone containing children; children alone do not establish the restriction's temporal applicability."
     }
   ],
-  "source_observation_mapping": {}
+  "source_observation_mapping": {},
+  "requirement_dispositions": [
+    {
+      "requirement": "Motor bus in a designated school zone at the 15 mph boundary",
+      "source": "NRS 484B.363(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_14_9",
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_0",
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1"
+      ],
+      "evidence_or_gap": "No accepted original school-bus recording; these exact source-gated cases require original Native capture and independent review."
+    },
+    {
+      "requirement": "Exception when school is not in session",
+      "source": "NRS 484B.363(1)(a)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__no_session_15_1"
+      ],
+      "evidence_or_gap": "No accepted original school-bus recording; these exact source-gated cases require original Native capture and independent review."
+    },
+    {
+      "requirement": "Half-hour after operation and before next operation exception",
+      "source": "NRS 484B.363(1)(b)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__after_operation_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__before_next_start_15_1"
+      ],
+      "evidence_or_gap": "No accepted original school-bus recording; these exact source-gated cases require original Native capture and independent review."
+    },
+    {
+      "requirement": "Operational beacon, class hours and nonflashing exception",
+      "source": "NRS 484B.363(1)(c)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_class_flashing_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_class_not_flashing_15_1"
+      ],
+      "evidence_or_gap": "No accepted original school-bus recording; these exact source-gated cases require original Native capture and independent review."
+    },
+    {
+      "requirement": "Nonbeacon sign active-period exception",
+      "source": "NRS 484B.363(1)(d)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C262661__NRS-484B-363-1__bus_driver__nonbeacon_sign_on_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__nonbeacon_sign_off_15_1"
+      ],
+      "evidence_or_gap": "No accepted original school-bus recording; these exact source-gated cases require original Native capture and independent review."
+    },
+    {
+      "requirement": "Two or more alternating yellow lights in speed-limit beacon definition",
+      "source": "NRS 484B.363(9)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_one_yellow_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_non_alternating_15_1"
+      ],
+      "evidence_or_gap": "No accepted original school-bus recording; these exact source-gated cases require original Native capture and independent review."
+    },
+    {
+      "requirement": "Zone boundary, children and bus identity remain separately observable",
+      "source": "NRS 484B.363(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__outside_zone_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__no_children_15_1",
+        "testing__C262661__NRS-484B-363-1__bus_driver__ordinary_car_15_1"
+      ],
+      "evidence_or_gap": "No accepted original school-bus recording; these exact source-gated cases require original Native capture and independent review."
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "school bus body, designated zone and child actor inventory",
+        "interval": "startup through final frame"
+      },
+      {
+        "view": "approach",
+        "subject": "school bus path and zone boundary",
+        "interval": "full approach and steady speed window"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "beacon yellow lamps or nonbeacon sign",
+        "interval": "all device states"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver view of school zone and children",
+        "interval": "startup through final frame"
+      }
+    ]
+  }
 }

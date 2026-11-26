@@ -4,6 +4,7 @@ import hashlib
 import json
 import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -13,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from school_scene_construction import SOURCES, construct, load_case, validate_site
 import native_capture
+import native_output_bridge
 from native_capture import validate_frame
 from runner import check
 
@@ -228,7 +230,7 @@ class SceneTest(unittest.TestCase):
                "bus_speed_mps": case["speed_target_mph"] / 2.2369362921,
                "inside_designated_zone": True, "sign_limit_active": True,
                "beacon_yellow_lights_lit": [True, False],
-               "children_actor_ids": ["child_1"],
+               "children_actor_ids": ["51"],
                "children_actor_readback": [{"actor_id": 51, "blueprint": "walker.pedestrian.0001",
                                              "position_m": [40, 16, 0],
                                              "body_vertices_m": [[40, 16, 0]] * 4}],
@@ -248,6 +250,8 @@ class SceneTest(unittest.TestCase):
         case = json.loads((ROOT / "case-plan.json").read_text())["cases"][0]
         site = validate_site(self.packet(case["case_id"]), case["case_id"])
         site["vehicle_id"] = 41
+        map_bytes = b"original test OpenDRIVE"
+        site["map_sha256"] = hashlib.sha256(map_bytes).hexdigest()
 
         class CaptureAdapter:
             def read_original_context(self, current_site, current_case):
@@ -280,7 +284,12 @@ class SceneTest(unittest.TestCase):
                           "bus_speed_mps": case["speed_target_mph"] / 2.2369362921,
                           "inside_designated_zone": True, "sign_limit_active": True,
                           "beacon_yellow_lights_lit": [index == 0, index == 1],
-               "children_actor_ids": ["51"],
+                          "children_actor_ids": ["51"],
+                          "children_actor_readback": [{"actor_id": 51, "blueprint": "walker.pedestrian.0001",
+                                                        "position_m": [40, 16, 0],
+                                                        "body_vertices_m": [[40, 16, 0]] * 4}],
+                          "actor_id": 41, "position_m": [0, 10, 0],
+                          "heading_xy": [1, 0], "body_vertices_m": [[0, 10, 0]] * 4,
                           "school_in_session_today": True,
                           "beacon_or_sign_state": case["beacon_or_sign_request"],
                           "time_window_label": case["time_request"]}
@@ -307,6 +316,31 @@ class SceneTest(unittest.TestCase):
         self.assertEqual(len(Path(produced["trace"]).read_text().splitlines()), 2)
         self.assertEqual(set(json.loads(Path(produced["camera_manifest"]).read_text())["streams"]),
                          set(native_capture.VIEWS))
+        camera_bytes = (output / "overview.mkv").read_bytes()
+        with patch.object(native_output_bridge, "FRAMES", 2):
+            with self.assertRaisesRegex(ValueError, "loaded map differs"):
+                native_output_bridge.publish(output, map_bytes=b"wrong map", restored=True)
+            (output / "overview.mkv").write_bytes(b"changed camera")
+            with self.assertRaisesRegex(ValueError, "original synchronized camera stream differs"):
+                native_output_bridge.publish(output, map_bytes=map_bytes, restored=True)
+            (output / "overview.mkv").write_bytes(camera_bytes)
+            adapter_package = types.ModuleType("traffic_spec_adapter")
+            adapter_module = types.ModuleType("traffic_spec_adapter.adapter")
+            adapter_module.write_adapter_graph = lambda graph, path: Path(path).write_text(
+                json.dumps(graph.graph) + "\n")
+            worker_package = types.ModuleType("worker_exchange")
+            native_module = types.ModuleType("worker_exchange.native_output")
+            native_module.seal_capture = lambda root, **kwargs: {"frames": kwargs["frames"]}
+            with patch.dict(sys.modules, {"traffic_spec_adapter": adapter_package,
+                                          "traffic_spec_adapter.adapter": adapter_module,
+                                          "worker_exchange": worker_package,
+                                          "worker_exchange.native_output": native_module}):
+                receipt = native_output_bridge.publish(output, map_bytes=map_bytes,
+                                                       restored=True)
+            self.assertEqual(receipt["frames"], 2)
+            self.assertEqual(len((output / "trace.jsonl").read_text().splitlines()), 2)
+            self.assertEqual(len((output / "video_frames.jsonl").read_text().splitlines()), 2)
+            self.assertEqual(len((output / "capture/native/frames.jsonl").read_text().splitlines()), 2)
 
 
 if __name__ == "__main__":

@@ -4,12 +4,26 @@ This does not infer legal visibility or covered-vehicle status from appearance.
 """
 
 import argparse
+from datetime import datetime
 import hashlib
 import json
 import math
 from pathlib import Path
 
 ASSIGNMENT_ID = "testing__C230286__LVMC-11-38-120-B__motorcycle_or_moped_operator"
+SOURCE_BINDINGS = {
+    "vehicle_blueprint_source": "vehicle_coverage",
+    "section_080_coverage_source": "vehicle_coverage",
+    "trail_ride_source": "vehicle_coverage",
+    "enclosed_three_wheel_source": "vehicle_coverage",
+    "road_sidewalk_source": "road_sidewalk_geometry",
+    "local_date_time_source": "astronomical_times",
+    "sunset_sunrise_source": "astronomical_times",
+    "light_atmosphere_source": "light_atmosphere",
+    "discernibility_500ft_source": "discernibility_protocol",
+    "headlamp_calibration_source": "headlamp_photometry",
+    "tail_lamp_calibration_source": "tail_lamp_photometry",
+}
 
 
 def sha(path):
@@ -35,15 +49,32 @@ def measure(case_id, context_path, trace_path, receipt_path):
     context = json.loads(Path(context_path).read_text(encoding="utf-8"))
     if context.get("case_id") != case_id or not isinstance(context.get("map_sha256"), str) or len(context["map_sha256"]) != 64:
         raise ValueError("exact source map context required")
-    for key in ("vehicle_blueprint_source", "section_080_coverage_source", "trail_ride_source",
-                "enclosed_three_wheel_source", "road_sidewalk_source", "local_date_time_source",
-                "sunset_sunrise_source", "light_atmosphere_source", "discernibility_500ft_source",
-                "headlamp_calibration_source", "tail_lamp_calibration_source"):
-        if not context.get(key):
-            raise ValueError("original context source missing: " + key)
+    refs = context.get("source_refs")
+    if not isinstance(refs, dict) or set(refs) != set(SOURCE_BINDINGS.values()) | {"map_opendrive"}:
+        raise ValueError("complete original source hash inventory required")
+    for name, ref in refs.items():
+        if not isinstance(ref, dict) or set(ref) != {"path", "sha256"}:
+            raise ValueError("original source path and hash required: " + name)
+        path = Path(ref["path"])
+        if path.is_absolute() or len(path.parts) != 1 or ".." in path.parts:
+            raise ValueError("original source must be a sibling file: " + name)
+        if sha(Path(context_path).parent / path) != ref["sha256"]:
+            raise ValueError("original source bytes changed: " + name)
+    if context["map_sha256"] != refs["map_opendrive"]["sha256"]:
+        raise ValueError("original map source hash mismatch")
+    for key, name in SOURCE_BINDINGS.items():
+        if context.get(key) != refs[name]["sha256"]:
+            raise ValueError("original context source mismatch: " + key)
     for key in ("local_datetime", "sunset_local", "sunrise_local"):
         if not isinstance(context.get(key), str) or not context[key]:
             raise ValueError("original local timing missing: " + key)
+    try:
+        local_time, sunset, sunrise = (datetime.fromisoformat(context[key]) for key in
+                                       ("local_datetime", "sunset_local", "sunrise_local"))
+        if any(value.tzinfo is None for value in (local_time, sunset, sunrise)):
+            raise ValueError("original local timing must include timezone")
+    except ValueError as error:
+        raise ValueError("valid timezone-aware original local timing required") from error
     head, tail = context.get("headlamp_calibration"), context.get("tail_lamp_calibration")
     if not isinstance(head, dict) or not isinstance(tail, dict):
         raise ValueError("original calibrated lamp inventory required")
@@ -71,6 +102,9 @@ def measure(case_id, context_path, trace_path, receipt_path):
             "source_bindings": {"context_sha256": sha(context_path), "trace_sha256": sha(trace_path),
                                 "receipt_sha256": sha(receipt_path), "native_map_sha256": context["map_sha256"]},
             "original_local_timing": {k: context[k] for k in ("local_datetime", "sunset_local", "sunrise_local")},
+            "astronomical_offsets_minutes": {
+                "since_sunset": (local_time - sunset).total_seconds() / 60,
+                "before_sunrise": (sunrise - local_time).total_seconds() / 60},
             "calibrated_headlamp": head, "calibrated_tail_lamp": tail,
             "observed_discernibility_ft": discernibility, "observations": observations,
             "headlamp_300ft_reference_only": 300, "tail_lamp_500ft_reference_only": 500,

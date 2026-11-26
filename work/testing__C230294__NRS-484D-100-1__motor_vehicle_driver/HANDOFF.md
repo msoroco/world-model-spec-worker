@@ -18,16 +18,16 @@ The day-clear cases isolate official direction from the independent nighttime an
 `runner.py` is lazy under `--check`; Native mode requires source-hashed reviewed site and operator modules. `source_packet.py` checks independent source bytes/assertions, including public authority/NRS 484A.145 qualification, operative timing, highway dedication/access, and class-specific lamp citations. `native_acquisition.py` captures 900 original ticks, four source cameras and pinned PipelineCapture through its adapter boundary, and restores owned actors/world. `saved_audit.py` joins copied sources, original lamp ticks, four camera files per frame, measured report and owner release; deletion of an original camera source is rejected. `finalize_original.py` produces four saved-only, source-hashed measurements without a legal verdict.
 Seven focused tests pass, including 900-frame positive saved acquisition, negative missing camera, changed source bytes, comparison fixed-context isolation, missing lamp states and exact numeric endpoints. All five primary and five risk-based exposure fallback constructions pass pinned `runtime.py offline` with source-linked materialized bundles.
 - `case-plan.json` SHA256 `8f9b8f5df7dcc619d8e19179ffd4a91c7d1651b77de367b42de9548eabcfc441`
-- `execution-manifest.json` SHA256 `7d4abfa4f6ffc8f8e703fdfafe136a5f01496fad669b737d436fe255ab48d48e`
+- `execution-manifest.json` SHA256 `3e1059538b32132d02a909d5bfb56b6185b9dea4eca6856dec1fc1bff8375b1b`
 - `proposals/cases.json` SHA256 `ba21b1a37e9bf74da407f71b9c6e0d659b967932de75e9ab8a749d62dd71efcb`
 - `lamp_direction.py` SHA256 `a3008cf3103ac746e3658e22dec929ef8323dd9d995e6ce9076085846aef8ef8`
 - `source_packet.py` SHA256 `e3462e366133ae79631de55bd482026c72123d86ef4011421db5ff6bda74d852`
-- `native_acquisition.py` SHA256 `ceb48ecdf43e7db9bb515eb65978db00f2f24c01ad52588961db99085f047052`
-- `saved_audit.py` SHA256 `a9c3ea1fbb5ddac41dd5609f4b041cd502705c099688b0773794b58a7235e515`
-- `finalize_original.py` SHA256 `a9267e2e640b35eb680bb7286443b6021a5c117a22f1a0adf79d3a84a9eb8d60`
+- `native_acquisition.py` SHA256 `5e7d3fc25eb9523134e0a44859855be0f3b994fbb8bd3b993feb13def5d1e009`
+- `saved_audit.py` SHA256 `904b8c86654055923d4bb6a26b8d18d7daf6042793e548a1d1a16bc287e4cc23`
+- `finalize_original.py` SHA256 `407ae4edd3248db6bcaed7dbed6f0e243a700f8126c02fdc876d4be9fba53626`
 - `runner.py` SHA256 `3b5ae120cf4f141c0be4f4d504390d18979aa26f43c4974c93bd8ac62b64f8b3`
-- `cpu-tests.log` SHA256 `6b1febb8a91811d405feb8f902aa215f0f508a6e0aa5aaed92eb20ba5301db0d`
-- `result.json` SHA256 `5173b5f8f16c79a634f14086fa00ce475a797402113790d31951c71461a90e93`
+- `cpu-tests.log` SHA256 `1e997e9badcb6c51f2fff0c73fb30e6ae1fee88b220e23d632c87665345761b3`
+- `result.json` SHA256 `c040408caeda2fb0ba4ed28259f1603e91b4430e1bf31639bb468f19f1a95669`
 
 ## Remaining CPU work
 

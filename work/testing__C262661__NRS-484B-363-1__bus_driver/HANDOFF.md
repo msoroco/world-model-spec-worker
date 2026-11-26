@@ -1,54 +1,66 @@
 # testing__C262661__NRS-484B-363-1__bus_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial, source-gated CPU construction and analysis checkpoint. No original CARLA recording or legal/physical acceptance is claimed.
 
-Exact law: NRS 484B.363(1); with 484B.363(9) — A person shall not drive a motor vehicle at a speed in excess of 15 miles per hour in an area designated as a school zone except: (a) On a day on which school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.
-Assigned branch(es): Motor bus in a school zone with children.
-Cell: C262661 (school_zone, travel, children); actor: bus_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Frozen scope and selected coverage
 
-## Next CPU actions
+Assigned branch: Motor bus in a school zone with children. Law: NRS 484B.363(1) and beacon definition in subsection (9). Cell C262661, bus_driver. Frozen accepted recordings: zero. The 15-mph rule, four exceptions and two-or-more alternating-yellow-light definition are mapped to seven selected requirement dispositions in `case-plan.json`; all source facts remain independently reviewable.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C262661__NRS-484B-363-1__bus_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Exact cases (15):
+- `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_14_9`
+- `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_0`
+- `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__no_session_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__after_operation_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__before_next_start_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__beacon_class_not_flashing_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__beacon_class_flashing_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__nonbeacon_sign_off_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__nonbeacon_sign_on_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__beacon_one_yellow_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__beacon_non_alternating_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__outside_zone_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__no_children_15_1`
+- `testing__C262661__NRS-484B-363-1__bus_driver__ordinary_car_15_1`
 
-## Proven checks and dependency boundary
+Exact controlled comparisons (12):
+- `below_versus_at_15_mph`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_14_9`, `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_0`
+- `at_versus_above_15_mph`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_0`, `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`
+- `school_not_in_session`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__no_session_15_1`
+- `half_hour_after_operation`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__after_operation_15_1`
+- `half_hour_before_next_operation`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__before_next_start_15_1`
+- `class_hours_beacon_flashing`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_class_flashing_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__beacon_class_not_flashing_15_1`
+- `nonbeacon_sign_time_indication`: `testing__C262661__NRS-484B-363-1__bus_driver__nonbeacon_sign_on_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__nonbeacon_sign_off_15_1`
+- `two_yellow_light_definition`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__beacon_one_yellow_15_1`
+- `alternating_flash_definition`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__beacon_non_alternating_15_1`
+- `designated_zone_boundary`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__outside_zone_15_1`
+- `children_presence_is_not_independent_exception`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__no_children_15_1`
+- `bus_versus_other_motor_vehicle`: `testing__C262661__NRS-484B-363-1__bus_driver__beacon_flashing_15_1`, `testing__C262661__NRS-484B-363-1__bus_driver__ordinary_car_15_1`
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+## Current construction and CPU proofs
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+`school_scene_construction.py` and `school_timing.py` require a reviewed 16-record source-hashed school site, bus/driver/children, designated zone and route, calendar/clock, and beacon/sign facts. `runner.py` additionally checks the reviewed operator hash and loaded OpenDRIVE bytes. `native_capture.py` checks 900 consecutive 20-Hz bus/child/body/device readbacks and four synchronized FFV1 camera streams and restores world settings. `native_output_bridge.py` publishes exact source frames, adapter graphs, evidence, frame map and Native seal. `analysis.py` separates bounded diagnostic measurement from original 900-frame saved finalization. `comparison_audit.py` rejects changed fixed sources and missing declared differences. All are CPU-tested; original motion remains unverified.
 
-## 2026-11-23 school-zone bus speed and exception checkpoint
+Current construction hashes are recorded per case in `execution-manifest.json`. Every one of its 15 offline commands passed with exit code 0 and hash-bound logs, against the current plan and embedded analysis. The local `gpu-queue-proposal.json` includes 15 exact production commands and 12 comparison commands. Shell-token and case/comparison-ID binding checks passed; the lead owns shared queue integration.
 
-`case-plan.json` now has fifteen exact unexecuted cases and twelve comparisons. The 14.9/15.0/15.1 mph targets probe the express speed boundary. Other controls isolate no-session day, the half-hour after operation and before next operation, class hours with operational beacon flashing/not flashing, nonbeacon sign active/inactive, one-light and nonalternating-light beacon definition probes, zone boundary, children presence and bus versus other motor vehicle. Children alone do not resolve a temporal exception.
+- `case-plan.json` SHA-256 `56f082d960a068a05bdd1787a3c6b03c7e6f1f5e6cf014843fbbe11db35e96af`
+- `construction.json` SHA-256 `efcfac9007ee37da32b60c655c400a538b852fd35de626f0f8821629f58910c9`
+- `execution-manifest.json` SHA-256 `0dc9ae77213881b44d3b9c28de00d2de3ab9576837405c0332a46c696aa094cc`
+- `gpu-queue-proposal.json` SHA-256 `09f6e9b28656838c54fb7b6285bfc664f26f2499c0d8d4ac371debdb00d3da2c`
+- `native_capture.py` SHA-256 `c02609fc34eaae54299430659cd5b7868e1faf09bd7fdfc6729c42644ad05f64`
+- `native_output_bridge.py` SHA-256 `559d6e0a4ddc3bcf0a10f252ffb7c9b723022e74cd75a5abcc3b79fadef94465`
+- `analysis.py` SHA-256 `982744c30c133ae487207d79c686fc263e0e1c94f6ac52e5439a357afcd1662a`
+- `saved_finalizer.py` SHA-256 `38dde3f126edfac6019e9a5d25a443aa69badc7fdab5b6ec3261ec425bb3c95d`
+- `comparison_audit.py` SHA-256 `31a76a97fae384608a88d6c0f372cf296115ce198149a25ea7b0fe5d99604806`
+- `cpu-school-tests-nov26.log` SHA-256 `74aa91c3e4df5603fe95bd6f050a63e7906fedb7fe62380487d05a05b60e6ef3`
+- `assignment-check-nov26.log` SHA-256 `5a8a41eecd92d272be71cb394065baa5466c89b04d79dc3bc55f408fe79e2edb`
+- `strict-gate-nov26.log` SHA-256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`
 
-`school_zone_observations.py` accepts only a hash-sealed original Native context and 20 Hz trace. It requires source references for the designated zone, property, bus route/driver, children, civil date/time, calendar, operation and class hours, beacon designation/operability/lamp configuration/history and sign periods. It retains per-frame bus speed in m/s and mph, inside-zone state, each yellow lamp state, sign indication and children inventory. Independent session and beacon-designation facts remain separate. It does not declare the limit applicable or a violation from speed alone; all exception and beacon-definition judgments remain unresolved. Diagnostic fixtures are rejected as delivery evidence.
+Focused tests: `.venv-cpu/bin/python -m unittest discover -s work/testing__C262661__NRS-484B-363-1__bus_driver/tests -v`, exit 0, 21 tests. Pinned runtime verify and preflight passed. Scoped `.venv-cpu/bin/python worker_check.py --assignment testing__C262661__NRS-484B-363-1__bus_driver --complete` passed. Scoped strict with `--require-delivery-ready` exited 1 because `result.json.status` truthfully remains `partial`; this does not certify delivery readiness.
 
-Pinned preflight passed (`cpu-preflight.log`, SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`). Seven focused tests passed (`cpu-school-tests.log`, SHA256 `c9a6d8f3060916129de4809fbbaa000a2a56ea91ce55c6170e0a3aa067e42b6d`). Scoped static check passed (`assignment-check.log`, SHA256 `5a8a41eecd92d272be71cb394065baa5466c89b04d79dc3bc55f408fe79e2edb`). Exact scoped strict exited 1 on truthful partial status (`strict-gate.log`, SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`). Source hashes: plan `dcd754e2ca3cc7515bfbcfbc49009bf46504e777d85ee27bd7432c88bf538b28`, measurement `c3eba4a4bdfa0c686b43760b377f322b1083d294fc40b3ac37b505e8a65a5b10`, focused tests `cec32588a9eecf29879391984189b1aabe0bbc622d2ce4ae940a051b6aec4e75`.
+## Next CPU work
 
-Remaining CPU work: bind a reviewed Native designated school-zone map, bus route, children and independent school-calendar/device source, construct fifteen physical scenes/controllers with synchronized original four-camera capture, validate the operational alternating-yellow beacon and sign-time branches, then implement finalizers/proposals, exact offline and positive/negative compatibility, saved-only delivery and twelve comparison audits. Physical and legal acceptance remain unverified.
-
-## 2026-11-26 source-gated construction and capture checkpoint
-
-The fifteen existing exact 15-mph and four-exception case IDs are preserved. `school_scene_construction.py` now seals all sixteen original school-zone source records, binds the selected site and map, validates zone polygon/route, bus or car blueprint, child inventory, speed-controller readback, calendar, and beacon/sign intervention. `school_timing.py` derives session, class, half-hour, two-yellow-light and alternating-history facts from independent source-hashed clock and device records; unsupported labels and lamp states fail. These facts remain measurements and do not assert the legal conclusion.
-
-`runner.py` gates execution on a reviewed exact site and operator hash. `native_capture.py` obtains 900 consecutive 20 Hz Native frames, original speed/zone/beacon/child readbacks and four RGB FFV1 streams, seals context/trace/camera hashes, and restores world settings with readback. The source operator is still a reviewed local dependency. A two-tick synthetic fake-world test exercised synchronized capture and restoration; it is not original footage.
-
-Fourteen focused tests passed; pinned runtime verify, preflight, and scoped `--complete` passed. Exact scoped strict exited 1 because truthful `result.json.status` remains `partial`. The remaining worker-owned CPU chain is selected execution manifest, semantic proposals, all exact offline and positive/negative compatibility receipts, saved processing, independent delivery/comparison and physical/lifecycle fixture audits. No original school-zone packet or physical receipt has been invented.
-
-Current hashes:
-
-- `school_scene_construction.py` SHA-256 `bebfad7e64cc62266b7bdd0cf142ec21fa35c0f48e1096034bf7533853fcfe30`.
-- `school_timing.py` SHA-256 `e83504c8fc897e48f9755afa68d5f6aabf1833af6d52d61ad50a6ab7a267c6d6`.
-- `native_capture.py` SHA-256 `c298e26872299a561c65ba1dfd4bf440a47d5051f1002d72b73913f23a302a1a`.
-- `runner.py` SHA-256 `720816ee651dcde15ebb23313e82d9f5c3f6fc89069d31e6958ae29f60cd4b6f`.
-- `school_zone_observations.py` SHA-256 `c3eba4a4bdfa0c686b43760b377f322b1083d294fc40b3ac37b505e8a65a5b10`.
-- `case-plan.json` SHA-256 `dcd754e2ca3cc7515bfbcfbc49009bf46504e777d85ee27bd7432c88bf538b28`.
-- `cpu-school-tests-nov26.log` SHA-256 `2359172246ed1865b0eaaec4df3323a866d883d8c2c171e324e4e8ead57e5e17`.
-- `cpu-verify-nov26.log` SHA-256 `e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d`.
-- `cpu-preflight-nov26.log` SHA-256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`.
-- `assignment-check-nov26.log` SHA-256 `5a8a41eecd92d272be71cb394065baa5466c89b04d79dc3bc55f408fe79e2edb`.
-- `strict-gate-nov26.log` SHA-256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`.
+1. Bind all 15 cases to source-hashed diagnostic recipes and selected-requirement measurement contracts; run positive and negative compatibility through the pinned Native validator, converter, Lean and video path.
+2. Author and validate the six canonical semantic stages and exact cases proposal.
+3. Prove saved-only postprocessing, physical/lifecycle and independent delivery/comparison audits, then rerun the scoped strict gate.
+4. Only after strict passes, mark ready and release the local queue proposal for shared integration. Original site/operator and physical capture remain later local inputs; missing CPU work is not an external blocker.

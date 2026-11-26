@@ -9,10 +9,11 @@ PLAN = json.loads((ROOT / "case-plan.json").read_text())
 CASE_IDS = [row["case_id"] for row in PLAN["cases"]]
 FILES = (
     "runner.py", "school_scene_construction.py", "school_timing.py",
-    "native_capture.py", "school_zone_observations.py", "saved_finalizer.py",
-    "comparison_audit.py", "case-plan.json",
+    "native_capture.py", "native_output_bridge.py", "school_zone_observations.py", "saved_finalizer.py",
+    "comparison_audit.py", "analysis.py", "case-plan.json",
     "tests/test_school_scene_construction.py", "tests/test_school_zone_observations.py",
     "tests/test_comparison_audit.py", "tests/test_saved_finalizer.py",
+    "tests/test_analysis.py",
 )
 CHANNELS = (
     "bus_body_speed_and_zone", "children_positions", "school_calendar_and_clock",

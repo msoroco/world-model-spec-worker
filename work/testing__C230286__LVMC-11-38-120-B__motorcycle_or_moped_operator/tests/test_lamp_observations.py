@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -15,11 +16,13 @@ spec.loader.exec_module(observations)
 
 class LampTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"])
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.case_id = observations.ASSIGNMENT_ID + "__night_moving_both_lit"
-        self.context = dict(case_id=self.case_id, map_sha256="a" * 64,
+        self.context = dict(case_id=self.case_id,
                             local_datetime="2026-11-23T19:00:00-08:00",
                             sunset_local="2026-11-23T16:30:00-08:00",
                             sunrise_local="2026-11-24T06:30:00-08:00",
@@ -28,11 +31,14 @@ class LampTests(unittest.TestCase):
                                                       tested_visibility_ft=300),
                             tail_lamp_calibration=dict(emitted_color="red", mounted_position="rear",
                                                        tested_visibility_ft=500))
-        for key in ("vehicle_blueprint_source", "section_080_coverage_source", "trail_ride_source",
-                    "enclosed_three_wheel_source", "road_sidewalk_source", "local_date_time_source",
-                    "sunset_sunrise_source", "light_atmosphere_source", "discernibility_500ft_source",
-                    "headlamp_calibration_source", "tail_lamp_calibration_source"):
-            self.context[key] = "original:" + key
+        self.context["source_refs"] = {}
+        for name in set(observations.SOURCE_BINDINGS.values()) | {"map_opendrive"}:
+            path = self.root / (name + ".txt")
+            path.write_text("diagnostic source for " + name + "\n", encoding="utf-8")
+            self.context["source_refs"][name] = {"path": path.name, "sha256": observations.sha(path)}
+        self.context["map_sha256"] = self.context["source_refs"]["map_opendrive"]["sha256"]
+        for key, name in observations.SOURCE_BINDINGS.items():
+            self.context[key] = self.context["source_refs"][name]["sha256"]
         self.rows = [dict(frame=i, time_s=i / 20, speed_mps=5,
                           headlamp_burning=True, tail_lamp_burning=True) for i in range(2)]
         self.write_sources()
@@ -54,9 +60,9 @@ class LampTests(unittest.TestCase):
 
     def test_exact_lamp_and_coverage_plan(self):
         plan = json.loads((MODULE.parent / "case-plan.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(plan["cases"]), 17)
-        self.assertEqual(len(plan["comparisons"]), 14)
-        self.assertEqual(len({x["case_id"] for x in plan["cases"]}), 17)
+        self.assertEqual(len(plan["cases"]), 25)
+        self.assertEqual(len(plan["comparisons"]), 20)
+        self.assertEqual(len({x["case_id"] for x in plan["cases"]}), 25)
 
     def test_original_lamp_states_and_calibration_preserved(self):
         result = self.run_measure()
@@ -99,6 +105,11 @@ class LampTests(unittest.TestCase):
         del self.context["observed_discernibility_ft"]
         self.write_sources()
         with self.assertRaises(ValueError):
+            self.run_measure()
+
+    def test_changed_original_photometry_bytes_rejected(self):
+        (self.root / "headlamp_photometry.txt").write_text("changed\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "source bytes changed"):
             self.run_measure()
 
 
