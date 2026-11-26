@@ -125,6 +125,8 @@ def finalize(attempt, output):
     derive_channels(attempt, description, samples, mapping, trace)
     evidence_refs = [{'name': item['name'], 'unit': item['unit'],
         'reference': 'channels/' + item['name'] + '.jsonl'} for item in description['channels']]
+    evidence_refs += [{'name': item['name'], 'unit': item['unit'],
+        'reference': 'road_geometry.json'} for item in description['context_inputs']]
     provenance = source['measurement']['source_kind']
     actual = source['measured_signal_distance_m']
     target = config['signal_distance_m']

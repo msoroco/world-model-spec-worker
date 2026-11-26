@@ -25,7 +25,10 @@ def measure(source_dir, case_id):
     source_dir = Path(source_dir)
     if case_id not in CASES.values():
         raise ValueError("Exact selected case differs")
-    seal = json.loads((source_dir / "source-seal.json").read_text())
+    seal_path = source_dir / 'acquisition-seal.json'
+    if not seal_path.is_file():
+        seal_path = source_dir / 'source-seal.json'
+    seal = json.loads(seal_path.read_text())
     if seal.get("format") != "c295180-saved-source-seal-v1" or seal.get("case_id") != case_id:
         raise ValueError("Saved source seal identity differs")
     required = ("native_samples.jsonl", "video_frames.jsonl", "stop_reference.json",
@@ -96,7 +99,7 @@ def measure(source_dir, case_id):
         run = run + 1 if value else 0
         longest = max(longest, run)
     return {"format": "c295180-saved-stop-line-measurement-v1", "case_id": case_id,
-            "source_kind": reference["source_kind"], "source_seal_sha256": digest(source_dir / "source-seal.json"),
+            "source_kind": reference["source_kind"], "source_seal_sha256": digest(seal_path),
             "frames": FRAMES, "rate_hz": RATE_HZ,
             "first_front_stop_line_crossing_frame": crossing,
             "first_front_intersection_entry_frame": entry,

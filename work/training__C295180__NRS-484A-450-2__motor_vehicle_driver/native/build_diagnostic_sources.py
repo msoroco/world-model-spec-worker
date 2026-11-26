@@ -59,10 +59,10 @@ def build():
         write(target / 'stop_reference.json', reference)
         seal_names = ('native_samples.jsonl', 'video_frames.jsonl',
                       'stop_reference.json', 'road.xodr')
-        write(target / 'source-seal.json', {'format': 'c295180-saved-source-seal-v1',
-                                          'case_id': case,
-                                          'source_sha256': {name: sha(target / name)
-                                                            for name in seal_names}})
+        seal = {'format': 'c295180-saved-source-seal-v1', 'case_id': case,
+                'source_sha256': {name: sha(target / name) for name in seal_names}}
+        write(target / 'source-seal.json', seal)
+        write(target / 'acquisition-seal.json', seal)
         write(target / 'diagnostic-source-manifest.json',
               {'case_id': case, 'source_kind': 'synthetic_native_sample',
                'sha256': {'road.xodr': sha(target / 'road.xodr'),

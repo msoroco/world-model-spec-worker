@@ -218,9 +218,10 @@ def capture(case_id, output, host='127.0.0.1', port=2000, spawn_y_m=-61):
         indent=2) + '\n')
     names = ('native_samples.jsonl', 'video_frames.jsonl',
              'stop_reference.json', 'road.xodr')
-    (output / 'source-seal.json').write_text(json.dumps({
-        'format': 'c295180-saved-source-seal-v1', 'case_id': case_id,
-        'source_sha256': {name: sha(output / name) for name in names}}, indent=2) + '\n')
+    seal = {'format': 'c295180-saved-source-seal-v1', 'case_id': case_id,
+            'source_sha256': {name: sha(output / name) for name in names}}
+    for name in ('source-seal.json', 'acquisition-seal.json'):
+        (output / name).write_text(json.dumps(seal, indent=2) + '\n')
     return {'case_id': case_id, 'frames': frame_count, 'output': str(output),
             'physical_scene_reviewed': False}
 

@@ -57,17 +57,21 @@ def create(suffix):
                        'body_vertices_m':footprint})
         trace.append({'frame':frame,'time_s':time,'position':{'x':x,'y':y,'z':.5},
             'position_m':[x,y,.5],'heading_deg':heading,'speed_mps':8.0,
-            'speed_mph':8/.44704,'control':{'throttle':0,'brake':0,'hand_brake':False}})
+            'speed_mph':8/.44704,
+            'velocity_mps':[8*c,8*s,0.0],
+            'control':{'throttle':0,'brake':0,'hand_brake':False}})
         evidence.append({'original_frame':frame,'recording_time_s':time,
             'replay_frame':frame,'replay_simulation_time_s':time,'actor_id':107,
             'ego':{'body_vertices_m':footprint,'position_m':[x,y,.5],
                    'heading_deg':heading,'speed_mps':8.0,
-                   'speed_provenance':'synthetic_cpu_fixture','synthetic_diagnostic':True},
+                   'speed_provenance':'synthetic_native_sample','synthetic_diagnostic':True},
             'world':{'weather':{'cloudiness':90,'precipitation':80,'wetness':90,'fog_density':0},
                 'road_projection':{'road_id':road_id,'section_id':0,'lane_id':-1,'s_m':x+130}}})
         graph_path = f'capture/native/graphs/base/{frame:08d}.adapter.json'
         frames.append({'frame':frame,'simulation_time':time,'time_s':time,
-            'base':f'graphs/base/{frame:08d}.adapter.json','synthetic_diagnostic':True})
+            'base':f'graphs/base/{frame:08d}.adapter.json',
+            'adapter_graph':f'graphs/base/{frame:08d}.adapter.json',
+            'synthetic_diagnostic':True})
         graphs.append({'path':graph_path,'attributes':{'frame':frame},'nodes':[],'edges':[]})
     map_text = open_drive()
     files = {'road.xodr':map_text,

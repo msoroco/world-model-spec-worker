@@ -20,8 +20,8 @@ for entry in manifest['cases']:
     suffix = entry['case_id'].removeprefix(HERE.name + '__')
     candidate = entry['candidates'][0]
     assert candidate['id'] == 'fallback1'
-    offline = REPO / '.runtime-work' / f'c129273-offline-{suffix}-fallback1-v8'
-    compat = REPO / '.runtime-work' / f'c129273-compat-{suffix}-fallback1-v8'
+    offline = REPO / '.runtime-work' / f'c129273-offline-{suffix}-fallback1-v9'
+    compat = REPO / '.runtime-work' / f'c129273-compat-{suffix}-fallback1-v11'
     offline_log = HERE / 'offline' / f'{suffix}-fallback1.log'
     compat_receipt = HERE / 'compatibility' / f'{suffix}-fallback1.json'
     compat_log = HERE / 'compatibility' / f'{suffix}-fallback1-analysis.log'
@@ -38,7 +38,7 @@ for entry in manifest['cases']:
     assert receipt['log_sha256'] == sha(compat_log)
     assert receipt['negative_log_sha256'] == sha(negative_log)
     candidate['offline'] = {
-        'command': f'.venv-cpu/bin/python -B runtime.py offline --manifest work/{HERE.name}/execution-manifest.json --case {entry["case_id"]} --candidate fallback1 --output .runtime-work/c129273-offline-{suffix}-fallback1-v8',
+        'command': f'.venv-cpu/bin/python -B runtime.py offline --manifest work/{HERE.name}/execution-manifest.json --case {entry["case_id"]} --candidate fallback1 --output .runtime-work/c129273-offline-{suffix}-fallback1-v9',
         'exit_code': 0,
         'construction_sha256': candidate['construction_sha256'],
         'log': str(offline_log.relative_to(HERE)),

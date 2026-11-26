@@ -17,7 +17,43 @@ for entry in manifest['cases']:
         if file['path'] == 'runner.py':
             text = file['content']
             assert 'thickness=.08' in text and 'thickness=.09' in text
-            file['content'] = text.replace('thickness=.08', 'thickness=.16').replace('thickness=.09', 'thickness=.16')
+            text = text.replace('thickness=.08', 'thickness=.16').replace('thickness=.09', 'thickness=.16')
+            if suffix != 'assisted':
+                text = text.replace('life_time=31', 'life_time=.15')
+                needle = '                native_frame = world.tick()'
+                assert needle in text
+                moving_marker = '''                if helper is None:
+                    marker_position = walker.get_transform().location
+                    world.debug.draw_line(
+                        carla.Location(x=marker_position.x, y=marker_position.y,
+                                       z=marker_position.z + .8),
+                        carla.Location(x=marker_position.x + .35,
+                                       y=marker_position.y, z=marker_position.z),
+                        thickness=.16, color=carla.Color(255, 255, 255),
+                        life_time=.15)
+                    if marker == 'white_red_tipped_cane':
+                        world.debug.draw_line(
+                            carla.Location(x=marker_position.x + .28,
+                                           y=marker_position.y,
+                                           z=marker_position.z + .15),
+                            carla.Location(x=marker_position.x + .35,
+                                           y=marker_position.y,
+                                           z=marker_position.z),
+                            thickness=.16, color=carla.Color(255, 0, 0),
+                            life_time=.15)
+'''
+                text = text.replace(needle, moving_marker + needle)
+            if suffix == 'assisted':
+                text = text.replace('carla.Location(x=-1.2, y=-4.6, z=28.1)',
+                                    'carla.Location(x=-.55, y=-4.6, z=28.1)')
+                needle = '''                    walker.apply_control(carla.WalkerControl(
+                        direction=carla.Vector3D(0, 1, 0), speed=.5))'''
+                assert needle in text
+                text = text.replace(needle, needle + '''
+                    if helper is not None:
+                        helper.apply_control(carla.WalkerControl(
+                            direction=carla.Vector3D(0, 1, 0), speed=.5))''')
+            file['content'] = text
         if file['path'] == 'config.json':
             config = json.loads(file['content'])
             config['candidate_id'] = 'fallback1'
@@ -30,12 +66,22 @@ for entry in manifest['cases']:
         'id': 'fallback1',
         'construction': str(path.relative_to(HERE)),
         'construction_sha256': sha(path),
-        'trigger': {
+        'trigger': ({
+            'source': 'original Native assistant/person pose rows and four-camera frames',
+            'metric': 'assistant-person separation throughout crossing interval',
+            'failure_condition': 'primary assistant does not remain visibly adjacent to the crossing person',
+        } if suffix == 'assisted' else {
             'source': 'original Native four-camera frames and blind-person context',
-            'metric': 'cane marker stroke visibility in crossing interval',
-            'failure_condition': 'primary white or red-tipped cane marker is not visible in source frames',
-        },
-        'changed_knobs': ['authored cane debug stroke thickness: 0.08/0.09 to 0.16'],
+            'metric': 'cane marker stroke visibility and walker attachment in crossing interval',
+            'failure_condition': 'primary white or red-tipped cane marker is not visibly attached to the crossing person',
+        }),
+        'changed_knobs': ([
+            'assistant starting offset: 1.2 to 0.55 m',
+            'assistant control: stationary to synchronized walking request',
+        ] if suffix == 'assisted' else [
+            'authored cane debug stroke thickness: 0.08/0.09 to 0.16',
+            'authored cane marker position: fixed initial pose to per-tick walker pose',
+        ]),
     }]
 manifest_path.write_text(json.dumps(manifest, indent=2) + '\n')
 print('fallbacks', len(manifest['cases']), sha(manifest_path))

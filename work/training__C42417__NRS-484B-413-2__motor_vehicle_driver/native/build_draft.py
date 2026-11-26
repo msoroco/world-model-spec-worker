@@ -64,6 +64,8 @@ def description():
         'reference_frame':'original Native frame and time',
         'uncertainty':'50 ms sampled state; district and lamp pixels require review'}
         for name in names],
+        'context_inputs':[{'name':'area_classification','unit':'categorical',
+            'method':'authored business-district context joined to surveyed Native map; review pending'}],
         'limitations':['No legal conclusion from offline or synthetic data',
                        'Original district, body, lamp pixels and four cameras require review']}
 def build():
