@@ -94,7 +94,22 @@ def analyze(attempt):
               'diagnostic_fixture': True,
               'physical_acceptance_claimed': False,
               'legal_verdict_claimed': False}
-    write_result(root, physical_result(root, native))
+    result = physical_result(root, native)
+    name = case['case_id'].rsplit('__', 1)[-1]
+    sweep = ('surface_clearance', 'surface_clearance_m', 'min') if name in (
+        'bicycle_closer_pass', 'bicycle_wider_pass') else (
+        ('relative_station', 'relative_station_m', 'last') if name.startswith(
+            'endangerment_offset_') else None)
+    if sweep:
+        axis, field, statistic = sweep
+        values = [row[field] for row in rows]
+        result['realized_observables'][axis] = {
+            'value': min(values) if statistic == 'min' else values[-1],
+            'unit': 'm', 'method': '900-frame original cycle/motor body readback with timestamp and video join',
+            'time_window': 'entire original 45-second passing attempt',
+            'statistic': statistic, 'reference': 'channel-' + axis + '.jsonl',
+            'sample_window_s': [rows[0]['time_s'], rows[-1]['time_s']]}
+    write_result(root, result)
     return {'format': 'worker-analysis-report', 'case_id': case['case_id'],
             'analysis_complete': True, 'diagnostic_fixture': True,
             'physical_acceptance_claimed': False,

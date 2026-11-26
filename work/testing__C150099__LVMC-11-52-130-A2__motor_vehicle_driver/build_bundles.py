@@ -52,6 +52,20 @@ RECORDING = {
                     'Physical sign pixels, activity and statutory exception remain unconfirmed.'],
 }
 
+
+def case_recording(case) -> dict:
+    value = json.loads(json.dumps(RECORDING))
+    if case.sweep_kind != 'none':
+        name, method = (
+            ('conflict_gap_m', 'same-frame original actor body gap')
+            if case.sweep_kind == 'conflict_gap' else
+            ('posted_offset_m', 'same-frame original body centre minus reviewed posted end'))
+        value['channels'].append({'name': name, 'unit': 'm', 'sampling_rate_hz': 20,
+            'method': method, 'time_window': 'full original 45-second episode',
+            'reference_frame': 'reviewed original site and same-frame actor bodies',
+            'uncertainty': 'requested setpoint may differ from measured original motion'})
+    return value
+
 TEST = '''import json
 import unittest
 from pathlib import Path
@@ -78,6 +92,7 @@ def build() -> dict:
     expected = {row['case_id'] for row in plan['cases']}
     entries = []
     for case in CASES:
+        recording = case_recording(case)
         case_id = ASSIGNMENT + '__' + case.id
         if case_id not in expected:
             raise ValueError('planned exact fire-lane case missing: ' + case_id)
@@ -85,11 +100,11 @@ def build() -> dict:
             'assignment_id': ASSIGNMENT, 'law_id': plan['law_id'],
             'cell_id': plan['cell_id'], 'actor': plan['actor'],
             'selected_case_id': case_id, 'supported_case_ids': sorted(expected),
-            'case': {**vars(case), 'recording_description': RECORDING},
+            'case': {**vars(case), 'recording_description': recording},
             'plan_sha256': plan_sha,
             'rate_hz': 20, 'frame_count': 900, 'duration_s': 45,
             'cameras': CAMERAS, 'required_atoms': [], 'source_packets': [],
-            'diagnostic_only': True, 'recording_description': RECORDING,
+            'diagnostic_only': True, 'recording_description': recording,
             'control_profile': 'normal',
         }
         config_text = json.dumps(config, indent=2, sort_keys=True) + '\n'
@@ -97,7 +112,7 @@ def build() -> dict:
                  {'path': 'case-plan.json', 'content': plan_bytes.decode(),
                   'source': f'work/{ASSIGNMENT}/case-plan.json'},
                  {'path': 'tests/test_bundle.py', 'content': TEST}]
-        for name in ('runner.py', 'fire_lane.py', 'source_packet.py',
+        for name in ('runner.py', 'fire_lane.py', 'source_packet.py', 'judgment_sweeps.py',
                      'native_capture.py', 'saved_audit.py', 'comparison_audit.py',
                      'analysis.py'):
             files.append({'path': name, 'content': (ROOT / name).read_text(),
@@ -112,7 +127,7 @@ def build() -> dict:
                                  'legal_judgment': 'unresolved',
                                  'source_packets': ['reviewed_fire_lane_packet',
                                                     'frame_map', 'history', 'four_camera_png']},
-            'recording_description': RECORDING,
+            'recording_description': recording,
             'static_checks': ['exact law/cell/case identity',
                               'source-hashed original City designation and posting',
                               'four-profile camera joins and 20 Hz history'],

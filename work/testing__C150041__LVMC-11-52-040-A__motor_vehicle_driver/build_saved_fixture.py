@@ -9,7 +9,7 @@ import json
 import math
 from pathlib import Path
 
-from parking_pose import REQUESTS
+from parking_pose import REQUESTS, request
 
 
 ROOT = Path(__file__).resolve().parent
@@ -26,14 +26,13 @@ def _write(path, value):
 
 
 def build(kind):
-    if kind not in REQUESTS:
-        raise ValueError("unknown exact saved-fixture case")
+    activity = request(kind)[0]
     directory = ROOT / "diagnostic" / kind
     construction = json.loads((directory / "construction.json").read_text())
     scene = json.loads(next(item["content"] for item in construction["files"]
                             if item["path"] == "scene.json"))
     packet = json.loads((directory / "reviewed-context.json").read_text())
-    if scene["case_id"] != ASSIGNMENT + "__" + kind or packet["context"]["activity"] != REQUESTS[kind][0]:
+    if scene["case_id"] != ASSIGNMENT + "__" + kind or packet["context"]["activity"] != activity:
         raise ValueError("saved fixture case or activity changed")
     pose = scene["target_pose"]
     history = []

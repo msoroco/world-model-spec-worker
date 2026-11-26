@@ -22,6 +22,8 @@ CASES = (
     Case('bicycle_abort', 'bicycle', 2.5, 'abort'),
     Case('electric_bicycle_pass', 'electric_bicycle', 2.5, 'complete'),
     Case('electric_scooter_pass', 'electric_scooter', 2.5, 'complete'),
+    Case('endangerment_offset_low', 'bicycle', 1.5, 'complete'),
+    Case('endangerment_offset_high', 'bicycle', 2.5, 'complete'),
 )
 
 

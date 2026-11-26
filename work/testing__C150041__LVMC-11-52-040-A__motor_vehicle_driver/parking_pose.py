@@ -15,6 +15,17 @@ REQUESTS = {
     "stand_parallel_reverse": ("stand", "parallel", "reverse"),
 }
 
+SWEEP_REQUESTS = {f'orientation_sweep-{rank:04d}': ('park', 'parallel' if rank == 0 else 'angled', 'lawful', rank * 10)
+                  for rank in range(10)}
+
+
+def request(suffix):
+    if suffix in REQUESTS:
+        return (*REQUESTS[suffix], None)
+    if suffix in SWEEP_REQUESTS:
+        return SWEEP_REQUESTS[suffix]
+    raise ValueError('unknown exact standing/parking pose')
+
 
 def body(center, forward, *, length_m, width_m):
     if length_m <= 0 or width_m <= 0:
@@ -27,8 +38,7 @@ def body(center, forward, *, length_m, width_m):
 
 def construct(context, suffix, *, segment_index=0, edge_offset_m=2.5,
               length_m=4.5, width_m=2.0, angle_deg=30):
-    if suffix not in REQUESTS:
-        raise ValueError("unknown exact standing/parking pose")
+    activity, orientation, heading, sweep_angle = request(suffix)
     if not isinstance(segment_index, int) or segment_index < 0:
         raise ValueError("road edge segment index invalid")
     edge = context["road_edge_xy_m"]
@@ -50,10 +60,11 @@ def construct(context, suffix, *, segment_index=0, edge_offset_m=2.5,
     if len(choices) != 1:
         raise ValueError("inspected roadway does not identify one inward edge side")
     inward, center = choices[0]
-    activity, orientation, heading = REQUESTS[suffix]
+    if sweep_angle is not None:
+        angle_deg = sweep_angle
     direction = lawful if heading == "lawful" else tuple(-value for value in lawful)
     if orientation == "angled":
-        if not 0 < angle_deg < 90:
+        if not 0 < angle_deg <= 90:
             raise ValueError("engineering angled pose must be between parallel and perpendicular")
         radians = math.radians(angle_deg)
         direction = unit(tuple(math.cos(radians) * lawful[i] +

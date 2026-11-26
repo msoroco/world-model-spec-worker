@@ -16,6 +16,7 @@ from pathlib import Path
 
 from fire_lane import CASES, build_case
 from source_packet import EXCEPTION_SOURCES, SOURCES, validate_packet
+from judgment_sweeps import CONFLICT_POINTS, DESIGNATION_POINTS, preflight as sweep_preflight
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 FRAMES = 900
@@ -45,6 +46,12 @@ def capture(adapter, case_id: str, packet_path: Path, destination: Path,
         raise ValueError('unsupported curb approach control profile')
     case = cases[0]
     site = validate_packet(Path(packet_path), case_id)
+    if case.sweep_kind != 'none':
+        rank = int(case.id.rsplit('-', 1)[1])
+        point = (CONFLICT_POINTS if case.sweep_kind == 'conflict_gap'
+                 else DESIGNATION_POINTS)[rank]
+        sweep_preflight(Path(packet_path), case_id, point,
+                        adapter.ego_body_length_m())
     map_bytes = adapter.get_opendrive_bytes()
     if not isinstance(map_bytes, bytes) or hashlib.sha256(map_bytes).hexdigest() != site['map_sha256']:
         raise ValueError('Native map bytes differ from reviewed site')
@@ -148,6 +155,17 @@ def capture(adapter, case_id: str, packet_path: Path, destination: Path,
                     'traffic_device_direction': 'traffic_device_source_sha256',
                 }.get(case.exception, '')),
                 camera_frames=camera_frames)
+            if case.sweep_kind == 'posted_offset':
+                row['reviewed_posted_end_x_m'] = site['posted_interval_m'][1]
+            if case.sweep_kind == 'conflict_gap':
+                observed_gap = adapter.read_conflict_gap(frame)
+                if not isinstance(observed_gap, dict) or observed_gap.get('frame') != frame or \
+                        observed_gap.get('time_s') != time_s or \
+                        type(observed_gap.get('body_gap_m')) not in (int, float) or \
+                        not math.isfinite(observed_gap['body_gap_m']):
+                    raise ValueError('original conflict actor gap frame join failed')
+                row['actual_actor_body_gap_m'] = observed_gap['body_gap_m']
+                row['traffic_conflict_source_sha256'] = site['traffic_conflict_source_sha256']
             rows.append(row)
             frames.append({'frame': frame, 'time_s': time_s, 'video_frame': index})
         if hashlib.sha256(adapter.get_opendrive_bytes()).hexdigest() != site['map_sha256']:

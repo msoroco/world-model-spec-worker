@@ -22,7 +22,7 @@ def prepare(case_id, candidate, output):
     name = case_id.removeprefix(HERE.name + '__')
     if name == case_id:
         raise ValueError('exact assignment case required')
-    donor = SCRATCH / 'c229023-owner' / ('compat-' + candidate + '-' + name + '-sealed')
+    donor = SCRATCH / 'c229023-owner' / ('compat-' + candidate + '-' + name + '-sweep2')
     if not (donor / 'compatibility.json').is_file():
         raise ValueError('tested exact compatibility donor missing')
     manifest = HERE / 'execution-manifest.json'

@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 
 from parking_measurement import inside, unit
-from parking_pose import REQUESTS, body, construct
+from parking_pose import body, construct, request
 from source_review import validate
 
 
@@ -16,10 +16,8 @@ ASSIGNMENT = "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver"
 
 def build(packet_path, source_root, suffix, *, approach_distance_m=8.0,
           length_m=4.5, width_m=2.0):
-    if suffix not in REQUESTS:
-        raise ValueError("unknown exact standing/parking case")
+    activity = request(suffix)[0]
     context = validate(packet_path, source_root=source_root)
-    activity = REQUESTS[suffix][0]
     if context["activity"] != activity:
         raise ValueError("source-reviewed activity differs from requested case")
     pose = construct(context, suffix, length_m=length_m, width_m=width_m)

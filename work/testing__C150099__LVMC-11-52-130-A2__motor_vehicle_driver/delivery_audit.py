@@ -120,6 +120,11 @@ def audit_saved_channels(attempt: Path, case_id: str, *, allow_diagnostic: bool 
         'property_status': lambda row: row['property_kind'],
         'necessity_exceptions': lambda row: row['exception_kind'],
     }
+    if '__conflict_necessity_source_review-' in case_id:
+        expected['conflict_gap_m'] = lambda row: row['actual_actor_body_gap_m']
+    if '__designation_posting_source_review-' in case_id:
+        expected['posted_offset_m'] = lambda row: (
+            row['body_west_x_m'] + row['body_east_x_m']) / 2 - row['reviewed_posted_end_x_m']
     channels = {name: [json.loads(line) for line in
                        (attempt / 'channels' / (name + '.jsonl')).read_text().splitlines()]
                 for name in expected}

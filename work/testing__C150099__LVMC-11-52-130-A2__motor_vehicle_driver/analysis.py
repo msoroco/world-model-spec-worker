@@ -131,6 +131,9 @@ def build(attempt: Path) -> tuple[dict, dict]:
                     'attendance': row['attended_observation'],
                     'property_status': row['property_kind'],
                     'necessity_exceptions': row['exception_kind'],
+                    'conflict_gap_m': row.get('actual_actor_body_gap_m'),
+                    'posted_offset_m': (row['body_west_x_m'] + row['body_east_x_m']) / 2 -
+                                       row.get('reviewed_posted_end_x_m', 0),
                 }
                 stream.write(json.dumps({'time_s': row['time_s'],
                                          'value': values[name]}) + '\n')
@@ -144,6 +147,19 @@ def build(attempt: Path) -> tuple[dict, dict]:
         evidence.append({'name': channel['name'], 'unit': channel['unit'],
                          'reference': str(context.relative_to(attempt))})
     diagnostic = json.loads(required(attempt, 'original-attempt/inventory.json').read_text())['diagnostic_fixture']
+    realized = {}
+    sweep_kind = config['case'].get('sweep_kind')
+    if sweep_kind in ('conflict_gap', 'posted_offset'):
+        name = 'conflict_gap_m' if sweep_kind == 'conflict_gap' else 'posted_offset_m'
+        channel = next(item for item in definitions['channels'] if item['name'] == name)
+        values = [json.loads(line)['value'] for line in
+                  (channels / (name + '.jsonl')).read_text().splitlines()]
+        if any(type(value) not in (int, float) for value in values):
+            raise ValueError('original sweep measurement missing')
+        realized[name] = {'value': min(values), 'unit': 'm', 'method': channel['method'],
+                          'time_window': channel['time_window'], 'statistic': 'min',
+                          'sample_window_s': [original[0]['time_s'], original[-1]['time_s']],
+                          'reference': 'channels/' + name + '.jsonl'}
     result = {
         'case_id': config['selected_case_id'],
         'measured_values': measurement['value'],
@@ -160,7 +176,7 @@ def build(attempt: Path) -> tuple[dict, dict]:
                              ('overview', 'approach', 'reference_corner', 'driver_reference')],
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': definitions,
-        'recording_evidence': evidence, 'realized_observables': {},
+        'recording_evidence': evidence, 'realized_observables': realized,
         'provenance_kind': 'synthetic_fixture' if diagnostic else 'native',
         'diagnostic_fixture': diagnostic, 'physical_acceptance_claimed': False,
     }

@@ -11,16 +11,15 @@ import math
 from pathlib import Path
 
 from parking_measurement import measure_sequence
-from parking_pose import REQUESTS
+from parking_pose import request
 from parking_scene import ASSIGNMENT
 from source_review import validate
 
 
 def finalize(packet_path, source_root, suffix, history_path, expected_sha256):
-    if suffix not in REQUESTS:
-        raise ValueError("unknown exact standing/parking case")
+    activity = request(suffix)[0]
     context = validate(packet_path, source_root=source_root)
-    if context["activity"] != REQUESTS[suffix][0]:
+    if context["activity"] != activity:
         raise ValueError("source-reviewed activity differs from requested case")
     raw = Path(history_path).read_bytes()
     if hashlib.sha256(raw).hexdigest() != expected_sha256:

@@ -23,6 +23,12 @@ def assignments(case):
                           'note': 'requested target; original body position required'},
         'exception': {'kind': 'world_setup', 'value': case.exception,
                       'note': 'requires independent original traffic or direction source'},
+        'conflict_gap_m': {'kind': 'controller',
+                           'value': case.sweep_setpoint_m if case.sweep_kind == 'conflict_gap' else None,
+                           'note': 'requested actor gap; original gap measured separately'},
+        'posted_offset_m': {'kind': 'controller',
+                            'value': case.sweep_setpoint_m if case.sweep_kind == 'posted_offset' else None,
+                            'note': 'requested body-centre offset; original offset measured separately'},
     }
 
 
@@ -40,6 +46,8 @@ def build():
              for comparison in PLAN['comparisons']
              for case_id in comparison['case_ids']}
     for case in CASES:
+        if case.sweep_kind != 'none':
+            continue
         case_id = ROOT.name + '__' + case.id
         row = next(row for row in PLAN['cases'] if row['case_id'] == case_id)
         difference = next((comparison['deliberate_differences'][0]

@@ -1,63 +1,75 @@
 {
-  "assignment_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C150099",
-  "law_id": "LVMC-11-52-130-A2",
-  "selected_branches": [
-    {
-      "law_id": "LVMC-11-52-130-A2",
-      "cell_id": "C150099",
-      "actor": "motor_vehicle_driver",
-      "requirement": "LVMC-11-52-130-A2",
-      "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 308,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property.",
-  "law_source": "LVMC 11.52.130(A)(2)",
-  "topic_inventory": {
-    "exact-text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property."
+  "assignment_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45-second original episode",
+        "subject": "ego body, curb, posted extent and traffic",
+        "view": "overview"
+      },
+      {
+        "interval": "full original approach and halt",
+        "subject": "one-way approach and body halt",
+        "view": "approach"
+      },
+      {
+        "interval": "full original episode",
+        "subject": "physical fire-lane sign and posted boundary",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full original episode",
+        "subject": "driver reference toward sign and curb",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
+        "status": "physical"
+      },
       "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_attended",
-      "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
+      "construction": {
+        "activity": "park",
+        "attended": true,
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
+          "posting": "location-specific City Fire Code designation and posting source",
+          "route": "one-way sourced route",
+          "sign": "physical sign or mapped object with readback",
+          "vehicle_blueprint": "same source",
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "inside"
+      },
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "activity": "park",
-        "attended": true,
-        "property_kind": "public",
-        "target_region": "inside",
-        "exception": "none",
-        "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
-          "posting": "location-specific City Fire Code designation and posting source",
-          "route": "one-way sourced route",
-          "weather": "same source",
-          "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
-      },
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original Native frame map and body footprint",
           "curb geometry and posted extent",
@@ -65,51 +77,51 @@
           "City Fire Code designation and posting records",
           "property status and attendance",
           "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
+      "requirement": "LVMC-11-52-130-A2"
     },
     {
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
+        "status": "physical"
+      },
       "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_unattended",
-      "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
+      "construction": {
+        "activity": "park",
+        "attended": false,
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
+          "posting": "location-specific City Fire Code designation and posting source",
+          "route": "one-way sourced route",
+          "sign": "physical sign or mapped object with readback",
+          "vehicle_blueprint": "same source",
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "inside"
+      },
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "activity": "park",
-        "attended": false,
-        "property_kind": "public",
-        "target_region": "inside",
-        "exception": "none",
-        "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
-          "posting": "location-specific City Fire Code designation and posting source",
-          "route": "one-way sourced route",
-          "weather": "same source",
-          "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
-      },
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original Native frame map and body footprint",
           "curb geometry and posted extent",
@@ -117,51 +129,51 @@
           "City Fire Code designation and posting records",
           "property status and attendance",
           "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
+      "requirement": "LVMC-11-52-130-A2"
     },
     {
-      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_attended",
       "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_attended",
       "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
         "activity": "park",
         "attended": true,
-        "property_kind": "private",
-        "target_region": "inside",
+        "entrypoint": "build_case",
         "exception": "none",
         "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
           "posting": "location-specific City Fire Code designation and posting source",
           "route": "one-way sourced route",
-          "weather": "same source",
+          "sign": "physical sign or mapped object with readback",
           "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
+          "weather": "same source"
+        },
+        "property_kind": "private",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "inside"
       },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original Native frame map and body footprint",
           "curb geometry and posted extent",
@@ -169,51 +181,51 @@
           "City Fire Code designation and posting records",
           "property status and attendance",
           "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
+      "requirement": "LVMC-11-52-130-A2"
     },
     {
-      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_unattended",
       "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_unattended",
       "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
         "activity": "park",
         "attended": false,
-        "property_kind": "private",
-        "target_region": "inside",
+        "entrypoint": "build_case",
         "exception": "none",
         "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
           "posting": "location-specific City Fire Code designation and posting source",
           "route": "one-way sourced route",
-          "weather": "same source",
+          "sign": "physical sign or mapped object with readback",
           "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
+          "weather": "same source"
+        },
+        "property_kind": "private",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "inside"
       },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original Native frame map and body footprint",
           "curb geometry and posted extent",
@@ -221,51 +233,51 @@
           "City Fire Code designation and posting records",
           "property status and attendance",
           "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
+      "requirement": "LVMC-11-52-130-A2"
     },
     {
-      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stop",
       "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stop",
       "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
         "activity": "stop",
         "attended": true,
-        "property_kind": "public",
-        "target_region": "inside",
+        "entrypoint": "build_case",
         "exception": "none",
         "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
           "posting": "location-specific City Fire Code designation and posting source",
           "route": "one-way sourced route",
-          "weather": "same source",
+          "sign": "physical sign or mapped object with readback",
           "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "inside"
       },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original Native frame map and body footprint",
           "curb geometry and posted extent",
@@ -273,51 +285,51 @@
           "City Fire Code designation and posting records",
           "property status and attendance",
           "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
+      "requirement": "LVMC-11-52-130-A2"
     },
     {
-      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stand",
       "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stand",
       "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
         "activity": "stand",
         "attended": true,
-        "property_kind": "public",
-        "target_region": "inside",
+        "entrypoint": "build_case",
         "exception": "none",
         "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
           "posting": "location-specific City Fire Code designation and posting source",
           "route": "one-way sourced route",
-          "weather": "same source",
+          "sign": "physical sign or mapped object with readback",
           "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "inside"
       },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original Native frame map and body footprint",
           "curb geometry and posted extent",
@@ -325,51 +337,51 @@
           "City Fire Code designation and posting records",
           "property status and attendance",
           "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
+      "requirement": "LVMC-11-52-130-A2"
     },
     {
-      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__outside_posted_extent",
       "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__outside_posted_extent",
       "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
         "activity": "park",
         "attended": true,
-        "property_kind": "public",
-        "target_region": "outside",
+        "entrypoint": "build_case",
         "exception": "none",
         "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
           "posting": "location-specific City Fire Code designation and posting source",
           "route": "one-way sourced route",
-          "weather": "same source",
+          "sign": "physical sign or mapped object with readback",
           "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "outside"
       },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original Native frame map and body footprint",
           "curb geometry and posted extent",
@@ -377,51 +389,51 @@
           "City Fire Code designation and posting records",
           "property status and attendance",
           "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
+      "requirement": "LVMC-11-52-130-A2"
     },
     {
-      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__traffic_conflict_exception",
       "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__traffic_conflict_exception",
       "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
         "activity": "stop",
         "attended": true,
-        "property_kind": "public",
-        "target_region": "inside",
+        "entrypoint": "build_case",
         "exception": "lawful_traffic_conflict",
         "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
           "posting": "location-specific City Fire Code designation and posting source",
           "route": "one-way sourced route",
-          "weather": "same source",
+          "sign": "physical sign or mapped object with readback",
           "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "inside"
       },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original Native frame map and body footprint",
           "curb geometry and posted extent",
@@ -429,103 +441,51 @@
           "City Fire Code designation and posting records",
           "property status and attendance",
           "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
+      "requirement": "LVMC-11-52-130-A2"
     },
     {
-      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__police_direction_exception",
       "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
-      "gap_ids": [
-        "no_accepted_evidence"
-      ],
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__police_direction_exception",
       "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
         "activity": "stop",
         "attended": true,
-        "property_kind": "public",
-        "target_region": "inside",
+        "entrypoint": "build_case",
         "exception": "police_direction",
         "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
           "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
           "posting": "location-specific City Fire Code designation and posting source",
           "route": "one-way sourced route",
-          "weather": "same source",
+          "sign": "physical sign or mapped object with readback",
           "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "inside"
       },
-      "recording_description": {
-        "duration_frames": 900,
-        "rate_hz": 20,
-        "sources": [
-          "original Native frame map and body footprint",
-          "curb geometry and posted extent",
-          "physical sign readback and four camera pixels",
-          "City Fire Code designation and posting records",
-          "property status and attendance",
-          "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
-      },
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
-      },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
-    },
-    {
-      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction_exception",
-      "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "requirement": "LVMC-11-52-130-A2",
-      "kind": "delivery",
       "gap_ids": [
         "no_accepted_evidence"
       ],
-      "construction": {
-        "script": "fire_lane.py",
-        "site_preflight": "validate_site",
-        "entrypoint": "build_case",
-        "activity": "stop",
-        "attended": true,
-        "property_kind": "public",
-        "target_region": "inside",
-        "exception": "traffic_device_direction",
-        "fixed_conditions": {
-          "cell_id": "C150099",
-          "layout": "one_way_road",
-          "actor": "motor_vehicle_driver",
-          "sign": "physical sign or mapped object with readback",
-          "posting": "location-specific City Fire Code designation and posting source",
-          "route": "one-way sourced route",
-          "weather": "same source",
-          "vehicle_blueprint": "same source",
-          "duration_frames": 900,
-          "camera_plan": "four camera 20 Hz"
-        }
-      },
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
       "recording_description": {
         "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
         "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
         "sources": [
           "original Native frame map and body footprint",
           "curb geometry and posted extent",
@@ -533,26 +493,399 @@
           "City Fire Code designation and posting records",
           "property status and attendance",
           "activity, traffic and direction sources"
-        ],
-        "measurement": "fire_lane.py:measure_original_history",
-        "saved_source_audit": "saved_audit.py:audit_original_history",
-        "legal_judgment": null
+        ]
       },
+      "requirement": "LVMC-11-52-130-A2"
+    },
+    {
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
       "candidate_risk": {
-        "status": "physical",
+        "candidates": [],
         "reason": "The physical sign, legally designated extent and curb are not established by the cell label; live source readback and view must be checked.",
-        "candidates": []
+        "status": "physical"
       },
-      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video."
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction_exception",
+      "construction": {
+        "activity": "stop",
+        "attended": true,
+        "entrypoint": "build_case",
+        "exception": "traffic_device_direction",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
+          "posting": "location-specific City Fire Code designation and posting source",
+          "route": "one-way sourced route",
+          "sign": "physical sign or mapped object with readback",
+          "vehicle_blueprint": "same source",
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "target_region": "inside"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "The sign could be absent, illegible or outside camera view, and the body could miss the posted curb-adjacent interval; check actual original footprints and full video.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original Native frame map and body footprint",
+          "curb geometry and posted extent",
+          "physical sign readback and four camera pixels",
+          "City Fire Code designation and posting records",
+          "property status and attendance",
+          "activity, traffic and direction sources"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A2"
+    },
+    {
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Original physical request may miss target; source-gated preflight and measured fallback are required.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__conflict_necessity_source_review-0000",
+      "construction": {
+        "activity": "stop",
+        "attended": true,
+        "entrypoint": "build_case",
+        "exception": "lawful_traffic_conflict",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
+          "posting": "location-specific City Fire Code designation and posting source",
+          "route": "one-way sourced route",
+          "sign": "physical sign or mapped object with readback",
+          "vehicle_blueprint": "same source",
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "sweep_kind": "conflict_gap",
+        "sweep_setpoint_m": 4.0,
+        "target_region": "inside"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Frozen physical request may miss reviewed site geometry or original actor gap; preflight must reject unsupported route and original measurements remain unverified.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original Native frame map and body footprint",
+          "curb geometry and posted extent",
+          "physical sign readback and four camera pixels",
+          "City Fire Code designation and posting records",
+          "property status and attendance",
+          "activity, traffic and direction sources"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A2"
+    },
+    {
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Original physical request may miss target; source-gated preflight and measured fallback are required.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__conflict_necessity_source_review-0001",
+      "construction": {
+        "activity": "stop",
+        "attended": true,
+        "entrypoint": "build_case",
+        "exception": "lawful_traffic_conflict",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
+          "posting": "location-specific City Fire Code designation and posting source",
+          "route": "one-way sourced route",
+          "sign": "physical sign or mapped object with readback",
+          "vehicle_blueprint": "same source",
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "sweep_kind": "conflict_gap",
+        "sweep_setpoint_m": 12.0,
+        "target_region": "inside"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Frozen physical request may miss reviewed site geometry or original actor gap; preflight must reject unsupported route and original measurements remain unverified.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original Native frame map and body footprint",
+          "curb geometry and posted extent",
+          "physical sign readback and four camera pixels",
+          "City Fire Code designation and posting records",
+          "property status and attendance",
+          "activity, traffic and direction sources"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A2"
+    },
+    {
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Original physical request may miss target; source-gated preflight and measured fallback are required.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__conflict_necessity_source_review-0002",
+      "construction": {
+        "activity": "stop",
+        "attended": true,
+        "entrypoint": "build_case",
+        "exception": "lawful_traffic_conflict",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
+          "posting": "location-specific City Fire Code designation and posting source",
+          "route": "one-way sourced route",
+          "sign": "physical sign or mapped object with readback",
+          "vehicle_blueprint": "same source",
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "sweep_kind": "conflict_gap",
+        "sweep_setpoint_m": 8.0,
+        "target_region": "inside"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Frozen physical request may miss reviewed site geometry or original actor gap; preflight must reject unsupported route and original measurements remain unverified.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original Native frame map and body footprint",
+          "curb geometry and posted extent",
+          "physical sign readback and four camera pixels",
+          "City Fire Code designation and posting records",
+          "property status and attendance",
+          "activity, traffic and direction sources"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A2"
+    },
+    {
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Original physical request may miss target; source-gated preflight and measured fallback are required.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__designation_posting_source_review-0000",
+      "construction": {
+        "activity": "park",
+        "attended": true,
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
+          "posting": "location-specific City Fire Code designation and posting source",
+          "route": "one-way sourced route",
+          "sign": "physical sign or mapped object with readback",
+          "vehicle_blueprint": "same source",
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "sweep_kind": "posted_offset",
+        "sweep_setpoint_m": -2.0,
+        "target_region": "inside"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Frozen physical request may miss reviewed site geometry or original actor gap; preflight must reject unsupported route and original measurements remain unverified.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original Native frame map and body footprint",
+          "curb geometry and posted extent",
+          "physical sign readback and four camera pixels",
+          "City Fire Code designation and posting records",
+          "property status and attendance",
+          "activity, traffic and direction sources"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A2"
+    },
+    {
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Original physical request may miss target; source-gated preflight and measured fallback are required.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__designation_posting_source_review-0001",
+      "construction": {
+        "activity": "park",
+        "attended": true,
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
+          "posting": "location-specific City Fire Code designation and posting source",
+          "route": "one-way sourced route",
+          "sign": "physical sign or mapped object with readback",
+          "vehicle_blueprint": "same source",
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "sweep_kind": "posted_offset",
+        "sweep_setpoint_m": 2.0,
+        "target_region": "inside"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Frozen physical request may miss reviewed site geometry or original actor gap; preflight must reject unsupported route and original measurements remain unverified.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original Native frame map and body footprint",
+          "curb geometry and posted extent",
+          "physical sign readback and four camera pixels",
+          "City Fire Code designation and posting records",
+          "property status and attendance",
+          "activity, traffic and direction sources"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A2"
+    },
+    {
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
+      "candidate_risk": {
+        "candidates": [],
+        "reason": "Original physical request may miss target; source-gated preflight and measured fallback are required.",
+        "status": "physical"
+      },
+      "case_id": "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__designation_posting_source_review-0002",
+      "construction": {
+        "activity": "park",
+        "attended": true,
+        "entrypoint": "build_case",
+        "exception": "none",
+        "fixed_conditions": {
+          "actor": "motor_vehicle_driver",
+          "camera_plan": "four camera 20 Hz",
+          "cell_id": "C150099",
+          "duration_frames": 900,
+          "layout": "one_way_road",
+          "posting": "location-specific City Fire Code designation and posting source",
+          "route": "one-way sourced route",
+          "sign": "physical sign or mapped object with readback",
+          "vehicle_blueprint": "same source",
+          "weather": "same source"
+        },
+        "property_kind": "public",
+        "script": "fire_lane.py",
+        "site_preflight": "validate_site",
+        "sweep_kind": "posted_offset",
+        "sweep_setpoint_m": 0.0,
+        "target_region": "inside"
+      },
+      "gap_ids": [
+        "no_accepted_evidence"
+      ],
+      "kind": "delivery",
+      "physical_risk_assessment": "Frozen physical request may miss reviewed site geometry or original actor gap; preflight must reject unsupported route and original measurements remain unverified.",
+      "recording_description": {
+        "duration_frames": 900,
+        "legal_judgment": null,
+        "measurement": "fire_lane.py:measure_original_history",
+        "rate_hz": 20,
+        "saved_source_audit": "saved_audit.py:audit_original_history",
+        "sources": [
+          "original Native frame map and body footprint",
+          "curb geometry and posted extent",
+          "physical sign readback and four camera pixels",
+          "City Fire Code designation and posting records",
+          "property status and attendance",
+          "activity, traffic and direction sources"
+        ]
+      },
+      "requirement": "LVMC-11-52-130-A2"
     }
   ],
+  "cell_id": "C150099",
   "comparisons": [
     {
-      "comparison_id": "attendance_public",
+      "audit": "fire_lane.py:audit_comparison",
       "case_ids": [
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_attended",
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_unattended"
       ],
+      "comparison_id": "attendance_public",
+      "deliberate_differences": [
+        "attended"
+      ],
       "fixed_conditions": [
         "one-way map",
         "City jurisdiction",
@@ -564,18 +897,18 @@
         "weather",
         "camera plan",
         "duration"
-      ],
-      "deliberate_differences": [
-        "attended"
-      ],
-      "audit": "fire_lane.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "attendance_private",
+      "audit": "fire_lane.py:audit_comparison",
       "case_ids": [
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_attended",
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_unattended"
       ],
+      "comparison_id": "attendance_private",
+      "deliberate_differences": [
+        "attended"
+      ],
       "fixed_conditions": [
         "one-way map",
         "City jurisdiction",
@@ -587,18 +920,18 @@
         "weather",
         "camera plan",
         "duration"
-      ],
-      "deliberate_differences": [
-        "attended"
-      ],
-      "audit": "fire_lane.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "stop_vs_park",
+      "audit": "fire_lane.py:audit_comparison",
       "case_ids": [
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_attended",
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stop"
       ],
+      "comparison_id": "stop_vs_park",
+      "deliberate_differences": [
+        "activity"
+      ],
       "fixed_conditions": [
         "one-way map",
         "City jurisdiction",
@@ -610,18 +943,18 @@
         "weather",
         "camera plan",
         "duration"
-      ],
-      "deliberate_differences": [
-        "activity"
-      ],
-      "audit": "fire_lane.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "stand_vs_park",
+      "audit": "fire_lane.py:audit_comparison",
       "case_ids": [
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_attended",
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stand"
       ],
+      "comparison_id": "stand_vs_park",
+      "deliberate_differences": [
+        "activity"
+      ],
       "fixed_conditions": [
         "one-way map",
         "City jurisdiction",
@@ -633,18 +966,18 @@
         "weather",
         "camera plan",
         "duration"
-      ],
-      "deliberate_differences": [
-        "activity"
-      ],
-      "audit": "fire_lane.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "inside_vs_outside",
+      "audit": "fire_lane.py:audit_comparison",
       "case_ids": [
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_attended",
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__outside_posted_extent"
       ],
+      "comparison_id": "inside_vs_outside",
+      "deliberate_differences": [
+        "target_region"
+      ],
       "fixed_conditions": [
         "one-way map",
         "City jurisdiction",
@@ -656,18 +989,18 @@
         "weather",
         "camera plan",
         "duration"
-      ],
-      "deliberate_differences": [
-        "target_region"
-      ],
-      "audit": "fire_lane.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "traffic_exception",
+      "audit": "fire_lane.py:audit_comparison",
       "case_ids": [
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stop",
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__traffic_conflict_exception"
       ],
+      "comparison_id": "traffic_exception",
+      "deliberate_differences": [
+        "exception"
+      ],
       "fixed_conditions": [
         "one-way map",
         "City jurisdiction",
@@ -679,18 +1012,18 @@
         "weather",
         "camera plan",
         "duration"
-      ],
-      "deliberate_differences": [
-        "exception"
-      ],
-      "audit": "fire_lane.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "police_exception",
+      "audit": "fire_lane.py:audit_comparison",
       "case_ids": [
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stop",
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__police_direction_exception"
       ],
+      "comparison_id": "police_exception",
+      "deliberate_differences": [
+        "exception"
+      ],
       "fixed_conditions": [
         "one-way map",
         "City jurisdiction",
@@ -702,18 +1035,18 @@
         "weather",
         "camera plan",
         "duration"
-      ],
-      "deliberate_differences": [
-        "exception"
-      ],
-      "audit": "fire_lane.py:audit_comparison"
+      ]
     },
     {
-      "comparison_id": "device_exception",
+      "audit": "fire_lane.py:audit_comparison",
       "case_ids": [
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stop",
         "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction_exception"
       ],
+      "comparison_id": "device_exception",
+      "deliberate_differences": [
+        "exception"
+      ],
       "fixed_conditions": [
         "one-way map",
         "City jurisdiction",
@@ -725,49 +1058,109 @@
         "weather",
         "camera plan",
         "duration"
-      ],
-      "deliberate_differences": [
-        "exception"
-      ],
-      "audit": "fire_lane.py:audit_comparison"
+      ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_evidence",
+        "requirement": "No source-backed original Native record demonstrates curb-adjacent vehicle footprint, Fire Code designation and posting extent, activity, attendance, property status and exceptions.",
+        "source": "inputs/testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen accepted-recording inventory is empty."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "LVMC-11-52-130-A2",
+  "law_source": "LVMC 11.52.130(A)(2)",
+  "law_text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property.",
   "observations": [
     {
-      "name": "designation_and_posting",
-      "source": "original Native frame and externally sourced context",
+      "legal_judgment": null,
       "measurement": "Fire Code authorization and posted extent hashes with physical sign readback",
-      "legal_judgment": null
+      "name": "designation_and_posting",
+      "source": "original Native frame and externally sourced context"
     },
     {
-      "name": "curb_adjacency",
-      "source": "original Native frame and externally sourced context",
+      "legal_judgment": null,
       "measurement": "vehicle body footprint against curb and posted interval in original frames",
-      "legal_judgment": null
+      "name": "curb_adjacency",
+      "source": "original Native frame and externally sourced context"
     },
     {
-      "name": "activity",
-      "source": "original Native frame and externally sourced context",
+      "legal_judgment": null,
       "measurement": "observed stop, stand or park state",
-      "legal_judgment": null
+      "name": "activity",
+      "source": "original Native frame and externally sourced context"
     },
     {
-      "name": "attendance",
-      "source": "original Native frame and externally sourced context",
+      "legal_judgment": null,
       "measurement": "person/vehicle occupancy and attendance source",
-      "legal_judgment": null
+      "name": "attendance",
+      "source": "original Native frame and externally sourced context"
     },
     {
-      "name": "property_status",
-      "source": "original Native frame and externally sourced context",
+      "legal_judgment": null,
       "measurement": "public or private parcel source",
-      "legal_judgment": null
+      "name": "property_status",
+      "source": "original Native frame and externally sourced context"
     },
     {
-      "name": "necessity_exceptions",
-      "source": "original Native frame and externally sourced context",
+      "legal_judgment": null,
       "measurement": "traffic conflict, police or device source and observed action",
-      "legal_judgment": null
+      "name": "necessity_exceptions",
+      "source": "original Native frame and externally sourced context"
+    }
+  ],
+  "planning_status": "partial_selected_offline_construction",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_attended",
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_unattended",
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_attended",
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_unattended",
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stop",
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stand",
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__outside_posted_extent",
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__traffic_conflict_exception",
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__police_direction_exception",
+        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction_exception"
+      ],
+      "evidence_or_gap": "No accepted original recording or reviewed location-specific City designation/posting record was exported; ten exact original captures are planned.",
+      "requirement": "LVMC 11.52.130(A)(2): stop, stand or park at a curb-adjacent place designated and posted as a fire lane, subject to original-source exceptions",
+      "source": {
+        "path": "inputs/testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json",
+        "sha256": "ab610fa2c5ca269f910430540a69fed268d544476e316a1af23733f9418104c3"
+      },
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Location-specific City Fire Code designation and posting must be independently reviewed against original source bytes; a rendered sign cannot establish official status.",
+    "CARLA sign, curb, activity, original camera pixels and physical completion require later local Native run and independent source review.",
+    "Diagnostic exact bundles and offline receipts are present; semantic stage chain, original Native adapter, selected finalizer, compatibility, saved processing and full delivery audits remain CPU work."
+  ],
+  "selected_branch": "Parking in a designated and posted curb-adjacent fire lane",
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Parking in a designated and posted curb-adjacent fire lane",
+      "cell_id": "C150099",
+      "coverage_status": "pending_review",
+      "law_id": "LVMC-11-52-130-A2",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "LVMC-11-52-130-A2",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 308,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ],
   "sources": [
@@ -792,35 +1185,15 @@
       "sha256": "def13e71f6c3a2be8a0121c5e5c25876dcce87c1d9a909b6f9b917adcf8572d9"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Location-specific City Fire Code designation and posting must be independently reviewed against original source bytes; a rendered sign cannot establish official status.",
-    "CARLA sign, curb, activity, original camera pixels and physical completion require later local Native run and independent source review.",
-    "Diagnostic exact bundles and offline receipts are present; semantic stage chain, original Native adapter, selected finalizer, compatibility, saved processing and full delivery audits remain CPU work."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no_accepted_evidence",
-        "requirement": "No source-backed original Native record demonstrates curb-adjacent vehicle footprint, Fire Code designation and posting extent, activity, attendance, property status and exceptions.",
-        "source": "inputs/testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver/evidence.json",
-        "why_existing_insufficient": "Frozen accepted-recording inventory is empty."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: At any place or in any space adjacent to a curb which has been designated and posted as a fire lane pursuant to the City's Fire Code, whether the vehicle is attended or unattended and whether the location is on public or private property."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_selected_offline_construction",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 308,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Parking in a designated and posted curb-adjacent fire lane",
-      "decision": "conditional",
       "confidence": "medium",
+      "decision": "conditional",
+      "reason": "One-way-road parking can occupy the curb-adjacent space governed by the fixed fire-lane sign.",
       "required_context": [
         "Establish jurisdiction, qualifying vehicle, responsible person and unresolved NRS-definition applicability.",
         "Establish jurisdiction, vehicle scope, responsible person, attendance, property status, activity, traffic and directions.",
@@ -830,58 +1203,9 @@
         "Supply external evidence of fire-lane designation and posting pursuant to the City's Fire Code, including extent.",
         "Supply location-specific designation and posting evidence pursuant to the City's Fire Code, preserving its unresolved requirements."
       ],
-      "reason": "One-way-road parking can occupy the curb-adjacent space governed by the fixed fire-lane sign."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 308,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
-  ],
-  "selected_branch": "Parking in a designated and posted curb-adjacent fire lane",
-  "requirement_dispositions": [
-    {
-      "requirement": "LVMC 11.52.130(A)(2): stop, stand or park at a curb-adjacent place designated and posted as a fire lane, subject to original-source exceptions",
-      "source": {
-        "path": "inputs/testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver/assignment.json",
-        "sha256": "ab610fa2c5ca269f910430540a69fed268d544476e316a1af23733f9418104c3"
-      },
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_attended",
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_park_unattended",
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_attended",
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__private_park_unattended",
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stop",
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__public_stand",
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__outside_posted_extent",
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__traffic_conflict_exception",
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__police_direction_exception",
-        "testing__C150099__LVMC-11-52-130-A2__motor_vehicle_driver__device_direction_exception"
-      ],
-      "evidence_or_gap": "No accepted original recording or reviewed location-specific City designation/posting record was exported; ten exact original captures are planned."
-    }
-  ],
-  "camera_plan": {
-    "profile": "overview1080-capability",
-    "duration_s": 45,
-    "composition": "synchronized_four_view_primary",
-    "coverage": [
-      {
-        "subject": "ego body, curb, posted extent and traffic",
-        "interval": "full 45-second original episode",
-        "view": "overview"
-      },
-      {
-        "subject": "one-way approach and body halt",
-        "interval": "full original approach and halt",
-        "view": "approach"
-      },
-      {
-        "subject": "physical fire-lane sign and posted boundary",
-        "interval": "full original episode",
-        "view": "reference_corner"
-      },
-      {
-        "subject": "driver reference toward sign and curb",
-        "interval": "full original episode",
-        "view": "driver_reference"
-      }
-    ]
-  }
+  ]
 }

@@ -23,18 +23,26 @@ def review(contract_path, attempt, declaration_path, diagnostic=False):
     expected_kind = 'synthetic_fixture' if diagnostic else 'original_native_capture'
     require(manifest.get('source_kind') == expected_kind,
             'reviewed original source kind missing')
+    if not diagnostic:
+        require(manifest.get('accepted_original_source') is True and
+                manifest.get('reviewed_scene_packet_sha256'),
+                'reviewed original capture acceptance missing')
     require(manifest.get('frame_count') == 900,
             'complete 900-frame source manifest missing')
+    config = json.loads((root / 'config.json').read_text())
+    source_case = config.get('selected_case_id')
     require(declaration.get('case_id') and
-            declaration.get('case_id') == manifest.get('case_id'),
+            declaration.get('case_id') == source_case and
+            (not manifest.get('case_id') or manifest['case_id'] == source_case),
             'review case/source identity differs')
     require(declaration.get('legal_verdict') is None,
             'qualitative observation cannot declare a legal verdict')
     refs = {}
     for field in contract['required_sources']:
         digest = manifest.get('files', {}).get(field, {}).get('sha256')
-        source = (root / field).resolve()
-        require(source.is_relative_to(root) and source.is_file() and
+        candidate = root / field
+        source = candidate.resolve()
+        require(not candidate.is_symlink() and source.is_relative_to(root) and source.is_file() and
                 digest == sha(source), 'missing or changed original source: ' + field)
         refs[field] = digest
     reviews = {}
@@ -79,6 +87,12 @@ def compare(plan_path, left_path, right_path, comparison_id):
     require(left['contract_sha256'] == right['contract_sha256'] and
             left['legal_verdict'] is None and right['legal_verdict'] is None,
             'comparison source contract or legal status differs')
+    require(left.get('source_manifest_sha256') and
+            right.get('source_manifest_sha256') and
+            left.get('source_hashes') and right.get('source_hashes') and
+            set(left.get('observations', {})) == {'c229023-0', 'c229023-1'} and
+            set(right.get('observations', {})) == {'c229023-0', 'c229023-1'},
+            'comparison lacks source-bound qualitative observations')
     require(matches[0].get('deliberate_differences') is not None,
             'comparison difference missing')
     return {'comparison_id': comparison_id,
@@ -86,6 +100,10 @@ def compare(plan_path, left_path, right_path, comparison_id):
             'declared_differences': matches[0]['deliberate_differences'],
             'review_source_hashes': [left['source_manifest_sha256'],
                                      right['source_manifest_sha256']],
+            'observed_statuses': {
+                sweep: [left['observations'][sweep]['status'],
+                        right['observations'][sweep]['status']]
+                for sweep in ('c229023-0', 'c229023-1')},
             'legal_verdict': None}
 
 

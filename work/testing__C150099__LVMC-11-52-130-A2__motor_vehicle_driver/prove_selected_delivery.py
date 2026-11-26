@@ -26,7 +26,7 @@ def main() -> None:
         case = entry['case_id']
         suffix = case.removeprefix(ROOT.name + '__')
         attempt = REPO / '.runtime-work' / ('c150099-saved-proof-' + suffix +
-                                            '-v6/v0001/analysis')
+                                            '-v7/v0001/analysis')
         base = [str(REPO / '.venv-cpu/bin/python'), str(SCRIPT),
                 '--attempt', str(attempt), '--case', case]
         positive = base + ['--allow-diagnostic']

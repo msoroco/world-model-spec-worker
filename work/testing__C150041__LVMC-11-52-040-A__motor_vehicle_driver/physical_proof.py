@@ -13,7 +13,7 @@ from pathlib import Path
 
 from parking_finalizer import finalize
 from parking_measurement import unit
-from parking_pose import REQUESTS, body
+from parking_pose import REQUESTS, SWEEP_REQUESTS, body, request
 
 
 ROOT = Path(__file__).resolve().parent
@@ -64,7 +64,11 @@ def history_for(scene, kind):
 
 
 def evaluate(suffix, kind, history_path):
-    if suffix not in REQUESTS or kind not in KINDS:
+    try:
+        request(suffix)
+    except ValueError as exc:
+        raise ValueError('unknown physical probe identity') from exc
+    if kind not in KINDS:
         raise ValueError("unknown physical probe identity")
     folder = ROOT / "diagnostic" / suffix
     scene = scene_for(suffix)
@@ -132,7 +136,7 @@ def result_for(scene, status, sources, observed, method):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--case", choices=tuple(REQUESTS), required=True)
+    parser.add_argument("--case", choices=tuple(REQUESTS) + tuple(SWEEP_REQUESTS), required=True)
     parser.add_argument("--kind", choices=KINDS, required=True)
     parser.add_argument("--history", type=Path, required=True)
     parser.add_argument("--result", type=Path, required=True)

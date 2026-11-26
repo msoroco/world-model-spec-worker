@@ -19,6 +19,8 @@ class Case:
     property_kind: str
     target_region: str = 'inside'
     exception: str = 'none'
+    sweep_kind: str = 'none'
+    sweep_setpoint_m: float | None = None
 
 CASES = (
     Case('public_park_attended', 'park', True, 'public'),
@@ -31,6 +33,12 @@ CASES = (
     Case('traffic_conflict_exception', 'stop', True, 'public', 'inside', 'lawful_traffic_conflict'),
     Case('police_direction_exception', 'stop', True, 'public', 'inside', 'police_direction'),
     Case('device_direction_exception', 'stop', True, 'public', 'inside', 'traffic_device_direction'),
+    *(Case(f'conflict_necessity_source_review-{i:04d}', 'stop', True, 'public',
+            'inside', 'lawful_traffic_conflict', 'conflict_gap', gap)
+      for i, gap in enumerate((4.0, 12.0, 8.0))),
+    *(Case(f'designation_posting_source_review-{i:04d}', 'park', True, 'public',
+            'inside', 'none', 'posted_offset', offset)
+      for i, offset in enumerate((-2.0, 2.0, 0.0))),
 )
 
 
@@ -78,7 +86,9 @@ def target_interval(site: Mapping, case: Case, body_length_m: float) -> tuple[fl
     require(length > 0, 'body length invalid')
     lo, hi = site['posted_interval_m']
     require(hi - lo > length + 1, 'posted extent too short for body')
-    if case.target_region == 'inside':
+    if case.sweep_kind == 'posted_offset':
+        center = hi + number(case.sweep_setpoint_m, 'posted offset')
+    elif case.target_region == 'inside':
         center = (lo + hi) / 2
     else:
         center = hi + length / 2 + 1
@@ -110,6 +120,9 @@ def build_case(adapter, site: Mapping, case: Case, body_length_m: float) -> dict
         adapter.set_attendance(ego, case.attended)
         if case.exception != 'none':
             adapter.set_exception(ego, case.exception)
+        if case.sweep_kind == 'conflict_gap':
+            adapter.set_conflict_actor_gap(ego, number(case.sweep_setpoint_m, 'conflict gap'),
+                                           site['traffic_conflict_source_sha256'])
         return {'case_id': case.id, 'ego': ego, 'sign': sign,
                 'commanded_body_interval_m': interval, 'owned': tuple(owned)}
     except Exception:

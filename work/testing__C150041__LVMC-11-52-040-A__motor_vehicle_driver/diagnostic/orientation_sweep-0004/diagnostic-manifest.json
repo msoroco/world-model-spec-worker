@@ -1,0 +1,35 @@
+{
+  "assignment_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver",
+  "diagnostic_only": true,
+  "cases": [
+    {
+      "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004",
+      "kind": "diagnostic_only",
+      "construction": "construction.json",
+      "construction_sha256": "c5111355143e2c388b22e960b66c6b30fe638e42a75c5a49bc95fda94da20334",
+      "measurement_procedure": {
+        "entrypoint": "parking_analysis.py"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "An 8 m straight approach may not fit a reviewed roadway segment while a shorter approach does."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1.json",
+          "construction_sha256": "7993921f15db92d885bb9ff289e98976a945a2e9cfb9a63588e0e293ca8a5269",
+          "trigger": {
+            "source": "reviewed roadway geometry and full vehicle footprint",
+            "metric": "primary spawn footprint inside roadway",
+            "failure_condition": "8 m approach footprint outside reviewed roadway; 6 m footprint inside"
+          },
+          "changed_knobs": [
+            "approach_distance_m: 8.0 to 6.0"
+          ]
+        }
+      ],
+      "preparation_status": "synthetic_offline_only"
+    }
+  ]
+}

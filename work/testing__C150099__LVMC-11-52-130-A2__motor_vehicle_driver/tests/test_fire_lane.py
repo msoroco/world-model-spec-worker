@@ -54,6 +54,7 @@ class Fake:
     def set_curb_target(self, *args, **kwargs): self.calls.append('curb_target')
     def set_attendance(self, *args): self.calls.append('attendance')
     def set_exception(self, *args): self.calls.append('exception')
+    def set_conflict_actor_gap(self, *args): self.calls.append('conflict_gap')
     def destroy(self, actor): self.destroyed.append(actor)
 
 class Construction(unittest.TestCase):
@@ -66,7 +67,10 @@ class Construction(unittest.TestCase):
                 self.assertEqual(adapter.calls[:3], ['spawn_sign', 'read_sign', 'spawn_vehicle'])
                 west, east = built['commanded_body_interval_m']
                 self.assertLess(west, east)
-                self.assertEqual(east <= 30, case.target_region == 'inside')
+                if case.sweep_kind == 'none':
+                    self.assertEqual(east <= 30, case.target_region == 'inside')
+                elif case.sweep_kind == 'posted_offset':
+                    self.assertEqual((west + east) / 2, 30 + case.sweep_setpoint_m)
     def test_missing_designation_rejected(self):
         case = fire_lane.CASES[0]; s = site(case); del s['fire_code_designation_sha256']
         with self.assertRaisesRegex(ValueError, 'designation'):
@@ -77,7 +81,8 @@ class Construction(unittest.TestCase):
             fire_lane.build_case(adapter, site(case), case, 4.0)
         self.assertEqual(adapter.destroyed, ['sign'])
     def test_missing_exception_source_rejected(self):
-        case = fire_lane.CASES[-1]; s = site(case); del s['traffic_device_source_sha256']
+        case = next(c for c in fire_lane.CASES if c.id == 'device_direction_exception')
+        s = site(case); del s['traffic_device_source_sha256']
         with self.assertRaisesRegex(ValueError, 'traffic_device_source'):
             fire_lane.build_case(Fake(), s, case, 4.0)
 

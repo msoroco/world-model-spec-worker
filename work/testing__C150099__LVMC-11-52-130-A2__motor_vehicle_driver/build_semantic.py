@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -22,7 +23,8 @@ def write(name: str, value: dict) -> dict:
             'sha256': hashlib.sha256(raw).hexdigest()}
 
 
-def requirement(phrase: str, channel: str, context: bool) -> dict:
+def requirement(phrase: str, channel: str, context: bool,
+                dimension: str) -> dict:
     recorded = {'name': channel, 'unit': 'source record',
                 'description': 'Original source-bound observation for ' + phrase}
     return {'template_id': IDENT, 'phrase': phrase, 'note': '', 'status': 'draft',
@@ -31,8 +33,8 @@ def requirement(phrase: str, channel: str, context: bool) -> dict:
                 'context_inputs': [{'name': 'reviewed_fire_lane_packet', 'unit': 'source record',
                                     'description': 'Reviewed designation, posted extent and source identity'}]
                 if context else [],
-                'sweep_dimensions': [{'name': 'target_region', 'unit': 'categorical',
-                                      'description': 'Requested curb target, measured separately'}],
+                'sweep_dimensions': [{'name': dimension, 'unit': 'm',
+                                      'description': 'Physical coverage target; original geometry measured separately'}],
                 'landmarks': [], 'recording_needs': [recorded],
                 'limitations': ['Original City source and physical observation are required; '
                                 'no legal boundary is supplied.']}}
@@ -61,6 +63,8 @@ def build() -> dict:
             ('property_kind', 'world_setup', 'public or private reviewed parcel source'),
             ('target_region', 'controller', 'inside or outside reviewed posted extent; original body observed'),
             ('exception', 'world_setup', 'source-gated traffic, police or device direction kind'),
+            ('conflict_gap_m', 'controller', 'requested actor separation in metres; not a legal cutoff'),
+            ('posted_offset_m', 'controller', 'requested body-centre offset from reviewed posted end in metres'),
         )]
     template = {'template_id': IDENT, 'law_id': LAW['id'], 'actor': PLAN['actor'],
                 'quote': quote,
@@ -89,8 +93,8 @@ def build() -> dict:
                 'parameter_refs': parameters}
     refs['template'] = write('template.json', template)
     refs['judgment_observables'] = [
-        write('judgment-conflict.json', requirement(phrases[0], 'necessity_exceptions', False)),
-        write('judgment-designation.json', requirement(phrases[1], 'designation_and_posting', True)),
+        write('judgment-conflict.json', requirement(phrases[0], 'necessity_exceptions', False, 'conflict_gap_m')),
+        write('judgment-designation.json', requirement(phrases[1], 'designation_and_posting', True, 'posted_offset_m')),
     ]
     binding = {'cell_id': PLAN['cell_id'], 'actor': PLAN['actor'], 'status': 'draft',
                'established_contexts': ['one-way curb approach; original City designation and posted extent pending'],
@@ -114,21 +118,47 @@ def build() -> dict:
             continue
         suffix = case['case_id'].removeprefix(ROOT.name + '__')
         case['paired_probe_id'] = pairs.get(suffix, suffix + '_source_standard')
+    base = cases['cases'][1]['variable_assignments']
+    recording = cases['cases'][1]['recording_description']
+    def spec(suffix, phrase, variable, low, high, spacing, method, assignments):
+        description = json.loads(json.dumps(recording))
+        description['channels'].append({'name': variable, 'unit': 'm',
+            'sampling_rate_hz': 20, 'method': method,
+            'time_window': 'full original 45-second episode',
+            'reference_frame': 'reviewed original site and same-frame actor bodies',
+            'uncertainty': 'requested setpoint may differ from measured original motion'})
+        return {'sweep_id': ROOT.name + '__' + suffix, 'target_law_id': LAW['id'],
+            'judgment_refs': [{'phrase': phrase, 'note': ''}], 'status': 'complete',
+            'mode': 'one_dimensional', 'axes': [{'variable': variable,
+                'observable': variable, 'unit': 'm', 'min': low, 'max': high,
+                'spacing': spacing, 'measurement': {'method': method,
+                    'time_window': 'full original 45-second episode', 'statistic': 'min'},
+                'range_rationale': 'Three controlled engineering requests around an observed physical context; no legal boundary.',
+                'spacing_rationale': 'Endpoint and midpoint physical coverage at one fixed site; no label targeting.',
+                'feasibility_evidence': 'Source-gated judgment_sweeps.py preflight checks reviewed route and site before execution; CPU positive, tamper and missing-source tests.'}],
+            'landmarks': [],
+            'rationale': 'Freeze physical source-gated requests and measure actual originals; legal judgment unresolved.',
+            'variable_assignments': assignments,
+            'recording_description': description}
+    conflict = json.loads(json.dumps(base))
+    conflict['exception'] = {'kind': 'world_setup', 'value': 'lawful_traffic_conflict',
+                             'note': 'requires independently reviewed conflict source'}
+    conflict['activity'] = {'kind': 'controller', 'value': 'stop', 'note': 'requested activity'}
+    designation = json.loads(json.dumps(base))
+    designation['exception'] = {'kind': 'world_setup', 'value': 'none', 'note': 'no exception requested'}
     cases['sweep_specs'] = [
-        {'sweep_id': 'conflict_necessity_source_review', 'target_law_id': LAW['id'],
-         'judgment_refs': [{'phrase': phrases[0], 'note': ''}], 'status': 'incomplete',
-         'rationale': 'Physical conflict conditions require source-reviewed route and actors.',
-         'missing_inputs': ['Reviewed lawful traffic-conflict source and feasible original actor geometry']},
-        {'sweep_id': 'designation_posting_source_review', 'target_law_id': LAW['id'],
-         'judgment_refs': [{'phrase': phrases[1], 'note': ''}], 'status': 'incomplete',
-         'rationale': 'City designation and posting source fixes the physical interval before sampling.',
-         'missing_inputs': ['Location-specific City Fire Code designation, posting, sign and posted extent records']},
+        spec('conflict_necessity_source_review', phrases[0], 'conflict_gap_m',
+             4.0, 12.0, 4.0, 'same-frame original actor body gap', conflict),
+        spec('designation_posting_source_review', phrases[1], 'posted_offset_m',
+             -2.0, 2.0, 2.0, 'same-frame original body centre minus reviewed posted end', designation),
     ]
-    cases['sweeps_expanded'] = True
-    cases['semantic_status'] = 'partial_source_gated_judgment_sweeps'
+    sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
+    from batch_pipeline.sweeps import expand_sweeps
+    expand_sweeps(cases, [template], binding)
+    cases['semantic_status'] = 'source_gated_physical_sweeps_frozen_no_legal_label'
     refs['cases'] = write('cases.json', cases)
     index = {'format': 'worker-semantic-delivery', 'assignment_id': ROOT.name,
-             'stages': refs, 'status': 'partial_source_gated_judgment_sweeps'}
+             'stages': refs, 'status': 'source_gated_physical_sweeps_frozen_no_legal_label'}
     write('semantic-index.json', index)
     return index
 

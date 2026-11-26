@@ -35,7 +35,8 @@ def build(case) -> None:
     site = {'cell_id': 'C150099', 'layout': 'one_way_road',
             'property_kind': case.property_kind, 'sign_support': 'spawned_prop',
             'sign_text': 'FIRE LANE', 'posted_interval_m': [10, 30],
-            'curb_y_m': 2, 'approach_waypoints': [[0, 0], [20, 0]]}
+            'curb_y_m': 2, 'approach_waypoints': [[0, 0], [40, 0]],
+            'conflict_actor_waypoints': [[3, 0], [38, 0]]}
     names = list(SOURCES)
     if case.exception != 'none':
         names.append(EXCEPTION_SOURCES[case.exception])
@@ -55,7 +56,11 @@ def build(case) -> None:
     history = []
     for row in TRACE:
         frame = row['frame']
-        body = [11, 15] if case.target_region == 'inside' else [31, 35]
+        if case.sweep_kind == 'posted_offset':
+            centre = site['posted_interval_m'][1] + case.sweep_setpoint_m
+            body = [centre - 2, centre + 2]
+        else:
+            body = [11, 15] if case.target_region == 'inside' else [31, 35]
         history.append({
             'case_id': case_id, 'original_frame': frame,
             'time_s': row['time_s'], 'ego_id': 'diagnostic-ego',
@@ -72,6 +77,11 @@ def build(case) -> None:
             'property_kind': case.property_kind,
             'exception_kind': case.exception,
             'exception_source_sha256': site.get(EXCEPTION_SOURCES.get(case.exception, '') + '_sha256'),
+            **({'reviewed_posted_end_x_m': site['posted_interval_m'][1]}
+               if case.sweep_kind == 'posted_offset' else {}),
+            **({'actual_actor_body_gap_m': case.sweep_setpoint_m,
+                'traffic_conflict_source_sha256': site['traffic_conflict_source_sha256']}
+               if case.sweep_kind == 'conflict_gap' else {}),
             'camera_frames': {name: {'original_frame': frame,
                 'source_sha256': sha(f'DIAGNOSTIC ONLY {name} {frame}\n'.encode())}
                 for name in ('overview', 'approach', 'reference_corner',

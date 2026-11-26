@@ -50,14 +50,27 @@ def build(attempt):
     require(manifest.get('frame_count') == 900 and
             manifest.get('camera_frame_counts') == {name: 900 for name in VIEWS},
             'original four-camera frame identity incomplete')
-    evidence = [{'name': 'relative_station', 'unit': 'm',
-                 'reference': 'pass-readback.jsonl'},
-                {'name': 'surface_clearance', 'unit': 'm',
-                 'reference': 'pass-readback.jsonl'},
-                {'name': 'closing_speed', 'unit': 'm/s',
-                 'reference': 'pass-readback.jsonl'},
-                {'name': 'camera_frame_identity', 'unit': 'original frame ID',
-                 'reference': 'video_frames.jsonl'}]
+    channel_values = {
+        'relative_station': lambda row: row['cycle_station_m'] - row['motor_station_m'],
+        'surface_clearance': lambda row: row['surface_clearance_m'],
+        'closing_speed': lambda row: row['cycle_speed_mps'] - row['motor_speed_mps'],
+        'camera_frame_identity': lambda row: row['original_frame']}
+    evidence = []
+    for channel in config['case']['recording_description']['channels']:
+        name = channel['name']
+        require(name in channel_values, 'unknown original channel')
+        dest = root / ('channel-' + name + '.jsonl')
+        content = ''.join(json.dumps({'time_s': row['time_s'],
+                                      'value': channel_values[name](row)}) + '\n'
+                          for row in rows)
+        if dest.exists():
+            require(dest.is_file() and not dest.is_symlink() and
+                    dest.read_text() == content,
+                    'retained original channel differs: ' + name)
+        else:
+            dest.write_text(content)
+        evidence.append({'name': name, 'unit': channel['unit'],
+                         'reference': dest.name})
     hashes = {key: value['sha256'] for key, value in manifest['files'].items()}
     report = {'format': 'worker-analysis-report',
               'case_id': config['selected_case_id'], 'analysis_complete': True,
@@ -67,6 +80,20 @@ def build(attempt):
                   'method': 'measure_original', 'value': observation,
                   'sources': hashes}},
               'limitations': ['Safety and endangerment remain original physical and legal review.']}
+    suffix = case.case_id
+    sweep = ('surface_clearance', 'min') if suffix in (
+        'bicycle_closer_pass', 'bicycle_wider_pass') else (
+        ('relative_station', 'last') if suffix.startswith('endangerment_offset_') else None)
+    realized = {}
+    if sweep:
+        axis, statistic = sweep
+        values = [channel_values[axis](row) for row in rows]
+        realized[axis] = {
+            'value': min(values) if statistic == 'min' else values[-1],
+            'unit': 'm', 'method': '900-frame original cycle/motor body readback with timestamp and video join',
+            'time_window': 'entire original 45-second passing attempt',
+            'statistic': statistic, 'reference': 'channel-' + axis + '.jsonl',
+            'sample_window_s': [rows[0]['time_s'], rows[-1]['time_s']]}
     native = {'case_id': config['selected_case_id'],
               'measured_values': observation,
               'target_checks': [{'target': 'original cycle/motor passing history',
@@ -84,7 +111,7 @@ def build(attempt):
               'video_references': [name + '.mkv' for name in VIEWS],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': config['case']['recording_description'],
-              'recording_evidence': evidence, 'realized_observables': {},
+              'recording_evidence': evidence, 'realized_observables': realized,
               'diagnostic_fixture': False, 'physical_acceptance_claimed': False,
               'legal_verdict_claimed': False}
     return report, native
@@ -108,6 +135,11 @@ def compare(left, right, comparison):
                 a['pass_policy'] == b['pass_policy'] == 'complete' and
                 a['requested_lateral_offset_m'] != b['requested_lateral_offset_m'],
                 'requested offset comparison differs')
+    elif kind == 'endangerment_offset_pair':
+        require(a['cycle_kind'] == b['cycle_kind'] == 'bicycle' and
+                a['pass_policy'] == b['pass_policy'] == 'complete' and
+                a['requested_lateral_offset_m'] != b['requested_lateral_offset_m'],
+                'endangerment offset comparison differs')
     elif kind == 'pass_vs_abort':
         require(a['cycle_kind'] == b['cycle_kind'] == 'bicycle' and
                 a['requested_lateral_offset_m'] == b['requested_lateral_offset_m'] and

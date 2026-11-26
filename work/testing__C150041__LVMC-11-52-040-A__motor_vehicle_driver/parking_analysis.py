@@ -12,7 +12,7 @@ import math
 from pathlib import Path
 
 from parking_finalizer import finalize
-from parking_pose import REQUESTS
+from parking_pose import request
 from parking_scene import ASSIGNMENT
 
 
@@ -69,8 +69,7 @@ def analyze(attempt):
     if not case_id.startswith(ASSIGNMENT + "__"):
         raise ValueError("saved analysis exact case differs")
     suffix = case_id[len(ASSIGNMENT) + 2:]
-    if suffix not in REQUESTS:
-        raise ValueError("unknown exact saved parking case")
+    requested = request(suffix)
     if config.get("rate_hz") != 20 or [c.get("name") for c in config.get("cameras", [])] != [v[:-4] for v in VIDEOS]:
         raise ValueError("saved analysis capture contract differs")
     history, mapping, camera, trace = _joined(root)
@@ -97,7 +96,6 @@ def analyze(attempt):
                               "Engineering orientation differences are not legal thresholds."],
               "legal_verdict_claimed": False}
     final = measured["observations"][-1]
-    requested = REQUESTS[suffix]
     orientation = requested[1]
     heading = requested[2]
     checks = [

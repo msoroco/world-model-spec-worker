@@ -9,12 +9,12 @@ import hashlib
 import json
 from pathlib import Path
 
-from parking_pose import REQUESTS
+from parking_pose import REQUESTS, SWEEP_REQUESTS, request
 from parking_scene import ASSIGNMENT, build
 
 
 ROOT = Path(__file__).resolve().parent
-KINDS = tuple(REQUESTS)
+KINDS = tuple(REQUESTS) + tuple(SWEEP_REQUESTS)
 MODULES = ("parking_measurement.py", "parking_pose.py", "source_review.py",
            "parking_scene.py", "parking_control.py", "parking_native_driver.py",
            "parking_native_capture.py", "parking_cameras.py", "parking_tick_capture.py",
@@ -47,7 +47,7 @@ def build_bundle(kind="park_parallel_lawful"):
               "sources": sources,
               "context": {"roadway_kind": "one_way_road",
                           "responsible_person_role": "motor_vehicle_driver",
-                          "activity": REQUESTS[kind][0], "chapter_exception_review": "unresolved",
+                          "activity": request(kind)[0], "chapter_exception_review": "unresolved",
                           "road_edge_xy_m": [[-20, 0], [20, 0]],
                           "roadway_polygon_xy_m": [[-20, 0], [20, 0], [20, 5], [-20, 5]],
                           "lawful_travel_xy": [1, 0]}}
@@ -55,7 +55,8 @@ def build_bundle(kind="park_parallel_lawful"):
     _write(packet_path, packet)
     scene = build(packet_path, directory, kind)
     fallback_scene = build(packet_path, directory, kind, approach_distance_m=6.0)
-    semantic_cases = json.loads((ROOT / "proposals" / "cases.json").read_text())["cases"]
+    proposal_name = 'controlled-sweep-expanded.json' if kind in SWEEP_REQUESTS else 'cases.json'
+    semantic_cases = json.loads((ROOT / "proposals" / proposal_name).read_text())["cases"]
     semantic_case = next(item for item in semantic_cases if item["case_id"] == scene["case_id"])
     config = {"assignment_id": ASSIGNMENT, "selected_case_id": scene["case_id"],
               "law_id": "LVMC-11-52-040-A", "cell_id": "C150041",

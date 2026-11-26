@@ -22,7 +22,7 @@ def main() -> None:
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', TMPDIR=str(REPO / '.runtime-work'))
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(ROOT.name + '__')
-        output = REPO / '.runtime-work' / ('c150099-compat-' + suffix + '-v5')
+        output = REPO / '.runtime-work' / ('c150099-compat-' + suffix + '-v6')
         if not output.exists():
             command = [str(REPO / '.venv-cpu/bin/python'), str(REPO / 'runtime.py'),
                        'compatibility', '--manifest', str(MANIFEST), '--case',
@@ -56,7 +56,7 @@ def main() -> None:
             'entrypoint': 'analysis.py', 'method': 'saved_original_context',
             'evidence': 'channels/context.json'}
         fallback = entry['candidates'][0]
-        alternate = REPO / '.runtime-work' / ('c150099-compat-' + suffix + '-fallback1-v5')
+        alternate = REPO / '.runtime-work' / ('c150099-compat-' + suffix + '-fallback1-v6')
         fallback_command = [str(REPO / '.venv-cpu/bin/python'), str(REPO / 'runtime.py'),
                             'compatibility', '--manifest', str(MANIFEST), '--case',
                             entry['case_id'], '--candidate', 'fallback1', '--output',
