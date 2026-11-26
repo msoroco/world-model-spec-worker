@@ -1,0 +1,46 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__cross_without_stop",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "law_sidewalk_observation",
+      "method": "measure_sidewalk_requirement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-rows.jsonl",
+        "captured-source-hashes.json",
+        "site-review.json",
+        "site-sources/sidewalk.json",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "capture/native/frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "road_exit_scope_context",
+      "method": "measure_scope_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "original-site-review.json",
+        "site-sources/district.json",
+        "site-sources/driveway.json",
+        "site-sources/pedestrian.json",
+        "road.xodr"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "site-sources/sidewalk.json"
+    ],
+    "error_contains": "Missing required source: site-sources/sidewalk.json"
+  }
+}

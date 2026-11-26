@@ -112,6 +112,8 @@ class ExactBundle(unittest.TestCase):
 
 def build():
     entries = []
+    dispositions = json.loads((ROOT / 'case-plan.json').read_text())[
+        'requirement_dispositions']
     for suffix in SUFFIXES:
         files, recording = files_for(suffix)
         construction = {'case_id': AID + '__' + suffix,
@@ -120,14 +122,67 @@ def build():
                         'files': files, 'recording_description': recording}
         path = NATIVE / suffix / 'construction.json'
         path.write_text(json.dumps(construction, indent=2) + '\n')
+        contract = {'format': 'worker-measurement-contract',
+                    'case_id': construction['case_id'],
+                    'requirements': [
+                        {'disposition_index': 0,
+                         'requirement': dispositions[0]['requirement'],
+                         'source': dispositions[0]['source'],
+                         'output_key': 'law_sidewalk_observation',
+                         'method': 'measure_sidewalk_requirement',
+                         'value_type': 'object', 'kind': 'measured',
+                         'inputs': ['native-rows.jsonl',
+                                    'captured-source-hashes.json',
+                                    'site-review.json',
+                                    'site-sources/sidewalk.json',
+                                    'trace.jsonl', 'capture/evidence.jsonl',
+                                    'capture/native/frames.jsonl']},
+                        {'disposition_index': 1,
+                         'requirement': dispositions[1]['requirement'],
+                         'source': dispositions[1]['source'],
+                         'output_key': 'road_exit_scope_context',
+                         'method': 'measure_scope_context',
+                         'value_type': 'object', 'kind': 'sourced_context',
+                         'inputs': ['original-site-review.json',
+                                    'site-sources/district.json',
+                                    'site-sources/driveway.json',
+                                    'site-sources/pedestrian.json',
+                                    'road.xodr']},
+                    ],
+                    'negative': {
+                        'remove': ['site-sources/sidewalk.json'],
+                        'error_contains':
+                            'Missing required source: site-sources/sidewalk.json'}}
+        (NATIVE / suffix / 'measurement-contract.json').write_text(
+            json.dumps(contract, indent=2) + '\n')
         entries.append({'case_id': construction['case_id'],
                         'construction': f'{suffix}/construction.json',
-                        'construction_sha256': sha(path)})
+                        'construction_sha256': sha(path),
+                        'measurement_contract': f'{suffix}/measurement-contract.json',
+                        'measurement_procedure': {'entrypoint': 'native/finalize.py'}})
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': AID, 'cases': entries,
                 'diagnostic_only': True}
     path = NATIVE / 'probe-offline-manifest.json'
     path.write_text(json.dumps(manifest, indent=2) + '\n')
+    repo = ROOT.parents[1]
+    selected = {'format': 'worker-execution-manifest',
+                'assignment_id': AID,
+                'runtime_manifest_sha256': sha(repo / 'runtime/SOURCE-MANIFEST.json'),
+                'cases': []}
+    for entry in entries:
+        suffix = entry['case_id'].rsplit('__', 1)[-1]
+        selected['cases'].append({
+            'case_id': entry['case_id'],
+            'construction': 'native/' + entry['construction'],
+            'construction_sha256': entry['construction_sha256'],
+            'measurement_contract':
+                f'native/{suffix}/measurement-contract.json',
+            'measurement_procedure': {'entrypoint': 'native/finalize.py'},
+            'fixture_recipe':
+                f'work/{AID}/native/{suffix}/diagnostic/fixture-recipe.json',
+        })
+    (ROOT / 'probe-manifest.json').write_text(json.dumps(selected, indent=2) + '\n')
     return {'manifest': str(path), 'cases': entries}
 
 

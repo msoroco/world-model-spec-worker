@@ -1,6 +1,7 @@
 """Independent paired source audit for the two road-exit stop policies."""
 
 import json
+import argparse
 from pathlib import Path
 
 from measure_sidewalk import measure, rows, sha
@@ -37,3 +38,16 @@ def audit(stop_attempt, cross_attempt, assignment_id):
                                     for name in ('road.xodr', 'site-review.json')},
             'measurements': list(measures),
             'physical_or_legal_outcome_claimed': False}
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--stop', required=True)
+    parser.add_argument('--cross', required=True)
+    parser.add_argument('--assignment', required=True)
+    parser.add_argument('--output', required=True)
+    args = parser.parse_args()
+    result = audit(args.stop, args.cross, args.assignment)
+    Path(args.output).write_text(json.dumps(result, indent=2) + '\n')
+    print(json.dumps({'passed': result['passed'],
+                      'case_ids': result['case_ids']}))

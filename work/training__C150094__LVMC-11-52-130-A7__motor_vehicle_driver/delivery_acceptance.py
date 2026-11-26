@@ -51,6 +51,18 @@ def audit(root, case, diagnostic):
         raise ValueError('Specific private driveway authority source differs')
     if role != 'none' and context.get('driveway_kind') != 'private':
         raise ValueError('Private driveway authority claimed for public driveway')
+    exact_role = {'probe_03': 'owner', 'probe_07': 'controller',
+                  'probe_08': 'family_member', 'probe_09': 'invitee'}
+    for suffix, required_role in exact_role.items():
+        if case.endswith(suffix) and role != required_role:
+            raise ValueError('Exact case lacks specific private driveway authority role')
+    if case.endswith('probe_06') and context.get('driveway_kind') != 'public':
+        raise ValueError('Exact public driveway case lacks public source declaration')
+    if case.endswith('probe_10') and not (
+            context.get('usps_vehicle') is True and
+            context.get('usps_official_business') is True and
+            context.get('usps_official_business_source')):
+        raise ValueError('Exact USPS official-business case lacks source declaration')
     expected = 'synthetic_native_sample' if diagnostic else 'original_native_pose'
     for index, (park, state, frame, event, raw) in enumerate(zip(parking, core, frames, evidence, native)):
         original_frame = frame.get('native_frame')

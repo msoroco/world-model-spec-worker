@@ -71,10 +71,12 @@ def compare(first, second, comparison):
                 'Fixed camera source differs: ' + name)
     xa, xb = a['context'], b['context']
     excluded = {'case_id'}
-    if comparison == 'private_authority':
+    if comparison in ('private_authority', 'private_controller', 'private_family', 'private_invitee'):
         excluded |= {'owner_controller_family_invitee', 'private_driveway_authority_role'}
     if comparison == 'public_private_driveway':
         excluded.add('driveway_kind')
+    if comparison == 'usps_official_business':
+        excluded |= {'usps_vehicle', 'usps_official_business'}
     require({k:v for k,v in xa.items() if k not in excluded} ==
             {k:v for k,v in xb.items() if k not in excluded},
             'Uncontrolled driveway context differs')
@@ -124,6 +126,35 @@ def compare(first, second, comparison):
                 xb['private_driveway_authority_role'] == 'owner' and
                 xa['driveway_kind'] == xb['driveway_kind'] == 'private',
                 'Authority comparison did not isolate private owner status')
+    elif comparison == 'private_controller':
+        require(a['case_id'].endswith('__probe_02') and b['case_id'].endswith('__probe_07'),
+                'Controller comparison case order differs')
+        require(abs(ga-gb) <= 1e-6 and 0 < ga < FIVE_FEET_M and
+                xa['owner_controller_family_invitee'] is False and
+                xb['owner_controller_family_invitee'] is True and
+                xa['private_driveway_authority_role'] == 'none' and
+                xb['private_driveway_authority_role'] == 'controller' and
+                xa['driveway_kind'] == xb['driveway_kind'] == 'private',
+                'Controller comparison did not isolate specific private authority')
+    elif comparison in ('private_family', 'private_invitee'):
+        probe, role = ('08', 'family_member') if comparison == 'private_family' else ('09', 'invitee')
+        require(a['case_id'].endswith('__probe_02') and b['case_id'].endswith('__probe_' + probe),
+                'Private role comparison case order differs')
+        require(abs(ga-gb) <= 1e-6 and 0 < ga < FIVE_FEET_M and
+                xa['owner_controller_family_invitee'] is False and
+                xb['owner_controller_family_invitee'] is True and
+                xa['private_driveway_authority_role'] == 'none' and
+                xb['private_driveway_authority_role'] == role and
+                xa['driveway_kind'] == xb['driveway_kind'] == 'private',
+                'Private role comparison did not isolate specific authority')
+    elif comparison == 'usps_official_business':
+        require(a['case_id'].endswith('__probe_02') and b['case_id'].endswith('__probe_10'),
+                'USPS comparison case order differs')
+        require(abs(ga-gb) <= 1e-6 and 0 < ga < FIVE_FEET_M and
+                xa['usps_vehicle'] is False and xa['usps_official_business'] is False and
+                xb['usps_vehicle'] is True and xb['usps_official_business'] is True and
+                xa['owner_controller_family_invitee'] is xb['owner_controller_family_invitee'] is False,
+                'USPS comparison did not isolate official-business vehicle facts')
     else:
         raise ValueError('Unknown controlled driveway comparison')
     return {'format': 'worker-driveway-comparison-audit', 'comparison_id': AID + '__' + comparison,
@@ -137,7 +168,7 @@ def compare(first, second, comparison):
             'private_authority_roles': [xa['private_driveway_authority_role'], xb['private_driveway_authority_role']],
             'fixed_conditions_checked': ['cell', 'law', 'actor', 'rate', 'duration', 'cameras',
                                          'recording_description', 'road', 'source camera bytes',
-                                         'driveway context except declared authority', 'rest interval'],
+                                         'driveway context except declared comparison variable', 'rest interval'],
             'passed': True, 'diagnostic_only': True, 'legal_verdict_claimed': False}
 
 
@@ -145,9 +176,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--a', required=True)
     parser.add_argument('--b', required=True)
-    parser.add_argument('--comparison', choices=('distance_boundary', 'private_authority',
+    parser.add_argument('--comparison', choices=('distance_boundary', 'private_authority', 'private_controller',
+                                                  'private_family', 'private_invitee',
                                                   'five_foot_equality_below', 'five_foot_equality_above',
-                                                  'front_overlap', 'public_private_driveway'), required=True)
+                                                  'front_overlap', 'public_private_driveway',
+                                                  'usps_official_business'), required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
     receipt = compare(load(args.a), load(args.b), args.comparison)

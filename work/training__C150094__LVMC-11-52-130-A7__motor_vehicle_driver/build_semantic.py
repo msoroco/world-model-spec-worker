@@ -100,21 +100,28 @@ def main():
     for number, gap, branch in [('01', 2.0, 'above'), ('02', 1.2, 'below'),
                                 ('03', 1.2, 'owner'), ('04', 1.524, 'at'),
                                 ('05', 0.0, 'front overlap'),
-                                ('06', 1.2, 'public driveway')]:
+                                ('06', 1.2, 'public driveway'),
+                                ('07', 1.2, 'controller'),
+                                ('08', 1.2, 'family member'),
+                                ('09', 1.2, 'invitee')]:
         case_id = AID + '__probe_' + number
-        role = 'owner' if number == '03' else 'none'
+        role = {'03': 'owner', '07': 'controller', '08': 'family_member',
+                '09': 'invitee'}.get(number, 'none')
         comparison = ('private_authority' if number == '03' else
+                      'private_controller' if number == '07' else
+                      'private_family' if number == '08' else
+                      'private_invitee' if number == '09' else
                       'front_overlap' if number == '05' else
                       'public_private_driveway' if number == '06' else 'five_feet_boundary')
-        probe = {'primary_variable': ('private_authority_role' if number == '03' else
+        probe = {'primary_variable': ('private_authority_role' if number in ('03', '07', '08', '09') else
                                       'driveway_kind' if number == '06' else
                                       'target_gap_m' if number == '05' else 'observed_gap_m'),
-                 'comparison_or_standard': ('private authority source contrast' if number == '03' else
+                 'comparison_or_standard': ('private authority source contrast' if number in ('03', '07', '08', '09') else
                                             'positive interior driveway mouth overlap versus side band' if number == '05' else
                                             'public versus private driveway source contrast' if number == '06' else
                                             'five-foot body-gap side-band boundary'),
                  'target_value_or_branch': branch}
-        if number not in ('03', '05', '06'):
+        if number not in ('03', '05', '06', '07', '08', '09'):
             probe.update({'threshold_ref': 'activation.side_band', 'operator': '<=',
                           'unit': 'm', 'test_value': gap})
         cases.append({'case_id': case_id, 'target_law_id': LAW, 'target_type': 'boundary_probe',
@@ -124,7 +131,7 @@ def main():
                                                           'public' if number == '06' else 'private'),
                       'unresolved_judgment_calls': all_phrases,
                       'paired_probe_id': comparison,
-                      'deliberate_differences': (['private_authority_role'] if number == '03' else
+                      'deliberate_differences': (['private_authority_role'] if number in ('03', '07', '08', '09') else
                                                 ['driveway_kind'] if number == '06' else ['target_gap_m']),
                       'probe': probe,
                       'epsilon_used': {'value': 0.05, 'unit': 'm',

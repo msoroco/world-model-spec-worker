@@ -21,6 +21,11 @@ def write_rows(path, values):
     path.write_text(''.join(json.dumps(row, sort_keys=True) + '\n' for row in values))
 
 
+def bbox(x, y, half_x, half_y):
+    return [[x + dx, y + dy, z] for dx in (-half_x, half_x)
+            for dy in (-half_y, half_y) for z in (.2, 1.8)]
+
+
 def fixture(folder, suffix):
     case_id = ASSIGNMENT + '__' + suffix
     road = folder / 'road.xodr'
@@ -81,6 +86,7 @@ def fixture(folder, suffix):
         })
         mappings.append({
             'native_frame': frame,
+            'carla_frame': frame,
             'video_frame': index,
             'time_s': (index + 1) / 20,
             'camera_native_frames': cameras,
@@ -92,16 +98,41 @@ def fixture(folder, suffix):
     write_rows(folder / 'trace.jsonl', [
         {'frame': row['native_frame'], 'time_s': row['time_s'],
          'position': {'x': row['vehicle_world_xy_m'][0],
-                      'y': row['vehicle_world_xy_m'][1]},
-         'speed_mps': row['vehicle_speed_mps']} for row in native])
+                      'y': row['vehicle_world_xy_m'][1], 'z': 1.0},
+         'position_m': [*row['vehicle_world_xy_m'], 1.0],
+         'heading_deg': 0.0 if row['vehicle_xy_m'][1] < -1.75 else -90.0,
+         'speed_mps': row['vehicle_speed_mps'],
+         'speed_mph': row['vehicle_speed_mps'] / .44704,
+         'velocity_mps': [row['vehicle_speed_mps'], 0, 0],
+         'control': {'diagnostic': True}} for row in native])
     write_rows(capture / 'evidence.jsonl', [
         {'original_frame': row['native_frame'],
          'recording_time_s': row['time_s'],
-         'ego': {'position_m': row['vehicle_world_xy_m'],
-                 'speed_mps': row['vehicle_speed_mps']}} for row in native])
-    write_rows(capture / 'native/frames.jsonl', [
-        {'frame': row['native_frame'], 'time_s': row['time_s']}
+         'actor_id': row['vehicle_actor_id'],
+         'replay_frame': row['native_frame'],
+         'replay_simulation_time_s': row['time_s'],
+         'ego': {'position_m': [*row['vehicle_world_xy_m'], 1.0],
+                 'speed_mps': row['vehicle_speed_mps'],
+                 'body_vertices_m': bbox(*row['vehicle_world_xy_m'], 1.2, .8),
+                 'heading_deg': 0.0 if row['vehicle_xy_m'][1] < -1.75 else -90.0,
+                 'speed_provenance': 'synthetic_native_sample',
+                 'synthetic_diagnostic': True},
+         'other_actors': [{
+             'actor_id': row['pedestrian_actor_id'],
+             'sem_class': 'pedestrian',
+             'body_vertices_m': bbox(*row['pedestrian_world_xy_m'], .3, .3)}],
+         'world': {'road_projection': {'road_id': 1, 'section_id': 0,
+                                       'lane_id': -1, 's_m': 0.0},
+                   'weather': {'cloudiness': 0, 'fog_density': 0,
+                               'precipitation': 0, 'wetness': 0}}}
         for row in native])
+    write_rows(capture / 'native/frames.jsonl', [
+        {'frame': row['native_frame'], 'time_s': row['time_s'],
+         'simulation_time': row['time_s'],
+         'base': f"graphs/base/{index:08d}.adapter.json",
+         'adapter_graph': f"graphs/base/{index:08d}.adapter.json",
+         'nodes': 2, 'edges': 0}
+        for index, row in enumerate(native)])
     write_json(folder / 'captured-source-hashes.json', {
         'format': 'original-native-sidewalk-source-seal',
         'case_id': case_id,

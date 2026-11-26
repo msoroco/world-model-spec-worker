@@ -18,6 +18,7 @@ def case(probe, gap, authority, driveway_kind='private'):
                         'driveway_kind': driveway_kind,
                         'owner_controller_family_invitee': authority,
                         'private_driveway_authority_role': 'owner' if authority else 'none',
+                        'usps_vehicle': False, 'usps_official_business': False,
                         'driveway_curb_interval_m': [50, 53]},
             'value': {'minimum_footprint_gap_m_at_rest': gap, 'rest_frame_count': 600,
                       'strict_front_overlap_frame_count': 600 if gap == 0 else 0,
@@ -39,6 +40,18 @@ class ComparisonAuditTests(unittest.TestCase):
         self.assertTrue(compare(case('05', 0.0, False), near, 'front_overlap')['passed'])
         self.assertTrue(compare(near, case('06', 1.2, False, 'public'),
                                 'public_private_driveway')['passed'])
+        controller = case('07', 1.2, True)
+        controller['context']['private_driveway_authority_role'] = 'controller'
+        self.assertTrue(compare(near, controller, 'private_controller')['passed'])
+        for probe, role, comparison in [('08', 'family_member', 'private_family'),
+                                        ('09', 'invitee', 'private_invitee')]:
+            alternate = case(probe, 1.2, True)
+            alternate['context']['private_driveway_authority_role'] = role
+            self.assertTrue(compare(near, alternate, comparison)['passed'])
+        postal = case('10', 1.2, False)
+        postal['context']['usps_vehicle'] = True
+        postal['context']['usps_official_business'] = True
+        self.assertTrue(compare(near, postal, 'usps_official_business')['passed'])
 
     def test_rejects_uncontrolled_source_change(self):
         far, near = case('01', 2.0, False), case('02', 1.2, False)
@@ -69,6 +82,17 @@ class ComparisonAuditTests(unittest.TestCase):
         false_public = case('06', 1.2, False, 'private')
         with self.assertRaisesRegex(ValueError, 'isolate driveway kind'):
             compare(near, false_public, 'public_private_driveway')
+        false_controller = case('07', 1.2, True)
+        with self.assertRaisesRegex(ValueError, 'specific private authority'):
+            compare(near, false_controller, 'private_controller')
+        for probe, comparison in [('08', 'private_family'), ('09', 'private_invitee')]:
+            false_role = case(probe, 1.2, True)
+            with self.assertRaisesRegex(ValueError, 'specific authority'):
+                compare(near, false_role, comparison)
+        false_postal = case('10', 1.2, False)
+        false_postal['context']['usps_vehicle'] = True
+        with self.assertRaisesRegex(ValueError, 'official-business vehicle facts'):
+            compare(near, false_postal, 'usps_official_business')
 
 
 if __name__ == '__main__':

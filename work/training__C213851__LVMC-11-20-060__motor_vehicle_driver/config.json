@@ -1,0 +1,126 @@
+{
+  "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
+  "law_id": "LVMC-11-20-060",
+  "cell_id": "C213851",
+  "actor": "motor_vehicle_driver",
+  "route": "road_to_private_driveway",
+  "controller_policy": "stop_before_sidewalk",
+  "duration_s": 30,
+  "rate_hz": 20,
+  "requested_tracks_sha256": "cbebe536650f4c86450ef17e6428b41827563c8281422f7548e70f411431954b",
+  "sidewalk_route_s_interval_m": [
+    0,
+    2
+  ],
+  "source_review_required": [
+    "private_driveway_connection",
+    "sidewalk_polygon",
+    "residence_district",
+    "pedestrian_route"
+  ],
+  "original_physical_completion_claimed": false,
+  "legal_verdict_claimed": false,
+  "assignment_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver",
+  "selected_case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
+  "supported_case_ids": [
+    "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
+    "training__C213851__LVMC-11-20-060__motor_vehicle_driver__cross_without_stop"
+  ],
+  "candidate_id": "primary",
+  "frame_count": 600,
+  "required_atoms": [
+    "ru.motor_vehicle",
+    "kin.position",
+    "kin.speed"
+  ],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov": 80,
+      "fov_deg": 80,
+      "pose_strategy": "road-to-driveway sidewalk and driver view"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov": 80,
+      "fov_deg": 80,
+      "pose_strategy": "road-to-driveway sidewalk and driver view"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov": 75,
+      "fov_deg": 75,
+      "pose_strategy": "road-to-driveway sidewalk and driver view"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov": 80,
+      "fov_deg": 80,
+      "pose_strategy": "road-to-driveway sidewalk and driver view"
+    }
+  ],
+  "case": {
+    "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_pose_speed_footprint",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original frame-joined ego pose, speed, bounding box and sidewalk overlap",
+          "time_window": "entire 30 s or longer original Native capture",
+          "reference_frame": "source-verified map and original frame times",
+          "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+        },
+        {
+          "name": "pedestrian_vehicle_trace",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original frame-joined ego and pedestrian poses, speeds and footprints",
+          "time_window": "entire 30 s or longer original Native capture",
+          "reference_frame": "source-verified map and original frame times",
+          "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+        },
+        {
+          "name": "roadway_vehicle_trace",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original frame-joined ego and approaching roadway vehicle poses and footprints",
+          "time_window": "entire 30 s or longer original Native capture",
+          "reference_frame": "source-verified map and original frame times",
+          "uncertainty": "50 ms sampling interval; physical setup and pixel visibility unverified"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "sidewalk_geometry",
+          "unit": "structured",
+          "method": "source-verified sidewalk polygon and driveway edge"
+        },
+        {
+          "name": "pedestrian_sidewalk_route",
+          "unit": "structured",
+          "method": "source-verified pedestrian sidewalk waypoints"
+        },
+        {
+          "name": "roadway_entry_geometry",
+          "unit": "structured",
+          "method": "source-verified roadway boundary and approach lanes"
+        }
+      ],
+      "limitations": [
+        "This cell exits the road into a driveway; it does not physically exercise upon-entering-roadway yield.",
+        "Attempted stop policy and synthetic values are not observed Native results or legal conclusions."
+      ]
+    }
+  }
+}

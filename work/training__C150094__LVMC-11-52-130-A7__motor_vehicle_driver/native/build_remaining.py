@@ -9,7 +9,11 @@ VARIANTS = {'01': {'gap_m': 2.0, 'authority': False},
             '03': {'gap_m': 1.2, 'authority': True},
             '04': {'gap_m': 1.524, 'authority': False},
             '05': {'gap_m': 0.0, 'authority': False},
-            '06': {'gap_m': 1.2, 'authority': False}}
+            '06': {'gap_m': 1.2, 'authority': False},
+            '07': {'gap_m': 1.2, 'authority': True},
+            '08': {'gap_m': 1.2, 'authority': True},
+            '09': {'gap_m': 1.2, 'authority': True},
+            '10': {'gap_m': 1.2, 'authority': False}}
 
 
 def write(path, value):
@@ -46,6 +50,15 @@ def main():
                 raise ValueError('Public driveway survey insertion point changed')
             point = runner.rfind(marker)
             runner = runner[:point] + addition + runner[point:]
+        if probe == '10':
+            marker = "    config = json.loads((HERE / 'config.json').read_text())\n"
+            addition = ("    if (survey.get('usps_vehicle') is not True or survey.get('usps_official_business') is not True or\n"
+                        "            not survey.get('usps_vehicle_source') or not survey.get('usps_official_business_source')):\n"
+                        "        raise ValueError('Exact USPS official-business source required')\n")
+            if marker not in runner:
+                raise ValueError('USPS survey insertion point changed')
+            point = runner.rfind(marker)
+            runner = runner[:point] + addition + runner[point:]
         (bundle / 'runner.py').write_text(runner)
         (bundle / 'finalize.py').write_text((original / 'finalize.py').read_text())
         config = json.loads((original / 'config.json').read_text())
@@ -58,10 +71,16 @@ def main():
             config['target_front_overlap_m'] = 0.5
         if probe == '06':
             config['expected_driveway_kind'] = 'public'
+        if probe == '10':
+            config['expected_usps_official_business'] = True
         branch = {'01': 'far-no-exception', '03': 'near-private-authority',
                   '04': 'at-five-feet-no-exception',
                   '05': 'front-overlap-no-exception',
-                  '06': 'public-driveway-near-no-exception'}[probe]
+                  '06': 'public-driveway-near-no-exception',
+                  '07': 'near-private-controller-authority',
+                  '08': 'near-private-family-authority',
+                  '09': 'near-private-invitee-authority',
+                  '10': 'near-usps-official-business'}[probe]
         config['case'] = {'case_id': case,
                           'recording_description': config['recording_description'],
                           'branch': branch}
@@ -89,6 +108,15 @@ def main():
                                   "        with self.assertRaisesRegex(ValueError, 'public driveway'):\n"
                                   "            survey_check(survey)\n"
                                   "        survey['driveway_kind'] = 'public'\n"
+                                  "        survey['road_axis_xy'] = [2, 0]")
+        if probe == '10':
+            tests = tests.replace("'road_id': 7}",
+                                  "'road_id': 7, 'usps_vehicle': True, 'usps_official_business': True, 'usps_vehicle_source': 'test', 'usps_official_business_source': 'test'}")
+            tests = tests.replace("        survey['road_axis_xy'] = [2, 0]",
+                                  "        survey['usps_official_business'] = False\n"
+                                  "        with self.assertRaisesRegex(ValueError, 'USPS official-business'):\n"
+                                  "            survey_check(survey)\n"
+                                  "        survey['usps_official_business'] = True\n"
                                   "        survey['road_axis_xy'] = [2, 0]")
         (bundle / 'tests').mkdir(exist_ok=True)
         (bundle / 'tests/test_bundle.py').write_text(tests)
