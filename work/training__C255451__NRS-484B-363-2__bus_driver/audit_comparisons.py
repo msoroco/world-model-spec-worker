@@ -43,6 +43,20 @@ def audit(comparison_id, drop_last=False):
         receipts.append(receipt)
     speeds = [value(receipt, 'source_topic_0')['maximum_observed_mph_in_zone']
               for receipt in receipts]
+    observations = [value(receipt, 'source_topic_0') for receipt in receipts]
+    common_sources = ('video_frames.jsonl', 'children_context.jsonl',
+                      'overview.mkv', 'approach.mkv',
+                      'reference_corner.mkv', 'driver_reference.mkv')
+    for source in common_sources:
+        if len({item['sources'][source] for item in observations}) != 1:
+            raise ValueError('Comparison changed fixed source: ' + source)
+    for field in ('sample_count', 'sample_span_s', 'civil_start_iso',
+                  'civil_end_iso', 'review_kind'):
+        if len({item[field] for item in observations}) != 1:
+            raise ValueError('Comparison changed fixed observation: ' + field)
+    if any(item['sample_count'] != 600 or item['review_kind'] != 'synthetic_diagnostic'
+           for item in observations):
+        raise ValueError('Comparison lacks exact diagnostic sampling')
     suffix = comparison_id.rsplit('__', 1)[-1]
     if suffix == 'speed_boundary':
         passed = speeds == [20, 25, 30] and all(
@@ -52,6 +66,8 @@ def audit(comparison_id, drop_last=False):
     else:
         if speeds != [30, 30]:
             raise ValueError('Exception comparison changed measured speed')
+        if len({item['sources']['native_motion.jsonl'] for item in observations}) != 1:
+            raise ValueError('Exception comparison changed fixed motion source')
         key, field = {
             'no_school_day': ('source_topic_1', 'school_session_day'),
             'half_hour_window': ('source_topic_2', 'half_hour_window_exception'),
@@ -60,6 +76,14 @@ def audit(comparison_id, drop_last=False):
         }[suffix]
         states = [value(receipt, key)[field] for receipt in receipts]
         passed = states[0] != states[1]
+        fact_key = {'no_school_day': 'school_not_in_session',
+                    'half_hour_window': 'half_hour_window',
+                    'beacon_flash': 'operational_beacon_nonflashing_class_hours',
+                    'nonbeacon_sign': 'nonbeacon_sign_off'}[suffix]
+        facts = [item['reviewed_exception_facts'] for item in observations]
+        if any(any(value for name, value in row.items() if name != fact_key)
+               for row in facts) or facts[0][fact_key] == facts[1][fact_key]:
+            raise ValueError('Exception comparison changed another statutory branch')
         changed = field
     if not passed:
         raise ValueError('Comparison did not isolate the selected source variable')

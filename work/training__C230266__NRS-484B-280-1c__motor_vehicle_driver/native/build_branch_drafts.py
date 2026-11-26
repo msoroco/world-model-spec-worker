@@ -92,6 +92,7 @@ def build():
             config = dict(old_config)
             config.update({"case_id": cid, "selected_case_id": cid, "branch": branch,
                            "mode": mode, "status": "exact_unselected_cpu_draft",
+                           "physical_completion": {},
                            "controller": ("distance_triggered_slow_request" if mode == "caution"
                                           else "maintain_approach_request")})
             dump(target / "config.json", config)

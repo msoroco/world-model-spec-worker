@@ -58,7 +58,7 @@ def check(config):
                 and len(camera.get("location_xyz_m", [])) == 3
                 and len(camera.get("rotation_pyr_deg", [])) == 3,
                 "Camera rate, resolution or pose missing")
-    require(config.get("physical_completion") is False and config.get("legal_verdict") is None,
+    require(config.get("physical_completion") == {} and config.get("legal_verdict") is None,
             "Draft may not claim physical or legal outcome")
     require(config.get("driver_observation_not_inferred_from_visibility") is True,
             "Actual observation policy changed")

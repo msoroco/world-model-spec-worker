@@ -1,4 +1,4 @@
-"""Bind the 14 exact drafts to saved-only finalization and measurement contracts.
+"""Bind the exact drafts to saved-only finalization and measurement contracts.
 
 This prepares selected source bundles. It does not issue compatibility receipts or
 claim delivery readiness before the full positive/negative pipeline is tested.
@@ -29,6 +29,7 @@ def dump(path, obj):
 def build():
     draft = json.loads((ROOT / "draft-all-branches-manifest.json").read_text())
     plan = json.loads((ROOT / "case-plan.json").read_text())
+    supported = [entry["case_id"] for entry in draft["cases"]]
     files = {name: (NATIVE / name).read_text() for name in
              ("finalize.py", "saved_measure.py", "branch_meter.py")}
     rows = []
@@ -48,6 +49,8 @@ def build():
             channel["uncertainty"] = "synthetic software fixtures cannot establish physical visibility or perception"
         config["status"] = "selected_cpu_preparation"
         config["recording_description"] = description
+        config["case"] = {"case_id": case_id, "recording_description": description}
+        config["supported_case_ids"] = supported
         source["recording_description"] = description
         source["status"] = "selected_cpu_preparation"
         source["measurement_plan"] = {"entrypoint": "finalize.py",

@@ -1,17 +1,51 @@
-# training__C255451__NRS-484B-363-2__bus_driver
+# Bus school crossing zone: NRS 484B.363(2)
 
-Status: partial. Eight exact 30-second/600-frame constructions pass the pinned offline test. Eight selected inline delivery constructions also pass current-runtime offline checks. Their measurement contracts, compatibility and remaining delivery proofs are still incomplete. Original Native capture, physical and legal review are not claimed.
+CPU package: eight selected constructions passed current-runtime offline, public positive and missing-source compatibility, recorded-only saved processing, physical/lifecycle diagnostics and independent delivery audits. Five controlled comparisons passed positive and missing-member negative audits. Original Native recording and independent source review remain pending.
 
-The frozen NRS 484B.363(2) text states an express 25 mph limit in a designated school crossing zone. The rule has four distinct exceptions: a day with no school session; the period from half an hour after operation ends to half an hour before it next begins; an operational beacon whose yellow lights are not alternately flashing while pupils are in class; and a zone without an operational beacon whose sign states the limit is inactive. The beacon definition requires a sign and at least two alternating yellow lights. The frozen witness is a bus and children in a school crossing zone. No accepted membership or original recording is available for reuse. Authored road names, children and speed requests cannot prove official designation, school schedule, operational beacon state, sign schedule, observed velocity or legal applicability.
+## Statutory coverage
 
-## Exact planned cases and comparisons
+The full text fixes 25 mph in a designated school crossing zone while the limit applies. It separately excepts (a) no school session day, (b) the period from a half hour after school operation ends to a half hour before it next begins, (c) an operational beacon during class hours when its yellow lights are not flashing, and (d) a nonbeacon sign indicating the limit is inactive. The beacon definition requires a sign with at least two alternating yellow lights. Children present do not resolve an exception. Official designation and operation are original-source review facts.
 
-`case-plan.json` now binds eight planned case IDs under `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__`: `condition_a` (20 mph request), `at_limit` (25 mph), `condition_b` (30 mph), `no_school_day`, `half_hour_window`, `beacon_not_flashing`, `nonbeacon_sign_active`, and `nonbeacon_sign_inactive`. All use 600 frames at 20 Hz and the same four named camera contracts. The latter five use a 30 mph request. The plan declares five comparisons: `speed_boundary`, `no_school_day`, `half_hour_window`, `beacon_flash`, and `nonbeacon_sign`. These are engineering targets and planning contexts, not observed motion or statutory verdicts. The exception comparisons require original civil time, calendar, operating hours, installed sign and operational beacon evidence.
+## Exact selected cases
 
-`native/build_draft.py` packages an inline config, CPU-only runner check and negative contract tests for each ID. `native/draft-manifest.json` binds eight construction hashes. `runtime.py offline` passed each draft exact case with fresh materializations under `.runtime-work/c255451-offline2-*`; corresponding logs are `native/<condition>-offline.log`. `native/school_zone_request.py prove --output .runtime-work/c255451-zone2` passed eight 600-frame source-shaped authored diagnostics and five missing or forged source negatives. These diagnostics are deliberately marked non-original. `native/measurement-contract.json` lists required original channels and each exception's independently reviewable source.
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__condition_a`
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__at_limit`
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__condition_b`
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__no_school_day`
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__half_hour_window`
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__beacon_not_flashing`
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_active`
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_inactive`
 
-The selected path now uses `native/build_selected.py`, `native/selected/<condition>/construction.json` and `execution-manifest.json`. Each selected bundle binds the exact case, 20 Hz/600-frame four-camera contract, survey-gated original bus and children capture, saved-source meter, finalizer and CPU tests. The condition-b template's inherited 15 mph/probe assertions were corrected to the exact 25 mph school-crossing statute and the eight actual case IDs; six selected-primary tests pass. `native/prove_selected_offline.py` ran current `runtime.py offline` on all eight selected bundles; every command exited zero. The manifest binds each selected construction hash and its hashed `native/selected/<condition>/offline.log`. This is selected construction readiness only. The manifest remains partial, and no compatibility, post-capture or audit receipt is asserted.
+## Controlled comparisons
 
-## Remaining CPU work
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__speed_boundary`: ["measured motor-bus speed below, at and above express 25 mph"]
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__no_school_day`: ["independently reviewed school-session day status"]
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__half_hour_window`: ["independently reviewed civil time relative to school operating hours"]
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__beacon_flash`: ["observed alternating yellow-light flash during pupils-in-class hours"]
+- `training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign`: ["independently reviewed sign effective-hours indication without operational beacon"]
 
-Finish case-specific measurement contracts, positive and damaged-source negative compatibility fixtures for every exact selected case and any justified same-case physical fallback. Add full semantic proposals, recorded-only proof, physical/lifecycle fixtures and independent delivery/comparison auditors with positive and negative tests. Bind every hashed proof to `execution-manifest.json`, then run `.venv-cpu/bin/python worker_check.py --assignment training__C255451__NRS-484B-363-2__bus_driver --complete --require-delivery-ready`. Keep `result.json` partial until that exact gate passes. Actual CARLA realization and legal/source review remain local later checks.
+`case-plan.json` maps all seven frozen observation terms and every selected requirement to the cases. `proposals/semantic-index.json` binds canonical stages. Root `runner.py`, `config.json` and `construction.json` dispatch eight selected cases with 30 seconds at 20 Hz and synchronized overview, approach, reference corner and driver reference views. Exact selected constructions live under `native/selected/<condition>/construction.json`.
+
+## CPU proof and replay
+
+`execution-manifest.json` binds exact construction hashes, offline and public compatibility receipts, measurement contracts and diagnostic recipes, recorded-only saved-processing logs, three physical outcomes and lifecycle order, independent delivery positive/negative audits, and per-case fallback risk assessments. All software fixture evidence is synthetic; none proves actual motion, pixels or legal outcome.
+
+Run from repository root with `.venv-cpu/bin/python`, `TMPDIR=$PWD/.runtime-work`, and `SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c255451-check`. Existing proof outputs are retained; choose new scratch names before replaying materialization or processing.
+
+- `native/prove_selected_offline.py`: 8/8 current-runtime selected offline checks.
+- `native/prove_selected_compat.py`: 8/8 public positive and missing-source negative compatibility checks.
+- `native/prove_recorded_only.py`: 8/8 current-hash saved-only processing paths under `.runtime-work/c255451-recorded-v3-*`.
+- `native/prove_physical.py`: each case has source-bound complete, incomplete and absent motion outcomes plus Native-exit/owner-release-before-processing lifecycle.
+- `native/prove_delivery.py`: 8/8 independent 600-frame, three-participant, four-video audits and missing-original-source negatives.
+- `native/prove_comparisons.py`: 5/5 fixed-source comparison audits and missing-member negatives.
+- `tests/selected-bundle.log`: six selected runner template tests passed.
+- `tests/root-package.log`: two root dispatch/camera plan tests passed.
+
+## Original delivery review
+
+Source-survey the officially designated school crossing zone, installed 25 mph sign, actor/asset geometry and approach visibility. Beacon cases require sign-mounted distinct yellow lamp actors and the alternating controller source; nonbeacon cases require separate sign schedule source. Confirm calendar and school hours, civil time, motor-bus class, actual speed, complete traversal, four-view pixel visibility and all 600 joined frames. The CPU fixtures and expected labels do not replace original sources. Local canonical acceptance and legal judgment remain separate.
+
+The first GPU command is in `result.json` once the strict scoped gate passes. The lead integrates this exact package into the shared ordered queue. No CARLA or GPU run occurred here.
+
+The exact scoped gate `.venv-cpu/bin/python -B worker_check.py --assignment training__C255451__NRS-484B-363-2__bus_driver --complete --require-delivery-ready` passed on the current runtime with `static_checks_passed: true`.

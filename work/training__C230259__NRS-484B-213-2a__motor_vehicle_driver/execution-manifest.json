@@ -1,0 +1,1568 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_delivery_prepared",
+  "cases": [
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "construction": "selected-constructions/probe_a/primary/construction.json",
+      "construction_sha256": "7ff69978c5bbc62fe21863daadad607218b435a0cabb922ab0e2763bf5e41067",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The original Native ego may not reach the authored crest or curve interval during its left-side controller phase; inspect source-frame body and map positions."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-constructions/probe_a/fallback1/construction.json",
+          "construction_sha256": "7824c366dbe4a707c211f65c9e313080fb8e5637d59699eb7f63defdd0324362",
+          "trigger": {
+            "source": "original Native ego body, map waypoint and 600-frame time join",
+            "metric": "feature approach or traversal frame count with the requested body position",
+            "failure_condition": "Primary has no original source frames showing the requested body position at the authored crest or curve interval"
+          },
+          "changed_knobs": [
+            "ego spawn moved 20 m closer to feature for every linked comparison case; same feature geometry, controller phases, cameras and duration"
+          ],
+          "offline": {
+            "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a",
+            "candidate_id": "fallback1",
+            "construction_sha256": "7824c366dbe4a707c211f65c9e313080fb8e5637d59699eb7f63defdd0324362",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/nrs213-resume-5/offline-fallback1-probe_a --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-proofs/offline-fallback1-probe_a.log",
+            "log_sha256": "d4df2283814717f7e452c6fc6496123f37e0cdc95a7c4fbf3b531fe726efc65d"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/compat-fallback1-probe_a.json",
+            "sha256": "f6cdd82c34628e3131b8a6104513e02b9bfd712ab6cd63dbabaebb6d4970d89d",
+            "log": "selected-proofs/compat-fallback1-probe_a-analysis.log",
+            "negative_log": "selected-proofs/compat-fallback1-probe_a-negative.log",
+            "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/nrs213-resume-5/compat-fallback1-probe_a --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fixtures/probe_a/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-feature-source-measurement-v1"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.sight_distance_adequate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_geometry_source",
+            "unit": "structured",
+            "method": "Authored OpenDRIVE and original Native map readback; road authority pending"
+          }
+        ],
+        "limitations": [
+          "No original Native capture or legal highway designation is claimed by CPU construction",
+          "Actual curve/crest obstruction and pixel visibility require local review"
+        ]
+      },
+      "measurement_contract": "selected-fixtures/probe_a/measurement-contract.json",
+      "offline": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a",
+        "candidate_id": "primary",
+        "construction_sha256": "7ff69978c5bbc62fe21863daadad607218b435a0cabb922ab0e2763bf5e41067",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-construction-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a --output .runtime-work/nrs213-resume-5/offline-primary-probe_a --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-proofs/offline-primary-probe_a.log",
+        "log_sha256": "7da16d325449d74570abec77dcd0b0b6310a41747bff229d39c717324d6a1875"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/compat-primary-probe_a.json",
+        "sha256": "445fa2f909810ef549cfcef5ef83d6f85899399b797ef53ca222ac0f1c45fb5c",
+        "log": "selected-proofs/compat-primary-probe_a-analysis.log",
+        "negative_log": "selected-proofs/compat-primary-probe_a-negative.log",
+        "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-compatibility-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a --output .runtime-work/nrs213-resume-5/compat-primary-probe_a --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_a-receipt.json",
+        "sha256": "718d86f11ad0daeea1bfc0746d440759c26f3f1478176d08ff9c7f357fdea909"
+      },
+      "negative": {
+        "log": "selected-proofs/compat-primary-probe_a-negative.log"
+      },
+      "delivery_readiness": "incomplete",
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sight_and_hazard_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "abdfb23ffcdc9393caca461e67204b57fad37064e4c5d2af0f811b4414fd631b",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/probe_a-positive.log",
+        "test_log_sha256": "d0e18a9b04c0104e7ffe0917d9da7bc333e8adcf70c12fcca771baa59d5dd24c",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/probe_a-negative.log",
+        "negative_log_sha256": "bdc5d10c1bbf79335a70e5f3eb18346b7569397572a0d164d16436b9e972be34"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.oncoming": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.centre_line": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.curvature": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.grade": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json # training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_a"
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "construction": "selected-constructions/probe_b/primary/construction.json",
+      "construction_sha256": "c2acaeee6fd410187458994301cb5d121c6e89e75a00975446cb091dee387cc1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The original Native ego may not reach the authored crest or curve interval during its left-side controller phase; inspect source-frame body and map positions."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-constructions/probe_b/fallback1/construction.json",
+          "construction_sha256": "b8f71bd84a4e3a38aeb609512d9b10e12e472f03783434ab32e08dfecc1c97c2",
+          "trigger": {
+            "source": "original Native ego body, map waypoint and 600-frame time join",
+            "metric": "feature approach or traversal frame count with the requested body position",
+            "failure_condition": "Primary has no original source frames showing the requested body position at the authored crest or curve interval"
+          },
+          "changed_knobs": [
+            "ego spawn moved 20 m closer to feature for every linked comparison case; same feature geometry, controller phases, cameras and duration"
+          ],
+          "offline": {
+            "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b",
+            "candidate_id": "fallback1",
+            "construction_sha256": "b8f71bd84a4e3a38aeb609512d9b10e12e472f03783434ab32e08dfecc1c97c2",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/nrs213-resume-5/offline-fallback1-probe_b --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-proofs/offline-fallback1-probe_b.log",
+            "log_sha256": "8a0f4a72b1d86c988a376af8050a16c74d39616b6efe6c7321250526b7ae998f"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/compat-fallback1-probe_b.json",
+            "sha256": "e4d5a7088820d058181877530ed45274cb2d19b88c84369b23ed0deefa65f693",
+            "log": "selected-proofs/compat-fallback1-probe_b-analysis.log",
+            "negative_log": "selected-proofs/compat-fallback1-probe_b-negative.log",
+            "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/nrs213-resume-5/compat-fallback1-probe_b --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fixtures/probe_b/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-feature-source-measurement-v1"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.sight_distance_adequate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_geometry_source",
+            "unit": "structured",
+            "method": "Authored OpenDRIVE and original Native map readback; road authority pending"
+          }
+        ],
+        "limitations": [
+          "No original Native capture or legal highway designation is claimed by CPU construction",
+          "Actual curve/crest obstruction and pixel visibility require local review"
+        ]
+      },
+      "measurement_contract": "selected-fixtures/probe_b/measurement-contract.json",
+      "offline": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b",
+        "candidate_id": "primary",
+        "construction_sha256": "c2acaeee6fd410187458994301cb5d121c6e89e75a00975446cb091dee387cc1",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-construction-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b --output .runtime-work/nrs213-resume-5/offline-primary-probe_b --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-proofs/offline-primary-probe_b.log",
+        "log_sha256": "92839f9da20fa104e8c43d76797c3fc456dba3307c8f9604416e4c07015f7cde"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/compat-primary-probe_b.json",
+        "sha256": "e8e11fb45688e76d5827e486703ccaa865e220afa6378884a25ce543f4778738",
+        "log": "selected-proofs/compat-primary-probe_b-analysis.log",
+        "negative_log": "selected-proofs/compat-primary-probe_b-negative.log",
+        "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-compatibility-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b --output .runtime-work/nrs213-resume-5/compat-primary-probe_b --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_b-receipt.json",
+        "sha256": "5b6127eb90c3c1fd9d3d38a1c7f18679fc90dc27c70d47c4caff6a3fbe964548"
+      },
+      "negative": {
+        "log": "selected-proofs/compat-primary-probe_b-negative.log"
+      },
+      "delivery_readiness": "incomplete",
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sight_and_hazard_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "abdfb23ffcdc9393caca461e67204b57fad37064e4c5d2af0f811b4414fd631b",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/probe_b-positive.log",
+        "test_log_sha256": "4f404edf9fb4aafb7540a62ccdc73db3f8be01e8890bba9465d8c8655eb1216b",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/probe_b-negative.log",
+        "negative_log_sha256": "bdc5d10c1bbf79335a70e5f3eb18346b7569397572a0d164d16436b9e972be34"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.oncoming": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.centre_line": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.curvature": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.grade": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json # training__C230259__NRS-484B-213-2a__motor_vehicle_driver__probe_b"
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right",
+      "kind": "delivery",
+      "construction": "selected-constructions/curve_right/primary/construction.json",
+      "construction_sha256": "9f06e77af7c5893409de561827c073d02c3f34a11d0205361eeeaa3ab28d6604",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The original Native ego may not reach the authored crest or curve interval during its left-side controller phase; inspect source-frame body and map positions."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-constructions/curve_right/fallback1/construction.json",
+          "construction_sha256": "47aeb83bb24dc2d7370adc132b5beaa13feaec4248dfaabe0687319e258df3d0",
+          "trigger": {
+            "source": "original Native ego body, map waypoint and 600-frame time join",
+            "metric": "feature approach or traversal frame count with the requested body position",
+            "failure_condition": "Primary has no original source frames showing the requested body position at the authored crest or curve interval"
+          },
+          "changed_knobs": [
+            "ego spawn moved 20 m closer to feature for every linked comparison case; same feature geometry, controller phases, cameras and duration"
+          ],
+          "offline": {
+            "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right",
+            "candidate_id": "fallback1",
+            "construction_sha256": "47aeb83bb24dc2d7370adc132b5beaa13feaec4248dfaabe0687319e258df3d0",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right --candidate fallback1 --output .runtime-work/nrs213-resume-5/offline-fallback1-curve_right --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-proofs/offline-fallback1-curve_right.log",
+            "log_sha256": "5f818d0d89667d2472789bf8affedc9cfacb18e814a7048bb483bd8d3d66ef77"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/compat-fallback1-curve_right.json",
+            "sha256": "b03b373ea2b987c7293e097805e7d7a2acd1c44825f4fba65d37a527b3728fe0",
+            "log": "selected-proofs/compat-fallback1-curve_right-analysis.log",
+            "negative_log": "selected-proofs/compat-fallback1-curve_right-negative.log",
+            "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right --candidate fallback1 --output .runtime-work/nrs213-resume-5/compat-fallback1-curve_right --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fixtures/curve_right/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-feature-source-measurement-v1"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.sight_distance_adequate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_geometry_source",
+            "unit": "structured",
+            "method": "Authored OpenDRIVE and original Native map readback; road authority pending"
+          }
+        ],
+        "limitations": [
+          "No original Native capture or legal highway designation is claimed by CPU construction",
+          "Actual curve/crest obstruction and pixel visibility require local review"
+        ]
+      },
+      "measurement_contract": "selected-fixtures/curve_right/measurement-contract.json",
+      "offline": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right",
+        "candidate_id": "primary",
+        "construction_sha256": "9f06e77af7c5893409de561827c073d02c3f34a11d0205361eeeaa3ab28d6604",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-construction-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right --output .runtime-work/nrs213-resume-5/offline-primary-curve_right --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-proofs/offline-primary-curve_right.log",
+        "log_sha256": "edd015994ef2e056f9e400cad541a3690ea9e889791963c9194b0dfdf1c940c2"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/compat-primary-curve_right.json",
+        "sha256": "6a2129c0a07ce1bbfff90cb4b3dc4891fca6a422239605256c1d11c1e692690c",
+        "log": "selected-proofs/compat-primary-curve_right-analysis.log",
+        "negative_log": "selected-proofs/compat-primary-curve_right-negative.log",
+        "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-compatibility-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right --output .runtime-work/nrs213-resume-5/compat-primary-curve_right --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/curve_right-receipt.json",
+        "sha256": "bbc253d2372e797c2c490bd0a7ec1c63d80d737c54cf0842d3df243f3759cd18"
+      },
+      "negative": {
+        "log": "selected-proofs/compat-primary-curve_right-negative.log"
+      },
+      "delivery_readiness": "incomplete",
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sight_and_hazard_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "abdfb23ffcdc9393caca461e67204b57fad37064e4c5d2af0f811b4414fd631b",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/curve_right-positive.log",
+        "test_log_sha256": "f9057539623bcc2b407d43cf0e784e6356f0be3db1b51c1644843200c9b613ab",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/curve_right-negative.log",
+        "negative_log_sha256": "bdc5d10c1bbf79335a70e5f3eb18346b7569397572a0d164d16436b9e972be34"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.oncoming": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.centre_line": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.curvature": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.grade": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json # training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_right"
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left",
+      "kind": "delivery",
+      "construction": "selected-constructions/curve_left/primary/construction.json",
+      "construction_sha256": "1e4c8c8c9e5e2f4c685d666745b44afd6f5ace5ed2e8125c5affbf3af5d3652f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The original Native ego may not reach the authored crest or curve interval during its left-side controller phase; inspect source-frame body and map positions."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-constructions/curve_left/fallback1/construction.json",
+          "construction_sha256": "d6b364c75d8b8f24e575a7e4a52eb1ffd807cfa0ca9287b41cd1cca110353c64",
+          "trigger": {
+            "source": "original Native ego body, map waypoint and 600-frame time join",
+            "metric": "feature approach or traversal frame count with the requested body position",
+            "failure_condition": "Primary has no original source frames showing the requested body position at the authored crest or curve interval"
+          },
+          "changed_knobs": [
+            "ego spawn moved 20 m closer to feature for every linked comparison case; same feature geometry, controller phases, cameras and duration"
+          ],
+          "offline": {
+            "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left",
+            "candidate_id": "fallback1",
+            "construction_sha256": "d6b364c75d8b8f24e575a7e4a52eb1ffd807cfa0ca9287b41cd1cca110353c64",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left --candidate fallback1 --output .runtime-work/nrs213-resume-5/offline-fallback1-curve_left --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-proofs/offline-fallback1-curve_left.log",
+            "log_sha256": "90ad56a1dd2ab48a9c7d3a15e1dad0cead3a6fea872b9e65ab7eda222d4c0ceb"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/compat-fallback1-curve_left.json",
+            "sha256": "13bf3afbbc89cccb0161e672e4501a0ff5562c865f9e789ea62741f7c0124c17",
+            "log": "selected-proofs/compat-fallback1-curve_left-analysis.log",
+            "negative_log": "selected-proofs/compat-fallback1-curve_left-negative.log",
+            "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left --candidate fallback1 --output .runtime-work/nrs213-resume-5/compat-fallback1-curve_left --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fixtures/curve_left/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-feature-source-measurement-v1"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.sight_distance_adequate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_geometry_source",
+            "unit": "structured",
+            "method": "Authored OpenDRIVE and original Native map readback; road authority pending"
+          }
+        ],
+        "limitations": [
+          "No original Native capture or legal highway designation is claimed by CPU construction",
+          "Actual curve/crest obstruction and pixel visibility require local review"
+        ]
+      },
+      "measurement_contract": "selected-fixtures/curve_left/measurement-contract.json",
+      "offline": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left",
+        "candidate_id": "primary",
+        "construction_sha256": "1e4c8c8c9e5e2f4c685d666745b44afd6f5ace5ed2e8125c5affbf3af5d3652f",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-construction-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left --output .runtime-work/nrs213-resume-5/offline-primary-curve_left --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-proofs/offline-primary-curve_left.log",
+        "log_sha256": "dbc861a980622d0104da7463bbb671549f7e305c17551587291e53d7d222c68b"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/compat-primary-curve_left.json",
+        "sha256": "8d623d15344b978b17138e8b967fbd46c21a9c6ff043624b0770fb8f630e4e04",
+        "log": "selected-proofs/compat-primary-curve_left-analysis.log",
+        "negative_log": "selected-proofs/compat-primary-curve_left-negative.log",
+        "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-compatibility-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left --output .runtime-work/nrs213-resume-5/compat-primary-curve_left --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/curve_left-receipt.json",
+        "sha256": "024047a89bf46907eb60a66e68c1008ad14754626c5c6a3cb24fd189b78fb315"
+      },
+      "negative": {
+        "log": "selected-proofs/compat-primary-curve_left-negative.log"
+      },
+      "delivery_readiness": "incomplete",
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sight_and_hazard_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "abdfb23ffcdc9393caca461e67204b57fad37064e4c5d2af0f811b4414fd631b",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/curve_left-positive.log",
+        "test_log_sha256": "e8648361eac409bd8ab2ddddca4f1301af9a4cc3f73d854b5fe15b0085c14c5b",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/curve_left-negative.log",
+        "negative_log_sha256": "bdc5d10c1bbf79335a70e5f3eb18346b7569397572a0d164d16436b9e972be34"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.oncoming": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.centre_line": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.curvature": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.grade": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json # training__C230259__NRS-484B-213-2a__motor_vehicle_driver__curve_left"
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest",
+      "kind": "delivery",
+      "construction": "selected-constructions/one_way_crest/primary/construction.json",
+      "construction_sha256": "44b43d204b173b6f8609acba3a0115c7b0226bca726a0f653f7966f5febce368",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The original Native ego may not reach the authored crest or curve interval during its left-side controller phase; inspect source-frame body and map positions."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-constructions/one_way_crest/fallback1/construction.json",
+          "construction_sha256": "1eb08528a7c8c98bd073eaf484f2bc1676243fb5dcc1cc876a312a3ea9f1ec48",
+          "trigger": {
+            "source": "original Native ego body, map waypoint and 600-frame time join",
+            "metric": "feature approach or traversal frame count with the requested body position",
+            "failure_condition": "Primary has no original source frames showing the requested body position at the authored crest or curve interval"
+          },
+          "changed_knobs": [
+            "ego spawn moved 20 m closer to feature for every linked comparison case; same feature geometry, controller phases, cameras and duration"
+          ],
+          "offline": {
+            "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest",
+            "candidate_id": "fallback1",
+            "construction_sha256": "1eb08528a7c8c98bd073eaf484f2bc1676243fb5dcc1cc876a312a3ea9f1ec48",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest --candidate fallback1 --output .runtime-work/nrs213-resume-5/offline-fallback1-one_way_crest --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-proofs/offline-fallback1-one_way_crest.log",
+            "log_sha256": "d82f284f74e1cf8f4957218c6fa3558b7799718a254dc8cb6979f7a266a83b0e"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/compat-fallback1-one_way_crest.json",
+            "sha256": "dee8edb85914ce19503205d25ef7be2f35e3ad81bebf700d062e45bd18ee61a1",
+            "log": "selected-proofs/compat-fallback1-one_way_crest-analysis.log",
+            "negative_log": "selected-proofs/compat-fallback1-one_way_crest-negative.log",
+            "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest --candidate fallback1 --output .runtime-work/nrs213-resume-5/compat-fallback1-one_way_crest --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fixtures/one_way_crest/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-feature-source-measurement-v1"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.sight_distance_adequate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_geometry_source",
+            "unit": "structured",
+            "method": "Authored OpenDRIVE and original Native map readback; road authority pending"
+          }
+        ],
+        "limitations": [
+          "No original Native capture or legal highway designation is claimed by CPU construction",
+          "Actual curve/crest obstruction and pixel visibility require local review"
+        ]
+      },
+      "measurement_contract": "selected-fixtures/one_way_crest/measurement-contract.json",
+      "offline": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest",
+        "candidate_id": "primary",
+        "construction_sha256": "44b43d204b173b6f8609acba3a0115c7b0226bca726a0f653f7966f5febce368",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-construction-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest --output .runtime-work/nrs213-resume-5/offline-primary-one_way_crest --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-proofs/offline-primary-one_way_crest.log",
+        "log_sha256": "d30e7edd96c1ea57c156a31945c97781745acb5e45c35efc69ddff911ebbf6dd"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/compat-primary-one_way_crest.json",
+        "sha256": "00b1048dc1716f2c1acabdba56cac22e02cfd8e422051d1295ce87d3346154e5",
+        "log": "selected-proofs/compat-primary-one_way_crest-analysis.log",
+        "negative_log": "selected-proofs/compat-primary-one_way_crest-negative.log",
+        "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-compatibility-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest --output .runtime-work/nrs213-resume-5/compat-primary-one_way_crest --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/one_way_crest-receipt.json",
+        "sha256": "54fd953e23334baf87f5553530dc47b02f99894e25a58a09b43c3a26098d7b65"
+      },
+      "negative": {
+        "log": "selected-proofs/compat-primary-one_way_crest-negative.log"
+      },
+      "delivery_readiness": "incomplete",
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sight_and_hazard_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "abdfb23ffcdc9393caca461e67204b57fad37064e4c5d2af0f811b4414fd631b",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/one_way_crest-positive.log",
+        "test_log_sha256": "5b6a2baabbfff2567c70f44e9b5a0d586e524bc73e645750e4cf8e492dac0ed4",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/one_way_crest-negative.log",
+        "negative_log_sha256": "bdc5d10c1bbf79335a70e5f3eb18346b7569397572a0d164d16436b9e972be34"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.oncoming": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.centre_line": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.curvature": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.grade": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json # training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_crest"
+      }
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve",
+      "kind": "delivery",
+      "construction": "selected-constructions/one_way_curve/primary/construction.json",
+      "construction_sha256": "01d32b48badcd18ec2a65307123dc7550391fdc55ef57d4c474d21d2dcf730dd",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The original Native ego may not reach the authored crest or curve interval during its left-side controller phase; inspect source-frame body and map positions."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected-constructions/one_way_curve/fallback1/construction.json",
+          "construction_sha256": "f5b5dac9ec56ca683578e51c14978f3f5b00f4e40c07e697021c02ecc94e89d5",
+          "trigger": {
+            "source": "original Native ego body, map waypoint and 600-frame time join",
+            "metric": "feature approach or traversal frame count with the requested body position",
+            "failure_condition": "Primary has no original source frames showing the requested body position at the authored crest or curve interval"
+          },
+          "changed_knobs": [
+            "ego spawn moved 20 m closer to feature for every linked comparison case; same feature geometry, controller phases, cameras and duration"
+          ],
+          "offline": {
+            "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve",
+            "candidate_id": "fallback1",
+            "construction_sha256": "f5b5dac9ec56ca683578e51c14978f3f5b00f4e40c07e697021c02ecc94e89d5",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve --candidate fallback1 --output .runtime-work/nrs213-resume-5/offline-fallback1-one_way_curve --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "selected-proofs/offline-fallback1-one_way_curve.log",
+            "log_sha256": "efba194ea7b653833bb90e009d290bfd2c4e2a4ca800335bc806b37a75b7b320"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/compat-fallback1-one_way_curve.json",
+            "sha256": "bb5bd1604a91649276bc1c0ca5f16ab85e3deec075f21264af4d1082904ef71d",
+            "log": "selected-proofs/compat-fallback1-one_way_curve-analysis.log",
+            "negative_log": "selected-proofs/compat-fallback1-one_way_curve-negative.log",
+            "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fallback-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve --candidate fallback1 --output .runtime-work/nrs213-resume-5/compat-fallback1-one_way_curve --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-fixtures/one_way_curve/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-feature-source-measurement-v1"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.grade",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.curvature",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.sight_distance_adequate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native map, actor body, sight ray and synchronized camera source",
+            "time_window": "all 600 Native frames / 30 s",
+            "reference_frame": "original Native actor and map",
+            "uncertainty": "50 ms sample interval; road authority and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_geometry_source",
+            "unit": "structured",
+            "method": "Authored OpenDRIVE and original Native map readback; road authority pending"
+          }
+        ],
+        "limitations": [
+          "No original Native capture or legal highway designation is claimed by CPU construction",
+          "Actual curve/crest obstruction and pixel visibility require local review"
+        ]
+      },
+      "measurement_contract": "selected-fixtures/one_way_curve/measurement-contract.json",
+      "offline": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve",
+        "candidate_id": "primary",
+        "construction_sha256": "01d32b48badcd18ec2a65307123dc7550391fdc55ef57d4c474d21d2dcf730dd",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-construction-draft.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve --output .runtime-work/nrs213-resume-5/offline-primary-one_way_curve --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "selected-proofs/offline-primary-one_way_curve.log",
+        "log_sha256": "ccc11c25370ef1b06c8abd8eb69a9bd4b815f62da39494a1ded16b70fe4ba200"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/compat-primary-one_way_curve.json",
+        "sha256": "dc1a908e8aa69879c842a38ddfe5f067bcc223b7e333c4935f17df6b40c5ddd0",
+        "log": "selected-proofs/compat-primary-one_way_curve-analysis.log",
+        "negative_log": "selected-proofs/compat-primary-one_way_curve-negative.log",
+        "command": ".venv-cpu/bin/python -B runtime.py compatibility --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/selected-compatibility-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve --output .runtime-work/nrs213-resume-5/compat-primary-one_way_curve --library runtime/library --validator .runtime-work/nrs213-resume/current-decoder/.lake/build/bin/adapterCheck"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/one_way_curve-receipt.json",
+        "sha256": "14a0796248bae21a5ee3bb16310493a6e6f12295b77bd6646ff22aaf11568d45"
+      },
+      "negative": {
+        "log": "selected-proofs/compat-primary-one_way_curve-negative.log"
+      },
+      "delivery_readiness": "incomplete",
+      "delivery_acceptance": {
+        "case_id": "training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_sight_and_hazard_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "abdfb23ffcdc9393caca461e67204b57fad37064e4c5d2af0f811b4414fd631b",
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/one_way_curve-positive.log",
+        "test_log_sha256": "d7748d1e99e314bf66dbf9713edc95ac2a40efe787ac834ba6ed4e75469ca0ed",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/delivery_audit.py --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_log": "delivery-proofs/one_way_curve-negative.log",
+        "negative_log_sha256": "bdc5d10c1bbf79335a70e5f3eb18346b7569397572a0d164d16436b9e972be34"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "rel.oncoming": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.centre_line": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.curvature": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.grade": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original Native actor, road, sight ray and four-camera acquisition",
+          "evidence": "native-feature-source.jsonl, road-context.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230259__NRS-484B-213-2a__motor_vehicle_driver/execution-manifest.json --case training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": "cat $OUTPUT/versions/*/feedback.json # training__C230259__NRS-484B-213-2a__motor_vehicle_driver__one_way_curve"
+      }
+    }
+  ]
+}
