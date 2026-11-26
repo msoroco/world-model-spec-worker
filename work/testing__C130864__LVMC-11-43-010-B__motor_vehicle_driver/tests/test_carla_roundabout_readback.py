@@ -1,5 +1,7 @@
 import pathlib
 import sys
+from threading import Thread
+from time import sleep
 import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -27,13 +29,29 @@ class CarlaBridgeTests(unittest.TestCase):
 
     def test_rejects_missing_and_wrong_camera_bytes(self):
         bridge = CameraFrames({name: (2, 1) for name in
-            ("overview", "approach", "reference_corner", "driver_reference")})
+            ("overview", "approach", "reference_corner", "driver_reference")},
+            frame_timeout_s=.01)
         with self.assertRaisesRegex(ValueError, "unavailable"):
             bridge.reader("overview")(7)
         bad = type("Image", (), {"frame": 7, "width": 2, "height": 1,
                    "raw_data": b"bad"})()
-        with self.assertRaisesRegex(ValueError, "byte count"):
-            bridge.callback("overview")(bad)
+        bridge.callback("overview")(bad)
+        with self.assertRaisesRegex(ValueError, "callback failed"):
+            bridge.reader("overview")(7)
+
+    def test_waits_for_asynchronous_callback_frame(self):
+        bridge = CameraFrames({name: (2, 1) for name in
+            ("overview", "approach", "reference_corner", "driver_reference")},
+            frame_timeout_s=.5)
+        image = type("Image", (), {"frame": 19, "width": 2, "height": 1,
+                  "raw_data": b"\x00\x00\xff\xff" * 2})()
+        def delayed():
+            sleep(.02)
+            bridge.callback("overview")(image)
+        thread = Thread(target=delayed)
+        thread.start()
+        self.assertEqual(bridge.reader("overview")(19)["frame"], 19)
+        thread.join()
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Exact-case synthetic exit analyzer for CPU compatibility; no legal finding."""
+"""Saved exit analyzer for original sources and isolated CPU diagnostics."""
 import argparse
 import hashlib
 import json
@@ -55,6 +55,23 @@ def measure_exit(rows, config, scene):
 def analyze(attempt):
     root = Path(attempt)
     config = json.loads(required(root, 'config.json').read_text())
+    if (root / 'source-manifest.json').is_file():
+        from delivery_audit import audit_attempt
+        audit = audit_attempt(root, config['selected_case_id'])
+        if audit['source_kind'] != 'original_native_capture':
+            raise ValueError('saved analysis requires original Native sources')
+        sources = {'source-manifest.json': sha(root / 'source-manifest.json'),
+                   'original-history.json': sha(root / 'original-history.json'),
+                   'saved-packet.json': sha(root / 'saved-packet.json')}
+        return {'format': 'worker-analysis-report', 'case_id': config['selected_case_id'],
+                'analysis_complete': True, 'diagnostic_fixture': False,
+                'physical_acceptance_claimed': False, 'legal_verdict_claimed': False,
+                'measurements': {'controlled_access_exit': {
+                    'method': 'measure_history', 'value': audit['measurement'], 'sources': sources}},
+                'physical_checks': {'original_source_audit': True,
+                                    'independent_camera_decodes': audit['camera_decodes']},
+                'realized_observables': {'original_history_frames': 900},
+                'limitations': ['Immediate hazard and reasonable safety remain source-gated judgments.']}
     scene = json.loads(required(root, 'scene.json').read_text())
     marker_path = required(root, 'diagnostic-source-note.json')
     marker = json.loads(marker_path.read_text())

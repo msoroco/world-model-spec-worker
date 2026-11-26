@@ -45,14 +45,11 @@ class FixtureAdapter:
         self.calls.append(('destroy', actor))
 
 
-def check():
+def validate_config():
     root = Path(__file__).resolve().parent
     config = json.loads((root / 'config.json').read_text())
-    scene = json.loads((root / 'scene.json').read_text())
-    if scene.get('source_kind') != 'synthetic_diagnostic_fixture' or scene.get('accepted_original_source') is not False:
-        raise ValueError('synthetic provenance required')
     cameras = config.get('cameras')
-    if config['selected_case_id'] != scene['case_id'] or config['rate_hz'] != 20 or config['duration_s'] != 45 or \
+    if config['rate_hz'] != 20 or config['duration_s'] != 45 or \
             [(c.get('name'), c.get('width'), c.get('height')) for c in cameras] != [
                 ('overview', 1920, 1080), ('approach', 1280, 720),
                 ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]:
@@ -61,6 +58,18 @@ def check():
     case = next((item for item in CASES if item.name == spec['name']), None)
     if case is None or (case.policy, case.approaching_count, case.approach_headway_s) != (spec['policy'], spec['approaching_count'], spec['approach_headway_s']):
         raise ValueError('case design changed')
+    if not config['selected_case_id'].endswith('__' + case.name):
+        raise ValueError('exact case identity changed')
+    return config, case
+
+
+def check():
+    config, case = validate_config()
+    scene = json.loads((Path(__file__).resolve().parent / 'scene.json').read_text())
+    if scene.get('source_kind') != 'synthetic_diagnostic_fixture' or scene.get('accepted_original_source') is not False:
+        raise ValueError('synthetic provenance required')
+    if config['selected_case_id'] != scene['case_id']:
+        raise ValueError('exact diagnostic case changed')
     adapter = FixtureAdapter(scene['road']['map_sha256'])
     made = build_case(adapter, scene, case)
     if len(made['approaching']) != case.approaching_count or len(made['owned']) != case.approaching_count + 1:
@@ -79,8 +88,8 @@ if __name__ == '__main__':
     parser.add_argument('--host', default='localhost')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
-    scene = check()
     if args.check:
+        scene = check()
         print('synthetic exit protocol passed: ' + scene['case_id'])
     else:
         if not args.output_dir:
@@ -88,15 +97,15 @@ if __name__ == '__main__':
         source = os.environ.get('C228302_REVIEWED_SITE_PACKET')
         if not source:
             raise ValueError('reviewed original exit site packet path required')
-        root = Path(__file__).resolve().parent
-        config = json.loads((root / 'config.json').read_text(encoding='utf-8'))
-        case = next(item for item in CASES if scene['case_id'].endswith('__' + item.name))
+        config, case = validate_config()
         reviewed = verify(Path(source), case)
         output = Path(args.output_dir)
         output.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, output / 'reviewed-site.json')
+        archive = output / 'reviewed-site-packet'
+        archive.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, archive / 'packet.json')
         for item in reviewed['packet']['source_bindings'].values():
-            destination = output / 'reviewed-sources' / item['path']
+            destination = archive / item['path']
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(Path(source).parent / item['path'], destination)
         from native_original import run, finalize

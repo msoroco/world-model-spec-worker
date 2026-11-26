@@ -40,7 +40,8 @@ def seal(attempt: Path, site_packet: Path, source_root: Path,
     reviewed = verify(site_packet, source_root)
     acquisition = json.loads((attempt / 'capture-seal.json').read_text())
     native_exit = json.loads((attempt / 'native-exit.json').read_text())
-    receipt = json.loads(owner_receipt.read_text())
+    owner_receipt_raw = owner_receipt.read_text()
+    receipt = json.loads(owner_receipt_raw)
     case_id = acquisition.get('case_id', '')
     prefix = reviewed["assignment_id"] + "__"
     if not case_id.startswith(prefix) or case_id[len(prefix):] not in {c.id for c in CASES}:
@@ -86,7 +87,8 @@ def seal(attempt: Path, site_packet: Path, source_root: Path,
                    "restoration_verified": True, "native_process_exit_code": 0,
                    "encoder_exit_codes": {name: 0 for name in CAMERAS},
                    "provenance_kind": "original_native", "sources": hashes,
-                   "owner_receipt_sha256": owner_receipt_sha256}
+                   "owner_receipt_sha256": owner_receipt_sha256,
+                   "owner_receipt_raw": owner_receipt_raw}
     output.write_text(json.dumps(seal_record, indent=2, sort_keys=True) + "\n")
     try:
         proof = audit(attempt, site_packet, source_root)

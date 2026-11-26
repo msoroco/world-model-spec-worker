@@ -107,12 +107,22 @@ class DeliveryAuditTests(unittest.TestCase):
                                events=['capture_finished', 'encoders_closed', 'restoration_verified'],
                                native_revision=revision)
             (attempt / 'capture-seal.json').write_text(json.dumps(acquisition) + '\n')
-            forged['owner_receipt_sha256'] = '0' * 64
+            forged['owner_receipt_raw'] = '{}\n'
+            forged['owner_receipt_sha256'] = hashlib.sha256(forged['owner_receipt_raw'].encode()).hexdigest()
             (attempt / 'delivery-seal.json').write_text(json.dumps(forged) + '\n')
             (attempt / 'native-exit.json').write_text(json.dumps({
                 'event': 'native_exit', 'capture_seal_sha256': '0' * 64,
                 'native_revision': revision, 'native_process_exit_code': 0}) + '\n')
             with self.assertRaisesRegex(ValueError, 'Native acquisition/exit binding differs'):
+                audit(attempt, packet, sources)
+            native_exit = json.loads((attempt / 'native-exit.json').read_text())
+            native_exit['capture_seal_sha256'] = sha(attempt / 'capture-seal.json')
+            (attempt / 'native-exit.json').write_text(json.dumps(native_exit) + '\n')
+            with self.assertRaisesRegex(ValueError, 'owner receipt does not bind Native exit'):
+                audit(attempt, packet, sources)
+            forged['owner_receipt_raw'] = '{"event":"owner_released"}\n'
+            (attempt / 'delivery-seal.json').write_text(json.dumps(forged) + '\n')
+            with self.assertRaisesRegex(ValueError, 'owner receipt content missing or changed'):
                 audit(attempt, packet, sources)
 
     def test_sealed_frame_join_and_changed_original_rejection(self):

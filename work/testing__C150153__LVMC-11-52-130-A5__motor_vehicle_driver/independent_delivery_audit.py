@@ -108,6 +108,13 @@ def audit(attempt: Path, packet_path: Path, source_root: Path, *,
         acquisition = json.loads(acquisition_path.read_text())
         native_exit = json.loads(native_exit_path.read_text())
         revision = acquisition.get('native_revision', {})
+        owner_raw = seal.get('owner_receipt_raw')
+        if not isinstance(owner_raw, str) or hashlib.sha256(owner_raw.encode()).hexdigest() != seal.get('owner_receipt_sha256'):
+            raise ValueError('original owner receipt content missing or changed')
+        try:
+            owner = json.loads(owner_raw)
+        except (ValueError, TypeError):
+            raise ValueError('original owner receipt content malformed') from None
         if (acquisition.get('format') != 'sidewalk-elevator-native-acquisition-seal' or
                 acquisition.get('provenance_kind') != 'native' or
                 acquisition.get('diagnostic_fixture') is not False or
@@ -125,6 +132,11 @@ def audit(attempt: Path, packet_path: Path, source_root: Path, *,
                 not isinstance(seal.get('owner_receipt_sha256'), str) or
                 len(seal['owner_receipt_sha256']) != 64):
             raise ValueError('original Native acquisition/exit binding differs')
+        if (owner.get('event') != 'owner_released' or
+                owner.get('operator_attested') is not True or
+                owner.get('native_construction_sha256') != _sha(attempt / 'construction.json') or
+                owner.get('native_exit_sha256') != _sha(native_exit_path)):
+            raise ValueError('original owner receipt does not bind Native exit')
     history = audit_original_history(attempt / "history.jsonl", hashes["history.jsonl"],
                                      case_id[len(prefix):], site_sha)
     mapping = [json.loads(line) for line in (attempt / "camera-frame-map.jsonl").read_text().splitlines()]

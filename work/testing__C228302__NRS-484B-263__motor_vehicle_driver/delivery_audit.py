@@ -10,7 +10,7 @@ from controlled_access_exit import CASES, audit_comparison, measure_history, val
 from saved_audit import audit_saved
 
 HERE = Path(__file__).resolve().parent
-ASSIGNMENT = HERE.name
+ASSIGNMENT = 'testing__C228302__NRS-484B-263__motor_vehicle_driver'
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 

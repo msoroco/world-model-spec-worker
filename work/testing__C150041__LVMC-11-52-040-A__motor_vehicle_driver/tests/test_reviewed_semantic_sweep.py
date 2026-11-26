@@ -49,6 +49,13 @@ class ReviewedSemanticSweepTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "source hash changed"):
             expand(self.proposal, self.packets["park"], self.packets["stand"])
 
+    def test_duplicate_selected_case_rejected(self):
+        altered = copy.deepcopy(self.proposal)
+        altered["cases"].append(copy.deepcopy(next(case for case in altered["cases"]
+            if case["case_id"].endswith("__park_parallel_lawful"))))
+        with self.assertRaisesRegex(ValueError, "exactly six selected cases"):
+            expand(altered, self.packets["park"], self.packets["stand"])
+
     def test_six_selected_manifest_bindings_and_tamper_rejection(self):
         rebound = self.root / "rebound"
         rebind(self.packets["park"], self.packets["stand"], rebound)
@@ -62,6 +69,24 @@ class ReviewedSemanticSweepTests(unittest.TestCase):
         manifest["cases"][0]["candidates"][0]["construction_sha256"] = "0" * 64
         manifest_path.write_text(json.dumps(manifest) + "\n")
         with self.assertRaisesRegex(ValueError, "construction hash"):
+            bind_rebound(expanded, rebound)
+
+    def test_duplicate_rebound_case_and_candidate_rejected(self):
+        rebound = self.root / "rebound"
+        rebind(self.packets["park"], self.packets["stand"], rebound)
+        expanded = expand(self.proposal, self.packets["park"], self.packets["stand"])
+        source_path = rebound / "rebound-manifest.json"
+        original = source_path.read_text()
+        source = json.loads(original)
+        source["cases"].append(copy.deepcopy(source["cases"][0]))
+        source_path.write_text(json.dumps(source) + "\n")
+        with self.assertRaisesRegex(ValueError, "selected sweep and rebound manifest differ"):
+            bind_rebound(expanded, rebound)
+        source_path.write_text(original)
+        source = json.loads(original)
+        source["cases"][0]["variants"].append(copy.deepcopy(source["cases"][0]["variants"][0]))
+        source_path.write_text(json.dumps(source) + "\n")
+        with self.assertRaisesRegex(ValueError, "candidate set differs"):
             bind_rebound(expanded, rebound)
 
 

@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -26,6 +27,8 @@ def main():
         for candidate in ("primary", "fallback1"):
             construction = entry if candidate == "primary" else entry["candidates"][0]
             output = OUTPUT / short / candidate
+            if output.exists():
+                shutil.rmtree(output)
             command = [sys.executable, str(REPO / "runtime.py"), "offline",
                        "--manifest", str(MANIFEST), "--case", case_id,
                        "--candidate", candidate, "--output", str(output),

@@ -1,3 +1,11 @@
+## 2026-11-26 03:24 UTC C157964 full CPU suite confirmation
+
+The 35-test C157964 assignment suite passed after the current offline, compatibility, saved-processing, delivery and comparison proof refresh. Its scoped static check passes; strict still rejects its truthful partial status. The test log is hash-bound in the assignment result. Shared ready queue remains 82 assignments, 415 cases, 279 comparisons.
+
+## 2026-11-26 03:22 UTC C157964 proof refresh and C150041 CPU hardening
+
+C157964 refreshed the four selected delivery diagnostic positives and four original-mode rejection negatives against current sealed attempts. Three selected comparison audits and same-attempt controls pass; the scoped static check passes after all current hashes were rebound. The assignment remains partial for original source, physical and legal proof. C150041 added source-bound sweep identity checks; its 73 CPU tests, runtime preflight and scoped static check pass, while the exact strict gate still rejects its truthful partial status. Its HANDOFF records the precise original-source custody requirements. C130864 is now assigned to a new owner for remaining CPU roundabout construction. Shared queue remains 82 assignments, 415 cases, 279 comparisons.
+
 ## 2026-11-26 03:18 UTC current-runtime C143687 ready and C157964 partial progress
 
 `testing__C143687__LVMC-11-22-120-B__cycle_or_scooter_operator` passed its owner exact scoped strict gate and the independent lead rerun (`.runtime-work/c143687-lead-strict-final.log`, `static_checks_passed: true`). Its 3 exact cases and 2 comparison audits were checked against the manifest and plan, then integrated into `work/_shared/gpu-queue.json`: 82 ready assignments, 415 cases, 279 comparisons (SHA-256 `36e5ab011899670a8d89b9cd3d35ec8340d18832c514ebb1310287c425314657`). Original authority, Native motion, media and legal review remain local delivery checks.

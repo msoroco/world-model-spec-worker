@@ -8,8 +8,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from controlled_access_exit import CASES
-from reviewed_site import FIELDS, verify
+from reviewed_site import FIELDS, validate_site, verify
+
+CASES = validate_site.__globals__['CASES']
 
 
 class ReviewedSiteTests(unittest.TestCase):

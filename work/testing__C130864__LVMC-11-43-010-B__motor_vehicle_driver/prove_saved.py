@@ -48,11 +48,14 @@ def main():
             log.write_text(completed.stdout.rstrip() + "\n")
             versions = sorted(output.glob("v*/processing.json"))
             receipt = json.loads(versions[-1].read_text()) if versions else None
+            saved_receipt = folder / ("proof-saved-" + variant + ".json")
+            if versions:
+                saved_receipt.write_bytes(versions[-1].read_bytes())
             row = {"case_id": cid, "variant": variant, "manifest_sha256": manifest_sha,
                    "command": " ".join(command), "exit_code": completed.returncode,
                    "log": str(log.relative_to(ROOT)), "log_sha256": sha(log),
-                   "receipt": str(versions[-1].relative_to(REPO)) if versions else None,
-                   "receipt_sha256": sha(versions[-1]) if versions else None,
+                   "receipt": str(saved_receipt.relative_to(ROOT)) if versions else None,
+                   "receipt_sha256": sha(saved_receipt) if versions else None,
                    "missing_evidence": receipt.get("missing_evidence") if receipt else None,
                    "originals_preserved": receipt.get("originals_preserved") if receipt else None}
             rows.append(row)

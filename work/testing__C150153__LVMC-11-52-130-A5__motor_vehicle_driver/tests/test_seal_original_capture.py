@@ -56,13 +56,19 @@ class OriginalSealTests(unittest.TestCase):
         scratch.mkdir(parents=True, exist_ok=True)
         with TemporaryDirectory(dir=scratch) as temp:
             attempt, site, sources, path, receipt = self.fixture(temp)
-            with patch('seal_original_capture.audit', return_value={'frame_count': 900}):
-                self.assertEqual(seal(attempt, site, sources, path, sha(path)), {'frame_count': 900})
+            with patch('independent_delivery_audit._decode', return_value=900):
+                self.assertEqual(seal(attempt, site, sources, path, sha(path))['frame_count'], 900)
                 stamped = json.loads((attempt / 'delivery-seal.json').read_text())
                 self.assertEqual(stamped['owner_receipt_sha256'], sha(path))
+                self.assertEqual(stamped['owner_receipt_raw'], path.read_text())
                 self.assertEqual(stamped['sources'], json.loads((attempt / 'capture-seal.json').read_text())['sources'])
                 with self.assertRaisesRegex(ValueError, 'overwrite'):
                     seal(attempt, site, sources, path, sha(path))
+                stamped['owner_receipt_raw'] = '{"event":"owner_released"}\n'
+                (attempt / 'delivery-seal.json').write_text(json.dumps(stamped) + '\n')
+                with self.assertRaisesRegex(ValueError, 'owner receipt content missing or changed'):
+                    from independent_delivery_audit import audit
+                    audit(attempt, site, sources)
             (attempt / 'delivery-seal.json').unlink()
             (attempt / 'overview.mkv').write_text('changed synthetic camera\n')
             with self.assertRaisesRegex(ValueError, 'source hashes differ'):

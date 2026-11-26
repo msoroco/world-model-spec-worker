@@ -22,10 +22,11 @@ PHRASE = "parallel with the edge of the roadway"
 def expand(proposal: dict, park_packet: Path, stand_packet: Path) -> dict:
     """Return an exact six-case, source-sealed categorical sweep proposal."""
     binding = bind(park_packet, stand_packet)
-    proposed = {case["case_id"]: case for case in proposal.get("cases", [])
-                if case.get("target_type") != "baseline"}
+    selected = [case for case in proposal.get("cases", [])
+                if case.get("target_type") != "baseline"]
+    proposed = {case["case_id"]: case for case in selected}
     expected = {ASSIGNMENT + "__" + suffix for suffix in REQUESTS}
-    if set(proposed) != expected:
+    if len(selected) != len(proposed) or set(proposed) != expected:
         raise ValueError("source-bound sweep needs exactly six selected cases")
     samples = {row["angle_deg"]: row
                for row in binding["placement_grid"]["offsets"][0]["samples"]}
@@ -84,6 +85,7 @@ def bind_rebound(expanded: dict, rebound_dir: Path) -> dict:
     source_cases = {row["case_id"]: row for row in source["cases"]}
     execution_cases = {row["case_id"]: row for row in execution["cases"]}
     if (len(rows) != 6 or len(source_cases) != 6 or len(execution_cases) != 6 or
+            len(source["cases"]) != 6 or len(execution["cases"]) != 6 or
             set(rows) != set(source_cases) or set(rows) != set(execution_cases) or
             source.get("packet_sha256") != sweep["source_packets_sha256"] or
             source.get("native_map") != sweep["native_map"]):
@@ -96,7 +98,9 @@ def bind_rebound(expanded: dict, rebound_dir: Path) -> dict:
             raise ValueError("selected sweep activity differs")
         variants = {item["id"]: item for item in source_case["variants"]}
         candidates = {item["id"]: item for item in selected["candidates"]}
-        if set(variants) != {"primary", "fallback1"} or set(candidates) != {"fallback1"}:
+        if (len(source_case["variants"]) != 2 or len(selected["candidates"]) != 1 or
+                set(variants) != {"primary", "fallback1"} or
+                set(candidates) != {"fallback1"}):
             raise ValueError("selected sweep candidate set differs")
         candidate_bindings = []
         for candidate_id in ("primary", "fallback1"):

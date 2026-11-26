@@ -1,4 +1,12 @@
-# testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver
+# C130864 current delivery handoff (2026-11-25)
+
+Status: `ready`, `delivery_prepared`. The exact scoped gate `.venv-cpu/bin/python worker_check.py --assignment testing__C130864__LVMC-11-43-010-B__motor_vehicle_driver --complete --require-delivery-ready` passed after all new source-bound CPU proofs. Six exact selected cases and five comparisons are listed in `case-plan.json`; the lead can integrate `queue-proposal.json` after independently checking the scoped gate. The selected `execution-manifest.json` SHA256 is `5ae459ace3a18d9153df79ac9fbf7644b6617664277963f6002e906520fa617f`.
+
+The CARLA camera bridge in `carla_roundabout_readback.py` now waits up to 10 seconds for each asynchronous world-tick frame, uses a condition lock, and raises a saved callback error or missing-frame failure. `tests/test_carla_roundabout_readback.py` exercises delayed callback arrival, timeout, malformed bytes and body vertices. The full focused suite passes 31 tests in `cpu-camera-race-tests.log`. All six primary and six fallback constructions were regenerated from the current bridge, and all 12 exact offline checks passed. All 12 draft and 12 selected positive/missing-source compatibility checks passed, six physical/lifecycle proof receipts were refreshed, 12 selected saved-only positive/missing-map runs passed, and `seal_cpu_delivery.py` passed. The direct execution, semantic, delivery-case and compatibility validators passed. The original map, connected vehicle routes, camera poses, jurisdiction and actual legal-gap interpretation remain absent from the frozen inputs; acquisition enforces review/source hashes before world mutation. Diagnostic fixtures establish only software behavior. Native physical motion, four-camera visibility and independent legal review remain later local checks, with no legal verdict claimed.
+
+Proof commands (run with `PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c130864-output TMPDIR=$PWD/.runtime-work/c130864-tmp`): `prove_offline.py`, `prove_compatibility.py`, `bind_selected_manifest.py`, `build_physical_proofs.py`, `prove_canonical_compat.py`, `prove_saved.py`, `seal_cpu_delivery.py`, and the exact scoped gate above. `prove_offline.py` and `prove_compatibility.py` rebuild from `execution-manifest.draft.json`; `build_physical_proofs.py` then adds physical receipts to the selected manifest before canonical compatibility and saved-only proofs. `cpu-*-proofs.json` and `selected-cpu-delivery-audit.json` contain exact receipt hashes. Temporary fixture attempts and decoder outputs are under `.runtime-work/`.
+
+## Earlier checkpoints
 
 ## 2026-11-25 final CPU delivery preparation
 
