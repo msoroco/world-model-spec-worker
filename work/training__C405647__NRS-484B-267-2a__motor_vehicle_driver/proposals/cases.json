@@ -1,36 +1,9 @@
 {
-  "cell_id": "C405647",
   "actor": "motor_vehicle_driver",
-  "status": "draft",
-  "sweeps_expanded": true,
-  "sweep_specs": [],
   "cases": [
     {
-      "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_a",
-      "target_law_id": "NRS-484B-267-2a",
-      "target_type": "judgment_sweep",
-      "rationale": "Exact selected moving emergency-vehicle speed diagnostic",
-      "variable_assignments": {
-        "ego_target_speed_mps": {
-          "kind": "controller",
-          "value": 7,
-          "unit": "m/s"
-        },
-        "emergency_actor_moving": {
-          "kind": "world_setup",
-          "value": true,
-          "unit": "boolean"
-        },
-        "officer_direction": {
-          "kind": "world_setup",
-          "value": false,
-          "unit": "boolean"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "original vehicle authorization and lamp qualification",
-        "reasonable and proper speed under NRS 484B.600(1)"
-      ],
+      "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__baseline",
+      "rationale": "Shared unselected reference; no qualifying approach asserted.",
       "recording_description": {
         "channels": [
           {
@@ -49,34 +22,93 @@
           "Flashing-light qualification and reasonable speed require original review"
         ]
       },
-      "sweep_measurements": []
+      "target_law_id": null,
+      "target_type": "baseline",
+      "variable_assignments": {
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "unit": "m/s",
+          "value": 14
+        },
+        "emergency_actor_moving": {
+          "kind": "world_setup",
+          "unit": "boolean",
+          "value": false
+        },
+        "officer_direction": {
+          "kind": "world_setup",
+          "unit": "boolean",
+          "value": false
+        }
+      }
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_a",
+      "deliberate_differences": [
+        "ego_target_speed_mps"
+      ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__comparison",
+      "probe": {
+        "comparison_or_standard": "measured original speed response on approach",
+        "primary_variable": "ego_target_speed_mps",
+        "target_value_or_branch": "a"
+      },
+      "rationale": "Exact selected moving emergency-vehicle speed diagnostic",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Saved Native actor velocities, lamp readback and frame/time join",
+            "name": "emergency_speed_and_lamps",
+            "reference_frame": "original Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "uncertainty": "50 ms frame bracket; visual and legal qualification separate",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original site survey and pixels not available to CPU worker",
+          "Flashing-light qualification and reasonable speed require original review"
+        ]
+      },
+      "sweep_measurements": [],
+      "target_law_id": "NRS-484B-267-2a",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "qualifying moving emergency or regulatory vehicle using required flashing lights",
+        "speed reasonable and proper under NRS 484B.600(1)"
+      ],
+      "variable_assignments": {
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "unit": "m/s",
+          "value": 7
+        },
+        "emergency_actor_moving": {
+          "kind": "world_setup",
+          "unit": "boolean",
+          "value": true
+        },
+        "officer_direction": {
+          "kind": "world_setup",
+          "unit": "boolean",
+          "value": false
+        }
+      }
     },
     {
       "case_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__condition_b",
-      "target_law_id": "NRS-484B-267-2a",
-      "target_type": "judgment_sweep",
-      "rationale": "Exact selected moving emergency-vehicle speed diagnostic",
-      "variable_assignments": {
-        "ego_target_speed_mps": {
-          "kind": "controller",
-          "value": 14,
-          "unit": "m/s"
-        },
-        "emergency_actor_moving": {
-          "kind": "world_setup",
-          "value": true,
-          "unit": "boolean"
-        },
-        "officer_direction": {
-          "kind": "world_setup",
-          "value": false,
-          "unit": "boolean"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "original vehicle authorization and lamp qualification",
-        "reasonable and proper speed under NRS 484B.600(1)"
+      "deliberate_differences": [
+        "ego_target_speed_mps"
       ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__selected_d6045110__comparison",
+      "probe": {
+        "comparison_or_standard": "measured original speed response on approach",
+        "primary_variable": "ego_target_speed_mps",
+        "target_value_or_branch": "b"
+      },
+      "rationale": "Exact selected moving emergency-vehicle speed diagnostic",
       "recording_description": {
         "channels": [
           {
@@ -95,7 +127,55 @@
           "Flashing-light qualification and reasonable speed require original review"
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "target_law_id": "NRS-484B-267-2a",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "qualifying moving emergency or regulatory vehicle using required flashing lights",
+        "speed reasonable and proper under NRS 484B.600(1)"
+      ],
+      "variable_assignments": {
+        "ego_target_speed_mps": {
+          "kind": "controller",
+          "unit": "m/s",
+          "value": 14
+        },
+        "emergency_actor_moving": {
+          "kind": "world_setup",
+          "unit": "boolean",
+          "value": true
+        },
+        "officer_direction": {
+          "kind": "world_setup",
+          "unit": "boolean",
+          "value": false
+        }
+      }
     }
-  ]
+  ],
+  "cell_id": "C405647",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Authorization, lamp qualification, movement and original pixels require independent source review.",
+          "phrase": "qualifying moving emergency or regulatory vehicle using required flashing lights"
+        },
+        {
+          "note": "Record original speed and road/weather context without supplying a numeric legal cutoff.",
+          "phrase": "speed reasonable and proper under NRS 484B.600(1)"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native authorization, lamps, movement and officer review",
+        "Reasonable and proper speed judgment under NRS 484B.600(1)"
+      ],
+      "rationale": "Two controlled raw speed requests are constructed; original physical and legal source review remains.",
+      "status": "incomplete",
+      "sweep_id": "training__C405647__NRS-484B-267-2a__motor_vehicle_driver__raw_speed_response",
+      "target_law_id": "NRS-484B-267-2a"
+    }
+  ],
+  "sweeps_expanded": true
 }

@@ -43,7 +43,7 @@ def audit_structure(attempt, request):
     require(request.get("source_kind") == "original_native_observation",
             "Original Native delivery required")
     source_hashes = request.get("source_sha256", {})
-    required = {"result.json", "video_frames.jsonl", "emergency_observations.jsonl",
+    required = {"result.json", "capture-seal.json", "video_frames.jsonl", "emergency_observations.jsonl",
                 "trace.json", "primary.mkv", "pixel-review.json",
                 *(name + ".mkv" for name in VIEWS)}
     require(required <= set(source_hashes), "Original source inventory incomplete")
@@ -71,8 +71,9 @@ def audit_structure(attempt, request):
     sys.path.insert(0, str(repo / "runtime"))
     from scenario_pipeline.worker_exchange.media import verify_receipt
     decode_path = Path(request.get("source_decode_receipt_path", "")).resolve()
-    require(decode_path.is_file() and Path(__file__).resolve().parent in decode_path.parents,
-            "Source decode receipt must live with independent local auditor")
+    scratch = repo / ".runtime-work"
+    require(decode_path.is_file() and scratch in decode_path.parents,
+            "Source decode receipt must live in independent local scratch")
     verify_receipt(within(root, "primary.mkv"), decode_path,
                    FRAMES, mapping_sha256=source_hashes["video_frames.jsonl"])
     review = json.loads(within(root, "pixel-review.json").read_text())
@@ -92,7 +93,7 @@ def audit_structure(attempt, request):
             "Officer-directed exception requires separate branch review")
     physical = request.get("physical_review", {})
     require(physical.get("source_result_sha256") == source_hashes["result.json"]
-            and physical.get("native_capture_seal_sha256") == sha(within(root, "capture-seal.json"))
+            and physical.get("native_capture_seal_sha256") == source_hashes["capture-seal.json"]
             and physical.get("setup_confirmed") is True
             and physical.get("behavior_confirmed") is True
             and physical.get("maneuver_confirmed") is True
@@ -110,6 +111,22 @@ def audit_structure(attempt, request):
 
 def audit(attempt, request):
     value = audit_structure(attempt, request)
+    root = Path(attempt).resolve()
+    seal = json.loads(within(root, "capture-seal.json").read_text())
+    original_names = {"video_frames.jsonl", "emergency_observations.jsonl",
+                      "primary.mkv", *(name + ".mkv" for name in VIEWS)}
+    require(seal.get("format") == "worker-sealed-capture"
+            and seal.get("provenance_kind") == "native"
+            and seal.get("diagnostic_fixture") is False
+            and seal.get("frames") == FRAMES
+            and seal.get("restoration", {}).get("restored") is True
+            and set(seal.get("events", [])) ==
+            {"capture_finished", "encoders_closed", "restoration_verified"}
+            and all(code == 0 for code in seal.get("encoder_exit_codes", {}).values())
+            and all(seal.get("sources", {}).get(name) == value["source_hashes"][name]
+                    for name in original_names)
+            and not json.loads(within(root, "result.json").read_text()).get("cpu_harness_only"),
+            "Native capture seal does not verify original acquisition")
     require(request.get("auditor_mode") == "original_independent_review",
             "Synthetic or delegated review cannot establish delivery")
     require(request.get("job_id") and type(request.get("attempt")) is int

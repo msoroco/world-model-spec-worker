@@ -40,6 +40,8 @@ def measure(folder, expected_hashes, diagnostic=False):
     if not all(len(rows) == FRAMES for rows in (vehicle, occupancy, video)):
         raise ValueError('Complete 30-second source window required')
     actor_id = None
+    instrument_id = None
+    responsible_person_id = None
     unattended = []
     engine_states, brake_states, wheel_angles, movement = [], [], [], []
     for i, (v, o, f) in enumerate(zip(vehicle, occupancy, video)):
@@ -71,6 +73,27 @@ def measure(folder, expected_hashes, diagnostic=False):
             raise ValueError('Instrumented front-wheel state absent')
         if v.get('brake_source') != ('synthetic_instrument' if diagnostic else 'native_control_readback'):
             raise ValueError('Parking-brake readback absent')
+        if not diagnostic:
+            if instrument_id is None:
+                instrument_id = v.get('instrument_id')
+                responsible_person_id = o.get('responsible_person_id')
+            if (not isinstance(instrument_id, str) or not instrument_id or
+                    v.get('instrument_id') != instrument_id or
+                    o.get('instrument_id') != instrument_id or
+                    not isinstance(responsible_person_id, str) or not responsible_person_id or
+                    o.get('responsible_person_id') != responsible_person_id or
+                    not isinstance(v.get('engine_method'), str) or
+                    v['engine_method'] in ('command', 'requested_control', 'speed_proxy') or
+                    not isinstance(v.get('wheel_calibration_id'), str) or
+                    not v['wheel_calibration_id'] or
+                    not isinstance(o.get('attendance_method'), str) or
+                    o['attendance_method'] in ('case_label', 'empty_render', 'requested_control')):
+                raise ValueError('Original instrument method or identity differs')
+            native_wheels = v.get('front_wheel_angles_native_deg')
+            if (not isinstance(native_wheels, dict) or
+                    set(native_wheels) != {'front_left', 'front_right'} or
+                    not all(number(x) for x in native_wheels.values())):
+                raise ValueError('Original front-wheel API observations absent')
         if (type(v.get('engine_running')) is not bool or
                 type(v.get('parking_brake_set')) is not bool or
                 not number(v.get('front_wheel_heading_to_curb_deg')) or

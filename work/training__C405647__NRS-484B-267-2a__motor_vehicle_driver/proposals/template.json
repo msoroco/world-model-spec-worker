@@ -1,0 +1,65 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-267-2a",
+  "parameter_refs": [
+    {
+      "kind": "controller",
+      "name": "ego_target_speed_mps",
+      "range_or_domain": [
+        7,
+        14
+      ]
+    },
+    {
+      "kind": "world_setup",
+      "name": "emergency_actor_moving",
+      "range_or_domain": [
+        true,
+        false
+      ]
+    },
+    {
+      "kind": "world_setup",
+      "name": "officer_direction",
+      "range_or_domain": [
+        true,
+        false
+      ]
+    }
+  ],
+  "quote": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: Decrease the speed of his or her vehicle to a speed that is reasonable and proper, pursuant to the criteria set forth in subsection 1 of NRS 484B.600 [NRS-484B-600-1a]. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "condition": "Approaching a qualifying moving or visibly preparing-to-move vehicle using required flashing lights",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "description": "Officer direction changes the required response; review original instruction.",
+        "source_clause": "except when otherwise directed by a law enforcement officer"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Authorization, lamp qualification, movement and original pixels require independent source review.",
+        "phrase": "qualifying moving emergency or regulatory vehicle using required flashing lights"
+      },
+      {
+        "note": "Record original speed and road/weather context without supplying a numeric legal cutoff.",
+        "phrase": "speed reasonable and proper under NRS 484B.600(1)"
+      }
+    ],
+    "law_id": "NRS-484B-267-2a",
+    "obligation": {
+      "description": "Decrease speed to a reasonable and proper speed under NRS 484B.600(1)",
+      "numeric_conditions": [],
+      "type": "must"
+    },
+    "timing": {
+      "description": "Upon approach; no numeric legal speed or distance cutoff is supplied",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-267-2a@motor_vehicle_driver"
+}

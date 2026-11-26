@@ -39,7 +39,7 @@ class DeliveryAuditTest(unittest.TestCase):
 
     def test_rejects_changed_source_hash(self):
         inventory = {name: "0" * 64 for name in
-                     ("result.json", "video_frames.jsonl", "emergency_observations.jsonl",
+                     ("result.json", "capture-seal.json", "video_frames.jsonl", "emergency_observations.jsonl",
                       "trace.json", "primary.mkv", "pixel-review.json",
                       *(view + ".mkv" for view in audit.VIEWS))}
         for name in inventory:

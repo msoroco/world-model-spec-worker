@@ -23,7 +23,7 @@ def bind():
             construction = ROOT / target["construction"]
             if sha(construction) != target["construction_sha256"]:
                 raise ValueError("Draft construction changed before offline binding")
-            source = REPO / ".runtime-work" / f"c394563-offline-{suffix}-{candidate}-v7" / "offline.log"
+            source = REPO / ".runtime-work" / f"c394563-offline-{suffix}-{candidate}-v10" / "offline.log"
             log = source.read_text()
             if "Ran 2 tests" not in log or not log.rstrip().endswith("OK"):
                 raise ValueError("Pinned offline tests did not pass")
@@ -35,7 +35,7 @@ def bind():
                 "command": "runtime.py offline --manifest work/" + ROOT.name +
                     "/draft-native-manifest.json --case " + entry["case_id"] +
                     " --candidate " + candidate + " --output .runtime-work/c394563-offline-" +
-                    suffix + "-" + candidate + "-v7 --python $PWD/.venv-cpu/bin/python",
+                    suffix + "-" + candidate + "-v10 --python $PWD/.venv-cpu/bin/python",
                 "log": str(destination.relative_to(ROOT)),
                 "log_sha256": sha(destination)}
     path.write_text(json.dumps(manifest, indent=2) + "\n")

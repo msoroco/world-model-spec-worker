@@ -84,9 +84,36 @@ def finalize(attempt, output):
     case_id = construction["case_id"]
     if measured["case_id"] != case_id:
         raise ValueError("Saved exact school-warning case identity differs")
-    from worker_exchange.native_output import write_result
+    from worker_exchange.native_output import physical_result, write_result
     description = construction["recording_description"]
-    write_result(attempt, {
+    native = _jsonl(attempt / "native-rows.jsonl")
+    near_side_x_m = json.loads((attempt / "original-school-lane-review.json").read_text())["nearest_lane_side_x_m"]
+    fields = {
+        "st.crosswalk": lambda row: {"lane_side_x_m": near_side_x_m},
+        "dev.crossing_warning_signal": lambda row: {"active": row["warning_active"], "role": row["warning_role"]},
+        "dev.human_direction": lambda row: {"release_event": row["release_event"]},
+        "ru.child": lambda row: {"about_to_cross_or_crossing": row["children_about_to_cross_or_crossing"], "actor_id": row["child_actor_id"]},
+        "rel.centre_distance": lambda row: {"centre_x_m": row["vehicle_center_x_m"], "near_side_x_m": near_side_x_m},
+        "drv.stopped": lambda row: {"stopped": row["observed_speed_mps"] <= .1},
+        "drv.approaching": lambda row: {"approaching": row["observed_speed_mps"] > .1},
+        "kin.velocity": lambda row: {"speed_mps": row["observed_speed_mps"]},
+        "dev.position": lambda row: {"centre_x_m": row["vehicle_center_x_m"], "centre_y_m": row["vehicle_center_y_m"]},
+    }
+    evidence = []
+    for channel in description["channels"]:
+        name = channel["name"]
+        if name not in fields:
+            raise ValueError("Unknown school-warning observable channel: " + name)
+        reference = "recording-" + name.replace(".", "-") + ".jsonl"
+        (attempt / reference).write_text("".join(json.dumps({"time_s": row["time_s"], "value": fields[name](row)}, allow_nan=False) + "\n" for row in native))
+        evidence.append({"name": name, "unit": channel["unit"], "reference": reference})
+    context_reference = "recording-school-context.json"
+    (attempt / context_reference).write_text(json.dumps({"school_lane_child_warning_review": {
+        "source_inventory_sha256": measured["original_source_inventory_sha256"],
+        "review_sha256": sha(attempt / "original-school-lane-review.json")}}, allow_nan=False) + "\n")
+    evidence.extend({"name": channel["name"], "unit": channel["unit"], "reference": context_reference}
+                    for channel in description["context_inputs"])
+    result = {
         "case_id": case_id, "measured_values": measured,
         "target_checks": [{"target": "observed school-warning stop distance and release",
             "requested": True, "measured": True,
@@ -102,10 +129,10 @@ def finalize(attempt, output):
         "video_references": [name + ".mkv" for name in CAMERAS],
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": description,
-        "recording_evidence": [{"name": channel["name"], "unit": channel["unit"],
-                                "reference": "native-rows.jsonl"}
-                               for channel in description["channels"]],
-        "realized_observables": {}})
+        "recording_evidence": evidence,
+        "realized_observables": {}}
+    result = physical_result(attempt, result)
+    write_result(attempt, result)
     report = {"format": "worker-analysis-report", "case_id": case_id,
               "measurements": {"school_warning_stop": {
                   "method": "derive", "value": measured,

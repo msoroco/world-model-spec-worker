@@ -35,6 +35,8 @@ def main():
     parser.add_argument('--output-dir')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
+    parser.add_argument('--instrument-host')
+    parser.add_argument('--instrument-port', type=int)
     args = parser.parse_args()
     if sum((args.check, bool(args.process_saved), args.capture)) != 1:
         raise SystemExit('choose --check, --process-saved, or --capture')
@@ -44,7 +46,8 @@ def main():
         if not args.output_dir:
             raise SystemExit('--output-dir required')
         case = check()['case_id'].removeprefix(PREFIX)
-        print(json.dumps(capture_execute(case, args.output_dir, args.host, args.port)))
+        print(json.dumps(capture_execute(case, args.output_dir, args.host, args.port,
+                                         args.instrument_host, args.instrument_port)))
     else:
         if not args.source_hashes:
             raise SystemExit('--source-hashes required')

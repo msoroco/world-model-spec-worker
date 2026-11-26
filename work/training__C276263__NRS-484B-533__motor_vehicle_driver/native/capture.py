@@ -12,6 +12,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 
 from grade import check as grade_check, open_drive
+from instrumentation import InstrumentClient, wheel_angles
 
 FRAMES = 600
 RATE = 20
@@ -29,7 +30,7 @@ def check():
         raise ValueError('Graded stand capture design differs')
     return {'passed': True, 'cases': CASES, 'frames': FRAMES, 'rate_hz': RATE,
             'cameras': [x[0] for x in CAMERAS], 'geometry': g,
-            'engine_wheel_occupancy_instrumentation': 'unavailable_in_native_api',
+            'engine_wheel_occupancy_instrumentation': 'external_original_service_required',
             'native_executed': False}
 
 
@@ -54,13 +55,16 @@ def _survey(mapping, carla):
             'opendrive_sha256': hashlib.sha256(mapping.to_opendrive().encode()).hexdigest()}
 
 
-def execute(case, output_dir, host='127.0.0.1', port=2000):
+def execute(case, output_dir, host='127.0.0.1', port=2000,
+            instrument_host=None, instrument_port=None):
     import carla
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
     check()
     if case not in CASES:
         raise ValueError('Unknown exact case')
+    if not instrument_host or type(instrument_port) is not int or not (1 <= instrument_port <= 65535):
+        raise ValueError('Original engine, wheel calibration and attendance instrument endpoint required')
     output = Path(output_dir).resolve()
     if output.exists():
         raise ValueError('Use a fresh original Native attempt directory')
@@ -72,6 +76,7 @@ def execute(case, output_dir, host='127.0.0.1', port=2000):
             ('vehicle.', 'walker.', 'sensor.', 'controller.')) for actor in initial.get_actors()):
         raise RuntimeError('Exclusive idle asynchronous Native world required')
     owned, encoders, camera_queues = [], {}, {}
+    instruments = None
     changed = False
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
@@ -99,6 +104,7 @@ def execute(case, output_dir, host='127.0.0.1', port=2000):
         owned.append(vehicle)
         if vehicle.type_id != 'vehicle.lincoln.mkz_2020':
             raise RuntimeError('Original motor vehicle blueprint differs')
+        instruments = InstrumentClient(instrument_host, instrument_port)
         output.mkdir(parents=True)
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
         (output / 'grade-readback.json').write_text(json.dumps(survey, indent=2) + '\n')
@@ -153,18 +159,29 @@ def execute(case, output_dir, host='127.0.0.1', port=2000):
                 v = vehicle.get_velocity()
                 t = vehicle.get_transform()
                 c = vehicle.get_control()
+                wheels = wheel_angles(vehicle, carla)
+                instrument = instruments.sample(native_frame, vehicle.id, wheels)
                 common = {'frame': i, 'native_frame': native_frame, 'time_s': time_s}
                 vehicle_rows.write(json.dumps(dict(common, source_kind='native_actor',
                     actor_id=vehicle.id, blueprint=vehicle.type_id,
-                    engine_source='instrumented_engine_sensor_missing', engine_running=None,
+                    engine_source='instrumented_engine_sensor',
+                    engine_running=instrument['engine_running'],
+                    engine_method=instrument['engine_method'],
+                    instrument_id=instrument['instrument_id'],
                     brake_source='native_control_readback', parking_brake_set=bool(c.hand_brake),
-                    wheel_source='instrumented_front_wheel_sensor_missing',
-                    front_wheel_heading_to_curb_deg=None,
+                    wheel_source='instrumented_front_wheel_sensor',
+                    front_wheel_heading_to_curb_deg=instrument['front_wheel_heading_to_curb_deg'],
+                    front_wheel_angles_native_deg=wheels,
+                    wheel_calibration_id=instrument['wheel_calibration_id'],
                     requested_steer=float(controls['steer']),
                     speed_mps=math.hypot(v.x, v.y), position_x_m=t.location.x)) + '\n')
                 occupancy_rows.write(json.dumps(dict(common,
-                    source_kind='occupancy_sensor_missing', occupant_count=None,
-                    responsible_person_outside=None)) + '\n')
+                    source_kind='occupancy_sensor',
+                    occupant_count=instrument['occupant_count'],
+                    responsible_person_outside=instrument['responsible_person_outside'],
+                    attendance_method=instrument['attendance_method'],
+                    responsible_person_id=instrument['responsible_person_id'],
+                    instrument_id=instrument['instrument_id'])) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             errors = process.stderr.read()
@@ -174,19 +191,21 @@ def execute(case, output_dir, host='127.0.0.1', port=2000):
         (output / 'source-hashes.json').write_text(json.dumps(
             {name: sha(output / name) for name in SOURCES}, indent=2) + '\n')
         (output / 'instrument-review-required.json').write_text(json.dumps({
-            'format': 'c276263-instrument-review-gap-v1', 'case': case,
+            'format': 'c276263-instrument-review-v2', 'case': case,
+            'instrument_endpoint': [instrument_host, instrument_port],
             'native_control_readback': ['parking_brake_set', 'requested_steer'],
-            'required_original_sources': ['instrumented_engine_sensor',
-                'instrumented_front_wheel_sensor', 'occupancy_sensor',
-                'responsible_person_departure'],
-            'saved_measurement_expected_to_reject': True,
-            'do_not_relabel_missing_as_original': True}, indent=2) + '\n')
+            'original_instrument_fields': ['engine_running', 'front_wheel_heading_to_curb_deg',
+                'occupant_count', 'responsible_person_outside'],
+            'physical_calibration_and_attendance_review_required': True,
+            'do_not_relabel_commands_as_original': True}, indent=2) + '\n')
         return {'case': case, 'frames': FRAMES,
                 'native_brake_and_motion_captured': True,
-                'engine_wheel_occupancy_instrumentation': 'missing',
-                'saved_measurement_ready': False,
+                'engine_wheel_occupancy_instrumentation': 'original_service_packets_recorded',
+                'saved_measurement_ready': True,
                 'physical_acceptance_claimed': False}
     finally:
+        if instruments is not None:
+            instruments.close()
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()

@@ -27,8 +27,8 @@ def audit():
     entries = []
     paths = []
     for suffix, target in (("a", 7.0), ("b", 14.0)):
-        origin = SOURCE / ("c405647-selected-" + suffix + "-compat-v2")
-        saved = SOURCE / ("c405647-selected-" + suffix + "-saved-v2/v0001")
+        origin = SOURCE / ("c405647-selected-" + suffix + "-compat-v3")
+        saved = SOURCE / ("c405647-selected-" + suffix + "-saved-v3/v0001")
         receipt = json.loads((origin / "compatibility.json").read_text())
         processed = json.loads((saved / "processing.json").read_text())
         assert receipt["passed"] is True and REQUIRED <= set(receipt["checks"])

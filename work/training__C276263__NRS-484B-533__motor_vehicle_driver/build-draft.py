@@ -45,7 +45,7 @@ def main():
                                       'No numeric legal definition of perceptible or effective']},
                   'status': 'partial_cpu_draft'}
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
-                 for name in ('runner.py', 'capture.py', 'grade.py', 'measure.py',
+                 for name in ('runner.py', 'capture.py', 'instrumentation.py', 'grade.py', 'measure.py',
                               'tests/test_measure.py')]
         files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
         proposal = {'case_id': case_id, 'law_id': config['law_id'],
@@ -59,11 +59,12 @@ def main():
                     'mechanisms': ['authored 4% graded highway and curb with Native map readback',
                                    'vehicle parking brake command/readback and speed/position trace',
                                    'four original camera FFV1 videos and frame hashes',
-                                   'explicit missing engine, wheel and attendance source fields'],
+                                   'frame-synchronous instrument-service packets with strict actor/frame/provenance joins',
+                                   'native original front-wheel angle readback kept separate from calibrated curb-relative angle'],
                     'termination_rules': ['600 original frames at 20 Hz',
                                           'restore world and destroy owned actors',
-                                          'reject unavailable instrumented state'],
-                    'status': 'partial_native_capture_cpu_checked_instruments_missing'}
+                                          'reject unavailable or stale instrumented state'],
+                    'status': 'partial_native_capture_cpu_checked_instrument_service_required'}
         path = HERE / 'draft-grade' / suffix / 'primary/construction.json'
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(proposal, indent=2) + '\n')

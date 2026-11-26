@@ -1,5 +1,23 @@
 # Full-train delivery best-effort return
 
+## 2026-11-26 selected angle-parking and preparing alternatives CPU checkpoint
+
+C385967 now has both exact 45-degree and 70-degree angle-parking cases passing current-runtime public compatibility through selected finalizer, Native/Core/Lean validation, four-view full decode, source-bound measurement and missing-official-device negative. Its independent comparison holds device, curb and cameras fixed while measuring angle and rejects changed camera FOV, changed device angle and missing device. Independent delivery mechanics passes positives and rejects out-of-bounds pixel boxes; recorded-only and full-law/semantic work continue, so status is partial. C405647-2a added two source-guarded exact preparing-to-move prospective constructions, each passing offline, plus labeled synthetic positive delivery-audit harness proofs; production audit rejects synthetic review mode. Thirty-seven owner CPU tests and scoped partial `--complete` pass, but original-source delivery acceptance remains unavailable and result stays partial.
+
+## 2026-11-26 active CPU construction after C150094 integration
+
+C394563 now has four exact primary/fallback school-warning constructions passing current-runtime offline and public positive/missing-source negative compatibility. A 600-frame recorded-only diagnostic passes with original acquisition preserved; source-shaped complete/incomplete/missing-evidence physical fixtures and lifecycle owner-release tests pass. Statutory release constructions, semantic index, independent delivery and final selected manifest remain, so it is partial. C405647-2a has two exact selected moving-emergency-vehicle cases, paired fallback1 cases and a valid delivery execution manifest; source-bound public/saved/comparison and 37 CPU tests pass. Positive independent delivery acceptance and preparing-to-move alternatives remain, so it is partial. C385967 has two exact angle-parking Native bundles passing offline and seven source-meter tests; the owner corrected a discovered missing `carla_frame` video-map field and is rerunning public compatibility. It remains partial.
+
+## 2026-11-26 C150094 strict ready integration
+
+`training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver` is newly ready on the current runtime. Its owner and lead independently ran `.venv-cpu/bin/python -B worker_check.py --assignment training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver --complete --require-delivery-ready`; both exited 0 with `static_checks_passed: true`. Sixteen exact selected driveway cases and 17 source-bound comparisons bind current-runtime primary/fallback offline, public positive/missing-source negative, recorded-only positive/missing-source negative, semantic, physical preparation and independent delivery CPU proofs. The earlier acquisition-channel issue was fixed with seven explicit `finalize.py`-based mappings. Execution manifest SHA-256 `703684fbdbbba5813bc5bd8874d5afe49f6c8d9c9b1736b2121d60ae9f5439ca`. Original Native motion, sign/authority pixels and legal outcomes remain local review.
+
+The lead rebuilt and independently audited the ordered queue: **156 ready / 97 partial** of 253, 970 planned, 745 selected, 500 comparisons, 1,109 proven candidates and zero dispatchable. Builder `--check`, independent queue audit and return audit pass; queue SHA-256 `2d10aba8afef6e13d066927a1a5834525bb4392bec85c06550b057ecc8130be5`. The full batch strict gate remains unpassed while 97 packages are partial.
+
+## 2026-11-26 C150094 strict readiness revalidation
+
+All 16 selected C150094 exception receipts and saved negatives are now bound. The first provisional scoped strict run found missing acquisition/evidence channel mappings; the owner added explicit `finalize.py`-based mappings for all seven mandatory channels across all 16 cases. A second run exceeded a 240-second subprocess timeout without returning a gate verdict; the exact prior partial result was restored. The owner is rerunning with a longer timeout and automatic rollback. C150094 remains partial until its exact strict gate finishes successfully and the lead independently repeats it.
+
 ## 2026-11-26 comparison queue refresh after exception binding
 
 C150094 bound four additional exception comparisons against the ordinary private-driveway control. The lead rebuilt the ordered queue and independently validated it: **155 ready / 98 partial**, 970 planned, 743 selected, 500 comparisons, 1,107 proven candidates and zero dispatchable. Builder `--check`, independent queue audit and return audit pass; queue SHA-256 `3842519f8cf1cef6c2c1dcfb799f12349c0b69c02d225fdd3a01c182ae47bbf2`. The exception package still awaits its last saved negative and scoped strict check; full batch strict remains unpassed.

@@ -171,13 +171,13 @@ def capture(output_dir, host, port):
                     throttle=command["throttle"] * config["controller_throttle_scale"],
                     brake=command["brake"], steer=command["steer"]))
                 native_frame = world.tick()
-                snapshot = world.get_snapshot()
-                if snapshot.frame != native_frame:
+                world_snapshot = world.get_snapshot()
+                if world_snapshot.frame != native_frame:
                     raise RuntimeError("Native snapshot frame differs")
                 if first_time is None:
-                    first_time = snapshot.timestamp.elapsed_seconds - .05
+                    first_time = world_snapshot.timestamp.elapsed_seconds - .05
                 time_s = (index + 1) / 20
-                if abs(snapshot.timestamp.elapsed_seconds - first_time - time_s) > .001:
+                if abs(world_snapshot.timestamp.elapsed_seconds - first_time - time_s) > .001:
                     raise RuntimeError("Native 20 Hz time join differs")
                 pipeline.capture(native_frame, time_s)
                 camera_native = {}
