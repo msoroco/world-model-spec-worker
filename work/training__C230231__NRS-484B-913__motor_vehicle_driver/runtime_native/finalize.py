@@ -3,13 +3,15 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from shapely.geometry import LineString, Polygon
 
 from measure_hose import CAMERAS, FRAMES, measure
 
 LAW = 'A vehicle shall not be driven over any unprotected hose of a fire department when laid down on any highway or private way or place for use at any fire or alarm of fire or practice runs, without the consent of the fire department official in command.'
 SOURCES = ('road.xodr', 'actor-sources.jsonl', 'camera-frames.jsonl',
-           'hose-source.json', 'way-review.json', 'hose-review.json',
-           'command-review.json', 'video_frames.jsonl', 'reference_corner.mkv')
+           'hose-source.json', 'department-presence.json', 'communication-setup.json',
+           'way-review.json', 'hose-review.json', 'command-review.json',
+           'video_frames.jsonl', 'reference_corner.mkv')
 CHANNELS = ('st.obstruction', 'rel.occupies', 'kin.path_length', 'st.highway',
             'ru.fire_apparatus', 'dev.human_direction', 'kin.velocity')
 
@@ -34,6 +36,8 @@ def measured(root):
     sources = {name: required(root, name) for name in SOURCES}
     config = json.loads(required(root, 'config.json').read_text())
     hose = json.loads(sources['hose-source.json'].read_text())
+    department = json.loads(sources['department-presence.json'].read_text())
+    communication = json.loads(sources['communication-setup.json'].read_text())
     way = json.loads(sources['way-review.json'].read_text())
     hose_review = json.loads(sources['hose-review.json'].read_text())
     command = json.loads(sources['command-review.json'].read_text())
@@ -48,14 +52,25 @@ def measured(root):
         raise ValueError('Qualifying way source differs')
     if not way.get('road_access_basis') or way.get('hose_on_actual_route') is not True:
         raise ValueError('Highway dedication, access and placement review absent')
-    if hose_review.get('hose_source_sha256') != sha(sources['hose-source.json']) or hose_review.get('pixel_sha256') != sha(sources['reference_corner.mkv']):
+    pixel_bound = (hose_review.get('pixel_sha256') == 'synthetic_rgb_source' if diagnostic
+                   else hose_review.get('pixel_sha256') == sha(sources['reference_corner.mkv']))
+    if hose_review.get('hose_source_sha256') != sha(sources['hose-source.json']) or not pixel_bound:
         raise ValueError('Hose inventory or original pixels differ')
+    if (hose_review.get('department_presence_sha256') != sha(sources['department-presence.json']) or
+            'firetruck' not in department.get('fire_apparatus_blueprint', '') or
+            department.get('command_role_actor_id') != communication.get('official_actor_id') or
+            hose.get('official_in_command_id') != communication.get('official_actor_id')):
+        raise ValueError('Original department presence or command-role source differs')
     if hose_review.get('department_affiliation') is not True or hose_review.get('fire_use_purpose') not in ('fire', 'alarm', 'practice_run'):
         raise ValueError('Department affiliation or use purpose review absent')
     if hose_review.get('protection_arrangements') is None or type(hose_review.get('unprotected')) is not bool:
         raise ValueError('Independent protection arrangement review absent')
     if command.get('actor_sha256') != sha(sources['actor-sources.jsonl']) or command.get('case_id') != config['case_id']:
         raise ValueError('Command review actor/case source differs')
+    if (command.get('communication_setup_sha256') != sha(sources['communication-setup.json']) or
+            communication.get('case_id') != config['case_id'] or
+            communication.get('scope_case_id') != config['case_id']):
+        raise ValueError('Command communication setup source differs')
     if not command.get('official_identity') or command.get('command_status') != 'official_in_command':
         raise ValueError('Command-official identity and status review absent')
     if command.get('vehicle_class') != 'ordinary_motor_vehicle' or command.get('human_driver') is not True:
@@ -65,8 +80,12 @@ def measured(root):
     if command['communication_status'] == 'documented_consent':
         if command.get('permission') != 'drive_over_hose' or command.get('scope_case_id') != config['case_id'] or not command.get('timing_source'):
             raise ValueError('Consent content, scope or timing source absent')
+        if communication.get('communication_setup') != 'authored_radio_permission' or communication.get('permission') != 'drive_over_hose':
+            raise ValueError('Authored radio permission setup differs')
     if command['communication_status'] == 'explicit_none' and command.get('monitoring_window') != 'full_original_capture':
         raise ValueError('Explicit no-communication monitoring source absent')
+    if command['communication_status'] == 'explicit_none' and communication.get('communication_setup') != 'explicit_no_communication':
+        raise ValueError('Explicit no-communication setup differs')
     frame_map = rows(sources['video_frames.jsonl'])
     if len(frame_map) != FRAMES:
         raise ValueError('Original frame map incomplete')
@@ -76,6 +95,10 @@ def measured(root):
         if set(row.get('camera_native_frames', {})) != set(CAMERAS):
             raise ValueError('Original four-camera join differs')
     result = measure(root, config['case_id'], 'synthetic_cpu' if diagnostic else 'original_native')
+    for key in ('legal_verdict', 'hose_unprotected_per_source',
+                'consent_documented_from_command_official',
+                'missing_consent_record_means_no_consent', 'hose_radius_is_law'):
+        result.pop(key, None)
     for name in CAMERAS:
         required(root, name + '.mkv')
     return result, way, hose_review, command, {name: sha(path) for name, path in sources.items()}
@@ -142,10 +165,14 @@ def report(root):
         'sources': {'law-text.json': sha(root / 'law-text.json')}}
     channels = {name: [] for name in CHANNELS}
     actor_rows = rows(root / 'actor-sources.jsonl')
+    hose_geometry = json.loads(required(root, 'hose-source.json').read_text())
+    hose_region = LineString(hose_geometry['hose_centerline_xy_m']).buffer(hose_geometry['hose_radius_m'])
     for i, actor in enumerate(actor_rows):
+        overlap_m2 = Polygon(actor['ego_footprint_xy_m']).intersection(hose_region).area
         values = {
             'st.obstruction': {'hose_review_sha256': sha(root / 'hose-review.json')},
-            'rel.occupies': {'driven_overlap': value['first_driven_hose_overlap_frame'] is not None and i >= value['first_driven_hose_overlap_frame']},
+            'rel.occupies': {'overlap_area_m2': overlap_m2,
+                             'driven_overlap': overlap_m2 > 0 and actor['ego_speed_mps'] > .1},
             'kin.path_length': {'total_path_m': value['ego_center_path_length_m']},
             'st.highway': {'way_kind': way['way_kind']},
             'ru.fire_apparatus': {'department_affiliation': hose['department_affiliation']},

@@ -1,13 +1,15 @@
-"""Independent original-source audit for selected access-aisle deliveries."""
+"""Independent original-source and authority audit for selected hose deliveries."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SOURCE_NAMES = ('road.xodr', 'aisle-context.json', 'premises-review.json',
-                'aisle-designation-review.json', 'parking-review.json',
-                'native-vehicle.jsonl', 'video_frames.jsonl', 'reference_corner.mkv')
+SOURCE_NAMES = ('road.xodr', 'actor-sources.jsonl', 'camera-frames.jsonl',
+                'hose-source.json', 'department-presence.json', 'communication-setup.json',
+                'way-review.json', 'hose-review.json', 'command-review.json',
+                'video_frames.jsonl', 'reference_corner.mkv')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):
@@ -21,13 +23,16 @@ def read(path):
     return json.loads(path.read_text())
 
 
+def count(path):
+    return len(Path(path).read_text().splitlines())
+
+
 def audit(case, candidate, attempt, processing, diagnostic, omit_source=None):
     manifest = read(HERE / 'execution-manifest.json')
     entry = next((e for e in manifest['cases'] if e['case_id'] == case), None)
     if entry is None:
         raise ValueError('Unknown selected case')
-    selected = entry if candidate == 'primary' else next(
-        (e for e in entry['candidates'] if e['id'] == candidate), None)
+    selected = entry if candidate == 'primary' else next((e for e in entry['candidates'] if e['id'] == candidate), None)
     if selected is None:
         raise ValueError('Unknown selected candidate')
     saved = read(processing)
@@ -47,43 +52,53 @@ def audit(case, candidate, attempt, processing, diagnostic, omit_source=None):
         if not path.is_file():
             raise ValueError('Missing source: ' + name)
         hashes[name] = sha(path)
+    if count(stage / 'actor-sources.jsonl') != 600 or count(stage / 'camera-frames.jsonl') != 2400:
+        raise ValueError('Original actor or camera source frames incomplete')
+    if count(stage / 'trace.jsonl') != 600 or count(stage / 'video_frames.jsonl') != 600:
+        raise ValueError('Original trace or frame map incomplete')
     result = read(stage / 'result.json')
     report = read(stage / 'analysis-report.json')
-    if (result.get('case_id') != case or result.get('trace_reference') != 'trace.jsonl' or
-            len((stage / 'trace.jsonl').read_text().splitlines()) != 600 or
-            len((stage / 'video_frames.jsonl').read_text().splitlines()) != 600):
-        raise ValueError('Original trace or frame map differs')
-    measurement = report.get('measurements', {}).get('source_bound_aisle_parking', {})
+    if result.get('case_id') != case or result.get('trace_reference') != 'trace.jsonl':
+        raise ValueError('Original result or trace reference differs')
+    if set(result.get('video_references', [])) != {n + '.mkv' for n in CAMERAS}:
+        raise ValueError('Original four-camera references differ')
+    for name in CAMERAS:
+        if not (stage / (name + '.mkv')).is_file():
+            raise ValueError('Missing source: ' + name + '.mkv')
+    measurement = report.get('measurements', {}).get('source_bound_hose_passage', {})
     if (measurement.get('method') != 'measured' or
             any(measurement.get('sources', {}).get(name) != hashes[name] for name in SOURCE_NAMES)):
-        raise ValueError('Source-bound aisle measurement differs')
+        raise ValueError('Source-bound hose measurement differs')
     value = measurement.get('value', {})
-    if (value.get('frame_count') != 600 or value.get('legal_verdict_claimed') is not False or
-            type(value.get('stationary_overlap_samples')) is not int):
-        raise ValueError('Aisle footprint measurement differs')
-    designation = read(stage / 'aisle-designation-review.json')
-    premises = read(stage / 'premises-review.json')
-    parking = read(stage / 'parking-review.json')
-    if (designation.get('road_sha256') != hashes['road.xodr'] or
-            premises.get('road_sha256') != hashes['road.xodr'] or
-            designation.get('pixel_sha256') != hashes['reference_corner.mkv'] or
-            parking.get('motion_sha256') != hashes['native-vehicle.jsonl'] or
-            len({designation.get('source'), premises.get('source'), parking.get('source')}) != 3 or
-            not designation.get('contrasting_marking_or_paving') or
-            designation.get('vehicle_ingress_egress') is not True or
-            designation.get('accessible_route_connectivity') is not True or
-            not designation.get('adjacent_accessible_bay') or
-            premises.get('jurisdiction_reviewed') is not True or
-            parking.get('vehicle_class') != 'motor_vehicle' or
-            not parking.get('responsible_person') or
-            any(not parking.get(k) for k in ('occupancy', 'loading_purpose', 'actual_loading_activity'))):
-        raise ValueError('Independent premises, designation, route or parking source join differs')
-    if designation.get('designation_route') == '11.52.135(A)_sign':
-        sign = designation.get('conditional_11_52_135A_sign')
-        if not isinstance(sign, dict) or sign.get('access_symbol') is not True or not sign.get('minimum_fine_wording_or_equivalent') or type(sign.get('sign_bottom_height_ft')) not in (int, float) or sign['sign_bottom_height_ft'] < 4:
-            raise ValueError('Conditional accessible-space sign source incomplete')
-    elif designation.get('designation_route') != 'direct_marking_and_accessible_bay':
-        raise ValueError('Aisle designation route differs')
+    if value.get('frames') != 600 or type(value.get('driven_hose_overlap_frames')) is not int:
+        raise ValueError('Original hose passage measurement differs')
+    way = read(stage / 'way-review.json')
+    hose = read(stage / 'hose-review.json')
+    command = read(stage / 'command-review.json')
+    presence = read(stage / 'department-presence.json')
+    communication = read(stage / 'communication-setup.json')
+    if (way.get('road_sha256') != hashes['road.xodr'] or not way.get('road_access_basis') or
+            way.get('hose_on_actual_route') is not True or
+            hose.get('hose_source_sha256') != hashes['hose-source.json'] or
+            hose.get('department_presence_sha256') != hashes['department-presence.json'] or
+            'firetruck' not in presence.get('fire_apparatus_blueprint', '') or
+            presence.get('command_role_actor_id') != communication.get('official_actor_id') or
+            hose.get('department_affiliation') is not True or
+            hose.get('fire_use_purpose') not in ('fire', 'alarm', 'practice_run') or
+            not hose.get('protection_arrangements') or
+            command.get('actor_sha256') != hashes['actor-sources.jsonl'] or
+            command.get('communication_setup_sha256') != hashes['communication-setup.json'] or
+            command.get('case_id') != case or not command.get('official_identity') or
+            command.get('command_status') != 'official_in_command' or
+            command.get('vehicle_class') != 'ordinary_motor_vehicle' or
+            command.get('human_driver') is not True or
+            len({way.get('source'), hose.get('source'), command.get('source')}) != 3):
+        raise ValueError('Independent way, hose, driver or command source join differs')
+    if command.get('communication_status') == 'documented_consent':
+        if command.get('permission') != 'drive_over_hose' or command.get('scope_case_id') != case or not command.get('timing_source') or communication.get('communication_setup') != 'authored_radio_permission':
+            raise ValueError('Consent content, timing or scope source differs')
+    elif command.get('communication_status') != 'explicit_none' or command.get('monitoring_window') != 'full_original_capture' or communication.get('communication_setup') != 'explicit_no_communication':
+        raise ValueError('Explicit no-communication source differs')
     if diagnostic:
         receipt = read(Path(attempt) / 'compatibility.json')
         if (receipt.get('passed') is not True or receipt.get('case_id') != case or
@@ -94,18 +109,18 @@ def audit(case, candidate, attempt, processing, diagnostic, omit_source=None):
         provenance = read(Path(attempt) / 'acquisition-provenance.json')
         if provenance.get('provenance_kind') != 'native' or provenance.get('diagnostic_fixture') is True:
             raise ValueError('Original Native acquisition required')
-        for source in (designation, premises, parking):
-            if source.get('review_status') != 'independently_reviewed' or not source.get('reviewer'):
+        for review in (way, hose, command):
+            if review.get('review_status') != 'independently_reviewed' or not review.get('reviewer'):
                 raise ValueError('Independent original review incomplete')
-        pixel = read(stage / 'aisle-pixel-review.json')
-        if (pixel.get('review_status') != 'independently_reviewed' or
-                pixel.get('frame_map_sha256') != hashes['video_frames.jsonl'] or
-                pixel.get('source_video_sha256') != hashes['reference_corner.mkv']):
-            raise ValueError('Independent original aisle pixel review incomplete')
+        if hose.get('pixel_sha256') != hashes['reference_corner.mkv']:
+            raise ValueError('Original hose pixel review differs')
+        pixel = read(stage / 'hose-pixel-review.json')
+        if pixel.get('review_status') != 'independently_reviewed' or pixel.get('frame_map_sha256') != hashes['video_frames.jsonl'] or pixel.get('source_video_sha256') != hashes['reference_corner.mkv']:
+            raise ValueError('Independent original hose pixel review incomplete')
         physical = result.get('physical_checks', {}).get('maneuver', {})
         if physical.get('status') != 'met' or result.get('maneuver_completed') is not True:
-            raise ValueError('Original physical approach completion unverified')
-    return {'format': 'c200542-independent-delivery-audit-v1', 'case_id': case,
+            raise ValueError('Original physical travel completion unverified')
+    return {'format': 'c230231-independent-delivery-audit-v1', 'case_id': case,
             'candidate_id': candidate, 'construction_sha256': selected['construction_sha256'],
             'saved_processing_sha256': sha(processing), 'original_source_sha256': hashes,
             'diagnostic_only': diagnostic, 'physical_or_legal_acceptance_claimed': False}
@@ -128,8 +143,7 @@ def main():
     if args.output.exists():
         raise ValueError('Retain previous delivery audit result')
     args.output.write_text(json.dumps(receipt, indent=2) + '\n')
-    print(json.dumps({'passed': True, 'case_id': args.case,
-                      'diagnostic_only': args.diagnostic}))
+    print(json.dumps({'passed': True, 'case_id': args.case, 'diagnostic_only': args.diagnostic}))
 
 
 if __name__ == '__main__':

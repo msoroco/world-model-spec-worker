@@ -1,4 +1,4 @@
-"""Run exact offline and current-runtime public compatibility for both candidates."""
+"""Run exact offline and current-runtime public compatibility for all four hose cases and candidates."""
 import hashlib
 import json
 import os
@@ -34,7 +34,7 @@ def main():
         proof.mkdir(parents=True, exist_ok=True)
         for candidate, row in [('primary', entry), ('fallback1', entry['candidates'][0])]:
             short = 'primary' if candidate == 'primary' else 'fallback1'
-            offline_out = ROOT / '.runtime-work' / ('c200542-v4-offline-' + suffix + '-' + short)
+            offline_out = ROOT / '.runtime-work' / ('c230231-v4-offline-' + suffix + '-' + short)
             command = [sys.executable, str(ROOT / 'runtime.py'), 'offline', '--manifest', str(MANIFEST),
                        '--case', case, '--candidate', candidate, '--output', str(offline_out)]
             run(command, offline_out)
@@ -43,7 +43,7 @@ def main():
             row['offline'] = {'exit_code': 0, 'construction_sha256': row['construction_sha256'],
                               'command': 'runtime.py offline --case ' + case + ' --candidate ' + candidate,
                               'log': str(offline_log.relative_to(HERE)), 'log_sha256': sha(offline_log)}
-            compat_out = ROOT / '.runtime-work' / ('c200542-v4-compat-' + suffix + '-' + short)
+            compat_out = ROOT / '.runtime-work' / ('c230231-v4-compat-' + suffix + '-' + short)
             command = [sys.executable, str(ROOT / 'runtime.py'), 'compatibility', '--manifest', str(MANIFEST),
                        '--case', case, '--candidate', candidate, '--output', str(compat_out),
                        '--library', str(ROOT / 'runtime/library'), '--validator', str(DECODER)]

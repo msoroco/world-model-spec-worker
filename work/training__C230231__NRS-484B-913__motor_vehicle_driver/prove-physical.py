@@ -37,7 +37,7 @@ def run_case(suffix):
     destination = HERE / 'proofs' / suffix
     destination.mkdir(parents=True, exist_ok=True)
     fixtures = []
-    with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work', prefix='c200542-physical-') as temporary:
+    with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work', prefix='c230231-physical-') as temporary:
         root = Path(temporary)
         (root / 'config.json').write_text(json.dumps(config))
         (root / 'video_frames.jsonl').write_text(diagnostic['files']['video_frames.jsonl'])
@@ -96,7 +96,7 @@ def run_case(suffix):
                               'native_exit_sha256': sha(lifecycle / 'native-exit.json'),
                               'owner_release_sha256': sha(root / 'owner-release.json')})
     proof_path = destination / 'physical-preparation.json'
-    write(proof_path, {'format': 'c200542-physical-preparation-cpu-proof-v1',
+    write(proof_path, {'format': 'c230231-physical-preparation-cpu-proof-v1',
                        'case_id': case, 'construction_sha256': sha(construction_path),
                        'fixtures': fixtures, 'lifecycle': {'events': expected_events,
                            'exit_code': 0, 'log': str(lifecycle_log.relative_to(HERE)),
@@ -108,4 +108,4 @@ def run_case(suffix):
 
 if __name__ == '__main__':
     print(json.dumps({'proofs': [run_case(s) for s in
-        ('controlled_1', 'controlled_2')]}, indent=2))
+        ('witness_1', 'witness_2', 'exception_1_1', 'exception_1_2')]}, indent=2))

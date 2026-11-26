@@ -37,6 +37,9 @@ def measure(root, case_id, source_kind='synthetic_cpu'):
     actors_file = root / 'actor-sources.jsonl'
     camera_file = root / 'camera-frames.jsonl'
     context_file = root / 'crosswalk-source.json'
+    for path in (actors_file, camera_file, context_file):
+        if not path.is_file():
+            raise ValueError('Missing required source: ' + path.name)
     actors = rows(actors_file)
     camera = rows(camera_file)
     context = json.loads(context_file.read_text())

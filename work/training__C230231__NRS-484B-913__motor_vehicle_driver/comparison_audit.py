@@ -1,4 +1,4 @@
-"""Independent fixed-condition and footprint-contrast audit for the aisle pair."""
+"""Independent fixed-condition and measured hose/consent contrast audit."""
 import argparse
 import hashlib
 import json
@@ -39,9 +39,9 @@ def audit(comparison_id, processing_specs, omit_case=None):
         stage = Path(saved['analysis_directory'])
         config = read(stage / 'config.json')
         report = read(stage / 'analysis-report.json')
-        measured = report.get('measurements', {}).get('source_bound_aisle_parking', {})
+        measured = report.get('measurements', {}).get('source_bound_hose_passage', {})
         if measured.get('method') != 'measured':
-            raise ValueError('Comparison lacks source-bound aisle measurement')
+            raise ValueError('Comparison lacks source-bound hose measurement')
         for name, digest in measured.get('sources', {}).items():
             if digest != sha(stage / name):
                 raise ValueError('Comparison source changed: ' + name)
@@ -51,19 +51,39 @@ def audit(comparison_id, processing_specs, omit_case=None):
                   'required_atoms', 'source_packets', 'physical_completion'):
         if any(config[field] != configs[0][field] for config in configs[1:]):
             raise ValueError('Comparison fixed condition changed: ' + field)
-    if [config['case_suffix'] for config in configs] != ['controlled_1', 'controlled_2']:
-        raise ValueError('Aisle footprint request contrast changed')
-    counts = [row[2]['stationary_overlap_samples'] for row in observations]
-    if counts[0] != 0 or counts[1] <= 0:
-        raise ValueError('Outside/inside original source measurement differs')
-    for name in ('road.xodr', 'aisle-context.json', 'premises-review.json',
-                 'aisle-designation-review.json', 'reference_corner.mkv'):
+    suffixes = [config['case_suffix'] for config in configs]
+    counts = [row[2]['driven_hose_overlap_frames'] for row in observations]
+    if comparison_id.endswith('witness_comparison'):
+        if suffixes != ['witness_1', 'witness_2'] or counts[0] != 0 or counts[1] <= 0:
+            raise ValueError('Route-around/across source measurement differs')
+        if any(config['consent_record_requested'] for config in configs):
+            raise ValueError('Witness comparison command condition changed')
+    else:
+        if suffixes != ['exception_1_1', 'exception_1_2'] or min(counts) <= 0:
+            raise ValueError('Consent comparison passage condition differs')
+        if [config['consent_record_requested'] for config in configs] != [False, True]:
+            raise ValueError('Consent contrast changed')
+    for name in ('road.xodr', 'reference_corner.mkv'):
         if len({sha(row[3] / name) for row in observations}) != 1:
-            raise ValueError('Fixed premises or designation source changed: ' + name)
-    return {'format': 'c200542-independent-comparison-audit-v1',
+            raise ValueError('Fixed way or pixels changed: ' + name)
+    reviews = [(read(row[3] / 'way-review.json'), read(row[3] / 'hose-review.json'),
+                read(row[3] / 'command-review.json')) for row in observations]
+    for key in ('way_kind', 'road_access_basis', 'hose_on_actual_route'):
+        if reviews[0][0].get(key) != reviews[1][0].get(key):
+            raise ValueError('Fixed way context changed: ' + key)
+    for key in ('department_affiliation', 'fire_use_purpose', 'protection_arrangements', 'unprotected'):
+        if reviews[0][1].get(key) != reviews[1][1].get(key):
+            raise ValueError('Fixed hose context changed: ' + key)
+    if comparison_id.endswith('witness_comparison'):
+        if [r[2].get('communication_status') for r in reviews] != ['explicit_none', 'explicit_none']:
+            raise ValueError('Fixed command communication changed')
+    else:
+        if [r[2].get('communication_status') for r in reviews] != ['explicit_none', 'documented_consent']:
+            raise ValueError('Command communication contrast changed')
+    return {'format': 'c230231-independent-comparison-audit-v1',
             'comparison_id': comparison_id, 'case_ids': comparison['case_ids'],
             'fixed_conditions_checked': True, 'differences_checked': True,
-            'stationary_overlap_samples': counts,
+            'driven_hose_overlap_frames': counts,
             'analysis_sha256': {row[0]: row[4] for row in observations},
             'physical_or_legal_acceptance_claimed': False}
 

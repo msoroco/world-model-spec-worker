@@ -84,6 +84,33 @@ def execute(output_dir, host, port):
         if vehicle is None:
             raise RuntimeError('Original vehicle spawn failed')
         owned.append(vehicle)
+        fire_blueprints = world.get_blueprint_library().filter('vehicle.*firetruck*')
+        if not fire_blueprints:
+            raise RuntimeError('Original fire apparatus blueprint unavailable')
+        fire_truck = world.try_spawn_actor(fire_blueprints[0], carla.Transform(
+            carla.Location(x=17, y=-9, z=1.3), carla.Rotation(yaw=180)))
+        if fire_truck is None:
+            raise RuntimeError('Original fire apparatus spawn failed')
+        owned.append(fire_truck)
+        official_bp = world.get_blueprint_library().find('walker.pedestrian.0001')
+        official = world.try_spawn_actor(official_bp, carla.Transform(
+            carla.Location(x=11, y=-10, z=1.0), carla.Rotation(yaw=180)))
+        if official is None:
+            raise RuntimeError('Original command-role actor spawn failed')
+        owned.append(official)
+        (output / 'department-presence.json').write_text(json.dumps({
+            'source_kind': 'original_native', 'fire_apparatus_actor_id': fire_truck.id,
+            'fire_apparatus_blueprint': fire_truck.type_id,
+            'command_role_actor_id': official.id,
+            'command_role_status': 'authored_candidate_pending_independent_review',
+            'department_affiliation_confirmed': False}, indent=2) + '\n')
+        (output / 'communication-setup.json').write_text(json.dumps({
+            'source_kind': 'original_native', 'case_id': cfg['case_id'],
+            'official_actor_id': official.id,
+            'communication_setup': 'authored_radio_permission' if cfg['consent_record_requested'] else 'explicit_no_communication',
+            'permission': 'drive_over_hose' if cfg['consent_record_requested'] else None,
+            'timing': 'before_first_capture_frame', 'scope_case_id': cfg['case_id'],
+            'legal_consent_confirmed': False}, indent=2) + '\n')
         capture = PipelineCapture(client, vehicle, output, cfg['case_id'],
                                   visibility=False,
                                   required_observations=cfg.get('required_atoms', []))
@@ -169,7 +196,7 @@ def execute(output_dir, host, port):
             'cover_inventory_source': 'operator_readback',
             'cover_or_ramp_present': False,
             'protection_arrangements_status': 'pending_independent_review',
-            'official_in_command_id': None, 'command_status': 'pending_independent_review',
+            'official_in_command_id': official.id, 'command_status': 'pending_independent_review',
             'consent_record': None,
             'communication_status': 'pending_independent_review'}, indent=2) + '\n')
         complete = True
