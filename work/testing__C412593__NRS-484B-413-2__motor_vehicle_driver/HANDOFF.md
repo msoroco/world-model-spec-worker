@@ -250,3 +250,7 @@ The assignment-scoped strict `worker_check.py --complete --require-delivery-read
 ## 2026-11-23 historical log archive for C125745 return slots
 
 Older result-linked logs from this package were preserved byte-exactly, including their result test rows, in `work/_shared/c125745-primary-restore-cap-20261123.tar.xz` (SHA256 `a0e892a9fda7f424514e15a865c1f3f4914b91ff1ae153afdb618d65f17883eb`). The archive index records original paths, bytes and SHA256 values, and every member was verified before removal. The assignment-scoped complete strict delivery-ready gate passed after archival; this package remains **ready**.
+
+## 2026-11-26 current-runtime renewal
+
+All eight selected cases and 32 candidate paths have freshly generated current-runtime offline and positive/negative compatibility proofs. The prior execution manifest is preserved in `prior-runtime-20261125/`; the canonical execution manifest now binds runtime SHA `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`. `.venv-cpu/bin/python worker_check.py --assignment testing__C412593__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0 with `static_checks_passed: true`.
