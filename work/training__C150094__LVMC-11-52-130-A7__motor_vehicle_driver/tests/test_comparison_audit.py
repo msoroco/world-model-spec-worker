@@ -61,6 +61,17 @@ class ComparisonAuditTests(unittest.TestCase):
         self.assertTrue(compare(near, stopped, 'action_stop')['passed'])
         self.assertTrue(compare(near, standing, 'action_stand')['passed'])
         self.assertTrue(compare(stopped, standing, 'action_stop_stand')['passed'])
+        for probe, comparison, fact, source in [
+            ('13', 'necessary_traffic_conflict', 'necessary_to_avoid_traffic_conflict', 'traffic_conflict_source'),
+            ('14', 'complying_with_law', 'complying_with_law', 'applicable_law_source'),
+            ('15', 'officer_direction', 'officer_direction', 'officer_direction_source'),
+            ('16', 'traffic_device_direction', 'traffic_device_direction', 'traffic_device_direction_source')]:
+            exception = case(probe, 1.2, False)
+            near['context'][fact] = False
+            exception['context'][fact] = True
+            exception['context'][source] = 'test source declaration'
+            self.assertTrue(compare(near, exception, comparison)['passed'])
+            near['context'].pop(fact)
 
     def test_rejects_uncontrolled_source_change(self):
         far, near = case('01', 2.0, False), case('02', 1.2, False)
@@ -107,6 +118,11 @@ class ComparisonAuditTests(unittest.TestCase):
         false_stopped['context']['vehicle_action_source'] = 'test operator command'
         with self.assertRaisesRegex(ValueError, 'service-brake action'):
             compare(near, false_stopped, 'action_stop')
+        false_conflict = case('13', 1.2, False)
+        near['context']['necessary_to_avoid_traffic_conflict'] = False
+        false_conflict['context']['necessary_to_avoid_traffic_conflict'] = True
+        with self.assertRaisesRegex(ValueError, 'source-declared reason'):
+            compare(near, false_conflict, 'necessary_traffic_conflict')
 
 
 if __name__ == '__main__':

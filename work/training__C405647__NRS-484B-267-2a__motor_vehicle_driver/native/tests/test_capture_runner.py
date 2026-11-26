@@ -29,6 +29,15 @@ def survey():
 
 
 class CapturePlanTest(unittest.TestCase):
+    def test_four_original_camera_encode_commands(self):
+        for name in runner.VIEWS:
+            command = runner.camera_encode_command("/tmp/original-attempt", name)
+            self.assertEqual(command[0], "ffmpeg")
+            self.assertEqual(command[command.index("-frames:v") + 1], "600")
+            self.assertEqual(command[command.index("-framerate") + 1], "20")
+            self.assertTrue(any(value.endswith(name + "/%06d.png") for value in command))
+            self.assertTrue(command[-1].endswith("/" + name + ".mkv"))
+
     def test_two_exact_plans(self):
         for suffix in ("a", "b"):
             with self.subTest(suffix=suffix):

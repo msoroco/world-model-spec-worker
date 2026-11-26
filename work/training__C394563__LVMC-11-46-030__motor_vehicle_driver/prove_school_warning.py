@@ -56,6 +56,19 @@ if __name__ == "__main__":
     far = measure(context(), trace())
     near = measure(context(), trace(40))
     flagman = measure(context(), trace(role="flagman", release="flagman_go"))
+    releases = {
+        "signal_stopped": ("signal_device", "signal_stopped"),
+        "signal_raised": ("signal_device", "signal_raised"),
+        "signal_removed": ("signal_device", "signal_removed"),
+        "flagman_go": ("flagman", "flagman_go"),
+        "flagman_left": ("flagman", "flagman_left"),
+        "person_go": ("other_person", "person_go"),
+        "person_left": ("other_person", "person_left"),
+    }
+    release_proofs = {name: measure(context(), trace(role=role, release=event))
+                      for name, (role, event) in releases.items()}
+    assert all(value["first_release_event"] == key
+               for key, value in release_proofs.items())
     early = measure(context(), trace(proceed_frame=200))
     assert 54.5 < far["stop_distance_to_nearest_school_lane_side_ft"]["centre"] < 55.5
     assert 39.5 < near["stop_distance_to_nearest_school_lane_side_ft"]["centre"] < 40.5
@@ -71,7 +84,7 @@ if __name__ == "__main__":
     negatives.append(reject("not_school_lane", source, trace(), "School pedestrian"))
     negatives.append(reject("short_capture", context(), trace()[:-1], "Incomplete 30-second"))
     rows = trace()
-    rows[300]["source_cameras"].pop("warning_side")
+    rows[300]["source_cameras"].pop("approach")
     negatives.append(reject("missing_camera", context(), rows, "Four source camera"))
     rows = trace()
     rows[300]["native_frame"] = rows[299]["native_frame"]
@@ -82,13 +95,16 @@ if __name__ == "__main__":
     rows = trace()
     rows[250]["release_event"] = "flagman_go"
     negatives.append(reject("wrong_release_role", context(), rows, "role differ"))
+    rows = trace(role="other_person", release="signal_removed")
+    negatives.append(reject("person_cannot_emit_device_release", context(), rows, "role differ"))
     rows = trace()
     rows[100]["children_about_to_cross_or_crossing"] = None
     negatives.append(reject("missing_child_warning", context(), rows, "Children warning"))
     proof = {"format": "worker-cpu-school-warning-proof", "passed": True,
              "diagnostic_only": True, "original_native_observed": False,
              "positive": {"requested_55_ft": far, "requested_40_ft": near,
-                          "flagman_release": flagman, "early_proceed": early},
+                          "flagman_release": flagman, "early_proceed": early,
+                          "statutory_release_variants": release_proofs},
              "negative": negatives}
     path = Path(__file__).with_name("school-warning-proof.json")
     path.write_text(json.dumps(proof, indent=2, allow_nan=False) + "\n")

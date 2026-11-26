@@ -102,13 +102,20 @@ def main():
             if context_marker not in runner:
                 raise ValueError('Exception context insertion point changed')
             runner = runner.replace(context_marker, f"'{flag}': survey['{flag}'],")
-            source_marker = "            'traffic_device_direction': None,\n"
-            if source_marker not in runner and probe != '16':
-                raise ValueError('Exception source insertion point changed')
-            if probe == '16':
-                source_marker = "            'traffic_device_direction': survey['traffic_device_direction'],\n"
-            runner = runner.replace(source_marker, source_marker +
-                                    f"            '{source}': survey['{source}'],\n")
+            if probe == '13':
+                source_marker = "'traffic_conflict_source': None"
+                if source_marker not in runner:
+                    raise ValueError('Traffic source insertion point changed')
+                runner = runner.replace(source_marker,
+                                        "'traffic_conflict_source': survey['traffic_conflict_source']")
+            else:
+                source_marker = ("            'traffic_device_direction': survey['traffic_device_direction'],\n"
+                                 if probe == '16' else
+                                 "            'traffic_device_direction': None,\n")
+                if source_marker not in runner:
+                    raise ValueError('Exception source insertion point changed')
+                runner = runner.replace(source_marker, source_marker +
+                                        f"            '{source}': survey['{source}'],\n")
         (bundle / 'runner.py').write_text(runner)
         (bundle / 'finalize.py').write_text((original / 'finalize.py').read_text())
         config = json.loads((original / 'config.json').read_text())

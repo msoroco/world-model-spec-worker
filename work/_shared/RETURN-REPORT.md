@@ -1,8 +1,36 @@
 # Full-train delivery best-effort return
 
+## 2026-11-26 comparison queue refresh after exception binding
+
+C150094 bound four additional exception comparisons against the ordinary private-driveway control. The lead rebuilt the ordered queue and independently validated it: **155 ready / 98 partial**, 970 planned, 743 selected, 500 comparisons, 1,107 proven candidates and zero dispatchable. Builder `--check`, independent queue audit and return audit pass; queue SHA-256 `3842519f8cf1cef6c2c1dcfb799f12349c0b69c02d225fdd3a01c182ae47bbf2`. The exception package still awaits its last saved negative and scoped strict check; full batch strict remains unpassed.
+
+## 2026-11-26 school-warning release CPU expansion
+
+C394563 extended its source-labeled 600-frame meter to seven statutory release alternatives: device stopped, raised or removed; flagman go or left; and another person go or left. Role/release mismatches are rejected. Twenty focused CPU tests, both rebuilt exact draft offline preflights and the scoped partial `--complete` check pass. Only the signal-removal branch has a draft construction; public compatibility, recorded-only, semantic and independent delivery work remain, so status stays partial.
+
+## 2026-11-26 emergency-approach selected diagnostic audit
+
+C405647-2a now binds two exact selected public and recorded-only positive/negative diagnostic chains in `selected-proof-index.json`. Its independent selected diagnostic audit checks saved source hashes, all 600 fixed-context rows and the measured 7 m/s response difference; 24 CPU tests and the scoped partial `--complete` check pass with `static_checks_passed: true`. The scoped strict command still fails because the result is truthfully partial: independent delivery audit and branch alternatives are unfinished. Original CARLA, visual and legal conclusions remain local review. The owner continues this assignment.
+
+## 2026-11-26 exception public and physical CPU checkpoint
+
+For C150094 probes 13–16, the owner now reports full current-runtime primary and fallback public compatibility, controlled comparisons against probe 02, and 16-case semantic and physical fixture validation. Exact offline primary/fallback checks already passed. Recorded-only saved processing and independent delivery audits are running, so the package remains partial.
+
+## 2026-11-26 school-warning Native draft checkpoint
+
+C394563 now has an authored prospective CARLA Native runner with reviewed school-lane, child and warning assets, four-camera 600-frame joins, source sealing and world restoration. Two exact 55/40-foot draft bundles pass pinned `runtime.py offline`, and 12 focused source-bound meter/comparison CPU tests pass. The constructions are still unselected drafts; public positive/missing-source negative compatibility, recorded-only processing, physical/lifecycle and semantic proof, statutory release variants, and independent delivery remain. The owner keeps the assignment partial.
+
+## 2026-11-26 four selected exception constructions and queue refresh
+
+C150094 added four separate selected source-guarded cases for necessary traffic conflict, applicable law, officer direction and traffic-device direction. Their candidate bundle suites and exact primary/fallback offline preflights pass; current-runtime public, recorded-only, physical, delivery and controlled-comparison chains are still being completed. The assignment stays partial. The lead rebuilt the ordered queue after these case-plan changes and independently checked it: **155 ready / 98 partial**, 970 planned, 743 selected, 496 comparisons, 1,107 proven candidates and zero dispatchable. Builder `--check`, independent queue audit and return audit pass; queue SHA-256 `0d46a3103e9724384405e284849f87e45a9e816f3ff5548d365084decd1b5f81`. The full strict batch gate remains unpassed.
+
+## 2026-11-26 emergency-approach selected diagnostic checkpoint
+
+C405647-2a now has two exact selected diagnostic constructions. Its owner reports that A and B each pass current-runtime public compatibility with fresh Lean validation, including positive and missing-source negatives, Native/Core/Lean validation, render and final video decode. Both retained diagnostic attempts also pass recorded-only `process-saved`; the owner is binding bounded receipts, source hashes, selected comparison and independent delivery audits. The result remains partial, and no original CARLA motion or legal outcome is claimed. C394563 is building source-bound selected school-warning Native construction after its 600-frame four-camera meter and independent comparison tests passed. The full batch strict gate remains unpassed.
+
 ## 2026-11-26 stop/stand comparison queue refresh
 
-C150094 stop and stand cases 11–12 now pass exact offline, full public compatibility, recorded-only saved processing, independent diagnostic audits and controlled comparisons. Their source-declared service-brake behavior exposed a parking-brake assumption in the physical fixture; the owner is correcting that fixture before claiming physical CPU proof. Status remains partial. The queue was rebuilt for three additional comparison rows and independently audited: **155 ready / 98 partial**, 966 planned, 739 selected, 496 comparisons, 1,103 proven candidates, zero dispatchable. Builder `--check`, independent queue audit and return audit pass; queue SHA-256 `74210342ae917e5592ea30252ee1b1f6c1a38460ac6ba45454ff3d1fbf604080`.
+C150094 stop and stand cases 11–12 now pass exact offline, full public compatibility, recorded-only saved processing, independent diagnostic audits and controlled comparisons. The owner corrected the action-specific service-brake and parking-brake physical fixture; all 12 selected case candidate and physical validators and pinned semantic stages now pass, as does the scoped non-strict worker check. Traffic, law, police and device exception branches remain under construction, so status stays partial. The queue was rebuilt for three additional comparison rows and independently audited: **155 ready / 98 partial**, 966 planned, 739 selected, 496 comparisons, 1,103 proven candidates, zero dispatchable. Builder `--check`, independent queue audit and return audit pass; queue SHA-256 `74210342ae917e5592ea30252ee1b1f6c1a38460ac6ba45454ff3d1fbf604080`.
 
 ## 2026-11-26 C213851 complete road-exit CPU checkpoint
 

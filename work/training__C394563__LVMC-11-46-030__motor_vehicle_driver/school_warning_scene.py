@@ -14,8 +14,9 @@ LANE_WIDTH_M = 3.5
 LANE_NEAR_SIDE_X_M = 0.0
 FEET_PER_METRE = 3.280839895013123
 CASES = {"probe_1": 55.0, "probe_2": 40.0}
-CAMERAS = {"overview", "ego_front", "warning_side", "lane_side"}
-RELEASES = {"signal_stopped", "signal_raised", "signal_removed", "flagman_go", "flagman_left"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
+RELEASES = {"signal_stopped", "signal_raised", "signal_removed",
+            "flagman_go", "flagman_left", "person_go", "person_left"}
 
 
 def open_drive():
@@ -71,16 +72,16 @@ def scene_request(case, *, vehicle_blueprint="vehicle.tesla.model3",
                                    "far_side_x_m": 4.0, "official_status_verified": False},
         "warning": {"role": "signal_device", "blueprint": warning_blueprint,
                     "xyz": [-1, -6, 0], "active_from_frame": 0,
-                    "requested_release_event": "signal_stopped",
+                    "requested_release_event": "signal_removed",
                     "requested_release_frame": 250,
                     "original_warning_state_verified": False},
         "child": {"blueprint": child_blueprint, "start_xyz": [-2, -8, 0.2],
                   "age_status_verified": False, "requested_about_to_cross": True},
         "cameras": [
             {"name": "overview", "xyz": [-18, -13, 24], "yaw": 35, "pitch": -50, "size": [1920, 1080]},
-            {"name": "ego_front", "xyz": [1, 0, 2], "yaw": 0, "pitch": -8, "size": [1280, 720], "attach_to_vehicle": True},
-            {"name": "warning_side", "xyz": [-3, -11, 8], "yaw": 90, "pitch": -20, "size": [1280, 720]},
-            {"name": "lane_side", "xyz": [6, 11, 8], "yaw": 180, "pitch": -20, "size": [1280, 720]},
+            {"name": "approach", "xyz": [-3, -11, 8], "yaw": 90, "pitch": -20, "size": [1280, 720]},
+            {"name": "reference_corner", "xyz": [6, 11, 8], "yaw": 180, "pitch": -20, "size": [1280, 720]},
+            {"name": "driver_reference", "xyz": [1, 0, 2], "yaw": 0, "pitch": -8, "size": [1280, 720], "attach_to_vehicle": True},
         ],
         "rate_hz": 20, "duration_s": 30, "planned_frames": 600,
         "physical_success_claimed": False,

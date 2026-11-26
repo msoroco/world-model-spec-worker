@@ -27,7 +27,7 @@ def write_rows(path, rows):
 
 def build(suffix):
     case = BASE + suffix
-    root = ASSIGNMENT / "compatibility-fixture" / suffix
+    root = ASSIGNMENT / "selected-fixture-sources" / suffix
     root.mkdir(parents=True, exist_ok=True)
     observations, mapping, trace, evidence, native, graphs = [], [], [], [], [], []
     ego_x, other_x = -100.0, 100.0
@@ -137,12 +137,12 @@ def build(suffix):
                         ("approach", 1280, 720, "red"),
                         ("reference_corner", 1280, 720, "green"),
                         ("driver_reference", 1280, 720, "white"))]}
-    spec_path = ASSIGNMENT / ("compatibility-diagnostic-" + suffix + ".json")
+    spec_path = ASSIGNMENT / ("selected-diagnostic-" + suffix + ".json")
     write_json(spec_path, spec)
     recipe = {"format": "worker-fixture-recipe", "sources": files,
               "generator": {"source": spec_path.relative_to(REPO).as_posix(),
                             "sha256": sha(spec_path)}}
-    recipe_path = ASSIGNMENT / ("compatibility-recipe-" + suffix + ".json")
+    recipe_path = ASSIGNMENT / ("selected-recipe-" + suffix + ".json")
     recipe_path.write_text(json.dumps(recipe, indent=2) + "\n")
     return {"case": case, "recipe": recipe_path.relative_to(REPO).as_posix(),
             "recipe_sha256": sha(recipe_path), "spec_sha256": sha(spec_path)}

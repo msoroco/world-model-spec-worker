@@ -50,15 +50,15 @@ def build():
                         "construction_sha256": entry["construction_sha256"],
                         "measurement_procedure": entry["measurement_procedure"],
                         "measurement_contract": "native/" + entry["measurement_contract"],
-                        "fixture_recipe": "work/" + FOLDER.name + "/compatibility-recipe-" + suffix + ".json",
+                        "fixture_recipe": "work/" + FOLDER.name + "/selected-recipe-" + suffix + ".json",
                         "candidate_risk": entry["candidate_risk"], "candidates": []})
     manifest = {"format": "worker-execution-manifest", "assignment_id": FOLDER.name,
                 "status": "compatibility_draft_not_delivery_ready", "delivery_ready": False,
                 "original_native_observed": False,
                 "runtime_manifest_sha256": sha(REPO / "runtime/SOURCE-MANIFEST.json"),
                 "cases": entries}
-    write(FOLDER / "compatibility-draft-manifest.json", manifest)
-    return {"manifest_sha256": sha(FOLDER / "compatibility-draft-manifest.json"),
+    write(FOLDER / "selected-current-runtime-manifest.json", manifest)
+    return {"manifest_sha256": sha(FOLDER / "selected-current-runtime-manifest.json"),
             "proposal_sha256": sha(FOLDER / "proposals/cases.json")}
 
 

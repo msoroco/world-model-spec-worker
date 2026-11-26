@@ -80,6 +80,14 @@ def compare(first, second, comparison):
         excluded |= {'usps_vehicle', 'usps_official_business'}
     if comparison in ('action_stop', 'action_stand', 'action_stop_stand'):
         excluded |= {'vehicle_action', 'vehicle_action_source'}
+    exception_comparisons = {
+        'necessary_traffic_conflict': ('13', 'necessary_to_avoid_traffic_conflict', 'traffic_conflict_source'),
+        'complying_with_law': ('14', 'complying_with_law', 'applicable_law_source'),
+        'officer_direction': ('15', 'officer_direction', 'officer_direction_source'),
+        'traffic_device_direction': ('16', 'traffic_device_direction', 'traffic_device_direction_source')}
+    if comparison in exception_comparisons:
+        _, flag, source = exception_comparisons[comparison]
+        excluded |= {flag, source}
     require({k:v for k,v in xa.items() if k not in excluded} ==
             {k:v for k,v in xb.items() if k not in excluded},
             'Uncontrolled driveway context differs')
@@ -173,6 +181,15 @@ def compare(first, second, comparison):
                 (aa is None or xa.get('vehicle_action_source')) and
                 xb.get('vehicle_action_source'),
                 'Action comparison did not isolate source-declared service-brake action')
+    elif comparison in exception_comparisons:
+        probe, flag, source = exception_comparisons[comparison]
+        require(a['case_id'].endswith('__probe_02') and
+                b['case_id'].endswith('__probe_' + probe),
+                'Exception comparison case order differs')
+        require(abs(ga-gb) <= 1e-6 and 0 < ga < FIVE_FEET_M and
+                xa.get(flag) is False and xb.get(flag) is True and xb.get(source) and
+                xa['owner_controller_family_invitee'] is xb['owner_controller_family_invitee'] is False,
+                'Exception comparison did not isolate a source-declared reason')
     else:
         raise ValueError('Unknown controlled driveway comparison')
     return {'format': 'worker-driveway-comparison-audit', 'comparison_id': AID + '__' + comparison,
@@ -202,7 +219,9 @@ def main():
                                                   'five_foot_equality_below', 'five_foot_equality_above',
                                                   'front_overlap', 'public_private_driveway',
                                                   'usps_official_business', 'action_stop', 'action_stand',
-                                                  'action_stop_stand'), required=True)
+                                                  'action_stop_stand', 'necessary_traffic_conflict',
+                                                  'complying_with_law', 'officer_direction',
+                                                  'traffic_device_direction'), required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
     receipt = compare(load(args.a), load(args.b), args.comparison)

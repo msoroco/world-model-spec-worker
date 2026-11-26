@@ -65,6 +65,14 @@ class SavedFinalizerTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Missing required source: emergency_observations.jsonl"):
             module.finalize(self.attempt, self.output)
 
+    def test_saved_derived_channel_must_match_source(self):
+        module.finalize(self.attempt, self.output)
+        self.output.unlink()
+        (self.attempt / "result.json").unlink()
+        (self.attempt / "emergency_speed_and_lamps.jsonl").write_text("forged\n")
+        with self.assertRaisesRegex(ValueError, "Saved derived channel differs"):
+            module.finalize(self.attempt, self.output)
+
     def test_original_claim_without_seal_rejected(self):
         (self.attempt / "acquisition-provenance.json").write_text(
             json.dumps({"diagnostic_fixture": False, "provenance_kind": "native"}) + "\n")

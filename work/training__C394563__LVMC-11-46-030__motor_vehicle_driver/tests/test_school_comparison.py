@@ -63,7 +63,7 @@ class ComparisonAudit(unittest.TestCase):
             audit(self.inputs)
 
     def test_missing_camera_rejected(self):
-        self._change_trace(CASES[1], lambda rows: rows[220]["source_cameras"].pop("warning_side"))
+        self._change_trace(CASES[1], lambda rows: rows[220]["source_cameras"].pop("approach"))
         with self.assertRaisesRegex(ValueError, "Four source camera"):
             audit(self.inputs)
 

@@ -11,9 +11,10 @@ from pathlib import Path
 FRAMES = 600
 RATE_HZ = 20
 FEET_PER_METRE = 3.280839895013123
-CAMERAS = {"overview", "ego_front", "warning_side", "lane_side"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 WARNING_ROLES = {"signal_device", "flagman", "other_person"}
-RELEASES = {"signal_stopped", "signal_raised", "signal_removed", "flagman_go", "flagman_left"}
+RELEASES = {"signal_stopped", "signal_raised", "signal_removed",
+            "flagman_go", "flagman_left", "person_go", "person_left"}
 
 
 def finite(value, name):
@@ -71,7 +72,10 @@ def measure(context, rows):
         release = row.get("release_event")
         if release is not None and release not in RELEASES:
             raise ValueError("Unknown statutory release event")
-        if release is not None and role == "signal_device" and release.startswith("flagman_"):
+        allowed = {"signal_device": {"signal_stopped", "signal_raised", "signal_removed"},
+                   "flagman": {"flagman_go", "flagman_left"},
+                   "other_person": {"person_go", "person_left"}}
+        if release is not None and release not in allowed[role]:
             raise ValueError("Release event and warning role differ")
         centers.append(center)
         speeds.append(speed)

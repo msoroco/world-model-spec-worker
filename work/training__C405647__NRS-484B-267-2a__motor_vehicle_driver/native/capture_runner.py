@@ -9,7 +9,9 @@ import math
 import os
 from pathlib import Path
 import queue
+import subprocess
 import sys
+import hashlib
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT_ID = "training__C405647__NRS-484B-267-2a__motor_vehicle_driver"
@@ -96,6 +98,16 @@ def _transform(value, carla):
     return carla.Transform(carla.Location(x=x, y=y, z=z), carla.Rotation(yaw=yaw))
 
 
+def camera_encode_command(output, name):
+    require(name in VIEWS, "Unknown original camera")
+    folder = Path(output)
+    return ["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-n",
+            "-framerate", str(RATE), "-start_number", "0", "-i",
+            str(folder / name / "%06d.png"), "-frames:v", str(FRAMES),
+            "-an", "-c:v", "ffv1", "-pix_fmt", "yuv444p",
+            str(folder / (name + ".mkv"))]
+
+
 def execute(config, survey, output_dir, host, port, *, diagnostic_fixture=False):
     check(config, survey)
     require(".runtime-work" in os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", ""),
@@ -111,6 +123,12 @@ def execute(config, survey, output_dir, host, port, *, diagnostic_fixture=False)
     output = Path(output_dir)
     require(not (output / "capture").exists(), "Use a fresh Native attempt path")
     output.mkdir(parents=True, exist_ok=True)
+    (output / "acquisition-provenance.json").write_text(json.dumps({
+        "provenance_kind": "synthetic_fixture" if diagnostic_fixture else "native",
+        "diagnostic_fixture": diagnostic_fixture,
+        "case_id": config["case_id"],
+        "site_survey_sha256": hashlib.sha256(json.dumps(survey, sort_keys=True).encode()).hexdigest(),
+        "physical_acceptance_claimed": False}, sort_keys=True) + "\n")
     client = carla.Client(host, port)
     client.set_timeout(15)
     world = client.get_world()
@@ -118,6 +136,7 @@ def execute(config, survey, output_dir, host, port, *, diagnostic_fixture=False)
     actors = []
     sensors = []
     images = queue.Queue()
+    restoration = None
     try:
         require(world.get_map().name == survey["map_name"], "Survey map differs")
         settings = world.get_settings()
@@ -209,7 +228,21 @@ def execute(config, survey, output_dir, host, port, *, diagnostic_fixture=False)
             sensor.stop()
         for actor in reversed(actors):
             actor.destroy()
-        restore(client, original)
+        restoration = restore(client, original)
+    if diagnostic_fixture:
+        return
+    from scenario_pipeline.worker_exchange.native_output import seal_capture
+    from scenario_pipeline.worker_exchange.media import compose_four_views
+    sources = {}
+    for name in VIEWS:
+        subprocess.run(camera_encode_command(output, name), check=True, timeout=3600)
+        sources[name] = output / (name + ".mkv")
+    compose_four_views(sources, output / "video_frames.jsonl", output / "primary.mkv")
+    seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                 encoder_exit_codes={name: 0 for name in VIEWS},
+                 context={"case_id": config["case_id"],
+                          "site_survey_sha256": hashlib.sha256(json.dumps(survey, sort_keys=True).encode()).hexdigest(),
+                          "physical_acceptance_claimed": False})
 
 
 if __name__ == "__main__":

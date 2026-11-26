@@ -71,6 +71,16 @@ def audit(root, case, diagnostic):
                 config.get('expected_operator_action') == required_action and
                 all(row.get('park_brake_engaged') is False for row in parking)):
             raise ValueError('Exact service-brake action lacks source declaration')
+    exception_sources = {
+        'probe_13': ('necessary_to_avoid_traffic_conflict', 'traffic_conflict_source'),
+        'probe_14': ('complying_with_law', 'applicable_law_source'),
+        'probe_15': ('officer_direction', 'officer_direction_source'),
+        'probe_16': ('traffic_device_direction', 'traffic_device_direction_source')}
+    for suffix, (fact, source) in exception_sources.items():
+        if case.endswith(suffix) and not (
+                config.get('expected_exception_fact') == fact and
+                context.get(fact) is True and context.get(source)):
+            raise ValueError('Exact exception lacks its separate source declaration')
     expected = 'synthetic_native_sample' if diagnostic else 'original_native_pose'
     for index, (park, state, frame, event, raw) in enumerate(zip(parking, core, frames, evidence, native)):
         original_frame = frame.get('native_frame')
