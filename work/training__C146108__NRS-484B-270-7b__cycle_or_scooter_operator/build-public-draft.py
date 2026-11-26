@@ -34,6 +34,16 @@ def main():
         construction = json.loads(construction_path.read_text())
         config = json.loads(next(f['content'] for f in construction['files']
                                  if f['path'] == 'config.json'))
+        fallback_path = HERE / family / suffix / 'fallback1/construction.json'
+        candidates = []
+        if fallback_path.is_file():
+            candidates.append({'id': 'fallback1',
+                'construction': str(fallback_path.relative_to(HERE)),
+                'construction_sha256': sha(fallback_path),
+                'trigger': {'source': 'original participant-poses.jsonl and four camera videos',
+                    'metric': 'full-body surface gap and actor visibility',
+                    'failure_condition': 'primary pass has nonpositive measured gap or the complete rider and motor pass is not visible'},
+                'changed_knobs': ['rider_y_m']})
         manifest['cases'].append({'case_id': construction['case_id'],
             'kind': 'delivery', 'construction': str(construction_path.relative_to(HERE)),
             'construction_sha256': sha(construction_path),
@@ -44,7 +54,7 @@ def main():
                                'host_env_var': 'CARLA_HOST', 'port_env_var': 'CARLA_PORT'},
             'candidate_risk': {'status': 'physical',
                 'reason': 'Native rider spawn, complete pass and four-view visibility need original motion review'},
-            'candidates': [], 'delivery_readiness': 'incomplete'})
+            'candidates': candidates, 'delivery_readiness': 'incomplete'})
         proposal['cases'].append({'case_id': construction['case_id'],
             'target_law_id': 'NRS-484B-270-7b', 'target_type': 'controlled_attempt',
             'rationale': 'Source-grounded full rider pass of a motor vehicle in the frozen one-way multilane cell',
@@ -54,6 +64,11 @@ def main():
                 'Native physical class, occupants and visible evasive motion require review'],
             'recording_description': construction['recording_description']})
     write(HERE / 'selected-public-draft-manifest.json', manifest)
+    fallback = json.loads(json.dumps(manifest))
+    for entry in fallback['cases']:
+        suffix = entry['case_id'].removeprefix(HERE.name + '__')
+        entry['fixture_recipe'] = 'work/' + HERE.name + '/diagnostic/' + suffix + '/fallback1/fixture-recipe.json'
+    write(HERE / 'fallback-public-draft-manifest.json', fallback)
     write(HERE / 'proposals/cases.json', proposal)
     print(json.dumps({'selected_cases': len(CASES),
                       'manifest_sha256': sha(HERE / 'selected-public-draft-manifest.json')}))

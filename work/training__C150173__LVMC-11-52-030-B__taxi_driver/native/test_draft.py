@@ -44,6 +44,27 @@ class DraftComparison(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Yellow parking'):
             check(a, road_a.replace('color="yellow"', 'color="white"'))
 
+    def test_three_passenger_purposes_within_hours(self):
+        configs = []
+        roads = []
+        for suffix, purpose in (('probe_a', 'waiting_for_passengers'),
+                                ('probe_c', 'loading_passengers'),
+                                ('probe_d', 'unloading_passengers')):
+            construction = json.loads((PACKAGE / 'native-draft' / suffix / 'construction.json').read_text())
+            config = json.loads(file_content(construction, 'config.json'))
+            road = file_content(construction, 'yellow-road.xodr')
+            rows = [json.loads(line) for line in file_content(construction, 'requested-track.jsonl').splitlines()]
+            self.assertEqual(config['requested_purpose'], purpose)
+            self.assertEqual(measure_requested(rows, config)['sign_active_request_frames'], 600)
+            configs.append(config)
+            roads.append(road)
+        self.assertEqual(len(set(roads)), 1)
+        self.assertEqual(len({json.dumps(c['cameras'], sort_keys=True) for c in configs}), 1)
+        self.assertEqual({c['civil_start_local'] for c in configs}, {'2026-11-26T10:00:00'})
+        wrong = {**configs[1], 'requested_purpose': 'waiting_for_passengers'}
+        with self.assertRaisesRegex(ValueError, 'purpose request'):
+            check(wrong, roads[1])
+
 
 if __name__ == '__main__':
     unittest.main()

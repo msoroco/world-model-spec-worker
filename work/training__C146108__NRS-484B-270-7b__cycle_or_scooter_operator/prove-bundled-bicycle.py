@@ -23,7 +23,7 @@ def main():
     assert entry['case_id'] == CASE
     source = HERE / entry['construction']
     assert sha(source) == entry['construction_sha256']
-    materialized = ROOT / '.runtime-work/c146108-bicycle-offline-physical'
+    materialized = ROOT / '.runtime-work/c146108-final3-offline-bicycle_pass_wide-primary'
     bundled = materialized / 'pass_measure.py'
     construction = json.loads(source.read_text())
     bundled_content = next(item['content'] for item in construction['files'] if item['path'] == 'pass_measure.py')

@@ -1,0 +1,165 @@
+{
+  "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide",
+  "selected_case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide",
+  "supported_case_ids": [
+    "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide",
+    "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_wide",
+    "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_narrow"
+  ],
+  "case_suffix": "bicycle_pass_wide",
+  "candidate_id": "primary",
+  "cell_id": "C146108",
+  "law_id": "NRS-484B-270-7b",
+  "actor": "cycle_or_scooter_operator",
+  "rider_class": "bicycle",
+  "rider_y_m": -1.75,
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [
+    "ru.bicycle",
+    "ru.motor_vehicle",
+    "kin.position",
+    "kin.heading",
+    "kin.speed",
+    "rel.occupies"
+  ],
+  "source_packets": [],
+  "case": {
+    "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide"
+  },
+  "physical_completion": {
+    "criterion": "overtake_pass",
+    "motion_source": "participant-poses.jsonl",
+    "body_key": "rider_body_xy_m",
+    "other_body_key": "motor_body_xy_m",
+    "lateral_transition_m": 0,
+    "minimum_progress_m": 1
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "survey-gated fixed view along complete pass corridor",
+      "fov_deg": 85
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "survey-gated fixed view along complete pass corridor",
+      "fov_deg": 85
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "survey-gated fixed view along complete pass corridor",
+      "fov_deg": 85
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "survey-gated fixed view along complete pass corridor",
+      "fov_deg": 85
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "rider_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor transform and body corners",
+        "time_window": "entire 600-frame 30-second pass",
+        "reference_frame": "Native road and frame",
+        "uncertainty": "50 ms sampling"
+      },
+      {
+        "name": "motor_pose",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original Native actor transform and body corners",
+        "time_window": "entire 600-frame 30-second pass",
+        "reference_frame": "Native road and frame",
+        "uncertainty": "50 ms sampling"
+      },
+      {
+        "name": "drv.overtaking",
+        "unit": "structured event",
+        "method": "joined rider/motor full-body behind, alongside and clear-ahead order",
+        "sampling_rate_hz": 20,
+        "time_window": "entire 600-frame 30-second pass",
+        "reference_frame": "original Native frame and authored road",
+        "uncertainty": "50 ms sampling; physical semantics need review"
+      },
+      {
+        "name": "ru.motor_vehicle",
+        "unit": "structured identity",
+        "method": "original Native other actor identity and pass context",
+        "sampling_rate_hz": 20,
+        "time_window": "entire 600-frame 30-second pass",
+        "reference_frame": "original Native frame and authored road",
+        "uncertainty": "50 ms sampling; physical semantics need review"
+      },
+      {
+        "name": "rel.surface_gap",
+        "unit": "m",
+        "method": "minimum original full-body pass separation",
+        "sampling_rate_hz": 20,
+        "time_window": "entire 600-frame 30-second pass",
+        "reference_frame": "original Native frame and authored road",
+        "uncertainty": "50 ms sampling; physical semantics need review"
+      },
+      {
+        "name": "drv.time_to_conflict",
+        "unit": "s",
+        "method": "initial pose-derived time to rear-body overlap",
+        "sampling_rate_hz": 20,
+        "time_window": "entire 600-frame 30-second pass",
+        "reference_frame": "original Native frame and authored road",
+        "uncertainty": "50 ms sampling; physical semantics need review"
+      },
+      {
+        "name": "drv.passing_side",
+        "unit": "categorical",
+        "method": "rider lateral side at first alongside frame",
+        "sampling_rate_hz": 20,
+        "time_window": "entire 600-frame 30-second pass",
+        "reference_frame": "original Native frame and authored road",
+        "uncertainty": "50 ms sampling; physical semantics need review"
+      },
+      {
+        "name": "kin.speed",
+        "unit": "m/s",
+        "method": "original rider and motor pose-derived closing speed",
+        "sampling_rate_hz": 20,
+        "time_window": "entire 600-frame 30-second pass",
+        "reference_frame": "original Native frame and authored road",
+        "uncertainty": "50 ms sampling; physical semantics need review"
+      },
+      {
+        "name": "ru.occupant_count",
+        "unit": "count",
+        "method": "sourced driver count with cabin review unresolved",
+        "sampling_rate_hz": 20,
+        "time_window": "entire 600-frame 30-second pass",
+        "reference_frame": "original Native frame and authored road",
+        "uncertainty": "50 ms sampling; physical semantics need review"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "motor_occupants",
+        "unit": "count",
+        "method": "independent original vehicle and driver review"
+      }
+    ],
+    "limitations": [
+      "Electric-bicycle witness branch remains unconstructed",
+      "Generated CPU pass fixtures do not establish safety"
+    ]
+  },
+  "status": "selected_bicycle_cpu_draft_not_delivery_prepared"
+}

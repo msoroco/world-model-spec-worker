@@ -33,6 +33,11 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def check_sealed_sources(seal, paths):
+    require(all(seal.get('sources', {}).get(name) == sha(path) for name, path in paths.items()),
+            'Sealed original source hash differs')
+
+
 def decode(path, size):
     probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
                             '-show_entries', 'stream=nb_read_frames,width,height,r_frame_rate',
@@ -97,11 +102,13 @@ def audit(root, case, diagnostic=False):
             and review.get('source_sha256') == {name: sha(path) for name, path in paths.items()},
             'Original source review hash differs')
     result = json.loads(source(root, 'result.json').read_text())
-    require(result.get('case_id') == case and result.get('maneuver_completed') is True,
+    require(result.get('case_id') == case and result.get('maneuver_completed') is True and
+            result.get('physical_checks', {}).get('maneuver', {}).get('status') == 'met',
             'Original Native physical completion unverified')
     seal = json.loads(source(root, 'capture-seal.json').read_text())
     require(seal.get('provenance_kind') == 'native' and seal.get('diagnostic_fixture') is False,
             'Sealed original Native source missing')
+    check_sealed_sources(seal, paths)
     return {'format': 'worker-c230207-source-audit-v1', 'case_id': case,
             'passed': True, 'native_executed': True,
             'checks': ['native_source', 'all_participants', 'time_join',
@@ -120,6 +127,17 @@ def selftest(case, negative=False):
         root = Path(directory)
         for name in SOURCES:
             shutil.copyfile(HERE / 'diagnostic-source' / stem / name, root / name)
+        if not negative:
+            paths = {name: root / name for name in SOURCES}
+            seal = {'sources': {name: sha(path) for name, path in paths.items()}}
+            check_sealed_sources(seal, paths)
+            broken = {'sources': dict(seal['sources'], **{'trace.jsonl': '0' * 64})}
+            try:
+                check_sealed_sources(broken, paths)
+            except ValueError as error:
+                require('Sealed original source hash differs' in str(error), 'Wrong seal rejection')
+            else:
+                raise AssertionError('Changed original source hash accepted')
         if negative:
             (root / 'restriction-context.json').unlink()
         else:

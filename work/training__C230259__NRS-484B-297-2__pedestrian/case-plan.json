@@ -23,6 +23,12 @@
       "kind": "reviewed_scope",
       "text": "Pedestrian highway travel with approaching traffic",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json"
+    },
+    {
+      "topic_id": "cross-reference-297-6",
+      "kind": "statutory_exception_reference",
+      "text": "Subsection 6 permits a sidewalk traveler encountering an obstruction to enter the immediately adjacent highway with due care, near the sidewalk, and return as soon as practicable. This is a separate activation path; both selected subsection 2 drafts require sourced absence of a sidewalk and sourced absence of subsection 6 obstruction.",
+      "source": "inputs/coverage/branch-sources.json:NRS-484B-297-6"
     }
   ],
   "requirement_dispositions": [
@@ -44,6 +50,14 @@
       "status": "alternative_pending",
       "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
       "case_ids": []
+    },
+    {
+      "requirement": "cross-reference-297-6",
+      "source": "inputs/coverage/branch-sources.json:NRS-484B-297-6",
+      "source_text": "A pedestrian walking or otherwise traveling on a sidewalk who encounters an obstruction to his or her mobility on the sidewalk ... may proceed with due care on the immediately adjacent highway to move around such an obstruction.",
+      "status": "exception_pending",
+      "evidence_or_gap": "The source-packet meter excludes this alternative; its separate law assignment controls that branch. Original map/sidewalk source remains unavailable.",
+      "case_ids": []
     }
   ],
   "cases": [
@@ -53,7 +67,7 @@
       "target_type": "planned_delivery_comparison",
       "planning_status": "unselected_native_draft_offline_passed",
       "source_branch": "Pedestrian highway travel with approaching traffic",
-      "comparison_variable": "pedestrian_walking_side_and_direction",
+      "comparison_variable": "pedestrian_highway_side",
       "condition_index": 0,
       "fixed_conditions": {
         "cell_id": "C230259",
@@ -69,7 +83,7 @@
       "source_text": "Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.",
       "claim": "No legal outcome or physical execution is asserted.",
       "draft_native_construction": "draft-native/a/construction.json",
-      "draft_native_construction_sha256": "f3a130e7252985aef0d7f7c2969c963e8a8b8309a16c64a65a3b826d601da0e8",
+      "draft_native_construction_sha256": "c1d812777e1137fde682677e9d0047ed05524211ac7769fcbc0debb9f5517753",
       "draft_native_offline_log": "native/draft-offline-a.log"
     },
     {
@@ -78,7 +92,7 @@
       "target_type": "planned_delivery_comparison",
       "planning_status": "unselected_native_draft_offline_passed",
       "source_branch": "Pedestrian highway travel with approaching traffic",
-      "comparison_variable": "pedestrian_walking_side_and_direction",
+      "comparison_variable": "pedestrian_highway_side",
       "condition_index": 1,
       "fixed_conditions": {
         "cell_id": "C230259",
@@ -94,7 +108,7 @@
       "source_text": "Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.",
       "claim": "No legal outcome or physical execution is asserted.",
       "draft_native_construction": "draft-native/b/construction.json",
-      "draft_native_construction_sha256": "96d9385249a106f5ddca10a70f85ed3329091d75454bd8597042ee7757e45207",
+      "draft_native_construction_sha256": "48e928e437a7f7249e7bff5286e1d685143293c3ddbf97ce3f4952d6c8eab857",
       "draft_native_offline_log": "native/draft-offline-b.log"
     }
   ],
@@ -106,7 +120,7 @@
         "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b"
       ],
       "deliberate_differences": [
-        "pedestrian_walking_side_and_direction"
+        "pedestrian_highway_side"
       ],
       "fixed_conditions": {
         "cell_id": "C230259",
@@ -117,10 +131,15 @@
         "law_id": "NRS-484B-297-2",
         "selection_targets": [
           "full-train"
-        ]
+        ],
+        "pedestrian_heading_relative_to_traffic": "opposite",
+        "sidewalk_present": false,
+        "subsection_6_obstruction": false,
+        "duration_s": 30,
+        "rate_hz": 20
       },
-      "status": "planned_only",
-      "audit_gap": "Synthetic 600-frame walking-side contrast proved; original Native source, saved processing and independent comparison audit pending."
+      "status": "source_bound_diagnostic_only",
+      "audit_gap": "Both 600-frame traces hold opposite pedestrian heading and vehicle route fixed while varying only highway side; original Native source, saved processing and independent comparison audit pending."
     }
   ],
   "observations": [
@@ -202,14 +221,15 @@
       ]
     },
     "st.sidewalk": {
-      "evidence": "Source-bound geometry in native/walking_side.py and 600-frame diagnostic proof; original Native acquisition remains unverified.",
+      "evidence": "The meter requires a sourced no-sidewalk inventory and an explicit false subsection-6 obstruction context; 600-frame synthetic proof is diagnostic only.",
       "channels": [
         "reviewed-road-source.json.sidewalk_inventory_source"
       ],
       "source_refs": [
         "native/walking_side.py",
         "native/walking-side-proof.json",
-        "inputs/training__C230259__NRS-484B-297-2__pedestrian/assignment.json"
+        "inputs/training__C230259__NRS-484B-297-2__pedestrian/assignment.json",
+        "inputs/coverage/branch-sources.json"
       ]
     },
     "st.highway": {

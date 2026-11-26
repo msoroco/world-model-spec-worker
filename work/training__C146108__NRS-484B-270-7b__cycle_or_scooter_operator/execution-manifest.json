@@ -1,0 +1,792 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial_cpu_diagnostic",
+  "delivery_ready": false,
+  "cases": [
+    {
+      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide",
+      "kind": "delivery",
+      "construction": "draft-bicycle/bicycle_pass_wide/primary/construction.json",
+      "construction_sha256": "b3bb431d67d164192bf94c0c2ad9e0d87692e0917ba9e651876dcb531f918de5",
+      "measurement_contract": "bicycle_pass_wide-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/diagnostic/bicycle_pass_wide/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native rider spawn, complete pass and four-view visibility need original motion review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-bicycle/bicycle_pass_wide/fallback1/construction.json",
+          "construction_sha256": "040f05e836ef5b9135b46aacd6645cfc64116c04cca7934f6ea7e74ca757ed6c",
+          "trigger": {
+            "source": "original participant-poses.jsonl and four camera videos",
+            "metric": "full-body surface gap and actor visibility",
+            "failure_condition": "primary pass has nonpositive measured gap or the complete rider and motor pass is not visible"
+          },
+          "changed_knobs": [
+            "rider_y_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/selected-public-draft-manifest.json --case training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide --candidate fallback1 --output .runtime-work/c146108-final-offline-bicycle_pass_wide-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "040f05e836ef5b9135b46aacd6645cfc64116c04cca7934f6ea7e74ca757ed6c",
+            "exit_code": 0,
+            "log": "selected-proofs/bicycle_pass_wide/fallback1/offline.log",
+            "log_sha256": "580d346dea53c9de5245ac8706712bc04c5b9ac7fcf1dd2a452be9d42ff26d96"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/bicycle_pass_wide/fallback1/compatibility.json",
+            "sha256": "a7d912e5a36588759847426e82450f0ca6658ac7d49ae975d882b714644881a1",
+            "log": "selected-proofs/bicycle_pass_wide/fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/bicycle_pass_wide/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "acquisition": {
+        "drv.overtaking": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.passing_side": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "motor_pose": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rider_pose": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ru.bicycle": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/selected-public-draft-manifest.json --case training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide --candidate primary --output .runtime-work/c146108-final-offline-bicycle_pass_wide-primary --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "b3bb431d67d164192bf94c0c2ad9e0d87692e0917ba9e651876dcb531f918de5",
+        "exit_code": 0,
+        "log": "selected-proofs/bicycle_pass_wide/primary/offline.log",
+        "log_sha256": "285517b239ade6eefe8bccb1c2ca87efccf5923cd977fed6ef3d19430acf016f"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/bicycle_pass_wide/primary/compatibility.json",
+        "sha256": "70caa2fdd5b8646d2ba4818551ad3ca7beb461c585f28f3fc485b8021df53331",
+        "log": "selected-proofs/bicycle_pass_wide/primary/public-analysis.log",
+        "negative_log": "selected-proofs/bicycle_pass_wide/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-proofs/bicycle_pass_wide/primary/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/bicycle_pass_wide/physical-preparation.json",
+        "sha256": "3bc55c5bfef939dfbaea8f2ca65c3a38c6dcc35a0f84ed42d390d9ea4ce089cb"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/bicycle_pass_wide/saved-processing.json",
+        "sha256": "fd76ab5985bd670c63dd5597350716f9849e2f697d63514bcc5fa466f79276bd",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/bicycle_pass_wide/saved-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_wide",
+      "kind": "delivery",
+      "construction": "draft-ebike/electric_bicycle_pass_wide/primary/construction.json",
+      "construction_sha256": "03f3bfd5873e567f0ae284e8f73b9102206585d79efc1421d6cf09ba3eacb210",
+      "measurement_contract": "electric_bicycle_pass_wide-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/diagnostic/electric_bicycle_pass_wide/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native rider spawn, complete pass and four-view visibility need original motion review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-ebike/electric_bicycle_pass_wide/fallback1/construction.json",
+          "construction_sha256": "3650c94936bb635432c411f5af7ce66bd6c64feea1b5615d9308e5fdbcf50878",
+          "trigger": {
+            "source": "original participant-poses.jsonl and four camera videos",
+            "metric": "full-body surface gap and actor visibility",
+            "failure_condition": "primary pass has nonpositive measured gap or the complete rider and motor pass is not visible"
+          },
+          "changed_knobs": [
+            "rider_y_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/selected-public-draft-manifest.json --case training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_wide --candidate fallback1 --output .runtime-work/c146108-final-offline-electric_bicycle_pass_wide-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "3650c94936bb635432c411f5af7ce66bd6c64feea1b5615d9308e5fdbcf50878",
+            "exit_code": 0,
+            "log": "selected-proofs/electric_bicycle_pass_wide/fallback1/offline.log",
+            "log_sha256": "cae1613651e7ef230a1d146a6adef83fe4d7785c4fa094bb9c5255db207f13a1"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/electric_bicycle_pass_wide/fallback1/compatibility.json",
+            "sha256": "31206fd7a37f07cdf30536b3a3ac86fe4f4d5a0df5bb3a15f605861f73459805",
+            "log": "selected-proofs/electric_bicycle_pass_wide/fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/electric_bicycle_pass_wide/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "acquisition": {
+        "drv.overtaking": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.passing_side": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "motor_pose": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rider_pose": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ru.electric_bicycle": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/selected-public-draft-manifest.json --case training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_wide --candidate primary --output .runtime-work/c146108-final-offline-electric_bicycle_pass_wide-primary --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "03f3bfd5873e567f0ae284e8f73b9102206585d79efc1421d6cf09ba3eacb210",
+        "exit_code": 0,
+        "log": "selected-proofs/electric_bicycle_pass_wide/primary/offline.log",
+        "log_sha256": "cae1613651e7ef230a1d146a6adef83fe4d7785c4fa094bb9c5255db207f13a1"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/electric_bicycle_pass_wide/primary/compatibility.json",
+        "sha256": "6ab0d32ea4be58eb061a502d5fad91524344369702fca101ccd63c13e3e4366c",
+        "log": "selected-proofs/electric_bicycle_pass_wide/primary/public-analysis.log",
+        "negative_log": "selected-proofs/electric_bicycle_pass_wide/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-proofs/electric_bicycle_pass_wide/primary/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/electric_bicycle_pass_wide/physical-preparation.json",
+        "sha256": "147782b98baa5b07232bc6ef544903b8e518285906c6b56ec2913a08f1495d73"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/electric_bicycle_pass_wide/saved-processing.json",
+        "sha256": "8d2d2d5f921899d7d2d9b834420b961fe2ec0a767079955f594c51c8f88db01c",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/electric_bicycle_pass_wide/saved-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_narrow",
+      "kind": "delivery",
+      "construction": "draft-ebike/electric_bicycle_pass_narrow/primary/construction.json",
+      "construction_sha256": "7132a17b27a25851b0e4f9669b1113dc24e5626bf3cf9d9c7d4c50d15ca490c4",
+      "measurement_contract": "electric_bicycle_pass_narrow-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/diagnostic/electric_bicycle_pass_narrow/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native rider spawn, complete pass and four-view visibility need original motion review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-ebike/electric_bicycle_pass_narrow/fallback1/construction.json",
+          "construction_sha256": "4242ec2d24394556dda0288f081c9c3230edb995b03a781aa2565fedc2d05ad2",
+          "trigger": {
+            "source": "original participant-poses.jsonl and four camera videos",
+            "metric": "full-body surface gap and actor visibility",
+            "failure_condition": "primary pass has nonpositive measured gap or the complete rider and motor pass is not visible"
+          },
+          "changed_knobs": [
+            "rider_y_m"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/selected-public-draft-manifest.json --case training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_narrow --candidate fallback1 --output .runtime-work/c146108-final-offline-electric_bicycle_pass_narrow-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "4242ec2d24394556dda0288f081c9c3230edb995b03a781aa2565fedc2d05ad2",
+            "exit_code": 0,
+            "log": "selected-proofs/electric_bicycle_pass_narrow/fallback1/offline.log",
+            "log_sha256": "63021a78a35b7bd3ea3933b33c1fcc30b266c6d454697fd78bfcff6b2b77d8bd"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/electric_bicycle_pass_narrow/fallback1/compatibility.json",
+            "sha256": "27c9572da4929ddbb93ab8873932e2aeb7c5c21d407ecd1f9d9e63a6baf75b1b",
+            "log": "selected-proofs/electric_bicycle_pass_narrow/fallback1/public-analysis.log",
+            "negative_log": "selected-proofs/electric_bicycle_pass_narrow/fallback1/negative-analysis.log"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "acquisition": {
+        "drv.overtaking": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.passing_side": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.heading": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "motor_pose": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "rider_pose": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ru.electric_bicycle": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "original actor body/pose and frame-joined camera acquisition; electric-bicycle class is an authored surrogate pending Native qualification",
+          "evidence": [
+            "participant-poses.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl",
+            "pass-context.json",
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv"
+          ]
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator/selected-public-draft-manifest.json --case training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_narrow --candidate primary --output .runtime-work/c146108-final-offline-electric_bicycle_pass_narrow-primary --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "7132a17b27a25851b0e4f9669b1113dc24e5626bf3cf9d9c7d4c50d15ca490c4",
+        "exit_code": 0,
+        "log": "selected-proofs/electric_bicycle_pass_narrow/primary/offline.log",
+        "log_sha256": "cae1613651e7ef230a1d146a6adef83fe4d7785c4fa094bb9c5255db207f13a1"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/electric_bicycle_pass_narrow/primary/compatibility.json",
+        "sha256": "db94aee2e579ec3abfa66f6ae576b671799cff87db496535ff11239561e5ed7e",
+        "log": "selected-proofs/electric_bicycle_pass_narrow/primary/public-analysis.log",
+        "negative_log": "selected-proofs/electric_bicycle_pass_narrow/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "selected-proofs/electric_bicycle_pass_narrow/primary/negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "selected-physical/electric_bicycle_pass_narrow/physical-preparation.json",
+        "sha256": "38041e14c67d86f6c92beba84cddebfc10872c7d0d9653b8f6f04353fbdf2b63"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/electric_bicycle_pass_narrow/saved-processing.json",
+        "sha256": "ce81bfdd1b50a125c90c3df61ce5ac0e419e533904dc6565b91cc6a610b2e27e",
+        "recorded_only": true,
+        "originals_preserved": true,
+        "log": "selected-proofs/electric_bicycle_pass_narrow/saved-analysis.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}

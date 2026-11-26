@@ -11,7 +11,7 @@ from pathlib import Path
 
 from walking_side import FRAMES, HZ, _source
 
-VIEWS = ('overview', 'ego_front', 'curb_side', 'traffic_rear')
+VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def check(config):
@@ -24,7 +24,7 @@ def check(config):
     if tuple(x.get('name') for x in config.get('cameras', [])) != VIEWS:
         raise ValueError('Four named source cameras required')
     for camera in config['cameras']:
-        if not all(camera.get(k) for k in ('width', 'height', 'fov_deg', 'location_xyz_m', 'rotation_pyr_deg')) or camera.get('fps') != HZ:
+        if not all(camera.get(k) for k in ('width', 'height', 'fov_deg', 'pose_strategy', 'location_xyz_m', 'rotation_pyr_deg')) or camera.get('fps') != HZ:
             raise ValueError('Source camera geometry incomplete')
     if config.get('source_packet_required') is not True or config.get('physical_completion') is not False or config.get('legal_verdict') is not None:
         raise ValueError('Source provenance and unknown outcome required')
@@ -36,18 +36,20 @@ def check(config):
 def _packet(path, config):
     packet = json.loads(Path(path).read_text())
     traffic = _source(packet)
+    if packet.get('source_kind') != 'original_native':
+        raise ValueError('Native execution requires a reviewed original map packet')
     if packet.get('map_name') is None or packet.get('pedestrian_spawn_transform') is None or packet.get('vehicle_spawn_transform') is None:
         raise ValueError('Reviewed Native map and participant spawns required')
     if packet.get('condition') != config['condition']:
         raise ValueError('Source packet selected another condition')
-    if packet.get('pedestrian_route_side') != ('traffic_right' if config['condition'] == 'a' else 'traffic_left'):
+    if packet.get('pedestrian_route_side') != ('traffic_left' if config['condition'] == 'a' else 'traffic_right'):
         raise ValueError('Source route side differs from planned comparison')
     direction = packet.get('pedestrian_direction_xyz')
     if not isinstance(direction, list) or len(direction) != 3 or not all(isinstance(v, (int, float)) and math.isfinite(v) for v in direction):
         raise ValueError('Pedestrian direction missing')
     dot = direction[0] * traffic[0] + direction[1] * traffic[1]
-    if (config['condition'] == 'a' and dot >= 0) or (config['condition'] == 'b' and dot <= 0):
-        raise ValueError('Pedestrian direction differs from planned comparison')
+    if dot >= 0:
+        raise ValueError('Pedestrian must face approaching traffic in both conditions')
     if not 0 < packet.get('pedestrian_speed_mps', 0) <= 3 or not 0 <= packet.get('vehicle_throttle', -1) <= 1:
         raise ValueError('Participant control source invalid')
     return packet
@@ -67,6 +69,7 @@ def execute(config, source_path, output_path, host, port):
 
     output = Path(output_path)
     output.mkdir(parents=True, exist_ok=False)
+    (output / 'reviewed-road-source.json').write_text(Path(source_path).read_text())
     client = carla.Client(host, port)
     client.set_timeout(15)
     world = client.get_world()

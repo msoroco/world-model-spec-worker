@@ -7,13 +7,17 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parents[1]
 CASE = 'training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_'
 CAMERAS = [
-    {'name': 'overview', 'width': 1280, 'height': 720, 'fps': 20, 'fov_deg': 95,
+    {'name': 'overview', 'width': 1920, 'height': 1080, 'fps': 20, 'fov_deg': 95,
+     'pose_strategy': 'vehicle-relative high overview of both participants and highway sides',
      'location_xyz_m': [-7, 0, 5], 'rotation_pyr_deg': [-20, 0, 0]},
-    {'name': 'ego_front', 'width': 1280, 'height': 720, 'fps': 20, 'fov_deg': 85,
+    {'name': 'approach', 'width': 1280, 'height': 720, 'fps': 20, 'fov_deg': 85,
+     'pose_strategy': 'vehicle-relative forward view of pedestrian approach',
      'location_xyz_m': [3, 0, 2], 'rotation_pyr_deg': [-4, 0, 0]},
-    {'name': 'curb_side', 'width': 1280, 'height': 720, 'fps': 20, 'fov_deg': 90,
+    {'name': 'reference_corner', 'width': 1280, 'height': 720, 'fps': 20, 'fov_deg': 90,
+     'pose_strategy': 'vehicle-relative lateral view of highway boundary and sidewalk inventory',
      'location_xyz_m': [-4, 2, 1.3], 'rotation_pyr_deg': [0, -25, 0]},
-    {'name': 'traffic_rear', 'width': 1280, 'height': 720, 'fps': 20, 'fov_deg': 95,
+    {'name': 'driver_reference', 'width': 1280, 'height': 720, 'fps': 20, 'fov_deg': 95,
+     'pose_strategy': 'vehicle-relative rear view for traffic direction and context',
      'location_xyz_m': [-7, 0, 2], 'rotation_pyr_deg': [0, 180, 0]},
 ]
 
@@ -31,12 +35,15 @@ def main():
     source = Path(__file__).resolve().parent
     runner = (source / 'runner.py').read_text()
     meter = (source / 'walking_side.py').read_text()
+    finalizer = (source / 'saved_walking.py').read_text()
     cases = []
     for condition in ('a', 'b'):
         case_id = CASE + condition
-        config = {'case_id': case_id, 'selected_case_ids': [CASE + 'a', CASE + 'b'],
+        config = {'case_id': case_id, 'selected_case_id': case_id,
+                  'selected_case_ids': [CASE + 'a', CASE + 'b'],
+                  'supported_case_ids': [CASE + 'a', CASE + 'b'],
                   'law_id': 'NRS-484B-297-2', 'cell_id': 'C230259', 'actor': 'pedestrian',
-                  'case': 'condition_' + condition, 'condition': condition, 'rate_hz': 20,
+                  'case': {'case_id': case_id}, 'condition': condition, 'rate_hz': 20,
                   'duration_s': 30, 'frames': 600, 'source_packet_required': True,
                   'source_packets': [], 'required_atoms': ['kin.position', 'kin.speed'],
                   'cameras': CAMERAS, 'physical_completion': False, 'legal_verdict': None}
@@ -45,6 +52,7 @@ def main():
                         'actor': 'pedestrian', 'entrypoint': 'runner.py',
                         'files': [{'path': 'runner.py', 'content': runner},
                                   {'path': 'walking_side.py', 'content': meter},
+                                  {'path': 'saved_walking.py', 'content': finalizer},
                                   {'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'},
                                   {'path': 'tests/test_offline.py', 'content': test}],
                         'recording_description': {'duration_s': 30, 'rate_hz': 20,

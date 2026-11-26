@@ -54,7 +54,7 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
         settings.max_substeps = 10
         world.apply_settings(settings)
         road_map = world.get_map()
-        parking = road_map.get_waypoint(carla.Location(x=5.25, y=10, z=1),
+        parking = road_map.get_waypoint(carla.Location(x=config['taxi_stop_x_m'], y=10, z=1),
             project_to_road=True, lane_type=carla.LaneType.Parking)
         if parking is None or parking.road_id != 1 or parking.lane_id != -2:
             raise RuntimeError('Authored yellow parking lane readback failed')
@@ -75,9 +75,10 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
         taxi_bp = vehicles[0]
         taxi_bp.set_attribute('role_name', 'c150173_taxi_identity_pending')
         taxi = world.spawn_actor(taxi_bp, carla.Transform(
-            carla.Location(x=5.25, y=10, z=2), carla.Rotation(yaw=90)))
-        passenger_start_x = (5.5 if config['requested_purpose'] == 'unloading_passengers'
-                             else 8.2)
+            carla.Location(x=config['taxi_stop_x_m'], y=10, z=2), carla.Rotation(yaw=90)))
+        passenger_start_x = (config['taxi_stop_x_m'] + .25
+                             if config['requested_purpose'] == 'unloading_passengers'
+                             else config['taxi_stop_x_m'] + 2.95)
         passenger = world.spawn_actor(walkers[0], carla.Transform(
             carla.Location(x=passenger_start_x, y=10, z=2), carla.Rotation(yaw=270)))
         owned.extend((taxi, passenger))
@@ -143,12 +144,14 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
                 frame_map.append(frame, time_s, camera_native_frames=camera_frames)
                 pose, velocity = taxi.get_transform(), taxi.get_velocity()
                 pp = passenger.get_transform()
+                vertices = taxi.bounding_box.get_world_vertices(pose)
                 civil = civil_start + timedelta(seconds=time_s)
                 row = {'video_frame': index, 'native_frame': frame,
                        'time_s': time_s, 'source_kind': 'original_native',
                        'civil_time_local': civil.isoformat(timespec='milliseconds'),
                        'taxi_actor_id': taxi.id, 'taxi_blueprint_id': taxi.type_id,
                        'taxi_xyz_m': [pose.location.x, pose.location.y, pose.location.z],
+                       'taxi_body_vertices_xyz_m': [[v.x, v.y, v.z] for v in vertices],
                        'taxi_yaw_deg': pose.rotation.yaw,
                        'taxi_velocity_xyz_mps': [velocity.x, velocity.y, velocity.z],
                        'passenger_proxy_id': passenger.id,
@@ -198,3 +201,21 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
                 encoder_exit_codes={name: encoder.returncode for name, encoder in encoders.items()},
                 context={'case_id': config['case_id'],
                          'taxicab_sign_passenger_authority': 'pending'})
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--check', action='store_true')
+    parser.add_argument('--output-dir')
+    parser.add_argument('--host', default='127.0.0.1')
+    parser.add_argument('--port', type=int, default=2000)
+    args = parser.parse_args()
+    if args.check:
+        print(json.dumps(offline_check(HERE), sort_keys=True))
+    elif args.output_dir:
+        config = json.loads((HERE / 'config.json').read_text())
+        print(json.dumps(capture(config, args.output_dir, args.host, args.port),
+                         sort_keys=True))
+    else:
+        parser.error('Supply --check or --output-dir')

@@ -87,10 +87,10 @@ def prove():
         return [{'video_frame': i, 'time_s': i / HZ, 'pedestrian_id': 'ped-1', 'vehicle_id': 'vehicle-1',
                  'pedestrian_xy_m': [20 - i * .02, y], 'vehicle_xy_m': [-30 + i * .04, -1.75],
                  'pedestrian_heading_xy': heading} for i in range(FRAMES)]
-    a = measure(source, sample(-4.0, [-1, 0]))
-    b = measure(source, sample(4.0, [1, 0]))
-    assert a['counts']['traffic_right'] == FRAMES and a['counts']['facing_opposite_traffic'] == FRAMES
-    assert b['counts']['traffic_left'] == FRAMES and b['counts']['facing_opposite_traffic'] == 0
+    a = measure(source, sample(4.0, [-1, 0]))
+    b = measure(source, sample(-4.0, [-1, 0]))
+    assert a['counts']['traffic_left'] == FRAMES and a['counts']['facing_opposite_traffic'] == FRAMES
+    assert b['counts']['traffic_right'] == FRAMES and b['counts']['facing_opposite_traffic'] == FRAMES
     rejects = []
     for kind in ('short', 'missing_sidewalk', 'exception', 'time_join', 'participant'):
         bad_source = dict(source)

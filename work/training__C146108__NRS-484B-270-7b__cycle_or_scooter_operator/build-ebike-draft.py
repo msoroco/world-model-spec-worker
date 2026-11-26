@@ -26,7 +26,7 @@ def build():
             'assist_only_while_pedaling': True, 'assist_cutoff_mph': 20,
             'moped': False, 'electric_scooter': False,
             'source': 'authored ebike.py kinematic surrogate; physical asset unverified'},
-        'rate_hz': 20, 'duration_s': 30, 'required_atoms': ['ru.electric_bicycle', 'ru.motor_vehicle',
+        'rate_hz': 20, 'duration_s': 30, 'required_atoms': ['ru.bicycle', 'ru.motor_vehicle',
             'kin.position', 'kin.heading', 'kin.speed', 'rel.occupies'],
         'source_packets': [], 'case': {'case_id': CASE},
         'physical_completion': {'criterion': 'overtake_pass',

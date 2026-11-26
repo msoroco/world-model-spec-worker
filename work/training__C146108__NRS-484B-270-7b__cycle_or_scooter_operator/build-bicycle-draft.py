@@ -19,6 +19,7 @@ def build():
         'case_suffix': 'bicycle_pass_wide', 'candidate_id': 'primary',
         'cell_id': 'C146108', 'law_id': 'NRS-484B-270-7b',
         'actor': 'cycle_or_scooter_operator', 'rider_class': 'bicycle',
+        'rider_y_m': -1.75,
         'rate_hz': 20, 'duration_s': 30, 'required_atoms': ['ru.bicycle', 'ru.motor_vehicle',
             'kin.position', 'kin.heading', 'kin.speed', 'rel.occupies'],
         'source_packets': [], 'case': {'case_id': CASE},

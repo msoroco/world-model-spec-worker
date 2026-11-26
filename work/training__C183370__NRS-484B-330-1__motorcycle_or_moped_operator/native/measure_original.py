@@ -1,0 +1,96 @@
+"""Saved-only source join for a proposed original flagger Native attempt.
+
+This measures motorcycle motion against the requested signal schedule. It does
+not decide whether an authorized, visible, governing flagger gave that signal.
+"""
+
+import hashlib
+import json
+from pathlib import Path
+
+
+CAMERAS = ('overview', 'approach', 'flagger', 'rear')
+REVIEW_COPIES = {
+    'authority_source_sha256': 'original-authority-source',
+    'zone_designation_source_sha256': 'original-zone-source',
+    'signal_asset_source_sha256': 'original-signal-source',
+}
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def measure(attempt, case_id):
+    attempt = Path(attempt)
+    manifest = json.loads((attempt / 'captured-source-hashes.json').read_text())
+    required = {'road.xodr', 'native-rows.jsonl', 'video_frames.jsonl',
+                'original-flagger-review.json'} | set(REVIEW_COPIES.values()) | {
+                name + '.mkv' for name in CAMERAS}
+    if (manifest.get('source_kind') != 'original_native_capture' or
+            manifest.get('case_id') != case_id or
+            manifest.get('original_signal_pixels_reviewed') is not False or
+            manifest.get('physical_or_legal_outcome_claimed') is not False or
+            set(manifest.get('sha256', {})) != required):
+        raise ValueError('Original Native source seal differs')
+    for name, expected in manifest['sha256'].items():
+        if not (attempt / name).is_file() or sha(attempt / name) != expected:
+            raise ValueError('Original Native source missing or changed: ' + name)
+    review = json.loads((attempt / 'original-flagger-review.json').read_text())
+    for key, name in REVIEW_COPIES.items():
+        if review.get(key) != manifest['sha256'][name]:
+            raise ValueError('Original flagger review source binding differs: ' + name)
+    if review.get('governs_approach') is not True:
+        raise ValueError('Original flagger governance packet missing')
+    rows = [json.loads(line) for line in
+            (attempt / 'native-rows.jsonl').read_text().splitlines()]
+    frame_map = [json.loads(line) for line in
+                 (attempt / 'video_frames.jsonl').read_text().splitlines()]
+    if len(rows) != 600 or len(frame_map) != 600:
+        raise ValueError('Original Native frame coverage incomplete')
+    first_frame = rows[0]['native_frame']
+    first_cross = None
+    indication_at_cross = None
+    stop_seen = release_seen = False
+    for index, (row, mapping) in enumerate(zip(rows, frame_map)):
+        frame = first_frame + index
+        if (row.get('source_kind') != 'original_native' or
+                row.get('video_frame') != index or
+                row.get('native_frame') != frame or
+                mapping.get('video_frame') != index or
+                mapping.get('native_frame') != frame or
+                abs(row.get('time_s', -1) - (index + 1) / 20) > .001 or
+                abs(mapping.get('time_s', -1) - row['time_s']) > .001 or
+                row.get('source_cameras') != {name: frame for name in CAMERAS} or
+                mapping.get('camera_native_frames') != row['source_cameras'] or
+                row.get('motorcycle_blueprint') != 'vehicle.kawasaki.ninja' or
+                not isinstance(row.get('motorcycle_actor_id'), int) or
+                not isinstance(row.get('flagger_actor_id'), int)):
+            raise ValueError('Original motorcycle, flagger or camera frame join differs')
+        xyz = row.get('motorcycle_xyz_m')
+        if (not isinstance(xyz, list) or len(xyz) != 3 or
+                any(not isinstance(v, (int, float)) for v in xyz) or
+                not isinstance(row.get('motorcycle_speed_mps'), (int, float)) or
+                row['motorcycle_speed_mps'] < 0 or
+                abs(xyz[1] + 1.75) > 1.5):
+            raise ValueError('Original supported motorcycle lane or motion missing')
+        requested = row.get('requested_signal')
+        if requested != ('stop' if 100 <= index < 300 else 'release'):
+            raise ValueError('Requested flagger signal schedule differs')
+        stop_seen |= requested == 'stop'
+        release_seen |= requested == 'release' and stop_seen
+        if first_cross is None and xyz[0] >= 0:
+            first_cross = frame
+            indication_at_cross = requested
+    if not stop_seen or not release_seen or first_cross is None:
+        raise ValueError('Original stop, release or crossing event missing')
+    return {'case_id': case_id, 'source_kind': 'original_native_capture',
+            'source_seal_sha256': sha(attempt / 'captured-source-hashes.json'),
+            'frame_count': 600, 'rate_hz': 20,
+            'first_observed_stop_line_cross_frame': first_cross,
+            'requested_indication_at_crossing': indication_at_cross,
+            'original_signal_pixels_reviewed': False,
+            'flagger_authority_verified': False,
+            'zone_designation_verified': False,
+            'physical_completion': None,
+            'legal_verdict': None}

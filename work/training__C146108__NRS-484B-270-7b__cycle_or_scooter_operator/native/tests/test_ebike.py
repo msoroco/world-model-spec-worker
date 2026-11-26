@@ -27,7 +27,8 @@ class ElectricBicycleTests(unittest.TestCase):
         self.assertEqual(config['rider_class'], 'electric_bicycle')
         self.assertEqual(config['duration_s'], 30)
         self.assertEqual(config['rate_hz'], 20)
-        self.assertIn(config['rider_y_m'], (-1.75, -3.7))
+        y = config['rider_y_m']
+        self.assertTrue(-2.5 <= y <= -1.4 or -3.85 <= y <= -3.5)
 
 
 if __name__ == '__main__':

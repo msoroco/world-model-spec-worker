@@ -1,6 +1,7 @@
-"""Build two unselected, exact 30-second taxi curb request bundles."""
+"""Build four exact 30-second taxi curb request bundles and fallbacks."""
 import hashlib
 import json
+import copy
 from datetime import datetime, timedelta
 from pathlib import Path
 from yellow_plan import check, measure_requested
@@ -42,24 +43,27 @@ def main():
                                   ('probe_d', 10, 'unloading_passengers')):
         case_id = PREFIX + '__' + suffix
         start = datetime(2026, 11, 26, hour)
-        config = {'case_id': case_id, 'cell_id': 'C150173',
+        config = {'case_id': case_id, 'selected_case_id': case_id,
+                  'assignment_id': PREFIX, 'cell_id': 'C150173',
                   'law_id': 'LVMC-11-52-030-B', 'actor': 'taxi_driver',
                   'duration_s': 30, 'rate_hz': 20, 'frames': 600,
                   'civil_start_local': start.isoformat(),
                   'timezone': 'America/Los_Angeles',
                   'taxi_blueprint_filter': 'vehicle.*',
+                  'taxi_stop_x_m': 5.25,
                   'requested_purpose': purpose,
                   'sign_source_status': 'authored_proposal_unverified',
                   'ordinary_rules_outside_hours': 'unresolved',
                   'legal_verdict': None, 'cameras': CAMERAS,
-                  'required_atoms': [], 'source_packets': []}
+                  'required_atoms': [], 'source_packets': [],
+                  'case': {'case_id': case_id, 'target_law_id': 'LVMC-11-52-030-B'}}
         check(config, road)
         rows = [{'video_frame': i, 'time_s': (i + 1) / 20,
                  'source_kind': 'authored_native_request',
                  'civil_time_local': (start + timedelta(seconds=(i + 1) / 20)).isoformat(timespec='milliseconds'),
                  'requested_taxi_role': 'taxi_unverified',
                  'requested_purpose': purpose,
-                 'requested_stop_xy_m': [5.25, 10.0],
+                 'requested_stop_xy_m': [config['taxi_stop_x_m'], 10.0],
                  'requested_speed_mps': 0} for i in range(600)]
         expected = 600 if hour == 10 else 0
         if measure_requested(rows, config)['sign_active_request_frames'] != expected:
@@ -72,6 +76,8 @@ def main():
                         'files': [{'path': name, 'content': (HERE / source).read_text()}
                                   for source, name in (('runner.py', 'runner.py'),
                                                        ('yellow_plan.py', 'yellow_plan.py'),
+                                                       ('finalize_original.py', 'finalize_original.py'),
+                                                       ('seal_review.py', 'seal_review.py'),
                                                        ('yellow-road.xodr', 'yellow-road.xodr'))] +
                                  [{'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'},
                                   {'path': 'requested-track.jsonl', 'content': track},
@@ -83,12 +89,42 @@ def main():
                             'taxicab_identity_and_passenger_waiting_source_required': True,
                             'outside_hours_ordinary_rules_unresolved': True,
                             'legal_verdict': None},
+                        'measurement_plan': {'method': 'source_hashed_saved_join',
+                                             'entrypoint': 'finalize_original.py'},
                         'status': 'unselected_native_cpu_draft'}
         path = PACKAGE / 'native-draft' / suffix / 'construction.json'
         write(path, construction)
+        fallback = copy.deepcopy(construction)
+        fallback_config = copy.deepcopy(config)
+        fallback_config['candidate_id'] = 'fallback1'
+        fallback_config['taxi_stop_x_m'] = 4.75
+        check(fallback_config, road)
+        moved_rows = copy.deepcopy(rows)
+        for row in moved_rows:
+            row['requested_stop_xy_m'] = [4.75, 10.0]
+        measure_requested(moved_rows, fallback_config)
+        for item in fallback['files']:
+            if item['path'] == 'config.json':
+                item['content'] = json.dumps(fallback_config, indent=2) + '\n'
+            if item['path'] == 'requested-track.jsonl':
+                item['content'] = ''.join(json.dumps(row, sort_keys=True) + '\n'
+                                        for row in moved_rows)
+        fallback['candidate_id'] = 'fallback1'
+        fallback_path = PACKAGE / 'native-draft' / suffix / 'fallback1-construction.json'
+        write(fallback_path, fallback)
         cases.append({'case_id': case_id,
                       'construction': str(path.relative_to(PACKAGE)),
                       'construction_sha256': sha(path),
+                      'candidates': [{'id': 'fallback1',
+                                      'construction': str(fallback_path.relative_to(PACKAGE)),
+                                      'construction_sha256': sha(fallback_path),
+                                      'trigger': {
+                                          'source': 'original reference_corner.mkv and curb visibility review',
+                                          'metric': 'visible yellow curb and posted sign near stopped taxi',
+                                          'failure_condition': 'complete original capture obscures curb/sign due to taxi stop pose'},
+                                      'changed_knobs': ['taxi curb stop x coordinate 5.25 to 4.75 m; purpose, cameras, civil time and road fixed']}],
+                      'candidate_risk': {'status': 'physical',
+                                         'reason': 'Original taxi may obscure curb/sign in reference view.'},
                       'requested_sign_active_frames': expected,
                       'status': 'unselected_native_cpu_draft'})
     write(PACKAGE / 'native-draft-manifest.json', {

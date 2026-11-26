@@ -27,6 +27,7 @@ def build():
                       supported_case_ids=[case_id], case={'case_id': case_id},
                       controlled_behavior=behavior,
                       bicycle_blueprint_id='vehicle.bh.crossbike',
+                      requested_speed_mps=2.3,
                       status='partial_cpu_draft')
         config['recording_description'] = dict(config['recording_description'], context_inputs=[])
         config['cameras'] = [{'name': name, 'width': 1920 if name == 'overview' else 1280,

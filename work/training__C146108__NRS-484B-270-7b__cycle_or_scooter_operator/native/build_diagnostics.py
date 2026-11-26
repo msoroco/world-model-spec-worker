@@ -32,11 +32,13 @@ def body(x, y, length, width):
             for dy in (-width / 2, width / 2) for z in (0, 1.8)]
 
 
-def build(suffix):
+def build(suffix, candidate='primary'):
     family = 'draft-bicycle' if suffix.startswith('bicycle') else 'draft-ebike'
-    bundle = json.loads((ROOT / family / suffix / 'primary/construction.json').read_text())
+    bundle = json.loads((ROOT / family / suffix / candidate / 'construction.json').read_text())
     config = json.loads(next(f['content'] for f in bundle['files'] if f['path'] == 'config.json'))
     folder = ROOT / 'diagnostic' / suffix
+    if candidate != 'primary':
+        folder = folder / candidate
     sources = folder / 'sources'
     sys.path.insert(0, str(ROOT / 'native'))
     if suffix.startswith('bicycle'):
@@ -70,8 +72,8 @@ def build(suffix):
         pose = {'video_frame': index, 'native_frame': frame, 'time_s': t,
             'rider_xy_m': rider, 'motor_xy_m': motor,
             'rider_actor_id': 101, 'motor_actor_id': 202,
-            'rider_body_xy_m': [v[:2] for v in body(rider_x, rider_y, 1.2, .8)[:4]],
-            'motor_body_xy_m': [v[:2] for v in body(motor_x, -5.25, 4, 2)[:4]],
+            'rider_body_xy_m': [v[:2] for v in body(rider_x, rider_y, 1.2, .8)[::2]],
+            'motor_body_xy_m': [v[:2] for v in body(motor_x, -5.25, 4, 2)[::2]],
             'rider_speed_mps': 3.2, 'motor_speed_mps': .8,
             'synthetic_diagnostic': True}
         if electric:
@@ -99,7 +101,7 @@ def build(suffix):
             'original_frame': frame, 'other_actors': [],
             'recording_time_s': t, 'replay_frame': frame,
             'replay_simulation_time_s': t,
-            'world': {'road_projection': {'lane_id': -1 if rider_y == -1.75 else -2,
+            'world': {'road_projection': {'lane_id': -1 if rider_y > -3.5 else -2,
                 'road_id': 1, 's_m': rider_x + 100, 'section_id': 0},
                 'weather': {'cloudiness': 0, 'fog_density': 0,
                     'precipitation': 0, 'wetness': 0}}})
@@ -138,9 +140,13 @@ def build(suffix):
                      'source': str(path.relative_to(REPO)), 'sha256': sha(path)}
                     for path in sorted(sources.rglob('*')) if path.is_file()]}
     write(folder / 'fixture-recipe.json', recipe)
-    return {'case': suffix, 'recipe_sha256': sha(folder / 'fixture-recipe.json'),
+    return {'case': suffix, 'candidate': candidate, 'recipe_sha256': sha(folder / 'fixture-recipe.json'),
             'sources': len(recipe['sources']), 'frames': 600}
 
 
 if __name__ == '__main__':
-    print(json.dumps([build(case) for case in CASES], sort_keys=True))
+    outputs = [build(case) for case in CASES]
+    outputs.extend(build(case, 'fallback1') for case in CASES
+                   if (ROOT / ('draft-bicycle' if case.startswith('bicycle') else 'draft-ebike') /
+                       case / 'fallback1/construction.json').is_file())
+    print(json.dumps(outputs, sort_keys=True))

@@ -12,9 +12,19 @@
       "status": "selected_required",
       "case_ids": [
         "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_a",
-        "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_b"
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_b",
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_c",
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_d"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Four exact unselected Native request constructions cover waiting inside/outside posted hours and passenger loading/unloading; no authoritative sign, taxicab identity, observed passenger exchange or ordinary-rule review yet."
+    },
+    {
+      "requirement": "Commercial vehicle freight-loading alternative",
+      "source": "LVMC 11.52.030(B)(1)",
+      "branch": "commercial freight alternative",
+      "status": "alternative_pending",
+      "case_ids": [],
+      "evidence_or_gap": "Frozen actor is taxi_driver. A commercial freight vehicle and actual freight purpose need separate actor/cell source binding; taxi passenger requests cannot be relabeled as freight."
     }
   ],
   "cases": [
@@ -22,7 +32,7 @@
       "case_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_a",
       "target_law_id": "LVMC-11-52-030-B",
       "kind": "planned_only",
-      "target_type": "compliant_attempt",
+      "target_type": "measurement_attempt",
       "physical_target": "wait for passengers under posted conditions",
       "comparison_variable": "taxi_yellow_zone_use"
     },
@@ -30,23 +40,77 @@
       "case_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_b",
       "target_law_id": "LVMC-11-52-030-B",
       "kind": "planned_only",
-      "target_type": "violating_attempt",
-      "physical_target": "use zone contrary to posted conditions",
+      "target_type": "measurement_attempt",
+      "physical_target": "same taxi, curb, passenger-waiting request and sign proposal at 18:00; measure posted-hour condition only; ordinary rules unresolved",
       "comparison_variable": "taxi_yellow_zone_use"
+    },
+    {
+      "case_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_c",
+      "target_law_id": "LVMC-11-52-030-B",
+      "kind": "planned_only",
+      "target_type": "measurement_attempt",
+      "physical_target": "taxi stopped at same yellow curb during posted hours with a passenger loading request and a walker motion cue; actual passenger exchange and legal eligibility require original review",
+      "comparison_variable": "taxi_passenger_purpose"
+    },
+    {
+      "case_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_d",
+      "target_law_id": "LVMC-11-52-030-B",
+      "kind": "planned_only",
+      "target_type": "measurement_attempt",
+      "physical_target": "taxi stopped at same yellow curb during posted hours with a passenger unloading request and a walker motion cue; actual passenger exchange and legal eligibility require original review",
+      "comparison_variable": "taxi_passenger_purpose"
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__comparison",
+      "comparison_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__hours_comparison",
       "case_ids": [
         "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_a",
         "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_b"
       ],
+      "fixed_conditions": [
+        "taxi role and stop",
+        "yellow curb and authored sign",
+        "passenger waiting request",
+        "four cameras",
+        "600 frames at 20 Hz"
+      ],
       "deliberate_differences": [
-        "taxi_yellow_zone_use"
+        "civil clock hour 10:00 versus 18:00; outside-hours ordinary rules unresolved"
+      ]
+    },
+    {
+      "comparison_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__loading_comparison",
+      "case_ids": [
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_a",
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_c"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
+        "taxi role and stop",
+        "yellow curb and authored sign",
+        "civil clock 10:00",
+        "four cameras",
+        "600 frames at 20 Hz"
+      ],
+      "deliberate_differences": [
+        "waiting versus loading passenger request and walker cue"
+      ]
+    },
+    {
+      "comparison_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__unloading_comparison",
+      "case_ids": [
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_a",
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_d"
+      ],
+      "fixed_conditions": [
+        "taxi role and stop",
+        "yellow curb and authored sign",
+        "civil clock 10:00",
+        "four cameras",
+        "600 frames at 20 Hz"
+      ],
+      "deliberate_differences": [
+        "waiting versus unloading passenger request and walker cue"
       ]
     }
   ],
@@ -54,7 +118,7 @@
     {
       "name": "st.curb_zone",
       "mandatory": true,
-      "reason": "colour yellow, kind freight_loading — the painted curb"
+      "reason": "colour yellow, kind freight_loading \u2014 the painted curb"
     },
     {
       "name": "dev.regulatory_sign",
@@ -110,8 +174,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Native request bundles are offline-proved but unselected; saved processing, compatibility, semantic, physical, delivery and comparison audits remain CPU work.",
+    "Authoritative sign, taxi identity, actual passenger purpose, and outside-hours ordinary rules require original source review."
   ],
   "statutory_text": "The parking of vehicles is prohibited or restricted in certain zones as set forth in this Section. The location of such zones shall be established by posting appropriate signage or other durable markings, by painting curbs or the edges of road surfaces in accordance with the colors listed below, or by a combination thereof: Yellow indicates a zone for: (1) Commercial vehicles to stop, stand or park for the purpose of loading or unloading freight in accordance with the conditions and times posted on an accompanying sign; and (2) Taxicabs to stop, stand, park for the purpose of loading, unloading or waiting for passengers in accordance with the conditions and times posted on an accompanying sign.",
   "activation_conditions_from_unreviewed_summary": [

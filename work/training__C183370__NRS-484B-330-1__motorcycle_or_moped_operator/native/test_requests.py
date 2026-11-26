@@ -1,12 +1,14 @@
 """Focused construction checks for the exact flagger response pair."""
 
 import json
+import hashlib
 from pathlib import Path
 import shutil
 import tempfile
 import unittest
 
 from check_requests import check_pair, read_case
+from runner import _read_review
 
 
 HERE = Path(__file__).resolve().parent
@@ -66,6 +68,31 @@ class ConstructionTests(unittest.TestCase):
                 read_case('probe_a', base=self.base)
         finally:
             path.write_text(original)
+
+    def test_native_review_packet_is_required(self):
+        with self.assertRaisesRegex(ValueError, 'Original flagger authority'):
+            _read_review(self.base / 'absent-review.json', object())
+
+    def test_native_review_sources_are_hashed(self):
+        class Library:
+            def find(self, name):
+                if name not in ('static.prop.stop_source', 'static.prop.release_source'):
+                    raise ValueError('Unavailable reviewed signal')
+                return name
+        review = {'governs_approach': True,
+                  'stop_signal_blueprint': 'static.prop.stop_source',
+                  'release_signal_blueprint': 'static.prop.release_source'}
+        for stem in ('authority', 'zone_designation', 'signal_asset'):
+            source = self.base / (stem + '.txt')
+            source.write_text(stem + ' CPU source fixture\n')
+            review[stem + '_source_path'] = str(source)
+            review[stem + '_source_sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
+        packet = self.base / 'review.json'
+        packet.write_text(json.dumps(review) + '\n')
+        self.assertEqual(_read_review(packet, Library())['governs_approach'], True)
+        (self.base / 'authority.txt').write_text('changed\n')
+        with self.assertRaisesRegex(ValueError, 'source hash differs'):
+            _read_review(packet, Library())
 
 
 if __name__ == '__main__':

@@ -1,0 +1,51 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__probe_a",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "LVMC-11-52-030-B",
+      "source": "LVMC 11.52.030(B)",
+      "output_key": "taxi_yellow_zone_measurement",
+      "method": "inspect",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "yellow-zone-native.jsonl",
+        "sign-review.json",
+        "passenger-purpose-review.json",
+        "ordinary-rules-review.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "passenger-purpose-review.json"
+    ],
+    "error_contains": "Missing required source: passenger-purpose-review.json"
+  },
+  "frame_count": 600,
+  "sampling_rate_hz": 20,
+  "duration_s": 30,
+  "physical_acceptance_claimed": false,
+  "source_required": [
+    "original Native taxi body and velocity",
+    "600 aligned original frames from four cameras",
+    "source-based taxicab identity review",
+    "source-based yellow curb and posted sign review",
+    "source-based passenger-purpose review",
+    "source-based ordinary-rule review"
+  ],
+  "measured_channels": [
+    "stopped_frames",
+    "yellow_zone_body_frames",
+    "posted_active_stopped_frames",
+    "observed_purpose"
+  ],
+  "source_finalizer": "native/finalize_original.py",
+  "review_sealer": "native/seal_review.py",
+  "original_native_observed": false,
+  "legal_verdict": null,
+  "outside_posted_hours": "ordinary rules unresolved",
+  "commercial_freight_alternative": "requires separate compatible actor binding"
+}

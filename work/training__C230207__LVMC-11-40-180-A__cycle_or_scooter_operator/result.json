@@ -2,40 +2,112 @@
   "assignment_id": "training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator",
   "input_sha256": "0058dfbe0b6dfc86648ad663cc6665252825632ff5b18cdf46ebee4fc54e3d7e",
   "status": "partial",
-  "reason": "Controlled_1 walking and controlled_2 riding bicycle Native CPU drafts now pass individual pinned offline checks. A source-bound measurement records separate walking-operator and bicycle pose association, and a comparison pre-audit rejects altered signs, behavior and missing operator poses. Native tests and synthetic measurement/comparison tests pass. Both machine postures remain unverified until actual video review. Electric bicycle and electric scooter alternatives lack a verified pinned Native asset path. Selected delivery manifest, semantic proposals, source-bound compatibility, saved-only processing and independent delivery acceptance remain unfinished; exact strict rejects partial status.",
+  "reason": "Both exact ordinary-bicycle controlled cases and one source-listed bicycle-model fallback per case pass pinned offline and positive/negative compatibility; the primary cases pass recorded-only saved processing. Canonical semantic stages, source-bound measurement, three-outcome physical and lifecycle CPU proof, delivery selftests and comparison pre-audit are present. Full statutory delivery remains incomplete: pinned stock CARLA catalogue/runtime taxonomy identifies no electric bicycle or electric scooter Native asset or source-verified equivalent. These two required device alternatives have no exact cases. Actual named geography, sign pixels, cycle class and mounted/dismounted posture require local Native capture and independent visual review. No ready or accepted claim.",
   "readiness_kind": "implementation_checkpoint",
   "planned_case_count": 2,
-  "candidate_count": 2,
+  "candidate_count": 4,
   "source_law_review": "Exact law independently reviewed: the rider prohibition covers bicycle, electric bicycle and electric scooter on Fremont Street sidewalks between Main and Seventh; the three-class sign posting sentence is separate and is not an express riding prerequisite. Ordinary bicycle CPU drafts do not cover the electric alternatives. Named geography and actual sign pixels require local physical/source verification.",
   "accepted_membership_count": 0,
   "reuse_count": 0,
-  "unresolved_branch_count": 1,
+  "unresolved_branch_count": 2,
   "applied_update": 16,
   "selected_delivery_case_count": 0,
   "tests": [
     {
-      "command": "runtime.py offline --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_1",
+      "command": "runtime.py offline --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_1 --candidate primary",
       "exit_code": 0,
       "log": "controlled-1-offline.log",
-      "sha256": "c131f9b94ae07fcba6691ac83056c621f1c6796d4cd6e2e456a49114f0d57271"
+      "sha256": "d227ec5015bbf0400f702bcc7edcb47444bc458ea9be0acc20cf2ee94799484f"
     },
     {
-      "command": "runtime.py offline --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_2",
+      "command": "runtime.py offline --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_1 --candidate fallback1",
+      "exit_code": 0,
+      "log": "compatibility/controlled_1-fallback1-offline.log",
+      "sha256": "d227ec5015bbf0400f702bcc7edcb47444bc458ea9be0acc20cf2ee94799484f"
+    },
+    {
+      "command": "runtime.py compatibility --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_1 --candidate primary",
+      "exit_code": 0,
+      "log": "compatibility/controlled_1-primary.json",
+      "sha256": "7bc51657b0230e8f265ea9fff713681f1ec7e30db616fe9f1ac89b58846f0883"
+    },
+    {
+      "command": "runtime.py compatibility --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_1 --candidate fallback1",
+      "exit_code": 0,
+      "log": "compatibility/controlled_1-fallback1.json",
+      "sha256": "fd84cbe6caf9f3c1a419d52b453d005698f5c919053c929a94c900b4e7fba47e"
+    },
+    {
+      "command": "runtime.py process-saved --manifest draft-selected-execution-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_1 [synthetic source attempt]",
+      "exit_code": 0,
+      "log": "saved-proof/controlled_1-processing.json",
+      "sha256": "3ad25aa589ae64fda078c3c8ee401c108fbbbdab4a579d1cd8a8af0ef23b32d7"
+    },
+    {
+      "command": "native/delivery_audit.py --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_1 --selftest",
+      "exit_code": 0,
+      "log": "delivery-proof/controlled_1-positive.log",
+      "sha256": "33d397cd27fa01223da8f8390f0c437e11e4bde56ef72736bbcdcb7f740592c5"
+    },
+    {
+      "command": "runtime.py offline --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_2 --candidate primary",
       "exit_code": 0,
       "log": "controlled-2-offline.log",
-      "sha256": "c131f9b94ae07fcba6691ac83056c621f1c6796d4cd6e2e456a49114f0d57271"
+      "sha256": "d227ec5015bbf0400f702bcc7edcb47444bc458ea9be0acc20cf2ee94799484f"
+    },
+    {
+      "command": "runtime.py offline --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_2 --candidate fallback1",
+      "exit_code": 0,
+      "log": "compatibility/controlled_2-fallback1-offline.log",
+      "sha256": "d227ec5015bbf0400f702bcc7edcb47444bc458ea9be0acc20cf2ee94799484f"
+    },
+    {
+      "command": "runtime.py compatibility --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_2 --candidate primary",
+      "exit_code": 0,
+      "log": "compatibility/controlled_2-primary.json",
+      "sha256": "72f94bf564d765bc3e5a92141772d23d373997577923ff1d8fb735746b1eb95a"
+    },
+    {
+      "command": "runtime.py compatibility --manifest draft-mounted-sidewalk-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_2 --candidate fallback1",
+      "exit_code": 0,
+      "log": "compatibility/controlled_2-fallback1.json",
+      "sha256": "b21b65a34b18adce1ea1d6b7c406e40dfeb786a9a1eee42be0f601d384bd1fd2"
+    },
+    {
+      "command": "runtime.py process-saved --manifest draft-selected-execution-manifest.json --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_2 [synthetic source attempt]",
+      "exit_code": 0,
+      "log": "saved-proof/controlled_2-processing.json",
+      "sha256": "81fb2b44f0de924b0441644613dd1b2ce2e8b6cd1bc1828f3f6e6040de59cb9d"
+    },
+    {
+      "command": "native/delivery_audit.py --case training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator__controlled_2 --selftest",
+      "exit_code": 0,
+      "log": "delivery-proof/controlled_2-positive.log",
+      "sha256": "c7e99b8750836607b300bd9bd7682a05994cc042d82d1e57aff2d6c016aebc23"
     },
     {
       "command": "python -m unittest discover -s native/tests -v",
       "exit_code": 0,
       "log": "controlled-native-tests.log",
-      "sha256": "a77e3bbfbdfb395189ba96c9df6bcad0592357611b30b987d4a739690738b192"
+      "sha256": "caa136115b57891facc8fe4819b9f3768bc616d9732f60e5427437bec04067ae"
     },
     {
       "command": "python prove-measure.py",
       "exit_code": 0,
       "log": "controlled-measure-proof.log",
-      "sha256": "a2777de5aa7b4c39bfd49511f5028bffa3146364f193f02a313453b4acdb50d6"
+      "sha256": "dfa2389480369be7bcca756ffaab688828b8b7dba2a17743a941c93d9ffb7d69"
+    },
+    {
+      "command": "python prove-finalize.py",
+      "exit_code": 0,
+      "log": "controlled-finalize-proof.log",
+      "sha256": "9026a479f92e6a3decfd056b9ddd89c3951e7dfba4a7ad894d5f217c7989e5b5"
+    },
+    {
+      "command": "python prove-physical.py",
+      "exit_code": 0,
+      "log": "controlled-physical-proof.log",
+      "sha256": "7089352c163eb220f027e37872549e08e8e6446c7d695cbdb3eeb5635efe04f2"
     },
     {
       "command": "python prove-comparison.py",
@@ -47,5 +119,7 @@
   "remaining_gpu_checks": [
     "Actual bicycle and operator motion, rider posture and absence of an integral bicycle-model rider",
     "Sidewalk occupancy, sign face pixels, geographic identity and camera coverage"
-  ]
+  ],
+  "cpu_draft_case_count": 2,
+  "draft_selected_manifest": "draft-selected-execution-manifest.json"
 }

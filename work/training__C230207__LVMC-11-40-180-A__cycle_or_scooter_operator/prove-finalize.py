@@ -58,7 +58,9 @@ def main():
         report = finalize(attempt, attempt / 'analysis-report.json')
         result = json.loads((attempt / 'result.json').read_text())
         assert report['analysis_complete'] and not report['physical_acceptance_claimed']
-        assert result['diagnostic_fixture'] and not result['behavior_attempted']
+        assert result['diagnostic_fixture'] and result['provenance_kind'] == 'synthetic_fixture'
+        assert result['physical_checks']['maneuver']['status'] == 'met'
+        assert not result['physical_acceptance_claimed']
         assert not result['target_checks'][0]['matched']
         assert set(report['measurements']) == {'sidewalk_riding_observation'}
         reports[behavior] = {'case_id': report['case_id'],

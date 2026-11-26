@@ -30,6 +30,9 @@ def check(config, road_text):
         raise ValueError('Camera geometry or rate missing')
     if config.get('taxi_blueprint_filter') != 'vehicle.*':
         raise ValueError('Unreviewed taxi blueprint filter')
+    stop_x = config.get('taxi_stop_x_m')
+    if type(stop_x) not in (int, float) or not math.isfinite(stop_x) or not 4.5 <= stop_x <= 5.5:
+        raise ValueError('Yellow curb stop coordinate missing')
     suffix = config['case_id'][len(PREFIX):]
     hour, purpose = PURPOSES[suffix]
     if config.get('requested_purpose') != purpose:
@@ -54,9 +57,12 @@ def check(config, road_text):
     if not any(mark.get('color') == 'yellow' for mark in marks):
         raise ValueError('Yellow parking curb marking missing')
     if not any(node.get('name') == 'TAXI PASSENGERS 09:00-17:00 PROPOSAL'
+               and 80 <= float(node.get('s', '-1')) <= 90
                for node in road.findall('signals/signal')):
         raise ValueError('Posted-hours sign proposal missing')
-    if not any(node.get('id') == '701' for node in road.findall('objects/object')):
+    if not any(node.get('id') == '701' and float(node.get('s', '-1')) <= 90 <=
+               float(node.get('s', '-1')) + float(node.get('length', '0'))
+               for node in road.findall('objects/object')):
         raise ValueError('Yellow zone geometry missing')
     return {'frames': 600, 'rate_hz': 20, 'source_cameras': list(VIEWS),
             'civil_start_local': config['civil_start_local'],
@@ -81,7 +87,7 @@ def measure_requested(rows, config):
         civil = datetime.fromisoformat(row['civil_time_local'])
         if civil != start + timedelta(seconds=(i + 1) / 20):
             raise ValueError('Civil time join differs')
-        if row.get('requested_stop_xy_m') != [5.25, 10.0]:
+        if row.get('requested_stop_xy_m') != [config['taxi_stop_x_m'], 10.0]:
             raise ValueError('Yellow curb stop request differs')
         active += '09:00' <= civil.strftime('%H:%M') < '17:00'
     return {'requested_frames': 600, 'sign_active_request_frames': active,

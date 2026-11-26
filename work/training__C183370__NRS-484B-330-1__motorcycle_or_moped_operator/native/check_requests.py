@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 
 
 HERE = Path(__file__).resolve().parent
-ASSIGNMENT = HERE.parent.name
+ASSIGNMENT = 'training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator'
 
 
 def sha(path):

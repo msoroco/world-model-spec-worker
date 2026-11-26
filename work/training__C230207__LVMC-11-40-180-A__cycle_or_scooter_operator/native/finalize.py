@@ -46,7 +46,7 @@ def sidewalk_riding_observation(observed, config):
 
 
 def finalize(attempt, output):
-    from worker_exchange.native_output import provenance_record, write_result
+    from worker_exchange.native_output import physical_result, provenance_record, write_result
 
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
     if output.exists() or (attempt / 'result.json').exists():
@@ -128,10 +128,13 @@ def finalize(attempt, output):
               'provenance_kind': provenance['provenance_kind'],
               'diagnostic_fixture': provenance['diagnostic_fixture'],
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
+    result = physical_result(attempt, result)
     write_result(attempt, result)
     report = {'format': 'c230207-sidewalk-source-analysis-v1', 'case_id': config['case_id'],
               'analysis_complete': True, 'measurements': measurements,
               'source_hashes': source_hashes, 'provenance': provenance,
+              'physical_checks': result['physical_checks'],
+              'realized_observables': result['realized_observables'],
               'legal_verdict_claimed': False, 'physical_acceptance_claimed': False}
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     return report

@@ -89,7 +89,7 @@ def execute(output, host, port, case_id=None):
         bicycle_bp.set_attribute('role_name', 'c146108_bicycle_subject')
         motor_bp.set_attribute('role_name', 'c146108_passed_motor_vehicle')
         bicycle = world.spawn_actor(bicycle_bp, carla.Transform(
-            carla.Location(x=-50, y=-1.75, z=1), carla.Rotation(yaw=0)))
+            carla.Location(x=-50, y=float(config['rider_y_m']), z=1), carla.Rotation(yaw=0)))
         motor = world.spawn_actor(motor_bp, carla.Transform(
             carla.Location(x=-30, y=-5.25, z=1), carla.Rotation(yaw=0)))
         owned.extend((bicycle, motor))

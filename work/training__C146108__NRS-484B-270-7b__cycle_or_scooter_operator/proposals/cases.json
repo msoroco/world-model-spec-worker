@@ -3,21 +3,52 @@
   "cell_id": "C146108",
   "actor": "cycle_or_scooter_operator",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "full_pass_and_endangerment",
+      "target_law_id": "NRS-484B-270-7b",
+      "judgment_refs": [
+        {
+          "phrase": "Overtake and pass a motor vehicle",
+          "note": "Verify the qualifying rider and motor-vehicle classes and an original behind-to-clear-ahead pass."
+        },
+        {
+          "phrase": "safely without endangering himself or herself or the occupants of the motor vehicle",
+          "note": "Measure the full-body gap, closing motion, passing side and occupant evidence over the whole pass; no numeric legal threshold is supplied."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Full-body pass and relative motion are measured, but the legal safety/endangerment conclusion requires source review.",
+      "missing_inputs": [
+        "Original Native rider and motor class and camera visibility",
+        "Independent occupant and legal endangerment judgment"
+      ]
+    }
+  ],
   "sweeps_expanded": true,
   "cases": [
     {
       "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__bicycle_pass_wide",
       "target_law_id": "NRS-484B-270-7b",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Source-grounded full rider pass of a motor vehicle in the frozen one-way multilane cell",
       "variable_assignments": {
-        "rider_class": "bicycle",
-        "rider_y_m": -1.75
+        "rider_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_y_m": {
+          "kind": "controller",
+          "value": -1.75
+        },
+        "motor_vehicle_context": {
+          "kind": "world_setup",
+          "value": "source-reviewed motor vehicle, body and occupants required"
+        }
       },
       "unresolved_judgment_calls": [
-        "No source-backed safe-pass or endangerment threshold",
-        "Native physical class, occupants and visible evasive motion require review"
+        "Overtake and pass a motor vehicle",
+        "safely without endangering himself or herself or the occupants of the motor vehicle"
       ],
       "recording_description": {
         "channels": [
@@ -114,20 +145,39 @@
           "Electric-bicycle witness branch remains unconstructed",
           "Generated CPU pass fixtures do not establish safety"
         ]
+      },
+      "paired_probe_id": "c146108-bicycle-alternative",
+      "deliberate_differences": [
+        "rider_y_m"
+      ],
+      "probe": {
+        "primary_variable": "rider_y_m",
+        "comparison_or_standard": "source-measured full-body pass clearance and unresolved endangerment review",
+        "target_value_or_branch": -1.75
       }
     },
     {
       "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_wide",
       "target_law_id": "NRS-484B-270-7b",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Source-grounded full rider pass of a motor vehicle in the frozen one-way multilane cell",
       "variable_assignments": {
-        "rider_class": "electric_bicycle",
-        "rider_y_m": -1.75
+        "rider_class": {
+          "kind": "world_setup",
+          "value": "electric_bicycle"
+        },
+        "rider_y_m": {
+          "kind": "controller",
+          "value": -1.75
+        },
+        "motor_vehicle_context": {
+          "kind": "world_setup",
+          "value": "source-reviewed motor vehicle, body and occupants required"
+        }
       },
       "unresolved_judgment_calls": [
-        "No source-backed safe-pass or endangerment threshold",
-        "Native physical class, occupants and visible evasive motion require review"
+        "Overtake and pass a motor vehicle",
+        "safely without endangering himself or herself or the occupants of the motor vehicle"
       ],
       "recording_description": {
         "channels": [
@@ -224,20 +274,39 @@
           "Authored drivetrain does not certify rendered pedals or physical motor",
           "Generated CPU pass fixtures do not establish safety"
         ]
+      },
+      "paired_probe_id": "c146108-electric-bicycle-clearance-pair",
+      "deliberate_differences": [
+        "rider_y_m"
+      ],
+      "probe": {
+        "primary_variable": "rider_y_m",
+        "comparison_or_standard": "source-measured full-body pass clearance and unresolved endangerment review",
+        "target_value_or_branch": -1.75
       }
     },
     {
       "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__electric_bicycle_pass_narrow",
       "target_law_id": "NRS-484B-270-7b",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Source-grounded full rider pass of a motor vehicle in the frozen one-way multilane cell",
       "variable_assignments": {
-        "rider_class": "electric_bicycle",
-        "rider_y_m": -3.7
+        "rider_class": {
+          "kind": "world_setup",
+          "value": "electric_bicycle"
+        },
+        "rider_y_m": {
+          "kind": "controller",
+          "value": -3.7
+        },
+        "motor_vehicle_context": {
+          "kind": "world_setup",
+          "value": "source-reviewed motor vehicle, body and occupants required"
+        }
       },
       "unresolved_judgment_calls": [
-        "No source-backed safe-pass or endangerment threshold",
-        "Native physical class, occupants and visible evasive motion require review"
+        "Overtake and pass a motor vehicle",
+        "safely without endangering himself or herself or the occupants of the motor vehicle"
       ],
       "recording_description": {
         "channels": [
@@ -332,6 +401,135 @@
         ],
         "limitations": [
           "Authored drivetrain does not certify rendered pedals or physical motor",
+          "Generated CPU pass fixtures do not establish safety"
+        ]
+      },
+      "paired_probe_id": "c146108-electric-bicycle-clearance-pair",
+      "deliberate_differences": [
+        "rider_y_m"
+      ],
+      "probe": {
+        "primary_variable": "rider_y_m",
+        "comparison_or_standard": "source-measured full-body pass clearance and unresolved endangerment review",
+        "target_value_or_branch": -3.7
+      }
+    },
+    {
+      "case_id": "training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator__baseline",
+      "target_law_id": "NRS-484B-270-7b",
+      "target_type": "baseline",
+      "rationale": "Shared planning reference for original motor-vehicle and road context; no delivery capture is selected.",
+      "variable_assignments": {
+        "rider_class": {
+          "kind": "world_setup",
+          "value": "bicycle"
+        },
+        "rider_y_m": {
+          "kind": "controller",
+          "value": -1.75
+        },
+        "motor_vehicle_context": {
+          "kind": "world_setup",
+          "value": "source-reviewed motor vehicle, body and occupants required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Overtake and pass a motor vehicle",
+        "safely without endangering himself or herself or the occupants of the motor vehicle"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "rider_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor transform and body corners",
+            "time_window": "entire 600-frame 30-second pass",
+            "reference_frame": "Native road and frame",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "motor_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor transform and body corners",
+            "time_window": "entire 600-frame 30-second pass",
+            "reference_frame": "Native road and frame",
+            "uncertainty": "50 ms sampling"
+          },
+          {
+            "name": "drv.overtaking",
+            "unit": "structured event",
+            "method": "joined rider/motor full-body behind, alongside and clear-ahead order",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame 30-second pass",
+            "reference_frame": "original Native frame and authored road",
+            "uncertainty": "50 ms sampling; physical semantics need review"
+          },
+          {
+            "name": "ru.motor_vehicle",
+            "unit": "structured identity",
+            "method": "original Native other actor identity and pass context",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame 30-second pass",
+            "reference_frame": "original Native frame and authored road",
+            "uncertainty": "50 ms sampling; physical semantics need review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "m",
+            "method": "minimum original full-body pass separation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame 30-second pass",
+            "reference_frame": "original Native frame and authored road",
+            "uncertainty": "50 ms sampling; physical semantics need review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "s",
+            "method": "initial pose-derived time to rear-body overlap",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame 30-second pass",
+            "reference_frame": "original Native frame and authored road",
+            "uncertainty": "50 ms sampling; physical semantics need review"
+          },
+          {
+            "name": "drv.passing_side",
+            "unit": "categorical",
+            "method": "rider lateral side at first alongside frame",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame 30-second pass",
+            "reference_frame": "original Native frame and authored road",
+            "uncertainty": "50 ms sampling; physical semantics need review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "m/s",
+            "method": "original rider and motor pose-derived closing speed",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame 30-second pass",
+            "reference_frame": "original Native frame and authored road",
+            "uncertainty": "50 ms sampling; physical semantics need review"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "count",
+            "method": "sourced driver count with cabin review unresolved",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 600-frame 30-second pass",
+            "reference_frame": "original Native frame and authored road",
+            "uncertainty": "50 ms sampling; physical semantics need review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "motor_occupants",
+            "unit": "count",
+            "method": "independent original vehicle and driver review"
+          }
+        ],
+        "limitations": [
+          "Electric-bicycle witness branch remains unconstructed",
           "Generated CPU pass fixtures do not establish safety"
         ]
       }

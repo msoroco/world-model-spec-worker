@@ -1,0 +1,135 @@
+"""CPU source-shape tests for saved motorcycle/flagger observation joins."""
+
+import hashlib
+import json
+from pathlib import Path
+import tempfile
+
+from measure_original import CAMERAS, REVIEW_COPIES, measure
+
+
+ASSIGNMENT = 'training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator'
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def fixture(folder, suffix):
+    folder = Path(folder)
+    case_id = ASSIGNMENT + '__' + suffix
+    (folder / 'road.xodr').write_text('<OpenDRIVE/>\n')
+    for name in REVIEW_COPIES.values():
+        (folder / name).write_text('synthetic structural source: ' + name + '\n')
+    review = {key: sha(folder / name) for key, name in REVIEW_COPIES.items()}
+    review['governs_approach'] = True
+    review['source_review'] = 'synthetic_structural_only'
+    (folder / 'original-flagger-review.json').write_text(json.dumps(review) + '\n')
+    for camera in CAMERAS:
+        (folder / (camera + '.mkv')).write_text('synthetic marker, not video\n')
+    rows = []
+    mapping = []
+    crossing = 350 if suffix == 'probe_a' else 200
+    for index in range(600):
+        frame = 2000 + index
+        x = -40 + 40 * min(index / crossing, 1)
+        if index > crossing:
+            x = min(55, (index - crossing) * .23)
+        cameras = {name: frame for name in CAMERAS}
+        rows.append({'video_frame': index, 'native_frame': frame,
+                     'time_s': (index + 1) / 20, 'source_kind': 'original_native',
+                     'motorcycle_actor_id': 12, 'flagger_actor_id': 13,
+                     'motorcycle_blueprint': 'vehicle.kawasaki.ninja',
+                     'motorcycle_xyz_m': [x, -1.75, 1],
+                     'motorcycle_speed_mps': 0 if 110 <= index < 300 and
+                         suffix == 'probe_a' else 3,
+                     'requested_signal': 'stop' if 100 <= index < 300 else 'release',
+                     'source_cameras': cameras})
+        mapping.append({'video_frame': index, 'native_frame': frame,
+                        'time_s': (index + 1) / 20,
+                        'camera_native_frames': cameras})
+    (folder / 'native-rows.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in rows))
+    (folder / 'video_frames.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in mapping))
+    names = ['road.xodr', 'original-flagger-review.json', 'native-rows.jsonl',
+             'video_frames.jsonl'] + list(REVIEW_COPIES.values()) + [
+             name + '.mkv' for name in CAMERAS]
+    seal = {'source_kind': 'original_native_capture', 'case_id': case_id,
+            'sha256': {name: sha(folder / name) for name in names},
+            'original_signal_pixels_reviewed': False,
+            'physical_or_legal_outcome_claimed': False}
+    (folder / 'captured-source-hashes.json').write_text(json.dumps(seal) + '\n')
+    return case_id
+
+
+def prove():
+    scratch = Path('.runtime-work/c183370-original-shape').resolve()
+    scratch.mkdir(parents=True, exist_ok=True)
+    outcomes = []
+    with tempfile.TemporaryDirectory(dir=scratch) as folder:
+        for suffix, expected in (('probe_a', 'release'), ('probe_b', 'stop')):
+            path = Path(folder) / suffix
+            path.mkdir()
+            case = fixture(path, suffix)
+            measured = measure(path, case)
+            if (measured['requested_indication_at_crossing'] != expected or
+                    measured['physical_completion'] is not None):
+                raise AssertionError('Source-shaped measured crossing differs')
+            outcomes.append({'case_id': case, 'measured_cross_frame':
+                             measured['first_observed_stop_line_cross_frame'],
+                             'requested_indication': expected})
+            altered = path / 'native-rows.jsonl'
+            original = altered.read_text()
+            altered.write_text(original.replace('"motorcycle_actor_id": 12',
+                                                '"motorcycle_actor_id": 99', 1))
+            try:
+                measure(path, case)
+            except ValueError as error:
+                if 'source missing or changed' not in str(error):
+                    raise
+            else:
+                raise AssertionError('Changed original Native source accepted')
+            altered.write_text(original)
+            missing = path / 'flagger.mkv'
+            missing.unlink()
+            try:
+                measure(path, case)
+            except ValueError as error:
+                if 'source missing or changed' not in str(error):
+                    raise
+            else:
+                raise AssertionError('Missing flagger video source accepted')
+            missing.write_text('synthetic marker, not video\n')
+            authority = path / 'original-authority-source'
+            original_authority = authority.read_text()
+            authority.write_text('changed synthetic authority source\n')
+            try:
+                measure(path, case)
+            except ValueError as error:
+                if 'source missing or changed' not in str(error):
+                    raise
+            else:
+                raise AssertionError('Changed authority source accepted')
+            seal_path = path / 'captured-source-hashes.json'
+            original_seal = seal_path.read_text()
+            sealed = json.loads(original_seal)
+            sealed['sha256']['original-authority-source'] = sha(authority)
+            seal_path.write_text(json.dumps(sealed) + '\n')
+            try:
+                measure(path, case)
+            except ValueError as error:
+                if 'review source binding differs' not in str(error):
+                    raise
+            else:
+                raise AssertionError('Resealed but unreviewed authority source accepted')
+            authority.write_text(original_authority)
+            seal_path.write_text(original_seal)
+    return {'format': 'c183370-saved-source-shape-proof',
+            'source_kind': 'synthetic_structural_fixture',
+            'positive_count': 2, 'negative_count': 8,
+            'cases': outcomes, 'actual_video_decoded': False,
+            'original_native_observed': False,
+            'physical_or_legal_outcome_claimed': False}
+
+
+if __name__ == '__main__':
+    print(json.dumps(prove()))
