@@ -68,7 +68,7 @@ def prove():
                     list(REVIEW_COPIES.values()) +
                     [camera + '.mkv' for camera in CAMERAS]},
                 'observations': {name: {
-                    'camera': 'flagger' if name.startswith('signal') or
+                    'camera': 'reference_corner' if name.startswith('signal') or
                         name == 'flagger_identity' else 'overview',
                     'video_frame': 150 if name == 'signal_stop' else 350,
                     'observed': False,
@@ -99,7 +99,7 @@ def prove():
             if json.loads(output.read_text()) != result:
                 raise AssertionError('Saved delivery CLI output differs')
             positives += 1
-            video = attempt / 'flagger.mkv'
+            video = attempt / 'reference_corner.mkv'
             original_video = video.read_bytes()
             video.write_bytes(original_video[:-50])
             reject(lambda: audit(attempt, config_path, receipt_path),
@@ -127,7 +127,7 @@ def prove():
                    'case or duration differs')
             negatives += 1
             config['duration_s'] = 30
-            config['cameras']['flagger']['width'] += 1
+            config['cameras']['reference_corner']['width'] += 1
             config_path.write_text(json.dumps(config) + '\n')
             reject(lambda: audit(attempt, config_path, receipt_path),
                    'config differs from exact construction')

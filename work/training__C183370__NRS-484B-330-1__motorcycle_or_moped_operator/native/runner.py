@@ -15,8 +15,8 @@ from check_requests import check_pair, read_case
 CAMERA_POSES = {
     'overview': (-2, -22, 27, -45, 70),
     'approach': (-30, -14, 7, -15, 35),
-    'flagger': (7, -13, 7, -15, 150),
-    'rear': (25, -13, 8, -15, 190),
+    'reference_corner': (7, -13, 7, -15, 150),
+    'driver_reference': (0.4, 0, 1.6, -5, 0),
 }
 
 REVIEW_COPIES = {
@@ -102,6 +102,23 @@ def _spawn_work_area(world, library, carla, review, owned):
         owned.append(actor)
         assets.append(actor)
     return assets
+
+
+def _spawn_capture_camera(world, library, carla, name, spec, motorcycle):
+    """Mount the operator reference on the subject; other views watch the scene."""
+    if name not in CAMERA_POSES:
+        raise ValueError('Unknown exact camera view')
+    blueprint = library.find('sensor.camera.rgb')
+    blueprint.set_attribute('image_size_x', str(spec['width']))
+    blueprint.set_attribute('image_size_y', str(spec['height']))
+    blueprint.set_attribute('fov', str(spec['fov']))
+    blueprint.set_attribute('sensor_tick', '.05')
+    x, y, z, pitch, yaw = CAMERA_POSES[name]
+    transform = carla.Transform(carla.Location(x=x, y=y, z=z),
+                                carla.Rotation(pitch=pitch, yaw=yaw))
+    if name == 'driver_reference':
+        return world.spawn_actor(blueprint, transform, attach_to=motorcycle)
+    return world.spawn_actor(blueprint, transform)
 
 
 def _cleanup_capture(pipeline, encoders, owned, client, prior, changed,
@@ -216,15 +233,8 @@ def capture(output_dir, suffix, host, port):
         pipeline = PipelineCapture(client, motorcycle, output, config['case_id'],
             visibility=False, required_observations=['kin.velocity'])
         for name, spec in config['cameras'].items():
-            bp = library.find('sensor.camera.rgb')
-            bp.set_attribute('image_size_x', str(spec['width']))
-            bp.set_attribute('image_size_y', str(spec['height']))
-            bp.set_attribute('fov', str(spec['fov']))
-            bp.set_attribute('sensor_tick', '.05')
-            x, y, z, pitch, yaw = CAMERA_POSES[name]
-            sensor = world.spawn_actor(bp, carla.Transform(
-                carla.Location(x=x, y=y, z=z),
-                carla.Rotation(pitch=pitch, yaw=yaw)))
+            sensor = _spawn_capture_camera(world, library, carla, name,
+                                           spec, motorcycle)
             owned.append(sensor)
             stream = queue.Queue()
             sensor.listen(stream.put)

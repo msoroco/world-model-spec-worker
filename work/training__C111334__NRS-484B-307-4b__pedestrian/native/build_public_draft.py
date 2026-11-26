@@ -43,8 +43,9 @@ def build():
         item = dict(entry)
         for key in ('construction', 'measurement_contract'):
             item[key] = 'native-selected/' + item[key]
-        item['offline'] = dict(item['offline'])
-        item['offline']['log'] = 'native-selected/' + item['offline']['log']
+        if 'offline' in item:
+            item['offline'] = dict(item['offline'])
+            item['offline']['log'] = 'native-selected/' + item['offline']['log']
         suffix = item['case_id'].rsplit('__', 1)[1]
         recipe = FOLDER / 'native/diagnostic' / suffix / 'fixture-recipe.json'
         if recipe.is_file():

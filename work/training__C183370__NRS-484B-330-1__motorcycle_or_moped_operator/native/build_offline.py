@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+from build_requests import CAMERAS
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -53,7 +54,7 @@ def build(repo=Path('.')):
             'cell_id': 'C183370', 'actor': 'motorcycle_or_moped_operator',
             'entrypoint': 'runner.py', 'files': files,
             'recording_description': {'duration_s': 30, 'rate_hz': 20,
-                'source_cameras': ['overview', 'approach', 'flagger', 'rear'],
+                'source_cameras': list(CAMERAS),
                 'flagger_authorization_review_required': True,
                 'physical_or_legal_outcome_claimed': False},
             'status': 'draft_cpu_offline_only',

@@ -36,7 +36,7 @@ def prove():
         if len(positive['cameras']) != 4 or positive['actual_pixels_interpreted']:
             raise AssertionError('Four-view decode proof differs')
         wrong = dict(specs)
-        wrong['flagger'] = {'width': 80, 'height': 48}
+        wrong['reference_corner'] = {'width': 80, 'height': 48}
         try:
             audit_media(folder, wrong, 12)
         except ValueError as error:
@@ -44,7 +44,7 @@ def prove():
                 raise
         else:
             raise AssertionError('Wrong camera profile accepted')
-        flagger = folder / 'flagger.mkv'
+        flagger = folder / 'reference_corner.mkv'
         flagger.write_bytes(flagger.read_bytes()[:-50])
         try:
             audit_media(folder, specs, 12)
@@ -55,7 +55,7 @@ def prove():
             raise AssertionError('Changed camera bytes accepted')
         flagger.write_bytes(b'not a video\n')
         sealed = json.loads(seal.read_text())
-        sealed['sha256']['flagger.mkv'] = sha(flagger)
+        sealed['sha256']['reference_corner.mkv'] = sha(flagger)
         seal.write_text(json.dumps(sealed) + '\n')
         try:
             audit_media(folder, specs, 12)

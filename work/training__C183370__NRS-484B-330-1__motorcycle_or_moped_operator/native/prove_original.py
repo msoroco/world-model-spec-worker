@@ -111,7 +111,7 @@ def prove():
             else:
                 raise AssertionError('Changed original Native source accepted')
             altered.write_text(original)
-            missing = path / 'flagger.mkv'
+            missing = path / 'reference_corner.mkv'
             missing.unlink()
             try:
                 measure(path, case)

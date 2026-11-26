@@ -8,7 +8,8 @@ import tempfile
 import unittest
 
 from check_requests import check_pair, read_case
-from runner import _cleanup_capture, _read_review, _spawn_zone_markers, _spawn_work_area
+from runner import (_cleanup_capture, _read_review, _spawn_capture_camera,
+                    _spawn_zone_markers, _spawn_work_area)
 
 
 HERE = Path(__file__).resolve().parent
@@ -54,6 +55,20 @@ class ConstructionTests(unittest.TestCase):
             path.write_text(json.dumps(changed) + '\n')
             with self.assertRaisesRegex(ValueError, 'Exact flagger config'):
                 read_case('probe_b', base=self.base)
+        finally:
+            path.write_text(original)
+
+    def test_reject_changed_camera_dimensions_and_fov(self):
+        path = self.base / 'probe_a' / 'config.json'
+        original = path.read_text()
+        try:
+            for view, field, value in (('driver_reference', 'height', 721),
+                                       ('reference_corner', 'fov', 90)):
+                changed = json.loads(original)
+                changed['cameras'][view][field] = value
+                path.write_text(json.dumps(changed) + '\n')
+                with self.assertRaisesRegex(ValueError, 'Four-camera plan differs'):
+                    read_case('probe_a', base=self.base)
         finally:
             path.write_text(original)
 
@@ -234,6 +249,55 @@ class ConstructionTests(unittest.TestCase):
             _spawn_work_area(World(), Library(), Carla,
                              {'work_area_barrier_blueprint': 'missing',
                               'work_activity_blueprint': 'work_activity'}, [])
+
+    def test_driver_reference_follows_motorcycle(self):
+        class Blueprint:
+            def __init__(self):
+                self.attributes = {}
+
+            def set_attribute(self, key, value):
+                self.attributes[key] = value
+
+        class Library:
+            def find(self, name):
+                self.asserted = name
+                return Blueprint()
+
+        class Carla:
+            @staticmethod
+            def Location(**values):
+                return values
+
+            @staticmethod
+            def Rotation(**values):
+                return values
+
+            @staticmethod
+            def Transform(location, rotation):
+                return location, rotation
+
+        class World:
+            def __init__(self):
+                self.calls = []
+
+            def spawn_actor(self, blueprint, pose, **kwargs):
+                self.calls.append((blueprint, pose, kwargs))
+                return object()
+
+        world, subject = World(), object()
+        spec = {'width': 1280, 'height': 720, 'fov': 80}
+        _spawn_capture_camera(world, Library(), Carla, 'driver_reference',
+                              spec, subject)
+        blueprint, pose, kwargs = world.calls[-1]
+        self.assertIs(kwargs['attach_to'], subject)
+        self.assertEqual(pose[0]['x'], 0.4)
+        self.assertEqual(blueprint.attributes['image_size_x'], '1280')
+        _spawn_capture_camera(world, Library(), Carla, 'reference_corner',
+                              spec, subject)
+        self.assertEqual(world.calls[-1][2], {})
+        with self.assertRaisesRegex(ValueError, 'Unknown exact camera view'):
+            _spawn_capture_camera(world, Library(), Carla, 'unplanned',
+                                  spec, subject)
 
     def test_world_restoration_after_pipeline_close_error(self):
         events = []

@@ -59,6 +59,7 @@ def main():
             "context_inputs": [{"name": "left_lane_availability", "unit": "source context",
                                 "method": "original occupancy and independent review"}],
             "limitations": ["Reasonable safety and due care are not judged by CPU fixtures"]}
+        config["case"]["recording_description"] = recording
         files = [{"path": "runner.py", "content": source["runner.py"]},
                  {"path": "scene.py", "content": source["scene.py"]},
                  {"path": "finalize.py", "content": source["finalize.py"]},

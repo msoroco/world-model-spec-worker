@@ -10,7 +10,7 @@ import math
 from pathlib import Path
 
 
-CAMERAS = ('overview', 'approach', 'flagger', 'rear')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 REVIEW_COPIES = {
     'authority_source_sha256': 'original-authority-source',
     'zone_designation_source_sha256': 'original-zone-source',

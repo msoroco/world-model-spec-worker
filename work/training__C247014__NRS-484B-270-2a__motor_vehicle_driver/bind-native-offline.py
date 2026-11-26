@@ -27,7 +27,7 @@ def main():
         entry["offline"] = {
             "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/" +
                        HERE.name + "/selected-native-draft-manifest.json --case " +
-                       entry["case_id"] + " --output .runtime-work/c247014-offline-v7-" +
+                       entry["case_id"] + " --output .runtime-work/c247014-offline-v8-" +
                        suffix + " --python $PWD/.venv-cpu/bin/python",
             "construction_sha256": entry["construction_sha256"],
             "exit_code": 0, "log": "native/" + log.name,

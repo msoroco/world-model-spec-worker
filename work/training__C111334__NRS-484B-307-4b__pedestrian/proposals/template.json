@@ -1,0 +1,45 @@
+{
+  "template_id": "NRS-484B-307-4b@pedestrian",
+  "law_id": "NRS-484B-307-4b",
+  "actor": "pedestrian",
+  "status": "draft",
+  "quote": "Where the signal is a green turn arrow alone: Pedestrians facing such a signal shall not enter the highway until permitted to proceed by another device as provided in NRS 484B.283 [NRS-484B-283-1d1, NRS-484B-283-1d2, NRS-484B-283-1d3, NRS-484B-283-1d4].",
+  "structure": {
+    "activation": {
+      "condition": "green turn arrow alone faces the pedestrian",
+      "source_clause": "Where the signal is a green turn arrow alone:"
+    },
+    "obligation": {
+      "type": "must_not_enter",
+      "description": "do not enter the highway until permitted by another device",
+      "source_clause": "Pedestrians facing such a signal shall not enter the highway until permitted to proceed by another device"
+    },
+    "exceptions": [
+      {
+        "condition": "another device permits proceeding under NRS 484B.283",
+        "source_clause": "as provided in NRS 484B.283"
+      }
+    ],
+    "timing": {
+      "description": "compare independently reviewed device indication and permission at first highway-footprint occupancy"
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "green_turn_arrow_alone_facing_pedestrian",
+      "kind": "world_setup",
+      "range_or_domain": "authored arrow-only head; original facing and pixels pending"
+    },
+    {
+      "name": "other_device_permission",
+      "kind": "world_setup",
+      "range_or_domain": "none or authored permission request; authority under NRS 484B.283 pending"
+    },
+    {
+      "name": "pedestrian_highway_entry",
+      "kind": "controller",
+      "range_or_domain": "stay outside or request same crossing trajectory; footprint measured after capture"
+    }
+  ]
+}

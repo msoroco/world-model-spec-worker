@@ -2,7 +2,7 @@
   "assignment_id": "training__C111334__NRS-484B-307-4b__pedestrian",
   "input_sha256": "24013c4ac28d40ec5fa28d21dc3635a687782a5f35498ac93a111e7e354b4ec4",
   "status": "partial",
-  "reason": "Three 30-second controlled cases now have a case-specific authored intersection/highway crossing map, two named device requests, a four-camera Native runner and deterministic pedestrian/permission controller. CPU construction checks pass. Physical arrow-alone pixels, other-device permission authority and Native motion remain unverified; current v2 exact offline, public compatibility and recorded-only process-saved have not yet passed. Status remains partial.",
+  "reason": "Exact camera pose and FOV plan was added to all three selected Native constructions and root package. Current v8 public/Core and saved processing proofs are being regenerated to bind the changed construction hashes; previous v7 receipts are retained as prior diagnostics but stale for readiness. The canonical execution manifest, physical preparation fixtures and strict assignment gate remain unfinished; original signal pixels, authority and motion remain unverified.",
   "readiness_kind": "implementation_checkpoint",
   "planned_case_count": 3,
   "candidate_count": 1,
@@ -54,5 +54,84 @@
     "process_saved_passed": false,
     "delivery_ready": false,
     "scoped_complete_check_exit_code": 0
-  }
+  },
+  "public_saved_cpu_checkpoint": {
+    "status": "v7_prior_diagnostic_stale_after_camera_config_change",
+    "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+    "manifest_path": "native-draft-manifest.json",
+    "manifest_sha256": "6788d57e0279e1d6079c2e08ee08cf4241e185a1900ea9b8c63427803c30cc71",
+    "case_proofs": {
+      "probe_1": {
+        "path": "native-selected/probe_1/public-saved-proof.json",
+        "sha256": "207e1cb7747458031bf48a3007168be48612358df28f339ae715de30629726ee"
+      },
+      "probe_2": {
+        "path": "native-selected/probe_2/public-saved-proof.json",
+        "sha256": "476cb2a3ca57492a9589e48480f1c7d311744c8861f9aec0aae4307f6cf2e77a"
+      },
+      "permission_before_entry": {
+        "path": "native-selected/permission_before_entry/public-saved-proof.json",
+        "sha256": "38d75860edf39acffb568dcee678ef24f1ff522b38263ee6357fc67f4ea0385d"
+      }
+    },
+    "original_native_observed": false,
+    "physical_acceptance_claimed": false,
+    "delivery_ready": false
+  },
+  "comparison_cpu_checkpoint": {
+    "path": "native/comparison-cpu-proof.json",
+    "sha256": "72b45ca7a28b5f7820e23fa15ecdd31405fa04d8d2727ec34840a40985290223",
+    "comparisons": 2,
+    "negative_changed_trajectory_rejected": true,
+    "source_kind": "synthetic_cpu_fixture",
+    "physical_acceptance_claimed": false
+  },
+  "semantic_cpu_checkpoint": {
+    "path": "native/semantic-cpu-proof.json",
+    "sha256": "1e35e7f16ccb91320934b6a389e79f9c8cbc9df52e64ab721fdb1d6ff37e7550",
+    "stage_count": 5,
+    "selected_cases": 3,
+    "validation_passed": true
+  },
+  "delivery_audit_cpu_checkpoint": {
+    "path": "native/delivery-cpu-proof.json",
+    "sha256": "9372439fe947d899c9b657244d2e4f8b053614e1f7680637248e90559698fa2b",
+    "case_count": 3,
+    "positive_count": 3,
+    "negative_count": 3,
+    "synthetic_diagnostic_only": true,
+    "physical_acceptance_claimed": false
+  },
+  "physical_preparation_cpu_checkpoint": {
+    "cases": {
+      "probe_1": {
+        "path": "physical-probe_1-preparation.json",
+        "sha256": "f850b21e84701890bd510e4913687aa05d97f1e3e2eed7dbb7678d8c88e326dc"
+      },
+      "probe_2": {
+        "path": "physical-probe_2-preparation.json",
+        "sha256": "964e698f9f3f654aee9fda2604190a32ee1bea653c93cdb6e60f67369a56529d"
+      },
+      "permission_before_entry": {
+        "path": "physical-permission_before_entry-preparation.json",
+        "sha256": "1a3367e0214a1fc6ffdc24360b2dacb380381203a1e9e0e460044b5cec7b132d"
+      }
+    },
+    "fixture_count": 9,
+    "outcomes": [
+      "complete_motion",
+      "incomplete_motion",
+      "missing_evidence"
+    ],
+    "validator_passed": true,
+    "original_native_observed": false
+  },
+  "tests": [
+    {
+      "command": "PYTHONPATH=$PWD/work/training__C111334__NRS-484B-307-4b__pedestrian .venv-cpu/bin/python -B -m unittest discover -s work/training__C111334__NRS-484B-307-4b__pedestrian/tests",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad"
+    }
+  ]
 }

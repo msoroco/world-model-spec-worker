@@ -31,7 +31,7 @@
         "training__C111334__NRS-484B-307-4b__pedestrian__probe_1",
         "training__C111334__NRS-484B-307-4b__pedestrian__probe_2"
       ],
-      "evidence_or_gap": "Three exact Native construction bundles and current offline requests now exist. Original physical signal, authority, public compatibility, saved processing, independent audits and comparisons remain unverified."
+      "evidence_or_gap": "Three selected exact Native bundles and public/saved CPU diagnostics exist; original display, authority, physical motion and acceptance remain unverified."
     },
     {
       "requirement": "NRS-484B-307-4b",
@@ -41,7 +41,7 @@
       "case_ids": [
         "training__C111334__NRS-484B-307-4b__pedestrian__permission_before_entry"
       ],
-      "evidence_or_gap": "Permission-before-entry exact construction and source-join meter are selected for CPU preparation. Original signal/permission authority, public compatibility, saved processing and physical entry remain unverified."
+      "evidence_or_gap": "Selected permission-before-entry Native bundle and saved source-join diagnostics exist; original device authority and physical entry remain unverified."
     }
   ],
   "neutral_baseline": {
@@ -52,7 +52,7 @@
     {
       "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__probe_1",
       "target_law_id": "NRS-484B-307-4b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "below",
       "physical_target": "pedestrian waits for permitting device",
       "comparison_variable": "pedestrian_highway_entry_before_permission",
@@ -65,7 +65,7 @@
     {
       "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__probe_2",
       "target_law_id": "NRS-484B-307-4b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "pedestrian enters highway facing green turn arrow alone without other permission",
       "comparison_variable": "pedestrian_highway_entry_before_permission",
@@ -78,7 +78,7 @@
     {
       "case_id": "training__C111334__NRS-484B-307-4b__pedestrian__permission_before_entry",
       "target_law_id": "NRS-484B-307-4b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_permission",
       "physical_target": "pedestrian enters the same highway while the green turn arrow alone faces them after another device permits proceeding",
       "comparison_variable": "other_device_permission_before_highway_entry",
@@ -164,39 +164,14 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "Executable Native construction and exact selected CPU delivery proofs remain absent; source-only entry measurement is a synthetic diagnostic, not physical evidence."
+    "Canonical execution manifest and physical preparation proofs pending; original arrow pixels, governing authority, pedestrian motion and legal outcome require local review."
   ],
   "selected_branch": null,
   "observations": [
     {
-      "name": "dev.traffic_signal",
+      "name": "pedestrian_entry",
       "mandatory": true,
-      "reason": "state green_arrow(dir) alone"
-    },
-    {
-      "name": "dev.governs",
-      "mandatory": true,
-      "reason": "the head faces the pedestrian"
-    },
-    {
-      "name": "ru.subject",
-      "mandatory": true,
-      "reason": "the pedestrian judged"
-    },
-    {
-      "name": "drv.entering_intersection",
-      "mandatory": true,
-      "reason": "entry onto the highway"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "the pedestrian's footprint on the roadway"
-    },
-    {
-      "name": "dev.pedestrian_signal",
-      "mandatory": true,
-      "reason": "the device that could permit the crossing"
+      "reason": "Structured original Native pedestrian identity, body footprint and highway occupancy joined to independent facing-arrow and other-device review by all 600 frames; all six source terms remain mapped in source_observation_mapping."
     }
   ],
   "runtime_uncertainties": [
@@ -204,5 +179,102 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "pedestrian full route, highway boundary and both signal heads",
+        "interval": "all 600 frames at 20 Hz"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian approach, footprint and green turn-arrow head",
+        "interval": "all 600 frames at 20 Hz"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "highway crossing boundary and other permitting device",
+        "interval": "all 600 frames at 20 Hz"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "arrow head facing and pedestrian line of sight",
+        "interval": "all 600 frames at 20 Hz"
+      }
+    ],
+    "physical_visibility_unverified": true
+  },
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
+      "measurement": "green_turn_arrow_alone_by_frame",
+      "source_refs": [
+        "device-review.json",
+        "overview.mkv",
+        "approach.mkv"
+      ],
+      "evidence": "independent saved original-pixel review required; synthetic diagnostic is not physical evidence",
+      "channels": [
+        "pedestrian_entry"
+      ]
+    },
+    "dev.governs": {
+      "measurement": "arrow_faces_pedestrian_by_frame",
+      "source_refs": [
+        "device-review.json",
+        "driver_reference.mkv"
+      ],
+      "evidence": "independent facing and governing audit required",
+      "channels": [
+        "pedestrian_entry"
+      ]
+    },
+    "ru.subject": {
+      "measurement": "pedestrian_id",
+      "source_refs": [
+        "c111334-native-samples.jsonl",
+        "trace.jsonl"
+      ],
+      "evidence": "original actor identity joined to every frame",
+      "channels": [
+        "pedestrian_entry"
+      ]
+    },
+    "drv.entering_intersection": {
+      "measurement": "first_highway_entry_frame",
+      "source_refs": [
+        "c111334-native-samples.jsonl",
+        "road.xodr"
+      ],
+      "evidence": "pedestrian body polygon crosses map highway boundary",
+      "channels": [
+        "pedestrian_entry"
+      ]
+    },
+    "rel.occupies": {
+      "measurement": "highway_occupancy_frames",
+      "source_refs": [
+        "c111334-native-samples.jsonl",
+        "road.xodr"
+      ],
+      "evidence": "body footprint overlaps highway polygon",
+      "channels": [
+        "pedestrian_entry"
+      ]
+    },
+    "dev.pedestrian_signal": {
+      "measurement": "other_device_permits_proceed_by_frame",
+      "source_refs": [
+        "device-review.json",
+        "reference_corner.mkv"
+      ],
+      "evidence": "independent other-device indication and authority review required",
+      "channels": [
+        "pedestrian_entry"
+      ]
+    }
+  }
 }

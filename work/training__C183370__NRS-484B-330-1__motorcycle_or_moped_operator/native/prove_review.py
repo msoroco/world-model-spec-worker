@@ -33,7 +33,7 @@ def prove():
                 'reviewed_sha256': {name: seal['sha256'][name] for name in
                     list(REVIEW_COPIES.values()) +
                     [camera + '.mkv' for camera in CAMERAS]},
-                'observations': {name: {'camera': 'flagger' if name.startswith('signal')
+                'observations': {name: {'camera': 'reference_corner' if name.startswith('signal')
                     or name == 'flagger_identity' else 'overview',
                     'video_frame': 150 if name == 'signal_stop' else 350,
                     'observed': False,

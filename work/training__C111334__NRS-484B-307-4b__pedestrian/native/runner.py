@@ -12,7 +12,7 @@ import queue
 import subprocess
 import traceback
 
-from construction import VIEWS, check_map, proposal
+from construction import VIEWS, CAMERA_POSES, check_map, proposal
 from control import command
 from signals import resolve as resolve_signal_heads, sample as sample_signal_heads
 
@@ -98,14 +98,8 @@ def execute(config, output, host, port):
         if walker is None:
             raise RuntimeError('Native pedestrian spawn failed')
         owned.append(walker)
-        camera_poses = {
-            'overview': (-10, 10, 9, -45, -35),
-            'approach': (0, 8, 4, -90, -18),
-            'reference_corner': (-4, 4, 3, -45, -22),
-            'driver_reference': (1, 5, 2, -90, -8),
-        }
         for name, width, height in VIEWS:
-            x, y, z, yaw, pitch = camera_poses[name]
+            x, y, z, yaw, pitch = CAMERA_POSES[name]
             bp = library.find('sensor.camera.rgb')
             for key, value in (('image_size_x', width), ('image_size_y', height),
                                ('fov', 90), ('sensor_tick', 0)):

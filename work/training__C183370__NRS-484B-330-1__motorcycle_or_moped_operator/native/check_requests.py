@@ -8,6 +8,12 @@ import xml.etree.ElementTree as ET
 
 HERE = Path(__file__).resolve().parent
 ASSIGNMENT = 'training__C183370__NRS-484B-330-1__motorcycle_or_moped_operator'
+CAMERA_PROFILE = {
+    'overview': {'width': 1920, 'height': 1080, 'fov': 80},
+    'approach': {'width': 1280, 'height': 720, 'fov': 80},
+    'reference_corner': {'width': 1280, 'height': 720, 'fov': 75},
+    'driver_reference': {'width': 1280, 'height': 720, 'fov': 80},
+}
 
 
 def sha(path):
@@ -41,10 +47,7 @@ def read_case(suffix, repo=Path('.'), base=HERE):
             raise ValueError('Clearly marked work-area request differs')
     elif config.get('zone_basis') is not None:
         raise ValueError('Designated-zone request differs')
-    if (set(config['cameras']) != {'overview', 'approach', 'flagger', 'rear'} or
-            config['cameras']['overview']['width'] != 1920 or
-            any(v['width'] != 1280 for k, v in config['cameras'].items()
-                if k != 'overview')):
+    if config['cameras'] != CAMERA_PROFILE:
         raise ValueError('Four-camera plan differs')
     source = Path(repo).resolve() / config['assignment_source']
     if sha(source) != config['assignment_sha256']:

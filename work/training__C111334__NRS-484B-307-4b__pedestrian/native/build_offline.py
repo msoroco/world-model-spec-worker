@@ -99,7 +99,7 @@ def build():
                         'construction_sha256': digest(path),
                         'measurement_contract': str((path.parent / 'measurement-contract.json').relative_to(FOLDER / 'native-selected')),
                         'measurement_procedure': {'entrypoint': 'selected_finalize.py'}})
-    save(FOLDER / 'native-selected' / 'offline-manifest.json', {
+    save(FOLDER / 'native-selected' / 'construction-manifest.json', {
         'format': 'worker-execution-manifest', 'assignment_id': ASSIGNMENT,
         'runtime_manifest_sha256': digest(FOLDER.parents[1] / 'runtime' / 'SOURCE-MANIFEST.json'),
         'delivery_ready': False, 'status': 'offline_construction_only',

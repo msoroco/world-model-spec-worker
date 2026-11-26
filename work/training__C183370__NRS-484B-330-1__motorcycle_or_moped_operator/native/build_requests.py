@@ -16,8 +16,8 @@ SOURCE = Path('inputs') / ASSIGNMENT / 'assignment.json'
 CAMERAS = {
     'overview': {'width': 1920, 'height': 1080, 'fov': 80},
     'approach': {'width': 1280, 'height': 720, 'fov': 80},
-    'flagger': {'width': 1280, 'height': 720, 'fov': 75},
-    'rear': {'width': 1280, 'height': 720, 'fov': 80},
+    'reference_corner': {'width': 1280, 'height': 720, 'fov': 75},
+    'driver_reference': {'width': 1280, 'height': 720, 'fov': 80},
 }
 
 
