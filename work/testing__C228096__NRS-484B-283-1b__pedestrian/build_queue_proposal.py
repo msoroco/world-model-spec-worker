@@ -29,12 +29,12 @@ def main() -> None:
         rows.append({"order": i, "assignment_id": ASSIGNMENT, "case_id": case,
                      "prepare_command": prepare, "execute_command": execute,
                      "capture_command": execute, "accept_command": accept,
-                     "owner_release_command": f'.venv-cpu/bin/python runtime.py owner-released --attempt "$SAVED_ATTEMPT" --receipt "$OWNER_RELEASE_RECEIPT" --acknowledge-owner-released --case {case}',
+                     "owner_release_command": f'CASE_ID={case} .venv-cpu/bin/python runtime.py owner-released --attempt "$SAVED_ATTEMPT" --receipt "$OWNER_RELEASE_RECEIPT" --acknowledge-owner-released',
                      "postprocessing_command": f'.venv-cpu/bin/python runtime.py process-saved --manifest work/{ASSIGNMENT}/execution-manifest.json --case {case} --attempt "$SAVED_ATTEMPT" --output "$PROCESSED_ROOT" --library runtime/library --validator "$LEAN_VALIDATOR" --owner-release-receipt "$OWNER_RELEASE_RECEIPT"',
-                     "additional_source_audit_command": f'.venv-cpu/bin/python work/{ASSIGNMENT}/delivery_audit.py --authority-root "$SOURCE_ROOT" --receipt "$RECEIPT" --output "$AUDIT" --case {case}',
+                     "additional_source_audit_command": f'.venv-cpu/bin/python work/{ASSIGNMENT}/audit_cli.py --authority-root "$SOURCE_ROOT" --receipt "$RECEIPT" --output "$AUDIT" --case {case}',
                      "candidate_commands": {}})
     comparisons = [{"assignment_id": ASSIGNMENT, "comparison_id": item["comparison_id"],
-                    "command": f'.venv-cpu/bin/python work/{ASSIGNMENT}/comparison_audit.py --comparison {item["comparison_id"]} --authority-root "$SOURCE_ROOT" --receipts "$RECEIPTS" --output "$COMPARISON_AUDIT"'}
+                    "command": f'.venv-cpu/bin/python work/{ASSIGNMENT}/audit_cli.py --comparison {item["comparison_id"]} --authority-root "$SOURCE_ROOT" --receipts "$RECEIPTS" --output "$COMPARISON_AUDIT"'}
                    for item in plan["comparisons"]]
     value = {"format": "worker-assignment-gpu-queue-proposal", "assignment_id": ASSIGNMENT,
              "status": "source_gated_not_dispatchable", "cases": rows,

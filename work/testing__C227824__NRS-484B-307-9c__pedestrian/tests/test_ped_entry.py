@@ -11,7 +11,11 @@ def scene(case):
          'official_vehicle_signal': True, 'steady_red': True,
          'green_turn_arrow': True,
          'other_device_display': case.other_device_display,
+         'movement': case.movement,
          'pedestrian_route_xy': [[-3, 0], [-1, 0], [2, 0]],
+         'highway_boundary_line_xy': [[0, -2], [0, 2]],
+         'inside_sign': -1,
+         'signal_facing_xy': [10, 0],
          'start_signed_boundary_m': -2}
     for field in ('jurisdiction', 'highway_dedication', 'public_vehicle_use',
                   'highway_boundary', 'person_afoot', 'facing_orientation',
@@ -23,10 +27,13 @@ def scene(case):
 
 def rows(x, case):
     return [{'original_frame': 400 + i, 'time_s': i / 20,
-             **{field + '_sha256': 'fixture-' + field for field in
-                ('source', 'pedestrian_body', 'pedestrian_motion',
-                 'highway_boundary', 'signal_display', 'other_device_display',
-                 'facing_orientation')},
+             'source_sha256': 'fixture-source',
+             'pedestrian_body_sha256': x['person_afoot_source_sha256'],
+             'pedestrian_motion_sha256': x['pedestrian_route_source_sha256'],
+             'highway_boundary_sha256': x['highway_boundary_source_sha256'],
+             'signal_display_sha256': x['red_arrow_timing_source_sha256'],
+             'other_device_display_sha256': x['other_device_display_source_sha256'],
+             'facing_orientation_sha256': x['facing_orientation_source_sha256'],
              'highway_boundary_source_sha256': x['highway_boundary_source_sha256'],
              'other_device_display': case.other_device_display,
              'pedestrian_id': 'walker', 'person_afoot': True,

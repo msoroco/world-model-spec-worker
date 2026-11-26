@@ -90,6 +90,9 @@ class SceneTests(unittest.TestCase):
         with self.assertRaisesRegex(audit.AuditError,'original'):audit.audit_pair(base,other,'bus_line_behavior')
         other=dict(base,police_direction='proceed',police_direction_source='authority')
         self.assertTrue(audit.audit_pair(base,other,'police_direction')['accepted_as_source_complete'])
+        red_entry=dict(base,line_entry=True)
+        green_entry=dict(red_entry,aspect='green')
+        self.assertTrue(audit.audit_pair(red_entry,green_entry,'device_instruction')['accepted_as_source_complete'])
 
 if __name__=='__main__':unittest.main()
 

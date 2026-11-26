@@ -151,12 +151,36 @@
     }
   ],
   "observations": [
-    "source-hashed official device identity, provenance, placement, facing relation, displayed instruction and frame timing",
-    "bus blueprint, source-surveyed connected route, dimensions, intersection clearance and front-body position against original surveyed stop line",
-    "original traffic control aspect history, original bus pose and frame-continuous line entry or hold",
-    "authorized police officer identity, direction, timing and source; absent direction must be recorded as such",
-    "source context for each applicable NRS 484B.307 exception; statutory applicability left unresolved by engineering code",
-    "synchronized four-camera evidence and actual Native bus motion pending physical replay"
+    {
+      "name": "device_aspect",
+      "mandatory": true,
+      "method": "original governing signal aspect"
+    },
+    {
+      "name": "bus_front_line_distance_m",
+      "mandatory": true,
+      "method": "original bus front signed distance to stop line"
+    },
+    {
+      "name": "police_direction",
+      "mandatory": true,
+      "method": "original contemporaneous officer direction"
+    },
+    {
+      "name": "official_placement",
+      "mandatory": true,
+      "method": "original placement source"
+    },
+    {
+      "name": "nrs_307_context",
+      "mandatory": true,
+      "method": "original exception context"
+    },
+    {
+      "name": "camera_frame_identity",
+      "mandatory": true,
+      "method": "four synchronized original frame maps"
+    }
   ],
   "sources": [
     {
@@ -263,8 +287,8 @@
         "path": "inputs/coverage/branch-sources.json",
         "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
       },
-      "status": "exception_pending",
-      "evidence_or_gap": "Officer authority and direction require independent original source; intent flag cannot prove it",
+      "status": "selected_required",
+      "evidence_or_gap": "Officer authority and direction require independent original source; intent flag cannot prove it; case is selected for original-source acquisition only, statutory applicability remains unresolved",
       "case_ids": [
         "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
         "testing__C111329__NRS-484B-300-1__bus_driver__red_police_proceed"
@@ -277,12 +301,42 @@
         "path": "inputs/coverage/branch-sources.json",
         "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
       },
-      "status": "exception_pending",
-      "evidence_or_gap": "Device-specific statutory branch and original applicable context must be resolved; generic red/green label does not settle exception",
+      "status": "selected_required",
+      "evidence_or_gap": "Device-specific statutory branch and original applicable context must be resolved; generic red/green label does not settle exception; case is selected for original-source acquisition only, statutory applicability remains unresolved",
       "case_ids": [
         "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
         "testing__C111329__NRS-484B-300-1__bus_driver__green_proceed"
       ]
     }
-  ]
+  ],
+  "selected_branch": "Intersection travel under an applicable official device instruction.",
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "bus, intersection and governing device",
+        "interval": "full 45-second intersection approach"
+      },
+      {
+        "view": "approach",
+        "subject": "bus route, stop line and device aspect",
+        "interval": "full 45-second intersection approach"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "front-body stop-line relation and signal head",
+        "interval": "full 45-second intersection approach"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "officer direction and bus driver approach",
+        "interval": "full 45-second intersection approach"
+      }
+    ],
+    "status": "physical poses and visibility require reviewed original site and CARLA capture"
+  }
 }

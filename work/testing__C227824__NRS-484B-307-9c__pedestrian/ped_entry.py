@@ -41,6 +41,8 @@ def validate_scene(scene: Mapping, case: Case):
             'official red/green-arrow combination missing')
     require(scene.get('other_device_display') == case.other_device_display,
             'other-device case display differs')
+    require(scene.get('movement') == case.movement,
+            'pedestrian entry or wait case movement differs')
     for field in ('jurisdiction', 'highway_dedication', 'public_vehicle_use',
                   'highway_boundary', 'person_afoot', 'facing_orientation',
                   'official_signal', 'red_arrow_timing', 'other_device_inventory',
@@ -54,6 +56,19 @@ def validate_scene(scene: Mapping, case: Case):
     require(number(scene.get('start_signed_boundary_m')) and
             scene['start_signed_boundary_m'] < 0,
             'pedestrian must initially be outside highway')
+    boundary = scene.get('highway_boundary_line_xy')
+    require(isinstance(boundary, list) and len(boundary) == 2 and
+            all(isinstance(p, list) and len(p) == 2 and all(number(v) for v in p)
+                for p in boundary) and boundary[0] != boundary[1] and
+            scene.get('inside_sign') in (-1, 1),
+            'reviewed oriented highway boundary segment missing')
+    a, b = boundary
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    def signed(point):
+        return scene['inside_sign'] * (dx * (point[1] - a[1]) -
+                                       dy * (point[0] - a[0]))
+    require(signed(route[0]) < 0 and signed(route[-1]) > 0,
+            'pedestrian crossing route must span highway boundary')
     return {'other_device_display': case.other_device_display,
             'pedestrian_permission_judgment': None, 'legal_judgment': None}
 
@@ -96,6 +111,14 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
                 scene['highway_boundary_source_sha256'] and
                 row.get('other_device_display') == case.other_device_display,
                 'original boundary/device context changed')
+        linked_sources = {'pedestrian_body_sha256': 'person_afoot_source_sha256',
+                          'pedestrian_motion_sha256': 'pedestrian_route_source_sha256',
+                          'highway_boundary_sha256': 'highway_boundary_source_sha256',
+                          'signal_display_sha256': 'red_arrow_timing_source_sha256',
+                          'other_device_display_sha256': 'other_device_display_source_sha256',
+                          'facing_orientation_sha256': 'facing_orientation_source_sha256'}
+        require(all(row[field] == scene[source] for field, source in linked_sources.items()),
+                'original signal/body source binding differs')
         require(row.get('pedestrian_id'), 'pedestrian identity missing')
         identity = identity or row['pedestrian_id']
         require(row['pedestrian_id'] == identity, 'pedestrian identity changed')

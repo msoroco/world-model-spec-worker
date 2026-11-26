@@ -10,18 +10,23 @@ def audit_pair(left, right, difference):
     for key in required:
         if not left.get(key) or not right.get(key) or left[key] != right[key]:
             raise AuditError('fixed source/condition missing or changed: '+key)
-    if difference not in ('bus_line_behavior','police_direction'):
+    if difference not in ('bus_line_behavior','police_direction','device_instruction'):
         raise AuditError('unreviewed comparison variable')
     if difference == 'bus_line_behavior':
         if left.get('police_direction') != right.get('police_direction') or left.get('aspect') != right.get('aspect'):
             raise AuditError('context changed in conduct comparison')
         if left.get('line_entry') == right.get('line_entry') or None in (left.get('line_entry'),right.get('line_entry')):
             raise AuditError('original line-crossing difference missing')
-    else:
+    elif difference == 'police_direction':
         if left.get('aspect') != right.get('aspect') or left.get('line_entry') != right.get('line_entry'):
             raise AuditError('conduct/device changed in police comparison')
         if left.get('police_direction') == right.get('police_direction') or not right.get('police_direction_source'):
             raise AuditError('source-backed police direction difference missing')
+    else:
+        if left.get('line_entry') != right.get('line_entry') or left.get('police_direction') != right.get('police_direction'):
+            raise AuditError('conduct or police context changed in device comparison')
+        if (left.get('aspect'), right.get('aspect')) != ('red', 'green'):
+            raise AuditError('original red/green instruction difference missing')
     for row in (left,right):
         if not row.get('placement_source') or not row.get('nrs_307_context_source') or not row.get('original_trace_sha256'):
             raise AuditError('missing original device/exception/trace evidence')

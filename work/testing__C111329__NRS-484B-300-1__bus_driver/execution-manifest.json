@@ -1,0 +1,296 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C111329__NRS-484B-300-1__bus_driver",
+  "status": "source_gated_selected_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C111329__NRS-484B-300-1__bus_driver__red_hold",
+      "kind": "delivery",
+      "construction": "cases/red_hold/construction.json",
+      "construction_sha256": "d50bc07753bd7d29383ed101959b94ae2a882e54fd1f5448e8f37ee3d2d33c76",
+      "fixture_recipe": "work/testing__C111329__NRS-484B-300-1__bus_driver/diagnostics/red_hold-recipe.json",
+      "measurement_contract": "diagnostics/red_hold-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "device_aspect": {
+          "entrypoint": "analysis.py",
+          "method": "original governing signal aspect and frame",
+          "evidence": "channel-device_aspect.jsonl"
+        },
+        "bus_front_line_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "original bus front signed distance to surveyed stop line",
+          "evidence": "channel-bus_front_line_distance_m.jsonl"
+        },
+        "police_direction": {
+          "entrypoint": "analysis.py",
+          "method": "contemporaneous original officer direction and provenance",
+          "evidence": "channel-police_direction.jsonl"
+        },
+        "official_placement": {
+          "entrypoint": "analysis.py",
+          "method": "original device provenance and placement review",
+          "evidence": "channel-official_placement.jsonl"
+        },
+        "nrs_307_context": {
+          "entrypoint": "analysis.py",
+          "method": "original device-specific exception context",
+          "evidence": "channel-nrs_307_context.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "source_gate": "reviewed original official device, bus route, officer and 307 context required",
+      "candidate_risk": "red hold may overshoot the surveyed line; proceeding bus may fail to cross within the 45-second window",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_hold/fallback1/construction.json",
+          "construction_sha256": "06c0cc9e9eeff5b1b73bf8a2b45a0a69339e2c5d27e32575e3629caeda29050d",
+          "trigger": {
+            "metric": "original bus-front signed distance to surveyed line",
+            "source": "original Native device/bus history",
+            "failure_condition": "red hold overshoots line or intended proceed fails to enter"
+          },
+          "changed_knobs": [
+            "controller hold brake scale +20 percent"
+          ]
+        }
+      ],
+      "offline": {
+        "construction_sha256": "d50bc07753bd7d29383ed101959b94ae2a882e54fd1f5448e8f37ee3d2d33c76",
+        "command": null,
+        "exit_code": null,
+        "log": null,
+        "log_sha256": null
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-300-1__bus_driver__red_enter",
+      "kind": "delivery",
+      "construction": "cases/red_enter/construction.json",
+      "construction_sha256": "03c79634f2e8f9c2e76fabfc4bd2405515057208307fa9f8185d380d6e4633bb",
+      "fixture_recipe": "work/testing__C111329__NRS-484B-300-1__bus_driver/diagnostics/red_enter-recipe.json",
+      "measurement_contract": "diagnostics/red_enter-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "device_aspect": {
+          "entrypoint": "analysis.py",
+          "method": "original governing signal aspect and frame",
+          "evidence": "channel-device_aspect.jsonl"
+        },
+        "bus_front_line_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "original bus front signed distance to surveyed stop line",
+          "evidence": "channel-bus_front_line_distance_m.jsonl"
+        },
+        "police_direction": {
+          "entrypoint": "analysis.py",
+          "method": "contemporaneous original officer direction and provenance",
+          "evidence": "channel-police_direction.jsonl"
+        },
+        "official_placement": {
+          "entrypoint": "analysis.py",
+          "method": "original device provenance and placement review",
+          "evidence": "channel-official_placement.jsonl"
+        },
+        "nrs_307_context": {
+          "entrypoint": "analysis.py",
+          "method": "original device-specific exception context",
+          "evidence": "channel-nrs_307_context.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "source_gate": "reviewed original official device, bus route, officer and 307 context required",
+      "candidate_risk": "red hold may overshoot the surveyed line; proceeding bus may fail to cross within the 45-second window",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_enter/fallback1/construction.json",
+          "construction_sha256": "0a5657e6aeec5921cc1786946cf664a26bcc28ccdf82f36da799e38abc155789",
+          "trigger": {
+            "metric": "original bus-front signed distance to surveyed line",
+            "source": "original Native device/bus history",
+            "failure_condition": "red hold overshoots line or intended proceed fails to enter"
+          },
+          "changed_knobs": [
+            "controller proceed throttle scale +20 percent"
+          ]
+        }
+      ],
+      "offline": {
+        "construction_sha256": "03c79634f2e8f9c2e76fabfc4bd2405515057208307fa9f8185d380d6e4633bb",
+        "command": null,
+        "exit_code": null,
+        "log": null,
+        "log_sha256": null
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-300-1__bus_driver__red_police_proceed",
+      "kind": "delivery",
+      "construction": "cases/red_police_proceed/construction.json",
+      "construction_sha256": "5be79a5639d29ec85d31dc2ee23746a26345b98bea8e5036943099a653252cb2",
+      "fixture_recipe": "work/testing__C111329__NRS-484B-300-1__bus_driver/diagnostics/red_police_proceed-recipe.json",
+      "measurement_contract": "diagnostics/red_police_proceed-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "device_aspect": {
+          "entrypoint": "analysis.py",
+          "method": "original governing signal aspect and frame",
+          "evidence": "channel-device_aspect.jsonl"
+        },
+        "bus_front_line_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "original bus front signed distance to surveyed stop line",
+          "evidence": "channel-bus_front_line_distance_m.jsonl"
+        },
+        "police_direction": {
+          "entrypoint": "analysis.py",
+          "method": "contemporaneous original officer direction and provenance",
+          "evidence": "channel-police_direction.jsonl"
+        },
+        "official_placement": {
+          "entrypoint": "analysis.py",
+          "method": "original device provenance and placement review",
+          "evidence": "channel-official_placement.jsonl"
+        },
+        "nrs_307_context": {
+          "entrypoint": "analysis.py",
+          "method": "original device-specific exception context",
+          "evidence": "channel-nrs_307_context.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "source_gate": "reviewed original official device, bus route, officer and 307 context required",
+      "candidate_risk": "red hold may overshoot the surveyed line; proceeding bus may fail to cross within the 45-second window",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/red_police_proceed/fallback1/construction.json",
+          "construction_sha256": "476ac6c98eb3192382cda9f467129fd68a57edea06aee2d81c1c943917506b94",
+          "trigger": {
+            "metric": "original bus-front signed distance to surveyed line",
+            "source": "original Native device/bus history",
+            "failure_condition": "red hold overshoots line or intended proceed fails to enter"
+          },
+          "changed_knobs": [
+            "controller proceed throttle scale +20 percent"
+          ]
+        }
+      ],
+      "offline": {
+        "construction_sha256": "5be79a5639d29ec85d31dc2ee23746a26345b98bea8e5036943099a653252cb2",
+        "command": null,
+        "exit_code": null,
+        "log": null,
+        "log_sha256": null
+      }
+    },
+    {
+      "case_id": "testing__C111329__NRS-484B-300-1__bus_driver__green_proceed",
+      "kind": "delivery",
+      "construction": "cases/green_proceed/construction.json",
+      "construction_sha256": "7aa86aa497d7ab6cc0313e2dfd2eaf6dce27cce39ba6483ecb3c4c8c256e9a3a",
+      "fixture_recipe": "work/testing__C111329__NRS-484B-300-1__bus_driver/diagnostics/green_proceed-recipe.json",
+      "measurement_contract": "diagnostics/green_proceed-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "device_aspect": {
+          "entrypoint": "analysis.py",
+          "method": "original governing signal aspect and frame",
+          "evidence": "channel-device_aspect.jsonl"
+        },
+        "bus_front_line_distance_m": {
+          "entrypoint": "analysis.py",
+          "method": "original bus front signed distance to surveyed stop line",
+          "evidence": "channel-bus_front_line_distance_m.jsonl"
+        },
+        "police_direction": {
+          "entrypoint": "analysis.py",
+          "method": "contemporaneous original officer direction and provenance",
+          "evidence": "channel-police_direction.jsonl"
+        },
+        "official_placement": {
+          "entrypoint": "analysis.py",
+          "method": "original device provenance and placement review",
+          "evidence": "channel-official_placement.jsonl"
+        },
+        "nrs_307_context": {
+          "entrypoint": "analysis.py",
+          "method": "original device-specific exception context",
+          "evidence": "channel-nrs_307_context.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "four synchronized original camera streams",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "source_gate": "reviewed original official device, bus route, officer and 307 context required",
+      "candidate_risk": "red hold may overshoot the surveyed line; proceeding bus may fail to cross within the 45-second window",
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/green_proceed/fallback1/construction.json",
+          "construction_sha256": "ecee532056cab2dacd16a13d430e57a3816ec173ff2c5af4a0a2f47d4991d3b4",
+          "trigger": {
+            "metric": "original bus-front signed distance to surveyed line",
+            "source": "original Native device/bus history",
+            "failure_condition": "red hold overshoots line or intended proceed fails to enter"
+          },
+          "changed_knobs": [
+            "controller proceed throttle scale +20 percent"
+          ]
+        }
+      ],
+      "offline": {
+        "construction_sha256": "7aa86aa497d7ab6cc0313e2dfd2eaf6dce27cce39ba6483ecb3c4c8c256e9a3a",
+        "command": null,
+        "exit_code": null,
+        "log": null,
+        "log_sha256": null
+      }
+    }
+  ]
+}

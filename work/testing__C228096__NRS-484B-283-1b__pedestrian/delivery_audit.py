@@ -123,5 +123,3 @@ def audit(root: Path, receipt: dict, probe=probe_video) -> dict:
                        "full_video_decode", "actual_pixels", "physical_completion"],
             "physical_completion": "requires independent local review",
             "legal_suddenness_or_impossibility": "unresolved"}
-
-

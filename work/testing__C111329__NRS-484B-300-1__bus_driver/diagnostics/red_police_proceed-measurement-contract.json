@@ -1,0 +1,63 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C111329__NRS-484B-300-1__bus_driver__red_police_proceed",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Official traffic-control device instruction governs bus approach and is placed in accordance with applicable NRS chapters",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "output_key": "official_device_measurement",
+      "method": "measure_device_history",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "device-rows.json",
+        "site.json",
+        "diagnostic-source-note.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Bus conduct relative to observed device instruction",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "output_key": "bus_conduct_measurement",
+      "method": "measure_bus_conduct",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "device-rows.json",
+        "site.json",
+        "diagnostic-source-note.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Contemporaneous direction by police officer",
+      "source": {
+        "path": "inputs/coverage/branch-sources.json",
+        "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+      },
+      "output_key": "police_direction_measurement",
+      "method": "measure_police_direction",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "device-rows.json",
+        "site.json",
+        "diagnostic-source-note.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "device-rows.json"
+    ],
+    "error_contains": "Missing required source: device-rows.json"
+  }
+}

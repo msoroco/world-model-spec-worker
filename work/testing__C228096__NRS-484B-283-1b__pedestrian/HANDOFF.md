@@ -1,25 +1,21 @@
-# C228096 curb entry checkpoint
+# C228096 pedestrian curb-entry handoff
 
-Status: partial. Exact scoped strict gate exits 1 because this result remains partial.
+Status: partial, source gated. Original physical or legal completion is not claimed.
 
-## Constructed CPU scope
+## Exact selected scope
 
-`curb_entry.py` source-gates pedestrian identity, curb/safety boundary, qualifying vehicle and driver control, road and distinct vehicle-path geometry. It constructs timed pedestrian and vehicle routes and measures synchronized original pedestrian/vehicle positions over 900 frames. The finalizer distinguishes roadway entry from entry into the vehicle path and records proximity and speeds without inventing a suddenness or impossibility threshold.
+Five case IDs share the prefix `testing__C228096__NRS-484B-283-1b__pedestrian__`: `close_walk_into_path`, `close_run_into_path`, `far_walk_into_path`, `close_walk_road_only`, `close_walk_remain_curb`. Four controlled comparison IDs are `walk_vs_run`, `close_vs_far`, `path_vs_road`, `path_vs_curb`. `case-plan.json` and `proposals/cases.json` bind the exact law, cell, case variables and fixed conditions. The introductory NRS 484B.287/.290/.350 exceptions remain unresolved.
 
-Five exact cases and four comparisons in `case-plan.json` probe walk/run, close/far vehicle positioning, road-only entry and remaining at the curb. The introductory statutory exceptions are retained as unresolved context. Frozen evidence inventory has no accepted recording.
+## Constructed and tested
 
-## CPU proof receipts
+`curb_entry.py`, `reviewed_scene.py`, `native_adapter.py`, `runner.py`, `analysis.py`, `process_recorded_only.py`, `delivery_audit.py` and `comparison_audit.py` provide source-gated original curb/path geometry, timed pedestrian and driver vehicle motion, 900 synchronized frames, four Native cameras, saved-only finalization and independent source/video/comparison checks. `construction.json` and four `cases/*/construction.json` bundles bind these sources. All five exact bundles pass pinned offline and full positive/negative compatibility checks, including Native validation, converter, Lean decoder, render and four cameras. All five pass pinned recorded-only saved processing with acquisition bytes preserved.
 
-- `case-plan.json` SHA256 `dc1b5df4454c535637dde0f5e14142901372d9e85a6afaddc54806c32da4fb7c`
-- `curb_entry.py` SHA256 `5d3e8c534179d46e0e6407b8e1d0d1d36afd3778ed4e1d3f599436dc324b20e4`
-- `tests/test_curb_entry.py` SHA256 `81d67defcfeea4527d060976da7b2445c4c5f69696f7588b879739b179ce7943`
-- `cpu-tests.log` SHA256 `6f573220022a4c482d9648c78d7621e00e74242b4f5a9ae1f6d5cfaddd48ef7f`
-- `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`
-- `cpu-static-check.log` SHA256 `ff41d541ce02466f778dc2bfbbc829d90e30799405cc544c54e94f374c1a9062`
-- `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+`proposals/semantic-index.json` SHA-binds exact law/cell relevance, template, two judgment observable proposals, bindings and selected cases. Canonical stage validation passes. `execution-manifest.json` binds all five source-gated selected delivery intents to current offline, compatibility, saved, three-outcome synthetic physical, lifecycle and positive/negative delivery audit receipts. Independent comparison audit tests pass. Nine unit tests pass. `proof-summary.json` lists every exact case receipt and SHA-256; `selected-validator-report.json` records direct validator results. Semantic, package compatibility, physical preparation and delivery acceptance validators pass. The in-memory downstream selected structure probe passes, but it is not a sweep expansion.
 
-Focused unittest exit 0 (3 tests); pinned `runtime.py preflight` exit 0; scoped static `worker_check.py --assignment testing__C228096__NRS-484B-283-1b__pedestrian` exit 0; exact scoped strict with `--complete --require-delivery-ready` exit 1 on truthful partial. `result.json.tests` includes only successful commands with package-relative logs and SHA256.
+`gpu-queue-proposal.json` gives five exact case rows and four comparison commands for local integration. It is marked source gated and must not be dispatched before the strict gate passes. All returned files are UTF-8, below 2 MiB, and have clean EOF/whitespace; generated caches were removed.
 
-## Remaining CPU work
+## Exact external dependency and gate
 
-Create canonical selected-case bundles and source-bound positive/negative compatibility, saved processing, semantic proposals and independent delivery/comparison audits. Add sourced driver response/braking and any operative introductory exception facts. Then rerun scoped strict. Actual CARLA synchronization and camera coverage remain physical review after CPU readiness.
+Frozen evidence has no accepted original recording, and frozen judgment range inventory has no exact C228096/pedestrian range. The original reviewed curb/path site, OpenDRIVE, actor and driver packet, and source-supported physically feasible control ranges/spacing are missing for `suddenly leave a curb or other place of safety` and `so close that it is impossible for the driver to yield`. Both canonical sweep plans are explicitly incomplete. Source-shaped diagnostic values do not establish legal or physical boundaries. The selected execution validator fails exactly `Expand sweeps with the main implementation before manifest generation`. The exact `.venv-cpu/bin/python worker_check.py --assignment testing__C228096__NRS-484B-283-1b__pedestrian --complete --require-delivery-ready` exits 1 with `Preparation acceptance failed: partial/missing packages remain`, because `result.json` truthfully stays partial.
+
+When reviewed sources arrive, construct physically feasible below/interior/above judgment sweeps, add exact selected cases and current-hash proofs, capture released original Native attempts, and run independent delivery, physical and legal review. No queue release is proposed yet.
