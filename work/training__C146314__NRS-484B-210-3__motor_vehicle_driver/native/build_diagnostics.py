@@ -65,12 +65,15 @@ def build_case(suffix, lead_y, ego_y):
                           'time_s': time, 'camera_native_frames': {name: frame for name in CAMERAS}})
         trace.append({'frame': frame, 'time_s': time,
                       'position_m': [ex, ego_y, .5], 'heading_deg': 0,
-                      'speed_mps': 8, 'speed_mph': 8 / .44704})
+                      'position': {'x': ex, 'y': ego_y, 'z': .5},
+                      'speed_mps': 8, 'speed_mph': 8 / .44704,
+                      'velocity_mps': [8, 0, 0],
+                      'control': {'throttle': 0, 'brake': 0, 'hand_brake': False}})
         evidence.append({'actor_id': 10, 'original_frame': frame, 'recording_time_s': time,
                          'replay_frame': frame, 'replay_simulation_time_s': time,
                          'ego': {'body_vertices_m': body_xyz(ex, ego_y),
                                  'position_m': [ex, ego_y, .5], 'heading_deg': 0,
-                                 'speed_mps': 8, 'speed_provenance': 'synthetic_cpu_pass',
+                                 'speed_mps': 8, 'speed_provenance': 'synthetic_native_sample',
                                  'synthetic_diagnostic': True},
                          'other_actors': [{'actor_id': 11, 'body_vertices_m': body_xyz(lx, lead_y),
                                            'position_m': [lx, lead_y, .5], 'speed_mps': 5}],
@@ -82,7 +85,7 @@ def build_case(suffix, lead_y, ego_y):
         graph_path = f'graphs/base/{i:08d}.adapter.json'
         native_frames.append({'adapter_graph': graph_path, 'base': graph_path,
                               'edges': 0, 'frame': i, 'nodes': 2, 'simulation_time': time})
-        graphs.append({'path': graph_path,
+        graphs.append({'path': 'capture/native/' + graph_path,
                        'attributes': {'frame': i, 'simulation_time_s': time,
                                       'source': 'C146314 right-pass CPU diagnostic',
                                       'synthetic_diagnostic': True},

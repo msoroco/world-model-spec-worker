@@ -20,9 +20,9 @@ Source: `inputs/training__C146314__NRS-484B-210-3__motor_vehicle_driver/assignme
 
 Accepted membership IDs: 882987bca0cf436fb50c0cf93c3c8a3b5a3d95d554ae1230ac3a8c1d51904eb0. No source-hashed equivalence receipt or accepted recording contents are available locally, so no reuse is claimed.
 
-Incomplete CPU work: Delivery package incomplete: two controlled branches are planning definitions only; no four distinct CARLA constructions, offline and compatibility proofs, saved measurement fixtures, or independent audit. Accepted recording IDs are membership context only and lack an equivalence receipt. Physical realization and legal outcome remain unverified.
+Incomplete CPU work: Delivery package incomplete: two controlled branches are planning definitions only; no completed compatibility, physical-preparation, semantic, delivery, or comparison audit receipts. Accepted recording IDs are membership context only and lack an equivalence receipt. Physical realization and legal outcome remain unverified.
 
-Resume by resolving every statutory branch and exception against the law text; construct physical Native routes and controllers in the frozen cell; define measured channels and four distinct plans per selected case; run offline, compatibility, saved-only, comparison and independent audit proofs; set ready only after those proofs pass.
+Resume by resolving every statutory branch and exception against the law text; construct physical Native routes and controllers in the frozen cell; define measured channels and risk-justified fallbacks if a discrete physical failure mode is found; run offline, compatibility, saved-only, comparison and independent audit proofs; set ready only after those proofs pass.
 
 Update 016 status correction: missing case construction, candidate proofs and audits are actionable CPU work under START_HERE.md. This package is partial, with the frozen scope and listed resume actions preserved.
 
@@ -35,3 +35,9 @@ The frozen `review-context/review.json` describes accepted case `C146314-pavemen
 `native/measure_original.py` independently measures full-body behind/overlap/ahead timing, right-side position, concurrent off-paved footprint and paved-clearance feasibility from source-shaped body rows with exact frame, time and road-hash joins. `native/prove_measure_original.py` passes two 600-frame positives and six missing/changed-source negatives. Its proof is diagnostic, with no legal verdict. `prove-right-pass.py` now creates temporary negative-test directories under `.runtime-work/`; its retained proof hash is unchanged.
 
 The remaining CPU sequence is per-case construction and config materialization, case-specific finalizer and source-hashed fixture recipes, offline/public compatibility and saved Core/Lean/final decode tests, semantic stage proposals, and independent delivery/comparison audits. Exact `worker_check.py --assignment training__C146314__NRS-484B-210-3__motor_vehicle_driver --complete` passes as a partial checkpoint. Strict readiness has not passed.
+
+## Exact construction and CPU fixture checkpoint
+
+Two selected case constructions are now source-bound in `native/probe_a-construction.json` and `native/probe_b-construction.json`. The same one-way road, vehicles, longitudinal speed requests, timing and four cameras are fixed. Lead lateral placement and ego right-pass route differ by design. `runtime.py offline` passes for both exact cases, including materialized runner `--check` and unit tests. The two 600-frame source-hashed CPU diagnostic fixture recipes materialize, with four decoded camera videos each. `native/finalize.py` succeeds on both fixtures and its saved-only proof passes two positives plus four missing/changed-source negatives (SHA-256 `9370341f904622574fb04a8995f996ccf0765e108d77ef0b6fcc944e098d6ed3`). These fixtures verify software joins only; they are not original Native acquisition, physical pavement/material proof, or accepted delivery.
+
+`proposals/cases.json`, per-case measurement contracts and a draft execution manifest now bind the two explicit case identities for public compatibility. Public compatibility, physical-preparation, semantic and independent delivery/comparison audits are next. Status remains partial, and the exact scoped `--complete` check passes at this checkpoint.

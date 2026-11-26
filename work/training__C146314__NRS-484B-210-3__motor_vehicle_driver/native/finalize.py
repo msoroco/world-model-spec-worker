@@ -80,7 +80,8 @@ def finalize(attempt, output):
         evidence.append({'name': name, 'unit': channel['unit'],
                          'reference': 'channels/' + path.name})
     camera_path = channel_dir / 'four_source_cameras.json'
-    camera_path.write_text(json.dumps({name: sha(attempt / (name + '.mkv')) for name in names}) + '\n')
+    camera_path.write_text(json.dumps({'four_source_cameras':
+        {name: sha(attempt / (name + '.mkv')) for name in names}}) + '\n')
     evidence.append({'name': 'four_source_cameras', 'unit': 'video',
                      'reference': 'channels/' + camera_path.name})
     report = {'format': 'worker-analysis-report', 'case_id': case,

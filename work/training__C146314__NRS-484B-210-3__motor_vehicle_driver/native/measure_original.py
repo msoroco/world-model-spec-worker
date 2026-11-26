@@ -76,4 +76,4 @@ def measure(motion_rows, frame_rows, map_sha256):
             'right_pass_requires_off_pavement_geometry':
                 right_overlap > 0 and no_paved_corridor == right_overlap,
             'surface_material_review_pending': True,
-            'physical_acceptance_claimed': False, 'legal_verdict': None}
+            'physical_acceptance_claimed': False}

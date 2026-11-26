@@ -36,7 +36,7 @@ def main():
         config['supported_case_ids'] = [case]
         config['case']['case_id'] = case
         config['target_gap_m'] = variant['gap_m']
-        branch = {'01': 'far-no-exception', '03': 'near-private-owner',
+        branch = {'01': 'far-no-exception', '03': 'near-private-authority',
                   '04': 'at-five-feet-no-exception'}[probe]
         config['case'] = {'case_id': case,
                           'recording_description': config['recording_description'],

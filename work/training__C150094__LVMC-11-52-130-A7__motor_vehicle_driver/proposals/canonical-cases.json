@@ -1,0 +1,718 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__baseline",
+      "rationale": "Common surveyed one-way route and driveway source context.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original driveway curb-boundary survey",
+            "name": "st.driveway_or_alley_entrance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native body footprint projected to surveyed opening",
+            "name": "rel.centre_distance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native speed and parking-brake trace",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native body footprint overlap with reviewed opening",
+            "name": "rel.occupies",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native bounding-box world vertices projected to reviewed road axis",
+            "name": "kin.extent",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independently reviewed USPS identity and official-business source",
+            "name": "ru.official_vehicle",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independent original driveway sign and direction review",
+            "name": "dev.regulatory_sign",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed curb survey and authority facts",
+            "name": "driveway_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Original curb and authority facts need local independent review",
+          "Synthetic fixture does not establish physical parking or legal compliance"
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer or a traffic control device",
+        "owns or is in control of that driveway, or who is a family member or invitee",
+        "while it is being operated on official business"
+      ],
+      "variable_assignments": {
+        "driveway_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "private"
+        },
+        "observed_gap_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        },
+        "private_authority_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "none"
+        },
+        "target_gap_m": {
+          "kind": "controller",
+          "unit": "m",
+          "value": null
+        }
+      }
+    },
+    {
+      "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_01",
+      "deliberate_differences": [
+        "target_gap_m"
+      ],
+      "epsilon_used": {
+        "rationale": "Physical controller target margin only; exact legal boundary remains five feet.",
+        "unit": "m",
+        "value": 0.05
+      },
+      "paired_probe_id": "five_feet_boundary",
+      "probe": {
+        "comparison_or_standard": "five-foot body-gap side-band boundary",
+        "operator": "<=",
+        "primary_variable": "observed_gap_m",
+        "target_value_or_branch": "above",
+        "test_value": 2.0,
+        "threshold_ref": "activation.side_band",
+        "unit": "m"
+      },
+      "rationale": "Exact selected source-measured driveway above probe.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original driveway curb-boundary survey",
+            "name": "st.driveway_or_alley_entrance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native body footprint projected to surveyed opening",
+            "name": "rel.centre_distance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native speed and parking-brake trace",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native body footprint overlap with reviewed opening",
+            "name": "rel.occupies",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native bounding-box world vertices projected to reviewed road axis",
+            "name": "kin.extent",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independently reviewed USPS identity and official-business source",
+            "name": "ru.official_vehicle",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independent original driveway sign and direction review",
+            "name": "dev.regulatory_sign",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed curb survey and authority facts",
+            "name": "driveway_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Original curb and authority facts need local independent review",
+          "Synthetic fixture does not establish physical parking or legal compliance"
+        ]
+      },
+      "target_law_id": "LVMC-11-52-130-A7",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer or a traffic control device",
+        "owns or is in control of that driveway, or who is a family member or invitee",
+        "while it is being operated on official business"
+      ],
+      "variable_assignments": {
+        "driveway_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "private"
+        },
+        "observed_gap_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        },
+        "private_authority_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "none"
+        },
+        "target_gap_m": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 2.0
+        }
+      }
+    },
+    {
+      "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_02",
+      "deliberate_differences": [
+        "target_gap_m"
+      ],
+      "epsilon_used": {
+        "rationale": "Physical controller target margin only; exact legal boundary remains five feet.",
+        "unit": "m",
+        "value": 0.05
+      },
+      "paired_probe_id": "five_feet_boundary",
+      "probe": {
+        "comparison_or_standard": "five-foot body-gap side-band boundary",
+        "operator": "<=",
+        "primary_variable": "observed_gap_m",
+        "target_value_or_branch": "below",
+        "test_value": 1.2,
+        "threshold_ref": "activation.side_band",
+        "unit": "m"
+      },
+      "rationale": "Exact selected source-measured driveway below probe.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original driveway curb-boundary survey",
+            "name": "st.driveway_or_alley_entrance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native body footprint projected to surveyed opening",
+            "name": "rel.centre_distance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native speed and parking-brake trace",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native body footprint overlap with reviewed opening",
+            "name": "rel.occupies",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native bounding-box world vertices projected to reviewed road axis",
+            "name": "kin.extent",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independently reviewed USPS identity and official-business source",
+            "name": "ru.official_vehicle",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independent original driveway sign and direction review",
+            "name": "dev.regulatory_sign",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed curb survey and authority facts",
+            "name": "driveway_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Original curb and authority facts need local independent review",
+          "Synthetic fixture does not establish physical parking or legal compliance"
+        ]
+      },
+      "target_law_id": "LVMC-11-52-130-A7",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer or a traffic control device",
+        "owns or is in control of that driveway, or who is a family member or invitee",
+        "while it is being operated on official business"
+      ],
+      "variable_assignments": {
+        "driveway_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "private"
+        },
+        "observed_gap_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        },
+        "private_authority_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "none"
+        },
+        "target_gap_m": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 1.2
+        }
+      }
+    },
+    {
+      "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_03",
+      "deliberate_differences": [
+        "private_authority_role"
+      ],
+      "epsilon_used": {
+        "rationale": "Physical controller target margin only; exact legal boundary remains five feet.",
+        "unit": "m",
+        "value": 0.05
+      },
+      "paired_probe_id": "private_authority",
+      "probe": {
+        "comparison_or_standard": "private authority source contrast",
+        "primary_variable": "private_authority_role",
+        "target_value_or_branch": "owner"
+      },
+      "rationale": "Exact selected source-measured driveway owner probe.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original driveway curb-boundary survey",
+            "name": "st.driveway_or_alley_entrance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native body footprint projected to surveyed opening",
+            "name": "rel.centre_distance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native speed and parking-brake trace",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native body footprint overlap with reviewed opening",
+            "name": "rel.occupies",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native bounding-box world vertices projected to reviewed road axis",
+            "name": "kin.extent",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independently reviewed USPS identity and official-business source",
+            "name": "ru.official_vehicle",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independent original driveway sign and direction review",
+            "name": "dev.regulatory_sign",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed curb survey and authority facts",
+            "name": "driveway_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Original curb and authority facts need local independent review",
+          "Synthetic fixture does not establish physical parking or legal compliance"
+        ]
+      },
+      "target_law_id": "LVMC-11-52-130-A7",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer or a traffic control device",
+        "owns or is in control of that driveway, or who is a family member or invitee",
+        "while it is being operated on official business"
+      ],
+      "variable_assignments": {
+        "driveway_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "private"
+        },
+        "observed_gap_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        },
+        "private_authority_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "owner"
+        },
+        "target_gap_m": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 1.2
+        }
+      }
+    },
+    {
+      "case_id": "training__C150094__LVMC-11-52-130-A7__motor_vehicle_driver__probe_04",
+      "deliberate_differences": [
+        "target_gap_m"
+      ],
+      "epsilon_used": {
+        "rationale": "Physical controller target margin only; exact legal boundary remains five feet.",
+        "unit": "m",
+        "value": 0.05
+      },
+      "paired_probe_id": "five_feet_boundary",
+      "probe": {
+        "comparison_or_standard": "five-foot body-gap side-band boundary",
+        "operator": "<=",
+        "primary_variable": "observed_gap_m",
+        "target_value_or_branch": "at",
+        "test_value": 1.524,
+        "threshold_ref": "activation.side_band",
+        "unit": "m"
+      },
+      "rationale": "Exact selected source-measured driveway at probe.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "reviewed original driveway curb-boundary survey",
+            "name": "st.driveway_or_alley_entrance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native body footprint projected to surveyed opening",
+            "name": "rel.centre_distance",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "same-frame Native speed and parking-brake trace",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native body footprint overlap with reviewed opening",
+            "name": "rel.occupies",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "Native bounding-box world vertices projected to reviewed road axis",
+            "name": "kin.extent",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independently reviewed USPS identity and official-business source",
+            "name": "ru.official_vehicle",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "independent original driveway sign and direction review",
+            "name": "dev.regulatory_sign",
+            "reference_frame": "Native frame and surveyed driveway curb axis",
+            "sampling_rate_hz": 20,
+            "time_window": "600 joined frames",
+            "uncertainty": "50 ms sampling; driveway authority and physical pixels require independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed curb survey and authority facts",
+            "name": "driveway_context",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Original curb and authority facts need local independent review",
+          "Synthetic fixture does not establish physical parking or legal compliance"
+        ]
+      },
+      "target_law_id": "LVMC-11-52-130-A7",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer or a traffic control device",
+        "owns or is in control of that driveway, or who is a family member or invitee",
+        "while it is being operated on official business"
+      ],
+      "variable_assignments": {
+        "driveway_kind": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "private"
+        },
+        "observed_gap_m": {
+          "kind": "subject_behavior",
+          "unit": "m",
+          "value": null
+        },
+        "private_authority_role": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "none"
+        },
+        "target_gap_m": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 1.524
+        }
+      }
+    }
+  ],
+  "cell_id": "C150094",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Necessity requires original traffic context and a reason for the stop.",
+          "phrase": "necessary to avoid conflict with other traffic"
+        }
+      ],
+      "missing_inputs": [
+        "Selected branch construction and source-reviewed original exception evidence are pending."
+      ],
+      "rationale": "Retain this statutory judgment as an explicit unresolved source requirement.",
+      "status": "incomplete",
+      "sweep_id": "pending-0",
+      "target_law_id": "LVMC-11-52-130-A7"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "An applicable source of law and the reason for the stop must be declared.",
+          "phrase": "in compliance with law"
+        }
+      ],
+      "missing_inputs": [
+        "Selected branch construction and source-reviewed original exception evidence are pending."
+      ],
+      "rationale": "Retain this statutory judgment as an explicit unresolved source requirement.",
+      "status": "incomplete",
+      "sweep_id": "pending-1",
+      "target_law_id": "LVMC-11-52-130-A7"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Officer authority or a governing device instruction must be reviewed independently.",
+          "phrase": "the directions of a police officer or a traffic control device"
+        }
+      ],
+      "missing_inputs": [
+        "Selected branch construction and source-reviewed original exception evidence are pending."
+      ],
+      "rationale": "Retain this statutory judgment as an explicit unresolved source requirement.",
+      "status": "incomplete",
+      "sweep_id": "pending-2",
+      "target_law_id": "LVMC-11-52-130-A7"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Private authority role and relationship need a specific reviewed source declaration.",
+          "phrase": "owns or is in control of that driveway, or who is a family member or invitee"
+        }
+      ],
+      "missing_inputs": [
+        "Selected branch construction and source-reviewed original exception evidence are pending."
+      ],
+      "rationale": "Retain this statutory judgment as an explicit unresolved source requirement.",
+      "status": "incomplete",
+      "sweep_id": "pending-3",
+      "target_law_id": "LVMC-11-52-130-A7"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "USPS vehicle identity and official-business purpose are separate source facts.",
+          "phrase": "while it is being operated on official business"
+        }
+      ],
+      "missing_inputs": [
+        "Selected branch construction and source-reviewed original exception evidence are pending."
+      ],
+      "rationale": "Retain this statutory judgment as an explicit unresolved source requirement.",
+      "status": "incomplete",
+      "sweep_id": "pending-4",
+      "target_law_id": "LVMC-11-52-130-A7"
+    }
+  ],
+  "sweeps_expanded": true
+}

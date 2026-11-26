@@ -17,6 +17,7 @@ def case(probe, gap, authority):
             'context': {'case_id': AID + '__probe_' + probe,
                         'driveway_kind': 'private',
                         'owner_controller_family_invitee': authority,
+                        'private_driveway_authority_role': 'owner' if authority else 'none',
                         'driveway_curb_interval_m': [50, 53]},
             'value': {'minimum_footprint_gap_m_at_rest': gap, 'rest_frame_count': 600},
             'report_sha256': 'a' * 64,
@@ -28,8 +29,11 @@ def case(probe, gap, authority):
 class ComparisonAuditTests(unittest.TestCase):
     def test_distance_and_authority_contrasts(self):
         far, near, invited = case('01', 2.0, False), case('02', 1.2, False), case('03', 1.2, True)
+        equal = case('04', 1.524, False)
         self.assertTrue(compare(far, near, 'distance_boundary')['passed'])
         self.assertTrue(compare(near, invited, 'private_authority')['passed'])
+        self.assertTrue(compare(near, equal, 'five_foot_equality_below')['passed'])
+        self.assertTrue(compare(equal, far, 'five_foot_equality_above')['passed'])
 
     def test_rejects_uncontrolled_source_change(self):
         far, near = case('01', 2.0, False), case('02', 1.2, False)
@@ -45,6 +49,13 @@ class ComparisonAuditTests(unittest.TestCase):
             compare(wrong, near, 'distance_boundary')
         invited['context']['driveway_curb_interval_m'] = [51, 53]
         with self.assertRaisesRegex(ValueError, 'Uncontrolled driveway context'):
+            compare(near, invited, 'private_authority')
+        equal = case('04', 1.6, False)
+        with self.assertRaisesRegex(ValueError, 'misses five feet'):
+            compare(near, equal, 'five_foot_equality_below')
+        invited['context']['driveway_curb_interval_m'] = [50, 53]
+        invited['context']['private_driveway_authority_role'] = 'invitee'
+        with self.assertRaisesRegex(ValueError, 'private owner status'):
             compare(near, invited, 'private_authority')
 
 

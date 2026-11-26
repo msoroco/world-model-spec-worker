@@ -58,7 +58,9 @@ def compare(first, second, comparison):
         require(a['source_hashes'][name + '.mkv'] == b['source_hashes'][name + '.mkv'],
                 'Fixed camera source differs: ' + name)
     xa, xb = a['context'], b['context']
-    excluded = {'case_id', 'owner_controller_family_invitee'}
+    excluded = {'case_id'}
+    if comparison == 'private_authority':
+        excluded |= {'owner_controller_family_invitee', 'private_driveway_authority_role'}
     require({k:v for k,v in xa.items() if k not in excluded} ==
             {k:v for k,v in xb.items() if k not in excluded},
             'Uncontrolled driveway context differs')
@@ -73,14 +75,26 @@ def compare(first, second, comparison):
                 'Distance comparison authority differs')
         require(ga > FIVE_FEET_M and 0 < gb < FIVE_FEET_M,
                 'Distance comparison does not straddle exact five-foot boundary')
+    elif comparison == 'five_foot_equality_below':
+        require(a['case_id'].endswith('__probe_02') and b['case_id'].endswith('__probe_04'),
+                'Below/equality comparison case order differs')
+        require(0 < ga < FIVE_FEET_M and abs(gb-FIVE_FEET_M) <= 1e-6,
+                'Below/equality comparison misses five feet')
+    elif comparison == 'five_foot_equality_above':
+        require(a['case_id'].endswith('__probe_04') and b['case_id'].endswith('__probe_01'),
+                'Equality/above comparison case order differs')
+        require(abs(ga-FIVE_FEET_M) <= 1e-6 and gb > FIVE_FEET_M,
+                'Equality/above comparison misses five feet')
     elif comparison == 'private_authority':
         require(a['case_id'].endswith('__probe_02') and b['case_id'].endswith('__probe_03'),
                 'Authority comparison case order differs')
         require(abs(ga - gb) <= 1e-6 and 0 < ga < FIVE_FEET_M,
                 'Authority comparison driveway distance differs')
         require(xa['owner_controller_family_invitee'] is False and xb['owner_controller_family_invitee'] is True and
+                xa['private_driveway_authority_role'] == 'none' and
+                xb['private_driveway_authority_role'] == 'owner' and
                 xa['driveway_kind'] == xb['driveway_kind'] == 'private',
-                'Authority comparison did not isolate private owner or invitee status')
+                'Authority comparison did not isolate private owner status')
     else:
         raise ValueError('Unknown controlled driveway comparison')
     return {'format': 'worker-driveway-comparison-audit', 'comparison_id': AID + '__' + comparison,
@@ -88,6 +102,7 @@ def compare(first, second, comparison):
             {a['case_id']: a['report_sha256'], b['case_id']: b['report_sha256']},
             'observed_gap_m': [ga, gb], 'private_authority':
             [xa['owner_controller_family_invitee'], xb['owner_controller_family_invitee']],
+            'private_authority_roles': [xa['private_driveway_authority_role'], xb['private_driveway_authority_role']],
             'fixed_conditions_checked': ['cell', 'law', 'actor', 'rate', 'duration', 'cameras',
                                          'recording_description', 'road', 'source camera bytes',
                                          'driveway context except declared authority', 'rest interval'],
@@ -98,7 +113,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--a', required=True)
     parser.add_argument('--b', required=True)
-    parser.add_argument('--comparison', choices=('distance_boundary', 'private_authority'), required=True)
+    parser.add_argument('--comparison', choices=('distance_boundary', 'private_authority',
+                                                  'five_foot_equality_below', 'five_foot_equality_above'), required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
     receipt = compare(load(args.a), load(args.b), args.comparison)

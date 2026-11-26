@@ -167,10 +167,17 @@ def execute(case_id, output_dir, host, port):
                     'case_id': case_id, 'ego': ego_row, 'lead': lead_row,
                     'paved_right_edge_y_m': PAVED_RIGHT_EDGE_Y_M,
                     'native_map_sha256': road_hash}) + '\n')
+                control = ego.get_control()
                 trace.write(json.dumps({'frame': frame, 'time_s': elapsed,
                     'position_m': ego_row['center_xyz_m'], 'heading_deg': 0,
+                    'position': {'x': ego_row['center_xyz_m'][0],
+                                 'y': ego_row['center_xyz_m'][1],
+                                 'z': ego_row['center_xyz_m'][2]},
                     'speed_mps': ego_row['speed_mps'],
-                    'speed_mph': ego_row['speed_mps'] / .44704}) + '\n')
+                    'speed_mph': ego_row['speed_mps'] / .44704,
+                    'velocity_mps': ego_row['velocity_xyz_mps'],
+                    'control': {'throttle': control.throttle, 'brake': control.brake,
+                                'hand_brake': control.hand_brake}}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
