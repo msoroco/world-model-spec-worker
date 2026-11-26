@@ -57,7 +57,7 @@ def main():
     if not VALIDATOR.is_file():
         raise ValueError('pinned CPU Lean validator missing')
     outcomes = []
-    with ThreadPoolExecutor(max_workers=3) as pool:
+    with ThreadPoolExecutor(max_workers=4) as pool:
         futures = [pool.submit(run_one, case, candidate)
                    for case in CASES for candidate in (None, 'fallback1')]
         for future in as_completed(futures):

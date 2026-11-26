@@ -1,31 +1,22 @@
 {
   "assignment_id": "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator",
   "input_sha256": "b79f5a740187432261d5e03b6fdbe7f9bb6bd3824a4387a53bd8da53459712cb",
-  "status": "partial",
-  "readiness_kind": "partial_cpu_case_probe",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator/tests -p 'test*.py' -v",
+      "exit_code": 0,
       "log": "cpu-tests.log",
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator/tests -v",
-      "exit_code": 0,
-      "sha256": "c7abc77626d212fe49e901720a27f3ee2ffa58d30bdad8bb7b623e781099de6b"
-    },
-    {
-      "log": "cpu-preflight.log",
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
-    },
-    {
-      "log": "cpu-static-check.log",
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator",
-      "exit_code": 0,
-      "sha256": "c3e50433b357c841e9ddc7f2529c05e822d03ba70ece64450b761db9ca7948b8"
+      "sha256": "74a67d5034b8f66d0959abc9fcf5f5d0b1e181904e418e382a9e5e5b69136b1a"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Original 900-frame Native two/three-bicycle formation and four-camera capture",
+    "Independent pixel review of all riders and occupied roadway or exclusive-use path",
+    "Human review of legal abreast and exclusive-use meaning; 0.25 m tolerance remains physical only"
   ],
-  "reason": "Four exact roadway/exclusive-use rider cases, source-gated bicycle construction and original 900-frame formation measurement implemented and focused-tested. No original recording or canonical offline/compatibility/delivery proofs yet; strict gate remains partial."
+  "reason": "Four exact rider formation cases, three comparisons, source-gated Native construction and selected/fallback CPU proofs complete; original CARLA evidence and legal review remain required.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator --case testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_general --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

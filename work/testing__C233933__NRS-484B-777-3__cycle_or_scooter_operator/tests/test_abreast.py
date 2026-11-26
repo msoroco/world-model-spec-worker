@@ -101,6 +101,17 @@ class AbreastTests(unittest.TestCase):
             mod.construct(a, scene(case), case)
         self.assertEqual(a.destroyed, ['control', 'ego'])
 
+    def test_source_routes_keep_separate_riders_on_surveyed_surface(self):
+        case = mod.CASES[0]
+        for change in ('shoulder', 'unmatched_station'):
+            s = scene(case)
+            if change == 'shoulder':
+                s['rider_routes_xy'][2][1] = [40., 9.5]
+            else:
+                s['rider_routes_xy'][2][1] = [39., 3.]
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                mod.validate_scene(s, case)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,146 +1,169 @@
 {
-  "assignment_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C382162",
-  "law_id": "NRS-484B-223-3a",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-223-3a",
-      "cell_id": "C382162",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-223-3a",
-      "branch": "Purpose restriction during an intersection-related center-lane episode.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 350,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle may be driven in the center turn lane only for the purpose of making a left-hand turn onto or from the highway.",
-  "law_source": "NRS 484B.223(3)(a)",
-  "topic_inventory": {
-    "exact-text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle may be driven in the center turn lane only for the purpose of making a left-hand turn onto or from the highway."
+  "assignment_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45 s",
+        "subject": "single bidirectional shared center lane, both highway directions and junction",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through entry",
+        "subject": "vehicle before and during center-lane entry",
+        "view": "approach"
+      },
+      {
+        "interval": "center-lane occupancy through departure",
+        "subject": "left-turn departure and street or alley junction geometry",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full route",
+        "subject": "ego position, lane and actual turn trajectory",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
-      "kind": "delivery",
       "branch": "Purpose restriction during an intersection-related center-lane episode.",
-      "gap_ids": [
-        "no-accepted-recording"
-      ],
-      "construction_probe": "center_lane_probe.py",
+      "candidate_risk": {
+        "reason": "Shared center lane extent and departure geometry may not allow a stable left turn.",
+        "status": "physical"
+      },
       "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Shared center lane extent and departure geometry may not allow a stable left turn."
-      }
-    },
-    {
-      "kind": "delivery",
-      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "construction_probe": "center_lane_probe.py",
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction_probe": "center_lane_probe.py",
+      "kind": "delivery"
+    },
+    {
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "candidate_risk": {
+        "reason": "Joining the highway through the shared center lane may conflict with other traffic.",
+        "status": "physical"
+      },
       "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_onto_highway",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Joining the highway through the shared center lane may conflict with other traffic."
-      }
-    },
-    {
-      "kind": "delivery",
-      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "construction_probe": "center_lane_probe.py",
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction_probe": "center_lane_probe.py",
+      "kind": "delivery"
+    },
+    {
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "candidate_risk": {
+        "reason": "Actor may leave the shared center lane before enough occupancy is captured.",
+        "status": "physical"
+      },
       "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__through_travel",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Actor may leave the shared center lane before enough occupancy is captured."
-      }
-    },
-    {
-      "kind": "delivery",
-      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "construction_probe": "center_lane_probe.py",
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction_probe": "center_lane_probe.py",
+      "kind": "delivery"
+    },
+    {
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "candidate_risk": {
+        "reason": "Route controller may inadvertently produce a left turn.",
+        "status": "physical"
+      },
       "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__right_turn_purpose",
-      "candidate_risk": {
-        "status": "physical",
-        "reason": "Route controller may inadvertently produce a left turn."
-      }
-    },
-    {
-      "kind": "delivery",
-      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "construction_probe": "center_lane_probe.py",
       "gap_ids": [
         "no-accepted-recording"
       ],
-      "construction_probe": "center_lane_probe.py",
-      "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__alley_junction_rejection",
+      "kind": "delivery"
+    },
+    {
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Map junction may actually be an alley and not a qualifying intersection."
-      }
+        "reason": "Map junction may actually be an alley and not a qualifying intersection.",
+        "status": "physical"
+      },
+      "case_id": "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__alley_junction_rejection",
+      "construction_probe": "center_lane_probe.py",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery"
     }
   ],
+  "cell_id": "C382162",
   "comparisons": [
     {
-      "comparison_id": "qualifying_turn_directions",
       "case_ids": [
         "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
         "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_onto_highway"
+      ],
+      "comparison_id": "qualifying_turn_directions",
+      "deliberate_differences": [
+        "left turn from versus onto highway"
       ],
       "fixed_conditions": [
         "single shared center turn lane designed for both directions",
         "qualifying highway",
         "motor vehicle driver",
         "camera and duration plan"
-      ],
-      "deliberate_differences": [
-        "left turn from versus onto highway"
       ]
     },
     {
-      "comparison_id": "purpose_vs_trajectory",
       "case_ids": [
         "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
         "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__through_travel",
         "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__right_turn_purpose"
+      ],
+      "comparison_id": "purpose_vs_trajectory",
+      "deliberate_differences": [
+        "declared maneuver purpose and observed departure trajectory"
       ],
       "fixed_conditions": [
         "same highway and shared center-lane design",
         "actual center-lane occupancy",
         "vehicle/driver",
         "camera and duration plan"
-      ],
-      "deliberate_differences": [
-        "declared maneuver purpose and observed departure trajectory"
       ]
     },
     {
-      "comparison_id": "intersection_classification",
       "case_ids": [
         "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
         "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__alley_junction_rejection"
+      ],
+      "comparison_id": "intersection_classification",
+      "deliberate_differences": [
+        "street intersection versus alley junction classification"
       ],
       "fixed_conditions": [
         "shared center lane",
         "vehicle and planned left turn",
         "camera and duration plan"
-      ],
-      "deliberate_differences": [
-        "street intersection versus alley junction classification"
       ]
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Shared-center-lane purpose episode at this intersection",
+        "source": "inputs/testing__C382162__NRS-484B-223-3a__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this assignment."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-223-3a",
+  "law_source": "NRS 484B.223(3)(a)",
+  "law_text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle may be driven in the center turn lane only for the purpose of making a left-hand turn onto or from the highway.",
   "observations": [
     "Source-bound highway and one shared center turn-only lane for both traffic directions",
     "Original-frame ego lane occupancy, approach and departure road IDs and observed maneuver",
@@ -148,6 +171,100 @@
     "Street intersection versus alley-junction classification",
     "Purpose sufficiency remains unresolved and is not inferred from lane distance or turn completion"
   ],
+  "planning_status": "source_gated_native_capture_in_progress",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_onto_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__through_travel",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__right_turn_purpose",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__alley_junction_rejection"
+      ],
+      "evidence_or_gap": "No accepted recording in frozen inventory; original source-bound motion and intent are required.",
+      "requirement": "A highway designed with one shared center turn-only lane used by both traffic directions",
+      "source": "NRS 484B.223(3)(a)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_onto_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__through_travel",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__right_turn_purpose",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__alley_junction_rejection"
+      ],
+      "evidence_or_gap": "No accepted recording in frozen inventory; original source-bound motion and intent are required.",
+      "requirement": "Original motor-vehicle center-lane occupancy and actual physical driver control",
+      "source": "NRS 484B.223(3)(a)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_onto_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__through_travel",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__right_turn_purpose",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__alley_junction_rejection"
+      ],
+      "evidence_or_gap": "No accepted recording in frozen inventory; original source-bound motion and intent are required.",
+      "requirement": "Independently recorded route purpose before lane entry, separate from observed trajectory",
+      "source": "NRS 484B.223(3)(a)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_from_highway",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__turn_onto_highway"
+      ],
+      "evidence_or_gap": "No accepted recording in frozen inventory; original source-bound motion and intent are required.",
+      "requirement": "Left turn onto the highway and left turn from the highway as distinct authorized purposes",
+      "source": "NRS 484B.223(3)(a)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__through_travel",
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__right_turn_purpose"
+      ],
+      "evidence_or_gap": "No accepted recording in frozen inventory; original source-bound motion and intent are required.",
+      "requirement": "Through travel and right-turn purpose contrasts without an invented time or distance cutoff",
+      "source": "NRS 484B.223(3)(a)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3a__motor_vehicle_driver__alley_junction_rejection"
+      ],
+      "evidence_or_gap": "No accepted recording in frozen inventory; original source-bound motion and intent are required.",
+      "requirement": "Alley junction distinguished from street intersection for the selected witness, without extending this distinction into a new legal exemption",
+      "source": "NRS 484B.223(3)(a)",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Original reviewed highway and center-turn-lane design packet must be supplied at local run.",
+    "Actual lane occupancy, physical route, camera visibility and purpose sufficiency remain unverified.",
+    "Exact offline/compatibility/saved/physical/lifecycle/delivery/comparison proofs remain CPU work."
+  ],
+  "selected_branch": "Purpose restriction during an intersection-related shared center-lane episode",
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Purpose restriction during an intersection-related center-lane episode.",
+      "cell_id": "C382162",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-223-3a",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-223-3a",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 350,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C382162__NRS-484B-223-3a__motor_vehicle_driver/assignment.json",
@@ -170,36 +287,15 @@
       "sha256": "c868bce81bda56171f608acf4b8ed52ff40736488f002e94e328b7caca3bf260"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "CPU probe does not construct the shared lane or CARLA route.",
-    "Actual design provenance, declared purpose and intersection classification require source-bound construction.",
-    "Exact offline, compatibility, saved processing, semantic proposals and independent audits remain.",
-    "Actual motion and video evidence require later CARLA verification."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no-accepted-recording",
-        "requirement": "Shared-center-lane purpose episode at this intersection",
-        "source": "inputs/testing__C382162__NRS-484B-223-3a__motor_vehicle_driver/evidence.json",
-        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings for this assignment."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle may be driven in the center turn lane only for the purpose of making a left-hand turn onto or from the highway."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_cpu_center_lane_probe",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 350,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Purpose restriction during an intersection-related center-lane episode.",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "An intersection left turn can actively use the designated shared center lane when its extent and route relationship are established.",
       "required_context": [
         "Document one shared center lane exclusively for turns by traffic moving in both directions, including its extent and governance over the route.",
         "Establish highway status, qualifying vehicle and actual physical control.",
@@ -212,7 +308,9 @@
         "Route and purpose evidence before, during, and after center-lane occupancy.",
         "Supply realizable intersection, approach and departure geometry; do not classify an alley junction as an intersection."
       ],
-      "reason": "An intersection left turn can actively use the designated shared center lane when its extent and route relationship are established."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 350,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

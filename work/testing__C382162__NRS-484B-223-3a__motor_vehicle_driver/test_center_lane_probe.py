@@ -1,6 +1,7 @@
 import unittest
 
-from center_lane_probe import measure, validate_site
+from center_lane_probe import measure, measure_exact, validate_site
+from test_center_lane_site import packet
 
 
 class CenterLaneProbeTests(unittest.TestCase):
@@ -59,6 +60,35 @@ class CenterLaneProbeTests(unittest.TestCase):
         frames[1]["source_ref"] = ""
         with self.assertRaisesRegex(ValueError, "original route"):
             measure(self.site(), frames, self.purpose())
+
+    def test_exact_original_onto_from_purpose_and_alley(self):
+        for kind in ("turn_from_highway", "turn_onto_highway", "through_travel",
+                     "right_turn_purpose", "alley_junction_rejection"):
+            site = packet(kind)
+            route = site["route"]
+            maneuver = "right_turn" if kind == "right_turn_purpose" else (
+                "travel" if kind == "through_travel" else "left_turn")
+            frames = [dict(original_frame=10 + i, time_s=i * .05, lane_id=lane,
+                           road_id=road, maneuver=maneuver if i == 2 else "travel",
+                           source_ref="sealed/original-route.json", driver_id="ego")
+                      for i, (lane, road) in enumerate((
+                          ("E", route["approach_road_id"]),
+                          ("C", "H"), ("S", route["departure_road_id"]))) ]
+            purpose = dict(declared_purpose={"turn_from_highway": "left_turn_from_highway",
+                                             "turn_onto_highway": "left_turn_onto_highway",
+                                             "through_travel": "through_travel",
+                                             "right_turn_purpose": "right_turn",
+                                             "alley_junction_rejection": "left_turn_from_alley"}[kind],
+                           source_ref="sealed/pre-entry-intent.json",
+                           declared_before_frame=9)
+            result = measure_exact(site, kind, frames, purpose)
+            self.assertEqual(result["center_lane_occupancy_frames"], [11])
+            self.assertEqual(result["purpose_sufficiency"], "unresolved")
+            self.assertIsNone(result["legal_judgment"])
+            self.assertEqual(result["intersection_eligible"], kind != "alley_junction_rejection")
+            late = dict(purpose, declared_before_frame=11)
+            with self.assertRaisesRegex(ValueError, "before lane entry"):
+                measure_exact(site, kind, frames, late)
 
 
 if __name__ == "__main__":

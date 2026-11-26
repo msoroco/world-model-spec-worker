@@ -17,6 +17,8 @@ def site(kind='crosswalk'):
               'lane_width_m': 3.8, 'ego_width_m': 2.5, 'ego_length_m': 10.0,
               'occluder_corners_m': [[10.0, 4.0], [12.0, 4.0],
                                      [12.0, 6.0], [10.0, 6.0]],
+              'driver_eye_xy_m': [0.0, 0.0],
+              'cross_traffic_target_xy_m': [20.0, 10.0],
               'stop_references_m': refs, 'signal_geometry': {'x_m': 23.0}}
     for name in ('map', 'approach_source', 'signal_identity', 'signal_geometry',
                  'signal_blueprint', 'occluder_identity', 'occluder_geometry',

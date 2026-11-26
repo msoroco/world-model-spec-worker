@@ -1,0 +1,57 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_path_exclusive",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "persons riding qualifying bicycles on roadway or exclusive path",
+      "source": "inputs/testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator/assignment.json",
+      "output_key": "bicycle_classification",
+      "method": "source_sealed_rider_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "rider-history.json",
+        "rider-measurement.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "more than two abreast versus two abreast",
+      "source": "inputs/testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator/assignment.json",
+      "output_key": "rider_formation",
+      "method": "source_sealed_rider_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "rider-history.json",
+        "rider-measurement.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "exclusive-use path or roadway exception",
+      "source": "inputs/testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator/assignment.json",
+      "output_key": "exclusive_use_designation",
+      "method": "source_sealed_rider_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "rider-history.json",
+        "rider-measurement.json",
+        "original-source-receipt.json",
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "rider-history.json"
+    ],
+    "error_contains": "Missing required source: rider-history.json"
+  }
+}

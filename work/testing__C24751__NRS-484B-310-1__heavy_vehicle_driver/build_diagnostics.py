@@ -41,6 +41,7 @@ def site_for(case):
             'occluder_support': 'spawned_prop', 'approach_waypoints': [[0, 0], [50, 0]],
             'lane_width_m': 3.8, 'ego_width_m': 2.5, 'ego_length_m': 10.0,
             'occluder_corners_m': [[10, 4], [12, 4], [12, 6], [10, 6]],
+            'driver_eye_xy_m': [0, 0], 'cross_traffic_target_xy_m': [20, 10],
             'signal_geometry': {'x_m': 25.0, 'y_m': 0.0},
             'stop_references_m': {'crosswalk': 20.0 if case.reference == 'crosswalk' else None,
                                   'limit_line': 21.0 if case.reference == 'limit_line' else None,

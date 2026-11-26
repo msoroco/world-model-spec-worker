@@ -1,0 +1,158 @@
+{
+  "assignment_id": "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator",
+  "law_id": "NRS-484B-777-3",
+  "cell_id": "C233933",
+  "actor": "cycle_or_scooter_operator",
+  "selected_case_id": "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_general",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed rider formation and exclusive-use designation"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed rider formation and exclusive-use designation"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed rider formation and exclusive-use designation"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "source-surveyed rider formation and exclusive-use designation"
+    }
+  ],
+  "supported_case_ids": [
+    "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_general",
+    "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__two_roadway_general",
+    "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_exclusive",
+    "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_path_exclusive"
+  ],
+  "case": {
+    "case_id": "testing__C233933__NRS-484B-777-3__cycle_or_scooter_operator__three_roadway_general",
+    "target_law_id": "NRS-484B-777-3",
+    "case_kind": "physical_capture_probe",
+    "capture_frames": 900,
+    "fps": 20,
+    "construction": "abreast.py:construct",
+    "measurement": "abreast.py:measure_original",
+    "physical_risk": "Individual bicycle actors and lateral positions may be unsupported; original rider identities, bicycle classifications, roadway occupancy and exclusive-use designation must be source-backed; no legal abreast threshold inferred.",
+    "kind": "delivery",
+    "new_capture_selected": true,
+    "gap_ids": [
+      "unverified-law-coverage"
+    ],
+    "requested_rider_count": 3,
+    "requested_exclusive_use": false,
+    "requested_roadway_occupancy": true,
+    "construction_status": "source_gated_native_bundle_cpu_preparation",
+    "required_original_packets": [
+      "frame_map",
+      "separate_rider_identities",
+      "bicycle_classification",
+      "surface_designation",
+      "formation_positions",
+      "four_camera_video"
+    ],
+    "candidate_risk": {
+      "status": "physical",
+      "reason": "Individual bicycle actors and lateral positions may be unsupported; original rider identities, bicycle classifications, roadway occupancy and exclusive-use designation must be source-backed; no legal abreast threshold inferred."
+    },
+    "recording_description": {
+      "channels": [
+        {
+          "name": "highway_roadway_shoulder",
+          "unit": "source record",
+          "method": "independent highway, roadway and shoulder bounds",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second rider formation",
+          "reference_frame": "source-surveyed Native world and roadway",
+          "uncertainty": "0.25 m is a physical formation tolerance, not a statutory abreast cutoff"
+        },
+        {
+          "name": "occupied_surface",
+          "unit": "source record",
+          "method": "original rider occupancy on roadway or path",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second rider formation",
+          "reference_frame": "source-surveyed Native world and roadway",
+          "uncertainty": "0.25 m is a physical formation tolerance, not a statutory abreast cutoff"
+        },
+        {
+          "name": "exclusive_use_designation",
+          "unit": "source record",
+          "method": "official exclusive-use designation or its absence",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second rider formation",
+          "reference_frame": "source-surveyed Native world and roadway",
+          "uncertainty": "0.25 m is a physical formation tolerance, not a statutory abreast cutoff"
+        },
+        {
+          "name": "bicycle_classification",
+          "unit": "source record",
+          "method": "qualifying human-powered bicycle and moped exclusion",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second rider formation",
+          "reference_frame": "source-surveyed Native world and roadway",
+          "uncertainty": "0.25 m is a physical formation tolerance, not a statutory abreast cutoff"
+        },
+        {
+          "name": "rider_identity",
+          "unit": "source record",
+          "method": "separate ego, control and companion actor IDs",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second rider formation",
+          "reference_frame": "source-surveyed Native world and roadway",
+          "uncertainty": "0.25 m is a physical formation tolerance, not a statutory abreast cutoff"
+        },
+        {
+          "name": "rider_formation",
+          "unit": "world metres/frame",
+          "method": "original longitudinal and lateral rider separation at 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second rider formation",
+          "reference_frame": "source-surveyed Native world and roadway",
+          "uncertainty": "0.25 m is a physical formation tolerance, not a statutory abreast cutoff"
+        },
+        {
+          "name": "rider_motion",
+          "unit": "world metres/frame",
+          "method": "original rider positions and speeds",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second rider formation",
+          "reference_frame": "source-surveyed Native world and roadway",
+          "uncertainty": "0.25 m is a physical formation tolerance, not a statutory abreast cutoff"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_rider_site",
+          "unit": "source record",
+          "method": "source-sealed highway, surface, bicycle and rider identity packet"
+        }
+      ],
+      "limitations": [
+        "No invented legal abreast cutoff or persistence rule.",
+        "Mopeds are excluded from this selected bicycle construction.",
+        "Synthetic diagnostics prove software behavior only."
+      ]
+    }
+  }
+}

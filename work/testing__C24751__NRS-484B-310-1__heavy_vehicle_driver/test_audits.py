@@ -37,6 +37,36 @@ class AuditTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'every exact case'):
             comparison_audit.audit_comparison('crosswalk_stop_location', {})
 
+    def test_crosswalk_comparison_isolates_original_stop_position(self):
+        SCRATCH.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
+            root = Path(temporary)
+            pairs = {}
+            for index, name in enumerate(('crosswalk_stop', 'crosswalk_late_stop')):
+                case_id = ASSIGNMENT + '__' + name
+                item = {'format': 'c24751-original-delivery-audit-v1',
+                    'case_id': case_id, 'original_frame_count': 900,
+                    'flashing_red_transitions': 12,
+                    'legal_status': 'unresolved',
+                    'post_stop_right_to_proceed': 'unresolved_applicable_rules',
+                    'source_sha256': {'capture-seal.json': 'source-seal-' + name},
+                    'reference_kind': 'crosswalk', 'surveyed_reference_m': 20.0,
+                    'stop_geometry_sha256': 'same-survey', 'map_sha256': 'same-map',
+                    'signal_identity_sha256': 'same-signal',
+                    'occluder_identity_sha256': 'same-occluder',
+                    'stop_observations': [{'front_m': 18.8 if index == 0 else 20.8}]}
+                path = root / (name + '.json')
+                path.write_text(json.dumps(item) + '\n')
+                pairs[case_id] = path
+            checked = comparison_audit.audit_comparison('crosswalk_stop_location', pairs)
+            self.assertEqual(checked['legal_status'], 'unresolved')
+            second = root / 'crosswalk_late_stop.json'
+            changed = json.loads(second.read_text())
+            changed['signal_identity_sha256'] = 'different-signal'
+            second.write_text(json.dumps(changed) + '\n')
+            with self.assertRaisesRegex(ValueError, 'fixed physical signal'):
+                comparison_audit.audit_comparison('crosswalk_stop_location', pairs)
+
     def test_case_audit_protocol_preserves_post_stop_uncertainty(self):
         SCRATCH.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:

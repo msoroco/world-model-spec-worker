@@ -23,11 +23,11 @@ def run(entry):
         None)
     if attempt is None:
         return name, 1, 'current compatibility attempt missing'
-    replay_attempt = SCRATCH / ('saved-input-' + name)
+    replay_attempt = SCRATCH / ('saved-input-current-' + name)
     if not replay_attempt.exists():
         shutil.copytree(attempt, replay_attempt, copy_function=os.link)
         (replay_attempt / 'candidate-selection.json').unlink(missing_ok=True)
-    output = SCRATCH / ('saved-' + name)
+    output = SCRATCH / ('saved-current-' + name)
     for prior in sorted(output.glob('v*/processing.json'), reverse=True):
         receipt = json.loads(prior.read_text())
         if (receipt.get('passed') is True and receipt.get('recorded_only') is True and

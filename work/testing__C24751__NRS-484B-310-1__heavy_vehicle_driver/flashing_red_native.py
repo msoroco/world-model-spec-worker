@@ -8,6 +8,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from math import isfinite
 
+from flashing_red_probe import occluded
+
 ASSIGNMENT = 'testing__C24751__NRS-484B-310-1__heavy_vehicle_driver'
 
 
@@ -69,6 +71,12 @@ def validate_site(site):
              for p in corners), 'physical occluder polygon missing')
     need(len({p[0] for p in corners}) == 2 and len({p[1] for p in corners}) == 2,
          'occluder must have physical rectangular extent')
+    eye, target = site.get('driver_eye_xy_m'), site.get('cross_traffic_target_xy_m')
+    need(isinstance(eye, list) and isinstance(target, list)
+         and len(eye) == len(target) == 2
+         and all(finite(value) for value in eye + target)
+         and occluded(tuple(eye), tuple(target), tuple(tuple(p) for p in corners)),
+         'surveyed blind sight line does not intersect physical occluder')
     refs = site.get('stop_references_m')
     need(isinstance(refs, dict) and finite(refs.get('intersection')),
          'surveyed intersection entry missing')

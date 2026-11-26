@@ -81,6 +81,17 @@ def validate_scene(scene: Mapping, case: Case):
             all(isinstance(route, list) and len(route) >= 2 and
                 all(point(p) for p in route) for route in routes),
             'rider routes missing')
+    for route in routes:
+        require(all(inside(p, scene['occupied_surface_rect_m']) for p in route),
+                'source rider route leaves occupied surface')
+        if case.roadway:
+            require(all(inside(p, scene['roadway_rect_m']) and
+                        not inside(p, scene['shoulder_rect_m']) for p in route),
+                    'source roadway rider route enters shoulder')
+    for points in zip(*routes):
+        require(max(p[0] for p in points) - min(p[0] for p in points) <= .25 and
+                max(p[1] for p in points) > min(p[1] for p in points),
+                'source rider routes cannot produce planned physical formation')
     return {'case_id': case.name, 'abreast_legal_judgment': None,
             'exclusive_use_judgment': None}
 
