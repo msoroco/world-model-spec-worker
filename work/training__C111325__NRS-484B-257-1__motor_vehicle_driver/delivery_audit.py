@@ -6,7 +6,7 @@ import json
 import subprocess
 from pathlib import Path
 
-CASE = "training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield"
+BASE = "training__C111325__NRS-484B-257-1__motor_vehicle_driver__"
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 SOURCES = ("trace.jsonl", "video_frames.jsonl", "ego_body.jsonl", "through_body.jsonl",
            "interaction_history.jsonl", "governing_sign.json", "governing_controls.json",
@@ -33,7 +33,10 @@ def rows(path):
 
 
 def audit(case, attempt, receipt, diagnostic, missing_source=None):
-    require(case == CASE, "Different exact selected case")
+    require(case.startswith(BASE), "Different exact selected case")
+    selected = json.loads((Path(__file__).resolve().parent / "execution-manifest.json").read_text())
+    require(sum(entry.get("case_id") == case for entry in selected.get("cases", [])) == 1,
+            "Case is not an exact selected delivery entry")
     attempt = Path(attempt)
     receipt = read(Path(receipt))
     require(receipt.get("case_id") == case and receipt.get("candidate_id") == "primary"

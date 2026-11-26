@@ -26,7 +26,20 @@
           "changed_knobs": [
             "overview fixed-world camera position/pitch/yaw",
             "reference_corner fixed-world camera position/pitch/yaw"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --candidate fallback1 --output .runtime-work/nrs257-offline-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "cb9235c2ba9070b231281aebe96653da491c6c37b4334112f9f6351e62993512",
+            "log": "native-offline-fallback1.log",
+            "log_sha256": "839755fc5dd6f2333db72b95e93b82820ecc21fc988b54e2ce86cbb0dcc19057"
+          },
+          "compatibility": {
+            "receipt": "compatibility/complete_stop_then_yield-fallback1.json",
+            "sha256": "d9a2c10f345b124bdb4443ba5ee9dcaed57b7ce602e9ba922f17887827dae162",
+            "log": "compatibility/complete_stop_then_yield-fallback1-analysis.log",
+            "negative_log": "compatibility/complete_stop_then_yield-fallback1-negative.log"
+          }
         }
       ],
       "delivery_readiness": "incomplete",
@@ -106,17 +119,206 @@
           "physical_completion"
         ],
         "script": "delivery_audit.py",
-        "script_sha256": "0949331c28915237b2dd7696a268ec2c291d31ab5036ffc1e00a98c98740384e",
-        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --processing $PROCESSING",
+        "script_sha256": "8006a5f3891f43a9d97347bf8ba85b17277ee3e8f5b2ff981ce51aed597e4556",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
         "test_exit_code": 0,
         "test_log": "delivery-audit-positive.log",
         "test_log_sha256": "90b3e2a9e757f4ffd9fe498a72eedce3acea4985d2279aa044f662e51ab8a05e",
-        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --processing $PROCESSING --missing-source governing_sign.json",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --processing $PROCESSING --missing-source governing_sign.json --diagnostic",
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: governing_sign.json",
         "negative_log": "delivery-audit-negative.log",
         "negative_log_sha256": "22260ca1d16e6acd028358ab8612a9c065807ef2c71e576aa534a9408328914d",
+        "diagnostic_scope": "CPU fixture proof only; production audit requires original Native capture and independent source review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__complete_stop_then_yield --attempt $ATTEMPT --processing $PROCESSING"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict",
+      "kind": "delivery",
+      "construction": "construction-roll_through_conflict.json",
+      "construction_sha256": "5b1746c7abb16e25f1b6d8faedbde99a6807aac32f20f4d8522c921e4a0c6b6f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native marked-line and governing-sign pixel visibility require local review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-roll_through_conflict-fallback1.json",
+          "construction_sha256": "e047c41dbbad85750657267bddab8cd67d59fb41dbb28f9109374beaaa0f25f3",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing sign actual-pixel visibility in overview and reference_corner",
+            "failure_condition": "governing sign unreadable or occluded in either required source view"
+          },
+          "changed_knobs": [
+            "overview fixed-world camera position/pitch/yaw",
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --candidate fallback1 --output .runtime-work/nrs257-offline-rollthrough-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "e047c41dbbad85750657267bddab8cd67d59fb41dbb28f9109374beaaa0f25f3",
+            "log": "native-offline-rollthrough-fallback1.log",
+            "log_sha256": "d41af9f36f221a8caf8cf3d0b3072237c4a3bf60b9c8fadd31b14702a9069658"
+          },
+          "compatibility": {
+            "receipt": "compatibility/roll_through_conflict-fallback1.json",
+            "sha256": "565ce69f1bd4a005eb530478bff5a1ed3bbbbb6c21facf71b6f560ef4fa81dac",
+            "log": "compatibility/roll_through_conflict-fallback1-analysis.log",
+            "negative_log": "compatibility/roll_through_conflict-fallback1-negative.log"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-roll_through_conflict.json",
+      "fixture_recipe": "work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/selected-recipe-roll_through_conflict.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "nrs-484b-257-1-selected-analysis-v1"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --output .runtime-work/nrs257-offline-rollthrough-2",
+        "exit_code": 0,
+        "construction_sha256": "5b1746c7abb16e25f1b6d8faedbde99a6807aac32f20f4d8522c921e4a0c6b6f",
+        "log": "native-offline-rollthrough.log",
+        "log_sha256": "c1a48e2263eaf75ab9274fc7e9b894b8f1c0e183de8d9a30560d5995b1fd227b"
+      },
+      "compatibility": {
+        "receipt": "compatibility/roll_through_conflict-primary.json",
+        "sha256": "5b6600dd22adfcbe5c51250d2f0df94f0e48c01e9f9cb3c45f91d6d8d9cd1016",
+        "log": "compatibility/roll_through_conflict-primary-analysis.log",
+        "negative_log": "compatibility/roll_through_conflict-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/roll_through_conflict-primary-negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/roll_through_conflict-analysis.log",
+        "test_log_sha256": "7153a022dfd0883d93437f60c470ec78d58370561a5881eb3d7006493a690e23",
+        "processing_receipt": "saved/roll_through_conflict-processing.json",
+        "processing_receipt_sha256": "30e0e48c20e9d13028fce2b2bfeef364ec7da59f381d39f9045930ef2ada26c7"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/roll_through_conflict/proof.json",
+        "sha256": "88314022e8704e3cbf4cc60b32de771702ed8053f2a4338c1fe79645ed3ac43a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8006a5f3891f43a9d97347bf8ba85b17277ee3e8f5b2ff981ce51aed597e4556",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --attempt $ATTEMPT --processing $PROCESSING",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-rollthrough-positive.log",
+        "test_log_sha256": "99fa68b546b04ad62eb926cf057ec5afe0001989ef5d8546e170b3c9a2ba3606",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict --attempt $ATTEMPT --processing $PROCESSING --diagnostic --missing-source governing_sign.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: governing_sign.json",
+        "negative_log": "delivery-audit-rollthrough-negative.log",
+        "negative_log_sha256": "440d02ee7fbb98ce1fc464768508dc1da52f8d9f8a131f799d5c3136b41acb89",
         "diagnostic_scope": "CPU fixture proof only; production audit requires original Native capture and independent source review"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__yield_sign_slow_then_yield",
+      "kind": "delivery",
+      "construction": "construction-yield_sign_slow_then_yield.json",
+      "construction_sha256": "cc14e5d20bba29ad4bad45bc34ca56e991f900939ff975adba287bc45bd29300",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native sign pixels and reference visibility need local review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield_sign_slow_then_yield-fallback1.json",
+          "construction_sha256": "8a5a586489dfa2a186dc1210642ed169a1a7df016242c9e76df53f5c47f0d273",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing sign actual-pixel visibility in overview and reference_corner",
+            "failure_condition": "governing sign unreadable or occluded in either required source view"
+          },
+          "changed_knobs": [
+            "overview fixed-world camera position/pitch/yaw",
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-yield_sign_slow_then_yield.json",
+      "fixture_recipe": "work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/selected-recipe-yield_sign_slow_then_yield.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "nrs-484b-257-1-selected-analysis-v1"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__yield_sign_no_slow_conflict",
+      "kind": "delivery",
+      "construction": "construction-yield_sign_no_slow_conflict.json",
+      "construction_sha256": "c355dbd2edf335b173c47c48d1aeae348dc28da78985f8898423569fa6bdb5c0",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native sign pixels and reference visibility need local review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield_sign_no_slow_conflict-fallback1.json",
+          "construction_sha256": "8815dfa1a6bca523b9816ae13907b23cac95c49e9c834a53a169ff4d6ccfead0",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing sign actual-pixel visibility in overview and reference_corner",
+            "failure_condition": "governing sign unreadable or occluded in either required source view"
+          },
+          "changed_knobs": [
+            "overview fixed-world camera position/pitch/yaw",
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-yield_sign_no_slow_conflict.json",
+      "fixture_recipe": "work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/selected-recipe-yield_sign_no_slow_conflict.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "nrs-484b-257-1-selected-analysis-v1"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     }
   ]

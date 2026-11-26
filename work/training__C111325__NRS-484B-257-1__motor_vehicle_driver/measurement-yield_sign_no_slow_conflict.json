@@ -1,0 +1,43 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__yield_sign_no_slow_conflict",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "reference_hierarchy_observation",
+      "method": "measure_reference",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "stop_yield_context.json",
+        "stop_yield_motion.jsonl",
+        "stopping_reference.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "text-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "through_highway_duty_observation",
+      "method": "measure_through_duty",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "stop_yield_context.json",
+        "stop_yield_motion.jsonl",
+        "through_road.json",
+        "through_body.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "stopping_reference.json"
+    ],
+    "error_contains": "Missing required source: stopping_reference.json"
+  },
+  "legal_verdict": null,
+  "physical_acceptance_claimed": false
+}

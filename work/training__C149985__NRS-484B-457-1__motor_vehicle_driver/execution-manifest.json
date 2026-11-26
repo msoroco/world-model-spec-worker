@@ -1,0 +1,1169 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver",
+  "status": "delivery_prepared",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "physical_acceptance_claimed": false,
+  "cases": [
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_16_parked",
+      "kind": "delivery",
+      "construction": "native/bundles/right_16_parked/construction.json",
+      "construction_sha256": "81f8cdd644b321a2eb16cfa0911e3f16f62208d3689464b0a1346311418702d0",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "native/right_16_parked-measurement-contract.json",
+      "fixture_recipe": "work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/native/diagnostic-right_16_parked-fixture-recipe.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "wheel_curb_geometry",
+            "unit": "structured",
+            "method": "original wheel physics positions and curb readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "parking_state",
+            "unit": "structured",
+            "method": "original speed and stopped/parked source history",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "administrative_context",
+            "unit": "structured",
+            "method": "original ordinance and DOT source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "right_wheel_curb_clearance",
+            "unit": "structured",
+            "method": "saved derived wheel edge to curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original wheel units and curb surfaces require review.",
+          "Local ordinance and DOT determination are administrative facts, not inferred from signs.",
+          "Physical parking and camera visibility require original recording review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Straight curb approach has no distinct predeclared spawn fallback; any original physical failure requires review."
+      },
+      "compatibility": {
+        "receipt": "native/proofs/right_16_parked-primary-compatibility.json",
+        "sha256": "a8a6e5d67708b2b1e568b1b0f5248094665223f250f6c7eb09c29cdb4f2f67f8",
+        "log": "native/proofs/right_16_parked-primary-analysis.log",
+        "negative_log": "native/proofs/right_16_parked-primary-negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "81f8cdd644b321a2eb16cfa0911e3f16f62208d3689464b0a1346311418702d0",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_16_parked --output .runtime-work/c149985-457/offline-right_16_parked-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "native/proofs/right_16_parked-primary-offline.log",
+        "log_sha256": "4c2ffa88a3f7fe3433e477e5fa6f21ee9fb02ba83cc433a7af65be2e935dc4e5"
+      },
+      "negative": {
+        "log": "native/proofs/right_16_parked-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_16_parked-physical-preparation.json",
+        "sha256": "b9f6ed5d53f823f131a7d9e7f48cafe793d7c3ce9086e146e3c053782f66f391"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_16_parked --attempt $CAPTURE_OUTPUT --output $POSTPROCESS_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/v0001/processing.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/right_16_parked-saved-processing.json",
+        "test_log_sha256": "0cd1428f4aafda9116a2c39b9f68da707dcc831b720239e802cee8bd349f732a",
+        "diagnostic_fixture": true
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_16_parked",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bfd53d43e0dbd59ee4d2d2da8fb1440d16f4607dc9d4b27cceec7064e2f69a99",
+        "command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_16_parked --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/right_16_parked-delivery-positive.log",
+        "test_log_sha256": "913e647af17400ca15e3186e0bc7b212b996a27b17e369c32e3dbddb6c045926",
+        "negative_command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_16_parked --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "native/proofs/right_16_parked-delivery-negative.log",
+        "negative_log_sha256": "0d6d73b65b6bfd248b703583461ebee76a51ec2d2721dead9ea96944c674ca52"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor transform and body vertices",
+          "evidence": "native-parking.jsonl"
+        },
+        "wheel_curb_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original wheel physics positions and road curb readback",
+          "evidence": "native-parking.jsonl and parking-context.json"
+        },
+        "parking_state": {
+          "entrypoint": "runner.py",
+          "method": "original speed and requested rest mode, reviewed independently",
+          "evidence": "native-parking.jsonl"
+        },
+        "administrative_context": {
+          "entrypoint": "runner.py",
+          "method": "pending original ordinance and DOT source review",
+          "evidence": "parking-context.json and source-review.json"
+        },
+        "right_wheel_curb_clearance": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound outer wheel edge to reviewed curb",
+          "evidence": "native-parking.jsonl and channels/right_wheel_curb_clearance.jsonl"
+        }
+      },
+      "delivery_readiness": "selected_cpu_prepared_original_review_pending"
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_parked",
+      "kind": "delivery",
+      "construction": "native/bundles/right_18_parked/construction.json",
+      "construction_sha256": "38f2e25d1b69504b9bfd7e94c2cfadc2defe26f1b66e54f0d6de289b03ada85a",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "native/right_18_parked-measurement-contract.json",
+      "fixture_recipe": "work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/native/diagnostic-right_18_parked-fixture-recipe.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "wheel_curb_geometry",
+            "unit": "structured",
+            "method": "original wheel physics positions and curb readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "parking_state",
+            "unit": "structured",
+            "method": "original speed and stopped/parked source history",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "administrative_context",
+            "unit": "structured",
+            "method": "original ordinance and DOT source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "right_wheel_curb_clearance",
+            "unit": "structured",
+            "method": "saved derived wheel edge to curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original wheel units and curb surfaces require review.",
+          "Local ordinance and DOT determination are administrative facts, not inferred from signs.",
+          "Physical parking and camera visibility require original recording review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Straight curb approach has no distinct predeclared spawn fallback; any original physical failure requires review."
+      },
+      "compatibility": {
+        "receipt": "native/proofs/right_18_parked-primary-compatibility.json",
+        "sha256": "c5d7dbce7f53aefcb8acaa7c5d20fc12647a4d8fde42d7d6ddc086b5212a277f",
+        "log": "native/proofs/right_18_parked-primary-analysis.log",
+        "negative_log": "native/proofs/right_18_parked-primary-negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "38f2e25d1b69504b9bfd7e94c2cfadc2defe26f1b66e54f0d6de289b03ada85a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_parked --output .runtime-work/c149985-457/offline-right_18_parked-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "native/proofs/right_18_parked-primary-offline.log",
+        "log_sha256": "254cad5ce0354c08312a0cba616db995d2d98fc50859cd87723d0181a877cef5"
+      },
+      "negative": {
+        "log": "native/proofs/right_18_parked-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_parked-physical-preparation.json",
+        "sha256": "b2145ee0197c1da8ad74c91dea10d66bbf397fb13b918cbba286c4dbfd5ec95d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_parked --attempt $CAPTURE_OUTPUT --output $POSTPROCESS_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/v0001/processing.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/right_18_parked-saved-processing.json",
+        "test_log_sha256": "3bee7278918d5cfe2bc2060ade21e0ea09528274cec56c19652f46c550498ae6",
+        "diagnostic_fixture": true
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_parked",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bfd53d43e0dbd59ee4d2d2da8fb1440d16f4607dc9d4b27cceec7064e2f69a99",
+        "command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_parked --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/right_18_parked-delivery-positive.log",
+        "test_log_sha256": "8266463b76f686f270ecc57406e5e1debf5c978202bc60ceb9acc414a3ab7f40",
+        "negative_command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_parked --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "native/proofs/right_18_parked-delivery-negative.log",
+        "negative_log_sha256": "0d6d73b65b6bfd248b703583461ebee76a51ec2d2721dead9ea96944c674ca52"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor transform and body vertices",
+          "evidence": "native-parking.jsonl"
+        },
+        "wheel_curb_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original wheel physics positions and road curb readback",
+          "evidence": "native-parking.jsonl and parking-context.json"
+        },
+        "parking_state": {
+          "entrypoint": "runner.py",
+          "method": "original speed and requested rest mode, reviewed independently",
+          "evidence": "native-parking.jsonl"
+        },
+        "administrative_context": {
+          "entrypoint": "runner.py",
+          "method": "pending original ordinance and DOT source review",
+          "evidence": "parking-context.json and source-review.json"
+        },
+        "right_wheel_curb_clearance": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound outer wheel edge to reviewed curb",
+          "evidence": "native-parking.jsonl and channels/right_wheel_curb_clearance.jsonl"
+        }
+      },
+      "delivery_readiness": "selected_cpu_prepared_original_review_pending"
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_20_parked",
+      "kind": "delivery",
+      "construction": "native/bundles/right_20_parked/construction.json",
+      "construction_sha256": "e255b0c5f1d36d70ef0a71bc244a78613b8c379f80f4333668ebfdaecc10aa48",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "native/right_20_parked-measurement-contract.json",
+      "fixture_recipe": "work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/native/diagnostic-right_20_parked-fixture-recipe.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "wheel_curb_geometry",
+            "unit": "structured",
+            "method": "original wheel physics positions and curb readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "parking_state",
+            "unit": "structured",
+            "method": "original speed and stopped/parked source history",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "administrative_context",
+            "unit": "structured",
+            "method": "original ordinance and DOT source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "right_wheel_curb_clearance",
+            "unit": "structured",
+            "method": "saved derived wheel edge to curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original wheel units and curb surfaces require review.",
+          "Local ordinance and DOT determination are administrative facts, not inferred from signs.",
+          "Physical parking and camera visibility require original recording review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Straight curb approach has no distinct predeclared spawn fallback; any original physical failure requires review."
+      },
+      "compatibility": {
+        "receipt": "native/proofs/right_20_parked-primary-compatibility.json",
+        "sha256": "856c8c242440ab45ab1249cbe7061ccb715d4c69de1895aef1a6301202253c2b",
+        "log": "native/proofs/right_20_parked-primary-analysis.log",
+        "negative_log": "native/proofs/right_20_parked-primary-negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "e255b0c5f1d36d70ef0a71bc244a78613b8c379f80f4333668ebfdaecc10aa48",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_20_parked --output .runtime-work/c149985-457/offline-right_20_parked-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "native/proofs/right_20_parked-primary-offline.log",
+        "log_sha256": "cdc56b6b8743035076f813ffeec8595e7ecff17f570a4f5768290e3ac33bb883"
+      },
+      "negative": {
+        "log": "native/proofs/right_20_parked-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_20_parked-physical-preparation.json",
+        "sha256": "561487b2d0b35f97e0a5a60edcbfbb7821f0555f548297f9cbc3ad61e85dd563"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_20_parked --attempt $CAPTURE_OUTPUT --output $POSTPROCESS_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/v0001/processing.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/right_20_parked-saved-processing.json",
+        "test_log_sha256": "6dac4f3d70d4f679ce64f384f5f8944b45a8bd9e82ebe98a634828d418556c99",
+        "diagnostic_fixture": true
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_20_parked",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bfd53d43e0dbd59ee4d2d2da8fb1440d16f4607dc9d4b27cceec7064e2f69a99",
+        "command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_20_parked --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/right_20_parked-delivery-positive.log",
+        "test_log_sha256": "4ae200fdc52fc97343609cc2040d0fd1597e65926ffc901f255dd996100f8602",
+        "negative_command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_20_parked --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "native/proofs/right_20_parked-delivery-negative.log",
+        "negative_log_sha256": "0d6d73b65b6bfd248b703583461ebee76a51ec2d2721dead9ea96944c674ca52"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor transform and body vertices",
+          "evidence": "native-parking.jsonl"
+        },
+        "wheel_curb_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original wheel physics positions and road curb readback",
+          "evidence": "native-parking.jsonl and parking-context.json"
+        },
+        "parking_state": {
+          "entrypoint": "runner.py",
+          "method": "original speed and requested rest mode, reviewed independently",
+          "evidence": "native-parking.jsonl"
+        },
+        "administrative_context": {
+          "entrypoint": "runner.py",
+          "method": "pending original ordinance and DOT source review",
+          "evidence": "parking-context.json and source-review.json"
+        },
+        "right_wheel_curb_clearance": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound outer wheel edge to reviewed curb",
+          "evidence": "native-parking.jsonl and channels/right_wheel_curb_clearance.jsonl"
+        }
+      },
+      "delivery_readiness": "selected_cpu_prepared_original_review_pending"
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped",
+      "kind": "delivery",
+      "construction": "native/bundles/right_18_stopped/construction.json",
+      "construction_sha256": "60ea19bc8cbf7d04fdf57ff2ee69fcaf5068a4fb3f744948738c9fd92d09c45d",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "native/right_18_stopped-measurement-contract.json",
+      "fixture_recipe": "work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/native/diagnostic-right_18_stopped-fixture-recipe.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "wheel_curb_geometry",
+            "unit": "structured",
+            "method": "original wheel physics positions and curb readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "parking_state",
+            "unit": "structured",
+            "method": "original speed and stopped/parked source history",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "administrative_context",
+            "unit": "structured",
+            "method": "original ordinance and DOT source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "right_wheel_curb_clearance",
+            "unit": "structured",
+            "method": "saved derived wheel edge to curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original wheel units and curb surfaces require review.",
+          "Local ordinance and DOT determination are administrative facts, not inferred from signs.",
+          "Physical parking and camera visibility require original recording review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Straight curb approach has no distinct predeclared spawn fallback; any original physical failure requires review."
+      },
+      "compatibility": {
+        "receipt": "native/proofs/right_18_stopped-primary-compatibility.json",
+        "sha256": "cc539d706d5d919bff6487a85babfcd1950fd3592b6aedd35abc510c79f5483b",
+        "log": "native/proofs/right_18_stopped-primary-analysis.log",
+        "negative_log": "native/proofs/right_18_stopped-primary-negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "60ea19bc8cbf7d04fdf57ff2ee69fcaf5068a4fb3f744948738c9fd92d09c45d",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped --output .runtime-work/c149985-457/offline-right_18_stopped-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "native/proofs/right_18_stopped-primary-offline.log",
+        "log_sha256": "4f6f9121cc02295ff771d0b4f575dbd5af6b214a317c71dc5b98fc9aa21fed42"
+      },
+      "negative": {
+        "log": "native/proofs/right_18_stopped-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped-physical-preparation.json",
+        "sha256": "30ce91f830471dcaada084d9be48b222e52d18ce8f34f2cc09255f8cbfa65569"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped --attempt $CAPTURE_OUTPUT --output $POSTPROCESS_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/v0001/processing.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/right_18_stopped-saved-processing.json",
+        "test_log_sha256": "a7844b4ab00e6b2fa2593377f07bde496bc81ae6ead2a560584f1e067d1c71b9",
+        "diagnostic_fixture": true
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bfd53d43e0dbd59ee4d2d2da8fb1440d16f4607dc9d4b27cceec7064e2f69a99",
+        "command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/right_18_stopped-delivery-positive.log",
+        "test_log_sha256": "0d87e1648299b14b9dd4d2734d1b1318ebb2d7a26260911706044841740b2b31",
+        "negative_command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__right_18_stopped --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "native/proofs/right_18_stopped-delivery-negative.log",
+        "negative_log_sha256": "0d6d73b65b6bfd248b703583461ebee76a51ec2d2721dead9ea96944c674ca52"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor transform and body vertices",
+          "evidence": "native-parking.jsonl"
+        },
+        "wheel_curb_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original wheel physics positions and road curb readback",
+          "evidence": "native-parking.jsonl and parking-context.json"
+        },
+        "parking_state": {
+          "entrypoint": "runner.py",
+          "method": "original speed and requested rest mode, reviewed independently",
+          "evidence": "native-parking.jsonl"
+        },
+        "administrative_context": {
+          "entrypoint": "runner.py",
+          "method": "pending original ordinance and DOT source review",
+          "evidence": "parking-context.json and source-review.json"
+        },
+        "right_wheel_curb_clearance": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound outer wheel edge to reviewed curb",
+          "evidence": "native-parking.jsonl and channels/right_wheel_curb_clearance.jsonl"
+        }
+      },
+      "delivery_readiness": "selected_cpu_prepared_original_review_pending"
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__left_18_ordinance",
+      "kind": "delivery",
+      "construction": "native/bundles/left_18_ordinance/construction.json",
+      "construction_sha256": "4b217cf8eadf1082457dfc7a25bc653d53295d68a3c87a015ca3a3c24aba833e",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "native/left_18_ordinance-measurement-contract.json",
+      "fixture_recipe": "work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/native/diagnostic-left_18_ordinance-fixture-recipe.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "wheel_curb_geometry",
+            "unit": "structured",
+            "method": "original wheel physics positions and curb readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "parking_state",
+            "unit": "structured",
+            "method": "original speed and stopped/parked source history",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "administrative_context",
+            "unit": "structured",
+            "method": "original ordinance and DOT source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "right_wheel_curb_clearance",
+            "unit": "structured",
+            "method": "saved derived wheel edge to curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original wheel units and curb surfaces require review.",
+          "Local ordinance and DOT determination are administrative facts, not inferred from signs.",
+          "Physical parking and camera visibility require original recording review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Straight curb approach has no distinct predeclared spawn fallback; any original physical failure requires review."
+      },
+      "compatibility": {
+        "receipt": "native/proofs/left_18_ordinance-primary-compatibility.json",
+        "sha256": "bc492d7b379c7069529140b696dfc82b5567fb94b0c856e64b1f0e0c3122764b",
+        "log": "native/proofs/left_18_ordinance-primary-analysis.log",
+        "negative_log": "native/proofs/left_18_ordinance-primary-negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "4b217cf8eadf1082457dfc7a25bc653d53295d68a3c87a015ca3a3c24aba833e",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__left_18_ordinance --output .runtime-work/c149985-457/offline-left_18_ordinance-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "native/proofs/left_18_ordinance-primary-offline.log",
+        "log_sha256": "7253c97cf66e7aeff7b8447c10359a1878c3c8efa67c05532f36d8fb07a8c18c"
+      },
+      "negative": {
+        "log": "native/proofs/left_18_ordinance-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C149985__NRS-484B-457-1__motor_vehicle_driver__left_18_ordinance-physical-preparation.json",
+        "sha256": "e506608c4ed727ac4d8daed1ecf2b5c8e6ff0319b0251dc3956abcf9067a7203"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__left_18_ordinance --attempt $CAPTURE_OUTPUT --output $POSTPROCESS_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/v0001/processing.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/left_18_ordinance-saved-processing.json",
+        "test_log_sha256": "0fa322da6f71cbd7408b3cf35bfad84c11e40f0e91149affbd63936c48934108",
+        "diagnostic_fixture": true
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__left_18_ordinance",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bfd53d43e0dbd59ee4d2d2da8fb1440d16f4607dc9d4b27cceec7064e2f69a99",
+        "command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__left_18_ordinance --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/left_18_ordinance-delivery-positive.log",
+        "test_log_sha256": "c2c38584c34d17405edaf17329dcb88e04dbf586494f31cbf7fe6baf2a279f11",
+        "negative_command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__left_18_ordinance --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "native/proofs/left_18_ordinance-delivery-negative.log",
+        "negative_log_sha256": "0d6d73b65b6bfd248b703583461ebee76a51ec2d2721dead9ea96944c674ca52"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor transform and body vertices",
+          "evidence": "native-parking.jsonl"
+        },
+        "wheel_curb_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original wheel physics positions and road curb readback",
+          "evidence": "native-parking.jsonl and parking-context.json"
+        },
+        "parking_state": {
+          "entrypoint": "runner.py",
+          "method": "original speed and requested rest mode, reviewed independently",
+          "evidence": "native-parking.jsonl"
+        },
+        "administrative_context": {
+          "entrypoint": "runner.py",
+          "method": "pending original ordinance and DOT source review",
+          "evidence": "parking-context.json and source-review.json"
+        },
+        "right_wheel_curb_clearance": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound outer wheel edge to reviewed curb",
+          "evidence": "native-parking.jsonl and channels/right_wheel_curb_clearance.jsonl"
+        }
+      },
+      "delivery_readiness": "selected_cpu_prepared_original_review_pending"
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary",
+      "kind": "delivery",
+      "construction": "native/bundles/angle_ordinary/construction.json",
+      "construction_sha256": "c7111b22876234b558e66bbed42a399086cef701fd251143d43728dec24f2e58",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "native/angle_ordinary-measurement-contract.json",
+      "fixture_recipe": "work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/native/diagnostic-angle_ordinary-fixture-recipe.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "wheel_curb_geometry",
+            "unit": "structured",
+            "method": "original wheel physics positions and curb readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "parking_state",
+            "unit": "structured",
+            "method": "original speed and stopped/parked source history",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "administrative_context",
+            "unit": "structured",
+            "method": "original ordinance and DOT source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "right_wheel_curb_clearance",
+            "unit": "structured",
+            "method": "saved derived wheel edge to curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original wheel units and curb surfaces require review.",
+          "Local ordinance and DOT determination are administrative facts, not inferred from signs.",
+          "Physical parking and camera visibility require original recording review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/angle_ordinary/fallback1.json",
+          "construction_sha256": "f69e8cafce844f32626a7f743e256fe6f4dad2bfff6b4f8c3d52cd7450cb15f5",
+          "trigger": {
+            "source": "Native try_spawn_actor",
+            "metric": "actor spawn result",
+            "failure_condition": "spawn returns None"
+          },
+          "changed_knobs": [
+            "spawn height from 1.5m to 1.8m"
+          ],
+          "compatibility": {
+            "receipt": "native/proofs/angle_ordinary-fallback1-compatibility.json",
+            "sha256": "322179e82d5cb30bc522259b8ed3e08541fa0d5e50777ae102c9dca253457b1a",
+            "log": "native/proofs/angle_ordinary-fallback1-analysis.log",
+            "negative_log": "native/proofs/angle_ordinary-fallback1-negative.log"
+          },
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "f69e8cafce844f32626a7f743e256fe6f4dad2bfff6b4f8c3d52cd7450cb15f5",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary --output .runtime-work/c149985-457/offline-angle_ordinary-fallback1-v2 --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "native/proofs/angle_ordinary-fallback1-offline.log",
+            "log_sha256": "535e88c8527631c47376316f7524eb8da7169d74eb7df800a202f15826623efb"
+          }
+        }
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Angled vehicle spawn may intersect curb surface"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/angle_ordinary-primary-compatibility.json",
+        "sha256": "1b155c90743af15a032f131a245ca8dc932ac8cf0a76451c66c87879828ec4d1",
+        "log": "native/proofs/angle_ordinary-primary-analysis.log",
+        "negative_log": "native/proofs/angle_ordinary-primary-negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "c7111b22876234b558e66bbed42a399086cef701fd251143d43728dec24f2e58",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary --output .runtime-work/c149985-457/offline-angle_ordinary-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "native/proofs/angle_ordinary-primary-offline.log",
+        "log_sha256": "535e88c8527631c47376316f7524eb8da7169d74eb7df800a202f15826623efb"
+      },
+      "negative": {
+        "log": "native/proofs/angle_ordinary-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary-physical-preparation.json",
+        "sha256": "6a8e51d316ca04241237aac4ff90bec2b22087eceee8cbe359fe40ae09f0193a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary --attempt $CAPTURE_OUTPUT --output $POSTPROCESS_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/v0001/processing.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/angle_ordinary-saved-processing.json",
+        "test_log_sha256": "a8519e022cacbd7d081b0e8ec8a46fa43cbb7d33b9030b45ce232456f8abbcc4",
+        "diagnostic_fixture": true
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bfd53d43e0dbd59ee4d2d2da8fb1440d16f4607dc9d4b27cceec7064e2f69a99",
+        "command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/angle_ordinary-delivery-positive.log",
+        "test_log_sha256": "0491a1b7dbaa937f6ae7938959e491b71c3b9e211215d91541f8a32a1882655f",
+        "negative_command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_ordinary --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "native/proofs/angle_ordinary-delivery-negative.log",
+        "negative_log_sha256": "0d6d73b65b6bfd248b703583461ebee76a51ec2d2721dead9ea96944c674ca52"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor transform and body vertices",
+          "evidence": "native-parking.jsonl"
+        },
+        "wheel_curb_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original wheel physics positions and road curb readback",
+          "evidence": "native-parking.jsonl and parking-context.json"
+        },
+        "parking_state": {
+          "entrypoint": "runner.py",
+          "method": "original speed and requested rest mode, reviewed independently",
+          "evidence": "native-parking.jsonl"
+        },
+        "administrative_context": {
+          "entrypoint": "runner.py",
+          "method": "pending original ordinance and DOT source review",
+          "evidence": "parking-context.json and source-review.json"
+        },
+        "right_wheel_curb_clearance": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound outer wheel edge to reviewed curb",
+          "evidence": "native-parking.jsonl and channels/right_wheel_curb_clearance.jsonl"
+        }
+      },
+      "delivery_readiness": "selected_cpu_prepared_original_review_pending"
+    },
+    {
+      "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot",
+      "kind": "delivery",
+      "construction": "native/bundles/angle_dot/construction.json",
+      "construction_sha256": "4cc32601ec2d7f041120755086c31483b43c11af261e257916f1bf0dab5a1738",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "native/angle_dot-measurement-contract.json",
+      "fixture_recipe": "work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/native/diagnostic-angle_dot-fixture-recipe.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "wheel_curb_geometry",
+            "unit": "structured",
+            "method": "original wheel physics positions and curb readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "parking_state",
+            "unit": "structured",
+            "method": "original speed and stopped/parked source history",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "administrative_context",
+            "unit": "structured",
+            "method": "original ordinance and DOT source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          },
+          {
+            "name": "right_wheel_curb_clearance",
+            "unit": "structured",
+            "method": "saved derived wheel edge to curb",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 149985 and frame",
+            "uncertainty": "original source and wheel/curb unit review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original wheel units and curb surfaces require review.",
+          "Local ordinance and DOT determination are administrative facts, not inferred from signs.",
+          "Physical parking and camera visibility require original recording review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/angle_dot/fallback1.json",
+          "construction_sha256": "091150f9ebb92f509038c26b55a9a1530210015669fb4c8b2a5be5e50dbea354",
+          "trigger": {
+            "source": "Native try_spawn_actor",
+            "metric": "actor spawn result",
+            "failure_condition": "spawn returns None"
+          },
+          "changed_knobs": [
+            "spawn height from 1.5m to 1.8m"
+          ],
+          "compatibility": {
+            "receipt": "native/proofs/angle_dot-fallback1-compatibility.json",
+            "sha256": "5d05a191ee21f9404c2db74b1e4b5856ae5143914b54c30a3de37c23debc6a8a",
+            "log": "native/proofs/angle_dot-fallback1-analysis.log",
+            "negative_log": "native/proofs/angle_dot-fallback1-negative.log"
+          },
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "091150f9ebb92f509038c26b55a9a1530210015669fb4c8b2a5be5e50dbea354",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot --output .runtime-work/c149985-457/offline-angle_dot-fallback1-v2 --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "native/proofs/angle_dot-fallback1-offline.log",
+            "log_sha256": "67fea050c1fbbbe2489a0f49784b41090757a55fdb7589bbc2f80d0848820ae9"
+          }
+        }
+      ],
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Angled vehicle spawn may intersect curb surface"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/angle_dot-primary-compatibility.json",
+        "sha256": "91254b5aa78fc99804e1f48100b2b529b27d565804236619aa07fd0da4a56196",
+        "log": "native/proofs/angle_dot-primary-analysis.log",
+        "negative_log": "native/proofs/angle_dot-primary-negative.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "4cc32601ec2d7f041120755086c31483b43c11af261e257916f1bf0dab5a1738",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot --output .runtime-work/c149985-457/offline-angle_dot-primary-v2 --python $PWD/.venv-cpu/bin/python",
+        "log": "native/proofs/angle_dot-primary-offline.log",
+        "log_sha256": "67fea050c1fbbbe2489a0f49784b41090757a55fdb7589bbc2f80d0848820ae9"
+      },
+      "negative": {
+        "log": "native/proofs/angle_dot-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot-physical-preparation.json",
+        "sha256": "57894f0b23c55ca33f88846df9ccba4e139644b30f751de8c402a2c5abeb91b9"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/draft-native-manifest.json --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot --attempt $CAPTURE_OUTPUT --output $POSTPROCESS_OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": "cat $POSTPROCESS_OUTPUT/v0001/processing.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/angle_dot-saved-processing.json",
+        "test_log_sha256": "c598cb27931e2badf7d1b20bf26e3dc85fb989cada467bba3b280aff013672d7",
+        "diagnostic_fixture": true
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bfd53d43e0dbd59ee4d2d2da8fb1440d16f4607dc9d4b27cceec7064e2f69a99",
+        "command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/angle_dot-delivery-positive.log",
+        "test_log_sha256": "747e0fed40ce00eb4786a0539c8a57d33ad6d053a5b8e39956750ccf2597aa45",
+        "negative_command": ".venv-cpu/bin/python work/training__C149985__NRS-484B-457-1__motor_vehicle_driver/delivery_audit.py --case training__C149985__NRS-484B-457-1__motor_vehicle_driver__angle_dot --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "native/proofs/angle_dot-delivery-negative.log",
+        "negative_log_sha256": "0d6d73b65b6bfd248b703583461ebee76a51ec2d2721dead9ea96944c674ca52"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original Native actor transform and body vertices",
+          "evidence": "native-parking.jsonl"
+        },
+        "wheel_curb_geometry": {
+          "entrypoint": "runner.py",
+          "method": "original wheel physics positions and road curb readback",
+          "evidence": "native-parking.jsonl and parking-context.json"
+        },
+        "parking_state": {
+          "entrypoint": "runner.py",
+          "method": "original speed and requested rest mode, reviewed independently",
+          "evidence": "native-parking.jsonl"
+        },
+        "administrative_context": {
+          "entrypoint": "runner.py",
+          "method": "pending original ordinance and DOT source review",
+          "evidence": "parking-context.json and source-review.json"
+        },
+        "right_wheel_curb_clearance": {
+          "entrypoint": "finalize.py",
+          "method": "source-bound outer wheel edge to reviewed curb",
+          "evidence": "native-parking.jsonl and channels/right_wheel_curb_clearance.jsonl"
+        }
+      },
+      "delivery_readiness": "selected_cpu_prepared_original_review_pending"
+    }
+  ]
+}

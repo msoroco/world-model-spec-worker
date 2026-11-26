@@ -1,0 +1,71 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C111325__NRS-484B-257-1__motor_vehicle_driver__roll_through_conflict",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "stop_sign_observation",
+      "method": "measure_stop_sign",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "stop_yield_context.json",
+        "stop_yield_motion.jsonl",
+        "governing_sign.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "reference_hierarchy_observation",
+      "method": "measure_reference",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "stop_yield_context.json",
+        "stop_yield_motion.jsonl",
+        "stopping_reference.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "text-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "through_highway_duty_observation",
+      "method": "measure_through_duty",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "stop_yield_context.json",
+        "stop_yield_motion.jsonl",
+        "through_road.json",
+        "through_body.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "control_scope_observation",
+      "method": "measure_scope",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "stop_yield_context.json",
+        "stop_yield_motion.jsonl",
+        "governing_controls.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "governing_sign.json"
+    ],
+    "error_contains": "Missing required source: governing_sign.json"
+  },
+  "legal_verdict": null,
+  "physical_acceptance_claimed": false
+}

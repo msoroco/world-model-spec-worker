@@ -1,6 +1,7 @@
 """Write permanent textual CPU fixtures; generated media stays in .runtime-work."""
 import hashlib
 import json
+import math
 from pathlib import Path
 import sys
 
@@ -37,29 +38,35 @@ def build(suffix):
     folder.mkdir(parents=True,exist_ok=True)
     put(folder/'parking-context.json',json.dumps(context,indent=2)+'\n')
     center=req['requested_center_xy_m']
+    start=req['approach_start_xy_m']
     motion=[];frame_map=[];trace=[];evidence=[];graphs=[];native_frames=[]
     for i,row in enumerate(metric_rows):
-        x=-12+12*min(i,240)/240
+        fraction=min(i,240)/240
+        x=start[0]+(center[0]-start[0])*fraction
+        y=start[1]+(center[1]-start[1])*fraction
         speed=1 if i<240 else 0
-        body=[[x+dx,center[1]+dy,z] for dx in (-2,2) for dy in (-1,1) for z in (0,1.5)]
-        ego={'center_xyz_m':[x,center[1],1.5],'yaw_deg':angle,'speed_mps':speed,
+        cosine=math.cos(math.radians(angle));sine=math.sin(math.radians(angle))
+        body=[[x+dx*cosine-dy*sine,y+dx*sine+dy*cosine,z]
+              for dx in (-2,2) for dy in (-1,1) for z in (0,1.5)]
+        shift=y-center[1]
+        ego={'center_xyz_m':[x,y,1.5],'yaw_deg':angle,'speed_mps':speed,
              'stopped_or_parked':i>=240,'body_xyz_m':body,
-             'right_front_wheel_outer_y_m':row['right_front_wheel_outer_y_m'],
-             'right_rear_wheel_outer_y_m':row['right_rear_wheel_outer_y_m'],
-             'left_front_wheel_outer_y_m':row['left_front_wheel_outer_y_m'],
-             'left_rear_wheel_outer_y_m':row['left_rear_wheel_outer_y_m']}
+             'right_front_wheel_outer_y_m':row['right_front_wheel_outer_y_m']+shift,
+             'right_rear_wheel_outer_y_m':row['right_rear_wheel_outer_y_m']+shift,
+             'left_front_wheel_outer_y_m':row['left_front_wheel_outer_y_m']+shift,
+             'left_rear_wheel_outer_y_m':row['left_rear_wheel_outer_y_m']+shift}
         motion.append({'native_frame':i,'video_frame':i,'time_s':i/20,
                        'source_kind':'synthetic_native_sample','ego':ego,
                        'rest_mode_request':rest_mode,'legal_verdict':None})
         frame_map.append({'video_frame':i,'native_frame':i,'carla_frame':i,'time_s':i/20,
                           'camera_native_frames':{name:i for name in CAMERAS}})
-        trace.append({'frame':i,'time_s':i/20,'position':{'x':x,'y':center[1],'z':1.5},
-                      'position_m':[x,center[1],1.5],'velocity_mps':[speed,0,0],
+        trace.append({'frame':i,'time_s':i/20,'position':{'x':x,'y':y,'z':1.5},
+                      'position_m':[x,y,1.5],'velocity_mps':[speed,0,0],
                       'speed_mps':speed,'speed_mph':speed*2.2369362921,
                       'heading_deg':angle,'control':{},'source_kind':'synthetic_native_sample'})
         evidence.append({'replay_frame':i,'original_frame':i,'recording_time_s':i/20,
             'replay_simulation_time_s':i/20,'actor_id':10,'ego':{
-                'position_m':[x,center[1],1.5],'heading_deg':angle,'speed_mps':speed,
+                'position_m':[x,y,1.5],'heading_deg':angle,'speed_mps':speed,
                 'body_vertices_m':body,'synthetic_diagnostic':True,
                 'speed_provenance':'synthetic_native_sample'},'other_actors':[],
             'world':{'road_projection':{'road_id':149985,'lane_id':-3 if kind!='left_ordinance' else 1,
@@ -72,7 +79,7 @@ def build(suffix):
         graphs.append({'path':name,'attributes':{'frame':i,'simulation_time_s':i/20,
                     'synthetic_diagnostic':True},'edges':[],
                     'nodes':[{'id':'ego','attributes':{'entity_id':10,'sem_class':'ego',
-                    'vertex':[x,center[1],1.5],'forward':[1,0,0],
+                    'vertex':[x,y,1.5],'forward':[1,0,0],
                     'threedbbox':body}}]})
     for name,rows in (('native-parking.jsonl',motion),('video_frames.jsonl',frame_map),
                       ('trace.jsonl',trace),('capture/evidence.jsonl',evidence)):

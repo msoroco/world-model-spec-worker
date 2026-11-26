@@ -865,175 +865,131 @@
   ],
   "source_observation_mapping": {
     "ru.pedestrian": {
-      "evidence": "original Native actor metadata and independent classification",
+      "evidence": "Original Native actor identity plus independent pedestrian classification source; identity and visual presence require frame-matched review.",
       "channels": [
-        "pedestrian_actor_id",
-        "pedestrian_classification_source"
+        "native_vehicle_pedestrian_pose_and_control",
+        "four_camera_video"
       ],
       "source_refs": [
+        "native/branch_runner.py",
+        "native/finalize.py",
         "native/measurement-contract.json"
       ]
     },
     "rel.visible": {
-      "evidence": "original source-camera pixels and occluder survey; unproven in draft",
+      "evidence": "Original four-camera pixels may support an independent line-of-sight review; neither pixels nor requested speed establish the separate fact that the driver observed the pedestrian.",
       "channels": [
-        "line_of_sight_clear"
+        "four_camera_video"
       ],
       "source_refs": [
+        "native/branch_runner.py",
+        "native/finalize.py",
         "native/measurement-contract.json"
       ]
     },
     "st.highway": {
       "evidence": "original Native road/map boundary source",
       "channels": [
-        "road_y_bounds_m",
-        "ped_y_m"
+        "native_vehicle_pedestrian_pose_and_control",
+        "four_camera_video"
       ],
       "source_refs": [
+        "native/branch_runner.py",
+        "native/finalize.py",
         "native/measurement-contract.json"
       ]
     },
     "st.transit_stop": {
-      "evidence": "original transit-stop designation and pedestrian location; label alone is insufficient",
+      "evidence": "Original stop designation, furniture geometry, public transportation use where applicable, and pedestrian location, reviewed separately for bus stop, bench, shelter and transit stop; a label or prop alone is insufficient.",
       "channels": [
-        "stop_designation_source",
-        "stop_furniture_geometry_source",
-        "pedestrian_position_source"
+        "native_vehicle_pedestrian_pose_and_control",
+        "four_camera_video"
       ],
       "source_refs": [
         "native/branch_runner.py",
-        "native/branch_meter.py"
+        "native/finalize.py",
+        "native/measurement-contract.json"
       ]
     },
     "ru.bus": {
-      "evidence": "original bus class, door side and continuous pedestrian boarding movement",
+      "evidence": "Original vehicle class, door side and continuous pedestrian boarding movement; bus and other public transportation receive separate construction dispositions.",
       "channels": [
-        "transit_vehicle_class_source",
-        "door_side_source",
-        "boarding_motion_source"
+        "native_vehicle_pedestrian_pose_and_control",
+        "four_camera_video"
       ],
       "source_refs": [
         "native/branch_runner.py",
-        "native/branch_meter.py"
+        "native/finalize.py",
+        "native/measurement-contract.json"
       ]
     },
     "dev.zone_sign": {
-      "evidence": "pending alternative",
+      "evidence": "Original school or school-crossing sign/designation and frame-matched geometry survey; pending original Native source review.",
       "channels": [
-        "school_zone_sign_source"
+        "native_vehicle_pedestrian_pose_and_control",
+        "four_camera_video"
       ],
       "source_refs": [
-        "inputs/training__C230266__NRS-484B-280-1c__motor_vehicle_driver/assignment.json"
+        "native/branch_runner.py",
+        "native/finalize.py",
+        "native/measurement-contract.json"
       ]
     },
     "drv.within_signed_zone": {
-      "evidence": "pending alternative",
+      "evidence": "Original ego pose joined to independently surveyed marked school or school-crossing zone boundary; pending Native source review.",
       "channels": [
-        "ego_pose",
-        "zone_survey"
+        "native_vehicle_pedestrian_pose_and_control",
+        "four_camera_video"
       ],
       "source_refs": [
-        "inputs/training__C230266__NRS-484B-280-1c__motor_vehicle_driver/assignment.json"
+        "native/branch_runner.py",
+        "native/finalize.py",
+        "native/measurement-contract.json"
       ]
     },
     "st.crosswalk": {
-      "evidence": "pending alternative",
+      "evidence": "Original marked or unmarked crosswalk geometry/designation survey joined to pedestrian pose; pending Native source review.",
       "channels": [
-        "crosswalk_survey"
+        "native_vehicle_pedestrian_pose_and_control",
+        "four_camera_video"
       ],
       "source_refs": [
-        "inputs/training__C230266__NRS-484B-280-1c__motor_vehicle_driver/assignment.json"
+        "native/branch_runner.py",
+        "native/finalize.py",
+        "native/measurement-contract.json"
       ]
     },
     "rel.centre_distance": {
       "evidence": "source-hashed Native poses",
       "channels": [
-        "ego_x_m",
-        "ego_y_m",
-        "ped_x_m",
-        "ped_y_m"
+        "native_vehicle_pedestrian_pose_and_control"
       ],
       "source_refs": [
-        "native/caution_meter.py"
+        "native/branch_runner.py",
+        "native/finalize.py",
+        "native/measurement-contract.json"
       ]
     },
     "kin.speed": {
       "evidence": "Native velocity trace",
       "channels": [
-        "ego_speed_mps"
+        "native_vehicle_pedestrian_pose_and_control"
       ],
       "source_refs": [
-        "native/caution_meter.py"
+        "native/branch_runner.py",
+        "native/finalize.py",
+        "native/measurement-contract.json"
       ]
     },
     "drv.time_to_conflict": {
       "evidence": "source-hashed pose and speed trace",
       "channels": [
-        "ego_x_m",
-        "ped_x_m",
-        "ego_speed_mps"
-      ],
-      "source_refs": [
-        "native/caution_meter.py"
-      ]
-    },
-    "st.bus_stop": {
-      "evidence": "original bus-stop designation, geometry and pedestrian position survey",
-      "channels": [
-        "bus_stop_designation_source",
-        "bus_stop_geometry_source",
-        "pedestrian_position_source"
+        "native_vehicle_pedestrian_pose_and_control"
       ],
       "source_refs": [
         "native/branch_runner.py",
-        "native/branch_meter.py"
-      ]
-    },
-    "st.bench": {
-      "evidence": "original bench geometry and public mass transportation use, separately reviewed",
-      "channels": [
-        "bench_geometry_source",
-        "bench_public_mass_transport_use_source",
-        "pedestrian_position_source"
-      ],
-      "source_refs": [
-        "native/branch_runner.py",
-        "native/branch_meter.py"
-      ]
-    },
-    "st.shelter": {
-      "evidence": "original shelter geometry and public mass transportation use, separately reviewed",
-      "channels": [
-        "shelter_geometry_source",
-        "shelter_public_mass_transport_use_source",
-        "pedestrian_position_source"
-      ],
-      "source_refs": [
-        "native/branch_runner.py",
-        "native/branch_meter.py"
-      ]
-    },
-    "ru.other_public_transport": {
-      "evidence": "original other public transportation vehicle class, door side and continuous boarding movement",
-      "channels": [
-        "other_public_transport_class_source",
-        "door_side_source",
-        "boarding_motion_source"
-      ],
-      "source_refs": [
-        "native/branch_runner.py",
-        "native/branch_meter.py"
-      ]
-    },
-    "drv.actual_observation": {
-      "evidence": "separate driver or controller observation source; camera visibility and requested speed do not establish it",
-      "channels": [
-        "driver_observed_pedestrian",
-        "driver_observation_source"
-      ],
-      "source_refs": [
-        "native/saved_measure.py",
-        "native/finalize.py"
+        "native/finalize.py",
+        "native/measurement-contract.json"
       ]
     }
   },

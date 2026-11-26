@@ -99,10 +99,11 @@ def execute(output,host,port):
             raise RuntimeError('Original curb objects not retained')
         blueprints=world.get_blueprint_library()
         center=request['requested_center_xy_m']
+        approach=request['approach_start_xy_m']
         blueprint=blueprints.find('vehicle.tesla.model3')
         blueprint.set_attribute('role_name','c149985_parking_subject')
         ego=world.try_spawn_actor(blueprint,carla.Transform(
-            carla.Location(x=center[0],y=center[1],z=config['spawn_z_m']),
+            carla.Location(x=approach[0],y=approach[1],z=config['spawn_z_m']),
             carla.Rotation(yaw=request['requested_heading_deg'])))
         if ego is None:raise RuntimeError('Original parking vehicle spawn failed')
         owned.append(ego)
@@ -120,8 +121,13 @@ def execute(output,host,port):
         capture=PipelineCapture(client,ego,output,config['selected_case_id'],required_observations=())
         with (output/'native-parking.jsonl').open('x') as motion,FrameMap(output/'video_frames.jsonl') as frame_map:
             for index in range(FRAMES):
-                ego.apply_control(carla.VehicleControl(throttle=0,brake=1,
-                    hand_brake=request['rest_mode']=='parked'))
+                observed_x=ego.get_transform().location.x
+                moving=(observed_x>center[0]+.4 if request['reverse_approach'] else
+                        observed_x<center[0]-.4)
+                ego.apply_control(carla.VehicleControl(
+                    throttle=.25 if moving else 0,brake=0 if moving else 1,
+                    reverse=request['reverse_approach'],
+                    hand_brake=not moving and request['rest_mode']=='parked'))
                 native_frame=world.tick()
                 capture.capture(native_frame,index/20)
                 row=actor_row(ego)
