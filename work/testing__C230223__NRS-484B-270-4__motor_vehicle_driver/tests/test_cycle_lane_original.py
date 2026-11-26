@@ -64,6 +64,8 @@ class OriginalAuditTests(unittest.TestCase):
         self.seal = {"format": "cycle-lane-native-attempt-v1",
                      "source_kind": "original_native", "diagnostic_fixture": False,
                      "case_id": self.case_id, "site": self.site,
+                     "spawned_actor_id": 7,
+                     "vehicle_blueprint_id": "vehicle.synthetic.test",
                      "subsection_3": self.exception, "vehicle": self.vehicle,
                      "history": self.history, "cameras": cameras,
                      "capture_profile": {"duration_s": 45, "hz": 20,

@@ -141,13 +141,13 @@ def measure_original_history(rows: list[Mapping], site: Mapping, case: Case) -> 
     need(case in CASES and len(rows) >= 2, 'case or original history missing')
     fixed = {key: rows[0].get(key) for key in ('ego_id', 'fixture_id', 'map_sha256',
                                              'fixture_identity_sha256', 'fixture_geometry_sha256',
-                                             'camera_plan_sha256', 'jurisdiction_sha256')}
+                                             'camera_plan_sha256', 'municipal_jurisdiction_sha256')}
     need(all(fixed.values()), 'original fixed sources missing')
     need(fixed['map_sha256'] == site['map_sha256'] and
          fixed['fixture_identity_sha256'] == site['fixture_identity_sha256'] and
          fixed['fixture_geometry_sha256'] == site['fixture_geometry_sha256'] and
          fixed['camera_plan_sha256'] == site['camera_plan_sha256'] and
-         fixed['jurisdiction_sha256'] == site['municipal_jurisdiction_sha256'],
+         fixed['municipal_jurisdiction_sha256'] == site['municipal_jurisdiction_sha256'],
          'original source differs from site')
     first = rows[0].get('original_frame')
     need(type(first) is int, 'original frame identity missing')
@@ -192,7 +192,7 @@ def audit_comparison(left: Mapping, right: Mapping, deliberate_difference: str) 
              side.get('source_identity') and side.get('camera_plan_sha256'),
              'comparison source or duration missing')
     comparable_sources = ('map_sha256', 'fixture_identity_sha256', 'fixture_geometry_sha256',
-                          'camera_plan_sha256', 'jurisdiction_sha256')
+                          'camera_plan_sha256', 'municipal_jurisdiction_sha256')
     need(all(left['source_identity'].get(k) and
              left['source_identity'].get(k) == right['source_identity'].get(k)
              for k in comparable_sources), 'fixture or map changed')

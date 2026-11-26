@@ -64,7 +64,7 @@ def rows(case):
     base = {'case_id': case.id, 'ego_id': 'ego', 'fixture_id': 'fixture',
             'map_sha256': 'map', 'fixture_identity_sha256': 'fi',
             'fixture_geometry_sha256': 'fg', 'camera_plan_sha256': 'camera',
-            'jurisdiction_sha256': 'jur', 'source_sha256': 'src',
+            'municipal_jurisdiction_sha256': 'jur', 'source_sha256': 'src',
             'frame_map_sha256': 'fm', 'body_west_x_m': 13.374,
             'body_east_x_m': 17.374, 'body_curb_gap_m': 0.3,
             'ego_speed_mps': 0.0, 'activity_observation': 'parked',
@@ -136,7 +136,7 @@ class ParkingTests(unittest.TestCase):
         base = {'case_id': 'a', 'frame_count': 900, 'original_history_sha256': 'a',
                 'source_identity': {'map_sha256': 'map', 'fixture_identity_sha256': 'fi',
                                     'fixture_geometry_sha256': 'fg', 'camera_plan_sha256': 'cam',
-                                    'jurisdiction_sha256': 'jur'}, 'camera_plan_sha256': 'cam',
+                                    'municipal_jurisdiction_sha256': 'jur'}, 'camera_plan_sha256': 'cam',
                 'ego_blueprint_sha256': 'bp', 'weather_sha256': 'weather',
                 'route_sha256': 'route', 'curb_gap_target_m': 0.3, 'side_gap_target_m': 1.374}
         other = dict(base, case_id='b', original_history_sha256='b', side_gap_target_m=1.524)

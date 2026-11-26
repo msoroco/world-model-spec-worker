@@ -4,6 +4,8 @@ Physical reference, approach speed and through-vehicle phases are measured.
 Immediate hazard, right-of-way and governing-control applicability remain review.
 """
 from dataclasses import dataclass
+import hashlib
+import json
 from math import isfinite
 from typing import Mapping
 
@@ -31,6 +33,29 @@ def require(value, message):
 
 def number(value):
     return type(value) in (int, float) and isfinite(value)
+
+
+ROW_SOURCE_GROUPS = {
+    'ego_motion': ('ego_id', 'ego_speed_mps', 'ego_leading_station_m'),
+    'through_motion': ('through_id', 'through_center_station_m',
+                       'through_min_vertex_station_m', 'through_phase'),
+    'body_geometry': ('body_vertices', 'ego_leading_station_m',
+                      'through_min_vertex_station_m'),
+    'reference': ('reference_source_sha256', 'stop_line_present',
+                  'near_crosswalk_present', 'all_at_reference_observed'),
+    'sight': ('sight_observation',),
+    'control': ('officer_controls', 'signal_controls', 'control_readback'),
+}
+
+
+def row_group_sha256(row: Mapping, group: str):
+    require(group in ROW_SOURCE_GROUPS, 'unknown original row source group')
+    require(all(key in row for key in ROW_SOURCE_GROUPS[group]),
+            'original row source field missing: ' + group)
+    payload = {key: row[key] for key in ROW_SOURCE_GROUPS[group]}
+    encoded = json.dumps(payload, sort_keys=True, separators=(',', ':'),
+                         allow_nan=False).encode()
+    return hashlib.sha256(encoded).hexdigest()
 
 
 def validate_site(site: Mapping, case: Case):
@@ -98,12 +123,21 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case):
         for key in ('source', 'ego_motion', 'through_motion', 'body_geometry',
                     'reference', 'sight', 'control'):
             require(row.get(key + '_sha256'), 'original source missing: ' + key)
+        for group in ROW_SOURCE_GROUPS:
+            require(row[group + '_sha256'] == row_group_sha256(row, group),
+                    'original row source digest differs: ' + group)
         require(row.get('reference_source_sha256') == site['nearest_view_location_source_sha256'] and
                 row.get('officer_controls') is case.officer_controls and
                 row.get('signal_controls') is False and
                 row.get('stop_line_present') is False and
                 row.get('near_crosswalk_present') is False,
                 'original reference/control context changed')
+        control = row.get('control_readback')
+        require(isinstance(control, dict) and
+                control.get('officer_directing_traffic') is case.officer_controls and
+                control.get('traffic_signal_controlling') is False and
+                (not case.officer_controls or bool(control.get('officer_actor_id'))),
+                'original governing-control readback missing or changed')
         require(row.get('ego_id') and row.get('through_id'), 'participant identity missing')
         ego_id = ego_id or row['ego_id']
         through_id = through_id or row['through_id']

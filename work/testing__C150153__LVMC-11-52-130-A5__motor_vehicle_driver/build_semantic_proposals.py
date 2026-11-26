@@ -63,7 +63,7 @@ def build() -> dict:
                 "quote": quote,
                 "structure": {"activation": {"condition": "A person stops, stands or parks a vehicle beside a source-reviewed sidewalk elevator on the assigned municipal one-way road.",
                                              "numeric_conditions": []},
-                              "obligation": {"type": "prohibition", "description": "No stopping, standing or parking in front of the fixture or in the five-foot side spaces absent a stated necessity exception.",
+                              "obligation": {"type": "prohibition", "description": "No stopping, standing or parking in front of the fixture or in the five-foot side spaces absent a stated necessity exception. The 1.524 m probe is a geometric reference; boundary inclusion and measurement convention remain unresolved.",
                                              "numeric_conditions": [{"variable": "side_gap_m", "operator": "<=", "value": 1.524, "unit": "m"}]},
                               "exceptions": [{"source_clause": "except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device",
                                               "trigger": "source-reviewed traffic conflict or applicable direction",

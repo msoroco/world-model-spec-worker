@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import math
 from pathlib import Path
 
 from parking import CASES, validate_site
@@ -93,6 +94,10 @@ def capture_original_history(adapter, site: dict, case, output: Path,
                     raise ValueError('observed vehicle body footprint invalid')
                 if row.get('activity_observation') not in ('moving', 'stopped', 'standing', 'parked'):
                     raise ValueError('observed activity missing')
+                for name in ('body_curb_gap_m', 'ego_speed_mps'):
+                    value = row.get(name)
+                    if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+                        raise ValueError('observed ' + name + ' missing or invalid')
                 encoded = (json.dumps(row, sort_keys=True, allow_nan=False,
                                       separators=(',', ':')) + '\n').encode('utf-8')
                 stream.write(encoded)

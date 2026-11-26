@@ -33,6 +33,44 @@ def segment_intersects(a: Point, b: Point, c: Point, d: Point) -> bool:
         (values[2], c, d, a), (values[3], c, d, b)))
 
 
+def point_in_polygon(point: Point, corners: Sequence[Point]) -> bool:
+    """Closed polygon containment, used only for physical footprint contact."""
+    inside = False
+    for a, b in zip(corners, (*corners[1:], corners[0])):
+        if segment_intersects(a, b, point, point):
+            return True
+        if (a.y > point.y) != (b.y > point.y):
+            x_at_y = a.x + (point.y - a.y) * (b.x - a.x) / (b.y - a.y)
+            if point.x < x_at_y:
+                inside = not inside
+    return inside
+
+
+def body_over_hose_frames(packet: Mapping[str, Any], case_id: str,
+                          *, expected_frames: int = 900) -> list[int]:
+    """Measure actual sampled body footprint versus original hose segment.
+
+    This reports geometry, not whether a legal violation occurred. A complete
+    original history is required; the centerline diagnostic is insufficient.
+    """
+    inspect_saved_hose(packet, case_id)
+    rows = packet["native"]["frames"]
+    if len(rows) != expected_frames:
+        raise ValueError("complete original 20 Hz frame history required")
+    h0, h1 = (Point(*p) for p in packet["hose"]["segment_xy"])
+    hits = []
+    for row in rows:
+        raw = row.get("ego_body_corners_xy")
+        if not isinstance(raw, list) or len(raw) < 4 or any(
+                not isinstance(p, list) or len(p) != 2 for p in raw):
+            raise ValueError("original ego body footprint missing")
+        corners = [Point(*p) for p in raw]
+        if any(segment_intersects(a, b, h0, h1)
+               for a, b in zip(corners, (*corners[1:], corners[0]))) or point_in_polygon(h0, corners) or point_in_polygon(h1, corners):
+            hits.append(row["frame"])
+    return hits
+
+
 def require_hose_source(world: Any, actor_id: int, expected_blueprint: str) -> Any:
     """Resolve the actual prop readback; never synthesize a hose by label."""
     if not expected_blueprint or "hose" not in expected_blueprint.lower():

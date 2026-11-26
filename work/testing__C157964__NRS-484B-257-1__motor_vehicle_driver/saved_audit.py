@@ -79,6 +79,8 @@ def audit_saved(attempt, case, *, allow_diagnostic=False,
                       (index_path, "camera_index_sha256")):
         require(_sha(path.read_bytes()) == seal.get(key), "sealed saved bytes changed: " + key)
     rows = _read_json(rows_path)
+    require(all(row.get('source_sha256') == seal['site_packet_sha256']
+                for row in rows), 'original row/site packet source differs')
     measured = measure_original(rows, site, case)
     require(measured == _read_json(measurement_path), "saved measurement differs")
     cameras = _read_json(index_path)

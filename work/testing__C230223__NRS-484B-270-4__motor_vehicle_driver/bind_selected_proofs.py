@@ -40,10 +40,10 @@ def bind():
         construction = ROOT / entry["construction"]
         if sha(construction) != entry["construction_sha256"]:
             raise ValueError("Selected construction changed")
-        offline_source = REPO / ".runtime-work" / ("c230223-offline-" + suffix + "-v5/offline.log")
+        offline_source = REPO / ".runtime-work" / ("c230223-offline-" + suffix + "-v6/offline.log")
         offline_log = folder / "offline.log"
         offline_hash = copied(offline_source, offline_log)
-        compat = REPO / ".runtime-work" / ("c230223-compat-" + suffix + "-v5")
+        compat = REPO / ".runtime-work" / ("c230223-compat-" + suffix + "-v6")
         compat_receipt = folder / "compatibility.json"
         compat_hash = copied(compat / "compatibility.json", compat_receipt)
         compat_log = folder / "cpu-compat-analysis.log"
@@ -55,7 +55,7 @@ def bind():
                 receipt["log_sha256"] != sha(compat_log) or
                 receipt["negative_log_sha256"] != sha(negative_log)):
             raise ValueError("Compatibility receipt differs from selected inputs")
-        saved = REPO / ".runtime-work" / ("c230223-saved-" + suffix + "-v5/v0001/processing.json")
+        saved = REPO / ".runtime-work" / ("c230223-saved-" + suffix + "-v6/v0001/processing.json")
         saved_log = folder / "process-saved.json"
         saved_hash = copied(saved, saved_log)
         saved_receipt = json.loads(saved_log.read_text())

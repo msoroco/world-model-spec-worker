@@ -21,14 +21,18 @@ class Adapter:
     def tick_and_sample(self):
         s, i = self.site, self.index
         self.index += 1
+        body_west, body_east = parking.target_body_interval(s, self.case, 4.0)
+        observed_activity = {'park': 'parked', 'stop': 'stopped',
+                             'stand': 'standing'}[self.case.activity]
         row = {
             'case_id': self.case.id, 'original_frame': self.first + i,
             'time_s': 100.0 + i / 20, 'ego_id': 'native-ego-7',
             'fixture_id': 'native-elevator-9', 'frame_map_sha256': 'native-frame-map',
             'source_sha256': 'native-snapshot',
             'body_footprint_source_sha256': 'native-body',
-            'body_west_x_m': 13.374, 'body_east_x_m': 17.374,
-            'fixture_physically_present': True, 'activity_observation': 'parked',
+            'body_west_x_m': body_west, 'body_east_x_m': body_east,
+            'body_curb_gap_m': 0.3, 'ego_speed_mps': 0.0,
+            'fixture_physically_present': True, 'activity_observation': observed_activity,
             'exception_kind': self.case.exception,
             'exception_source_sha256': None,
             'fixture_identity_sha256': s['fixture_identity_sha256'],
@@ -62,6 +66,9 @@ class CaptureTests(unittest.TestCase):
             self.assertEqual(proof['frame_count'], 900)
             self.assertIsNone(proof['legal_judgment'])
             self.assertFalse(proof['physical_visibility_verified'])
+            original = [__import__('json').loads(line) for line in output.read_text().splitlines()]
+            measured = parking.measure_original_history(original, self.site, self.case)
+            self.assertEqual(measured['frame_count'], 900)
             with self.assertRaisesRegex(ValueError, 'overwrite'):
                 capture.capture_original_history(Adapter(self.site, self.case),
                                                  self.site, self.case, output)

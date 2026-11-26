@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 
@@ -50,6 +51,10 @@ def audit_original_history(path: Path, expected_sha256: str, case_id: str,
             raise ValueError('fixture presence readback missing')
         if row.get('activity_observation') not in ('moving', 'stopped', 'standing', 'parked'):
             raise ValueError('activity observation missing')
+        for name in ('body_curb_gap_m', 'ego_speed_mps'):
+            value = row.get(name)
+            if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+                raise ValueError('observed ' + name + ' missing or invalid')
         if row.get('exception_kind') not in ('none', 'lawful_traffic_conflict',
                                              'police_direction', 'traffic_device_direction'):
             raise ValueError('exception classification source missing')

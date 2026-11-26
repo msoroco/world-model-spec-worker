@@ -45,9 +45,10 @@ def fixture(root, case):
 
 
 class FakeAdapter:
-    def __init__(self, case, missing_view=False):
+    def __init__(self, case, missing_view=False, bad_control=False):
         self.case = case
         self.missing_view = missing_view
+        self.bad_control = bad_control
         self.events = []
         self.i = -1
         image = Image.new("RGB", (2, 2), (30, 60, 90))
@@ -103,7 +104,11 @@ class FakeAdapter:
             "near_crosswalk_present": False,
             "sight_observation": {"clear_to_m": 30},
             "body_vertices": {"ego": [[0, 0]] * 8, "through": [[1, 1]] * 8},
-            "control_readback": {"requested": self.case.approach_policy},
+            "control_readback": {"requested": self.case.approach_policy,
+                                 "officer_directing_traffic": (not self.case.officer_controls)
+                                 if self.bad_control else self.case.officer_controls,
+                                 "traffic_signal_controlling": False,
+                                 "officer_actor_id": "officer-1" if self.case.officer_controls else None},
         }
 
     def camera_packets(self, snapshot):
@@ -191,6 +196,18 @@ class CaptureTests(unittest.TestCase):
         adapter = FakeAdapter(case, missing_view=True)
         out = self.root / "bad-attempt"
         with self.assertRaisesRegex(ValueError, "four original camera packets missing"):
+            capture(adapter, packet, source, out, case, diagnostic=True)
+        self.assertFalse((out / "seal.json").exists())
+        self.assertEqual(adapter.events[-1], "restore")
+
+    def test_wrong_officer_readback_fails_without_seal(self):
+        case = CASES[3]
+        source = self.root / "officer-source"
+        source.mkdir()
+        packet = fixture(source, case)
+        adapter = FakeAdapter(case, bad_control=True)
+        out = self.root / "wrong-control"
+        with self.assertRaisesRegex(ValueError, "governing-control readback differs"):
             capture(adapter, packet, source, out, case, diagnostic=True)
         self.assertFalse((out / "seal.json").exists())
         self.assertEqual(adapter.events[-1], "restore")

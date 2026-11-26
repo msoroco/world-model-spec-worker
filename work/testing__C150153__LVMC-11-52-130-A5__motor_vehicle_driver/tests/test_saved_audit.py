@@ -23,6 +23,7 @@ class SavedAuditTests(unittest.TestCase):
                      time_s=i / 20, source_sha256='source',
                      body_footprint_source_sha256='body', body_west_x_m=10.0,
                      body_east_x_m=12.0, fixture_physically_present=True,
+                     body_curb_gap_m=0.3, ego_speed_mps=0.0,
                      activity_observation='parked', exception_kind='none') for i in range(900)]
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / 'native.jsonl'

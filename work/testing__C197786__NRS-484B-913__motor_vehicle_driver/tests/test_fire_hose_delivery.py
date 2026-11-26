@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+import os
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "fire_hose_delivery.py"
@@ -59,8 +60,67 @@ class FakeWorld:
 
 
 class HoseTests(unittest.TestCase):
+    def test_complete_body_cli_source_join_and_negative_passage(self):
+        with tempfile.TemporaryDirectory(dir=os.environ["HOSE_SCRATCH_ROOT"]) as tmp:
+            root = Path(tmp)
+            (root / "original.txt").write_text("diagnostic source only\n")
+            source_hash = hashlib.sha256((root / "original.txt").read_bytes()).hexdigest()
+            p = packet()
+            for key in ("hose", "road", "incident", "command_official", "consent", "vehicle"):
+                p[key].update(source_path="original.txt", sha256=source_hash)
+            p["native"]["frames"] = [
+                {"frame": i, "elapsed_seconds": i / 20, "ego_xy": [0, -2],
+                 "ego_body_corners_xy": [[-0.2, -2.2], [0.2, -2.2],
+                                          [0.2, -1.8], [-0.2, -1.8]]}
+                for i in range(900)]
+            p["native"]["frames"][500]["ego_body_corners_xy"] = [
+                [-0.2, -0.2], [0.2, -0.2], [0.2, 0.2], [-0.2, 0.2]]
+            rows = root / "frames.jsonl"
+            rows.write_text("".join(json.dumps(row, sort_keys=True) + "\n"
+                                    for row in p["native"]["frames"]))
+            p["native"].update(source_path="frames.jsonl",
+                               source_sha256=hashlib.sha256(rows.read_bytes()).hexdigest())
+            packet_path = root / "packet.json"
+            packet_path.write_text(json.dumps(p))
+            cmd = [sys.executable, str(MODULE_PATH.parent / "delivery_audit.py"),
+                   "--packet", str(packet_path), "--source-root", str(root),
+                   "--case-id", "case-a", "--output", str(root / "audit.json"),
+                   "--require-complete-body", "--expected-passage", "cross"]
+            passed = subprocess.run(cmd, text=True, capture_output=True)
+            self.assertEqual(passed.returncode, 0, passed.stderr)
+            self.assertEqual(json.loads((root / "audit.json").read_text())[
+                "physical_completion"]["original_body_contact_frames"], [500])
+            wrong = subprocess.run(cmd[:-1] + ["avoid"], text=True, capture_output=True)
+            self.assertNotEqual(wrong.returncode, 0)
+            self.assertIn("original body passage differs", wrong.stderr)
+            p["native"]["source_sha256"] = "0" * 64
+            packet_path.write_text(json.dumps(p))
+            stale = subprocess.run(cmd, text=True, capture_output=True)
+            self.assertNotEqual(stale.returncode, 0)
+            self.assertIn("Native original frame source hash mismatch", stale.stderr)
+
+    def test_complete_body_footprint_contact_and_avoidance(self):
+        p = packet()
+        p["native"]["frames"] = [
+            {"frame": i, "elapsed_seconds": i / 20, "ego_xy": [0, -2],
+             "ego_body_corners_xy": [[-0.2, -2.2], [0.2, -2.2],
+                                      [0.2, -1.8], [-0.2, -1.8]]}
+            for i in range(900)]
+        p["native"]["frames"][500]["ego_body_corners_xy"] = [
+            [-0.2, -0.2], [0.2, -0.2], [0.2, 0.2], [-0.2, 0.2]]
+        self.assertEqual(module.body_over_hose_frames(p, "case-a"), [500])
+        p["native"]["frames"][500]["ego_body_corners_xy"] = [
+            [1.8, -0.2], [2.2, -0.2], [2.2, 0.2], [1.8, 0.2]]
+        self.assertEqual(module.body_over_hose_frames(p, "case-a"), [])
+        del p["native"]["frames"][500]["ego_body_corners_xy"]
+        with self.assertRaisesRegex(ValueError, "body footprint missing"):
+            module.body_over_hose_frames(p, "case-a")
+        p["native"]["frames"].pop()
+        with self.assertRaisesRegex(ValueError, "complete original"):
+            module.body_over_hose_frames(p, "case-a")
+
     def test_saved_audit_cli_positive_and_negative(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=os.environ["HOSE_SCRATCH_ROOT"]) as tmp:
             root = Path(tmp)
             packet_path = root / "packet.json"
             output_path = root / "audit.json"

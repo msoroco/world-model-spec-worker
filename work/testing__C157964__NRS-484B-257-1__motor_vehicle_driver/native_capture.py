@@ -44,6 +44,14 @@ def _row(snapshot, observation, site, case, packet_sha):
     )
     require(all(key in observation for key in fields),
             "original participant, sight or control readback missing")
+    control = observation["control_readback"]
+    require(isinstance(control, dict) and
+            control.get("officer_directing_traffic") is case.officer_controls and
+            control.get("traffic_signal_controlling") is False and
+            (not case.officer_controls or
+             isinstance(control.get("officer_actor_id"), str) and
+             bool(control["officer_actor_id"])),
+            "observed governing-control readback differs")
     row = {"original_frame": frame, "time_s": time,
            **{key: observation[key] for key in fields},
            "source_sha256": packet_sha,

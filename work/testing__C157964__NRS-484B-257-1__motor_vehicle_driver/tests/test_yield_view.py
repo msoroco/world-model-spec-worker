@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from yield_view import CASES, construct, measure_original, validate_site
+from yield_view import CASES, ROW_SOURCE_GROUPS, construct, measure_original, row_group_sha256, validate_site
 
 
 def site(case):
@@ -21,12 +21,15 @@ def site(case):
 
 
 def rows(x, case):
-    return [{'original_frame': 300 + i, 'time_s': i / 20,
+    result = [{'original_frame': 300 + i, 'time_s': i / 20,
              **{key + '_sha256': 'fixture-' + key for key in
                 ('source', 'ego_motion', 'through_motion', 'body_geometry',
                  'reference', 'sight', 'control')},
              'reference_source_sha256': x['nearest_view_location_source_sha256'],
              'officer_controls': case.officer_controls, 'signal_controls': False,
+             'control_readback': {'officer_directing_traffic': case.officer_controls,
+                                  'traffic_signal_controlling': False,
+                                  'officer_actor_id': 'officer-1' if case.officer_controls else None},
              'stop_line_present': False, 'near_crosswalk_present': False,
              'ego_id': 'ego', 'through_id': 'through',
              'ego_speed_mps': 8 if i < 80 else (0 if case.approach_policy == 'stop' and i < 110 else 4),
@@ -35,8 +38,19 @@ def rows(x, case):
              'ego_leading_station_m': -2 if i < 120 else 3,
              'through_phase': case.through_state,
              'ego_across_or_within': i >= 120,
-             'all_at_reference_observed': i == 100}
+             'all_at_reference_observed': i == 100,
+             'body_vertices': {'ego': [[0, 0]] * 8, 'through': [[1, 1]] * 8},
+             'sight_observation': {'clear_to_m': 30}}
             for i in range(900)]
+    for row in result:
+        for group in ROW_SOURCE_GROUPS:
+            row[group + '_sha256'] = row_group_sha256(row, group)
+    return result
+
+
+def reseal(row, *groups):
+    for group in groups:
+        row[group + '_sha256'] = row_group_sha256(row, group)
 
 
 class Adapter:
@@ -93,7 +107,12 @@ class YieldViewTest(unittest.TestCase):
         x = site(case)
         a = rows(x, case)
         a[5]['through_id'] = 'other'
+        reseal(a[5], 'through_motion')
         with self.assertRaisesRegex(ValueError, 'identity changed'):
+            measure_original(a, x, case)
+        a = rows(x, case)
+        a[5]['through_center_station_m'] = 999
+        with self.assertRaisesRegex(ValueError, 'row source digest differs: through_motion'):
             measure_original(a, x, case)
         a = rows(x, case)
         a[5]['sight_sha256'] = ''
@@ -102,11 +121,18 @@ class YieldViewTest(unittest.TestCase):
         a = rows(x, case)
         for row in a:
             row['ego_leading_station_m'] = -2
+            reseal(row, 'ego_motion', 'body_geometry')
         with self.assertRaisesRegex(ValueError, 'never crossed'):
             measure_original(a, x, case)
         a = rows(x, case)
         a[100]['all_at_reference_observed'] = False
+        reseal(a[100], 'reference')
         with self.assertRaisesRegex(ValueError, 'all-at-reference event'):
+            measure_original(a, x, case)
+        a = rows(x, case)
+        a[100]['control_readback']['officer_directing_traffic'] = True
+        reseal(a[100], 'control')
+        with self.assertRaisesRegex(ValueError, 'governing-control readback'):
             measure_original(a, x, case)
 
     def test_owned_cleanup(self):

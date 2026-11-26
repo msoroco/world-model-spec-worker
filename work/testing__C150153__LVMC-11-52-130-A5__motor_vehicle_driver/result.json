@@ -2,7 +2,7 @@
   "assignment_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver",
   "input_sha256": "a66665a8e71e0be2875d9faba2026fdba763387e61e4bbaa6bf53541606979e3",
   "status": "partial",
-  "readiness_kind": "source_gated_exact_case_custody_and_native_capture_cpu_protocol",
+  "readiness_kind": "source_gated_exact_case_diagnostic_offline_and_semantic_draft",
   "applied_update": 0,
   "tests": [
     {
@@ -28,6 +28,60 @@
       "exit_code": 1,
       "log": "cpu-reviewed-site-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150153-owner/pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/build_semantic_proposals.py",
+      "exit_code": 0,
+      "log": "cpu-semantic-draft-build.log",
+      "sha256": "64b813957affb99b0c739defcf5c8b740cf6d4739faf73b6577212fb03a8314b"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150153-owner/pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/prove_semantic_draft.py --scratch .runtime-work/c150153-owner/semantic-mirror-final",
+      "exit_code": 0,
+      "log": "cpu-semantic-draft-pinned-proof.log",
+      "sha256": "267b5e1599eba0361006b19d687d20243dd22a7159f22566784cf01c7e473a0b"
+    },
+    {
+      "command": "TMPDIR=.runtime-work/c150153-owner/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150153-owner/pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-reviewed-site-semantic-tests.log",
+      "sha256": "e665aec0f702cf2c7bb8fd9e7a812c6e817d5c067f0a057c29ce5600c63aa231"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-reviewed-site-semantic-static.log",
+      "sha256": "d71e85fe1c24f5283493287976b41c26ad5867a640594eb3ac09ec1bb436cf00"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-reviewed-site-semantic-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "TMPDIR=.runtime-work/c150153-owner/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150153-owner/pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-diagnostic-bundles-tests.log",
+      "sha256": "c6d9e1ee0148794f311dd0348d54316169e3b450f46ff08fd56331efb9df5741"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/prove_diagnostic_offline.py",
+      "exit_code": 0,
+      "log": "cpu-diagnostic-bundles-offline.log",
+      "sha256": "6b4b6d7049886f1de5717b1593ffab4e89b3b12b68606c748aed0da9480ec2ae"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-diagnostic-bundles-static.log",
+      "sha256": "d71e85fe1c24f5283493287976b41c26ad5867a640594eb3ac09ec1bb436cf00"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-diagnostic-bundles-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
     }
   ],
   "remaining_gpu_checks": [
@@ -35,5 +89,5 @@
     "Observed one-way approach, curb stop/stand/park realization and body-to-fixture geometry",
     "Four-camera full-duration visibility and pixel review"
   ],
-  "reason": "Twelve exact cases and ten comparisons are planned. Reviewed-site custody now rejects missing, changed, unreviewed or escaping original source files, and the source-gated runner joins exact-case construction to 900-frame original capture and owner cleanup. Seventeen CPU tests and scoped static checks pass. Frozen inputs lack an actual reviewed C150153 elevator site and source bytes. Exact production bundles, selected offline and positive/negative compatibility, canonical semantic proposals, saved-only processing and independent delivery/comparison receipts remain CPU work after genuine source acquisition; strict delivery acceptance is not met."
+  "reason": "Twenty-five assignment tests pass, including a 900-frame producer-to-saved-to-measurement integration. The producer and saved audit now require finite observed body curb gap and ego speed. Twelve exact source-labeled synthetic primary and twelve fallback bundles pass pinned runtime.py offline checks, with hashes in diagnostic-offline-index.json. Nine canonical semantic stages pass in a scratch description mirror. These bundles refuse Native capture and are not selected production construction. Exact positive/negative compatibility, saved and physical preparation, independent selected delivery/comparison bindings and reviewed original site sources remain. Scoped strict exits 1 at truthful partial/missing-package acceptance."
 }

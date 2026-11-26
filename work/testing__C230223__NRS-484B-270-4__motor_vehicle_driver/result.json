@@ -2,7 +2,7 @@
   "assignment_id": "testing__C230223__NRS-484B-270-4__motor_vehicle_driver",
   "input_sha256": "ee136f862924fe3f929283f2b16526728128267da78dbcb44010b625aea387f1",
   "status": "partial",
-  "readiness_kind": "source_gated_native_route_and_saved_delivery_audit_draft",
+  "readiness_kind": "source_gated_selected_cpu_preparation",
   "applied_update": 0,
   "tests": [
     {
@@ -12,20 +12,26 @@
       "sha256": "828f94b81ba3dfbdcf5e2a0a1981736667ecc31010f72e746bb652a6fdcfd1e9"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C230223__NRS-484B-270-4__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-20261125.log",
-      "sha256": "a4614c36140d623eb0ca93b1a438ff87c3e8467bfd591cfde5cb744f9c6c5eee"
-    },
-    {
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C230223__NRS-484B-270-4__motor_vehicle_driver --complete",
       "exit_code": 0,
       "log": "cpu-static-20261125.log",
       "sha256": "ca883a18ff02814b24d102da8ee269a293ecc2e9a87dad0e273ee93031551a41"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C230223__NRS-484B-270-4__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-selected-20261125.log",
+      "sha256": "746784bfecbac18ecad16d73a4e5ba175dc581e6b5d5f2f415ca80e3b0dc4413"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c230223-python .venv-cpu/bin/python work/testing__C230223__NRS-484B-270-4__motor_vehicle_driver/validate_selected.py",
+      "exit_code": 0,
+      "log": "selected-validator-results.log",
+      "sha256": "414980fa5e181853e7a926911d378306210e536c7fffcd93cf8cfe9ca197dd71"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, four-camera visibility and Native capture quality after source-reviewed CPU package preparation"
+    "After reviewed source packets are bound, run original CARLA 45-second four-camera capture for each exact case; independently review lane/intersection body occupancy, pixels, physical completion, subsection 3 applicability and three fixed-source comparisons."
   ],
-  "reason": "Four exact cases and three comparisons retain partial status. Source-gated Native route/control planning, 900-frame polygon/body source joins, four-camera full decode, saved-only four-case finalization and independent fixed-source comparison audits pass 29 synthetic CPU tests. Reviewed original public intersection/cycle-lane designation, subsection 3 clause/status, vehicle and driver packets are absent; exact selected Native capture, runtime offline/compatibility/process-saved receipts, physical-risk candidate and delivery bindings remain unproven. No diagnostic fixture is original evidence."
+  "reason": "Four exact source-gated selected cases and three comparisons have complete diagnostic CPU construction. All four pass pinned offline, positive/missing-site compatibility, recorded-only process-saved, three physical outcome fixtures, lifecycle and diagnostic delivery protocol. Direct selected execution, semantic, physical, delivery and compatibility validators pass. Original reviewed public-intersection/OpenDRIVE and cycle-lane designation authority, authoritative subsection 3 clause/applicability, and motor-vehicle/driver packet are absent; no original Native capture, physical acceptance or legal verdict is claimed. Status remains partial until original sources and exact strict gate pass."
 }
