@@ -45,6 +45,15 @@ def main():
         draft_files = {item['path']: item['content'] for item in draft['files']}
         config = json.loads(draft_files['config.json'])
         case_id = config['case_id']
+        if 'curve' not in suffix:
+            config['ego_spawn']['s_m'] = 330
+        view_options = {
+            'overview': ('overhead original ego and authored road feature', 90),
+            'approach': ('forward original ego and approaching traffic', 85),
+            'reference_corner': ('roadside original feature and body crossing', 85),
+            'driver_reference': ('driver-height original sightline', 90)}
+        for camera in config['cameras']:
+            camera['pose_strategy'], camera['fov_deg'] = view_options[camera['name']]
         description = {'channels': [
             {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
              'method': 'Original Native map, actor body, sight ray and synchronized camera source',

@@ -25,7 +25,7 @@ def save(path, value):
 
 
 def source(suffix):
-    return ROOT / '.runtime-work/nrs213-resume-3' / ('compat-primary-' + suffix)
+    return ROOT / '.runtime-work/nrs213-resume-5' / ('compat-primary-' + suffix)
 
 
 def evaluate(suffix, kind, scratch, result):
@@ -88,7 +88,7 @@ def prove(only=None):
             continue
         fixtures = []
         for kind in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
-            scratch = ROOT / '.runtime-work/nrs213-resume-3' / ('physical-' + suffix + '-' + kind)
+            scratch = ROOT / '.runtime-work/nrs213-resume-5' / ('physical-' + suffix + '-' + kind)
             result = target / (suffix + '-' + kind + '.json')
             log = target / (suffix + '-' + kind + '.log')
             command = [sys.executable, '-B', str(Path(__file__).resolve()), '--evaluate',

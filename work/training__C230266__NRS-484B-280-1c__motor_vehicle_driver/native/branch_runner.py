@@ -19,8 +19,12 @@ MODE = "__MODE__"
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 CONTEXT_KEYS = {
     "road": ("road_boundary_source", "pedestrian_position_source"),
+    "bus_stop": ("bus_stop_designation_source", "bus_stop_geometry_source", "pedestrian_position_source"),
+    "bench": ("bench_geometry_source", "bench_public_mass_transport_use_source", "pedestrian_position_source"),
+    "shelter": ("shelter_geometry_source", "shelter_public_mass_transport_use_source", "pedestrian_position_source"),
     "transit_stop": ("stop_designation_source", "stop_furniture_geometry_source", "pedestrian_position_source"),
     "boarding": ("transit_vehicle_class_source", "door_side_source", "boarding_motion_source"),
+    "other_transport": ("other_public_transport_class_source", "door_side_source", "boarding_motion_source"),
     "school_zone": ("school_zone_sign_source", "governed_zone_extent_source", "pedestrian_position_source"),
     "school_crossing": ("school_crossing_sign_source", "governed_zone_extent_source", "pedestrian_position_source"),
     "marked_crosswalk": ("marked_crosswalk_source", "pedestrian_position_source"),
@@ -77,11 +81,11 @@ def read_survey(path):
     for key in CONTEXT_KEYS[BRANCH]:
         require(isinstance(survey.get(key), str) and survey[key].strip(),
                 "Missing original " + key)
-    if BRANCH in ("transit_stop", "school_zone", "school_crossing"):
+    if BRANCH in ("bus_stop", "bench", "shelter", "transit_stop", "school_zone", "school_crossing"):
         require(survey.get("context_prop_blueprint") and
                 len(survey.get("context_prop_xyz_m", [])) == 3,
                 "Surveyed physical context prop missing")
-    if BRANCH == "boarding":
+    if BRANCH in ("boarding", "other_transport"):
         require(survey.get("transit_vehicle_blueprint") and
                 len(survey.get("transit_vehicle_xyz_m", [])) == 3
                 and len(survey.get("boarding_waypoints_xyz_m", [])) >= 2,
@@ -92,7 +96,7 @@ def read_survey(path):
         if BRANCH == "marked_crosswalk":
             require(survey.get("marked_crossing_visible_source"),
                     "Original visible markings source missing")
-    if BRANCH in ("boarding", "marked_crosswalk", "unmarked_crosswalk"):
+    if BRANCH in ("boarding", "other_transport", "marked_crosswalk", "unmarked_crosswalk"):
         require(len(survey.get("pedestrian_path_xyz_m", [])) >= 2,
                 "Pedestrian crossing or boarding path missing")
     return survey
@@ -109,13 +113,13 @@ def control(distance_m, speed_mps):
 def spawn_context(world, carla, survey, actors):
     """Place surveyed objects; source claims stay separate from actor geometry."""
     library = world.get_blueprint_library()
-    if BRANCH in ("transit_stop", "school_zone", "school_crossing"):
+    if BRANCH in ("bus_stop", "bench", "shelter", "transit_stop", "school_zone", "school_crossing"):
         xyz = survey["context_prop_xyz_m"]
         actor = world.try_spawn_actor(library.find(survey["context_prop_blueprint"]),
                                       carla.Transform(carla.Location(x=xyz[0], y=xyz[1], z=xyz[2])))
         require(actor is not None, "Surveyed context prop spawn failed")
         actors.append(actor)
-    if BRANCH == "boarding":
+    if BRANCH in ("boarding", "other_transport"):
         xyz = survey["transit_vehicle_xyz_m"]
         actor = world.try_spawn_actor(library.find(survey["transit_vehicle_blueprint"]),
                                       carla.Transform(carla.Location(x=xyz[0], y=xyz[1], z=xyz[2])))
@@ -224,6 +228,10 @@ def execute(config, output_dir, survey_path, host, port):
                         continue
                     encoders[name].stdin.write(image.raw_data)
                     seen.add(name)
+                pose = ego.get_transform()
+                ped_pose = ped.get_transform()
+                velocity = ego.get_velocity()
+                speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
                 capture.capture(native_frame, frame / 20, extra={"video_frame": frame,
                                                                   "pedestrian_actor_id": ped.id,
                                                                   "context_actor_ids": context_ids})

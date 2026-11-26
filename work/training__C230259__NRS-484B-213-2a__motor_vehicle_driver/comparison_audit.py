@@ -3,6 +3,8 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import shutil
+import tempfile
 
 HERE = Path(__file__).resolve().parent
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -42,7 +44,7 @@ def load(directory, expected_case):
 
 
 def phases(config):
-    return [(item['name'], item['first_frame'], item['last_frame'], item['target_speed_mps'])
+    return [(item['first_frame'], item['last_frame'], item['target_speed_mps'])
             for item in config['control_phases']]
 
 
@@ -104,13 +106,43 @@ def compare(comparison_id, left_path, right_path):
             'legal_or_physical_acceptance_claimed': False}
 
 
+def self_test(comparison_id, left_path, right_path):
+    """Keep nonphysical phase names flexible while rejecting changed timing or speed."""
+    compare(comparison_id, left_path, right_path)
+    with tempfile.TemporaryDirectory(prefix='nrs213-comparison-', dir=HERE.parents[1] / '.runtime-work') as temporary:
+        copied = Path(temporary)
+        for name in SOURCES:
+            shutil.copyfile(Path(right_path) / name, copied / name)
+        original = json.loads((copied / 'config.json').read_text())
+        for field, value in (('first_frame', original['control_phases'][1]['first_frame'] + 1),
+                             ('target_speed_mps', original['control_phases'][1]['target_speed_mps'] + 1)):
+            changed = json.loads(json.dumps(original))
+            changed['control_phases'][1][field] = value
+            (copied / 'config.json').write_text(json.dumps(changed) + '\n')
+            try:
+                compare(comparison_id, left_path, copied)
+            except ValueError as error:
+                if str(error) != 'Fixed controller phase schedule differs':
+                    raise
+            else:
+                raise AssertionError('Physical schedule mutation was accepted: ' + field)
+    return {'comparison_id': comparison_id, 'label_difference_accepted': True,
+            'frame_mutation_rejected': True, 'speed_mutation_rejected': True}
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--comparison', required=True)
     parser.add_argument('--left', required=True)
     parser.add_argument('--right', required=True)
-    parser.add_argument('--output', required=True)
+    parser.add_argument('--output')
+    parser.add_argument('--self-test', action='store_true')
     args = parser.parse_args()
-    result = compare(args.comparison, args.left, args.right)
-    Path(args.output).write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
-    print(json.dumps({'comparison_id': args.comparison, 'passed': True}))
+    if args.self_test:
+        print(json.dumps(self_test(args.comparison, args.left, args.right)))
+    else:
+        if not args.output:
+            parser.error('--output is required unless --self-test is set')
+        result = compare(args.comparison, args.left, args.right)
+        Path(args.output).write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
+        print(json.dumps({'comparison_id': args.comparison, 'passed': True}))

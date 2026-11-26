@@ -25,14 +25,14 @@ def main():
         candidate = copy.deepcopy(primary)
         config_file = next(item for item in candidate['files'] if item['path'] == 'config.json')
         config = json.loads(config_file['content'])
-        if config['ego_spawn']['s_m'] != 300 or config['candidate_id'] != 'primary':
+        if config['ego_spawn']['s_m'] != (300 if 'curve' in suffix else 330) or config['candidate_id'] != 'primary':
             raise ValueError('Unexpected primary feature spawn')
-        config['ego_spawn']['s_m'] = 320
+        config['ego_spawn']['s_m'] += 20
         config['candidate_id'] = 'fallback1'
         config_file['content'] = encode(config)
         candidate['status'] = 'selected_fallback_cpu_construction'
         candidate['measurement_plan']['status'] = 'cpu_prepared_original_native_unobserved'
-        candidate['mechanisms'].append('Earlier ego start: s=320 m rather than s=300 m; exact feature, lanes and comparison variable retained')
+        candidate['mechanisms'].append('Ego starts 20 m closer to feature; exact feature, lanes and comparison variable retained')
         path = HERE / 'selected-constructions' / suffix / 'fallback1/construction.json'
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(encode(candidate))
@@ -49,7 +49,7 @@ def main():
                 'source': 'original Native ego body, map waypoint and 600-frame time join',
                 'metric': 'feature approach or traversal frame count with the requested body position',
                 'failure_condition': 'Primary has no original source frames showing the requested body position at the authored crest or curve interval'},
-            'changed_knobs': ['ego spawn s=300 m to s=320 m for every linked comparison case; same feature geometry, controller phases, cameras and duration'] }]
+            'changed_knobs': ['ego spawn moved 20 m closer to feature for every linked comparison case; same feature geometry, controller phases, cameras and duration'] }]
     selected['status'] = 'selected_fallback_offline_pending'
     target = HERE / 'selected-fallback-draft.json'
     target.write_text(encode(selected))

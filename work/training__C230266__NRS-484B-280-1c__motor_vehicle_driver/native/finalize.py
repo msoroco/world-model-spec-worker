@@ -66,6 +66,16 @@ def derive_channels(folder):
     frames = [json.loads(line) for line in required(folder, "video_frames.jsonl").read_text().splitlines()]
     if len(capture) != 600 or len(frames) != 600:
         raise ValueError("Full source/video join required")
+    for index, (row, video) in enumerate(zip(capture, frames)):
+        if (row.get("frame") != index or row.get("video_frame") != index or
+                video.get("video_frame") != index or
+                row.get("native_frame") != video.get("native_frame") or
+                row.get("time_s") != video.get("time_s") or
+                set(video.get("camera_native_frames", {})) !=
+                {"overview", "approach", "reference_corner", "driver_reference"} or
+                any(value != row["native_frame"] for value in
+                    video["camera_native_frames"].values())):
+            raise ValueError("Original pose, frame map and four-camera time join failed")
     channels = folder / "channels"
     channels.mkdir(exist_ok=True)
     values = {

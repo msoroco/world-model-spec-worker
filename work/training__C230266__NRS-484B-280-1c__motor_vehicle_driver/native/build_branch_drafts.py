@@ -1,4 +1,4 @@
-"""Build 14 exact offline constructions from the reviewed statutory alternatives."""
+"""Build exact offline constructions for each reviewed statutory alternative."""
 
 import hashlib
 import json
@@ -10,7 +10,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 ASSIGNMENT = ROOT.name
 SCRATCH = Path(__import__("os").environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", ".runtime-work/nrs280-drafts"))
-BRANCHES = ("road", "transit_stop", "boarding", "school_zone", "school_crossing",
+BRANCHES = ("road", "bus_stop", "bench", "shelter", "transit_stop", "boarding",
+            "other_transport", "school_zone", "school_crossing",
             "marked_crosswalk", "unmarked_crosswalk")
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 

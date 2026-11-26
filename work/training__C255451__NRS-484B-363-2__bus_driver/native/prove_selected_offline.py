@@ -26,7 +26,7 @@ def main():
     (REPO / '.runtime-work/c255451-mpl').mkdir(parents=True, exist_ok=True)
     for entry in manifest['cases']:
         condition = entry['case_id'].rsplit('__', 1)[-1]
-        output = REPO / '.runtime-work' / ('c255451-selected-offline-v5-' + condition)
+        output = REPO / '.runtime-work' / ('c255451-selected-offline-v6-' + condition)
         if output.exists():
             raise ValueError('Choose fresh offline output: ' + str(output))
         command = [sys.executable, '-B', 'runtime.py', 'offline',

@@ -12,8 +12,12 @@ SOURCE = "NRS 484B.280(1)(c)"
 
 BRANCHES = (
     ("road", "Pedestrian on or near a highway, street or road.", "roadway boundary and pedestrian body position"),
-    ("transit_stop", "Pedestrian at or near a bus stop, bench, shelter or transit stop.", "original stop furniture and transit designation"),
-    ("boarding", "Pedestrian in the act of boarding a bus or other public transportation vehicle.", "vehicle class, door side and continuous boarding movement"),
+    ("bus_stop", "Pedestrian at or near a bus stop for passengers of public mass transportation.", "original bus-stop designation, location and pedestrian position"),
+    ("bench", "Pedestrian at or near a bench for passengers of public mass transportation.", "original bench geometry, transit use and pedestrian position"),
+    ("shelter", "Pedestrian at or near a shelter for passengers of public mass transportation.", "original shelter geometry, transit use and pedestrian position"),
+    ("transit_stop", "Pedestrian at or near a transit stop for passengers of public mass transportation.", "original transit-stop designation, location and pedestrian position"),
+    ("boarding", "Pedestrian in the act of boarding a bus.", "original bus class, door side and continuous boarding movement"),
+    ("other_transport", "Pedestrian in the act of boarding another public transportation vehicle.", "original public-transport vehicle class, door side and continuous boarding movement"),
     ("school_zone", "Pedestrian in or near a school zone marked under NRS 484B.363.", "original school-zone sign and governed extent"),
     ("school_crossing", "Pedestrian in or near a school crossing zone marked under NRS 484B.363.", "original school-crossing-zone sign and governed extent"),
     ("marked_crosswalk", "Pedestrian in or near a marked crosswalk.", "original visible markings and roadway location"),
@@ -74,11 +78,15 @@ def main():
                                            ("approach", "pedestrian and roadway approach"),
                                            ("reference_corner", "stop, zone or crossing reference"),
                                            ("driver_reference", "driver-eye proxy and pedestrian line of sight"))]}
-    channels = {entry["term"]: {"evidence": entry["evidence"],
-                               "channels": entry["channels"], "source_refs": entry["source_refs"]}
-                for entry in plan["source_observation_mapping"]}
-    plan["source_observation_mapping"] = channels
-    path.write_text(json.dumps(plan, indent=2, ensure_ascii=False) + "\n")
+    if isinstance(plan["source_observation_mapping"], list):
+        channels = {entry["term"]: {"evidence": entry["evidence"],
+                                   "channels": entry["channels"], "source_refs": entry["source_refs"]}
+                    for entry in plan["source_observation_mapping"]}
+        plan["source_observation_mapping"] = channels
+    staged = Path(__import__("os").environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) / "nrs280-case-plan.json"
+    staged.parent.mkdir(parents=True, exist_ok=True)
+    staged.write_text(json.dumps(plan, indent=2, ensure_ascii=False) + "\n")
+    staged.replace(path)
     print(json.dumps({"cases": len(cases), "comparisons": len(comparisons)}))
 
 

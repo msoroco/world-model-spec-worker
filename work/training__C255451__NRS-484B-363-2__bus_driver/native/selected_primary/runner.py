@@ -48,7 +48,8 @@ def survey_check(survey):
             'ego_blueprint', 'spawn_xyz_m', 'spawn_yaw_deg', 'camera_world_transforms',
             'child_blueprints', 'child_world_transforms',
             'road_axis_xy', 'zone_station_bounds_m', 'civil_start_iso', 'authorized_mph', 'road_id',
-            'travel_direction_id', 'reviewed_plan_case_id', 'planned_context_source', 'planned_context')
+            'travel_direction_id', 'reviewed_plan_case_id', 'planned_context_source', 'planned_context',
+            'installed_sign_geometry')
     for key in keys:
         if key not in survey or survey[key] is None or survey[key] == '':
             raise ValueError('Missing reviewed Native survey source: ' + key)
@@ -81,6 +82,40 @@ def survey_check(survey):
     for item in survey['camera_world_transforms'].values():
         if len(item.get('xyz_m', [])) != 3 or len(item.get('rotation_deg', [])) != 3:
             raise ValueError('Invalid surveyed camera transform')
+    sign = survey['installed_sign_geometry']
+    if (not isinstance(sign, dict) or type(sign.get('actor_id')) is not int or
+            not sign.get('asset_id') or not sign.get('geometry_source') or
+            sign.get('sign_kind') != 'school_crossing_zone_speed_limit_25_mph' or
+            len(sign.get('xyz_m', [])) != 3 or
+            not all(type(v) in (int, float) and math.isfinite(v) for v in sign['xyz_m'])):
+        raise ValueError('Source-identify installed 25 mph school crossing sign geometry')
+    for name in ('overview', 'approach'):
+        camera = survey['camera_world_transforms'][name]
+        dx = sign['xyz_m'][0] - camera['xyz_m'][0]
+        dy = sign['xyz_m'][1] - camera['xyz_m'][1]
+        distance = math.hypot(dx, dy)
+        yaw = math.radians(camera['rotation_deg'][1])
+        forward = (math.cos(yaw), math.sin(yaw))
+        angle = math.degrees(math.acos(max(-1., min(1.,
+            (dx*forward[0] + dy*forward[1]) / max(distance, 1e-9)))))
+        if not (3 <= distance <= 150 and angle <= 35):
+            raise ValueError('Installed sign outside surveyed camera source view: ' + name)
+    if survey['planned_context'] not in ('nonbeacon_sign_active', 'nonbeacon_sign_inactive'):
+        beacon = survey.get('beacon_geometry')
+        if not isinstance(beacon, dict) or beacon.get('sign_actor_id') != sign['actor_id'] or not beacon.get('geometry_source') or not beacon.get('alternation_controller_source'):
+            raise ValueError('Source-identify installed beacon mounted with crossing sign')
+        lights = beacon.get('yellow_lights')
+        if not isinstance(lights, list) or len(lights) < 2 or len({lamp.get('actor_id') for lamp in lights if isinstance(lamp, dict)}) != len(lights):
+            raise ValueError('Beacon requires two or more distinct alternating yellow lights')
+        for lamp in lights:
+            if (not isinstance(lamp, dict) or type(lamp.get('actor_id')) is not int or
+                    lamp.get('color') != 'yellow' or not lamp.get('asset_id') or
+                    len(lamp.get('xyz_m', [])) != 3 or
+                    not all(type(v) in (int, float) and math.isfinite(v) for v in lamp['xyz_m']) or
+                    math.dist(lamp['xyz_m'], sign['xyz_m']) > 5):
+                raise ValueError('Beacon lamp lacks source-identified yellow geometry')
+    elif survey.get('beacon_geometry') is not None:
+        raise ValueError('Nonbeacon exception plan cannot claim an installed beacon')
     return survey
 
 
@@ -106,6 +141,15 @@ def capture(survey, output, host, port):
     world = client.get_world()
     if world.get_map().name != survey['map_name']:
         raise ValueError('Live CARLA map differs from reviewed survey')
+    devices = [survey['installed_sign_geometry']]
+    if survey.get('beacon_geometry'):
+        devices.extend(survey['beacon_geometry']['yellow_lights'])
+    for device in devices:
+        actor = world.get_actors().find(device['actor_id'])
+        if (actor is None or actor.type_id != device['asset_id'] or
+                actor.get_location().distance(carla.Location(
+                    x=device['xyz_m'][0], y=device['xyz_m'][1], z=device['xyz_m'][2])) > .5):
+            raise ValueError('Live installed sign/beacon actor differs from source-identified survey')
     settings = world.get_settings()
     old_sync, old_step = settings.synchronous_mode, settings.fixed_delta_seconds
     actors, encoders = [], {}

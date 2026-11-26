@@ -1,0 +1,131 @@
+{
+  "case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__bus_stop_maintain",
+  "selected_case_id": "training__C230266__NRS-484B-280-1c__motor_vehicle_driver__bus_stop_maintain",
+  "law_id": "NRS-484B-280-1c",
+  "cell_id": "C230266",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "road",
+    "maneuver": "travel",
+    "control": "pedestrian"
+  },
+  "status": "selected_cpu_preparation",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "frames": 600,
+  "vehicle_blueprint": "vehicle.tesla.model3",
+  "pedestrian_blueprint": "walker.pedestrian.0001",
+  "controller": "maintain_approach_request",
+  "road_survey_required": true,
+  "driver_observation_not_inferred_from_visibility": true,
+  "required_atoms": [
+    "kin.position",
+    "kin.speed",
+    "ru.pedestrian"
+  ],
+  "physical_completion": false,
+  "legal_verdict": null,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fps": 20,
+      "fov_deg": 95,
+      "location_xyz_m": [
+        -7,
+        0,
+        5
+      ],
+      "rotation_pyr_deg": [
+        -20,
+        0,
+        0
+      ],
+      "pose_strategy": "ego_relative_source_camera"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 85,
+      "location_xyz_m": [
+        3,
+        0,
+        2
+      ],
+      "rotation_pyr_deg": [
+        -4,
+        0,
+        0
+      ],
+      "pose_strategy": "ego_relative_source_camera"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        -3,
+        3,
+        2
+      ],
+      "rotation_pyr_deg": [
+        -5,
+        -35,
+        0
+      ],
+      "pose_strategy": "ego_relative_source_camera"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 95,
+      "location_xyz_m": [
+        -7,
+        0,
+        2
+      ],
+      "rotation_pyr_deg": [
+        0,
+        180,
+        0
+      ],
+      "pose_strategy": "ego_relative_source_camera"
+    }
+  ],
+  "branch": "bus_stop",
+  "mode": "maintain",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "native_vehicle_pedestrian_pose_and_control",
+        "method": "Native actor transform, velocity and requested control at 20 Hz",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "structured",
+        "reference_frame": "original Native 20 Hz frame and four-camera join",
+        "uncertainty": "synthetic software fixtures cannot establish physical visibility or perception"
+      },
+      {
+        "name": "four_camera_video",
+        "method": "four synchronized named RGB source cameras",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "structured",
+        "reference_frame": "original Native 20 Hz frame and four-camera join",
+        "uncertainty": "synthetic software fixtures cannot establish physical visibility or perception"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Original statutory-position source, driver observation, Native motion and pixels remain unverified",
+      "Controller distance trigger is engineering policy, not legal threshold"
+    ]
+  }
+}

@@ -75,8 +75,26 @@ class ExactBundleTest(unittest.TestCase):
                                                      'rotation_deg': [0, 0, 0]}
                                               for name in ('child_left', 'child_right')},
                       reviewed_plan_case_id=runner.CASE,
-                      planned_context=config['planned_context'])
+                      planned_context=config['planned_context'],
+                      installed_sign_geometry={'actor_id': 201, 'asset_id': 'surveyed-sign',
+                                               'geometry_source': 'surveyed actor transform and image',
+                                               'sign_kind': 'school_crossing_zone_speed_limit_25_mph',
+                                               'xyz_m': [20, 0, 2]})
+        if config['planned_context'] not in ('nonbeacon_sign_active', 'nonbeacon_sign_inactive'):
+            survey['beacon_geometry'] = {
+                'sign_actor_id': 201, 'geometry_source': 'surveyed beacon actor transforms',
+                'alternation_controller_source': 'source-identified beacon controller',
+                'yellow_lights': [
+                    {'actor_id': 202, 'asset_id': 'yellow-left', 'color': 'yellow', 'xyz_m': [20, -0.5, 3]},
+                    {'actor_id': 203, 'asset_id': 'yellow-right', 'color': 'yellow', 'xyz_m': [20, 0.5, 3]}]}
         self.assertEqual(runner.survey_check(survey), survey)
+        with self.assertRaisesRegex(ValueError, 'Installed sign outside surveyed camera source view'):
+            runner.survey_check({**survey, 'installed_sign_geometry': {
+                **survey['installed_sign_geometry'], 'xyz_m': [-20, 0, 2]}})
+        if 'beacon_geometry' in survey:
+            with self.assertRaisesRegex(ValueError, 'two or more distinct alternating yellow lights'):
+                runner.survey_check({**survey, 'beacon_geometry': {
+                    **survey['beacon_geometry'], 'yellow_lights': survey['beacon_geometry']['yellow_lights'][:1]}})
         with self.assertRaisesRegex(ValueError, 'exact planned school-crossing-zone condition'):
             runner.survey_check({**survey, 'reviewed_plan_case_id': 'another case'})
         with self.assertRaisesRegex(ValueError, 'civil start needs timezone'):

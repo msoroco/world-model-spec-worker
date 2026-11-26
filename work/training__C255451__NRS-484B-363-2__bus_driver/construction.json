@@ -1,0 +1,68 @@
+{
+  "format": "worker-inline-construction",
+  "law_id": "NRS-484B-363-2",
+  "cell_id": "C255451",
+  "actor": "bus_driver",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "path": "runner.py",
+      "source": "work/training__C255451__NRS-484B-363-2__bus_driver/runner.py",
+      "content": "\"\"\"Exact-case dispatch preflight; selected Native runners own acquisition.\"\"\"\nimport argparse\nimport json\nfrom pathlib import Path\nROOT = Path(__file__).resolve().parent\ndef check(case):\n    manifest = json.loads((ROOT / \"execution-manifest.json\").read_text())\n    config = json.loads((ROOT / \"config.json\").read_text())\n    cases = {item[\"case_id\"] for item in manifest[\"cases\"]}\n    if case not in cases or cases != set(config[\"supported_case_ids\"]):\n        raise ValueError(\"Select an exact prepared bus school-crossing case\")\n    return {\"case_id\": case, \"frames\": 600, \"rate_hz\": 20,\n            \"physical_acceptance_claimed\": False}\nif __name__ == \"__main__\":\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--case\", required=True)\n    args = parser.parse_args()\n    print(json.dumps(check(args.case), sort_keys=True))\n"
+    },
+    {
+      "path": "config.json",
+      "source": "work/training__C255451__NRS-484B-363-2__bus_driver/config.json",
+      "content": "{\n  \"assignment_id\": \"training__C255451__NRS-484B-363-2__bus_driver\",\n  \"cell_id\": \"C255451\",\n  \"law_id\": \"NRS-484B-363-2\",\n  \"actor\": \"bus_driver\",\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"frames\": 600,\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"pose_strategy\": \"surveyed fixed world transform with installed sign and full crossing interval in source view\",\n      \"fov_deg\": 80\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"surveyed fixed world transform with installed sign and full crossing interval in source view\",\n      \"fov_deg\": 80\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"surveyed fixed world transform with installed sign and full crossing interval in source view\",\n      \"fov_deg\": 80\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"pose_strategy\": \"surveyed fixed world transform with installed sign and full crossing interval in source view\",\n      \"fov_deg\": 80\n    }\n  ],\n  \"recording_description\": {\n    \"channels\": [\n      {\n        \"name\": \"school_crossing_observation\",\n        \"unit\": \"structured\",\n        \"sampling_rate_hz\": 20,\n        \"method\": \"same-frame original bus velocity and reviewed school-crossing zone station\",\n        \"time_window\": \"600 frames\",\n        \"reference_frame\": \"Native world XY and school-crossing road station\",\n        \"uncertainty\": \"50 ms sampling; designation and exceptions require independent authority review\"\n      }\n    ],\n    \"context_inputs\": [\n      {\n        \"name\": \"school_zone_context\",\n        \"unit\": \"structured\",\n        \"method\": \"survey-bound reviewed designation, sign, calendar, civil time and beacon state\"\n      }\n    ],\n    \"limitations\": [\n      \"Original bus and children, zone designation, sign, beacon pixels, school schedule and civil clock require local source review\",\n      \"Requested speed is not observed velocity or legal verdict\"\n    ]\n  },\n  \"physical_acceptance_claimed\": false,\n  \"legal_verdict\": null,\n  \"supported_case_ids\": [\n    \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__condition_a\",\n    \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__at_limit\",\n    \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__condition_b\",\n    \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__no_school_day\",\n    \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__half_hour_window\",\n    \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__beacon_not_flashing\",\n    \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_active\",\n    \"training__C255451__NRS-484B-363-2__bus_driver__selected_d08892c9__nonbeacon_sign_inactive\"\n  ]\n}\n"
+    }
+  ],
+  "measurement_plan": {
+    "entrypoint": "native/measure_saved.py",
+    "required_sources": [
+      "native_motion.jsonl",
+      "school_zone_context.json",
+      "video_frames.jsonl"
+    ],
+    "status": "source_bound_saved_measurement"
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "school_crossing_observation",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "same-frame original bus velocity and reviewed school-crossing zone station",
+        "time_window": "600 frames",
+        "reference_frame": "Native world XY and school-crossing road station",
+        "uncertainty": "50 ms sampling; designation and exceptions require independent authority review"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "school_zone_context",
+        "unit": "structured",
+        "method": "survey-bound reviewed designation, sign, calendar, civil time and beacon state"
+      }
+    ],
+    "limitations": [
+      "Original bus and children, zone designation, sign, beacon pixels, school schedule and civil clock require local source review",
+      "Requested speed is not observed velocity or legal verdict"
+    ]
+  },
+  "static_checks": [
+    "exact eight-case dispatch",
+    "25 mph statute",
+    "600 joined source frames",
+    "four source cameras",
+    "surveyed installed sign/beacon geometry"
+  ],
+  "termination_rules": [
+    "600 frames at 20 Hz",
+    "encoders closed and world restored before saved processing"
+  ],
+  "mechanisms": [
+    "survey-gated original CARLA source acquisition",
+    "source-bound saved meter and finalizer",
+    "independent source review"
+  ]
+}

@@ -7,8 +7,12 @@ import math
 
 BRANCH_SOURCES = {
     "road": ("road_boundary_source", "pedestrian_position_source"),
+    "bus_stop": ("bus_stop_designation_source", "bus_stop_geometry_source", "pedestrian_position_source"),
+    "bench": ("bench_geometry_source", "bench_public_mass_transport_use_source", "pedestrian_position_source"),
+    "shelter": ("shelter_geometry_source", "shelter_public_mass_transport_use_source", "pedestrian_position_source"),
     "transit_stop": ("stop_designation_source", "stop_furniture_geometry_source", "pedestrian_position_source"),
     "boarding": ("transit_vehicle_class_source", "door_side_source", "boarding_motion_source"),
+    "other_transport": ("other_public_transport_class_source", "door_side_source", "boarding_motion_source"),
     "school_zone": ("school_zone_sign_source", "governed_zone_extent_source", "pedestrian_position_source"),
     "school_crossing": ("school_crossing_sign_source", "governed_zone_extent_source", "pedestrian_position_source"),
     "marked_crosswalk": ("marked_crosswalk_source", "pedestrian_position_source"),

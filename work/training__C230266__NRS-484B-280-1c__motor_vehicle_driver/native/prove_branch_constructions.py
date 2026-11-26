@@ -1,4 +1,4 @@
-"""CPU-only proof of 14 source-surveyed construction contracts and seven pairs."""
+"""CPU-only proof of source-surveyed construction contracts and exact pairs."""
 
 import copy
 import hashlib
@@ -10,7 +10,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 ASSIGNMENT = ROOT.name
-BRANCHES = ("road", "transit_stop", "boarding", "school_zone", "school_crossing",
+BRANCHES = ("road", "bus_stop", "bench", "shelter", "transit_stop", "boarding",
+            "other_transport", "school_zone", "school_crossing",
             "marked_crosswalk", "unmarked_crosswalk")
 
 
@@ -28,14 +29,14 @@ def synthetic_survey(branch, keys):
               "pedestrian_classification_source": "synthetic-classification-contract",
               "control_relationship_source": "synthetic-driver-contract"}
     survey.update({key: "synthetic-source-contract" for key in keys})
-    if branch in ("transit_stop", "school_zone", "school_crossing"):
+    if branch in ("bus_stop", "bench", "shelter", "transit_stop", "school_zone", "school_crossing"):
         survey.update({"context_prop_blueprint": "static.prop.synthetic",
                        "context_prop_xyz_m": [11.0, 3.0, 0.0]})
-    if branch == "boarding":
+    if branch in ("boarding", "other_transport"):
         survey.update({"transit_vehicle_blueprint": "vehicle.synthetic.bus",
                        "transit_vehicle_xyz_m": [12.0, 3.0, 0.0],
                        "boarding_waypoints_xyz_m": [[10.0, 3.0, 0.0], [12.0, 3.0, 0.0]]})
-    if branch in ("boarding", "marked_crosswalk", "unmarked_crosswalk"):
+    if branch in ("boarding", "other_transport", "marked_crosswalk", "unmarked_crosswalk"):
         survey["pedestrian_path_xyz_m"] = [[11.0, 2.0, 0.0], [11.0, -2.0, 0.0]]
     if branch in ("marked_crosswalk", "unmarked_crosswalk"):
         survey["crossing_polygon_xyz_m"] = [[9.0, -3.0, 0.0], [13.0, -3.0, 0.0],
@@ -107,11 +108,11 @@ def main():
             world = FakeWorld()
             actors = [type("Ego", (), {"id": 1})(), type("Ped", (), {"id": 2})()]
             context_ids = runner.spawn_context(world, FakeCarla, survey, actors)
-            expected_context = 1 if branch in ("transit_stop", "boarding", "school_zone", "school_crossing") else 0
+            expected_context = 1 if branch in ("bus_stop", "bench", "shelter", "transit_stop", "boarding", "other_transport", "school_zone", "school_crossing") else 0
             assert len(world.spawned) == len(context_ids) == expected_context
-            if branch in ("transit_stop", "school_zone", "school_crossing"):
+            if branch in ("bus_stop", "bench", "shelter", "transit_stop", "school_zone", "school_crossing"):
                 assert world.spawned[0][0] == survey["context_prop_blueprint"]
-            if branch == "boarding":
+            if branch in ("boarding", "other_transport"):
                 assert world.spawned[0][0] == survey["transit_vehicle_blueprint"]
             bad = copy.deepcopy(survey)
             key = runner.CONTEXT_KEYS[branch][0]
@@ -121,7 +122,7 @@ def main():
             bad_config = copy.deepcopy(config)
             bad_config["driver_observation_not_inferred_from_visibility"] = False
             reject(lambda: runner.check(bad_config), "Actual observation policy changed")
-            if branch in ("boarding", "marked_crosswalk", "unmarked_crosswalk"):
+            if branch in ("boarding", "other_transport", "marked_crosswalk", "unmarked_crosswalk"):
                 assert runner.pedestrian_target(survey, 160) == survey["pedestrian_path_xyz_m"][0]
                 assert runner.pedestrian_target(survey, 280) == survey["pedestrian_path_xyz_m"][-1]
             positives[suffix] = {"case_id": cid,

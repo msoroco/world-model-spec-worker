@@ -27,7 +27,7 @@ def bind():
     env['PYTHONDONTWRITEBYTECODE'] = '1'
     for entry in manifest['cases']:
         condition = entry['case_id'].rsplit('__', 1)[-1]
-        output = REPO / '.runtime-work' / ('c255451-compat2-condition_b' if condition == 'condition_b' else 'c255451-compat3-' + condition)
+        output = REPO / '.runtime-work' / ('c255451-compat4-' + condition)
         command = [sys.executable, '-B', 'runtime.py', 'compatibility', '--manifest',
                    str(MANIFEST.relative_to(REPO)), '--case', entry['case_id'],
                    '--output', str(output.relative_to(REPO)), '--library', 'runtime/library',
@@ -45,7 +45,7 @@ def bind():
             raise ValueError('Stale exact selected compatibility: ' + condition)
         dest = HERE / 'selected' / condition
         for source, target in (('compatibility.json', 'compatibility.json'),
-                               ('compatibility-analysis.log', 'compatibility-analysis.log'),
+                               ('compatibility-analysis.log', 'analysis.log'),
                                ('negative-analysis.log', 'negative-analysis.log')):
             shutil.copyfile(output / source, dest / target)
         entry['compatibility'] = {
@@ -55,7 +55,7 @@ def bind():
                        + ' --library runtime/library --validator ' + str(VALIDATOR.relative_to(REPO)),
             'receipt': str((dest / 'compatibility.json').relative_to(ROOT)),
             'sha256': sha(dest / 'compatibility.json'),
-            'log': str((dest / 'compatibility-analysis.log').relative_to(ROOT)),
+            'log': str((dest / 'analysis.log').relative_to(ROOT)),
         }
         entry['negative'] = {'log': str((dest / 'negative-analysis.log').relative_to(ROOT))}
         temporary = REPO / '.runtime-work/c255451-manifest-next.json'
