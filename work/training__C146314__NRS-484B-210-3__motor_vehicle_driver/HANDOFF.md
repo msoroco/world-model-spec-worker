@@ -1,3 +1,13 @@
+# Current delivery preparation: C146314 / NRS 484B.210(3)
+
+The two selected exact cases are `probe_a` (right pass on the authored paved corridor) and `probe_b` (right pass using the authored shoulder route). Their road, vehicles, speed requests, longitudinal timing, duration and four-camera policy are fixed. The lateral route and resulting paved clearance deliberately differ. The 2.2 m planned body-plus-clearance requirement is within 5.1 m of paved corridor for `probe_a` and exceeds the 1.1 m paved corridor for `probe_b`. These are geometry plans; original CARLA road material, body motion, actual right pass and necessity require Native review.
+
+Both 600-frame, 20 Hz, four-camera diagnostic bundles pass offline and public compatibility, selected saved finalization, recorded-only `process-saved`, Core/Lean conversion, full final decode, physical-preparation contract tests, semantic delivery and independent delivery acceptance. Missing `native_motion.jsonl` in saved-only processing produces incomplete-evidence feedback without Native replay. The independent comparison binds both source traces and rejects a changed road source. Delivery audits reject missing and changed accepted source inputs. These CPU fixture receipts demonstrate software behavior; they do not claim physical or legal completion.
+
+The exact scoped strict command `.venv-cpu/bin/python worker_check.py --assignment training__C146314__NRS-484B-210-3__motor_vehicle_driver --complete --require-delivery-ready` passed with exit code 0. Its retained output is `native/proofs/strict-scoped.log` (SHA-256 fbc373f7883315b6d4ed8e4dc81604c0da155cf825d4b2750fa5ca394eedccc1). `result.json` is `ready` with `delivery_prepared` scope. First GPU delivery is bound to exact `probe_a`; the second selected case remains in the execution manifest. The accepted recording ID is membership only because no source-hashed equivalence receipt or accepted frames were supplied.
+
+The sections below are historical CPU checkpoints and were superseded by the completed preparation above.
+
 # NRS-484B-210-3 at C146314
 
 ## Current CPU construction checkpoint

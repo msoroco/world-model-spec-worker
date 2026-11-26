@@ -86,11 +86,11 @@ def main():
     recs = {item['case_id']: json.loads((ROOT / item['construction']).read_text())['recording_description'] for item in manifest['cases']}
     common_recording = recs[ids[0]]
     all_phrases = [item[0] for item in judgments]
-    def assignments(gap, role='none'):
+    def assignments(gap, role='none', driveway_kind='private'):
         return {'target_gap_m': {'kind': 'controller', 'value': gap, 'unit': 'm'},
                 'observed_gap_m': {'kind': 'subject_behavior', 'value': None, 'unit': 'm'},
                 'private_authority_role': {'kind': 'world_setup', 'value': role, 'unit': 'categorical'},
-                'driveway_kind': {'kind': 'world_setup', 'value': 'private', 'unit': 'categorical'}}
+                'driveway_kind': {'kind': 'world_setup', 'value': driveway_kind, 'unit': 'categorical'}}
     baseline = {'case_id': AID + '__baseline', 'target_law_id': None, 'target_type': 'baseline',
                 'rationale': 'Common surveyed one-way route and driveway source context.',
                 'recording_description': common_recording,
@@ -98,23 +98,34 @@ def main():
                 'unresolved_judgment_calls': all_phrases}
     cases = [baseline]
     for number, gap, branch in [('01', 2.0, 'above'), ('02', 1.2, 'below'),
-                                ('03', 1.2, 'owner'), ('04', 1.524, 'at')]:
+                                ('03', 1.2, 'owner'), ('04', 1.524, 'at'),
+                                ('05', 0.0, 'front overlap'),
+                                ('06', 1.2, 'public driveway')]:
         case_id = AID + '__probe_' + number
         role = 'owner' if number == '03' else 'none'
-        comparison = 'private_authority' if number == '03' else 'five_feet_boundary'
-        probe = {'primary_variable': 'private_authority_role' if number == '03' else 'observed_gap_m',
-                 'comparison_or_standard': 'private authority source contrast' if number == '03' else 'five-foot body-gap side-band boundary',
+        comparison = ('private_authority' if number == '03' else
+                      'front_overlap' if number == '05' else
+                      'public_private_driveway' if number == '06' else 'five_feet_boundary')
+        probe = {'primary_variable': ('private_authority_role' if number == '03' else
+                                      'driveway_kind' if number == '06' else
+                                      'target_gap_m' if number == '05' else 'observed_gap_m'),
+                 'comparison_or_standard': ('private authority source contrast' if number == '03' else
+                                            'positive interior driveway mouth overlap versus side band' if number == '05' else
+                                            'public versus private driveway source contrast' if number == '06' else
+                                            'five-foot body-gap side-band boundary'),
                  'target_value_or_branch': branch}
-        if number != '03':
+        if number not in ('03', '05', '06'):
             probe.update({'threshold_ref': 'activation.side_band', 'operator': '<=',
                           'unit': 'm', 'test_value': gap})
         cases.append({'case_id': case_id, 'target_law_id': LAW, 'target_type': 'boundary_probe',
                       'rationale': 'Exact selected source-measured driveway '+branch+' probe.',
                       'recording_description': recs[case_id],
-                      'variable_assignments': assignments(gap, role),
+                      'variable_assignments': assignments(gap, role,
+                                                          'public' if number == '06' else 'private'),
                       'unresolved_judgment_calls': all_phrases,
                       'paired_probe_id': comparison,
-                      'deliberate_differences': ['private_authority_role'] if number == '03' else ['target_gap_m'],
+                      'deliberate_differences': (['private_authority_role'] if number == '03' else
+                                                ['driveway_kind'] if number == '06' else ['target_gap_m']),
                       'probe': probe,
                       'epsilon_used': {'value': 0.05, 'unit': 'm',
                                        'rationale': 'Physical controller target margin only; exact legal boundary remains five feet.'}})

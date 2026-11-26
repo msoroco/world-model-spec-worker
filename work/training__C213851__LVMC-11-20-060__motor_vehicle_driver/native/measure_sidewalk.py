@@ -8,8 +8,15 @@ from pathlib import Path
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SUFFIXES = ('stop_before_sidewalk', 'cross_without_stop')
-SOURCE_FILES = ('site-review.json', 'road.xodr', 'native-rows.jsonl',
-                'video_frames.jsonl') + tuple(name + '.mkv' for name in CAMERAS)
+SITE_SOURCES = {
+    'district_source': 'site-sources/district.json',
+    'private_driveway_source': 'site-sources/driveway.json',
+    'sidewalk_source': 'site-sources/sidewalk.json',
+    'pedestrian_route_source': 'site-sources/pedestrian.json',
+}
+SOURCE_FILES = ('original-site-review.json', 'site-review.json', 'road.xodr',
+                'native-rows.jsonl', 'video_frames.jsonl') + \
+               tuple(SITE_SOURCES.values()) + tuple(name + '.mkv' for name in CAMERAS)
 
 
 def sha(path):
@@ -45,10 +52,20 @@ def measure(attempt, case_id):
             site.get('district') != 'residence' or
             site.get('road_xodr_sha256') != seal['sha256']['road.xodr'] or
             site.get('sidewalk_y_interval_m') != [0, 2] or
+            site.get('world_sidewalk_y_interval_m') != [-5.5, -3.5] or
+            site.get('route_frame') != 'road_east_then_driveway_south' or
             site.get('driveway_connection_reviewed') is not True or
             site.get('sidewalk_polygon_reviewed') is not True or
             site.get('pedestrian_route_reviewed') is not True):
         raise ValueError('Original district, driveway or sidewalk review missing')
+    original = json.loads((attempt / 'original-site-review.json').read_text())
+    if any(site.get(key) != original.get(key) for key in original):
+        raise ValueError('Original site review changed after capture')
+    for key, name in SITE_SOURCES.items():
+        item = site.get(key)
+        if (not isinstance(item, dict) or item.get('path') != name or
+                item.get('sha256') != seal['sha256'][name]):
+            raise ValueError('Original site source binding differs: ' + key)
     native = rows(attempt / 'native-rows.jsonl')
     frames = rows(attempt / 'video_frames.jsonl')
     if len(native) != 600 or len(frames) != 600:
@@ -84,18 +101,29 @@ def measure(attempt, case_id):
         elif identity != ids:
             raise ValueError('Original vehicle or pedestrian identity changed')
         ego = row.get('vehicle_xy_m')
+        world_ego = row.get('vehicle_world_xy_m')
         ped = row.get('pedestrian_xy_m')
+        world_ped = row.get('pedestrian_world_xy_m')
         extent = row.get('vehicle_half_extent_m')
         speed = row.get('vehicle_speed_mps')
         if (not isinstance(ego, list) or len(ego) != 2 or
+                not isinstance(world_ego, list) or len(world_ego) != 2 or
                 not isinstance(ped, list) or len(ped) != 2 or
-                any(not number(v) for v in ego + ped) or
+                not isinstance(world_ped, list) or len(world_ped) != 2 or
+                any(not number(v) for v in ego + world_ego + ped + world_ped) or
                 not number(extent) or extent <= 0 or
                 not number(speed) or speed < 0 or
                 (previous_y is not None and ego[1] + .001 < previous_y) or
                 abs(ego[0]) > 1.5 or
-                abs(ped[1] - 1) > .5):
+                abs(ped[1] - 1) > .5 or
+                abs(world_ped[0] - ped[0]) > .1 or
+                abs(world_ped[1] + 4.5) > .5):
             raise ValueError('Original road-to-driveway or pedestrian motion differs')
+        expected_world = ([ego[1] + 1.75, -1.75] if ego[1] < -1.75
+                          else [0.0, -3.5 - ego[1]])
+        if (abs(world_ego[0] - expected_world[0]) > 1.5 or
+                abs(world_ego[1] - expected_world[1]) > 1.5):
+            raise ValueError('Original road-to-driveway local/world projection differs')
         previous_y = ego[1]
         if ego[1] + extent < 0 and speed <= .1:
             prior_stop_frames += 1
@@ -122,3 +150,51 @@ def measure(attempt, case_id):
         'physical_completion': None,
         'legal_verdict': None,
     }
+
+
+def measure_core_join(attempt, case_id):
+    """Require saved Core and native source frames to describe the same motion."""
+    attempt = Path(attempt)
+    measured = measure(attempt, case_id)
+    names = ('trace.jsonl', 'capture/evidence.jsonl',
+             'capture/native/frames.jsonl')
+    for name in names:
+        if not (attempt / name).is_file():
+            raise ValueError('Missing required source: ' + name)
+    native = rows(attempt / 'native-rows.jsonl')
+    sources = [rows(attempt / name) for name in names]
+    if any(len(source) != 600 for source in sources):
+        raise ValueError('Original Core frame coverage incomplete')
+    for row, (trace, evidence, frame) in zip(native, zip(*sources)):
+        expected_frame = row['native_frame']
+        expected_time = row['time_s']
+        position = trace.get('position', {})
+        ego = evidence.get('ego', {})
+        ego_position = ego.get('position_m')
+        if (trace.get('frame') != expected_frame or
+                evidence.get('original_frame') != expected_frame or
+                frame.get('frame') != expected_frame or
+                not isinstance(ego_position, list) or len(ego_position) < 2 or
+                any(not number(value) for value in (
+                    position.get('x'), position.get('y'),
+                    trace.get('speed_mps'), ego.get('speed_mps'),
+                    ego_position[0], ego_position[1],
+                    trace.get('time_s'), evidence.get('recording_time_s'),
+                    frame.get('time_s'))) or
+                any(abs(item - expected_time) > 1e-4 for item in (
+                    trace['time_s'], evidence['recording_time_s'],
+                    frame['time_s'])) or
+                abs(position['x'] - row['vehicle_world_xy_m'][0]) > 1e-3 or
+                abs(position['y'] - row['vehicle_world_xy_m'][1]) > 1e-3 or
+                abs(ego_position[0] - row['vehicle_world_xy_m'][0]) > 1e-3 or
+                abs(ego_position[1] - row['vehicle_world_xy_m'][1]) > 1e-3 or
+                abs(trace['speed_mps'] - row['vehicle_speed_mps']) > 1e-3 or
+                abs(ego['speed_mps'] - row['vehicle_speed_mps']) > 1e-3):
+            raise ValueError('Original Native/Core sidewalk source join differs')
+    measured['core_join'] = {
+        'frames': 600,
+        'source_sha256': {name: sha(attempt / name) for name in names},
+        'original_native_core_join_passed': True,
+        'physical_or_legal_outcome_claimed': False,
+    }
+    return measured

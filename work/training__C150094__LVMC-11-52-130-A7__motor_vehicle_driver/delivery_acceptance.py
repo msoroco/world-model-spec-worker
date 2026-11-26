@@ -45,6 +45,12 @@ def audit(root, case, diagnostic):
         raise ValueError('Driveway context identity differs')
     if context.get('review_kind') != ('synthetic_diagnostic' if diagnostic else 'original_source_review'):
         raise ValueError('Driveway context provenance differs')
+    role = context.get('private_driveway_authority_role')
+    if role not in ('none', 'owner', 'controller', 'family_member', 'invitee') or (
+            context.get('owner_controller_family_invitee') != (role != 'none')):
+        raise ValueError('Specific private driveway authority source differs')
+    if role != 'none' and context.get('driveway_kind') != 'private':
+        raise ValueError('Private driveway authority claimed for public driveway')
     expected = 'synthetic_native_sample' if diagnostic else 'original_native_pose'
     for index, (park, state, frame, event, raw) in enumerate(zip(parking, core, frames, evidence, native)):
         original_frame = frame.get('native_frame')
@@ -69,10 +75,19 @@ def audit(root, case, diagnostic):
         if proc.stdout.strip() != '600':
             raise ValueError('Incomplete delivery video: ' + name)
         sources[name + '.mkv'] = sha(path)
+    bounds = context['driveway_curb_interval_m']
+    interior_overlap_frames = sum(
+        park['ego_speed_mps'] <= .05 and
+        min(park['ego_curb_station_m'] + park['ego_half_length_m'], bounds[1]) -
+        max(park['ego_curb_station_m'] - park['ego_half_length_m'], bounds[0]) > 1e-9
+        for park in parking)
+    if case.endswith('__probe_05') and not interior_overlap_frames:
+        raise ValueError('Front driveway case lacks positive interior body overlap')
     return {'format': 'c150094-independent-delivery-audit-v1', 'case_id': case,
             'checks': ['native_source', 'all_participants', 'time_join',
                        'full_video_decode', 'actual_pixels', 'physical_completion'],
             'source_hashes': sources, 'frames': 600,
+            'interior_driveway_overlap_frames': interior_overlap_frames,
             'diagnostic_fixture': diagnostic, 'original_native_observed': not diagnostic,
             'display_pixels_reviewed': False, 'private_authority_reviewed': False,
             'physical_acceptance': False, 'legal_verdict': None}

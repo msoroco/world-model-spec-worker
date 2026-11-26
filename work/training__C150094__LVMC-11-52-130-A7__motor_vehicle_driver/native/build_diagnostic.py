@@ -12,7 +12,9 @@ COUNT = 600
 VARIANTS = {'01': {'gap_m': 2.0, 'authority': False},
             '02': {'gap_m': 1.2, 'authority': False},
             '03': {'gap_m': 1.2, 'authority': True},
-            '04': {'gap_m': 1.524, 'authority': False}}
+            '04': {'gap_m': 1.524, 'authority': False},
+            '05': {'gap_m': 0.0, 'authority': False},
+            '06': {'gap_m': 1.2, 'authority': False, 'driveway_kind': 'public'}}
 
 
 def sha_bytes(value):
@@ -29,7 +31,7 @@ def main(probe):
         raise ValueError('Unknown frozen driveway probe')
     variant = VARIANTS[probe]
     case = AID + '__probe_' + probe
-    station = 53.0 + 2.0 + variant['gap_m']
+    station = 54.5 if probe == '05' else 53.0 + 2.0 + variant['gap_m']
     reference = REPO / 'work/training__C262666__NRS-484B-363-1__heavy_vehicle_driver/native/selected-generator-probe_03.json'
     base = json.loads(reference.read_text())
     files = dict(base['files'])
@@ -47,7 +49,7 @@ def main(probe):
                'traffic_conflict_source': 'synthetic traffic context',
                'lawful_direction_source': 'synthetic law and direction context',
                'driveway_curb_interval_m': [50.0, 53.0],
-               'driveway_kind': 'private',
+               'driveway_kind': variant.get('driveway_kind', 'private'),
                'owner_controller_family_invitee': variant['authority'],
                'private_driveway_authority_role': 'owner' if variant['authority'] else 'none',
                'usps_vehicle': False, 'usps_official_business': False,

@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from comparison_audit import AID, compare
 
 
-def case(probe, gap, authority):
+def case(probe, gap, authority, driveway_kind='private'):
     return {'case_id': AID + '__probe_' + probe,
             'config': {'cell_id': 'C150094', 'law_id': 'LVMC-11-52-130-A7',
                        'actor': 'motor_vehicle_driver', 'rate_hz': 20,
@@ -15,11 +15,13 @@ def case(probe, gap, authority):
                        'cameras': ['overview', 'approach', 'reference_corner', 'driver_reference'],
                        'recording_description': {'source': 'same'}},
             'context': {'case_id': AID + '__probe_' + probe,
-                        'driveway_kind': 'private',
+                        'driveway_kind': driveway_kind,
                         'owner_controller_family_invitee': authority,
                         'private_driveway_authority_role': 'owner' if authority else 'none',
                         'driveway_curb_interval_m': [50, 53]},
-            'value': {'minimum_footprint_gap_m_at_rest': gap, 'rest_frame_count': 600},
+            'value': {'minimum_footprint_gap_m_at_rest': gap, 'rest_frame_count': 600,
+                      'strict_front_overlap_frame_count': 600 if gap == 0 else 0,
+                      'maximum_front_overlap_m': 0.5 if gap == 0 else 0.0},
             'report_sha256': 'a' * 64,
             'source_hashes': {name: 'b' * 64 for name in
                               ('road.xodr', 'overview.mkv', 'approach.mkv',
@@ -34,6 +36,9 @@ class ComparisonAuditTests(unittest.TestCase):
         self.assertTrue(compare(near, invited, 'private_authority')['passed'])
         self.assertTrue(compare(near, equal, 'five_foot_equality_below')['passed'])
         self.assertTrue(compare(equal, far, 'five_foot_equality_above')['passed'])
+        self.assertTrue(compare(case('05', 0.0, False), near, 'front_overlap')['passed'])
+        self.assertTrue(compare(near, case('06', 1.2, False, 'public'),
+                                'public_private_driveway')['passed'])
 
     def test_rejects_uncontrolled_source_change(self):
         far, near = case('01', 2.0, False), case('02', 1.2, False)
@@ -57,6 +62,13 @@ class ComparisonAuditTests(unittest.TestCase):
         invited['context']['private_driveway_authority_role'] = 'invitee'
         with self.assertRaisesRegex(ValueError, 'private owner status'):
             compare(near, invited, 'private_authority')
+        touching = case('05', 0.0, False)
+        touching['value']['strict_front_overlap_frame_count'] = 0
+        with self.assertRaisesRegex(ValueError, 'positive interior body overlap'):
+            compare(touching, near, 'front_overlap')
+        false_public = case('06', 1.2, False, 'private')
+        with self.assertRaisesRegex(ValueError, 'isolate driveway kind'):
+            compare(near, false_public, 'public_private_driveway')
 
 
 if __name__ == '__main__':
