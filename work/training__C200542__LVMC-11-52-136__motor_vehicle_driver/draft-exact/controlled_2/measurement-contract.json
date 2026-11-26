@@ -1,0 +1,107 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C200542__LVMC-11-52-136__motor_vehicle_driver__controlled_2",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Access-aisle parking source-bound joint observation",
+      "source": "LVMC 11.52.136; inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json#0",
+      "output_key": "source_bound_aisle_parking",
+      "method": "measured",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road.xodr",
+        "aisle-context.json",
+        "premises-review.json",
+        "aisle-designation-review.json",
+        "parking-review.json",
+        "native-vehicle.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Public-access premises and jurisdiction",
+      "source": "LVMC 11.52.136; inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json#0",
+      "output_key": "public_access_premises",
+      "method": "premises_observation",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road.xodr",
+        "aisle-context.json",
+        "premises-review.json",
+        "aisle-designation-review.json",
+        "parking-review.json",
+        "native-vehicle.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Qualifying official access-aisle designation",
+      "source": "LVMC 11.52.136; inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json#0",
+      "output_key": "official_access_aisle",
+      "method": "designation_observation",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road.xodr",
+        "aisle-context.json",
+        "premises-review.json",
+        "aisle-designation-review.json",
+        "parking-review.json",
+        "native-vehicle.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Vehicle, responsible person and parking activity",
+      "source": "LVMC 11.52.136; inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json#0",
+      "output_key": "parked_vehicle",
+      "method": "parking_observation",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road.xodr",
+        "aisle-context.json",
+        "premises-review.json",
+        "aisle-designation-review.json",
+        "parking-review.json",
+        "native-vehicle.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "Measured body footprint and stationary overlap",
+      "source": "LVMC 11.52.136; inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json#0",
+      "output_key": "body_aisle_overlap",
+      "method": "overlap_observation",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road.xodr",
+        "aisle-context.json",
+        "premises-review.json",
+        "aisle-designation-review.json",
+        "parking-review.json",
+        "native-vehicle.jsonl",
+        "video_frames.jsonl",
+        "reference_corner.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "aisle-designation-review.json"
+    ],
+    "error_contains": "Missing required source: aisle-designation-review.json"
+  }
+}

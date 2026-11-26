@@ -505,7 +505,7 @@
   "mandatory_observation_terms": [
     {
       "term": "sig.headlamp",
-      "purpose": "state off / low_beam / high_beam — the lamps displayed",
+      "purpose": "state off / low_beam / high_beam \u2014 the lamps displayed",
       "status": "measurement_mapping_pending"
     },
     {
@@ -558,7 +558,7 @@
     {
       "name": "sig.headlamp",
       "mandatory": true,
-      "reason": "state off / low_beam / high_beam — the lamps displayed"
+      "reason": "state off / low_beam / high_beam \u2014 the lamps displayed"
     },
     {
       "name": "sig.position_lamp",
@@ -653,118 +653,108 @@
     "test_scope": "three 600-frame/20-Hz synthetic source-shaped positives, nine source/frame negatives, original FrameMap join and OpenDRIVE hash check",
     "legal_result": null
   },
-  "source_observation_mapping": [
-    {
-      "term": "sig.headlamp",
-      "measurement": "original lamp readback",
+  "source_observation_mapping": {
+    "sig.headlamp": {
+      "evidence": "original lamp readback",
       "channels": [
-        "vehicle-lamps.jsonl"
+        "sig.headlamp"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     },
-    {
-      "term": "sig.position_lamp",
-      "measurement": "original position-lamp readback",
+    "sig.position_lamp": {
+      "evidence": "original position-lamp readback",
       "channels": [
-        "vehicle-lamps.jsonl"
+        "sig.position_lamp"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     },
-    {
-      "term": "drv.civil_night",
-      "measurement": "timezone-aware civil timestamp joined to independently sourced sunset and sunrise",
+    "drv.civil_night": {
+      "evidence": "timezone-aware civil timestamp joined to independently sourced sunset and sunrise",
       "channels": [
-        "civil_time"
+        "drv.civil_night"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     },
-    {
-      "term": "env.civil_time",
-      "measurement": "timezone-aware original per-frame civil timestamp",
+    "env.civil_time": {
+      "evidence": "timezone-aware original per-frame civil timestamp",
       "channels": [
-        "civil_time"
+        "env.civil_time"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     },
-    {
-      "term": "env.visibility",
-      "measurement": "separate original person and vehicle discernibility at 304.8 m",
+    "env.visibility": {
+      "evidence": "separate original person and vehicle discernibility at 304.8 m",
       "channels": [
-        "visibility_1000ft"
+        "env.visibility"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     },
-    {
-      "term": "env.darkness",
-      "measurement": "original image and independently sourced light context; no inference from weather",
+    "env.darkness": {
+      "evidence": "original image and independently sourced light context; no inference from weather",
       "channels": [
-        "actual_pixels"
+        "env.darkness"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     },
-    {
-      "term": "env.precipitation",
-      "measurement": "original weather readback and image; not a discernibility proxy",
+    "env.precipitation": {
+      "evidence": "original weather readback and image; not a discernibility proxy",
       "channels": [
-        "weather"
+        "env.precipitation"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     },
-    {
-      "term": "dev.regulatory_sign",
-      "measurement": "OpenDRIVE signal plus independent device authority/content/timing review",
+    "dev.regulatory_sign": {
+      "evidence": "OpenDRIVE signal plus independent device authority/content/timing review",
       "channels": [
-        "lamp-context.json"
+        "dev.regulatory_sign"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     },
-    {
-      "term": "st.highway",
-      "measurement": "OpenDRIVE lane plus independent Nevada highway source",
+    "st.highway": {
+      "evidence": "OpenDRIVE lane plus independent Nevada highway source",
       "channels": [
-        "road_and_class"
+        "st.highway"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     },
-    {
-      "term": "drv.standing_or_parked",
-      "measurement": "original per-frame parked state and separately reviewed parking exception",
+    "drv.standing_or_parked": {
+      "evidence": "original per-frame parked state and separately reviewed parking exception",
       "channels": [
-        "parking"
+        "drv.standing_or_parked"
       ],
       "source_refs": [
         "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json"
       ],
       "status": "diagnostic_or_source_review_pending"
     }
-  ],
+  },
   "additional_cpu_measurements": {
     "module": "lamp_branch_measure.py",
     "proof": "lamp-branch-proof.log",
@@ -788,22 +778,22 @@
     "coverage": [
       {
         "view": "overview",
-        "subject": "subject vehicle and governed roadway",
+        "subject": "subject vehicle, paved highway and shoulder",
         "interval": "all 600 frames"
       },
       {
         "view": "approach",
-        "subject": "approach sign, vehicle, pavement and emitted lamps",
+        "subject": "device face, vehicle lamps and travel path",
         "interval": "all 600 frames"
       },
       {
         "view": "reference_corner",
-        "subject": "device face, sign placement and governed lane",
+        "subject": "person and vehicle targets at the selected 1,000-foot boundary",
         "interval": "all 600 frames"
       },
       {
         "view": "driver_reference",
-        "subject": "forward view, lamp illumination and roadway",
+        "subject": "driver view of targets, roadway and emitted lamps",
         "interval": "all 600 frames"
       }
     ]

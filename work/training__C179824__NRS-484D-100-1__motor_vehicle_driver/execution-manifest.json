@@ -8,84 +8,126 @@
   "cases": [
     {
       "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
-      "kind": "delivery",
-      "construction": "draft-lamp-device/controlled_1/primary/construction.json",
-      "construction_sha256": "b6e4d53f0a437ec6967322d6554f0fef3343867c60cc7b8e1d876d482849c671",
+      "construction": "draft-device-full/controlled_1/primary/construction.json",
+      "construction_sha256": "d02c6b0caeece380140f888f6789ba02d2ef683b349f12d89e25ba6ef5760d51",
       "measurement_procedure": {
-        "entrypoint": "finalize_lamp.py",
+        "entrypoint": "finalize_full_lamp.py",
         "output_schema": "worker-analysis-report-v1"
       },
-      "measurement_contract": "cases/controlled_1/measurement-contract.json",
-      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/controlled_1/recipe.json",
+      "measurement_contract": "cases/full_controlled_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/full_controlled_1/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
       "candidate_risk": {
         "status": "physical",
-        "reason": "Actual lamp pixels, traffic-device face and travel route require Native review"
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
       },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "draft-lamp-device/controlled_1/fallback1/construction.json",
-          "construction_sha256": "ccfecbdfade08c6e5e7d343fbe924d30740b6778da6cf5f4a33c45859cb93dd7",
-          "trigger": {
-            "source": "Original Native pose trace and video frame map",
-            "metric": "600 joined frames with at least 200 governed moving frames and four camera views",
-            "failure_condition": "Primary start or motion yields fewer than 200 governed moving frames or obscures sign approach"
-          },
-          "changed_knobs": [
-            "spawn x: -70 m to -68 m",
-            "target speed: 3.0 to 2.8 m/s"
-          ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/draft-lamp-device-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/c179824/offline-fallback1-1 --python $PWD/.venv-cpu/bin/python",
-            "exit_code": 0,
-            "construction_sha256": "ccfecbdfade08c6e5e7d343fbe924d30740b6778da6cf5f4a33c45859cb93dd7",
-            "log": "fallback-proofs/controlled_1/offline.log",
-            "log_sha256": "18872c321a8fca510a0608438226b371a32e074c026aa7acc7e133710f441ac7"
-          },
-          "compatibility": {
-            "receipt": "fallback-proofs/controlled_1/receipt.json",
-            "sha256": "e52c0053789f17f2b291f8aae741774555a697f6aafd762f00c6573eb372d361",
-            "log": "fallback-proofs/controlled_1/analysis.log",
-            "negative_log": "fallback-proofs/controlled_1/negative.log"
-          }
-        }
-      ],
-      "id": "primary",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --candidate primary --output .runtime-work/c179824/offline-primary-1",
-        "exit_code": 0,
-        "construction_sha256": "b6e4d53f0a437ec6967322d6554f0fef3343867c60cc7b8e1d876d482849c671",
-        "log": "controlled-1-offline.log",
-        "log_sha256": "39b0e9ed7b379ebed888d28fccae1b1060d429618088cd2e68d3cb7b07a40caa"
-      },
       "compatibility": {
-        "receipt": "cases/controlled_1/public-compatibility.json",
-        "sha256": "4a4462db0f83aa2a39bb88a27ae96d12cf495d281197e646882d032f6e596662",
-        "log": "cases/controlled_1/public-analysis.log",
-        "negative_log": "cases/controlled_1/public-negative.log"
+        "receipt": "draft-device-full-proofs/controlled_1/primary/receipt.json",
+        "sha256": "1ae0ae1949f09575b949b1656e4148202fa8d37cad9d39447289845c0f15f22c",
+        "log": "draft-device-full-proofs/controlled_1/primary/analysis.log",
+        "negative_log": "draft-device-full-proofs/controlled_1/primary/negative.log"
       },
       "negative": {
-        "log": "cases/controlled_1/public-negative.log"
+        "log": "draft-device-full-proofs/controlled_1/primary/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-proof/controlled_1/proof.json",
-        "sha256": "81cca7cebf86b8fdfc8e520791a165865010a6abc439ab64644b9baa4c9771b6"
+        "sha256": "18768c45827d2da4bfd83b8937892548e83742c13c3193d94eb7f08410b20a44"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --candidate primary --output .runtime-work/c179824/selected-offline-controlled_1-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "d02c6b0caeece380140f888f6789ba02d2ef683b349f12d89e25ba6ef5760d51",
+        "log": "draft-device-full-proofs/controlled_1/primary-offline.log",
+        "log_sha256": "512db860209cde2d5ccbfe93e796ee38240f1fa6244c3aacd5514c7880d460f9"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
         "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
         "recorded_only": true,
         "test_exit_code": 0,
-        "test_log": "cases/controlled_1/saved-processing.json",
-        "test_log_sha256": "76e6c9d0add7cf3acb29b76cbfadc062fcf0f31695709045cee0bc22dede3975",
-        "processing_receipt": "cases/controlled_1/saved-processing.json",
-        "processing_receipt_sha256": "76e6c9d0add7cf3acb29b76cbfadc062fcf0f31695709045cee0bc22dede3975"
+        "test_log": "draft-device-full-proofs/controlled_1/primary/saved-processing.json",
+        "test_log_sha256": "9ecde8f53e71aad40d22a55694fcaaa8aca3d2d6261e197bfe274fdda4748150",
+        "processing_receipt": "draft-device-full-proofs/controlled_1/primary/saved-processing.json",
+        "processing_receipt_sha256": "9ecde8f53e71aad40d22a55694fcaaa8aca3d2d6261e197bfe274fdda4748150"
       },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-device-full/controlled_1/fallback1/construction.json",
+          "construction_sha256": "1ba3d54498dbf0e89a62279d5457ec23e9ace60b5af49bfc5697bf380f3c610c",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --candidate fallback1 --output .runtime-work/c179824/selected-offline-controlled_1-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "1ba3d54498dbf0e89a62279d5457ec23e9ace60b5af49bfc5697bf380f3c610c",
+            "log": "draft-device-full-proofs/controlled_1/fallback1-offline.log",
+            "log_sha256": "512db860209cde2d5ccbfe93e796ee38240f1fa6244c3aacd5514c7880d460f9"
+          },
+          "compatibility": {
+            "receipt": "draft-device-full-proofs/controlled_1/fallback/receipt.json",
+            "sha256": "e12f3aa1baacc77366efa71900307e0756b54f66311bf4556e150e4c115b06f0",
+            "log": "draft-device-full-proofs/controlled_1/fallback/analysis.log",
+            "negative_log": "draft-device-full-proofs/controlled_1/fallback/negative.log"
+          }
+        }
+      ],
       "delivery_acceptance": {
         "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
         "sets": [
@@ -99,122 +141,142 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "f26ded002b64103a35b8737c343daf5ae08ab225f30d00139ee08d350be55cef",
-        "command": ".venv-cpu/bin/python work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --self-test",
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --self-test",
         "test_exit_code": 0,
-        "test_log": "delivery-proofs/controlled_1-positive.log",
+        "test_log": "delivery-proofs/controlled_1/positive.log",
         "test_log_sha256": "8fb24dea5c13835f0b472b6e956c8421c5680354288b61ebf1e8590492c30ddd",
-        "negative_command": ".venv-cpu/bin/python work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --self-test --negative",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1 --self-test --negative",
         "negative_exit_code": 1,
-        "negative_expected_error": "Original pixel review source hash changed: video_sha256",
-        "negative_log": "delivery-proofs/controlled_1-negative.log",
-        "negative_log_sha256": "e0618220ba8cbf013e84e3bc6b890db3d2930b20f354ea1eff805336d0da3ea0",
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/controlled_1/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
         "scope": "source predicate CPU proof only; original Native capture not observed"
-      },
-      "acquisition": {
-        "native_lamp_setting": {
-          "entrypoint": "runner.py",
-          "method": "Original Native VehicleLightState per-frame readback joined to saved video frame map",
-          "evidence": [
-            "vehicle-lamps.jsonl",
-            "video_frames.jsonl",
-            "lamp-context.json"
-          ]
-        },
-        "device_and_highway_context": {
-          "entrypoint": "finalize_lamp.py",
-          "method": "OpenDRIVE road/sign survey joined to independent official-device and Nevada highway reviews",
-          "evidence": [
-            "road.xodr",
-            "lamp-context.json",
-            "device-authority-review.json",
-            "highway-review.json",
-            "video_frames.jsonl"
-          ]
-        }
       }
     },
     {
       "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2",
-      "kind": "delivery",
-      "construction": "draft-lamp-device/controlled_2/primary/construction.json",
-      "construction_sha256": "1d2755b2941f5117942dfff760bd2048e0452972623a6a537726a1cc6bdca6a3",
+      "construction": "draft-device-full/controlled_2/primary/construction.json",
+      "construction_sha256": "f95fd50cf8820f12323c53cb538cd1279e9b788e9c0d228d8a02cc6542b1b6c5",
       "measurement_procedure": {
-        "entrypoint": "finalize_lamp.py",
+        "entrypoint": "finalize_full_lamp.py",
         "output_schema": "worker-analysis-report-v1"
       },
-      "measurement_contract": "cases/controlled_2/measurement-contract.json",
-      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/controlled_2/recipe.json",
+      "measurement_contract": "cases/full_controlled_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/full_controlled_2/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
       "candidate_risk": {
         "status": "physical",
-        "reason": "Actual lamp pixels, traffic-device face and travel route require Native review"
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
       },
-      "candidates": [
-        {
-          "id": "fallback1",
-          "construction": "draft-lamp-device/controlled_2/fallback1/construction.json",
-          "construction_sha256": "1dfe2425f1802f3567840f20e1134376d9a12585ba6e81376361cd9e0ca6087e",
-          "trigger": {
-            "source": "Original Native pose trace and video frame map",
-            "metric": "600 joined frames with at least 200 governed moving frames and four camera views",
-            "failure_condition": "Primary start or motion yields fewer than 200 governed moving frames or obscures sign approach"
-          },
-          "changed_knobs": [
-            "spawn x: -70 m to -68 m",
-            "target speed: 3.0 to 2.8 m/s"
-          ],
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/draft-lamp-device-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c179824/offline-fallback1-2 --python $PWD/.venv-cpu/bin/python",
-            "exit_code": 0,
-            "construction_sha256": "1dfe2425f1802f3567840f20e1134376d9a12585ba6e81376361cd9e0ca6087e",
-            "log": "fallback-proofs/controlled_2/offline.log",
-            "log_sha256": "18872c321a8fca510a0608438226b371a32e074c026aa7acc7e133710f441ac7"
-          },
-          "compatibility": {
-            "receipt": "fallback-proofs/controlled_2/receipt.json",
-            "sha256": "1c63183bfddf7d6c13063e41dde52b8e2351c8565b55de2b730fd8ca2e584167",
-            "log": "fallback-proofs/controlled_2/analysis.log",
-            "negative_log": "fallback-proofs/controlled_2/negative.log"
-          }
-        }
-      ],
-      "id": "primary",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --candidate primary --output .runtime-work/c179824/offline-primary-2",
-        "exit_code": 0,
-        "construction_sha256": "1d2755b2941f5117942dfff760bd2048e0452972623a6a537726a1cc6bdca6a3",
-        "log": "controlled-2-offline.log",
-        "log_sha256": "c97b34313103d74feef77566c71d48ee0722c460caebbc1552d6f86eb151da13"
-      },
       "compatibility": {
-        "receipt": "cases/controlled_2/public-compatibility.json",
-        "sha256": "b90c25c4fa8ed32c40e4ca071df822c858a80507bfa17ef344c950c53a1fc0d7",
-        "log": "cases/controlled_2/public-analysis.log",
-        "negative_log": "cases/controlled_2/public-negative.log"
+        "receipt": "draft-device-full-proofs/controlled_2/primary/receipt.json",
+        "sha256": "7fce1f7db0ddd204afb1d177017c60d4aad635600893c78bef4910ab6cbe139b",
+        "log": "draft-device-full-proofs/controlled_2/primary/analysis.log",
+        "negative_log": "draft-device-full-proofs/controlled_2/primary/negative.log"
       },
       "negative": {
-        "log": "cases/controlled_2/public-negative.log"
+        "log": "draft-device-full-proofs/controlled_2/primary/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-proof/controlled_2/proof.json",
-        "sha256": "68e6df8d713c31b2b1bdf1a8fe5a6c5f2a02980e89066b2f316f174a8191418d"
+        "sha256": "35ff05d35c286eabb84c1a0d967018da961ae37ad0aa4cae716a45f821afdc0a"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --candidate primary --output .runtime-work/c179824/selected-offline-controlled_2-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "f95fd50cf8820f12323c53cb538cd1279e9b788e9c0d228d8a02cc6542b1b6c5",
+        "log": "draft-device-full-proofs/controlled_2/primary-offline.log",
+        "log_sha256": "c94e1b7d78c57b0219c436bcdcfceff2c8591d850bbb4a9d4a0e2cfd2e21e049"
       },
       "post_capture": {
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
         "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
         "recorded_only": true,
         "test_exit_code": 0,
-        "test_log": "cases/controlled_2/saved-processing.json",
-        "test_log_sha256": "89e57bd6db1803639d557d77d97b689bb228a2004268751b412fee729bf4a620",
-        "processing_receipt": "cases/controlled_2/saved-processing.json",
-        "processing_receipt_sha256": "89e57bd6db1803639d557d77d97b689bb228a2004268751b412fee729bf4a620"
+        "test_log": "draft-device-full-proofs/controlled_2/primary/saved-processing.json",
+        "test_log_sha256": "69fe8d4cc278d1906bf8de8350f9d84f007522be1cf97d4fe67b8b1135091a8c",
+        "processing_receipt": "draft-device-full-proofs/controlled_2/primary/saved-processing.json",
+        "processing_receipt_sha256": "69fe8d4cc278d1906bf8de8350f9d84f007522be1cf97d4fe67b8b1135091a8c"
       },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_full_lamp.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-device-full/controlled_2/fallback1/construction.json",
+          "construction_sha256": "9742b0c5bb74ec37e76847b59857ac97624c2a9d70e3c4c7f36bf05763b42f06",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --candidate fallback1 --output .runtime-work/c179824/selected-offline-controlled_2-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "9742b0c5bb74ec37e76847b59857ac97624c2a9d70e3c4c7f36bf05763b42f06",
+            "log": "draft-device-full-proofs/controlled_2/fallback1-offline.log",
+            "log_sha256": "c94e1b7d78c57b0219c436bcdcfceff2c8591d850bbb4a9d4a0e2cfd2e21e049"
+          },
+          "compatibility": {
+            "receipt": "draft-device-full-proofs/controlled_2/fallback/receipt.json",
+            "sha256": "f85ac75380c5208710675bc39ee33f56829c7fac0f60160f4da327bfe0d472aa",
+            "log": "draft-device-full-proofs/controlled_2/fallback/analysis.log",
+            "negative_log": "draft-device-full-proofs/controlled_2/fallback/negative.log"
+          }
+        }
+      ],
       "delivery_acceptance": {
         "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2",
         "sets": [
@@ -228,40 +290,1657 @@
           "actual_pixels",
           "physical_completion"
         ],
-        "script": "delivery_audit.py",
-        "script_sha256": "f26ded002b64103a35b8737c343daf5ae08ab225f30d00139ee08d350be55cef",
-        "command": ".venv-cpu/bin/python work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --self-test",
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --self-test",
         "test_exit_code": 0,
-        "test_log": "delivery-proofs/controlled_2-positive.log",
+        "test_log": "delivery-proofs/controlled_2/positive.log",
         "test_log_sha256": "cd143508a150f6ee4e7ac3e0dd25648fa1cb4e59dccf4731a161185164d0359c",
-        "negative_command": ".venv-cpu/bin/python work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --self-test --negative",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2 --self-test --negative",
         "negative_exit_code": 1,
-        "negative_expected_error": "Original pixel review source hash changed: video_sha256",
-        "negative_log": "delivery-proofs/controlled_2-negative.log",
-        "negative_log_sha256": "e0618220ba8cbf013e84e3bc6b890db3d2930b20f354ea1eff805336d0da3ea0",
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/controlled_2/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
         "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below",
+      "construction": "draft-boundary-cases/minutes_after_sunset_below/primary/construction.json",
+      "construction_sha256": "acb010f64363301677392e5528f02761667a9ea1b45eb7a3946b7c61981e0265",
+      "measurement_procedure": {
+        "entrypoint": "finalize_boundary.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/minutes_after_sunset_below/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/minutes_after_sunset_below/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-boundary-proofs/minutes_after_sunset_below/primary/receipt.json",
+        "sha256": "74086cb94436e85eaa7a034c02e717ad0343f1c53eaead70be85f25d0005a981",
+        "log": "draft-boundary-proofs/minutes_after_sunset_below/primary/analysis.log",
+        "negative_log": "draft-boundary-proofs/minutes_after_sunset_below/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-boundary-proofs/minutes_after_sunset_below/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/minutes_after_sunset_below/proof.json",
+        "sha256": "29a77b0cc43f5c72e7ba7be5b05203b04ed3bde4f8c2899e51e16ce56ad2c5a5"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below --candidate primary --output .runtime-work/c179824/selected-offline-minutes_after_sunset_below-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "acb010f64363301677392e5528f02761667a9ea1b45eb7a3946b7c61981e0265",
+        "log": "draft-boundary-proofs/minutes_after_sunset_below/primary-offline.log",
+        "log_sha256": "4bbe4ec347b46176b1beb6074d7b3c5af6f3ebc481eda6f07a109129e6f6c7e6"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-boundary-proofs/minutes_after_sunset_below/primary/saved-processing.json",
+        "test_log_sha256": "bd868afeaa7b1697078360c8a4736a6398fc3e3a805bf99ce9d292b595eed51b",
+        "processing_receipt": "draft-boundary-proofs/minutes_after_sunset_below/primary/saved-processing.json",
+        "processing_receipt_sha256": "bd868afeaa7b1697078360c8a4736a6398fc3e3a805bf99ce9d292b595eed51b"
       },
       "acquisition": {
         "native_lamp_setting": {
-          "entrypoint": "runner.py",
-          "method": "Original Native VehicleLightState per-frame readback joined to saved video frame map",
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
           "evidence": [
-            "vehicle-lamps.jsonl",
             "video_frames.jsonl",
-            "lamp-context.json"
+            "analysis-report.json"
           ]
         },
         "device_and_highway_context": {
-          "entrypoint": "finalize_lamp.py",
-          "method": "OpenDRIVE road/sign survey joined to independent official-device and Nevada highway reviews",
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
           "evidence": [
-            "road.xodr",
-            "lamp-context.json",
-            "device-authority-review.json",
-            "highway-review.json",
-            "video_frames.jsonl"
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
           ]
         }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-boundary-cases/minutes_after_sunset_below/fallback1/construction.json",
+          "construction_sha256": "e06f60720ff1e527ed8f49820792e62f6274827754cd00c320ac0773e5c37c50",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below --candidate fallback1 --output .runtime-work/c179824/selected-offline-minutes_after_sunset_below-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "e06f60720ff1e527ed8f49820792e62f6274827754cd00c320ac0773e5c37c50",
+            "log": "draft-boundary-proofs/minutes_after_sunset_below/fallback1-offline.log",
+            "log_sha256": "4bbe4ec347b46176b1beb6074d7b3c5af6f3ebc481eda6f07a109129e6f6c7e6"
+          },
+          "compatibility": {
+            "receipt": "draft-boundary-proofs/minutes_after_sunset_below/fallback1/receipt.json",
+            "sha256": "a6f75675e48e5a2da7caa3c35926d86e85aad45e737be2b5b9cee5eccfc1d1dd",
+            "log": "draft-boundary-proofs/minutes_after_sunset_below/fallback1/analysis.log",
+            "negative_log": "draft-boundary-proofs/minutes_after_sunset_below/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/minutes_after_sunset_below/positive.log",
+        "test_log_sha256": "80ffd29d2430ad9da241afecdc94690a086c6ac2ac2381ed75cfb8266adf31ff",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/minutes_after_sunset_below/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_at",
+      "construction": "draft-boundary-cases/minutes_after_sunset_at/primary/construction.json",
+      "construction_sha256": "56f8b14ec9df74b7055e993d877d5f7d37a928bef299753c1c654c70f21cc928",
+      "measurement_procedure": {
+        "entrypoint": "finalize_boundary.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/minutes_after_sunset_at/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/minutes_after_sunset_at/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-boundary-proofs/minutes_after_sunset_at/primary/receipt.json",
+        "sha256": "1c2229a3fdea63e5f7bcf9f7168c7f719d6ee0c2b6a475cad08ecaa314d4e127",
+        "log": "draft-boundary-proofs/minutes_after_sunset_at/primary/analysis.log",
+        "negative_log": "draft-boundary-proofs/minutes_after_sunset_at/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-boundary-proofs/minutes_after_sunset_at/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/minutes_after_sunset_at/proof.json",
+        "sha256": "af1d343abefa4cf4ffc8561710f8dad5243f8906f121a4341c7512714652447a"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_at --candidate primary --output .runtime-work/c179824/selected-offline-minutes_after_sunset_at-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "56f8b14ec9df74b7055e993d877d5f7d37a928bef299753c1c654c70f21cc928",
+        "log": "draft-boundary-proofs/minutes_after_sunset_at/primary-offline.log",
+        "log_sha256": "ff9dfce2e41ffe69e924c366c52de1afd3c27568354b0b5fdd21c1342a3eacec"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_at --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_at --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-boundary-proofs/minutes_after_sunset_at/primary/saved-processing.json",
+        "test_log_sha256": "f4fba442a553c0cba87a9c038938a01a82ab5ab30802cd8569de517bfc0ab987",
+        "processing_receipt": "draft-boundary-proofs/minutes_after_sunset_at/primary/saved-processing.json",
+        "processing_receipt_sha256": "f4fba442a553c0cba87a9c038938a01a82ab5ab30802cd8569de517bfc0ab987"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-boundary-cases/minutes_after_sunset_at/fallback1/construction.json",
+          "construction_sha256": "5f296d79edfc675704c93870ee2ce893cfa0520db954a2d06367dd68e6d07f26",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_at --candidate fallback1 --output .runtime-work/c179824/selected-offline-minutes_after_sunset_at-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "5f296d79edfc675704c93870ee2ce893cfa0520db954a2d06367dd68e6d07f26",
+            "log": "draft-boundary-proofs/minutes_after_sunset_at/fallback1-offline.log",
+            "log_sha256": "ff9dfce2e41ffe69e924c366c52de1afd3c27568354b0b5fdd21c1342a3eacec"
+          },
+          "compatibility": {
+            "receipt": "draft-boundary-proofs/minutes_after_sunset_at/fallback1/receipt.json",
+            "sha256": "bdd7838ff90559a0bcf9cb1424246782f937f8d5fe50a93b0bb9f7661a4ded1d",
+            "log": "draft-boundary-proofs/minutes_after_sunset_at/fallback1/analysis.log",
+            "negative_log": "draft-boundary-proofs/minutes_after_sunset_at/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_at",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_at --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/minutes_after_sunset_at/positive.log",
+        "test_log_sha256": "626fc896f5e6bc838c806fecaf9ce08b1e3794ca7a290b507fabb6e5e4eb5d4e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_at --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/minutes_after_sunset_at/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_above",
+      "construction": "draft-boundary-cases/minutes_after_sunset_above/primary/construction.json",
+      "construction_sha256": "461b491b18dbb9fb1aa0c96f35e2e871c9d41aca7fe9d99c9d11573973947b3a",
+      "measurement_procedure": {
+        "entrypoint": "finalize_boundary.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/minutes_after_sunset_above/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/minutes_after_sunset_above/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-boundary-proofs/minutes_after_sunset_above/primary/receipt.json",
+        "sha256": "9401062165fc5d21869217501adc2f62478713d5ec0997c0064afdb32bb17667",
+        "log": "draft-boundary-proofs/minutes_after_sunset_above/primary/analysis.log",
+        "negative_log": "draft-boundary-proofs/minutes_after_sunset_above/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-boundary-proofs/minutes_after_sunset_above/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/minutes_after_sunset_above/proof.json",
+        "sha256": "dc50ba12f639cbefd303d3139a6e6abf76ae552c3c2a1d30f9e5de00bc5a370c"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_above --candidate primary --output .runtime-work/c179824/selected-offline-minutes_after_sunset_above-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "461b491b18dbb9fb1aa0c96f35e2e871c9d41aca7fe9d99c9d11573973947b3a",
+        "log": "draft-boundary-proofs/minutes_after_sunset_above/primary-offline.log",
+        "log_sha256": "2cdf17aec4f69c6fe5c1b45ddc4183150d9ed4cc53173953b795ba30942d4bd9"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_above --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_above --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-boundary-proofs/minutes_after_sunset_above/primary/saved-processing.json",
+        "test_log_sha256": "8c798141fb5e220138062976703f895d7e2a5d60da4e7842bf77119d6bad0e2e",
+        "processing_receipt": "draft-boundary-proofs/minutes_after_sunset_above/primary/saved-processing.json",
+        "processing_receipt_sha256": "8c798141fb5e220138062976703f895d7e2a5d60da4e7842bf77119d6bad0e2e"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-boundary-cases/minutes_after_sunset_above/fallback1/construction.json",
+          "construction_sha256": "2fc32bab06f39415044d5ff0cdc6531952430474b6d7047bd6f2a34aafc7a420",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_above --candidate fallback1 --output .runtime-work/c179824/selected-offline-minutes_after_sunset_above-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2fc32bab06f39415044d5ff0cdc6531952430474b6d7047bd6f2a34aafc7a420",
+            "log": "draft-boundary-proofs/minutes_after_sunset_above/fallback1-offline.log",
+            "log_sha256": "2cdf17aec4f69c6fe5c1b45ddc4183150d9ed4cc53173953b795ba30942d4bd9"
+          },
+          "compatibility": {
+            "receipt": "draft-boundary-proofs/minutes_after_sunset_above/fallback1/receipt.json",
+            "sha256": "c56e67be4cf158a8eb9cb7b17250a181c4573c7bd380c9627344632fa2cb36eb",
+            "log": "draft-boundary-proofs/minutes_after_sunset_above/fallback1/analysis.log",
+            "negative_log": "draft-boundary-proofs/minutes_after_sunset_above/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_above",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_above --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/minutes_after_sunset_above/positive.log",
+        "test_log_sha256": "5780ccb8f1418cbb1eef586067c55aea16659818dc42bc54aa33a7476efcde5c",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_above --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/minutes_after_sunset_above/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_below",
+      "construction": "draft-boundary-cases/minutes_before_sunrise_below/primary/construction.json",
+      "construction_sha256": "3c4eefae8f6d140f5bd8b0290941b0c8a81c9a169d6324e358737d028cf09b40",
+      "measurement_procedure": {
+        "entrypoint": "finalize_boundary.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/minutes_before_sunrise_below/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/minutes_before_sunrise_below/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-boundary-proofs/minutes_before_sunrise_below/primary/receipt.json",
+        "sha256": "a247140608ac1bbeed17c667bea3b96c669bb3d84415f4566c5a0b83ecb50e83",
+        "log": "draft-boundary-proofs/minutes_before_sunrise_below/primary/analysis.log",
+        "negative_log": "draft-boundary-proofs/minutes_before_sunrise_below/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-boundary-proofs/minutes_before_sunrise_below/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/minutes_before_sunrise_below/proof.json",
+        "sha256": "7467da58cc6db6924b0a194fca6449b893118cae2d242aede61209c9c5bd5dbf"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_below --candidate primary --output .runtime-work/c179824/selected-offline-minutes_before_sunrise_below-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "3c4eefae8f6d140f5bd8b0290941b0c8a81c9a169d6324e358737d028cf09b40",
+        "log": "draft-boundary-proofs/minutes_before_sunrise_below/primary-offline.log",
+        "log_sha256": "fc3ffdfce84c74cf319be94e83b0b2d4a01668976383228f3d999407d610a0f9"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_below --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_below --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-boundary-proofs/minutes_before_sunrise_below/primary/saved-processing.json",
+        "test_log_sha256": "bd8f86ebb41f845cdb073f764c31737336fd4fcd6239209481e3fdedb5246677",
+        "processing_receipt": "draft-boundary-proofs/minutes_before_sunrise_below/primary/saved-processing.json",
+        "processing_receipt_sha256": "bd8f86ebb41f845cdb073f764c31737336fd4fcd6239209481e3fdedb5246677"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-boundary-cases/minutes_before_sunrise_below/fallback1/construction.json",
+          "construction_sha256": "1f7dcf5153d87791aa4d3851b326b179224de5cdf155a140c8ff387923ce0acd",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_below --candidate fallback1 --output .runtime-work/c179824/selected-offline-minutes_before_sunrise_below-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "1f7dcf5153d87791aa4d3851b326b179224de5cdf155a140c8ff387923ce0acd",
+            "log": "draft-boundary-proofs/minutes_before_sunrise_below/fallback1-offline.log",
+            "log_sha256": "fc3ffdfce84c74cf319be94e83b0b2d4a01668976383228f3d999407d610a0f9"
+          },
+          "compatibility": {
+            "receipt": "draft-boundary-proofs/minutes_before_sunrise_below/fallback1/receipt.json",
+            "sha256": "1c6f1d00cb118d04e5ce86f1101a867a4035674f2c056a4913a6d976c80a23ab",
+            "log": "draft-boundary-proofs/minutes_before_sunrise_below/fallback1/analysis.log",
+            "negative_log": "draft-boundary-proofs/minutes_before_sunrise_below/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_below",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_below --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/minutes_before_sunrise_below/positive.log",
+        "test_log_sha256": "cec897c17ef225c0b1bcbe9a77dd0db1d5ccd19fd99d10d607746ddd75c9268e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_below --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/minutes_before_sunrise_below/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_at",
+      "construction": "draft-boundary-cases/minutes_before_sunrise_at/primary/construction.json",
+      "construction_sha256": "2d7879e8920deb464de59408fe3a54748897cf44239447f19abeaad6189ae633",
+      "measurement_procedure": {
+        "entrypoint": "finalize_boundary.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/minutes_before_sunrise_at/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/minutes_before_sunrise_at/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-boundary-proofs/minutes_before_sunrise_at/primary/receipt.json",
+        "sha256": "ac5364ebc0d671c1d10b7a96258462b685104741bd217967a94db68d65889779",
+        "log": "draft-boundary-proofs/minutes_before_sunrise_at/primary/analysis.log",
+        "negative_log": "draft-boundary-proofs/minutes_before_sunrise_at/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-boundary-proofs/minutes_before_sunrise_at/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/minutes_before_sunrise_at/proof.json",
+        "sha256": "9121030c55aac62fbc085cd4dc4ec279bdebdb1c45aa36c1b3b73699de4f5021"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_at --candidate primary --output .runtime-work/c179824/selected-offline-minutes_before_sunrise_at-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "2d7879e8920deb464de59408fe3a54748897cf44239447f19abeaad6189ae633",
+        "log": "draft-boundary-proofs/minutes_before_sunrise_at/primary-offline.log",
+        "log_sha256": "9f51590aadcba6927ce895c12dc7c61ec0d02369abe5e5e6ac63791ce0213922"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_at --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_at --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-boundary-proofs/minutes_before_sunrise_at/primary/saved-processing.json",
+        "test_log_sha256": "e4fe4234976438d7410e1117648dea5a8f5d879fdf24b87b2f4828a563d9c193",
+        "processing_receipt": "draft-boundary-proofs/minutes_before_sunrise_at/primary/saved-processing.json",
+        "processing_receipt_sha256": "e4fe4234976438d7410e1117648dea5a8f5d879fdf24b87b2f4828a563d9c193"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-boundary-cases/minutes_before_sunrise_at/fallback1/construction.json",
+          "construction_sha256": "c062183c3c070aa09b5d8047a09f3fe14e16a62ee08b7aeccc45d4e35422e366",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_at --candidate fallback1 --output .runtime-work/c179824/selected-offline-minutes_before_sunrise_at-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "c062183c3c070aa09b5d8047a09f3fe14e16a62ee08b7aeccc45d4e35422e366",
+            "log": "draft-boundary-proofs/minutes_before_sunrise_at/fallback1-offline.log",
+            "log_sha256": "9f51590aadcba6927ce895c12dc7c61ec0d02369abe5e5e6ac63791ce0213922"
+          },
+          "compatibility": {
+            "receipt": "draft-boundary-proofs/minutes_before_sunrise_at/fallback1/receipt.json",
+            "sha256": "33b8dcf393f1b92153a659a1527885d63a1d6199361520588f7907bb4fa4dbd2",
+            "log": "draft-boundary-proofs/minutes_before_sunrise_at/fallback1/analysis.log",
+            "negative_log": "draft-boundary-proofs/minutes_before_sunrise_at/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_at",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_at --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/minutes_before_sunrise_at/positive.log",
+        "test_log_sha256": "1cb4a602a59268011d92d0163e872cba5e99d84cb664744c8aebdda722acb64c",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_at --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/minutes_before_sunrise_at/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_above",
+      "construction": "draft-boundary-cases/minutes_before_sunrise_above/primary/construction.json",
+      "construction_sha256": "b8e742a0d572b67dba1fa07e397eec2d38b8061f001a90229f97545d9230ae02",
+      "measurement_procedure": {
+        "entrypoint": "finalize_boundary.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/minutes_before_sunrise_above/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/minutes_before_sunrise_above/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-boundary-proofs/minutes_before_sunrise_above/primary/receipt.json",
+        "sha256": "5637f4f804b0856ede1a6e3a7ebfb831335dde0c98c0e7fa4f0a4a82efa02420",
+        "log": "draft-boundary-proofs/minutes_before_sunrise_above/primary/analysis.log",
+        "negative_log": "draft-boundary-proofs/minutes_before_sunrise_above/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-boundary-proofs/minutes_before_sunrise_above/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/minutes_before_sunrise_above/proof.json",
+        "sha256": "38196656a08682ca293762034e03e076fbca02877ecc24396a70aa543847523f"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_above --candidate primary --output .runtime-work/c179824/selected-offline-minutes_before_sunrise_above-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "b8e742a0d572b67dba1fa07e397eec2d38b8061f001a90229f97545d9230ae02",
+        "log": "draft-boundary-proofs/minutes_before_sunrise_above/primary-offline.log",
+        "log_sha256": "67c027bcc5cef254026337ce16f1b57529b3a4ceebb2e7160a1eac506c97e68d"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_above --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_above --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-boundary-proofs/minutes_before_sunrise_above/primary/saved-processing.json",
+        "test_log_sha256": "a3d29755d0ff85f426fb91aed4576162d20e061cfc81b7b07079aa99f11c0a74",
+        "processing_receipt": "draft-boundary-proofs/minutes_before_sunrise_above/primary/saved-processing.json",
+        "processing_receipt_sha256": "a3d29755d0ff85f426fb91aed4576162d20e061cfc81b7b07079aa99f11c0a74"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-boundary-cases/minutes_before_sunrise_above/fallback1/construction.json",
+          "construction_sha256": "5e0a5e426197678a7fb870a81f45da898c8e542b7cfcd7625918db22188ceb83",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_above --candidate fallback1 --output .runtime-work/c179824/selected-offline-minutes_before_sunrise_above-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "5e0a5e426197678a7fb870a81f45da898c8e542b7cfcd7625918db22188ceb83",
+            "log": "draft-boundary-proofs/minutes_before_sunrise_above/fallback1-offline.log",
+            "log_sha256": "67c027bcc5cef254026337ce16f1b57529b3a4ceebb2e7160a1eac506c97e68d"
+          },
+          "compatibility": {
+            "receipt": "draft-boundary-proofs/minutes_before_sunrise_above/fallback1/receipt.json",
+            "sha256": "3fefabd31a734a6ceeb507a96bd0973308d271701bc868362a310d2eaf7963aa",
+            "log": "draft-boundary-proofs/minutes_before_sunrise_above/fallback1/analysis.log",
+            "negative_log": "draft-boundary-proofs/minutes_before_sunrise_above/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_above",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_above --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/minutes_before_sunrise_above/positive.log",
+        "test_log_sha256": "2b104dd9a181b1b7a6e8a5dce3cf6e2c904cebdf423e1e5505a86c6692c7f109",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_above --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/minutes_before_sunrise_above/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_below",
+      "construction": "draft-boundary-cases/target_reference_distance_ft_below/primary/construction.json",
+      "construction_sha256": "7dee49a724f5c8434996c851d2fa8e9fd111de555f7d1fe6c7b2343f567cbb0c",
+      "measurement_procedure": {
+        "entrypoint": "finalize_boundary.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/target_reference_distance_ft_below/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/target_reference_distance_ft_below/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-boundary-proofs/target_reference_distance_ft_below/primary/receipt.json",
+        "sha256": "a46d65795ad78a030dab4314f231c2163c15306d7b98f8bec45e237a361c7f9d",
+        "log": "draft-boundary-proofs/target_reference_distance_ft_below/primary/analysis.log",
+        "negative_log": "draft-boundary-proofs/target_reference_distance_ft_below/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-boundary-proofs/target_reference_distance_ft_below/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/target_reference_distance_ft_below/proof.json",
+        "sha256": "fa4fe2c0fc7b2fc1ff710824fb6c6f5415c97e5bb31edffa2e7ca8a4bb43678d"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_below --candidate primary --output .runtime-work/c179824/selected-offline-target_reference_distance_ft_below-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "7dee49a724f5c8434996c851d2fa8e9fd111de555f7d1fe6c7b2343f567cbb0c",
+        "log": "draft-boundary-proofs/target_reference_distance_ft_below/primary-offline.log",
+        "log_sha256": "9cc64fe741d393e41c71e804525822f9639244afa7a3e35e96226bf2245bb7c1"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_below --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_below --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-boundary-proofs/target_reference_distance_ft_below/primary/saved-processing.json",
+        "test_log_sha256": "74ebb72662e6d17c646309d45a984458294dcc9077cf978bc193f57fda1e835b",
+        "processing_receipt": "draft-boundary-proofs/target_reference_distance_ft_below/primary/saved-processing.json",
+        "processing_receipt_sha256": "74ebb72662e6d17c646309d45a984458294dcc9077cf978bc193f57fda1e835b"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-boundary-cases/target_reference_distance_ft_below/fallback1/construction.json",
+          "construction_sha256": "782211a3861041a033c07e0006188a7cb3c870f3e2bc4d543bcd7fb841d74fcd",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_below --candidate fallback1 --output .runtime-work/c179824/selected-offline-target_reference_distance_ft_below-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "782211a3861041a033c07e0006188a7cb3c870f3e2bc4d543bcd7fb841d74fcd",
+            "log": "draft-boundary-proofs/target_reference_distance_ft_below/fallback1-offline.log",
+            "log_sha256": "9cc64fe741d393e41c71e804525822f9639244afa7a3e35e96226bf2245bb7c1"
+          },
+          "compatibility": {
+            "receipt": "draft-boundary-proofs/target_reference_distance_ft_below/fallback1/receipt.json",
+            "sha256": "4098aaa68ddc308f50119fcf6e7ef7115ac9027c0e6f326d521027586109ace1",
+            "log": "draft-boundary-proofs/target_reference_distance_ft_below/fallback1/analysis.log",
+            "negative_log": "draft-boundary-proofs/target_reference_distance_ft_below/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_below",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_below --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/target_reference_distance_ft_below/positive.log",
+        "test_log_sha256": "d158ee940f9d8802a35381907ce99c5ed53dd4f2daa7bda4ffc696cfc137a1fd",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_below --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/target_reference_distance_ft_below/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_at",
+      "construction": "draft-boundary-cases/target_reference_distance_ft_at/primary/construction.json",
+      "construction_sha256": "fe888d2420fd6fa78ca44f59615060ffb2b8bd30e662a24b0c1e078164aeca1e",
+      "measurement_procedure": {
+        "entrypoint": "finalize_boundary.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/target_reference_distance_ft_at/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/target_reference_distance_ft_at/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-boundary-proofs/target_reference_distance_ft_at/primary/receipt.json",
+        "sha256": "73d33555c15329fb601aeba90dd6aa900937dc234479770e3e3c3edd1f7b8af8",
+        "log": "draft-boundary-proofs/target_reference_distance_ft_at/primary/analysis.log",
+        "negative_log": "draft-boundary-proofs/target_reference_distance_ft_at/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-boundary-proofs/target_reference_distance_ft_at/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/target_reference_distance_ft_at/proof.json",
+        "sha256": "e2192cb648b781ad1401ccffabe73f57364340705af939aa48485f7599fbd368"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_at --candidate primary --output .runtime-work/c179824/selected-offline-target_reference_distance_ft_at-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "fe888d2420fd6fa78ca44f59615060ffb2b8bd30e662a24b0c1e078164aeca1e",
+        "log": "draft-boundary-proofs/target_reference_distance_ft_at/primary-offline.log",
+        "log_sha256": "30329f97a37502c992f12e1f0ca7a319495bbb677bae9d03ac49350a0ca05328"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_at --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_at --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-boundary-proofs/target_reference_distance_ft_at/primary/saved-processing.json",
+        "test_log_sha256": "c4e6a7490fa083b24e17adb5e2a5c248fbc08ddbea47b698464d7f23ca69cd8c",
+        "processing_receipt": "draft-boundary-proofs/target_reference_distance_ft_at/primary/saved-processing.json",
+        "processing_receipt_sha256": "c4e6a7490fa083b24e17adb5e2a5c248fbc08ddbea47b698464d7f23ca69cd8c"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-boundary-cases/target_reference_distance_ft_at/fallback1/construction.json",
+          "construction_sha256": "10fa75d89abf01cca3f90e01b6c1cf03c8671710b69e696d1653c2e97f5c41b2",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_at --candidate fallback1 --output .runtime-work/c179824/selected-offline-target_reference_distance_ft_at-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "10fa75d89abf01cca3f90e01b6c1cf03c8671710b69e696d1653c2e97f5c41b2",
+            "log": "draft-boundary-proofs/target_reference_distance_ft_at/fallback1-offline.log",
+            "log_sha256": "30329f97a37502c992f12e1f0ca7a319495bbb677bae9d03ac49350a0ca05328"
+          },
+          "compatibility": {
+            "receipt": "draft-boundary-proofs/target_reference_distance_ft_at/fallback1/receipt.json",
+            "sha256": "7123fa223d4ec0b35806a8f61e73d7239373fed25def8fcfad106a18aa06ce43",
+            "log": "draft-boundary-proofs/target_reference_distance_ft_at/fallback1/analysis.log",
+            "negative_log": "draft-boundary-proofs/target_reference_distance_ft_at/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_at",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_at --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/target_reference_distance_ft_at/positive.log",
+        "test_log_sha256": "c4ed252f02a9fcdab661d3e0290ee69b3d404adaa682df38724522fd812f3094",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_at --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/target_reference_distance_ft_at/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_above",
+      "construction": "draft-boundary-cases/target_reference_distance_ft_above/primary/construction.json",
+      "construction_sha256": "8cabc9bacb0acb75bf08d3f6816f2db89f195cb9b9114bcd44439feeed9f95f6",
+      "measurement_procedure": {
+        "entrypoint": "finalize_boundary.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/target_reference_distance_ft_above/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/target_reference_distance_ft_above/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-boundary-proofs/target_reference_distance_ft_above/primary/receipt.json",
+        "sha256": "c427c48eff8158149d42b049e8b81d7751d147ffb23c21dd84617999059e21ca",
+        "log": "draft-boundary-proofs/target_reference_distance_ft_above/primary/analysis.log",
+        "negative_log": "draft-boundary-proofs/target_reference_distance_ft_above/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-boundary-proofs/target_reference_distance_ft_above/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/target_reference_distance_ft_above/proof.json",
+        "sha256": "c7a3dc3ca47fed7fe1f394fe11093ec8ee1c2a8d6b6b6419450a36833160120c"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_above --candidate primary --output .runtime-work/c179824/selected-offline-target_reference_distance_ft_above-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "8cabc9bacb0acb75bf08d3f6816f2db89f195cb9b9114bcd44439feeed9f95f6",
+        "log": "draft-boundary-proofs/target_reference_distance_ft_above/primary-offline.log",
+        "log_sha256": "1450150c46fbe9211e8ad8e2302b1a8ca8de049283d2b5d50a20bcb31aec9823"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_above --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_above --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-boundary-proofs/target_reference_distance_ft_above/primary/saved-processing.json",
+        "test_log_sha256": "69e6c5bfb688d4325db21a74eca1f9fcafdff040b99ebd04eff6412e5865444d",
+        "processing_receipt": "draft-boundary-proofs/target_reference_distance_ft_above/primary/saved-processing.json",
+        "processing_receipt_sha256": "69e6c5bfb688d4325db21a74eca1f9fcafdff040b99ebd04eff6412e5865444d"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "civil_time_and_sun_events": {
+          "entrypoint": "finalize_boundary.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for civil_time_and_sun_events",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-boundary-cases/target_reference_distance_ft_above/fallback1/construction.json",
+          "construction_sha256": "0cdf8c86f098120946ffbb944ef8f8b4fc5e255934d84251c300bf25bb9fd2d9",
+          "trigger": {
+            "source": "Original Native trace and synchronized video frame map",
+            "metric": "600 joined frames with both people and vehicles at the selected civil or distance boundary",
+            "failure_condition": "Primary motion or camera view fails original source/geometry readback"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_above --candidate fallback1 --output .runtime-work/c179824/selected-offline-target_reference_distance_ft_above-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0cdf8c86f098120946ffbb944ef8f8b4fc5e255934d84251c300bf25bb9fd2d9",
+            "log": "draft-boundary-proofs/target_reference_distance_ft_above/fallback1-offline.log",
+            "log_sha256": "1450150c46fbe9211e8ad8e2302b1a8ca8de049283d2b5d50a20bcb31aec9823"
+          },
+          "compatibility": {
+            "receipt": "draft-boundary-proofs/target_reference_distance_ft_above/fallback1/receipt.json",
+            "sha256": "60476edcdb3b33f4180ca0d2fa3dacf4f00d6f8f121c4ce95892838689c3097a",
+            "log": "draft-boundary-proofs/target_reference_distance_ft_above/fallback1/analysis.log",
+            "negative_log": "draft-boundary-proofs/target_reference_distance_ft_above/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_above",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_above --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/target_reference_distance_ft_above/positive.log",
+        "test_log_sha256": "e8a168c62d1b5c57cb258222afe30c6b696d37108b634ffbe7c81b50c579728b",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_above --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/target_reference_distance_ft_above/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1",
+      "construction": "draft-parked-cases/parked_lamps_1/primary/construction.json",
+      "construction_sha256": "1750210b3f92a8b46e1f7087fbb8dbe0cb17cfc743587bd6b1509811824509c8",
+      "measurement_procedure": {
+        "entrypoint": "finalize_parked.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/parked_lamps_1/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/parked_lamps_1/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-parked-proofs/parked_lamps_1/primary/receipt.json",
+        "sha256": "006976868d35c1038ad28e40f7379ca48bc54a5021bbaf6065f8553a5a5eb007",
+        "log": "draft-parked-proofs/parked_lamps_1/primary/analysis.log",
+        "negative_log": "draft-parked-proofs/parked_lamps_1/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-parked-proofs/parked_lamps_1/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/parked_lamps_1/proof.json",
+        "sha256": "24ff873078c257cbe8df3b22a643a6a83140eb042ca8edebe28f5d0c19caca18"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/draft-parked-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1 --candidate primary --output .runtime-work/c179824/parked-offline-1-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "1750210b3f92a8b46e1f7087fbb8dbe0cb17cfc743587bd6b1509811824509c8",
+        "log": "draft-parked-proofs/parked_lamps_1/primary/offline.log",
+        "log_sha256": "7b9c7d3d5374ffd498e185859e9bc8b362e2dda46f8b69e74afad598a7472be4"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-parked-proofs/parked_lamps_1/primary/saved-processing.json",
+        "test_log_sha256": "1868b51c812173f2088ea2cbf133a6ce79f3dc6f03206adfd1bc5bb3afadac2e",
+        "processing_receipt": "draft-parked-proofs/parked_lamps_1/primary/saved-processing.json",
+        "processing_receipt_sha256": "1868b51c812173f2088ea2cbf133a6ce79f3dc6f03206adfd1bc5bb3afadac2e"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "parked_exception_sources": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for parked_exception_sources",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-parked-cases/parked_lamps_1/fallback1/construction.json",
+          "construction_sha256": "4d6a478c6804dcae2a12ac8fac47e0b42363beb390087501b26815aeaeec13f9",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/draft-parked-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1 --candidate fallback1 --output .runtime-work/c179824/parked-offline-1-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "4d6a478c6804dcae2a12ac8fac47e0b42363beb390087501b26815aeaeec13f9",
+            "log": "draft-parked-proofs/parked_lamps_1/fallback1/offline.log",
+            "log_sha256": "7b9c7d3d5374ffd498e185859e9bc8b362e2dda46f8b69e74afad598a7472be4"
+          },
+          "trigger": {
+            "source": "Original shoulder lane and stopped-frame readback",
+            "metric": "final 100 frames stationary on lane -2",
+            "failure_condition": "Primary speed or shoulder transition fails on original Native attempt"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "compatibility": {
+            "receipt": "draft-parked-proofs/parked_lamps_1/fallback1/receipt.json",
+            "sha256": "d968882a8ac638af3bacf8c0e43610ae1dc6dce7ef63f31121d091bee26db15a",
+            "log": "draft-parked-proofs/parked_lamps_1/fallback1/analysis.log",
+            "negative_log": "draft-parked-proofs/parked_lamps_1/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/parked_lamps_1/positive.log",
+        "test_log_sha256": "0583f41f783be73061cc02c987fc86a480b76786fc1002927759a53bd652fd06",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/parked_lamps_1/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
+      }
+    },
+    {
+      "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2",
+      "construction": "draft-parked-cases/parked_lamps_2/primary/construction.json",
+      "construction_sha256": "6bba5b77a68c5541dd91553c740bdb06597fbadea283d299fe01719e7c60644c",
+      "measurement_procedure": {
+        "entrypoint": "finalize_parked.py",
+        "output_schema": "worker-analysis-report-v1"
+      },
+      "measurement_contract": "cases/parked_lamps_2/measurement-contract.json",
+      "fixture_recipe": "work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/cases/parked_lamps_2/recipe.json",
+      "kind": "delivery",
+      "id": "primary",
+      "original_native_observed": false,
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native road, actors, lamps and original pixels require local physical review"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "draft-parked-proofs/parked_lamps_2/primary/receipt.json",
+        "sha256": "c4bee29a6963e1c8ca15ccfb40e1df36ffd66b16c31eacac46d57af36778381c",
+        "log": "draft-parked-proofs/parked_lamps_2/primary/analysis.log",
+        "negative_log": "draft-parked-proofs/parked_lamps_2/primary/negative.log"
+      },
+      "negative": {
+        "log": "draft-parked-proofs/parked_lamps_2/primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/parked_lamps_2/proof.json",
+        "sha256": "21809da3073cbd2dd87b5011e6d62b72c813d57682bb3e09daaeb5a9e11db34c"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/draft-parked-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2 --candidate primary --output .runtime-work/c179824/parked-offline-2-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "6bba5b77a68c5541dd91553c740bdb06597fbadea283d299fe01719e7c60644c",
+        "log": "draft-parked-proofs/parked_lamps_2/primary/offline.log",
+        "log_sha256": "c11d5a7fe789c36db0ea4a4fddb040e9014e5b828d79f0092d6817bbd54c4b69"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/execution-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "draft-parked-proofs/parked_lamps_2/primary/saved-processing.json",
+        "test_log_sha256": "a097fb7c96ce682588adacb8695264d884831842947a290869dc99ad29cbcc41",
+        "processing_receipt": "draft-parked-proofs/parked_lamps_2/primary/saved-processing.json",
+        "processing_receipt_sha256": "a097fb7c96ce682588adacb8695264d884831842947a290869dc99ad29cbcc41"
+      },
+      "acquisition": {
+        "native_lamp_setting": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for native_lamp_setting",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "device_and_highway_context": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for device_and_highway_context",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "parked_exception_sources": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for parked_exception_sources",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "person_visibility_1000ft": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for person_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        },
+        "vehicle_visibility_1000ft": {
+          "entrypoint": "finalize_parked.py",
+          "method": "Join original frame-mapped Native capture with independently hashed source review for vehicle_visibility_1000ft",
+          "evidence": [
+            "video_frames.jsonl",
+            "analysis-report.json"
+          ]
+        }
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-parked-cases/parked_lamps_2/fallback1/construction.json",
+          "construction_sha256": "447e676b16d47726ac54119ca8193fe1bba136d972b4b56a8875983c3985f9ae",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/draft-parked-manifest.json --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2 --candidate fallback1 --output .runtime-work/c179824/parked-offline-2-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "447e676b16d47726ac54119ca8193fe1bba136d972b4b56a8875983c3985f9ae",
+            "log": "draft-parked-proofs/parked_lamps_2/fallback1/offline.log",
+            "log_sha256": "c11d5a7fe789c36db0ea4a4fddb040e9014e5b828d79f0092d6817bbd54c4b69"
+          },
+          "trigger": {
+            "source": "Original shoulder lane and stopped-frame readback",
+            "metric": "final 100 frames stationary on lane -2",
+            "failure_condition": "Primary speed or shoulder transition fails on original Native attempt"
+          },
+          "changed_knobs": [
+            "target speed: 3.0 to 2.8 m/s"
+          ],
+          "compatibility": {
+            "receipt": "draft-parked-proofs/parked_lamps_2/fallback1/receipt.json",
+            "sha256": "427b4206c50a0803f866a4afe73d48f3e4b79d9401ea1af5cd68d38643b1d8da",
+            "log": "draft-parked-proofs/parked_lamps_2/fallback1/analysis.log",
+            "negative_log": "draft-parked-proofs/parked_lamps_2/fallback1/negative.log"
+          }
+        }
+      ],
+      "delivery_acceptance": {
+        "case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit_full.py",
+        "script_sha256": "8cec667ad519525ade17a7e101aa0c41dde5f58c74f13e3b485a7a1fb0131f03",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2 --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/parked_lamps_2/positive.log",
+        "test_log_sha256": "b6193a170d7fc334a795ce559f9f3f9c6a458740aa4eae483e1c4ea80abf6a7c",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C179824__NRS-484D-100-1__motor_vehicle_driver/delivery_audit_full.py --case training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Person and vehicle discernibility require separate original pixel review",
+        "negative_log": "delivery-proofs/parked_lamps_2/negative.log",
+        "negative_log_sha256": "69dcf780773cc3d3e629eaeb2f95f7a117daf3bc72a08d0dc3b0190d8e5357a4",
+        "scope": "source predicate CPU proof only; original Native capture not observed"
       }
     }
   ]

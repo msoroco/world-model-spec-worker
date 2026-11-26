@@ -3,7 +3,18 @@
   "selected_case_id": "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
   "supported_case_ids": [
     "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_1",
-    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2"
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__controlled_2",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_below",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_at",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_after_sunset_above",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_below",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_at",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__minutes_before_sunrise_above",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_below",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_at",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__target_reference_distance_ft_above",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_1",
+    "training__C179824__NRS-484D-100-1__motor_vehicle_driver__parked_lamps_2"
   ],
   "candidate_id": "primary",
   "law_id": "NRS-484D-100-1",
@@ -66,14 +77,138 @@
         "time_window": "600 frames",
         "reference_frame": "signed paved road",
         "uncertainty": "official status and actual pixels unverified"
+      },
+      {
+        "name": "person_visibility_1000ft",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original person transform and four-view pixels at source-reviewed 304.8 m reference",
+        "time_window": "600 original Native frames",
+        "reference_frame": "vehicle forward view and target person",
+        "uncertainty": "clear discernibility requires independent pixel review; no cutoff inferred"
+      },
+      {
+        "name": "vehicle_visibility_1000ft",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original target-vehicle transform and four-view pixels at source-reviewed 304.8 m reference",
+        "time_window": "600 original Native frames",
+        "reference_frame": "vehicle forward view and target vehicle",
+        "uncertainty": "clear discernibility requires independent pixel review; no cutoff inferred"
+      },
+      {
+        "name": "civil_time_and_sun_events",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original 600-frame timezone-aware clock joined to independently sourced sunset and sunrise",
+        "time_window": "600 original Native frames",
+        "reference_frame": "Nevada date and location",
+        "uncertainty": "authored clock request is insufficient without original timestamps and sun-event source"
+      },
+      {
+        "name": "parked_exception_sources",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original motion and road position joined to reviewed NRS 484D.165, 1,000-foot light and 500-foot lamp pixels",
+        "time_window": "600 original Native frames including final 100 parked frames",
+        "reference_frame": "traveled highway or adjacent shoulder",
+        "uncertainty": "statutory exception applicability and lamp sufficiency require independent source and pixel review"
+      },
+      {
+        "name": "sig.headlamp",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
+      },
+      {
+        "name": "sig.position_lamp",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
+      },
+      {
+        "name": "drv.civil_night",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
+      },
+      {
+        "name": "env.civil_time",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
+      },
+      {
+        "name": "env.visibility",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
+      },
+      {
+        "name": "env.darkness",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
+      },
+      {
+        "name": "env.precipitation",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
+      },
+      {
+        "name": "dev.regulatory_sign",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
+      },
+      {
+        "name": "st.highway",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
+      },
+      {
+        "name": "drv.standing_or_parked",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Source-bound exact-case Native acquisition and independent review",
+        "time_window": "600 frames",
+        "reference_frame": "Nevada paved roadway",
+        "uncertainty": "physical and legal acceptance require original local review"
       }
     ],
     "context_inputs": [],
     "limitations": [
-      "Class-specific chapter 484D lamp requirements not yet supplied",
-      "Civil time and 1000-foot visibility branches remain separate",
-      "Parked vehicle exceptions unresolved"
+      "Original Native capture, independent original pixels and legal disposition are not attested by CPU diagnostics"
     ]
   },
-  "status": "partial_cpu_draft"
+  "status": "selected_cpu_proofs_in_progress"
 }
