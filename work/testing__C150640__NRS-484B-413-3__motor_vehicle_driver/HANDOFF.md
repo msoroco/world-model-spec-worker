@@ -1,37 +1,23 @@
-# testing__C150640__NRS-484B-413-3__motor_vehicle_driver
+# C150640 rear-recipient signal delivery handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: CPU delivery prepared for five exact selected cases and four controlled comparisons. The selected frozen cell is C150640, one-way road, stop/stand, other vehicle; actor is motor vehicle driver. NRS 484B.413(3) says a driver shall not stop or suddenly decrease vehicle speed without first giving an appropriate signal to the driver of any vehicle immediately to the rear. Zero accepted original recordings are in the frozen inventory. No legal verdict or original physical acceptance is claimed.
 
-Exact law: NRS 484B.413(3) — A driver shall not stop or suddenly decrease the speed of a vehicle without first giving an appropriate signal to the driver of any vehicle immediately to the rear.
-Assigned branch(es): Intentional stop with a rear-driver recipient.
-Cell: C150640 (one_way_road, stop_stand, other_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Exact construction
 
-## Next CPU actions
+The five cases are `stop_signal_before`, `stop_signal_after`, `decrease_signal_before`, `decrease_signal_after`, and `stop_no_rear_driver`. `runner.py` requires a reviewed original `C150640_REVIEWED_SCENE_PACKET`. `scene_review.py` checks source-file hashes and the selected identity. `native_signal.py` constructs separate ego and rear vehicles, a rear driver actor when required, a source-bound one-way route and stop footprint, an actual CARLA signal light, before/after control timing, 900 original frames, two-actor motion, a rear mounted driver view, three external views, Native seal and world restoration. Actual rear driver placement, displayed signal visibility and separation must be reviewed in the original run.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C150640__NRS-484B-413-3__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`rear_signal.py` measures the original 900-frame participant IDs, rear gap/offset, ego/rear speed, signal display and visibility readback, and event versus signal onset. It leaves signal appropriateness, immediately-to-rear status, conflict/official-direction context, and legal outcome unresolved. Engineering speed checks verify the authored physical probe; they are not statutory thresholds.
 
-## Proven checks and dependency boundary
+The comparisons are `stop_signal_order`, `decrease_signal_order`, `stop_vs_decrease`, and `rear_driver_presence`. `comparison_audit.py` accepts only original delivery audit reports, checks the fixed source hashes, camera plan and duration, and requires the intended measured difference. The assignment-local `queue-proposal.json` has five selected case rows and four original-only comparison rows. There are no fallback candidates because the reviewed route, rear participant and signal device are absent; no distinct source-grounded alternate construction is available yet.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+## CPU proof
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+- Ten focused tests pass, including all five exact original-frame probes, source packet tamper/identity checks, inline construction binding, and four comparison contrasts.
+- Five exact offline constructions and pinned compatibility positive/negative receipts pass at current construction hashes.
+- Five physical/lifecycle probes pass complete, incomplete and missing-evidence states, including Native exit, owner release and saved-source staging.
+- Five recorded-only saved replays and mock delivery audit positive/negative probes pass. These are synthetic software checks and make no original physical claim.
+- Direct execution-manifest, semantic-delivery, delivery-handoff, and shadow ready checks pass 5/5. The scoped complete static check and focused tests are recorded in `cpu-nov25-static-current.log` and `cpu-nov25-tests-current.log`.
 
-## CPU construction checkpoint
+## Original delivery boundary
 
-Added `rear_signal.py` with five exact probes: stop and sudden-decrease alternatives, signal before/after order, and a rear-driver-absence contrast. The lazy constructor requests the one-way route, stop footprint, rear participant and signal policy and cleans owned actors on failure. Original measurement joins 900 frames, participants, displayed signal/visibility, event onset, speed history and rear gap/offset. Signal appropriateness, immediately-to-rear and legal outcomes remain unresolved.
-
-Four focused CPU tests pass, including all five cases and negative source, driver, identity, signal and cleanup paths. Pinned preflight and scoped static pass. Exact scoped strict exits 1 because this package remains partial. Frozen accepted recording inventory is empty; diagnostic values are synthetic only. Canonical capture/offline/compatibility, semantic proposals, independent saved delivery/comparison audits and physical source-backed scene are still worker-owned CPU work.
-
-Proof SHA256:
-
-- `rear_signal.py`: `10918dba0168aaa614144f083a85826f9a9daf81eb6b5db8195dddd83510a8e7`
-- `tests/test_rear_signal.py`: `9400d928c2faf757c77eb78e1028158a7eaf9c3d200f35087ceeb6666054aede`
-- `cpu-tests.log`: `cb4b6282868dbd033115f1afd8d2d6f19d9f762a13f38b9b1365852711dcf47e`
-- `cpu-preflight.log`: `f84245a584a94eeb0a92a10ef649d0517bc7fb846f1c8bfa7f7209dd89518459`
-- `cpu-static-check.log`: `aa925a6ca30c94a70b5610b5fe10cef1352bd5d8f9dad27988ef9325c8e73e82`
-- `cpu-strict-check.log`: `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+Acquire a reviewed original scene packet with the required jurisdiction, one-way route, rear driver and participant positions, signal device/visibility, stop footprint and conflict/official-direction sources. Use the canonical commands in `queue-proposal.json`. Retain original CARLA recorder, four videos, 900 joined rear-signal rows, map, reviewed scene packet, Native seal/exit/owner release, saved processing and full-decode receipts. An independent reviewer must inspect actual signal and rear-driver pixels and record `pixel-review.json`; `queue_delivery.py` verifies original sources, physical completion and pixel review before writing its audit. The four comparison audits require accepted original reports. Actual rear-driver visibility, signal suitability, “immediately to the rear,” and legal interpretation remain open for local review.

@@ -1,0 +1,110 @@
+{
+  "actor": "pedestrian",
+  "cameras": [
+    {
+      "fov_deg": 75,
+      "height": 1080,
+      "name": "overview",
+      "pose_strategy": "reviewed original roadway/crossing/vehicle view",
+      "width": 1920
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "approach",
+      "pose_strategy": "reviewed original roadway/crossing/vehicle view",
+      "width": 1280
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "reference_corner",
+      "pose_strategy": "reviewed original roadway/crossing/vehicle view",
+      "width": 1280
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "driver_reference",
+      "pose_strategy": "reviewed original roadway/crossing/vehicle view",
+      "width": 1280
+    }
+  ],
+  "case": {
+    "case_id": "testing__C228096__LVMC-11-30-060-A__pedestrian__prohibited_place",
+    "physical_target": "reviewed crossing outside both crosswalk categories and separate vehicle yield interaction",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "original roadway, marked/unmarked crosswalk and 11.30.070 source readback",
+          "name": "outside_crosswalk_site",
+          "reference_frame": "reviewed roadway geometry",
+          "sampling_rate_hz": 20,
+          "time_window": "900 original frames",
+          "uncertainty": "crosswalk and prohibition status pending original review",
+          "unit": "classification"
+        },
+        {
+          "method": "original pedestrian road-entry and crossing transform readback",
+          "name": "pedestrian_roadway_motion",
+          "reference_frame": "reviewed roadway XY",
+          "sampling_rate_hz": 20,
+          "time_window": "900 original frames",
+          "uncertainty": "physical crossing pending",
+          "unit": "state"
+        },
+        {
+          "method": "original all-vehicle roadway occupancy and trajectory readback",
+          "name": "vehicle_roadway_motion",
+          "reference_frame": "reviewed roadway XY",
+          "sampling_rate_hz": 20,
+          "time_window": "900 original frames",
+          "uncertainty": "actual all-vehicle inventory pending",
+          "unit": "state"
+        },
+        {
+          "method": "original pedestrian yield throughout crossing and vehicle conflict readback",
+          "name": "yield_trajectory",
+          "reference_frame": "reviewed crossing route",
+          "sampling_rate_hz": 20,
+          "time_window": "900 original frames",
+          "uncertainty": "legal right-of-way judgment pending",
+          "unit": "state"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "reviewed original roadway, crosswalk, routes and prohibition source hashes",
+          "name": "reviewed_outside_crosswalk_site",
+          "unit": "source"
+        }
+      ],
+      "limitations": [
+        "Entry observation alone does not prove yield throughout crossing.",
+        "11.30.070 prohibited-place applicability requires separate original review."
+      ]
+    }
+  },
+  "cell_id": "C228096",
+  "duration_s": 45,
+  "law_id": "LVMC-11-30-060-A",
+  "physical_completion": {
+    "completion_goal_method": "At least 5m original pedestrian progress as an engineering motion proxy; independently audit full roadway crossing.",
+    "criterion": "travel_progress",
+    "engineering_tolerances_not_legal": true,
+    "minimum_progress_m": 5.0,
+    "minimum_samples": 3,
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m"
+  },
+  "rate_hz": 20,
+  "required_atoms": [],
+  "selected_case_id": "testing__C228096__LVMC-11-30-060-A__pedestrian__prohibited_place",
+  "source_packets": [],
+  "supported_case_ids": [
+    "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_with_vehicle",
+    "testing__C228096__LVMC-11-30-060-A__pedestrian__no_yield_with_vehicle",
+    "testing__C228096__LVMC-11-30-060-A__pedestrian__yield_no_vehicle",
+    "testing__C228096__LVMC-11-30-060-A__pedestrian__prohibited_place"
+  ]
+}

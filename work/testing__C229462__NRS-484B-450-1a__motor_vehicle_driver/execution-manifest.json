@@ -1,0 +1,480 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_on_sidewalk",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "8a75f22d0b65a06aed215bb048d491d55af54d29d45e3a37dc765ca996ff1970",
+      "fixture_recipe": "work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/diagnostic-park_on_sidewalk-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original sidewalk/highway and parking/exception source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "sidewalk_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-sidewalk_polygon.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "ego_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-ego_speed_history.jsonl"
+        },
+        "activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "conflict_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-conflict_motion.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed route and sidewalk targets are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "8a75f22d0b65a06aed215bb048d491d55af54d29d45e3a37dc765ca996ff1970",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_on_sidewalk --output .runtime-work/c229462/offline-final-park_on_sidewalk",
+        "exit_code": 0,
+        "log": "cpu-offline-park_on_sidewalk.log",
+        "log_sha256": "a395a212c72002e02b064e8b62d76abfd694ab6ded9044c96f83e4bdd5a3ab9d"
+      },
+      "compatibility": {
+        "receipt": "proofs/park_on_sidewalk/receipt.json",
+        "sha256": "f4b99caed28478673eeef9feb965cc2a1d8ce67cab7f4e2f010f3981d71f4dbb",
+        "log": "proofs/park_on_sidewalk/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/park_on_sidewalk/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final-park_on_sidewalk-receipt.json",
+        "sha256": "50479e5df8c812c9026c85d89e45b0aeb7e457954fbe9c0305bbd04df0901dbe"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_on_sidewalk --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_on_sidewalk --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-final-park_on_sidewalk.log",
+        "test_log_sha256": "615b07d50a8d382071ee66d8d00f649c57a919c7bedb44632afe892de4ea4f1f",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original sidewalk, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_on_sidewalk",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "70c3d41e946d4b28606567cb713f036f40c37bf9ae1638222772a11e7d3287f4",
+        "command": ".venv-cpu/bin/python work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/delivery_probe.py --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_on_sidewalk --attempt .runtime-work/c229462/compat-final-park_on_sidewalk --saved-root .runtime-work/c229462/saved-final-park_on_sidewalk --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-park_on_sidewalk-positive.log",
+        "test_log_sha256": "fc63fc203e2c7df73536cdd0446dd4ff9777fcdfd6d9208baa7f3d6a19f95ac1",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/delivery_probe.py --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_on_sidewalk --attempt .runtime-work/c229462/compat-final-park_on_sidewalk --saved-root .runtime-work/c229462/saved-final-park_on_sidewalk --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: sidewalk-site.json",
+        "negative_log": "delivery-park_on_sidewalk-missing_source.log",
+        "negative_log_sha256": "4f39cfdf06bb69318073cbfbb3ba3d075ff588491bc4246b71449f2e8c4c5303"
+      }
+    },
+    {
+      "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_edge_touch",
+      "kind": "delivery",
+      "construction": "cases/park_edge_touch/construction.json",
+      "construction_sha256": "fee7b9fac8d0e55798b242be34e0377e56d106d8709163766238dffe85a58fc4",
+      "fixture_recipe": "work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/diagnostic-park_edge_touch-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original sidewalk/highway and parking/exception source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "sidewalk_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-sidewalk_polygon.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "ego_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-ego_speed_history.jsonl"
+        },
+        "activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "conflict_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-conflict_motion.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed route and sidewalk targets are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "fee7b9fac8d0e55798b242be34e0377e56d106d8709163766238dffe85a58fc4",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_edge_touch --output .runtime-work/c229462/offline-final-park_edge_touch",
+        "exit_code": 0,
+        "log": "cpu-offline-park_edge_touch.log",
+        "log_sha256": "b80bc089aaecc39a94bbff79df2fb277103a44e278ce662edcf0fe93091511c3"
+      },
+      "compatibility": {
+        "receipt": "proofs/park_edge_touch/receipt.json",
+        "sha256": "f1cf7f9b162191ea48c4cd26a28f4d279f5e4e6155fda4f2576db64cbc279526",
+        "log": "proofs/park_edge_touch/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/park_edge_touch/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final-park_edge_touch-receipt.json",
+        "sha256": "688356d6fc9be87030ff97d74084cc75c1cc8d8d0dcc4fac501d7d481da08cd6"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_edge_touch --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_edge_touch --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-final-park_edge_touch.log",
+        "test_log_sha256": "c8ef64b71e196a5dfffaa4a3348549faeead94c596449ab9a6199930c9db1bdf",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original sidewalk, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_edge_touch",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "70c3d41e946d4b28606567cb713f036f40c37bf9ae1638222772a11e7d3287f4",
+        "command": ".venv-cpu/bin/python work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/delivery_probe.py --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_edge_touch --attempt .runtime-work/c229462/compat-final-park_edge_touch --saved-root .runtime-work/c229462/saved-final-park_edge_touch --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-park_edge_touch-positive.log",
+        "test_log_sha256": "d51182c8e7eeeb8e500168a34c01351d83d821a4f1018ebf88a62192a43b2dd8",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/delivery_probe.py --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_edge_touch --attempt .runtime-work/c229462/compat-final-park_edge_touch --saved-root .runtime-work/c229462/saved-final-park_edge_touch --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: sidewalk-site.json",
+        "negative_log": "delivery-park_edge_touch-missing_source.log",
+        "negative_log_sha256": "4f39cfdf06bb69318073cbfbb3ba3d075ff588491bc4246b71449f2e8c4c5303"
+      }
+    },
+    {
+      "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_off_sidewalk",
+      "kind": "delivery",
+      "construction": "cases/park_off_sidewalk/construction.json",
+      "construction_sha256": "6cf39ff11ad68a84d5c82a1a3a17b913f2a990c48f0381b49dae16d00a7ce754",
+      "fixture_recipe": "work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/diagnostic-park_off_sidewalk-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original sidewalk/highway and parking/exception source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "sidewalk_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-sidewalk_polygon.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "ego_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-ego_speed_history.jsonl"
+        },
+        "activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "conflict_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-conflict_motion.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed route and sidewalk targets are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "6cf39ff11ad68a84d5c82a1a3a17b913f2a990c48f0381b49dae16d00a7ce754",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_off_sidewalk --output .runtime-work/c229462/offline-final-park_off_sidewalk",
+        "exit_code": 0,
+        "log": "cpu-offline-park_off_sidewalk.log",
+        "log_sha256": "671ead44fc69eb3e58e256a44ffa8b0881036113c3b2a841f9ac10f6519e3887"
+      },
+      "compatibility": {
+        "receipt": "proofs/park_off_sidewalk/receipt.json",
+        "sha256": "25bffee573af132fddd36b66b4de52bb55f3a1ada41458d53a5a0eba1b3080ca",
+        "log": "proofs/park_off_sidewalk/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/park_off_sidewalk/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final-park_off_sidewalk-receipt.json",
+        "sha256": "3e7b9e864d864a4e75d5f0140dc11fe8da5f0250c4b9efb0677d012a76c703f3"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_off_sidewalk --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_off_sidewalk --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-final-park_off_sidewalk.log",
+        "test_log_sha256": "1e136d7cf7f8cf37b86d9b3914c481a56cda209d1520fa91bbbd54951aebfbf6",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original sidewalk, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_off_sidewalk",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "70c3d41e946d4b28606567cb713f036f40c37bf9ae1638222772a11e7d3287f4",
+        "command": ".venv-cpu/bin/python work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/delivery_probe.py --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_off_sidewalk --attempt .runtime-work/c229462/compat-final-park_off_sidewalk --saved-root .runtime-work/c229462/saved-final-park_off_sidewalk --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-park_off_sidewalk-positive.log",
+        "test_log_sha256": "38eff8451451c0d5791c56c427f0b259dce22852a154afa1f3d35199c7c05a0a",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/delivery_probe.py --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_off_sidewalk --attempt .runtime-work/c229462/compat-final-park_off_sidewalk --saved-root .runtime-work/c229462/saved-final-park_off_sidewalk --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: sidewalk-site.json",
+        "negative_log": "delivery-park_off_sidewalk-missing_source.log",
+        "negative_log_sha256": "4f39cfdf06bb69318073cbfbb3ba3d075ff588491bc4246b71449f2e8c4c5303"
+      }
+    },
+    {
+      "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__on_sidewalk_traffic_necessity",
+      "kind": "delivery",
+      "construction": "cases/on_sidewalk_traffic_necessity/construction.json",
+      "construction_sha256": "3618d429886c9f3ffe9585caf3b9082b11ad0df70a91a1538321a9d393181b20",
+      "fixture_recipe": "work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/diagnostic-on_sidewalk_traffic_necessity-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original sidewalk/highway and parking/exception source packet absent",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "sidewalk_polygon": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-sidewalk_polygon.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "ego_speed_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-ego_speed_history.jsonl"
+        },
+        "activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "conflict_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-conflict_motion.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native source-bound body, activity and exception readback",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "Reviewed route and sidewalk targets are source gated; no distinct CPU-grounded fallback trigger is established."
+      },
+      "candidates": [],
+      "offline": {
+        "construction_sha256": "3618d429886c9f3ffe9585caf3b9082b11ad0df70a91a1538321a9d393181b20",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__on_sidewalk_traffic_necessity --output .runtime-work/c229462/offline-final-on_sidewalk_traffic_necessity",
+        "exit_code": 0,
+        "log": "cpu-offline-on_sidewalk_traffic_necessity.log",
+        "log_sha256": "0f12c9a6159b0e156906cd7588193af378e2839422d376fc8f524e8d78a882fc"
+      },
+      "compatibility": {
+        "receipt": "proofs/on_sidewalk_traffic_necessity/receipt.json",
+        "sha256": "e8bfed66ad169035c84ecfa1455755a3fa3aade5b902c5d2ba1326bbfe3b4393",
+        "log": "proofs/on_sidewalk_traffic_necessity/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/on_sidewalk_traffic_necessity/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final-on_sidewalk_traffic_necessity-receipt.json",
+        "sha256": "6a747d9d9807234bf5723f562b539d4a40895189e430d406ed8467eb45ce0f36"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__on_sidewalk_traffic_necessity --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/execution-manifest.json --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__on_sidewalk_traffic_necessity --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-final-on_sidewalk_traffic_necessity.log",
+        "test_log_sha256": "0f6669fd77cc9c77f0794f43c36d5f126d336a9fd98913a10547e1afce7c25ad",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original sidewalk, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__on_sidewalk_traffic_necessity",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "70c3d41e946d4b28606567cb713f036f40c37bf9ae1638222772a11e7d3287f4",
+        "command": ".venv-cpu/bin/python work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/delivery_probe.py --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__on_sidewalk_traffic_necessity --attempt .runtime-work/c229462/compat-final-on_sidewalk_traffic_necessity --saved-root .runtime-work/c229462/saved-final-on_sidewalk_traffic_necessity --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-on_sidewalk_traffic_necessity-positive.log",
+        "test_log_sha256": "59ac17e2cb82bedb8dbb874093b5d0289f18b5dc845481eec1d320e2879daf8a",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/delivery_probe.py --case testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__on_sidewalk_traffic_necessity --attempt .runtime-work/c229462/compat-final-on_sidewalk_traffic_necessity --saved-root .runtime-work/c229462/saved-final-on_sidewalk_traffic_necessity --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: sidewalk-site.json",
+        "negative_log": "delivery-on_sidewalk_traffic_necessity-missing_source.log",
+        "negative_log_sha256": "4f39cfdf06bb69318073cbfbb3ba3d075ff588491bc4246b71449f2e8c4c5303"
+      }
+    }
+  ]
+}

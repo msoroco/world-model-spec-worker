@@ -15,6 +15,26 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _inside(point: list, polygon: list) -> bool:
+    if (not isinstance(point, list) or len(point) != 2
+            or not isinstance(polygon, list) or len(polygon) < 3):
+        raise ValueError('reviewed crossing polygon or point invalid')
+    x, y = point
+    inside = False
+    previous = polygon[-1]
+    for current in polygon:
+        if not isinstance(current, list) or len(current) != 2:
+            raise ValueError('reviewed crossing polygon vertex invalid')
+        px, py = previous
+        cx, cy = current
+        if (cy > y) != (py > y):
+            edge_x = cx + (y - cy) * (px - cx) / (py - cy)
+            if x < edge_x:
+                inside = not inside
+        previous = current
+    return inside
+
+
 def load_review(packet: str | Path, source_root: str | Path, case_id: str) -> dict:
     packet = Path(packet).resolve()
     source_root = Path(source_root).resolve()
@@ -56,10 +76,18 @@ def load_review(packet: str | Path, source_root: str | Path, case_id: str) -> di
         raise ValueError('both original crosswalk categories require reviewed inventory')
     if (route.get('roadway_id') != roadway['roadway_id']
             or not route.get('crossing_point_id') or not route.get('pedestrian_actor_id')
+            or not route.get('crossing_point_xy_m')
             or not route.get('approach_xy_m') or not route.get('exit_xy_m')
             or route.get('within_marked_crosswalk') is not False
             or route.get('within_unmarked_intersection_crosswalk') is not False):
         raise ValueError('reviewed pedestrian route is not proven outside both crosswalk categories')
+    point = route['crossing_point_xy_m']
+    if not _inside(point, roadway['roadway_polygon_xy_m']):
+        raise ValueError('reviewed crossing point is not within roadway')
+    for category in ('marked_crosswalk_polygons_xy_m',
+                     'unmarked_intersection_crosswalk_polygons_xy_m'):
+        if any(_inside(point, polygon) for polygon in inventory[category]):
+            raise ValueError('reviewed crossing point lies within ' + category)
     if (place.get('crossing_point_id') != route['crossing_point_id']
             or type(place.get('prohibited_place_under_11_30_070')) is not bool
             or not place.get('source_review')):

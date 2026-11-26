@@ -8,7 +8,7 @@
       "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "62c7497922749e1c98ac5ad07ca31b2399e8c1bc2fad3e331e43c7f2880e83ec",
+      "construction_sha256": "3770ff553e1ebdb8ac8c8e5bf4838dd85cbe5d153afcbb74c692632f7eaf59e8",
       "fixture_recipe": "work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/diagnostic-stop_signal_before-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -78,39 +78,65 @@
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "62c7497922749e1c98ac5ad07ca31b2399e8c1bc2fad3e331e43c7f2880e83ec",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before --output .runtime-work/c150640/offline-final-stop_signal_before",
+        "construction_sha256": "3770ff553e1ebdb8ac8c8e5bf4838dd85cbe5d153afcbb74c692632f7eaf59e8",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before --output .runtime-work/c150640/offline-final2-stop_signal_before",
         "exit_code": 0,
         "log": "cpu-offline-stop_signal_before.log",
-        "log_sha256": "16326cfa84c671107d1e7bbe6ea13e244529ae2396326c6251f82eeab21cbd3c"
+        "log_sha256": "6e3147ba8af84e20165b694eb406a81e68fb2b0a3ebb286ebe4ecd40390cde18"
       },
       "compatibility": {
         "receipt": "proofs/stop_signal_before/receipt.json",
-        "sha256": "3fa52dc1783ed0141bc91718f2e1377812392e0abd0e6ffd6b0560a4a4672003",
+        "sha256": "0349f2849a09085bac3a8f80654b8c4e44af3bddf21006e3b690150eafb20069",
         "log": "proofs/stop_signal_before/analysis.log"
       },
       "negative": {
         "log": "proofs/stop_signal_before/negative.log"
       },
-      "physical_preparation": {
-        "receipt": "physical-stop_signal_before-receipt.json",
-        "sha256": "2c42c0eb3f9624c8d7c0da5d89170729542fc5fb6ea6a75531796c16ea6d930d"
-      },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-saved-stop_signal_before.log",
-        "test_log_sha256": "2ad1c065a333a1c3234553f8e4c7c6c3b5acbb427f02cee73f32df9f3cc88463",
+        "test_log": "cpu-saved-final2-stop_signal_before.log",
+        "test_log_sha256": "6211f5621eaf629da8aa00b2111b62866723edb23d0d69d985a126fcf03f092b",
         "test_exit_code": 0,
         "scope": "synthetic recorded-only replay; original rear driver, signal pixels and legal review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final3-stop_signal_before-receipt.json",
+        "sha256": "159118b110af228e8209793d37cc52cd308e681c617341b4f60493b8d3341862"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "18ebfda04e882306a5ee010254f8afa799972a8f5f1fb8357d935a6426bf2e0c",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before --attempt .runtime-work/c150640/compat-final2-stop_signal_before --saved-root .runtime-work/c150640/saved-final2-stop_signal_before --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-stop_signal_before-positive.log",
+        "test_log_sha256": "947b4e791cdcfcd205876fcffa02dc4429e2bd446894d4e86ad5d9f34fec5bab",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before --attempt .runtime-work/c150640/compat-final2-stop_signal_before --saved-root .runtime-work/c150640/saved-final2-stop_signal_before --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: rear-signal-scene.json",
+        "negative_log": "delivery-stop_signal_before-missing_source.log",
+        "negative_log_sha256": "117a36aea3a438668718cf8732293f9815d460dadbf0df85a87c7d5bce068808"
       }
     },
     {
       "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after",
       "kind": "delivery",
       "construction": "cases/stop_signal_after/construction.json",
-      "construction_sha256": "f87b56598fba01a97a7dea926724530946bf3f077ded276b739e80e95100b6f0",
+      "construction_sha256": "c885c972e3b88b799efa9851bb8911ee781cbff15d1d91da4ecb34af4677adc6",
       "fixture_recipe": "work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/diagnostic-stop_signal_after-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -180,39 +206,65 @@
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "f87b56598fba01a97a7dea926724530946bf3f077ded276b739e80e95100b6f0",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after --output .runtime-work/c150640/offline-final-stop_signal_after",
+        "construction_sha256": "c885c972e3b88b799efa9851bb8911ee781cbff15d1d91da4ecb34af4677adc6",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after --output .runtime-work/c150640/offline-final2-stop_signal_after",
         "exit_code": 0,
         "log": "cpu-offline-stop_signal_after.log",
-        "log_sha256": "cc199fd11a8740ef531dd39915e9bc48988d5836c32d6b4e4c78d6f594fa3b66"
+        "log_sha256": "c7b34ec032ed25331e9b4eb7ae2a851c6bef50deacce1bfa23afe9fc9f31ed97"
       },
       "compatibility": {
         "receipt": "proofs/stop_signal_after/receipt.json",
-        "sha256": "1c97d83ef2a6555a3b8c1ac51251e8212152c8eef9482ffec645393972444d8e",
+        "sha256": "a9060ba7ba18a6ddbe66233500cfc44a314ce5306b8eecf6219da6098af660db",
         "log": "proofs/stop_signal_after/analysis.log"
       },
       "negative": {
         "log": "proofs/stop_signal_after/negative.log"
       },
-      "physical_preparation": {
-        "receipt": "physical-stop_signal_after-receipt.json",
-        "sha256": "a88196d41c62b333d30901abeb3b97a5dab1de0717484ee54c8a21552b3e22ec"
-      },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-saved-stop_signal_after.log",
-        "test_log_sha256": "fc4b1ae46180e1f49af62e32d5dbd7ce9f2e8a038f29e9c1a7a0d3a356e84177",
+        "test_log": "cpu-saved-final2-stop_signal_after.log",
+        "test_log_sha256": "5b33c64bce5f1e9efd5257707229cdea9f8824c75e1eee741a1ad4e745f8fd23",
         "test_exit_code": 0,
         "scope": "synthetic recorded-only replay; original rear driver, signal pixels and legal review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final3-stop_signal_after-receipt.json",
+        "sha256": "066fb67d36a4ca3a1bc23017f1db97b502a15114b8f43132d901529d5ca59521"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "18ebfda04e882306a5ee010254f8afa799972a8f5f1fb8357d935a6426bf2e0c",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after --attempt .runtime-work/c150640/compat-final2-stop_signal_after --saved-root .runtime-work/c150640/saved-final2-stop_signal_after --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-stop_signal_after-positive.log",
+        "test_log_sha256": "929b54320c0f056736c7ccca1a353f3ba9084e7db2e80eb2f5a6ee0ad2d97b89",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_after --attempt .runtime-work/c150640/compat-final2-stop_signal_after --saved-root .runtime-work/c150640/saved-final2-stop_signal_after --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: rear-signal-scene.json",
+        "negative_log": "delivery-stop_signal_after-missing_source.log",
+        "negative_log_sha256": "117a36aea3a438668718cf8732293f9815d460dadbf0df85a87c7d5bce068808"
       }
     },
     {
       "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before",
       "kind": "delivery",
       "construction": "cases/decrease_signal_before/construction.json",
-      "construction_sha256": "92ae335ff71d1aea5d2ae7642c2d90c2ab2c0ab549ee18225464dca824fc0173",
+      "construction_sha256": "bfbc4350071c3f7071f78b7f8fd53027254e985beec835b2f1d4f5e8ddd92cc9",
       "fixture_recipe": "work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/diagnostic-decrease_signal_before-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -282,39 +334,65 @@
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "92ae335ff71d1aea5d2ae7642c2d90c2ab2c0ab549ee18225464dca824fc0173",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before --output .runtime-work/c150640/offline-final-decrease_signal_before",
+        "construction_sha256": "bfbc4350071c3f7071f78b7f8fd53027254e985beec835b2f1d4f5e8ddd92cc9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before --output .runtime-work/c150640/offline-final2-decrease_signal_before",
         "exit_code": 0,
         "log": "cpu-offline-decrease_signal_before.log",
-        "log_sha256": "70c97901cb141455272ea04b8ba4fe4f6176a33a9bcd7eb74e6b7175a91366c8"
+        "log_sha256": "f7339c90cd6c23375d84576b0e33d8a0588e34719dba0da626663a42f3df5254"
       },
       "compatibility": {
         "receipt": "proofs/decrease_signal_before/receipt.json",
-        "sha256": "80d9a35390e6954be8edce76a89c5560dbd4bef2c8d67f07e5ca875b90676da5",
+        "sha256": "50a88216882f78fb181061bcfb36ee7c0b81feb4ea09620e536075968fecb1b5",
         "log": "proofs/decrease_signal_before/analysis.log"
       },
       "negative": {
         "log": "proofs/decrease_signal_before/negative.log"
       },
-      "physical_preparation": {
-        "receipt": "physical-decrease_signal_before-receipt.json",
-        "sha256": "4acebb177d58ffe3c3ff21e243a39339686b107fef9c09f2d07eca67d1fbea7c"
-      },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-saved-decrease_signal_before.log",
-        "test_log_sha256": "65581d9496cb28fbe3df7ef6106e5d001cab118e32c9ff156e23eef99ddae062",
+        "test_log": "cpu-saved-final2-decrease_signal_before.log",
+        "test_log_sha256": "619f97b157fdf6e325be1cd8594491b51500a64b252cf55294dcdcd6b21c1ef5",
         "test_exit_code": 0,
         "scope": "synthetic recorded-only replay; original rear driver, signal pixels and legal review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final3-decrease_signal_before-receipt.json",
+        "sha256": "8c90ac1ac477eb0858ec258754018ea9213b227bc8944d24924bdf2535e58c46"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "18ebfda04e882306a5ee010254f8afa799972a8f5f1fb8357d935a6426bf2e0c",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before --attempt .runtime-work/c150640/compat-final2-decrease_signal_before --saved-root .runtime-work/c150640/saved-final2-decrease_signal_before --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-decrease_signal_before-positive.log",
+        "test_log_sha256": "4a9ae7b0cdb131bc832ad64e331ea755baa58ec50cb5cb3f2711f838d9f9b309",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_before --attempt .runtime-work/c150640/compat-final2-decrease_signal_before --saved-root .runtime-work/c150640/saved-final2-decrease_signal_before --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: rear-signal-scene.json",
+        "negative_log": "delivery-decrease_signal_before-missing_source.log",
+        "negative_log_sha256": "117a36aea3a438668718cf8732293f9815d460dadbf0df85a87c7d5bce068808"
       }
     },
     {
       "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after",
       "kind": "delivery",
       "construction": "cases/decrease_signal_after/construction.json",
-      "construction_sha256": "84c9c59ea9da980482af78e54f424975f041394a2e4ef4abd06f4d64a44c7053",
+      "construction_sha256": "a4416337afee1bf180be75555735a1aefe275ab7a88b8c7cf9137a5517f215a4",
       "fixture_recipe": "work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/diagnostic-decrease_signal_after-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -384,39 +462,65 @@
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "84c9c59ea9da980482af78e54f424975f041394a2e4ef4abd06f4d64a44c7053",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after --output .runtime-work/c150640/offline-final-decrease_signal_after",
+        "construction_sha256": "a4416337afee1bf180be75555735a1aefe275ab7a88b8c7cf9137a5517f215a4",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after --output .runtime-work/c150640/offline-final2-decrease_signal_after",
         "exit_code": 0,
         "log": "cpu-offline-decrease_signal_after.log",
-        "log_sha256": "48d9526607ca36e1c023bde78ac7b9f9596ecc4af92b8624dc30df0472dea644"
+        "log_sha256": "2316cfffc3a91d9fdb31a1b3d5b447cc52f6ecb5ce6f6aeed651296d82c49837"
       },
       "compatibility": {
         "receipt": "proofs/decrease_signal_after/receipt.json",
-        "sha256": "e6a1c1fed3cbbce3192571be016d6842093ab7fd54bd843392b6347255907bbc",
+        "sha256": "775b1057ca328fbaf8acd21e18ab799eb09a6885b57a5ae735b4ae63acbeacf2",
         "log": "proofs/decrease_signal_after/analysis.log"
       },
       "negative": {
         "log": "proofs/decrease_signal_after/negative.log"
       },
-      "physical_preparation": {
-        "receipt": "physical-decrease_signal_after-receipt.json",
-        "sha256": "28f04b7ccf000172fb1e3a6b36037944d8accc83a3493b245edaeb1e9c10b326"
-      },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-saved-decrease_signal_after.log",
-        "test_log_sha256": "d8af73286448bce4098e346a26ef0a51c4f0f88f7a72ca418a1140f4ec721c69",
+        "test_log": "cpu-saved-final2-decrease_signal_after.log",
+        "test_log_sha256": "adc067304cbe3fa6816c954cb67300f58fc1896edcce842aa29b5383ea036337",
         "test_exit_code": 0,
         "scope": "synthetic recorded-only replay; original rear driver, signal pixels and legal review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final3-decrease_signal_after-receipt.json",
+        "sha256": "8fd4131ae47193f36931d32d92d70ed8cd27a3ae47105670b15155705ebe77a3"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "18ebfda04e882306a5ee010254f8afa799972a8f5f1fb8357d935a6426bf2e0c",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after --attempt .runtime-work/c150640/compat-final2-decrease_signal_after --saved-root .runtime-work/c150640/saved-final2-decrease_signal_after --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-decrease_signal_after-positive.log",
+        "test_log_sha256": "cc33e27e200859acee88bc9c4890ee2e7f925c18098190de62636af900f76286",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__decrease_signal_after --attempt .runtime-work/c150640/compat-final2-decrease_signal_after --saved-root .runtime-work/c150640/saved-final2-decrease_signal_after --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: rear-signal-scene.json",
+        "negative_log": "delivery-decrease_signal_after-missing_source.log",
+        "negative_log_sha256": "117a36aea3a438668718cf8732293f9815d460dadbf0df85a87c7d5bce068808"
       }
     },
     {
       "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver",
       "kind": "delivery",
       "construction": "cases/stop_no_rear_driver/construction.json",
-      "construction_sha256": "3853fee4c4b443cef038231bbd846de6a682a3ebcaa61f8f60dfad2f1ed6c2dc",
+      "construction_sha256": "9b853dbf694bbcd1cf4750dc6b1aa710e910b3809c0e0012bd1ed86aaab40704",
       "fixture_recipe": "work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/diagnostic-stop_no_rear_driver-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -486,32 +590,58 @@
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "3853fee4c4b443cef038231bbd846de6a682a3ebcaa61f8f60dfad2f1ed6c2dc",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver --output .runtime-work/c150640/offline-final-stop_no_rear_driver",
+        "construction_sha256": "9b853dbf694bbcd1cf4750dc6b1aa710e910b3809c0e0012bd1ed86aaab40704",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver --output .runtime-work/c150640/offline-final2-stop_no_rear_driver",
         "exit_code": 0,
         "log": "cpu-offline-stop_no_rear_driver.log",
-        "log_sha256": "92c4b594367f6ae0ae2cc1e27d0ac054de4efee25748104a846806ac9e42d31e"
+        "log_sha256": "0e07d577642c59109581f260c0fc78ded2aaae190d3c244c0ec71dd0d20f9a21"
       },
       "compatibility": {
         "receipt": "proofs/stop_no_rear_driver/receipt.json",
-        "sha256": "d9731fdfbf7bf111c06f6e7e6e51ae91b24df166ac90a41e502e6bb488b215c0",
+        "sha256": "67e9fddd80765877a69c676eb8c7c3f5f1bcfbfd9bd9fb088df09c6f9c7d7d87",
         "log": "proofs/stop_no_rear_driver/analysis.log"
       },
       "negative": {
         "log": "proofs/stop_no_rear_driver/negative.log"
       },
-      "physical_preparation": {
-        "receipt": "physical-stop_no_rear_driver-receipt.json",
-        "sha256": "b51cd9ca30853a131b40adcdc0f6b173f2288653b5d1c97472ffed67914e4488"
-      },
       "post_capture": {
         "recorded_only": true,
         "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
         "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
-        "test_log": "cpu-saved-stop_no_rear_driver.log",
-        "test_log_sha256": "4015f957c891b1ff289dd80200c7069be417162870328d06ababcf9ee6e74916",
+        "test_log": "cpu-saved-final2-stop_no_rear_driver.log",
+        "test_log_sha256": "4642a92f51489492a1e3ce270155282c2910e6251c4e05a05e79c161b469ce54",
         "test_exit_code": 0,
         "scope": "synthetic recorded-only replay; original rear driver, signal pixels and legal review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-final3-stop_no_rear_driver-receipt.json",
+        "sha256": "e40099c8a27f50ab173daaa945acc3547463c0395ed330a3852b419d40610820"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "18ebfda04e882306a5ee010254f8afa799972a8f5f1fb8357d935a6426bf2e0c",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver --attempt .runtime-work/c150640/compat-final2-stop_no_rear_driver --saved-root .runtime-work/c150640/saved-final2-stop_no_rear_driver --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-stop_no_rear_driver-positive.log",
+        "test_log_sha256": "b5370af5f86373e916b58328762b1a3be626c08c16b8de1c5a3b3af7c14fb6e1",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150640/pipeline PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python .venv-cpu/bin/python work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_no_rear_driver --attempt .runtime-work/c150640/compat-final2-stop_no_rear_driver --saved-root .runtime-work/c150640/saved-final2-stop_no_rear_driver --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: rear-signal-scene.json",
+        "negative_log": "delivery-stop_no_rear_driver-missing_source.log",
+        "negative_log_sha256": "117a36aea3a438668718cf8732293f9815d460dadbf0df85a87c7d5bce068808"
       }
     }
   ]

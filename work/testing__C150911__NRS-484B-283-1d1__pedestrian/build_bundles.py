@@ -70,8 +70,11 @@ def build() -> list[dict]:
                 for name, width, height in (('overview', 1920, 1080),
                     ('approach', 1280, 720), ('reference_corner', 1280, 720),
                     ('driver_reference', 1280, 720))],
-            'physical_completion': {'criterion': 'observed_crosswalk_entry_and_signal',
-                'completion_goal_method': '900 original joined signal, walker and driver frames'},
+            'physical_completion': {'criterion': 'travel_progress',
+                'motion_source': 'trace.jsonl', 'position_key': 'position_m',
+                'minimum_progress_m': 5.0, 'minimum_samples': 3,
+                'engineering_tolerances_not_legal': True,
+                'completion_goal_method': 'At least 5m original pedestrian progress as an engineering motion proxy; independently audit WALK crosswalk entry and driver trajectory.'},
             'case': {'case_id': case_id,
                 'physical_target': 'reviewed official WALK entry and distinct driver yield interaction',
                 'recording_description': description}}

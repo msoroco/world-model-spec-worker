@@ -1,4 +1,4 @@
-"""Recheck all selected C150911 CPU receipt bindings and runtime validators."""
+"""Recheck all selected C228096 CPU receipt bindings and runtime validators."""
 from __future__ import annotations
 
 import json

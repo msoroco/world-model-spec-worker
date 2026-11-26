@@ -27,12 +27,12 @@
   "cases": [
     {
       "branch": "Vehicle parking on a sidewalk",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "kind": "delivery",
+      "new_capture_selected": true,
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
+      "construction_status": "source_gated_executable",
       "required_original_packets": [
         "frame_map",
         "motor_vehicle_type_action_and_footprint",
@@ -45,16 +45,17 @@
       "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_on_sidewalk",
       "requested_footprint_sidewalk_relation": "overlap",
       "requested_traffic_conflict_necessity_status": "absent",
-      "measurement": "Original convex sidewalk patch and vehicle footprint intersection area; physical overlap separate from traffic/law/officer/device/subsection 3 exception review."
+      "measurement": "Original convex sidewalk patch and vehicle footprint intersection area; physical overlap separate from traffic/law/officer/device/subsection 3 exception review.",
+      "target_law_id": "NRS-484B-450-1a"
     },
     {
       "branch": "Vehicle parking on a sidewalk",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "kind": "delivery",
+      "new_capture_selected": true,
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
+      "construction_status": "source_gated_executable",
       "required_original_packets": [
         "frame_map",
         "motor_vehicle_type_action_and_footprint",
@@ -67,16 +68,17 @@
       "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_edge_touch",
       "requested_footprint_sidewalk_relation": "touch",
       "requested_traffic_conflict_necessity_status": "absent",
-      "measurement": "Original convex sidewalk patch and vehicle footprint intersection area; physical overlap separate from traffic/law/officer/device/subsection 3 exception review."
+      "measurement": "Original convex sidewalk patch and vehicle footprint intersection area; physical overlap separate from traffic/law/officer/device/subsection 3 exception review.",
+      "target_law_id": "NRS-484B-450-1a"
     },
     {
       "branch": "Vehicle parking on a sidewalk",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "kind": "delivery",
+      "new_capture_selected": true,
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
+      "construction_status": "source_gated_executable",
       "required_original_packets": [
         "frame_map",
         "motor_vehicle_type_action_and_footprint",
@@ -89,16 +91,17 @@
       "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_off_sidewalk",
       "requested_footprint_sidewalk_relation": "separate",
       "requested_traffic_conflict_necessity_status": "absent",
-      "measurement": "Original convex sidewalk patch and vehicle footprint intersection area; physical overlap separate from traffic/law/officer/device/subsection 3 exception review."
+      "measurement": "Original convex sidewalk patch and vehicle footprint intersection area; physical overlap separate from traffic/law/officer/device/subsection 3 exception review.",
+      "target_law_id": "NRS-484B-450-1a"
     },
     {
       "branch": "Vehicle parking on a sidewalk",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "kind": "delivery",
+      "new_capture_selected": true,
       "gap_ids": [
         "unverified-law-coverage"
       ],
-      "construction_status": "not_implemented",
+      "construction_status": "source_gated_executable",
       "required_original_packets": [
         "frame_map",
         "motor_vehicle_type_action_and_footprint",
@@ -111,7 +114,8 @@
       "case_id": "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__on_sidewalk_traffic_necessity",
       "requested_footprint_sidewalk_relation": "overlap",
       "requested_traffic_conflict_necessity_status": "unresolved",
-      "measurement": "Original convex sidewalk patch and vehicle footprint intersection area; physical overlap separate from traffic/law/officer/device/subsection 3 exception review."
+      "measurement": "Original convex sidewalk patch and vehicle footprint intersection area; physical overlap separate from traffic/law/officer/device/subsection 3 exception review.",
+      "target_law_id": "NRS-484B-450-1a"
     }
   ],
   "comparisons": [
@@ -128,7 +132,7 @@
         "same motor vehicle, sidewalk site, stop/stand/park action and camera plan except named change",
         "same exception context except named change"
       ],
-      "status": "planned_unbuilt"
+      "status": "source_gated_original_audit"
     },
     {
       "comparison_id": "boundary_touch",
@@ -143,7 +147,7 @@
         "same motor vehicle, sidewalk site, stop/stand/park action and camera plan except named change",
         "same exception context except named change"
       ],
-      "status": "planned_unbuilt"
+      "status": "source_gated_original_audit"
     },
     {
       "comparison_id": "traffic_necessity_exception",
@@ -158,10 +162,43 @@
         "same motor vehicle, sidewalk site, stop/stand/park action and camera plan except named change",
         "same exception context except named change"
       ],
-      "status": "planned_unbuilt"
+      "status": "source_gated_original_audit"
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "site_source",
+      "mandatory": true
+    },
+    {
+      "name": "sidewalk_polygon",
+      "mandatory": true
+    },
+    {
+      "name": "vehicle_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed_history",
+      "mandatory": true
+    },
+    {
+      "name": "activity_history",
+      "mandatory": true
+    },
+    {
+      "name": "exception_context",
+      "mandatory": true
+    },
+    {
+      "name": "conflict_motion",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/assignment.json",
@@ -193,10 +230,18 @@
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "unverified-law-coverage",
+        "requirement": "original motor-vehicle sidewalk parking and independent statutory exception context",
+        "source": "inputs/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/evidence.json",
+        "source_sha256": "8f9d9f4b81db4882b401f696b24a9a0abc7ec8a81ca334583a5d446b82590767",
+        "why_existing_insufficient": "Frozen inventory contains zero accepted original recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_sidewalk_footprint_cases_and_tested_geometry",
+  "planning_status": "source_gated_cpu_delivery_construction",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -217,5 +262,47 @@
       ],
       "reason": "The road and activating sidewalk can support a parking destination on the sidewalk once its boundaries and vehicle access are constructed."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-450-1a motor-vehicle stop, stand or park on a sidewalk with subsection 3 and traffic/law/officer/device exceptions separately reviewed",
+      "source": "inputs/testing__C229462__NRS-484B-450-1a__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted original recording; four source-gated selected physical probes and three comparisons",
+      "case_ids": [
+        "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_on_sidewalk",
+        "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_edge_touch",
+        "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__park_off_sidewalk",
+        "testing__C229462__NRS-484B-450-1a__motor_vehicle_driver__on_sidewalk_traffic_necessity"
+      ]
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "sidewalk site, road access and parked motor vehicle",
+        "interval": "all 45 seconds"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle approach, parking action and other traffic",
+        "interval": "all 45 seconds"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "sidewalk boundary and vehicle body footprint",
+        "interval": "all 45 seconds"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "motor vehicle approach and terminal position",
+        "interval": "all 45 seconds"
+      }
+    ]
+  }
 }

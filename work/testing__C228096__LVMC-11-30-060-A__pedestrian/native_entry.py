@@ -1,4 +1,4 @@
-"""Capture original same-tick crossing, crossinger, driver and four-camera sources."""
+"""Capture original same-tick crossing, pedestrian, vehicles and four cameras."""
 from __future__ import annotations
 
 import hashlib
@@ -59,7 +59,8 @@ def _frame(queue: Queue, expected: int):
 def _sample(sample: dict, frame: int, time_s: float, review: dict) -> dict:
     required = ('pedestrian_on_roadway', 'pedestrian_yield_observed',
                 'vehicles_on_roadway', 'pedestrian_xyz_m',
-                'vehicle_positions_xyz_m', 'observation_source')
+                'vehicle_positions_xyz_m', 'observation_source',
+                'roadway_inventory_source')
     if not isinstance(sample, dict) or any(key not in sample for key in required):
         raise ValueError('original crossing adapter observation incomplete')
     if any(type(sample[key]) is not bool for key in required[:2]):
@@ -71,6 +72,8 @@ def _sample(sample: dict, frame: int, time_s: float, review: dict) -> dict:
         raise ValueError('original roadway vehicle inventory differs')
     if sample['observation_source'] != 'original_native_snapshot':
         raise ValueError('original Native snapshot readback required')
+    if sample['roadway_inventory_source'] != 'original_native_snapshot_all_actors':
+        raise ValueError('all-actor original roadway inventory required')
     pedestrian_xyz = sample['pedestrian_xyz_m']
     if (not isinstance(pedestrian_xyz, list) or len(pedestrian_xyz) != 3
             or any(type(value) not in (int, float) or not math.isfinite(value)
@@ -162,6 +165,8 @@ def run_native(packet, source_root, adapter_module, case_id, output_dir, speed,
             'site_source_sha256': reviewed['packet_sha256'],
             'site': {'roadway_id': route['roadway_id'],
                 'crossing_point_id': route['crossing_point_id'],
+                'approach_xy_m': route['approach_xy_m'],
+                'crossing_exit_xy_m': route['exit_xy_m'],
                 'within_marked_crosswalk': False,
                 'within_unmarked_intersection_crosswalk': False,
                 'prohibited_place_under_11_30_070': reviewed['sources']['prohibited_place'][

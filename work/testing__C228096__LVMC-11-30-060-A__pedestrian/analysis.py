@@ -6,7 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from outside_crossoutside_entry import measure
+from outside_crosswalk_entry import measure
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
@@ -64,16 +64,16 @@ def analyze(attempt: Path, output: Path) -> dict:
     channels = attempt / 'channels'
     channels.mkdir(exist_ok=False)
     value = {
-        'crossing_signal_state': lambda frame: {'signal_indication': frame['signal_indication'],
-            'pedestrian_signal_id': packet['pedestrian_signal_id']},
-        'pedestrian_crosscrossing_motion': lambda frame: {
-            'pedestrian_in_crosscrossing': frame['pedestrian_in_crosscrossing'],
-            'pedestrian_facing_signal': frame['pedestrian_facing_signal'],
-            'crossing_direction_matches_signal': frame['crossing_direction_matches_signal']},
-        'driver_yield_trajectory': lambda frame: {
-            'driver_actor_ids': frame['driver_actor_ids'],
-            'driver_yield_observed': frame['driver_yield_observed']},
-        'exception_context': lambda frame: frame['exception_context']}
+        'outside_crosswalk_site': lambda frame: packet['site'],
+        'pedestrian_roadway_motion': lambda frame: {
+            'pedestrian_on_roadway': frame['pedestrian_on_roadway'],
+            'pedestrian_xyz_m': frame.get('pedestrian_xyz_m')},
+        'vehicle_roadway_motion': lambda frame: {
+            'vehicles_on_roadway': frame['vehicles_on_roadway'],
+            'vehicle_positions_xyz_m': frame.get('vehicle_positions_xyz_m')},
+        'yield_trajectory': lambda frame: {
+            'pedestrian_yield_observed': frame['pedestrian_yield_observed'],
+            'vehicles_on_roadway': frame['vehicles_on_roadway']}}
     evidence = []
     for channel in description['channels']:
         name = channel['name']
@@ -85,14 +85,14 @@ def analyze(attempt: Path, output: Path) -> dict:
                 stream.write(json.dumps({'time_s': frame['time_s'],
                     'value': value[name](frame)}, separators=(',', ':')) + '\n')
         evidence.append({'name': name, 'unit': channel['unit'], 'reference': ref})
-    context = 'channels/reviewed_crossing_site.json'
-    (attempt / context).write_text(json.dumps({'reviewed_crossing_site': {
+    context = 'channels/reviewed_outside_crosswalk_site.json'
+    (attempt / context).write_text(json.dumps({'reviewed_outside_crosswalk_site': {
         'site_source_sha256': packet['site_source_sha256'],
-        'exception_source_sha256': packet['exception_source_sha256'],
-        'statutory_exceptions': 'independent review pending'}}) + '\n')
-    evidence.append({'name': 'reviewed_crossing_site', 'unit': 'source', 'reference': context})
+        'site': packet['site'],
+        'prohibited_place_exception': 'independent 11.30.070 source review pending'}}) + '\n')
+    evidence.append({'name': 'reviewed_outside_crosswalk_site', 'unit': 'source', 'reference': context})
     native = {'case_id': case_id, 'measured_values': {'outside_entry': measurement},
-        'target_checks': [{'target': 'source-bound original crossing crosscrossing entry',
+        'target_checks': [{'target': 'source-bound original outside-crosswalk road entry',
             'requested': True, 'measured': True, 'method': 'measure_outside_entry',
             'tolerance': 0, 'matched': True, 'physical_cause_confirmed': False,
             'cause_evidence': ['original-crossing-observations.json']}],
@@ -110,7 +110,7 @@ def analyze(attempt: Path, output: Path) -> dict:
             'sources': {'original-crossing-observations.json': sha(source),
                 'original-crossing-receipt.json': sha(attempt / 'original-crossing-receipt.json')},
             'value': measurement}},
-        'limitations': ['Actual signal pixels, physical crossing, driver duty and statutory exceptions require original review.']}
+        'limitations': ['Actual roadway and crosswalk geometry, full pedestrian yielding, all roadway vehicles and 11.30.070 applicability require original review.']}
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     return report
 

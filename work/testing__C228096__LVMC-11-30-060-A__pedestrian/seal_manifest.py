@@ -29,7 +29,7 @@ def main():
         short = cid.split("__")[-1]
         entry["native_handoff"] = {"python_env_var": "CARLA_PYTHON",
             "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT",
-            "site_review_env_var": "C150911_WALK_REVIEW_PACKET"}
+            "site_review_env_var": "C228096_CROSSING_REVIEW_PACKET"}
         for candidate, target in (("primary", entry), ("fallback1", entry["candidates"][0])):
             proof = offline[cid, candidate]
             receipt = compatibility[cid, candidate]

@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / "execution-manifest.draft.json"
-OUTPUT = REPO / ".runtime-work/c228096-owner/offline-selected"
+OUTPUT = REPO / ".runtime-work/c228096-owner/offline-selected-v4"
 
 
 def sha(path):
@@ -31,8 +31,8 @@ def main():
                        "--candidate", candidate, "--output", str(output),
                        "--python", sys.executable]
             env = dict(os.environ)
-            env["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(REPO / ".runtime-work/c150911-output")
-            env["TMPDIR"] = str(REPO / ".runtime-work/c150911-tmp")
+            env["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(REPO / ".runtime-work/c228096-owner/pipeline")
+            env["TMPDIR"] = str(REPO / ".runtime-work/c228096-owner/tmp")
             env["PYTHONDONTWRITEBYTECODE"] = "1"
             Path(env["TMPDIR"]).mkdir(parents=True, exist_ok=True)
             completed = subprocess.run(command, cwd=REPO, env=env,

@@ -56,7 +56,9 @@ def probe(entry, suffix, kind):
     write(target, result)
     log = HERE / 'physical' / suffix / (kind + '-proof.log')
     log.write_text('synthetic motion assessment: ' + expected + '\n')
-    return {'kind': kind, 'exit_code': 0,
+    return {'kind': kind,
+            'command': 'prove_physical_diagnostic.py ' + suffix + ' ' + kind,
+            'exit_code': 0,
             'log': str(log.relative_to(HERE)), 'log_sha256': sha(log),
             'result': str(target.relative_to(HERE)), 'result_sha256': sha(target)}
 

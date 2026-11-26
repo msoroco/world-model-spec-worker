@@ -1,37 +1,26 @@
 {
   "assignment_id": "testing__C150640__NRS-484B-413-3__motor_vehicle_driver",
   "input_sha256": "58da4a269440bba35cb61e1a77de3c0a1f8b65dc7c1831199ab0c78323838a91",
-  "status": "partial",
-  "readiness_kind": "partial_exact_rear_signal_cpu_probes",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "path": "rear_signal.py",
-      "sha256": "10918dba0168aaa614144f083a85826f9a9daf81eb6b5db8195dddd83510a8e7"
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C150640__NRS-484B-413-3__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov25-tests-current.log",
+      "sha256": "45e2cc3f2b3beccee55a1a7511b61428aa5dacd16be277c694ddfb7c63086ad2"
     },
     {
-      "path": "tests/test_rear_signal.py",
-      "sha256": "9400d928c2faf757c77eb78e1028158a7eaf9c3d200f35087ceeb6666054aede"
-    },
-    {
-      "path": "cpu-tests.log",
-      "sha256": "cb4b6282868dbd033115f1afd8d2d6f19d9f762a13f38b9b1365852711dcf47e"
-    },
-    {
-      "path": "cpu-preflight.log",
-      "sha256": "f84245a584a94eeb0a92a10ef649d0517bc7fb846f1c8bfa7f7209dd89518459"
-    },
-    {
-      "path": "cpu-static-check.log",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C150640__NRS-484B-413-3__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov25-static-current.log",
       "sha256": "aa925a6ca30c94a70b5610b5fe10cef1352bd5d8f9dad27988ef9325c8e73e82"
-    },
-    {
-      "path": "cpu-strict-check.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Acquire reviewed original rear-driver/signal scene packet; run actual CARLA stop/decrease and four-view capture; independently review source hashes, 900 frame joins, rear-driver and signal pixels, physical motion and legal judgment."
   ],
-  "reason": "Five source-gated exact stop/decrease and signal-order probes pass CPU fixture tests. Original physical rear-driver relation and signal visibility, canonical capture/offline/compatibility, semantic proposals and saved delivery/comparison audits remain CPU work; no accepted recording is available."
+  "reason": "CPU delivery preparation passes for five exact stop/decrease and signal-order cases and four original-only comparisons. Reviewed original rear-driver scene, actual physical behavior, signal pixels, appropriateness, immediacy and legal judgment remain source gated; no original acceptance is claimed.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C150640__NRS-484B-413-3__motor_vehicle_driver --case testing__C150640__NRS-484B-413-3__motor_vehicle_driver__stop_signal_before --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }
