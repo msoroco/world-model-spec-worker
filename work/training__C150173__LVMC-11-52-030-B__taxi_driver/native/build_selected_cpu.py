@@ -32,11 +32,12 @@ def main():
                 'disposition_index': 0, 'requirement': 'LVMC-11-52-030-B',
                 'source': 'LVMC 11.52.030(B)',
                 'output_key': 'taxi_yellow_zone_measurement',
-                'method': 'inspect', 'kind': 'measured', 'value_type': 'object',
+                'method': 'source_join_measurement', 'kind': 'measured', 'value_type': 'object',
                 'inputs': ['yellow-zone-native.jsonl', 'sign-review.json',
-                           'passenger-purpose-review.json', 'ordinary-rules-review.json']}],
-            'negative': {'remove': ['passenger-purpose-review.json'],
-                         'error_contains': 'Missing required source: passenger-purpose-review.json'},
+                           'passenger-purpose-review.json', 'ordinary-rules-review.json',
+                           'observed-passenger-activity.jsonl']}],
+            'negative': {'remove': ['observed-passenger-activity.jsonl'],
+                         'error_contains': 'Missing required source: observed-passenger-activity.jsonl'},
             'frame_count': 600, 'sampling_rate_hz': 20, 'duration_s': 30,
             'physical_acceptance_claimed': False,
             'source_required': ['original Native taxi body and velocity',
@@ -54,9 +55,12 @@ def main():
             'commercial_freight_alternative': 'requires separate compatible actor binding'}
         contract_path = BASE / 'native-selected' / suffix / 'measurement-contract.json'
         write(contract_path, contract)
+        recipe_path = BASE / 'native' / 'diagnostic' / suffix / 'fixture-recipe.json'
+        if not recipe_path.is_file():
+            raise ValueError('Missing exact taxi CPU diagnostic recipe: ' + suffix)
         receipt_map = {}
         for candidate, name in (('primary', 'primary'), ('fallback1', 'fallback')):
-            source = SCRATCH / f'offline-{suffix}-{name}-v8' / 'offline.log'
+            source = SCRATCH / f'offline-{suffix}-{name}-v10' / 'offline.log'
             if not source.exists() or 'OK' not in source.read_text():
                 raise ValueError('Missing passing exact offline check: ' + suffix + ' ' + candidate)
             retained = BASE / 'native-selected' / suffix / (candidate + '-offline.log')
@@ -73,6 +77,8 @@ def main():
                         'candidates': item['candidates'],
                         'measurement_contract': str(contract_path.relative_to(BASE)),
                         'measurement_contract_sha256': digest(contract_path),
+                        'fixture_recipe': str(recipe_path.relative_to(ROOT)),
+                        'fixture_recipe_sha256': digest(recipe_path),
                         'offline_cpu': receipt_map,
                         'compatibility': 'pending', 'saved_processing': 'pending',
                         'delivery_audit': 'pending'})

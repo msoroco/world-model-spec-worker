@@ -8,7 +8,7 @@ import tempfile
 import unittest
 
 from check_requests import check_pair, read_case
-from runner import _read_review
+from runner import _cleanup_capture, _read_review
 
 
 HERE = Path(__file__).resolve().parent
@@ -90,9 +90,49 @@ class ConstructionTests(unittest.TestCase):
         packet = self.base / 'review.json'
         packet.write_text(json.dumps(review) + '\n')
         self.assertEqual(_read_review(packet, Library())['governs_approach'], True)
+        for stem, copied in (('authority', 'original-authority-source'),
+                             ('zone_designation', 'original-zone-source'),
+                             ('signal_asset', 'original-signal-source')):
+            self.assertEqual((self.base / copied).read_bytes(),
+                             (self.base / (stem + '.txt')).read_bytes())
         (self.base / 'authority.txt').write_text('changed\n')
         with self.assertRaisesRegex(ValueError, 'source hash differs'):
             _read_review(packet, Library())
+
+    def test_world_restoration_after_pipeline_close_error(self):
+        events = []
+
+        class Pipeline:
+            def close(self, confirmed):
+                events.append(('close', confirmed))
+                raise RuntimeError('forced close failure')
+
+        class Encoder:
+            def poll(self):
+                return None
+
+            def kill(self):
+                events.append('kill')
+
+            def wait(self):
+                events.append('wait')
+
+        class Actor:
+            def stop(self):
+                events.append('stop')
+
+            def destroy(self):
+                events.append('destroy')
+
+        def restore(client, prior):
+            events.append(('restore', client, prior))
+            return {'restored': True}
+
+        with self.assertRaisesRegex(RuntimeError, 'forced close failure'):
+            _cleanup_capture(Pipeline(), {'overview': Encoder()}, [Actor()],
+                             'client', 'prior', True, False, restore)
+        self.assertEqual(events, [('close', False), 'kill', 'wait', 'stop',
+                                  'destroy', ('restore', 'client', 'prior')])
 
 
 if __name__ == '__main__':

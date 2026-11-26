@@ -32,6 +32,8 @@ def prove():
         positive = audit(a, b)
         if (positive['observed_cross_frames'] != [2350, 2200] or
                 positive['requested_indications_at_crossing'] != ['release', 'stop'] or
+                positive['body_crossed_during_requested_stop'] != [False, True] or
+                positive['stopped_frames_during_requested_stop'] != [190, 0] or
                 positive['physical_completion'] is not None):
             raise AssertionError('Paired measured source audit differs')
         review = b / 'original-flagger-review.json'

@@ -50,8 +50,11 @@ def measure(attempt, case_id):
         raise ValueError('Original Native frame coverage incomplete')
     first_frame = rows[0]['native_frame']
     first_cross = None
+    first_body_cross = None
     indication_at_cross = None
     stop_seen = release_seen = False
+    stopped_frames_during_stop = 0
+    body_crossed_during_stop = False
     for index, (row, mapping) in enumerate(zip(rows, frame_map)):
         frame = first_frame + index
         if (row.get('source_kind') != 'original_native' or
@@ -68,26 +71,46 @@ def measure(attempt, case_id):
                 not isinstance(row.get('flagger_actor_id'), int)):
             raise ValueError('Original motorcycle, flagger or camera frame join differs')
         xyz = row.get('motorcycle_xyz_m')
+        body = row.get('motorcycle_body_vertices_m')
         if (not isinstance(xyz, list) or len(xyz) != 3 or
                 any(not isinstance(v, (int, float)) for v in xyz) or
+                not isinstance(body, list) or len(body) != 8 or
+                any(not isinstance(vertex, list) or len(vertex) != 3 or
+                    any(not isinstance(v, (int, float)) for v in vertex)
+                    for vertex in body) or
                 not isinstance(row.get('motorcycle_speed_mps'), (int, float)) or
                 row['motorcycle_speed_mps'] < 0 or
                 abs(xyz[1] + 1.75) > 1.5):
             raise ValueError('Original supported motorcycle lane or motion missing')
+        if (min(v[0] for v in body) > xyz[0] or
+                max(v[0] for v in body) < xyz[0] or
+                min(v[1] for v in body) > xyz[1] or
+                max(v[1] for v in body) < xyz[1]):
+            raise ValueError('Original motorcycle body does not surround actor')
         requested = row.get('requested_signal')
         if requested != ('stop' if 100 <= index < 300 else 'release'):
             raise ValueError('Requested flagger signal schedule differs')
         stop_seen |= requested == 'stop'
         release_seen |= requested == 'release' and stop_seen
+        if requested == 'stop' and row['motorcycle_speed_mps'] <= .1:
+            stopped_frames_during_stop += 1
+        if max(v[0] for v in body) >= 0:
+            if requested == 'stop':
+                body_crossed_during_stop = True
+            if first_body_cross is None:
+                first_body_cross = frame
         if first_cross is None and xyz[0] >= 0:
             first_cross = frame
             indication_at_cross = requested
-    if not stop_seen or not release_seen or first_cross is None:
+    if not stop_seen or not release_seen or first_cross is None or first_body_cross is None:
         raise ValueError('Original stop, release or crossing event missing')
     return {'case_id': case_id, 'source_kind': 'original_native_capture',
             'source_seal_sha256': sha(attempt / 'captured-source-hashes.json'),
             'frame_count': 600, 'rate_hz': 20,
             'first_observed_stop_line_cross_frame': first_cross,
+            'first_observed_body_stop_line_cross_frame': first_body_cross,
+            'observed_stopped_frames_during_requested_stop': stopped_frames_during_stop,
+            'body_crossed_during_requested_stop': body_crossed_during_stop,
             'requested_indication_at_crossing': indication_at_cross,
             'original_signal_pixels_reviewed': False,
             'flagger_authority_verified': False,

@@ -41,6 +41,10 @@ def fixture(folder, suffix):
                      'motorcycle_actor_id': 12, 'flagger_actor_id': 13,
                      'motorcycle_blueprint': 'vehicle.kawasaki.ninja',
                      'motorcycle_xyz_m': [x, -1.75, 1],
+                     'motorcycle_body_vertices_m': [
+                         [x + dx, -1.75 + dy, z]
+                         for dx in (-1.2, 1.2) for dy in (-.3, .3)
+                         for z in (.2, 1.8)],
                      'motorcycle_speed_mps': 0 if 110 <= index < 300 and
                          suffix == 'probe_a' else 3,
                      'requested_signal': 'stop' if 100 <= index < 300 else 'release',
@@ -72,10 +76,18 @@ def prove():
             case = fixture(path, suffix)
             measured = measure(path, case)
             if (measured['requested_indication_at_crossing'] != expected or
-                    measured['physical_completion'] is not None):
+                    measured['physical_completion'] is not None or
+                    measured['body_crossed_during_requested_stop'] !=
+                    (suffix == 'probe_b')):
                 raise AssertionError('Source-shaped measured crossing differs')
             outcomes.append({'case_id': case, 'measured_cross_frame':
                              measured['first_observed_stop_line_cross_frame'],
+                             'measured_body_cross_frame':
+                             measured['first_observed_body_stop_line_cross_frame'],
+                             'stopped_frames_during_requested_stop':
+                             measured['observed_stopped_frames_during_requested_stop'],
+                             'body_crossed_during_requested_stop':
+                             measured['body_crossed_during_requested_stop'],
                              'requested_indication': expected})
             altered = path / 'native-rows.jsonl'
             original = altered.read_text()
@@ -123,9 +135,29 @@ def prove():
                 raise AssertionError('Resealed but unreviewed authority source accepted')
             authority.write_text(original_authority)
             seal_path.write_text(original_seal)
+            raw_rows = altered.read_text()
+            changed_rows = raw_rows.splitlines()
+            first = json.loads(changed_rows[0])
+            first['motorcycle_body_vertices_m'] = [
+                [v[0] + 100, v[1], v[2]]
+                for v in first['motorcycle_body_vertices_m']]
+            changed_rows[0] = json.dumps(first)
+            altered.write_text('\n'.join(changed_rows) + '\n')
+            sealed = json.loads(original_seal)
+            sealed['sha256']['native-rows.jsonl'] = sha(altered)
+            seal_path.write_text(json.dumps(sealed) + '\n')
+            try:
+                measure(path, case)
+            except ValueError as error:
+                if 'body does not surround actor' not in str(error):
+                    raise
+            else:
+                raise AssertionError('Resealed false motorcycle body accepted')
+            altered.write_text(raw_rows)
+            seal_path.write_text(original_seal)
     return {'format': 'c183370-saved-source-shape-proof',
             'source_kind': 'synthetic_structural_fixture',
-            'positive_count': 2, 'negative_count': 8,
+            'positive_count': 2, 'negative_count': 10,
             'cases': outcomes, 'actual_video_decoded': False,
             'original_native_observed': False,
             'physical_or_legal_outcome_claimed': False}

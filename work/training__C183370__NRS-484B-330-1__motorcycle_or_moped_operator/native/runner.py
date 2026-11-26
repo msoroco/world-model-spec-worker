@@ -66,6 +66,33 @@ def _read_review(path, library):
     return review
 
 
+def _cleanup_capture(pipeline, encoders, owned, client, prior, changed,
+                     complete, restore_world):
+    """Attempt world restoration even when capture finalization fails."""
+    close_error = None
+    if pipeline is not None:
+        try:
+            pipeline.close(confirmed=complete)
+        except Exception as error:
+            close_error = error
+    for process in encoders.values():
+        if process.poll() is None:
+            process.kill()
+            process.wait()
+    for actor in reversed(owned):
+        try:
+            if hasattr(actor, 'stop'):
+                actor.stop()
+            actor.destroy()
+        except Exception:
+            pass
+    restoration = (restore_world(client, prior) if changed else
+                   {'restored': True, 'world_unchanged': True})
+    if close_error is not None:
+        raise close_error
+    return restoration
+
+
 def capture(output_dir, suffix, host, port):
     import carla
     from pipeline_capture import PipelineCapture
@@ -201,12 +228,14 @@ def capture(output_dir, suffix, host, port):
                     camera_native_frames=camera_frames)
                 pose = motorcycle.get_transform()
                 speed = motorcycle.get_velocity()
+                body = motorcycle.bounding_box.get_world_vertices(pose)
                 row = {'video_frame': index, 'native_frame': native_frame,
                     'time_s': time_s, 'source_kind': 'original_native',
                     'motorcycle_actor_id': motorcycle.id,
                     'motorcycle_blueprint': motorcycle.type_id,
                     'motorcycle_xyz_m': [pose.location.x, pose.location.y,
                                          pose.location.z],
+                    'motorcycle_body_vertices_m': [[v.x, v.y, v.z] for v in body],
                     'motorcycle_speed_mps': math.sqrt(
                         speed.x**2 + speed.y**2 + speed.z**2),
                     'flagger_actor_id': flagger.id,
@@ -242,21 +271,8 @@ def capture(output_dir, suffix, host, port):
                 'flagger_authority_and_visibility_verified': False,
                 'physical_or_legal_outcome_claimed': False}
     finally:
-        if pipeline is not None:
-            pipeline.close(confirmed=complete)
-        for process in encoders.values():
-            if process.poll() is None:
-                process.kill()
-                process.wait()
-        for actor in reversed(owned):
-            try:
-                if hasattr(actor, 'stop'):
-                    actor.stop()
-                actor.destroy()
-            except Exception:
-                pass
-        restoration = restore(client, prior) if changed else {'restored': True,
-            'world_unchanged': True}
+        restoration = _cleanup_capture(pipeline, encoders, owned, client, prior,
+                                       changed, complete, restore)
         if complete:
             seal_capture(output, frames=600, restoration=restoration, errors=[],
                 encoder_exit_codes={name: process.returncode for name, process in encoders.items()},

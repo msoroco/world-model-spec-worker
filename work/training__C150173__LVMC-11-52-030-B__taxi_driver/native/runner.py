@@ -170,6 +170,7 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
                     'position_m': row['taxi_xyz_m'], 'heading_deg': pose.rotation.yaw,
                     'velocity_mps': row['taxi_velocity_xyz_mps'],
                     'speed_mps': sum(v * v for v in row['taxi_velocity_xyz_mps']) ** .5,
+                    'control': {'throttle': 0, 'brake': 1, 'hand_brake': True},
                     'source_kind': 'original_native'}) + '\n')
         for name, encoder in encoders.items():
             encoder.stdin.close()

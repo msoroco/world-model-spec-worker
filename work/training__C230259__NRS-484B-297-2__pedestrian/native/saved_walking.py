@@ -26,6 +26,24 @@ def rows(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def measure_walk_side(context, trace):
+    return measure(context, trace)['counts']
+
+
+def measure_scope(context, trace):
+    return {'highway_authority_source': context['highway_authority_source'],
+            'highway_boundary_source': context['highway_boundary_source'],
+            'sidewalk_inventory_source': context['sidewalk_inventory_source'],
+            'pedestrian_id': trace[0]['pedestrian_id'],
+            'no_sidewalk_sourced': context['sidewalk_present'] is False}
+
+
+def measure_exception(context, trace):
+    return {'subsection_6_obstruction_source': context['subsection_6_obstruction_source'],
+            'obstruction_exception_active': context['subsection_6_obstruction'],
+            'source_frames': len(trace)}
+
+
 def finalize(attempt):
     attempt = Path(attempt)
     config = json.loads(require_file(attempt, 'config.json').read_text())
@@ -48,14 +66,18 @@ def finalize(attempt):
         raise ValueError('Road context provenance differs from Native result')
     if config.get('case_id') not in config.get('selected_case_ids', []):
         raise ValueError('Wrong saved case identity')
-    measurements = measure(context, trace)
     sources = {name: digest(attempt / name) for name in ('reviewed-road-source.json', 'walking-source.jsonl', 'video_frames.jsonl')}
+    observations = measure(context, trace)
     return {'format': 'worker-analysis-report', 'case_id': config['case_id'],
             'source_kind': context['source_kind'], 'diagnostic_fixture': diagnostic,
             'analysis_complete': True, 'physical_completion': False, 'legal_verdict': None,
-            'measurements': {'walking_side_trace': {'method': 'finalize', 'value': measurements['counts'],
-                                                    'sources': sources}},
-            'frame_count': FRAMES, 'observations': measurements,
+            'measurements': {'walking_side_trace': {'method': 'measure_walk_side',
+                                                    'value': measure_walk_side(context, trace), 'sources': sources},
+                             'highway_walk_scope': {'method': 'measure_scope',
+                                                    'value': measure_scope(context, trace), 'sources': sources},
+                             'subsection_6_exclusion': {'method': 'measure_exception',
+                                                        'value': measure_exception(context, trace), 'sources': sources}},
+            'frame_count': FRAMES, 'observations': observations,
             'limitations': ['Legal outcome and original physical realization require independent review.']}
 
 

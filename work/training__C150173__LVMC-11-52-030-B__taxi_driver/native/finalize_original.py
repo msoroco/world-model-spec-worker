@@ -9,7 +9,8 @@ from yellow_plan import VIEWS, check
 
 REVIEWS = ('taxicab-review.json', 'sign-review.json', 'passenger-purpose-review.json',
            'ordinary-rules-review.json')
-SOURCES = ('yellow-zone-native.jsonl', 'video_frames.jsonl', 'trace.jsonl',
+SOURCES = ('yellow-zone-native.jsonl', 'observed-passenger-activity.jsonl',
+           'video_frames.jsonl', 'trace.jsonl',
            'road.xodr', 'yellow-road.xodr', 'sign-authority-pending.json',
            *(view + '.mkv' for view in VIEWS), *REVIEWS)
 
@@ -122,7 +123,8 @@ def inspect(attempt, manifest_path, expected_source_kind='original_native'):
             'yellow_zone_body_frames': body_in_yellow,
             'posted_active_stopped_frames': active,
             'observed_purpose': purpose['observed_purpose'],
-            'taxicab_identity_reviewed': True, 'sign_source_reviewed': True,
+            'taxicab_identity_reviewed': expected_source_kind == 'original_native',
+            'sign_source_reviewed': expected_source_kind == 'original_native',
             'outside_hours_ordinary_rules_status': ordinary.get('review_status', 'unresolved'),
             'source_manifest_sha256': sha(manifest_path),
             'source_kind': expected_source_kind,

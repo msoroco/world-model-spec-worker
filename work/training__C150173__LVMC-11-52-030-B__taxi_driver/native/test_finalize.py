@@ -38,7 +38,7 @@ def fixture(folder):
     for view in ('overview', 'approach', 'reference_corner', 'driver_reference'):
         (folder / (view + '.mkv')).write_bytes(b'synthetic CPU video placeholder')
     start = datetime.fromisoformat(config['civil_start_local'])
-    native, frame_map, trace = [], [], []
+    native, frame_map, trace, activity = [], [], [], []
     for index in range(600):
         frame, time_s = 1000 + index, (index + 1) / 20
         cameras = {name: frame for name in
@@ -53,9 +53,16 @@ def fixture(folder):
         frame_map.append({'video_frame': index, 'carla_frame': frame,
                           'time_s': time_s, 'camera_native_frames': cameras})
         trace.append({'frame': frame, 'time_s': time_s})
+        activity.append({'video_frame': index, 'native_frame': frame,
+                         'source_kind': 'synthetic_cpu_fixture',
+                         'observed_door_open': False,
+                         'observed_occupant_count': 1,
+                         'observed_purpose': 'waiting_for_passengers'})
     for name, rows in [('yellow-zone-native.jsonl', native),
                        ('video_frames.jsonl', frame_map), ('trace.jsonl', trace)]:
         (folder / name).write_text(''.join(json.dumps(row) + '\n' for row in rows))
+    (folder / 'observed-passenger-activity.jsonl').write_text(
+        ''.join(json.dumps(row) + '\n' for row in activity))
     manifest = folder / 'source-manifest.json'
     write(manifest, {'source_kind': 'synthetic_cpu_fixture',
                      'sha256': {name: sha(folder / name) for name in SOURCES}})

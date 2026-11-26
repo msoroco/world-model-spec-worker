@@ -47,17 +47,23 @@
       "requirement": "reviewed-scope-0",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Pedestrian highway travel with approaching traffic",
-      "status": "alternative_pending",
+      "status": "selected_required",
       "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
-      "case_ids": []
+      "case_ids": [
+        "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a",
+        "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b"
+      ]
     },
     {
       "requirement": "cross-reference-297-6",
       "source": "inputs/coverage/branch-sources.json:NRS-484B-297-6",
       "source_text": "A pedestrian walking or otherwise traveling on a sidewalk who encounters an obstruction to his or her mobility on the sidewalk ... may proceed with due care on the immediately adjacent highway to move around such an obstruction.",
-      "status": "exception_pending",
+      "status": "selected_required",
       "evidence_or_gap": "The source-packet meter excludes this alternative; its separate law assignment controls that branch. Original map/sidewalk source remains unavailable.",
-      "case_ids": []
+      "case_ids": [
+        "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a",
+        "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b"
+      ]
     }
   ],
   "cases": [
@@ -65,7 +71,7 @@
       "case_id": "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_a",
       "target_law_id": "NRS-484B-297-2",
       "target_type": "planned_delivery_comparison",
-      "planning_status": "unselected_native_draft_offline_passed",
+      "planning_status": "selected_requirement_measurement_draft",
       "source_branch": "Pedestrian highway travel with approaching traffic",
       "comparison_variable": "pedestrian_highway_side",
       "condition_index": 0,
@@ -83,14 +89,14 @@
       "source_text": "Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.",
       "claim": "No legal outcome or physical execution is asserted.",
       "draft_native_construction": "draft-native/a/construction.json",
-      "draft_native_construction_sha256": "c1d812777e1137fde682677e9d0047ed05524211ac7769fcbc0debb9f5517753",
+      "draft_native_construction_sha256": "13394fd17ccfcb1067a54dc63395d7e4fb6f0fc92a5f8fcdbaa9c0f5d5fb9624",
       "draft_native_offline_log": "native/draft-offline-a.log"
     },
     {
       "case_id": "training__C230259__NRS-484B-297-2__pedestrian__selected_81846e7f__condition_b",
       "target_law_id": "NRS-484B-297-2",
       "target_type": "planned_delivery_comparison",
-      "planning_status": "unselected_native_draft_offline_passed",
+      "planning_status": "selected_requirement_measurement_draft",
       "source_branch": "Pedestrian highway travel with approaching traffic",
       "comparison_variable": "pedestrian_highway_side",
       "condition_index": 1,
@@ -108,7 +114,7 @@
       "source_text": "Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.",
       "claim": "No legal outcome or physical execution is asserted.",
       "draft_native_construction": "draft-native/b/construction.json",
-      "draft_native_construction_sha256": "48e928e437a7f7249e7bff5286e1d685143293c3ddbf97ce3f4952d6c8eab857",
+      "draft_native_construction_sha256": "ebce2fd092d68375f7126cab770bc08d51b173fac09a3f659512630012866a2a",
       "draft_native_offline_log": "native/draft-offline-b.log"
     }
   ],
@@ -139,7 +145,9 @@
         "rate_hz": 20
       },
       "status": "source_bound_diagnostic_only",
-      "audit_gap": "Both 600-frame traces hold opposite pedestrian heading and vehicle route fixed while varying only highway side; original Native source, saved processing and independent comparison audit pending."
+      "audit_gap": "Independent CPU raw-source audit passes side-only comparison and rejects route changes/missing trace. Actual Native source, selected saved process and delivery audit pending.",
+      "independent_audit": "native/audit_comparison.py",
+      "independent_audit_proof": "native/comparison-proof.json"
     }
   ],
   "observations": [
@@ -202,11 +210,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Confirm absence of a sidewalk, pedestrian travel along highway, left-side occupancy and facing approaching traffic.",
-    "Subsection 6 obstruction bypass is an express exception and needs separate scope handling.",
-    "No verified CARLA mechanism or target-specific Native construction for this assignment.",
-    "No full four-candidate offline and compatibility proof.",
-    "No measured saved evidence or independent acceptance audit."
+    "Original reviewed Native map packet is unavailable: authority, highway boundary, sidewalk inventory and subsection-6 context remain unverified.",
+    "Physical pedestrian travel, source camera visibility and composed primary video remain untested.",
+    "Selected execution manifest, canonical semantic proposals, exact positive/negative runtime compatibility, saved-only runtime process and independent delivery/comparison audit remain CPU work."
   ],
   "source_observation_mapping": {
     "ru.subject": {
@@ -293,7 +299,7 @@
     }
   },
   "legal_analysis_note": "Exact statute retained. Witnesses and recovered summaries are unreviewed where marked. Conditions, alternatives and exceptions in source_topic_inventory require separate physical scoping before delivery selection.",
-  "readiness": "draft_native_offline_checkpoint",
+  "readiness": "selected_requirement_measurement_draft",
   "physical_prerequisites": "Confirm absence of a sidewalk, pedestrian travel along highway, left-side occupancy and facing approaching traffic.",
   "legal_interpretation_limit": "Subsection 6 obstruction bypass is an express exception and needs separate scope handling."
 }

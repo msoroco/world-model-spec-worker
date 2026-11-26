@@ -40,6 +40,12 @@ def audit(first_attempt, second_attempt, base=None):
         'deliberate_difference': 'requested_motorcycle_response_to_fixed_flagger_signal',
         'observed_cross_frames': [row['first_observed_stop_line_cross_frame']
                                   for row in results],
+        'observed_body_cross_frames': [
+            row['first_observed_body_stop_line_cross_frame'] for row in results],
+        'stopped_frames_during_requested_stop': [
+            row['observed_stopped_frames_during_requested_stop'] for row in results],
+        'body_crossed_during_requested_stop': [
+            row['body_crossed_during_requested_stop'] for row in results],
         'requested_indications_at_crossing': [
             row['requested_indication_at_crossing'] for row in results],
         'observed_response_difference':

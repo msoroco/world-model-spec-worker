@@ -1,5 +1,33 @@
 # Full-train delivery best-effort return
 
+## 2026-11-26 CTO C109166 current-worktree strict recheck
+
+The lead reran `.venv-cpu/bin/python -B worker_check.py --assignment training__C109166__NRS-484B-287-1c__pedestrian --complete --require-delivery-ready` on the present worktree. It exits 0 with `static_checks_passed: true`; the exact camera and duration plan remains present. This confirms the current worktree, not the older CTO clone. No C109166 package files were changed.
+
+## 2026-11-26 C146314 source binding review
+
+The C146314 owner rechecked current-runtime verify/preflight, the assignment-scoped partial complete gate and an exhaustive frozen candidate-cell catalog. Thirteen selected right-pass cases remain CPU integrated; two paragraph (b) cases require two moving traffic lines in each direction, while frozen C146314 is one-way. The catalog has 1,243 cells, 52 right-pass/other-vehicle candidates and zero actor-eligible `motor_vehicle_driver` bindings for the missing branch. A draft two-way construction passes pinned offline but cannot be selected against an unauthorized cell; the provisional ready gate rejected pending full-branch requirements. C146314 stays truthful partial with its updated HANDOFF. The owner moved to selected 12-case C227853.
+
+## 2026-11-26 C183370 Native cleanup continuation
+
+The lead repaired C183370 Native cleanup so world restoration is still attempted after a PipelineCapture finalization error. A focused fake-world failure test verifies encoder/actor cleanup and restore ordering; seven construction tests pass. Both exact changed-runner pinned offline checks pass (draft manifest SHA-256 `e12e997664bfbbfc9b6db564ff97c84388330e1888bcfbaacf96572eb6608214`, offline proof SHA-256 `07b74de5ebee166a6579826559f91cc65f7b85d5de7c9f8e8ec50bc60bac6e06`). Runtime verify, CPU preflight and C183370 scoped partial complete pass. C183370 remains unselected and partial; public/saved/semantic/delivery proofs are unfinished. C150173 taxi, C230259 pedestrian and C146314 right-pass partials have distinct active owners. Full strict batch delivery is unpassed.
+
+## 2026-11-26 C146108 exact current-runtime ready integration
+
+`training__C146108__NRS-484B-270-7b__cycle_or_scooter_operator` passed the lead independent exact scoped strict gate with `static_checks_passed: true`. Its three selected bicycle/Class 1 electric-bicycle pass cases bind six public and three saved-only CPU receipts, semantic/delivery audits and a matched electric-bicycle clearance comparison (result SHA-256 `1fc79ddd825d495b5d86c9171c23283810fbd72f0afe26ea0e71a24cf7f318f4`). Shared coverage maps runnable bicycle and electric-bicycle branches and leaves the electric-scooter alternative pending, without inferring physical safety or legal outcome (coverage SHA-256 `1f49f5faf3029784ef4686d3416c3b05fe6a56d24b09e971143502b9cc4ea087`). The deterministic queue build/check, independent queue audit and return audit pass: 253 packages, 950 planned, 691 selected, 478 comparisons, 1,071 proven candidates, zero dispatchable, **147 ready / 106 partial**; queue SHA-256 `fe180292c9a4b76b2928ae1dfc1c939dfa7641149119442ecf2e0aa0854c0207`. C183370 scoped partial complete passes after the saved body-proof SHA update (`9117024bfe35db4cc774591b878b7c2ed3b6f26cb2b2a06947ddd8894625bb4d`); its selected public/saved/semantic/delivery CPU work continues. A new owner is working C150142; C150173 and C230259 remain active. The full strict batch gate is unpassed.
+
+## 2026-11-26 C183370 exact-duration media CPU fixture
+
+The lead extended the C183370 four-view FFV1 saved media procedure proof to a synthetic 600-frame, 30-second, 20-Hz positive alongside the prior small positive and four damaging negatives. The proof has two positives and four negatives (`native/media-cpu-proof.json`, SHA-256 `68d5230b55667fe54a3566205420a1a20d8df4db2aa03b624155da28843be389`). This tests full decode and duration handling at tiny 64x48 resolution; original high-resolution camera pixels and flagger visibility remain unreviewed. C183370 stays partial while selected CPU chains continue.
+
+## 2026-11-26 C183370 original-body response measurement
+
+C183370 now carries source-sealed eight-vertex motorcycle bodies in its prospective Native rows. Saved-only measurement checks body geometry and records front-body stop-line crossing and low-speed frames against the requested flagger signal without legal inference. A synthetic pair and ten damaging source negatives pass (saved structural proof SHA-256 `9117024bfe35db4cc774591b878b7c2ed3b6f26cb2b2a06947ddd8894625bb4d`); both changed-runner offline constructions pass (manifest SHA-256 `cbea6d7b45416ba179f320cafb35c3d4b6eef0ead5d4e9a88ccd6c4485fb6755`, proof SHA-256 `97a662009700719fd9256f791202b771f46aef24b56a697fe831d5af5ec611aa`). The package remains unselected and partial pending original source review and the remaining CPU chains.
+
+## 2026-11-26 C183370 four-view decode CPU procedure
+
+C183370 now includes a saved-only media procedure that verifies sealed FFV1 bytes, per-camera profile and frame count, and full decode for all four views after the 600-frame Native/source join. Synthetic FFV1 fixtures pass two positives and four changed/missing/profile/decode negatives (`native/media-cpu-proof.json`, SHA-256 `68d5230b55667fe54a3566205420a1a20d8df4db2aa03b624155da28843be389`). The exact scoped partial `--complete` check passes. This tests code only; no original 600-frame media or flagger pixels have been reviewed. Selection, public compatibility, recorded-only saved and independent delivery chains remain unfinished CPU work.
+
 ## 2026-11-26 C183370 original-source sealing rerun
 
 The lead strengthened C183370's prospective Native capture and saved meter: the authority, zone and signal-asset review source bytes are copied into each original attempt, sealed, and cross-checked against the reviewed hashes. Synthetic saved-source checks now pass two positives and eight changed/missing-source negatives (proof SHA-256 `f961ec2d9593e5f54905222016bd0b0b6494751ad3fa7ca798b0a9a26f944aa0`). Both exact primary offline constructions were rerun against the changed runner and pass (draft manifest SHA-256 `43744a1766f2d4a13fc172f22d2dee31349a2a620c848bb2ac0e7bb31bfdf7bb`, proof SHA-256 `a929b62d51111d86edfe935f6088d0aca5a6df3f7ef0189ca67227c0f710c62b`). The pair remains unselected and partial. No original flagger source packet, captured motion, decoded video or legal outcome is claimed.

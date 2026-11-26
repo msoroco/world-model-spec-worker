@@ -7,9 +7,13 @@ import argparse
 import json
 import queue
 import math
+import subprocess
+import os
+import hashlib
+import traceback
 from pathlib import Path
 
-from walking_side import FRAMES, HZ, _source
+from walking_side import FRAMES, HZ, _source, measure
 
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
@@ -61,22 +65,39 @@ def execute(config, source_path, output_path, host, port):
     packet = _packet(source_path, config)
     import carla
     from worker_exchange.world_restore import snapshot, restore
-    from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import FrameMap, physical_result, write_result, seal_capture
+    from worker_exchange.media import compose_four_views
     from pipeline_capture import PipelineCapture
+    import numpy as np
 
     def transform(data):
         return carla.Transform(carla.Location(**data['location']), carla.Rotation(**data['rotation']))
 
     output = Path(output_path)
-    output.mkdir(parents=True, exist_ok=False)
-    (output / 'reviewed-road-source.json').write_text(Path(source_path).read_text())
+    if not output.is_dir() or not (output / 'config.json').is_file() or not (output / 'construction.json').is_file():
+        raise ValueError('Fresh materialized Native attempt with config and construction required')
+    retained_packet = output / 'reviewed-road-source.json'
+    if retained_packet.exists():
+        if hashlib.sha256(retained_packet.read_bytes()).digest() != hashlib.sha256(Path(source_path).read_bytes()).digest():
+            raise ValueError('Original reviewed road packet differs from retained attempt source')
+    else:
+        retained_packet.write_bytes(Path(source_path).read_bytes())
     client = carla.Client(host, port)
     client.set_timeout(15)
     world = client.get_world()
     initial = snapshot(client)
+    if initial['settings'].synchronous_mode:
+        raise ValueError('Exclusive idle asynchronous Native world required')
     actors = []
     cameras = []
     received = queue.Queue()
+    capture = None
+    encoders = {}
+    encoder_logs = {}
+    encoder_exit_codes = {}
+    error = None
+    restored = None
+    result = None
     try:
         if world.get_map().name != packet['map_name']:
             raise ValueError('Native map differs from reviewed source packet')
@@ -101,42 +122,125 @@ def execute(config, source_path, output_path, host, port):
                                                             carla.Rotation(pitch=rot[0], yaw=rot[1], roll=rot[2])), attach_to=vehicle)
             actors.append(sensor)
             cameras.append(sensor)
-            (output / camera['name']).mkdir()
             sensor.listen(lambda image, name=camera['name']: received.put((name, image)))
+            encoder_logs[camera['name']] = (output / (camera['name'] + '.encoder.log')).open('x')
+            encoders[camera['name']] = subprocess.Popen([
+                'ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-n',
+                '-f', 'rawvideo', '-pix_fmt', 'rgb24',
+                '-s', f"{camera['width']}x{camera['height']}", '-r', str(HZ),
+                '-i', 'pipe:0', '-an', '-c:v', 'ffv1', '-level', '1',
+                str(output / (camera['name'] + '.mkv'))], stdin=subprocess.PIPE,
+                stderr=encoder_logs[camera['name']])
         direction = packet['pedestrian_direction_xyz']
         control = carla.WalkerControl(direction=carla.Vector3D(x=direction[0], y=direction[1], z=direction[2]),
                                       speed=packet['pedestrian_speed_mps'])
+        (output / 'channels').mkdir()
+        capture = PipelineCapture(client, pedestrian, output, config['case_id'], required_observations=config.get('required_atoms', []))
         with FrameMap(output / 'video_frames.jsonl') as frame_map, \
-             PipelineCapture(client, vehicle, output, config['case_id'], required_observations=config.get('required_atoms', [])) as capture, \
-             (output / 'walking-source.jsonl').open('x', buffering=1) as trace:
+             (output / 'walking-source.jsonl').open('x', buffering=1) as walk_source, \
+             (output / 'channels' / 'kin.position.jsonl').open('x', buffering=1) as position, \
+             (output / 'channels' / 'kin.speed.jsonl').open('x', buffering=1) as speed:
             for index in range(FRAMES):
                 pedestrian.apply_control(control)
                 vehicle.set_autopilot(False)
                 vehicle.apply_control(carla.VehicleControl(throttle=packet['vehicle_throttle'], brake=0, steer=0))
                 tick = world.tick()
                 seen = set()
+                pixel_hashes = {}
                 while len(seen) != len(VIEWS):
                     name, image = received.get(timeout=15)
-                    if image.frame != tick or name in seen:
+                    if image.frame < tick:
                         continue
-                    image.save_to_disk(str(output / name / f'{index:06d}.png'))
+                    if image.frame != tick or name in seen:
+                        raise ValueError('Original source camera/frame join failed')
+                    camera = next(item for item in config['cameras'] if item['name'] == name)
+                    pixels = np.frombuffer(image.raw_data, dtype=np.uint8).reshape(camera['height'], camera['width'], 4)[:, :, :3][:, :, ::-1].tobytes()
+                    pixel_hashes[name] = hashlib.sha256(pixels).hexdigest()
+                    encoders[name].stdin.write(pixels)
                     seen.add(name)
-                capture.capture(tick, index / HZ, extra={'video_frame': index, 'pedestrian_id': pedestrian.id})
-                frame_map.append(tick, index / HZ, native_elapsed_s=world.get_snapshot().timestamp.elapsed_seconds)
                 p = pedestrian.get_transform()
                 p_velocity = pedestrian.get_velocity()
                 v = vehicle.get_transform()
-                trace.write(json.dumps({'source_kind': 'original_native', 'video_frame': index, 'native_frame': tick,
-                                        'time_s': index / HZ, 'pedestrian_id': pedestrian.id, 'vehicle_id': vehicle.id,
-                                        'pedestrian_xy_m': [p.location.x, p.location.y],
-                                        'vehicle_xy_m': [v.location.x, v.location.y],
-                                        'pedestrian_heading_xy': [p_velocity.x, p_velocity.y]}) + '\n')
+                time_s = index / HZ
+                capture.capture(tick, time_s, extra={'video_frame': index, 'pedestrian_id': pedestrian.id,
+                                                     'vehicle_id': vehicle.id})
+                frame_map.append(tick, time_s, native_elapsed_s=world.get_snapshot().timestamp.elapsed_seconds,
+                                 source_rgb_sha256=pixel_hashes)
+                pose = [p.location.x, p.location.y, p.location.z]
+                velocity = [p_velocity.x, p_velocity.y, p_velocity.z]
+                walk_source.write(json.dumps({'source_kind': 'original_native', 'video_frame': index, 'native_frame': tick,
+                                              'time_s': time_s, 'pedestrian_id': pedestrian.id, 'vehicle_id': vehicle.id,
+                                              'pedestrian_xy_m': pose[:2],
+                                              'vehicle_xy_m': [v.location.x, v.location.y],
+                                              'pedestrian_heading_xy': velocity[:2]}) + '\n')
+                position.write(json.dumps({'time_s': time_s, 'value': pose}) + '\n')
+                speed.write(json.dumps({'time_s': time_s, 'value': math.sqrt(sum(value * value for value in velocity))}) + '\n')
+        source_rows = [json.loads(line) for line in (output / 'walking-source.jsonl').read_text().splitlines()]
+        observed = measure(packet, source_rows)
+        wanted_side = 'traffic_left' if config['condition'] == 'a' else 'traffic_right'
+        side_frames = observed['counts'][wanted_side]
+        face_frames = observed['counts']['facing_opposite_traffic']
+        target = {'target': 'continuous_requested_side_and_opposing_heading',
+                  'requested': {'side': wanted_side, 'frames': FRAMES},
+                  'measured': {'side_frames': side_frames, 'opposing_heading_frames': face_frames},
+                  'method': 'source-bound original Native pedestrian and vehicle trace',
+                  'tolerance': 0, 'matched': side_frames == face_frames == FRAMES,
+                  'physical_cause_confirmed': False,
+                  'cause_evidence': 'walking-source.jsonl and reviewed-road-source.json; independent pixel review pending'}
+        result = {'case_id': config['case_id'], 'measured_values': observed['counts'],
+                  'target_checks': [target], 'setup_confirmed': False,
+                  'behavior_attempted': False, 'maneuver_completed': False,
+                  'termination_reason': 'Full source window captured; saved review pending',
+                  'physical_failure_flags': {'source_camera_visibility_unverified': True},
+                  'trace_reference': 'trace.jsonl', 'video_references': ['raw.mkv'],
+                  'video_frame_map_reference': 'video_frames.jsonl',
+                  'recording_description': config['recording_description'],
+                  'recording_evidence': [{'name': 'kin.position', 'unit': 'm',
+                                          'reference': 'channels/kin.position.jsonl'},
+                                         {'name': 'kin.speed', 'unit': 'm/s',
+                                          'reference': 'channels/kin.speed.jsonl'}],
+                  'realized_observables': {}}
+    except BaseException as exc:
+        error = {'type': type(exc).__name__, 'message': str(exc), 'traceback': traceback.format_exc()}
     finally:
+        if capture is not None:
+            try:
+                capture.close(confirmed=error is None)
+            except BaseException as exc:
+                error = error or {'capture_close_error': str(exc)}
+        for name, encoder in encoders.items():
+            try:
+                encoder.stdin.close()
+                encoder_exit_codes[name] = encoder.wait(timeout=180)
+                if encoder_exit_codes[name]:
+                    raise ValueError('Four-view source encoding failed: ' + name)
+            except BaseException as exc:
+                error = error or {'encoder_error': str(exc)}
+            encoder_logs[name].close()
         for sensor in cameras:
-            sensor.stop()
+            try:
+                sensor.stop()
+            except BaseException as exc:
+                error = error or {'sensor_stop_error': str(exc)}
         for actor in reversed(actors):
-            actor.destroy()
-        restore(client, initial)
+            try:
+                actor.destroy()
+            except BaseException as exc:
+                error = error or {'actor_destroy_error': str(exc)}
+        try:
+            restored = restore(client, initial)
+        except BaseException as exc:
+            error = error or {'world_restore_error': str(exc)}
+    if error:
+        (output / 'native-run-status.json').write_text(json.dumps({'errors': [error]}, indent=2) + '\n')
+        raise ValueError('Original Native capture failed: ' + str(error.get('message', error)))
+    composition = compose_four_views({name: output / (name + '.mkv') for name in VIEWS},
+                                     output / 'video_frames.jsonl', output / 'raw.mkv')
+    (output / 'four-view-receipt.json').write_text(json.dumps(composition, indent=2) + '\n')
+    seal_capture(output, frames=FRAMES, restoration=restored, errors=[], encoder_exit_codes=encoder_exit_codes,
+                 context={'law_id': config['law_id'], 'cell_id': config['cell_id'],
+                          'source_packet': 'reviewed-road-source.json', 'legal_verdict': None})
+    write_result(output, physical_result(output, result))
 
 
 if __name__ == '__main__':
@@ -151,6 +255,9 @@ if __name__ == '__main__':
     if args.check:
         print(json.dumps(check(config)))
     else:
-        if not args.source or not args.output_dir:
-            raise ValueError('Reviewed source packet and output dir required')
-        execute(config, args.source, args.output_dir, args.host, args.port)
+        if not args.output_dir:
+            raise ValueError('Attempt output dir required')
+        source = args.source or os.environ.get('REVIEWED_ROAD_PACKET') or str(Path(args.output_dir) / 'reviewed-road-source.json')
+        if not Path(source).is_file():
+            raise ValueError('Missing required source: reviewed-road-source.json')
+        execute(config, source, args.output_dir, args.host, args.port)
