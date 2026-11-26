@@ -45,6 +45,8 @@ def build():
         config = json.loads(config_path.read_text())
         config["selected_case_id"] = case_id
         config["recording_description"] = description
+        config["case"] = {"case_id": case_id,
+                          "recording_description": description}
         config_path.write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n")
         files.append({"path": "config.json", "content": config_path.read_text()})
         construction = {

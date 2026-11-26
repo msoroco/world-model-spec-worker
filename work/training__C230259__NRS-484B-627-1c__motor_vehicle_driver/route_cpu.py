@@ -29,12 +29,13 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def graph():
+def graph(alternate_possible=True):
     return {'source_kind': 'synthetic_cpu', 'controlled_access': True,
             'highway_road_id': 'hwy', 'exit_x_m': EXIT_X_M,
-            'edges': [['hwy_before', 'hwy_after'], ['hwy_before', 'exit'],
-                      ['exit', 'alternate'], ['alternate', 'destination'],
-                      ['hwy_after', 'destination']],
+            'edges': ([['hwy_before', 'hwy_after'], ['hwy_before', 'exit'],
+                       ['exit', 'alternate'], ['alternate', 'destination'],
+                       ['hwy_after', 'destination']] if alternate_possible else
+                      [['hwy_before', 'hwy_after'], ['hwy_after', 'destination']]),
             'start': 'hwy_before', 'destination': 'destination',
             'alternate_exit': 'exit', 'alternate_route': 'alternate',
             'designation_independently_verified': False,
@@ -52,9 +53,11 @@ def track(take_exit):
                        'ego': {'id': 'ego', 'x_m': x, 'y_m': y, 'speed_mps': 5.0,
                                'road': route},
                        'behind': [{'id': 'following-1', 'x_m': x - 12.0,
-                                   'y_m': 0.0, 'speed_mps': 8.0},
+                                   'y_m': 0.0, 'speed_mps': 5.0,
+                                   'unimpeded_request_mps': 8.0},
                                   {'id': 'following-2', 'x_m': x - 28.0,
-                                   'y_m': 0.0, 'speed_mps': 8.0}]})
+                                   'y_m': 0.0, 'speed_mps': 5.0,
+                                   'unimpeded_request_mps': 8.0}]})
     return result
 
 
@@ -88,10 +91,11 @@ def measure(track_bytes, graph_bytes, envelope_bytes):
     edges = road.get('edges')
     require(isinstance(edges, list) and all(isinstance(e, list) and len(e) == 2 for e in edges),
             'route topology missing')
-    require(['hwy_before', 'exit'] in edges
-            and reachable(edges, road['alternate_exit'], road['destination'])
-            and ['exit', road['alternate_route']] in edges,
-            'connected alternate route missing')
+    alternate_connected = (['hwy_before', 'exit'] in edges
+                           and ['exit', road['alternate_route']] in edges
+                           and reachable(edges, road['alternate_route'], road['destination']))
+    require(reachable(edges, road['start'], road['destination']),
+            'journey destination unreachable')
     require(len(rows) == FRAMES, 'full exit-window trace missing')
     prev_x = -math.inf
     encountered_exit = False
@@ -116,7 +120,8 @@ def measure(track_bytes, graph_bytes, envelope_bytes):
         gaps = []
         for vehicle in followers:
             gap = x - vehicle['x_m']
-            require(0 < gap < 50 and vehicle['speed_mps'] > speed
+            require(0 < gap < 50 and vehicle['speed_mps'] == speed
+                    and vehicle['unimpeded_request_mps'] > speed
                     and vehicle['y_m'] == 0 and vehicle.get('id'),
                     'following movement source differs')
             gaps.append(gap)
@@ -126,7 +131,8 @@ def measure(track_bytes, graph_bytes, envelope_bytes):
             'usable exit observation window missing')
     departure = next((r['frame'] for r in rows if r['ego']['road'] == 'alternate'), None)
     if departure is not None:
-        require(departure in exit_frames and all(r['ego']['road'] != 'hwy' for r in rows[departure:]),
+        require(alternate_connected and departure in exit_frames
+                and all(r['ego']['road'] != 'hwy' for r in rows[departure:]),
                 'alternate-route trace differs')
     else:
         require(all(r['ego']['road'] == 'hwy' for r in rows), 'unmeasured route transition')
@@ -134,7 +140,7 @@ def measure(track_bytes, graph_bytes, envelope_bytes):
             'graph_sha256': digest(graph_bytes), 'frame_count': FRAMES,
             'duration_s': FRAMES / HZ, 'follower_pair_frames': queue_frames,
             'exit_observation_frames': len(exit_frames),
-            'alternate_route_connected_in_authored_graph': True,
+            'alternate_route_connected_in_authored_graph': alternate_connected,
             'alternate_route_departure_frame': departure,
             'original_native_observed': False, 'controlled_access_independently_verified': False,
             'impeding_legally_determined': False, 'legal_result': None}
@@ -143,15 +149,19 @@ def measure(track_bytes, graph_bytes, envelope_bytes):
 def prove():
     graph_bytes = encode(graph())
     positives = []
-    for take_exit in (True, False):
+    for take_exit, alternate_possible in ((True, True), (False, True),
+                                          (False, False)):
         raw = b''.join(encode(row) for row in track(take_exit))
+        graph_bytes = encode(graph(alternate_possible))
         envelope = encode({'assignment_id': ASSIGNMENT, 'source_kind': 'synthetic_cpu',
                            'track_sha256': digest(raw), 'graph_sha256': digest(graph_bytes)})
         positives.append(measure(raw, graph_bytes, envelope))
     negatives = []
     base = track(False)
     for name, changed_rows, changed_graph in (
-        ('no_connected_alternate', base, {**graph(), 'edges': [['hwy_before', 'hwy_after'], ['hwy_after', 'destination']]}),
+        ('unreachable_destination', base, {**graph(), 'edges': [['hwy_before', 'exit'], ['exit', 'alternate']]}),
+        ('uncoupled_follower_speed', [{**r, 'behind': [{**r['behind'][0], 'speed_mps': 8.0}, r['behind'][1]]}
+                                      if r['frame'] == 240 else r for r in base], graph()),
         ('missing_follower', [{**r, 'behind': r['behind'][:1]} if r['frame'] == 240 else r for r in base], graph()),
         ('short_exit_window', base[:400], graph()),
         ('route_hop_without_exit', [{**r, 'ego': {**r['ego'], 'road': 'alternate'}} if r['frame'] == 300 else r for r in base], graph()),
@@ -175,6 +185,17 @@ def prove():
         negatives.append({'mutation': 'changed_track_without_source_hash', 'rejected_for': str(error)})
     else:
         raise AssertionError('unbound trace accepted')
+    # A requested departure cannot be credited on a topology with no connected alternative.
+    raw = b''.join(encode(row) for row in track(True))
+    no_route = encode(graph(False))
+    envelope = encode({'assignment_id': ASSIGNMENT, 'source_kind': 'synthetic_cpu',
+                       'track_sha256': digest(raw), 'graph_sha256': digest(no_route)})
+    try:
+        measure(raw, no_route, envelope)
+    except ValueError as error:
+        negatives.append({'mutation': 'departure_without_connected_route', 'rejected_for': str(error)})
+    else:
+        raise AssertionError('departure without connected route accepted')
     receipt = {'format': 'c230259-route-cpu-proof-v1', 'script_sha256': digest(Path(__file__).read_bytes()),
                'positives': positives, 'negatives': negatives,
                'original_native_observed': False, 'delivery_ready': False}

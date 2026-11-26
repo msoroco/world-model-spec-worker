@@ -47,24 +47,46 @@ def build(number):
                  "original-map.json", "original-road.json", "original-transfer.json",
                  "original-scene-review.json"):
         shutil.copyfile(scratch / name, source_dir / name)
+    telemetry = [json.loads(row) for row in (source_dir / "trace.jsonl").read_text().splitlines()]
+    for row in telemetry:
+        row["speed_mph"] = 0.0
+        row["position_m"] = [0, 0, 0]
+        row["velocity_mps"] = [0, 0, 0]
+        row["control"] = {"throttle": 0.0, "brake": 1.0, "hand_brake": True}
+    (source_dir / "trace.jsonl").write_text(lines(telemetry))
+    road = (REPO / "work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/diagnostic-sources/reference/road.xodr").read_text()
+    road = road.replace("C276263-grade", "C228817-flat-door-diagnostic")
+    road = road.replace("graded-highway-proposal", "flat-door-diagnostic")
+    road = road.replace('b=".04"', 'b="0"')
+    (source_dir / "road.xodr").write_text(road.rstrip() + "\n")
     specimen = json.loads((REPO / "work/training__C276263__NRS-484B-533__motor_vehicle_driver/native/reference-adapter-video-spec.json").read_text())
     graphs = specimen["graphs"]
-    for graph in graphs:
+    for i, graph in enumerate(graphs):
+        old_frame, new_frame = 900 + i, 1000 + i
+        graph["path"] = graph["path"].replace(f"{old_frame:08d}", f"{new_frame:08d}")
+        graph["attributes"]["frame"] = new_frame
         graph["attributes"]["source"] = "C228817 synthetic diagnostic graph"
         graph["nodes"][0]["attributes"]["entity_id"] = 1
         graph["nodes"][0]["attributes"]["vertex"] = [0, 0, 0]
     frames = [json.loads(row) for row in specimen["files"]["capture/native/frames.jsonl"].splitlines()]
     evidence = [json.loads(row) for row in specimen["files"]["capture/evidence.jsonl"].splitlines()]
-    for item in evidence:
+    for i, (frame, item) in enumerate(zip(frames, evidence)):
+        old_frame, new_frame = 900 + i, 1000 + i
+        frame["frame"] = new_frame
+        frame["adapter_graph"] = frame["adapter_graph"].replace(f"{old_frame:08d}", f"{new_frame:08d}")
+        frame["base"] = frame["base"].replace(f"{old_frame:08d}", f"{new_frame:08d}")
+        item["original_frame"] = new_frame
+        item["replay_frame"] = new_frame
         item["actor_id"] = 1
         item["ego"]["position_m"] = [0, 0, 0]
         item["ego"]["synthetic_diagnostic"] = True
     files = {"capture/native/frames.jsonl": lines(frames),
              "capture/evidence.jsonl": lines(evidence),
-             "capture/recorder_info.txt": "Create 1: synthetic ego vehicle\nCreate 2: synthetic passing vehicle\n",
+             "capture/recorder_info.txt": "Create 1: vehicle.tesla.model3\nCreate 2: vehicle.tesla.model3\n",
              "capture/manifest.json": json.dumps({"extraction_confirmed": True,
                 "frames": 600, "synthetic_diagnostic": True,
-                "sources": {"trace.jsonl": sha(source_dir / "trace.jsonl")}},
+                "sources": {"trace.jsonl": sha(source_dir / "trace.jsonl"),
+                            "road.xodr": sha(source_dir / "road.xodr")}},
                 sort_keys=True, separators=(",", ":")) + "\n"}
     spec = {"files": files, "graphs": graphs, "videos": specimen["videos"]}
     spec_path = ROOT / ("probe-" + str(number) + "-diagnostic-spec.json")

@@ -1,18 +1,22 @@
-# training__C230247__NRS-484B-307-12a__motor_vehicle_driver
+# NRS 484B.307(12)(a) C230247 motor vehicle driver handoff
 
-Status: partial. NRS 484B.307(12)(a) permits a driver facing a downward green arrow to drive in a lane over which it is displayed. The adjacent-lane comparison makes no prohibition claim. Frozen accepted evidence is empty.
+Status: ready for canonical GPU delivery. Exact scoped CPU strict gate passed on 2026-11-26. No original Native capture, physical acceptance, or legal verdict is claimed.
 
-## Exact selected CPU checkpoint
+## Exact cases and proof
 
-- `condition_a`: construction SHA-256 `658727c8a4bd79b8f71c73140ba504d820f19d57a099b9f349909ef963cefd67`; selected offline log SHA-256 `aa7dcc8376a7480d3035b178cb9c8b909271fb58332a3c4973fadafb9760266c`; positive/negative compatibility receipt SHA-256 `048dd9b684b048ccaae466045cc3b667275d78a2976c37f28e5c3216862639ad`. Target lane -1, under the arrow.
-- `condition_b`: construction SHA-256 `9dc2e5b26d7522ef77f347cb574216d819faf49f69b42cd2fac1468d6e528c0f`; selected offline log SHA-256 `655ef259ff81d8f98dec95d923e976827e8bedf48ebfae3e45c5112b4fa7ef64`; positive/negative compatibility receipt SHA-256 `68f844b65722705d8e66bf8ca2ad88d1ebd1a641828f9a1d524672fc5ba5167d`. Target lane -2, adjacent to the arrow.
+- Condition a: target lane -1 under the arrow; construction SHA-256 `181f14a5b007950063d94e1da21143f1fb1350353a29afaec2777d58e3bad290`; compatibility receipt SHA-256 `ca27ffdcc51f37eae6ed1ef90aaf633c5660dc2b3f1a831fde99bd345a6b5150`; physical receipt SHA-256 `e9825491772d516c02ee8cf277ddd1319a7928a1fa06965ed449e10359b58a4f`.
+- Condition b: target lane -2 adjacent to the arrow; construction SHA-256 `9b09addaedef7dfe1e267b9f9ecdecb7cba1c85bcca58b47e7c7c109d552dc49`; compatibility receipt SHA-256 `e2e1f40c096d29c95eeca25ff30d999570ab9c6cddf61978f2b1970f252d04d1`; physical receipt SHA-256 `5d466152eae78f53c19884ee66815e8858a430b3e5466caffdfa5171a141f5d4`.
 
-The two public compatibility commands passed selected measurement validation, original 600-frame saved finalization, Native attempt validation, Core conversion, Lean decoding, four-camera video decode and the negative that removes `native-signal-rows.jsonl`. Receipts are bound in `execution-manifest.json`. The fixtures are synthetic software diagnostics, not physical acceptance.
+Current-runtime offline, public diagnostic positive and missing-source negative compatibility, six source-derived synthetic physical outcomes, and four saved-only positive/missing-source paths passed. The saved-only proof preserves originals and covers 600 joined frames in each path. The saved-only test ran before receipt annotations were bound into the final manifest; construction and finalizer bytes were unchanged by that binding.
 
-`native/signal_source.py` requires original map signal ID 100, exact lane-control actor role and a live `green_down_arrow` state. Generic traffic-light Green is rejected. `native-map-readback.xodr` is a separate acquired source. The saved finalizer checks the original frame, signal, map, actor, body occupancy and four-camera join. The current runtime source describes this signal but may not instantiate the exact overhead actor; acquisition fails closed if absent.
+The six-stage semantic proposal chain passed canonical validation. Independent delivery and comparison source-structure checks passed their positive and missing-source/changed-map negatives. These diagnostic checks establish CPU readiness only.
 
-## Next CPU proof and local physical review
+## Original delivery and review
 
-Six source-derived synthetic physical fixtures for complete/incomplete/missing motion and lifecycle order receipts now pass `physical_preparation.validate` for both selected cases. They claim no actual Native motion. Run `runtime.py process-saved` on each captured attempt after Native ownership closes, then independent delivery and comparison audits. After those CPU contracts pass, acquire original Native green-arrow pixels, verify official device authority and motor vehicle motion/cameras locally. Do not set ready without the exact assignment strict gate.
+NRS 484B.307(12)(a) permits a driver facing a downward green arrow to drive in the lane over which it is displayed. Condition B tests an adjacent lane without asserting that the green arrow prohibits it. At GPU delivery, require original Native overhead lane-control actor ID 100, exact `green_down_arrow` state, map lane validity, the driver-facing signal pixels, original actor body lane, and four synchronized cameras. A generic green traffic light is rejected. Independently review official device authority, actual pixels and physical completion before acceptance.
 
-`TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230247 .venv-cpu/bin/python -B worker_check.py --assignment training__C230247__NRS-484B-307-12a__motor_vehicle_driver --complete --require-delivery-ready`
+First command: `PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230247__NRS-484B-307-12a__motor_vehicle_driver --case training__C230247__NRS-484B-307-12a__motor_vehicle_driver__selected_378a10ff__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT`
+
+Exact scoped check: `TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c230247 .venv-cpu/bin/python worker_check.py --assignment training__C230247__NRS-484B-307-12a__motor_vehicle_driver --complete --require-delivery-ready`
+
+Manifest SHA-256: `ba1289882122b59e272f6dcbc9bf9fe293aa361cb040a570df8d4c676e34eb9b`. Recorded-only proof SHA-256: `0becf050eaceca8740c3809e10f7aaa11f9b19bf13640a7afbfe608eb8e2e4dc`. Semantic index SHA-256: `59eec576fafade42c94bb613b80842a9368b3cb09cb257e589880f468d303ee0`.

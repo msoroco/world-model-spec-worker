@@ -86,6 +86,8 @@ def build():
                         'error_contains':'Missing required source: native-signal-rows.jsonl'}})
         if tag=='condition_a':
             (ROOT/'runner.py').write_text((HERE/'selected_runner.py').read_text())
+            (ROOT/'tests').mkdir(exist_ok=True)
+            (ROOT/'tests/test_selected.py').write_text((HERE/'selected_test.py').read_text())
             for name in SOURCE_FILES:
                 if name!='selected_runner.py':
                     (ROOT/name).write_text((HERE/name).read_text())

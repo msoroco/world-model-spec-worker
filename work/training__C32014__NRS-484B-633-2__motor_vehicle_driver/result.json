@@ -8,44 +8,39 @@
   "candidate_count": 2,
   "selected_delivery_case_count": 2,
   "reuse_count": 0,
-  "source_law_review": "Exact NRS 484B.633(2)-(3) reviewed: speed over the bridge/elevated highway structure must exceed the Department-declared structural safe maximum, with suitable signs stating that maximum 100 feet before each end. Department investigation/declaration, actual qualifying structure, both maintained postings and measured on-structure speed are distinct facts. Authored 25 mph is a scenario request, not an established Department limit.",
+  "source_law_review": "NRS 484B.633(2)-(3) requires actual speed on a qualifying highway bridge or elevated structure above a Department-investigated and declared structural safe maximum, with suitable maintained signs 100 feet before each end. Both selected cases test measured speed below/above an authored 25 mph posting. Authored sign metadata is not Department authority; original sign pixels, bridge structure and accepted-recording equivalence remain unverified.",
   "applied_update": 16,
   "tests": [
     {
-      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/prove-measure.py",
+      "command": "TMPDIR=$ROOT/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$ROOT/.runtime-work/c32014-root-tests PYTHONPATH=$ROOT/work/training__C32014__NRS-484B-633-2__motor_vehicle_driver $ROOT/.venv-cpu/bin/python -B -m unittest discover -s tests -v",
       "exit_code": 0,
-      "log": "bridge-measure-proof.log",
-      "sha256": "10a5d003c9d10525b1d432fb1db15ab19c495a7e56c06fc589374d3389e6e766"
+      "log": "proof/root-tests.log",
+      "sha256": "bfad7a069c649a30d9a3c1e4ca7e1760e86460926194b9897de719ab4b987037",
+      "working_directory": "work/training__C32014__NRS-484B-633-2__motor_vehicle_driver"
     },
     {
-      "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/prove-comparison.py",
+      "command": "TMPDIR=$PWD/.runtime-work SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c32014-final-saved .venv-cpu/bin/python -B work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/prove_saved.py",
       "exit_code": 0,
-      "log": "bridge-comparison-proof.log",
-      "sha256": "f26f0ae719f35e3df0a1c4de3620091ed704ca17407f2b845275c9d8a5076501"
+      "log": "proof/probe_01/saved-final.log",
+      "sha256": "e7aeea9aa43df1d06b8c3ecea5fb53cddb7e20b68da8e64bf0f9b6b6366578d8"
     },
     {
-      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c32014-runtime .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01 --output .runtime-work/c32014-offline-v10-01 --python $PWD/.venv-cpu/bin/python",
+      "command": "TMPDIR=$PWD/.runtime-work SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c32014-final-saved .venv-cpu/bin/python -B work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/prove_saved.py",
       "exit_code": 0,
-      "log": "proof/probe_01/offline.log",
-      "sha256": "bf6b1442be4e9df2f8d5bd72a079a22f096913e3d03bf3b3fcc573a7d2f8256e"
+      "log": "proof/probe_02/saved-final.log",
+      "sha256": "b4edcef1ffe1072aca7bbf98c0316c9eec1d1ba040c51e3f7f8518995bf48e51"
     },
     {
-      "command": "runtime.py compatibility --manifest work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01 --output .runtime-work/c32014-compat-v5-01 --library runtime/library --validator .runtime-work/c32014-decoder/.lake/build/bin/adapterCheck",
+      "command": "TMPDIR=$PWD/.runtime-work SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c32014-delivery-proof .venv-cpu/bin/python -B work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/prove_delivery.py",
       "exit_code": 0,
-      "log": "proof/probe_01/compatibility.json",
-      "sha256": "e3a3ed7779d2371e1c58b3f50352b0cb63bb1fc951906d55f9a66ab618022447"
+      "log": "proof/probe_01/delivery-positive.log",
+      "sha256": "1a133b02e3f10bd7d3071072a725aa831db4048704ec1742e5824464b0708b30"
     },
     {
-      "command": "TMPDIR=$PWD/.runtime-work PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c32014-runtime .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02 --output .runtime-work/c32014-offline-v10-02 --python $PWD/.venv-cpu/bin/python",
+      "command": "TMPDIR=$PWD/.runtime-work SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c32014-comparison-saved .venv-cpu/bin/python -B work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/bridge_comparison_audit.py --below .runtime-work/c32014-final-output-01/v0001/analysis --above .runtime-work/c32014-final-output-02/v0001/analysis",
       "exit_code": 0,
-      "log": "proof/probe_02/offline.log",
-      "sha256": "28906eb540cfb252ba0cbbd0e64a6c839a34c8d369f402e68545a685c5d90a23"
-    },
-    {
-      "command": "runtime.py compatibility --manifest work/training__C32014__NRS-484B-633-2__motor_vehicle_driver/draft-bridge-manifest.json --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_02 --output .runtime-work/c32014-compat-v5-02 --library runtime/library --validator .runtime-work/c32014-decoder/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "proof/probe_02/compatibility.json",
-      "sha256": "0af3b1b60d4530acdaecf376e6eddd15f0965dd0c438d6b48de3058e95763abb"
+      "log": "proof/comparison-saved.log",
+      "sha256": "a727dba443bd76f41ca5ae9b60185e34a6e71752c8cfe90881442e9a2f3e2e89"
     }
   ],
   "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C32014__NRS-484B-633-2__motor_vehicle_driver --case training__C32014__NRS-484B-633-2__motor_vehicle_driver__probe_01 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
