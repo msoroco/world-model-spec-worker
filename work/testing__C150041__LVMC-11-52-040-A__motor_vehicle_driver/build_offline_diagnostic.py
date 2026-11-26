@@ -63,7 +63,8 @@ def build_bundle(kind="park_parallel_lawful"):
               "actor": "motor_vehicle_driver", "rate_hz": 20, "duration_s": 12,
               "required_atoms": [], "source_packets": [],
               "case": {"case_id": scene["case_id"],
-                       "recording_description": semantic_case["recording_description"]},
+                       "recording_description": semantic_case["recording_description"],
+                       "sweep_measurements": semantic_case.get("sweep_measurements", [])},
               "cameras": [{"name": name, "width": 1920 if name == "overview" else 1280,
                            "height": 1080 if name == "overview" else 720,
                            "fov_deg": 90, "pose_strategy": "source-bound fixed or vehicle attached"}

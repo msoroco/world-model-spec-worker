@@ -89,6 +89,7 @@ def compare(plan_path, left_path, right_path, comparison_id):
             'comparison source contract or legal status differs')
     require(left.get('source_manifest_sha256') and
             right.get('source_manifest_sha256') and
+            left['source_manifest_sha256'] != right['source_manifest_sha256'] and
             left.get('source_hashes') and right.get('source_hashes') and
             set(left.get('observations', {})) == {'c229023-0', 'c229023-1'} and
             set(right.get('observations', {})) == {'c229023-0', 'c229023-1'},
@@ -112,11 +113,14 @@ def main():
     parser.add_argument('--contract', type=Path, required=True)
     parser.add_argument('--attempt', type=Path, required=True)
     parser.add_argument('--declaration', type=Path, required=True)
+    parser.add_argument('--case-id', required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--diagnostic', action='store_true')
     args = parser.parse_args()
     result = review(args.contract, args.attempt, args.declaration,
                     diagnostic=args.diagnostic)
+    require(result['case_id'] == args.case_id,
+            'review selected case differs')
     require(not args.output.exists(), 'retain prior source review')
     args.output.write_text(json.dumps(result, indent=2) + '\n')
 

@@ -22,7 +22,9 @@ def proof(comparison_id: str, installed_saved_root: Path | None = None) -> None:
     for suffix in (first, second):
         binding = bind(suffix, installed_saved_root) if installed_saved_root else None
         fixture = (Path(binding["source_attempt"]) if binding else
-                   REPO / ".runtime-work" / ("c150041-saved-fixture-v8-" + suffix))
+                   REPO / '.runtime-work/c150041-sweep-saved-v3' / suffix / 'compatibility'
+                   if suffix.startswith('orientation_sweep-') else
+                   REPO / '.runtime-work' / ('c150041-saved-fixture-v8-' + suffix))
         history = fixture / "parking-history.jsonl"
         measured = finalize(fixture / "reviewed-context.json", fixture, suffix,
                             history, sha(history))

@@ -103,6 +103,9 @@ def build() -> dict:
                'variable_parameters': [{**row, 'used_by_laws': [LAW['id']]} for row in parameters]}
     refs['bindings'] = write('bindings.json', binding)
     cases = json.loads((PROPOSALS / 'cases.json').read_text())
+    cases['cases'] = [case for case in cases['cases']
+                      if case.get('target_type') != 'judgment_sweep']
+    cases.pop('sweeps_expanded', None)
     pairs = {
         'public_park_attended': 'attendance_public',
         'public_park_unattended': 'attendance_public',
@@ -146,6 +149,8 @@ def build() -> dict:
     conflict['activity'] = {'kind': 'controller', 'value': 'stop', 'note': 'requested activity'}
     designation = json.loads(json.dumps(base))
     designation['exception'] = {'kind': 'world_setup', 'value': 'none', 'note': 'no exception requested'}
+    designation['target_region'] = {'kind': 'controller', 'value': 'sweep_offset',
+                                    'note': 'numeric posted offset controls the target'}
     cases['sweep_specs'] = [
         spec('conflict_necessity_source_review', phrases[0], 'conflict_gap_m',
              4.0, 12.0, 4.0, 'same-frame original actor body gap', conflict),

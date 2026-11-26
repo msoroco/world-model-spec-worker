@@ -80,6 +80,7 @@ def build(case) -> None:
             **({'reviewed_posted_end_x_m': site['posted_interval_m'][1]}
                if case.sweep_kind == 'posted_offset' else {}),
             **({'actual_actor_body_gap_m': case.sweep_setpoint_m,
+                'conflict_actor_id': 'diagnostic-conflict-actor',
                 'traffic_conflict_source_sha256': site['traffic_conflict_source_sha256']}
                if case.sweep_kind == 'conflict_gap' else {}),
             'camera_frames': {name: {'original_frame': frame,

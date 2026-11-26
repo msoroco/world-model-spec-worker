@@ -1,72 +1,108 @@
 {
+  "cell_id": "C150041",
   "actor": "motor_vehicle_driver",
+  "status": "draft",
   "cases": [
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
       "rationale": "Neutral one-way parking setup definition; not a planned recording.",
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "note": "Engineering request only; actual original body orientation measured separately",
+          "value": 0
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -75,109 +111,110 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "target_law_id": null,
-      "target_type": "baseline",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__park_parallel_lawful",
-      "deliberate_differences": [
-        "orientation_request"
-      ],
-      "paired_probe_id": "park_orientation_and_heading",
-      "probe": {
-        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
-        "primary_variable": "orientation_request",
-        "target_value_or_branch": "parallel"
-      },
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "boundary_probe",
       "rationale": "Requested standing/parking pose; original geometry and legal context remain unverified.",
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "note": "Engineering request only; actual original body orientation measured separately",
+          "value": 0
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -186,109 +223,119 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
       ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
+      "paired_probe_id": "park_orientation_and_heading",
+      "deliberate_differences": [
+        "orientation_request"
+      ],
+      "probe": {
+        "primary_variable": "orientation_request",
+        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
+        "target_value_or_branch": "parallel"
       }
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__park_angled_lawful",
-      "deliberate_differences": [
-        "orientation_request"
-      ],
-      "paired_probe_id": "park_orientation_and_heading",
-      "probe": {
-        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
-        "primary_variable": "orientation_request",
-        "target_value_or_branch": "angled"
-      },
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "boundary_probe",
       "rationale": "Requested standing/parking pose; original geometry and legal context remain unverified.",
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "angled",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "note": "Engineering request only; actual original body orientation measured separately",
+          "value": 30
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -297,109 +344,120 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
       ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "angled"
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
+      "paired_probe_id": "park_orientation_and_heading",
+      "deliberate_differences": [
+        "orientation_request",
+        "orientation_request_deg"
+      ],
+      "probe": {
+        "primary_variable": "orientation_request",
+        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
+        "target_value_or_branch": "angled"
       }
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__park_parallel_reverse",
-      "deliberate_differences": [
-        "heading_request"
-      ],
-      "paired_probe_id": "park_orientation_and_heading",
-      "probe": {
-        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
-        "primary_variable": "heading_request",
-        "target_value_or_branch": "reverse"
-      },
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "boundary_probe",
       "rationale": "Requested standing/parking pose; original geometry and legal context remain unverified.",
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "reverse",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "note": "Engineering request only; actual original body orientation measured separately",
+          "value": 0
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -408,109 +466,119 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
       ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "reverse"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
+      "paired_probe_id": "park_orientation_and_heading",
+      "deliberate_differences": [
+        "heading_request"
+      ],
+      "probe": {
+        "primary_variable": "heading_request",
+        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
+        "target_value_or_branch": "reverse"
       }
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__stand_parallel_lawful",
-      "deliberate_differences": [
-        "orientation_request"
-      ],
-      "paired_probe_id": "stand_orientation_and_heading",
-      "probe": {
-        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
-        "primary_variable": "orientation_request",
-        "target_value_or_branch": "parallel"
-      },
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "boundary_probe",
       "rationale": "Requested standing/parking pose; original geometry and legal context remain unverified.",
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "stand",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "note": "Engineering request only; actual original body orientation measured separately",
+          "value": 0
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -519,109 +587,119 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
       ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "stand"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
+      "paired_probe_id": "stand_orientation_and_heading",
+      "deliberate_differences": [
+        "orientation_request"
+      ],
+      "probe": {
+        "primary_variable": "orientation_request",
+        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
+        "target_value_or_branch": "parallel"
       }
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__stand_angled_lawful",
-      "deliberate_differences": [
-        "orientation_request"
-      ],
-      "paired_probe_id": "stand_orientation_and_heading",
-      "probe": {
-        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
-        "primary_variable": "orientation_request",
-        "target_value_or_branch": "angled"
-      },
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "boundary_probe",
       "rationale": "Requested standing/parking pose; original geometry and legal context remain unverified.",
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "stand",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "angled",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "note": "Engineering request only; actual original body orientation measured separately",
+          "value": 30
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -630,109 +708,120 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
       ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "stand"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "angled"
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
+      "paired_probe_id": "stand_orientation_and_heading",
+      "deliberate_differences": [
+        "orientation_request",
+        "orientation_request_deg"
+      ],
+      "probe": {
+        "primary_variable": "orientation_request",
+        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
+        "target_value_or_branch": "angled"
       }
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__stand_parallel_reverse",
-      "deliberate_differences": [
-        "heading_request"
-      ],
-      "paired_probe_id": "stand_orientation_and_heading",
-      "probe": {
-        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
-        "primary_variable": "heading_request",
-        "target_value_or_branch": "reverse"
-      },
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "boundary_probe",
       "rationale": "Requested standing/parking pose; original geometry and legal context remain unverified.",
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "stand",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "reverse",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "note": "Engineering request only; actual original body orientation measured separately",
+          "value": 0
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -741,117 +830,145 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
       ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "stand"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "reverse"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
+      "paired_probe_id": "stand_orientation_and_heading",
+      "deliberate_differences": [
+        "heading_request"
+      ],
+      "probe": {
+        "primary_variable": "heading_request",
+        "comparison_or_standard": "original body axis and reviewed roadway edge/direction",
+        "target_value_or_branch": "reverse"
       }
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 0.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "sweep_point": {
+        "orientation_request_deg": 0.0
+      },
+      "selection_rank": 0,
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 0.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -860,140 +977,154 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "selection_rank": 0,
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
       "sweep_measurements": [
         {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
+          "variable": "orientation_request_deg",
           "observable": "parallel_deviation_deg",
           "unit": "deg",
-          "variable": "orientation_request_deg"
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
         }
       ],
-      "sweep_point": {
-        "orientation_request_deg": 0.0
-      },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 0.0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 90.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "sweep_point": {
+        "orientation_request_deg": 90.0
+      },
+      "selection_rank": 1,
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 90.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -1002,140 +1133,154 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "selection_rank": 1,
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
       "sweep_measurements": [
         {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
+          "variable": "orientation_request_deg",
           "observable": "parallel_deviation_deg",
           "unit": "deg",
-          "variable": "orientation_request_deg"
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
         }
       ],
-      "sweep_point": {
-        "orientation_request_deg": 90.0
-      },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 90.0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0002",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 40.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "sweep_point": {
+        "orientation_request_deg": 40.0
+      },
+      "selection_rank": 2,
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 40.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -1144,140 +1289,154 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "selection_rank": 2,
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
       "sweep_measurements": [
         {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
+          "variable": "orientation_request_deg",
           "observable": "parallel_deviation_deg",
           "unit": "deg",
-          "variable": "orientation_request_deg"
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
         }
       ],
-      "sweep_point": {
-        "orientation_request_deg": 40.0
-      },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 40.0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0003",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 20.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "sweep_point": {
+        "orientation_request_deg": 20.0
+      },
+      "selection_rank": 3,
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 20.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -1286,140 +1445,154 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "selection_rank": 3,
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
       "sweep_measurements": [
         {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
+          "variable": "orientation_request_deg",
           "observable": "parallel_deviation_deg",
           "unit": "deg",
-          "variable": "orientation_request_deg"
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
         }
       ],
-      "sweep_point": {
-        "orientation_request_deg": 20.0
-      },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 20.0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0004",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 60.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "sweep_point": {
+        "orientation_request_deg": 60.0
+      },
+      "selection_rank": 4,
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 60.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -1428,140 +1601,154 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "selection_rank": 4,
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
       "sweep_measurements": [
         {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
+          "variable": "orientation_request_deg",
           "observable": "parallel_deviation_deg",
           "unit": "deg",
-          "variable": "orientation_request_deg"
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
         }
       ],
-      "sweep_point": {
-        "orientation_request_deg": 60.0
-      },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 60.0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0005",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 10.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "sweep_point": {
+        "orientation_request_deg": 10.0
+      },
+      "selection_rank": 5,
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 10.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -1570,140 +1757,154 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "selection_rank": 5,
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
       "sweep_measurements": [
         {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
+          "variable": "orientation_request_deg",
           "observable": "parallel_deviation_deg",
           "unit": "deg",
-          "variable": "orientation_request_deg"
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
         }
       ],
-      "sweep_point": {
-        "orientation_request_deg": 10.0
-      },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 10.0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0006",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 30.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "sweep_point": {
+        "orientation_request_deg": 30.0
+      },
+      "selection_rank": 6,
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 30.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -1712,140 +1913,154 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "selection_rank": 6,
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
       "sweep_measurements": [
         {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
+          "variable": "orientation_request_deg",
           "observable": "parallel_deviation_deg",
           "unit": "deg",
-          "variable": "orientation_request_deg"
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
         }
       ],
-      "sweep_point": {
-        "orientation_request_deg": 30.0
-      },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 30.0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 50.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "sweep_point": {
+        "orientation_request_deg": 50.0
+      },
+      "selection_rank": 7,
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 50.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -1854,140 +2069,154 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "selection_rank": 7,
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
       "sweep_measurements": [
         {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
+          "variable": "orientation_request_deg",
           "observable": "parallel_deviation_deg",
           "unit": "deg",
-          "variable": "orientation_request_deg"
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
         }
       ],
-      "sweep_point": {
-        "orientation_request_deg": 50.0
-      },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 50.0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 70.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "sweep_point": {
+        "orientation_request_deg": 70.0
+      },
+      "selection_rank": 8,
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 70.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
+        }
+      },
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -1996,304 +2225,154 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
-      "selection_rank": 8,
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
       "sweep_measurements": [
         {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
+          "variable": "orientation_request_deg",
           "observable": "parallel_deviation_deg",
           "unit": "deg",
-          "variable": "orientation_request_deg"
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
         }
       ],
-      "sweep_point": {
-        "orientation_request_deg": 70.0
-      },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
       "unresolved_judgment_calls": [
         "parallel with the edge of the roadway"
-      ],
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 70.0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     },
     {
       "case_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009",
+      "target_law_id": "LVMC-11-52-040-A",
+      "target_type": "judgment_sweep",
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "deliberate_differences": [
         "orientation_request_deg"
       ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "paired_probe_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
       "probe": {
-        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "primary_variable": "orientation_request_deg",
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
         "target_value_or_branch": {
           "orientation_request_deg": 80.0
         }
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
-      "recording_description": {
-        "channels": [
-          {
-            "method": "Original Native bounding-box XY corners",
-            "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
-            "sampling_rate_hz": 20,
-            "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
-          },
-          {
-            "method": "Original Native transform forward axis",
-            "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
-            "sampling_rate_hz": 20,
-            "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
-          },
-          {
-            "method": "Original Native velocity norm",
-            "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
-            "sampling_rate_hz": 20,
-            "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
-          },
-          {
-            "method": "Original applied Native throttle, steer and brake",
-            "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
-            "sampling_rate_hz": 20,
-            "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
-          },
-          {
-            "method": "Original four-camera/world frame join",
-            "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
-            "sampling_rate_hz": 20,
-            "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
-          }
-        ],
-        "context_inputs": [
-          {
-            "method": "SHA-256 retained reviewed roadway packet",
-            "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
-          },
-          {
-            "method": "SHA-256 retained reviewed direction packet",
-            "name": "lawful_one_way_direction",
-            "unit": "unit vector"
-          },
-          {
-            "method": "Separate retained stand/park activity and Chapter source packets",
-            "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
-          }
-        ],
-        "limitations": [
-          "Requested pose does not establish realized orientation or activity.",
-          "No numerical legal parallelism or edge-distance threshold is supplied.",
-          "Chapter exception and municipal applicability require source review."
-        ]
-      },
-      "selection_rank": 9,
       "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
-      "sweep_measurements": [
-        {
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
-          "observable": "parallel_deviation_deg",
-          "unit": "deg",
-          "variable": "orientation_request_deg"
-        }
-      ],
+      "sweep_spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
       "sweep_point": {
         "orientation_request_deg": 80.0
       },
-      "sweep_spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "target_law_id": "LVMC-11-52-040-A",
-      "target_type": "judgment_sweep",
-      "unresolved_judgment_calls": [
-        "parallel with the edge of the roadway"
-      ],
+      "selection_rank": 9,
       "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
         "activity_context": {
           "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
         },
         "orientation_request": {
           "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
         },
         "orientation_request_deg": {
           "kind": "controller",
-          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
-          "value": 80.0
+          "value": 80.0,
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately"
         },
-        "roadway_context": {
+        "parallel_deviation_deg": {
           "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
+          "note": "Original body deviation is measured after source-bound Native capture",
+          "value": "pending_original_measurement"
         }
-      }
-    }
-  ],
-  "cell_id": "C150041",
-  "delivery_status": "source_gated_cpu_plan",
-  "legal_judgment": "unresolved",
-  "physical_realization_claimed": false,
-  "source_review_required": true,
-  "status": "draft",
-  "sweep_specs": [
-    {
-      "axes": [
-        {
-          "feasibility_evidence": "diagnostic/provisional-sweep-feasibility.json, SHA-256 ccc78cae667da0eb6cc31efe0bc9e1ae1d45d53da6d87dbda60a1f0106e93f99",
-          "max": 90,
-          "measurement": {
-            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
-            "statistic": "mean",
-            "time_window": "original stationary interval"
-          },
-          "min": 0,
-          "observable": "parallel_deviation_deg",
-          "range_rationale": "Provisional 0..90 degree vehicle-to-edge orientation on the authored straight lane; no legal angular threshold.",
-          "spacing": 10,
-          "spacing_rationale": "Ten-degree geometry samples include both endpoints and intermediate poses; recheck against reviewed Native geometry before freezing.",
-          "unit": "deg",
-          "variable": "orientation_request_deg"
-        }
-      ],
-      "judgment_refs": [
-        {
-          "note": "No legal angular threshold is provided.",
-          "phrase": "parallel with the edge of the roadway"
-        }
-      ],
-      "landmarks": [],
-      "mode": "one_dimensional",
-      "planned_case_count": 10,
-      "provisional_cpu_feasibility": {
-        "path": "diagnostic/provisional-sweep-feasibility.json",
-        "scope": "authored synthetic OpenDRIVE footprint only; not a Native site review or legal range",
-        "sha256": "ccc78cae667da0eb6cc31efe0bc9e1ae1d45d53da6d87dbda60a1f0106e93f99"
       },
-      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
       "recording_description": {
         "channels": [
           {
-            "method": "Original Native bounding-box XY corners",
             "name": "body_vertices_xy_m",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m",
             "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native transform forward axis",
             "name": "vehicle_forward_xy",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "unit vector",
             "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "unit vector"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original Native velocity norm",
             "name": "speed_m_s",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "m/s",
             "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "m/s"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original applied Native throttle, steer and brake",
             "name": "control",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
           },
           {
-            "method": "Original four-camera/world frame join",
             "name": "camera_frame_map",
-            "reference_frame": "original CARLA world and frame/time",
+            "unit": "structured record",
             "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
             "time_window": "entire approach and stationary interval",
-            "uncertainty": "Native motion and camera pixels require physical review",
-            "unit": "structured record"
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
           }
         ],
         "context_inputs": [
           {
-            "method": "SHA-256 retained reviewed roadway packet",
             "name": "roadway_edge_and_polygon",
-            "unit": "m in Native world XY"
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
           },
           {
-            "method": "SHA-256 retained reviewed direction packet",
             "name": "lawful_one_way_direction",
-            "unit": "unit vector"
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
           },
           {
-            "method": "Separate retained stand/park activity and Chapter source packets",
             "name": "activity_and_chapter_exception_review",
-            "unit": "source context"
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
           }
         ],
         "limitations": [
@@ -2302,6 +2381,180 @@
           "Chapter exception and municipal applicability require source review."
         ]
       },
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
+      "sweep_measurements": [
+        {
+          "variable": "orientation_request_deg",
+          "observable": "parallel_deviation_deg",
+          "unit": "deg",
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
+        }
+      ],
+      "unresolved_judgment_calls": [
+        "parallel with the edge of the roadway"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
+      "target_law_id": "LVMC-11-52-040-A",
+      "judgment_refs": [
+        {
+          "phrase": "parallel with the edge of the roadway",
+          "note": "No legal angular threshold is provided."
+        }
+      ],
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "orientation_request_deg",
+          "observable": "parallel_deviation_deg",
+          "unit": "deg",
+          "min": 0,
+          "max": 90,
+          "spacing": 10,
+          "range_rationale": "Provisional 0..90 degree vehicle-to-edge orientation on the authored straight lane; no legal angular threshold.",
+          "spacing_rationale": "Ten-degree geometry samples include both endpoints and intermediate poses; recheck against reviewed Native geometry before freezing.",
+          "feasibility_evidence": "diagnostic/provisional-sweep-feasibility.json, SHA-256 ccc78cae667da0eb6cc31efe0bc9e1ae1d45d53da6d87dbda60a1f0106e93f99",
+          "measurement": {
+            "method": "Original saved body axis against source-reviewed roadway edge; retain full raw stream",
+            "time_window": "original stationary interval",
+            "statistic": "mean"
+          }
+        }
+      ],
+      "landmarks": [],
+      "provisional_cpu_feasibility": {
+        "path": "diagnostic/provisional-sweep-feasibility.json",
+        "sha256": "ccc78cae667da0eb6cc31efe0bc9e1ae1d45d53da6d87dbda60a1f0106e93f99",
+        "scope": "authored synthetic OpenDRIVE footprint only; not a Native site review or legal range"
+      },
+      "rationale": "Fixed 0..90 degree engineering requests on one source-reviewed roadway; actual Native pose and legal judgment remain unresolved.",
+      "variable_assignments": {
+        "roadway_context": {
+          "kind": "world_setup",
+          "value": "pending_reviewed_one_way_road",
+          "note": "Exact public roadway, edge and direction need retained source"
+        },
+        "activity_context": {
+          "kind": "world_setup",
+          "value": "park",
+          "note": "Halt purpose and responsible person need retained source"
+        },
+        "orientation_request": {
+          "kind": "controller",
+          "value": "parallel",
+          "note": "Original body geometry measures realization"
+        },
+        "heading_request": {
+          "kind": "controller",
+          "value": "lawful",
+          "note": "Original transform measures realization"
+        },
+        "orientation_request_deg": {
+          "kind": "controller",
+          "value": 0,
+          "note": "Engineering request only; original body angle is measured separately"
+        },
+        "parallel_deviation_deg": {
+          "kind": "world_setup",
+          "value": "pending_original_measurement",
+          "note": "Original body deviation is measured after source-bound Native capture"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "body_vertices_xy_m",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "Original Native bounding-box XY corners",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "vehicle_forward_xy",
+            "unit": "unit vector",
+            "sampling_rate_hz": 20,
+            "method": "Original Native transform forward axis",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "speed_m_s",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "Original Native velocity norm",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "control",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original applied Native throttle, steer and brake",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original four-camera/world frame join",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Native motion and camera pixels require physical review"
+          },
+          {
+            "name": "parallel_deviation_deg",
+            "unit": "deg",
+            "sampling_rate_hz": 20,
+            "method": "Original body axis against source-reviewed roadway edge",
+            "time_window": "entire approach and stationary interval",
+            "reference_frame": "original CARLA world and frame/time",
+            "uncertainty": "Legal parallelism remains unresolved"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "roadway_edge_and_polygon",
+            "unit": "m in Native world XY",
+            "method": "SHA-256 retained reviewed roadway packet"
+          },
+          {
+            "name": "lawful_one_way_direction",
+            "unit": "unit vector",
+            "method": "SHA-256 retained reviewed direction packet"
+          },
+          {
+            "name": "activity_and_chapter_exception_review",
+            "unit": "source context",
+            "method": "Separate retained stand/park activity and Chapter source packets"
+          }
+        ],
+        "limitations": [
+          "Requested pose does not establish realized orientation or activity.",
+          "No numerical legal parallelism or edge-distance threshold is supplied.",
+          "Chapter exception and municipal applicability require source review."
+        ]
+      },
+      "spec_version": "0625305db5e2b58ff987556c69c5b307bb4427ed350ce6bfcb1bb9c3942f616f",
+      "planned_case_count": 10,
       "selection_order": [
         "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0000",
         "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0001",
@@ -2313,39 +2566,12 @@
         "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0007",
         "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0008",
         "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep-0009"
-      ],
-      "spec_version": "0b0ab903dbc5eced657aff95bfb0e52a2d4d2553d3a361da74bb5450a2dea8c4",
-      "status": "complete",
-      "sweep_id": "testing__C150041__LVMC-11-52-040-A__motor_vehicle_driver__orientation_sweep",
-      "target_law_id": "LVMC-11-52-040-A",
-      "variable_assignments": {
-        "activity_context": {
-          "kind": "world_setup",
-          "note": "Halt purpose and responsible person need retained source",
-          "value": "park"
-        },
-        "heading_request": {
-          "kind": "controller",
-          "note": "Original transform measures realization",
-          "value": "lawful"
-        },
-        "orientation_request": {
-          "kind": "controller",
-          "note": "Original body geometry measures realization",
-          "value": "parallel"
-        },
-        "orientation_request_deg": {
-          "kind": "controller",
-          "note": "Engineering request only; original body angle is measured separately",
-          "value": 0
-        },
-        "roadway_context": {
-          "kind": "world_setup",
-          "note": "Exact public roadway, edge and direction need retained source",
-          "value": "pending_reviewed_one_way_road"
-        }
-      }
+      ]
     }
   ],
-  "sweeps_expanded": true
+  "sweeps_expanded": true,
+  "source_review_required": true,
+  "delivery_status": "source_gated_cpu_plan",
+  "physical_realization_claimed": false,
+  "legal_judgment": "unresolved"
 }

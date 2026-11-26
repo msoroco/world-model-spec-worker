@@ -19,7 +19,7 @@ def main() -> None:
                TMPDIR=str(REPO / '.runtime-work'))
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(ROOT.name + '__')
-        destination = REPO / '.runtime-work' / 'c150099-nov25-offline-batch-v7' / suffix
+        destination = REPO / '.runtime-work' / 'c150099-nov25-offline-batch-v11' / suffix
         if destination.exists():
             raise ValueError('retain prior offline attempt; choose new proof version')
         command = [str(REPO / '.venv-cpu/bin/python'), str(REPO / 'runtime.py'),
@@ -38,7 +38,7 @@ def main() -> None:
                             'log_sha256': hashlib.sha256(log.read_bytes()).hexdigest(),
                             'construction_sha256': entry['construction_sha256']}
         fallback = entry['candidates'][0]
-        alternate = REPO / '.runtime-work' / 'c150099-nov25-offline-batch-v7' / (suffix + '-fallback1')
+        alternate = REPO / '.runtime-work' / 'c150099-nov25-offline-batch-v11' / (suffix + '-fallback1')
         command += ['--candidate', 'fallback1']
         command[command.index('--output') + 1] = str(alternate)
         run = subprocess.run(command, cwd=REPO, env=env, text=True,

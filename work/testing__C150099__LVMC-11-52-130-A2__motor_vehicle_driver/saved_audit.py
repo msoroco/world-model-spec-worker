@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from judgment_sweeps import CONFLICT_POINTS, DESIGNATION_POINTS, measure_original
 from fire_lane import CASES
 
 
@@ -108,10 +109,15 @@ def audit_planned_case(path: Path, expected_sha256: str, full_case_id: str,
         raise ValueError('planned exception source absent from original hold')
     overlaps = [min(row['posted_interval_m'][1], row['body_interval_m'][1]) >
                 max(row['posted_interval_m'][0], row['body_interval_m'][0]) for row in tail]
-    if case.target_region == 'inside' and not all(overlaps):
+    if case.sweep_kind == 'none' and case.target_region == 'inside' and not all(overlaps):
         raise ValueError('planned inside target absent from original hold')
-    if case.target_region == 'outside' and any(overlaps):
+    if case.sweep_kind == 'none' and case.target_region == 'outside' and any(overlaps):
         raise ValueError('planned outside target absent from original hold')
+    if case.sweep_kind != 'none':
+        rank = int(case.id.rsplit('-', 1)[1])
+        point = (CONFLICT_POINTS if case.sweep_kind == 'conflict_gap'
+                 else DESIGNATION_POINTS)[rank]
+        report['sweep_measurement'] = measure_original(rows, point)
     report['observed'] = {
         'attended': case.attended, 'property_kind': case.property_kind,
         'activity': case.activity, 'target_region': case.target_region,

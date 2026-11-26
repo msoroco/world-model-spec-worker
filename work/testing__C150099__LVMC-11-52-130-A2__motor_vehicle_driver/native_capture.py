@@ -159,12 +159,14 @@ def capture(adapter, case_id: str, packet_path: Path, destination: Path,
                 row['reviewed_posted_end_x_m'] = site['posted_interval_m'][1]
             if case.sweep_kind == 'conflict_gap':
                 observed_gap = adapter.read_conflict_gap(frame)
-                if not isinstance(observed_gap, dict) or observed_gap.get('frame') != frame or \
-                        observed_gap.get('time_s') != time_s or \
-                        type(observed_gap.get('body_gap_m')) not in (int, float) or \
-                        not math.isfinite(observed_gap['body_gap_m']):
+                if (not isinstance(observed_gap, dict) or observed_gap.get('frame') != frame or
+                        observed_gap.get('time_s') != time_s or
+                        type(observed_gap.get('body_gap_m')) not in (int, float) or
+                        not math.isfinite(observed_gap['body_gap_m']) or
+                        not observed_gap.get('actor_id')):
                     raise ValueError('original conflict actor gap frame join failed')
                 row['actual_actor_body_gap_m'] = observed_gap['body_gap_m']
+                row['conflict_actor_id'] = str(observed_gap['actor_id'])
                 row['traffic_conflict_source_sha256'] = site['traffic_conflict_source_sha256']
             rows.append(row)
             frames.append({'frame': frame, 'time_s': time_s, 'video_frame': index})

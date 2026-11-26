@@ -15,7 +15,7 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from parking_pose import REQUESTS
+from parking_pose import REQUESTS, SWEEP_REQUESTS
 from source_review import validate
 
 
@@ -80,7 +80,7 @@ def stage(rebound_dir, output_dir):
         raise ValueError('rebound and fresh staging output must be under .runtime-work')
     source = json.loads((rebound / 'rebound-manifest.json').read_text())
     manifest = json.loads((rebound / 'execution-manifest.json').read_text())
-    expected = {ROOT.name + '__' + name for name in REQUESTS}
+    expected = {ROOT.name + '__' + name for name in (*REQUESTS, *SWEEP_REQUESTS)}
     if (source.get('assignment_id') != ROOT.name or
             source.get('preparation_status') != 'review_and_cpu_proofs_pending' or
             {item['case_id'] for item in source['cases']} != expected or
@@ -187,6 +187,11 @@ def stage(rebound_dir, output_dir):
                 'method': 'capture_ticks',
                 'evidence': 'Original world frame and timestamp joined to all four camera source names in camera-frame-map.jsonl',
             }
+            if case_id.split('__')[-1] in SWEEP_REQUESTS:
+                entry['acquisition']['parallel_deviation_deg'] = {
+                    'entrypoint': 'parking_analysis.py', 'method': 'analyze',
+                    'evidence': 'Original saved body axis measured against source-reviewed road edge in channels/parallel_deviation_deg.jsonl',
+                }
             for obsolete in ('offline', 'compatibility'):
                 if obsolete in entry['candidates'][0]:
                     raise ValueError('rebound candidate carries stale proof: ' + obsolete)
@@ -231,15 +236,15 @@ def install(staged_dir, park_packet, stand_packet, target=ROOT):
         if sha(packet) != receipt['packet_sha256'][activity]:
             raise ValueError('retained reviewed packet differs from canonical stage')
     manifest = json.loads(manifest_path.read_text())
-    expected = {ROOT.name + '__' + name for name in REQUESTS}
+    expected = {ROOT.name + '__' + name for name in (*REQUESTS, *SWEEP_REQUESTS)}
     if (manifest.get('assignment_id') != ROOT.name or
             manifest.get('runtime_manifest_sha256') != sha(REPO / 'runtime' / 'SOURCE-MANIFEST.json') or
             {entry['case_id'] for entry in manifest['cases']} != expected or
-            len(receipt['constructions']) != 12):
+            len(receipt['constructions']) != 32):
         raise ValueError('canonical staged exact-case inventory differs')
     declared = {(entry['case_id'], entry['candidate_id']): entry
                 for entry in receipt['constructions']}
-    if len(declared) != 12:
+    if len(declared) != 32:
         raise ValueError('duplicate staged construction')
     for entry in manifest['cases']:
         for candidate_id, selected in (('primary', entry),

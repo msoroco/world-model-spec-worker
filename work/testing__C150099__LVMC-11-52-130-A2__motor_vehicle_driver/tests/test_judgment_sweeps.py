@@ -72,7 +72,8 @@ class JudgmentSweepTests(unittest.TestCase):
         rows = [{'original_frame': i, 'body_west_x_m': 29+i*.1,
                  'body_east_x_m': 33+i*.1, 'reviewed_posted_end_x_m': 30,
                  'posted_extent_sha256': 'a'*64, 'actual_actor_body_gap_m': 5+i,
-                 'traffic_conflict_source_sha256': 'b'*64} for i in range(3)]
+                 'traffic_conflict_source_sha256': 'b'*64,
+                 'conflict_actor_id': 'diagnostic-actor'} for i in range(3)]
         self.assertEqual(len(measure_original(rows, DESIGNATION_POINTS[0])['measured_offset_m']), 3)
         self.assertEqual(len(measure_original(rows, CONFLICT_POINTS[0])['measured_gap_m']), 3)
         rows[1]['traffic_conflict_source_sha256'] = None

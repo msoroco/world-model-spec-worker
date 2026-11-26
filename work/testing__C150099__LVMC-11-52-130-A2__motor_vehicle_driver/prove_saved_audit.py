@@ -1,4 +1,4 @@
-"""Independent source/channel checks on ten pinned saved diagnostic fixtures."""
+"""Independent source/channel checks on every selected saved diagnostic fixture."""
 from __future__ import annotations
 
 import hashlib
@@ -20,11 +20,11 @@ def main() -> None:
     for entry in manifest['cases']:
         case_id = entry['case_id']
         suffix = case_id.removeprefix(ROOT.name + '__')
-        attempt = REPO / '.runtime-work' / ('c150099-saved-proof-' + suffix + '-v7/v0001/analysis')
+        attempt = REPO / '.runtime-work' / ('c150099-saved-proof-' + suffix + '-v8/v0001/analysis')
         report['cases'][case_id] = audit_saved_channels(attempt, case_id, allow_diagnostic=True)
     first = manifest['cases'][0]['case_id']
-    source = REPO / '.runtime-work/c150099-saved-proof-public_park_attended-v7/v0001/analysis'
-    tampered = REPO / '.runtime-work/c150099-saved-audit-tamper-v3'
+    source = REPO / '.runtime-work/c150099-saved-proof-public_park_attended-v8/v0001/analysis'
+    tampered = REPO / '.runtime-work/c150099-saved-audit-tamper-v5'
     if tampered.exists():
         raise ValueError('retain prior tamper fixture; choose a new version')
     shutil.copytree(source, tampered)
@@ -42,7 +42,8 @@ def main() -> None:
     else:
         raise ValueError('tampered saved channel was accepted')
     (ROOT / 'cpu-saved-channel-audit.json').write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
-    print('saved source/channel audit passed: 10 positive, 1 tamper negative')
+    print('saved source/channel audit passed:', len(report['cases']),
+          'positive, 1 tamper negative')
 
 
 if __name__ == '__main__':

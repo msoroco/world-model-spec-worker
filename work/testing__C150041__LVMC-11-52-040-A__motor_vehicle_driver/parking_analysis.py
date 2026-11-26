@@ -124,6 +124,7 @@ def analyze(attempt):
         "speed_m_s": [row["speed_m_s"] for row in history],
         "control": [row["control"] for row in history],
         "camera_frame_map": camera,
+        "parallel_deviation_deg": [item["parallel_deviation_deg"] for item in measured["observations"]],
     }
     channel_dir = root / "channels"
     channel_dir.mkdir(exist_ok=True)
@@ -154,6 +155,25 @@ def analyze(attempt):
     for item in description["context_inputs"]:
         evidence.append({"name": item["name"], "unit": item["unit"],
                          "reference": context_path.relative_to(root).as_posix()})
+    realized = {}
+    sweep = config['case'].get('sweep_measurements', [])
+    if sweep:
+        if len(sweep) != 1 or sweep[0]['observable'] != 'parallel_deviation_deg':
+            raise ValueError('unsupported selected orientation sweep measurement')
+        interval = measured['stationary_intervals'][-1]
+        window = [next(row['time_s'] for row in measured['observations']
+                       if row['frame'] == interval['first_frame']),
+                  next(row['time_s'] for row in measured['observations']
+                       if row['frame'] == interval['last_frame'])]
+        values = [row['parallel_deviation_deg'] for row in measured['observations']
+                  if window[0] <= row['time_s'] <= window[1]]
+        realized['parallel_deviation_deg'] = {
+            'value': sum(values) / len(values), 'unit': 'deg',
+            'method': sweep[0]['measurement']['method'],
+            'time_window': sweep[0]['measurement']['time_window'],
+            'statistic': sweep[0]['measurement']['statistic'],
+            'reference': 'channels/parallel_deviation_deg.jsonl',
+            'sample_window_s': window}
     result = {"case_id": case_id, "measured_values": measured,
               "target_checks": checks, "setup_confirmed": False,
               "behavior_attempted": False, "maneuver_completed": False,
@@ -162,7 +182,7 @@ def analyze(attempt):
               "video_references": list(VIDEOS),
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": description, "recording_evidence": evidence,
-              "realized_observables": {},
+              "realized_observables": realized,
               "legal_judgment": "unresolved", "physical_acceptance_claimed": False}
     return report, result
 

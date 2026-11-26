@@ -15,6 +15,9 @@ PAIRS = {
     "park_heading": ("park_parallel_lawful", "park_parallel_reverse", "heading"),
     "stand_parallelism": ("stand_parallel_lawful", "stand_angled_lawful", "orientation"),
     "stand_heading": ("stand_parallel_lawful", "stand_parallel_reverse", "heading"),
+    "sweep_0_vs_30": ("orientation_sweep-0000", "orientation_sweep-0006", "orientation"),
+    "sweep_30_vs_60": ("orientation_sweep-0006", "orientation_sweep-0004", "orientation"),
+    "sweep_60_vs_90": ("orientation_sweep-0004", "orientation_sweep-0001", "orientation"),
 }
 
 

@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -99,6 +100,25 @@ class QualitativeReviewTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'comparison cases differ'):
                     compare(HERE / 'case-plan.json', reports[1], reports[0],
                             comparison['comparison_id'])
+
+    def test_exact_case_cli_path(self):
+        case = 'testing__C229023__NRS-484B-270-7b__cycle_or_scooter_operator__endangerment_offset_low'
+        with tempfile.TemporaryDirectory(dir=ROOT / '.runtime-work') as temp:
+            root = Path(temp) / 'attempt'
+            declaration = self.make_attempt(root, case)
+            base = [sys.executable, str(HERE / 'qualitative_review.py'),
+                    '--contract', str(HERE / 'qualitative-review-contract.json'),
+                    '--attempt', str(root), '--declaration', str(declaration),
+                    '--diagnostic']
+            passed = subprocess.run(base + ['--case-id', case,
+                                            '--output', str(Path(temp) / 'review.json')],
+                                    capture_output=True, text=True)
+            self.assertEqual(passed.returncode, 0, passed.stderr)
+            rejected = subprocess.run(base + ['--case-id', case + '-wrong',
+                                              '--output', str(Path(temp) / 'wrong.json')],
+                                      capture_output=True, text=True)
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertIn('review selected case differs', rejected.stderr)
 
 
 if __name__ == '__main__':

@@ -15,8 +15,9 @@ REQUESTS = {
     "stand_parallel_reverse": ("stand", "parallel", "reverse"),
 }
 
-SWEEP_REQUESTS = {f'orientation_sweep-{rank:04d}': ('park', 'parallel' if rank == 0 else 'angled', 'lawful', rank * 10)
-                  for rank in range(10)}
+SWEEP_ANGLES = (0, 90, 40, 20, 60, 10, 30, 50, 70, 80)
+SWEEP_REQUESTS = {f'orientation_sweep-{rank:04d}': ('park', 'parallel' if angle == 0 else 'angled', 'lawful', angle)
+                  for rank, angle in enumerate(SWEEP_ANGLES)}
 
 
 def request(suffix):

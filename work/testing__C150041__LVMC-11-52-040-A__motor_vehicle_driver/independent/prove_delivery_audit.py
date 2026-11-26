@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import tempfile
 
-from delivery_audit import CHECKS, OBSERVATIONS, ROOT, SOURCE, sha, verify_inputs
+from delivery_audit import CHECKS, OBSERVATIONS, ROOT, SOURCE, SUFFIXES, sha, verify_inputs
 from installed_binding import bind
 
 
@@ -52,9 +52,7 @@ def fixture(attempt: Path, case_id: str):
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("case_id", choices=tuple(ROOT.name + "__" + name for name in
-                        ("park_parallel_lawful", "park_angled_lawful", "park_parallel_reverse",
-                         "stand_parallel_lawful", "stand_angled_lawful", "stand_parallel_reverse")))
+    parser.add_argument("case_id", choices=tuple(ROOT.name + "__" + name for name in SUFFIXES))
     parser.add_argument("--negative", action="store_true")
     parser.add_argument("--installed-saved-root", type=Path)
     args = parser.parse_args()

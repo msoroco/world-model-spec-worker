@@ -44,9 +44,19 @@ def source(case_id: str, kind: str, destination: Path) -> None:
                                         'source_sha256': packet['source_sha256']}
                                 for name, packet in first['camera_frames'].items()}
         inside = case.target_region == 'inside'
-        if kind == 'incomplete_motion':
+        if kind == 'incomplete_motion' and case.sweep_kind == 'none':
             inside = not inside
         body = [11.0, 15.0] if inside else [31.0, 35.0]
+        if case.sweep_kind == 'posted_offset':
+            centre = site['posted_interval_m'][1] + case.sweep_setpoint_m
+            if kind == 'incomplete_motion':
+                centre += 4.0
+            body = [centre - 2.0, centre + 2.0]
+            row['reviewed_posted_end_x_m'] = site['posted_interval_m'][1]
+        if case.sweep_kind == 'conflict_gap':
+            row['actual_actor_body_gap_m'] = case.sweep_setpoint_m + (
+                4.0 if kind == 'incomplete_motion' else 0.0)
+            row['traffic_conflict_source_sha256'] = site['traffic_conflict_source_sha256']
         row['body_west_x_m'], row['body_east_x_m'] = body
         row['body_interval_m'] = body
         row['source_sha256'] = hashlib.sha256(f'{kind}:{frame}'.encode()).hexdigest()
@@ -92,7 +102,15 @@ def assess(case_id: str, kind: str, directory: Path) -> dict:
         lo, hi = site['posted_interval_m']
         inside = [min(row['body_east_x_m'], hi) > max(row['body_west_x_m'], lo)
                   for row in hold]
-        region_met = all(inside) if case.target_region == 'inside' else not any(inside)
+        if case.sweep_kind == 'posted_offset':
+            actual = [(row['body_west_x_m'] + row['body_east_x_m']) / 2 - hi
+                      for row in hold]
+            region_met = all(abs(value - case.sweep_setpoint_m) <= .25 for value in actual)
+        elif case.sweep_kind == 'conflict_gap':
+            actual = [row['actual_actor_body_gap_m'] for row in hold]
+            region_met = all(abs(value - case.sweep_setpoint_m) <= .25 for value in actual)
+        else:
+            region_met = all(inside) if case.target_region == 'inside' else not any(inside)
         activity = {'park': 'parked', 'stand': 'standing', 'stop': 'stopped'}[case.activity]
         state_met = all(row['activity_observation'] == activity and
                         row['attended_observation'] is case.attended and

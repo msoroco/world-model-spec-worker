@@ -13,7 +13,7 @@ import shutil
 import tempfile
 
 from bind_reviewed_site import bind
-from parking_pose import REQUESTS
+from parking_pose import REQUESTS, SWEEP_REQUESTS, request
 from parking_scene import build
 from source_review import validate
 
@@ -51,15 +51,16 @@ def rebind(park_packet, stand_packet, output_dir):
         source_files[activity] = files
     original = json.loads((ROOT / 'execution-manifest.json').read_text())
     originals = {entry['case_id']: entry for entry in original['cases']}
-    expected = {ROOT.name + '__' + suffix for suffix in REQUESTS}
+    expected = {ROOT.name + '__' + suffix for suffix in (*REQUESTS, *SWEEP_REQUESTS)}
     if set(originals) != expected:
-        raise ValueError('six exact delivery template cases required')
+        raise ValueError('six categorical plus ten sweep delivery template cases required')
     output.parent.mkdir(parents=True, exist_ok=True)
     staged = Path(tempfile.mkdtemp(prefix='c150041-rebind-', dir=output.parent))
     try:
         entries = []
         runtime_entries = []
-        for suffix, (activity, _, _) in REQUESTS.items():
+        for suffix in (*REQUESTS, *SWEEP_REQUESTS):
+            activity = request(suffix)[0]
             case_id = ROOT.name + '__' + suffix
             template = originals[case_id]
             variants = []

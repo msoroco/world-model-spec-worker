@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = ROOT.parents[1]
 sys.path.insert(0, str(ROOT))
 from native_capture import CAMERAS, capture
-from source_packet import SOURCES, validate_packet
+from source_packet import SOURCES, EXCEPTION_SOURCES, validate_packet
 from saved_audit import audit_planned_case
 from delivery_audit import audit_capture
 
@@ -38,6 +38,13 @@ class FakeNative:
     def set_control_profile(self, ego, profile):
         self.control_profile = (ego, profile)
     def set_attendance(self, *args): pass
+    def set_exception(self, *args): pass
+    def set_conflict_actor_gap(self, ego, gap, source_sha):
+        self.requested_conflict_gap = (ego, gap, source_sha)
+    def read_conflict_gap(self, frame):
+        return {'frame': frame, 'time_s': frame / 20,
+                'actor_id': 'diagnostic-conflict-actor',
+                'body_gap_m': self.requested_conflict_gap[1]}
     def tick(self):
         if self.frame == self.fail_frame:
             raise ValueError('synthetic Native tick failure')
@@ -59,11 +66,14 @@ class FakeNative:
 
 
 class NativeCaptureTests(unittest.TestCase):
-    def packet(self, root):
-        case_id = ROOT.name + '__public_park_attended'
+    def packet(self, root, suffix='public_park_attended'):
+        case_id = ROOT.name + '__' + suffix
         sources = {}
         map_bytes = b'<OpenDRIVE diagnostic="true"/>'
-        for name in SOURCES:
+        names = list(SOURCES)
+        if suffix.startswith('conflict_necessity_source_review-'):
+            names.append(EXCEPTION_SOURCES['lawful_traffic_conflict'])
+        for name in names:
             path = root / (name + '.txt')
             path.write_bytes(map_bytes if name == 'map' else (name + '\n').encode())
             sources[name] = {'path': path.name,
@@ -76,7 +86,8 @@ class NativeCaptureTests(unittest.TestCase):
                   'site': {'cell_id': 'C150099', 'layout': 'one_way_road',
                            'property_kind': 'public', 'sign_support': 'spawned_prop',
                            'sign_text': 'FIRE LANE', 'posted_interval_m': [10, 30],
-                           'curb_y_m': 2, 'approach_waypoints': [[0, 0], [20, 0]]}}
+                           'curb_y_m': 2, 'approach_waypoints': [[0, 0], [40, 0]],
+                           'conflict_actor_waypoints': [[3, 0], [38, 0]]}}
         path = root / 'packet.json'
         path.write_text(json.dumps(packet) + '\n')
         adapter = FakeNative(map_bytes)
@@ -139,6 +150,29 @@ class NativeCaptureTests(unittest.TestCase):
             self.assertEqual(inventory['control_profile'], 'slow_approach')
             self.assertEqual(audit_capture(root / 'attempt', case_id,
                                            allow_diagnostic=True)['original_frames'], 900)
+
+    def test_conflict_sweep_same_frame_actor_measurement_and_source_gate(self):
+        scratch = WORKSPACE / '.runtime-work'
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as directory:
+            root = Path(directory)
+            packet, adapter, case_id = self.packet(
+                root, 'conflict_necessity_source_review-0000')
+            destination = root / 'attempt'
+            inventory = capture(adapter, case_id, packet, destination)
+            self.assertEqual(adapter.requested_conflict_gap[1], 4.0)
+            rows = [json.loads(line) for line in
+                    (destination / 'history.jsonl').read_text().splitlines()]
+            self.assertEqual(len(rows), 900)
+            self.assertEqual(rows[0]['conflict_actor_id'], 'diagnostic-conflict-actor')
+            self.assertEqual(rows[-1]['actual_actor_body_gap_m'], 4.0)
+            self.assertTrue(inventory['diagnostic_fixture'])
+            reviewed = json.loads(packet.read_text())
+            reviewed['sources'].pop('traffic_conflict_source')
+            packet.write_text(json.dumps(reviewed) + '\n')
+            with self.assertRaisesRegex(ValueError, 'original source missing'):
+                capture(adapter, case_id, packet, root / 'rejected')
+            self.assertFalse((root / 'rejected').exists())
 
 
 if __name__ == '__main__':

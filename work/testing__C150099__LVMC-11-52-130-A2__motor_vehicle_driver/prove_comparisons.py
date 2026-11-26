@@ -9,7 +9,7 @@ from comparison_audit import audit_pair
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-TEMP = REPO / '.runtime-work/c150099-comparison-source-v1'
+TEMP = REPO / '.runtime-work/c150099-comparison-source-v2'
 
 
 def serial(value: dict) -> str:

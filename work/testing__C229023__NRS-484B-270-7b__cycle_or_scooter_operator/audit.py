@@ -72,6 +72,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', type=Path)
     parser.add_argument('--report', type=Path)
+    parser.add_argument('--case-id')
     parser.add_argument('--plan', type=Path)
     parser.add_argument('--comparison')
     parser.add_argument('--left', type=Path)
@@ -85,7 +86,10 @@ def main():
                                   args.left, args.right)
     else:
         require(args.attempt and args.report, 'original attempt and report required')
+        require(args.case_id, 'exact audit case required')
         result = audit_delivery(args.attempt, args.report)
+        require(result['case_id'] == args.case_id,
+                'audit selected case differs')
     require(not args.output.exists(), 'retain prior audit')
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
 

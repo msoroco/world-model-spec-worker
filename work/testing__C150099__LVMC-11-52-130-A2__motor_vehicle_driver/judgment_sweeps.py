@@ -68,6 +68,8 @@ def preflight(packet_path: Path, case_id: str, point: SweepPoint,
                     any(type(v) not in (int, float) or not isfinite(v) for v in p)
                     for p in actor_route)):
             raise ValueError('reviewed conflict actor route required')
+        if actor_route[-1][0] - actor_route[0][0] < gap + length:
+            raise ValueError('requested conflict gap exceeds reviewed actor route')
         return {'sweep': point.sweep, 'rank': point.rank,
                 'requested_actor_gap_m': gap, 'legal_judgment': None}
     raise ValueError('unknown judgment sweep')
@@ -91,9 +93,13 @@ def measure_original(rows: list[dict], point: SweepPoint) -> dict:
                 'measured_offset_m': measured, 'legal_judgment': None}
     if point.sweep == 'conflict_necessity_source_review':
         measured = []
+        actor_id = rows[0].get('conflict_actor_id')
+        if not actor_id:
+            raise ValueError('original conflict actor identity missing')
         for row in rows:
             gap = _finite(row.get('actual_actor_body_gap_m'), 'actual actor gap')
-            if gap < 0 or not row.get('traffic_conflict_source_sha256'):
+            if (gap < 0 or not row.get('traffic_conflict_source_sha256') or
+                    row.get('conflict_actor_id') != actor_id):
                 raise ValueError('original conflict source missing')
             measured.append(gap)
         return {'sweep': point.sweep, 'rank': point.rank,

@@ -16,7 +16,8 @@ assert SPEC.loader is not None
 SPEC.loader.exec_module(SOURCE)
 
 SUFFIXES = ("park_parallel_lawful", "park_angled_lawful", "park_parallel_reverse",
-            "stand_parallel_lawful", "stand_angled_lawful", "stand_parallel_reverse")
+            "stand_parallel_lawful", "stand_angled_lawful", "stand_parallel_reverse") + tuple(
+                f"orientation_sweep-{rank:04d}" for rank in range(10))
 CHECKS = ("native_source", "all_participants", "time_join", "full_video_decode",
           "actual_pixels", "physical_completion")
 OBSERVATIONS = ("vehicle_body", "roadway_edge", "lawful_direction",

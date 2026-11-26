@@ -122,6 +122,15 @@ def expand_canonical_plan(proposal):
     spec['variable_assignments']['orientation_request_deg'] = {
         'kind': 'controller', 'value': 0,
         'note': 'Engineering request only; original body angle is measured separately'}
+    spec['variable_assignments']['parallel_deviation_deg'] = {
+        'kind': 'world_setup', 'value': 'pending_original_measurement',
+        'note': 'Original body deviation is measured after source-bound Native capture'}
+    spec['recording_description']['channels'].append({
+        'name': 'parallel_deviation_deg', 'unit': 'deg', 'sampling_rate_hz': 20,
+        'method': 'Original body axis against source-reviewed roadway edge',
+        'time_window': 'entire approach and stationary interval',
+        'reference_frame': 'original CARLA world and frame/time',
+        'uncertainty': 'Legal parallelism remains unresolved'})
     expand_sweeps(result)
     expanded = [case for case in result['cases']
                 if case.get('target_type') == 'judgment_sweep']
@@ -129,6 +138,11 @@ def expand_canonical_plan(proposal):
         raise ValueError('canonical sweep point count differs')
     if {case['sweep_point']['orientation_request_deg'] for case in expanded} != set(ANGLE_REQUESTS):
         raise ValueError('canonical sweep points differ')
+    from parking_pose import SWEEP_REQUESTS
+    for case in expanded:
+        suffix = case['case_id'].split('__')[-1]
+        if SWEEP_REQUESTS[suffix][3] != case['sweep_point']['orientation_request_deg']:
+            raise ValueError('canonical sweep ID and requested pose differ')
     result['source_review_required'] = True
     result['delivery_status'] = 'source_gated_cpu_plan'
     result['physical_realization_claimed'] = False

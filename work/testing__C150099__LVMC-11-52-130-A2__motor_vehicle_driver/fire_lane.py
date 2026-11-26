@@ -37,7 +37,7 @@ CASES = (
             'inside', 'lawful_traffic_conflict', 'conflict_gap', gap)
       for i, gap in enumerate((4.0, 12.0, 8.0))),
     *(Case(f'designation_posting_source_review-{i:04d}', 'park', True, 'public',
-            'inside', 'none', 'posted_offset', offset)
+            'sweep_offset', 'none', 'posted_offset', offset)
       for i, offset in enumerate((-2.0, 2.0, 0.0))),
 )
 

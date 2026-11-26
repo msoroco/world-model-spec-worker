@@ -24,7 +24,7 @@ def main() -> None:
         suffix = case.removeprefix(ROOT.name + '__')
         fixtures = []
         for kind in KINDS:
-            source = REPO / '.runtime-work' / ('c150099-physical-' + suffix + '-' + kind + '-v3')
+            source = REPO / '.runtime-work' / ('c150099-physical-' + suffix + '-' + kind + '-v4')
             result = ROOT / ('cpu-physical-' + suffix + '-' + kind + '.json')
             log = ROOT / ('cpu-physical-' + suffix + '-' + kind + '.log')
             command = [str(REPO / '.venv-cpu/bin/python'), str(ROOT / 'physical_probe.py'),
@@ -45,7 +45,7 @@ def main() -> None:
         life_command = [str(REPO / '.venv-cpu/bin/python'), str(ROOT / 'prove_lifecycle.py'),
                         '--case', case, '--construction',
                         str(ROOT / 'cases' / suffix / 'construction.json'), '--scratch',
-                        str(REPO / '.runtime-work' / ('c150099-lifecycle-' + suffix + '-v2'))]
+                        str(REPO / '.runtime-work' / ('c150099-lifecycle-' + suffix + '-v3'))]
         life_env = dict(env, PYTHONPATH=str(REPO / 'runtime'),
                         SCENARIO_PIPELINE_OUTPUT_ROOT=str(REPO / '.runtime-work' /
                                                           ('c150099-lifecycle-output-' + suffix)))
