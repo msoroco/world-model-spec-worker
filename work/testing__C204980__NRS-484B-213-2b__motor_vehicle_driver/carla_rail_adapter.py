@@ -35,10 +35,14 @@ def pose(carla, values):
 
 
 class CarlaRailAdapter:
-    def __init__(self, client, packet, case_id, output: Path, *, carla_module=None):
+    def __init__(self, client, packet, case_id, output: Path, *, carla_module=None,
+                 graph_root=None, graph_capture_class=None):
         self.client, self.packet, self.case_id = client, packet, case_id
         self.output = Path(output)
         self.carla = carla_module
+        self.graph_root = Path(graph_root) if graph_root is not None else None
+        self.graph_capture_class = graph_capture_class
+        self.graph = None
         self.world = client.get_world()
         self.settings = None
         self.actors, self.sensors, self.encoders = [], [], {}
@@ -132,6 +136,12 @@ class CarlaRailAdapter:
         require(actor is not None, 'reviewed rail ego pose could not spawn')
         self.ego = actor
         self.actors.append(actor)
+        if self.graph_root is not None:
+            if self.graph_capture_class is None:
+                from pipeline_capture import PipelineCapture
+                self.graph_capture_class = PipelineCapture
+            self.graph = self.graph_capture_class(self.client, actor,
+                                                  self.graph_root, self.case_id)
         return actor
 
     def set_rail_route(self, ego, route, station, left_side):
@@ -218,6 +228,8 @@ class CarlaRailAdapter:
         stamp = self.world.get_snapshot().timestamp.elapsed_seconds
         if self.first_time is None:
             self.first_time = stamp
+        if self.graph is not None:
+            self.graph.capture(frame, stamp - self.first_time)
         corners = self._corners()
         v = self.ego.get_velocity()
         speed = math.sqrt(v.x**2 + v.y**2 + v.z**2)
@@ -259,6 +271,11 @@ class CarlaRailAdapter:
 
     def close(self, owned=()):
         errors = []
+        if self.graph is not None:
+            try:
+                self.graph.close()
+            except Exception as error:
+                errors.append(str(error))
         for sensor in reversed(self.sensors):
             try:
                 sensor.stop(); sensor.destroy()

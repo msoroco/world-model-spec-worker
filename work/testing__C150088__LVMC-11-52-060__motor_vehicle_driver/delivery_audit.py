@@ -64,7 +64,14 @@ def audit(attempt, processing, decode_receipt, case_id, *, synthetic_fixture=Fal
     if (owner.get("event") != "owner_released" or owner.get("operator_attested") is not True or
             owner.get("native_exit_sha256") != sha(attempt / "native-exit.json")):
         raise ValueError("owner release missing or stale")
-    result = read(attempt / "result.json")
+    saved = read(processing)
+    saved_result = Path(saved.get("result", ""))
+    if (saved.get("format") != "worker-saved-processing" or saved.get("passed") is not True or
+            saved.get("recorded_only") is not True or saved.get("case_id") != case_id or
+            not saved_result.is_file() or saved.get("result_sha256") != sha(saved_result) or
+            not saved.get("originals_preserved")):
+        raise ValueError("saved-only processing proof absent or changed")
+    result = read(saved_result)
     if (result.get("case_id") != case_id or result.get("physical_checks", {}).get("maneuver", {}).get("status") != "met" or
             result.get("maneuver_completed") is not True):
         raise ValueError("physical parked-assembly completion not confirmed")
@@ -81,6 +88,7 @@ def audit(attempt, processing, decode_receipt, case_id, *, synthetic_fixture=Fal
     if not history or any(len(item) != count for item in (history, cameras, trace)) or (not synthetic_fixture and count != 900):
         raise ValueError("original complete frame inventory missing")
     measurements = []
+    history_sha256 = sha(attempt / ORIGINAL[0])
     for index, (row, camera, point, frame) in enumerate(zip(history, cameras, trace, mapping)):
         native_frame = frame.get("carla_frame")
         if (frame.get("video_frame") != index or row.get("frame") != native_frame or
@@ -90,7 +98,7 @@ def audit(attempt, processing, decode_receipt, case_id, *, synthetic_fixture=Fal
             raise ValueError("original projection, trace and four-camera frame join changed")
         packet = dict(row, load_present=case.controlling_part == "load",
                       trailer_attached=case.controlling_part == "trailer")
-        measurements.append(measure_packet(packet, {"original-projection-history.jsonl": sha(attempt / ORIGINAL[0])}))
+        measurements.append(measure_packet(packet, {"original-projection-history.jsonl": history_sha256}))
     maximum = max(item["maximum_street_projection_m"] for item in measurements)
     vehicle_base = max(next(part["maximum_street_projection_m"] for part in item["parts"]
                             if part["category"] == "vehicle") for item in measurements)
@@ -106,12 +114,6 @@ def audit(attempt, processing, decode_receipt, case_id, *, synthetic_fixture=Fal
         if any(row.get("reviewed_packet_sha256") != sha(packet_path) or
                row.get("loaded_opendrive_sha256") != reviewed["opendrive_sha256"] for row in history):
             raise ValueError("original loaded map or curb review binding differs")
-    saved = read(processing)
-    saved_result = Path(saved.get("result", ""))
-    if (saved.get("format") != "worker-saved-processing" or saved.get("passed") is not True or
-            saved.get("recorded_only") is not True or saved.get("case_id") != case_id or
-            saved.get("result_sha256") != sha(saved_result) or not saved.get("originals_preserved")):
-        raise ValueError("saved-only processing proof absent or changed")
     video = Path(saved.get("analysis_directory", "")) / "raw.mkv"
     if media_verify is None:
         from worker_exchange.media import verify_receipt
@@ -144,7 +146,7 @@ def audit(attempt, processing, decode_receipt, case_id, *, synthetic_fixture=Fal
                 sort_keys=True).encode()).hexdigest(),
             "camera_contract_sha256": hashlib.sha256(json.dumps(config["cameras"], sort_keys=True).encode()).hexdigest(),
             "duration_s": config["duration_s"], "candidate_id": config["candidate_id"],
-            "native_result_sha256": sha(attempt / "result.json"), "frame_count": count,
+            "native_result_sha256": sha(saved_result), "frame_count": count,
             "frame_map_sha256": sha(attempt / ORIGINAL[3]), "video_sha256": sha(video),
             "source_decode_receipt_sha256": sha(decode_receipt),
             "maximum_perpendicular_projection_m": maximum,

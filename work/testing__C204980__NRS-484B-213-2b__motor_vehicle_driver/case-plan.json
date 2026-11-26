@@ -167,20 +167,38 @@
         "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_99ft",
         "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__one_way_left_99ft"
       ],
-      "fixed_conditions": "same qualifying grade crossing, centerline, vehicle, route, camera/duration and body reference",
+      "fixed_conditions": "same reviewed crossing geometry, body reference, target 99-foot distance, left-side request, camera/duration; highway direction is deliberately varied",
       "deliberate_differences": [
         "one-way highway status"
       ]
     }
   ],
   "observations": [
-    "highway and one-way status from original source",
-    "ordinary vehicle and actual driver control",
-    "stationary-rail carrier of persons or property other than streetcar",
-    "at-grade highway crossing and near/far physical extent",
-    "original centerline and body lateral extent",
-    "original leading/trailing body stations across approach and traversal",
-    "statutory 100 feet retained; chosen leading-body/edge measurement marked engineering assumption"
+    {
+      "name": "rail_qualification",
+      "mandatory": true,
+      "source": "original Native rail site, body, map and camera joins"
+    },
+    {
+      "name": "highway_direction",
+      "mandatory": true,
+      "source": "original Native rail site, body, map and camera joins"
+    },
+    {
+      "name": "crossing_extent",
+      "mandatory": true,
+      "source": "original Native rail site, body, map and camera joins"
+    },
+    {
+      "name": "ego_body_side_and_station",
+      "mandatory": true,
+      "source": "original Native rail site, body, map and camera joins"
+    },
+    {
+      "name": "original_frame_and_camera_join",
+      "mandatory": true,
+      "source": "original Native rail site, body, map and camera joins"
+    }
   ],
   "sources": [
     {
@@ -206,9 +224,11 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "The rail-crossing cell does not alone establish a stationary-rail carrier, grade crossing or highway legal status.",
-    "Diagnostic 101/100/99-foot targets are synthetic and do not prove original physical placement.",
-    "Canonical capture/offline/compatibility, semantic and saved delivery/comparison audits remain CPU work."
+    "The local reviewed source packet must establish a stationary-rail carrier other than a streetcar, an at-grade crossing, highway status, live map and centerline before Native mutation.",
+    "Original leading-body to reviewed near-edge station is an engineering reference; 100 feet remains statutory, and exact boundary interpretation remains legal review.",
+    "The 0.25-foot source-sample engineering tolerance tests whether a target was reached; it is not a legal threshold.",
+    "Actual CARLA motion, rail crossing geometry and four-view visibility require local original capture and independent review.",
+    "Offline, positive/negative compatibility, semantic, saved delivery and comparison audit receipts remain worker-owned CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -225,7 +245,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_exact_rail_approach_cpu_probes",
+  "planning_status": "exact_cases_and_source_gated_native_capture_implemented_cpu_proofs_pending",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -246,5 +266,104 @@
       ],
       "reason": "The fixed rail crossing supports the railroad branch if it is a railroad grade crossing rather than a streetcar or grade-separated crossing."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "Vehicle driven to the left side of the highway",
+      "source": "NRS 484B.213(2)(b) and subsection (3), exact exported text in inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_101ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_100ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__right_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_traversal",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__one_way_left_99ft"
+      ],
+      "evidence_or_gap": "Original full-body lateral extent relative to reviewed centerline; no accepted recording in frozen inventory"
+    },
+    {
+      "requirement": "Approaching within 100 feet of railroad grade crossing",
+      "source": "NRS 484B.213(2)(b) and subsection (3), exact exported text in inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_101ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_100ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__right_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_traversal",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__one_way_left_99ft"
+      ],
+      "evidence_or_gap": "Original leading-body distance from reviewed near crossing edge; reference choice is engineering assumption; no accepted recording in frozen inventory"
+    },
+    {
+      "requirement": "Traversing railroad grade crossing",
+      "source": "NRS 484B.213(2)(b) and subsection (3), exact exported text in inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_101ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_100ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__right_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_traversal",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__one_way_left_99ft"
+      ],
+      "evidence_or_gap": "Original leading/trailing body overlap with reviewed near/far crossing extent; no accepted recording in frozen inventory"
+    },
+    {
+      "requirement": "Railroad grade crossing qualification",
+      "source": "NRS 484B.213(2)(b) and subsection (3), exact exported text in inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_101ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_100ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__right_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_traversal",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__one_way_left_99ft"
+      ],
+      "evidence_or_gap": "Original stationary-rail carrier of persons/property other than streetcar, and at-grade highway crossing; no accepted recording in frozen inventory"
+    },
+    {
+      "requirement": "Subsection 2 does not apply upon one-way highway",
+      "source": "NRS 484B.213(2)(b) and subsection (3), exact exported text in inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_101ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_100ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__right_99ft",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_traversal",
+        "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__one_way_left_99ft"
+      ],
+      "evidence_or_gap": "Original source-reviewed one-way designation and live map binding; no accepted recording in frozen inventory"
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego, reviewed railroad grade crossing and full approach/traversal",
+        "interval": "all 900 original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "ego body and 101/100/99-foot near-edge probes",
+        "interval": "all 900 original frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "reviewed centerline and near/far crossing boundaries",
+        "interval": "all 900 original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego driver reference and rail crossing geometry",
+        "interval": "all 900 original frames"
+      }
+    ]
+  }
 }

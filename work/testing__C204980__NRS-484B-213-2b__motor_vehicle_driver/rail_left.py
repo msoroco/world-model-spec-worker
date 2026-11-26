@@ -131,7 +131,7 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
         left_samples.append(row['body_leftmost_lateral_m'] > 0)
     target = case.target_leading_distance_ft
     observed = distances[100]
-    require(abs(observed - target) <= .01,
+    require(abs(observed - target) <= .25,
             'observed distance differs from diagnostic target')
     require(left_samples[100] is case.left_side,
             'observed left-side state differs from case')

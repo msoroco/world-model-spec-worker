@@ -1,6 +1,9 @@
 import importlib.util
+import hashlib
+import json
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 
@@ -9,6 +12,8 @@ spec = importlib.util.spec_from_file_location('pavement_protection', path)
 probe = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = probe
 spec.loader.exec_module(probe)
+sys.path.insert(0, str(path.parent))
+import runner
 
 
 def scene(case):
@@ -19,6 +24,7 @@ def scene(case):
              protection=case.protection, route_kind=case.route,
              employee_engaged=case.employee_engaged,
              employee_pavement_id='p1', work_kind='paving', work_active=True,
+             protection_placed_time_s=-1,
              barrier_rect_m=[-1, 0, 0, 4], warning_person_id='w1',
              barrier_perimeter_rects_m=[[-1, -1, 0, 5], [10, -1, 11, 5],
                                         [0, -1, 10, 0], [0, 4, 10, 5]],
@@ -43,12 +49,9 @@ def rows(case, s):
         row = dict(original_frame=100+i, time_s=i/20,
                    vehicle_id='ego', vehicle_position_xy=[x, y],
                    protection=case.protection,
-                   employee_engaged=case.employee_engaged)
-        for field in ('frame', 'vehicle_motion', 'pavement_condition',
-                      'pavement_extent', 'protection_geometry',
-                      'protection_placement_time', 'employment', 'work_activity'):
-            row[field + '_source_sha256'] = 'a' * 64
-        row['pavement_extent_source_sha256'] = s['pavement_extent_source_sha256']
+                   employee_engaged=case.employee_engaged,
+                   protection_present=True, warning_actor_ids=['w1'],
+                   work_active=True, employee_pavement_id='p1')
         output.append(row)
     return output
 
@@ -82,10 +85,10 @@ class PavementTests(unittest.TestCase):
     def test_missing_source_and_crossing_rejected(self):
         case = probe.CASES[0]
         s = scene(case)
-        data = rows(case, s)
-        del data[2]['protection_geometry_source_sha256']
-        with self.assertRaisesRegex(ValueError, 'source missing'):
-            probe.measure_original(data, s, case)
+        invalid = dict(s)
+        del invalid['protection_geometry_source_sha256']
+        with self.assertRaisesRegex(ValueError, 'original context missing'):
+            probe.measure_original(rows(case, s), invalid, case)
         data = rows(case, s)
         for row in data:
             row['vehicle_position_xy'] = [-5, 6]
@@ -100,6 +103,42 @@ class PavementTests(unittest.TestCase):
             probe.validate_scene(s, case)
         with self.assertRaisesRegex(ValueError, 'vehicle spawn failed'):
             probe.construct(Adapter(fail=True), scene(case), case)
+
+    def test_reviewed_native_site_source_hashes_and_identity(self):
+        scratch = path.parents[2] / '.runtime-work'
+        scratch.mkdir(exist_ok=True)
+        for case in (probe.CASES[0], probe.CASES[1], probe.CASES[-1]):
+            with self.subTest(case=case.name), tempfile.TemporaryDirectory(dir=scratch) as temporary:
+                folder = Path(temporary)
+                s = scene(case)
+                refs = []
+                for role in ('map', 'jurisdiction', 'driver', 'vehicle',
+                             'pavement_condition', 'pavement_extent',
+                             'protection_geometry', 'protection_placement_time',
+                             'vehicle_route', 'employment', 'work_activity'):
+                    name = role + '.txt'
+                    value = 'reviewed source for ' + role
+                    (folder / name).write_text(value)
+                    checksum = hashlib.sha256(value.encode()).hexdigest()
+                    refs.append({'role': role, 'path': name, 'sha256': checksum})
+                    if role != 'map':
+                        s[role + '_source_sha256'] = checksum
+                ident = runner.AID + '__' + case.name
+                site = {'source_kind': 'reviewed_original_native_site',
+                        'assignment_id': runner.AID, 'case_id': ident,
+                        'cell_id': 'C230211', 'map_name': 'reviewed-map',
+                        'map_sha256': refs[0]['sha256'], 'duration_frames': 900,
+                        'rate_hz': 20, 'cameras': list(runner.CAMERA_NAMES),
+                        'source_refs': refs, 'scene': s}
+                site_path = folder / 'site.json'
+                site_path.write_text(json.dumps(site))
+                actual, parsed, exact = runner.reviewed_site(site_path, ident)
+                self.assertEqual(exact, case)
+                self.assertEqual(parsed, s)
+                self.assertEqual(len(actual['reviewed_site_sha256']), 64)
+                (folder / 'vehicle_route.txt').write_text('altered')
+                with self.assertRaisesRegex(ValueError, 'source hash changed'):
+                    runner.reviewed_site(site_path, ident)
 
 
 if __name__ == '__main__':

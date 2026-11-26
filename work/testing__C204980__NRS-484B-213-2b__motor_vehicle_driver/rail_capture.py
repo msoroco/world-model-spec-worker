@@ -86,6 +86,7 @@ def capture(adapter, packet_path: Path, source_root: Path, output: Path,
         hashes = {name: hashlib.sha256((output / name).read_bytes()).hexdigest()
                   for name in source_files}
         _write_new(output / 'source-hashes.json', hashes)
+        _write_new(output / 'original-hashes.json', hashes)
         return {'case_id': case_id, 'frame_count': 900, 'source_sha256': hashes,
                 'diagnostic_probe': observation,
                 'physical_acceptance_claimed': False}

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from carla_rail_adapter import CarlaRailAdapter
+from canonical_bridge import bridge
 from rail_capture import capture
 
 ASSIGNMENT = 'testing__C204980__NRS-484B-213-2b__motor_vehicle_driver'
@@ -21,11 +22,14 @@ def run(client, packet_path, source_root, output, case_id, *, carla_module=None)
     original = output / 'original'
     original.mkdir()
     adapter = CarlaRailAdapter(client, packet, case_id, original,
-                               carla_module=carla_module)
+                               carla_module=carla_module, graph_root=output)
     result = capture(adapter, packet_path, source_root, original, case_id)
     release = adapter.release_receipt()
     (output / 'owner-release.json').write_text(json.dumps(release, sort_keys=True) + '\n')
+    published = bridge(output, original, assignment_id=ASSIGNMENT,
+                       case_id=case_id, release=release)
     return {'original_capture': result, 'owner_release': release,
+            'canonical_publication': published,
             'physical_acceptance_claimed': False}
 
 

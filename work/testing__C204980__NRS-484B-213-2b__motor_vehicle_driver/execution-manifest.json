@@ -1,0 +1,463 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_101ft",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "3dd45841042ce73c58382c2582c0885ab3af779f3e339c1df057d14cd71bf0bb",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/diagnostics/left_101ft/recipe.json",
+      "acquisition": {
+        "rail_qualification": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "highway_direction": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "crossing_extent": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "ego_body_side_and_station": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "original_frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original rail qualification, near crossing edge and camera view may fail at this reviewed anchor; source-selected route tuning is required if original physical target/pixels fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/left_101ft/construction.json",
+          "construction_sha256": "225725119259f65ab705cb14d04a82e0ac15a1c34613637f84b1d689e832f993",
+          "trigger": {
+            "source": "original rail-frames.jsonl and four-view pixels",
+            "metric": "body station/side, crossing overlap and actual-pixel visibility",
+            "failure_condition": "primary reviewed packet fails the exact requested body/crossing target or visible crossing evidence"
+          },
+          "changed_knobs": [
+            "source-reviewed alternate Native spawn/target-speed/camera packet path applied consistently across linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_101ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-left_101ft-fallback1-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "225725119259f65ab705cb14d04a82e0ac15a1c34613637f84b1d689e832f993",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_101ft.log",
+            "log_sha256": "9674a94ef417cc170181954f7de0bd9b4bbee8c47df74bd82813376b444ceb16"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_101ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-left_101ft-primary-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "3dd45841042ce73c58382c2582c0885ab3af779f3e339c1df057d14cd71bf0bb",
+        "exit_code": 0,
+        "log": "proof-offline-primary-left_101ft.log",
+        "log_sha256": "e2c585721a2f1111e5bc6014e8626708b836ca3f9a7f5a90e391913088d6e336"
+      }
+    },
+    {
+      "case_id": "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_100ft",
+      "kind": "delivery",
+      "construction": "cases/left_100ft/construction.json",
+      "construction_sha256": "dacd2c725604905afb7d33f6b41c2231eac9a6d4c7d4eaef8b918ed5673f3464",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/diagnostics/left_100ft/recipe.json",
+      "acquisition": {
+        "rail_qualification": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "highway_direction": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "crossing_extent": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "ego_body_side_and_station": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "original_frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original rail qualification, near crossing edge and camera view may fail at this reviewed anchor; source-selected route tuning is required if original physical target/pixels fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/left_100ft/construction.json",
+          "construction_sha256": "0f4e5fb4cd088e053c4ececa18eb4a525cd6891f8ae6d78fc5d7bfeafcaec2cd",
+          "trigger": {
+            "source": "original rail-frames.jsonl and four-view pixels",
+            "metric": "body station/side, crossing overlap and actual-pixel visibility",
+            "failure_condition": "primary reviewed packet fails the exact requested body/crossing target or visible crossing evidence"
+          },
+          "changed_knobs": [
+            "source-reviewed alternate Native spawn/target-speed/camera packet path applied consistently across linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_100ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-left_100ft-fallback1-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "0f4e5fb4cd088e053c4ececa18eb4a525cd6891f8ae6d78fc5d7bfeafcaec2cd",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_100ft.log",
+            "log_sha256": "5b62861988f2a38196a8144da4ad58a03f83bdf59202afdf2009d1cee91dcec4"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_100ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-left_100ft-primary-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "dacd2c725604905afb7d33f6b41c2231eac9a6d4c7d4eaef8b918ed5673f3464",
+        "exit_code": 0,
+        "log": "proof-offline-primary-left_100ft.log",
+        "log_sha256": "daffca1039de2837eaa0785d2454d3092ac24128861abf43c62dfde5b7f9ce2b"
+      }
+    },
+    {
+      "case_id": "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_99ft",
+      "kind": "delivery",
+      "construction": "cases/left_99ft/construction.json",
+      "construction_sha256": "97a6ff7180fcbc9c70278d1333e588aaabac9a16afa0e35f218e0aef7be5a7f2",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/diagnostics/left_99ft/recipe.json",
+      "acquisition": {
+        "rail_qualification": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "highway_direction": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "crossing_extent": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "ego_body_side_and_station": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "original_frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original rail qualification, near crossing edge and camera view may fail at this reviewed anchor; source-selected route tuning is required if original physical target/pixels fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/left_99ft/construction.json",
+          "construction_sha256": "6e24e3c45eec5898e453f346d8506a449e01b6d4bf4bce1f17da938b3804d016",
+          "trigger": {
+            "source": "original rail-frames.jsonl and four-view pixels",
+            "metric": "body station/side, crossing overlap and actual-pixel visibility",
+            "failure_condition": "primary reviewed packet fails the exact requested body/crossing target or visible crossing evidence"
+          },
+          "changed_knobs": [
+            "source-reviewed alternate Native spawn/target-speed/camera packet path applied consistently across linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_99ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-left_99ft-fallback1-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "6e24e3c45eec5898e453f346d8506a449e01b6d4bf4bce1f17da938b3804d016",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_99ft.log",
+            "log_sha256": "c73a3b1dae04f551d240b9a316d243bb5ec6174c3329376e703a14730bc6e9e2"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_99ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-left_99ft-primary-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "97a6ff7180fcbc9c70278d1333e588aaabac9a16afa0e35f218e0aef7be5a7f2",
+        "exit_code": 0,
+        "log": "proof-offline-primary-left_99ft.log",
+        "log_sha256": "416fc9d81be3be3c26c4c560f61341d89fe5e197d58dea7a497ae4b944c43d4b"
+      }
+    },
+    {
+      "case_id": "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__right_99ft",
+      "kind": "delivery",
+      "construction": "cases/right_99ft/construction.json",
+      "construction_sha256": "a1a49e3e00a8463cf109fe1220acd7c46ff56fd9d214ac051550a67d3bd572a3",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/diagnostics/right_99ft/recipe.json",
+      "acquisition": {
+        "rail_qualification": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "highway_direction": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "crossing_extent": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "ego_body_side_and_station": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "original_frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original rail qualification, near crossing edge and camera view may fail at this reviewed anchor; source-selected route tuning is required if original physical target/pixels fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/right_99ft/construction.json",
+          "construction_sha256": "30c7e6cc7d24e3bb58f81ceb71372bbd06ffc9dc5f48d8d836f68083bb879388",
+          "trigger": {
+            "source": "original rail-frames.jsonl and four-view pixels",
+            "metric": "body station/side, crossing overlap and actual-pixel visibility",
+            "failure_condition": "primary reviewed packet fails the exact requested body/crossing target or visible crossing evidence"
+          },
+          "changed_knobs": [
+            "source-reviewed alternate Native spawn/target-speed/camera packet path applied consistently across linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__right_99ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-right_99ft-fallback1-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "30c7e6cc7d24e3bb58f81ceb71372bbd06ffc9dc5f48d8d836f68083bb879388",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-right_99ft.log",
+            "log_sha256": "26257ae55972bbce34f1042db08f353ec37320b42e6cc64f07d75f8958d5bf45"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__right_99ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-right_99ft-primary-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "a1a49e3e00a8463cf109fe1220acd7c46ff56fd9d214ac051550a67d3bd572a3",
+        "exit_code": 0,
+        "log": "proof-offline-primary-right_99ft.log",
+        "log_sha256": "a63a87ddbf4c19f7b43bafcc1874e854e56809e053cce74492601ffa2c39bb05"
+      }
+    },
+    {
+      "case_id": "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_traversal",
+      "kind": "delivery",
+      "construction": "cases/left_traversal/construction.json",
+      "construction_sha256": "d5d3dea3e7cb49425da060d0555b22bc092c100c7f8b57860c883454ac479f0c",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/diagnostics/left_traversal/recipe.json",
+      "acquisition": {
+        "rail_qualification": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "highway_direction": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "crossing_extent": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "ego_body_side_and_station": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "original_frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original rail qualification, near crossing edge and camera view may fail at this reviewed anchor; source-selected route tuning is required if original physical target/pixels fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/left_traversal/construction.json",
+          "construction_sha256": "b1a531c6705bff6265fc74f436f846ccdf9cbecf982856fd62b3e851986137ee",
+          "trigger": {
+            "source": "original rail-frames.jsonl and four-view pixels",
+            "metric": "body station/side, crossing overlap and actual-pixel visibility",
+            "failure_condition": "primary reviewed packet fails the exact requested body/crossing target or visible crossing evidence"
+          },
+          "changed_knobs": [
+            "source-reviewed alternate Native spawn/target-speed/camera packet path applied consistently across linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_traversal --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-left_traversal-fallback1-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "b1a531c6705bff6265fc74f436f846ccdf9cbecf982856fd62b3e851986137ee",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_traversal.log",
+            "log_sha256": "7e66209a7706c8a13afade003ad84938e4c7d5e95d445f4d7970257249f094f0"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__left_traversal --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-left_traversal-primary-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "d5d3dea3e7cb49425da060d0555b22bc092c100c7f8b57860c883454ac479f0c",
+        "exit_code": 0,
+        "log": "proof-offline-primary-left_traversal.log",
+        "log_sha256": "b05369c3bae782c7f101227f291b3e93730e6a1d858181c9b5a6a4dc0ba115d4"
+      }
+    },
+    {
+      "case_id": "testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__one_way_left_99ft",
+      "kind": "delivery",
+      "construction": "cases/one_way_left_99ft/construction.json",
+      "construction_sha256": "9658d3a30aedaa6def243c7240e422e523d5b728290de78a3fb5869f2f269fdf",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "fixture_recipe": "work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/diagnostics/one_way_left_99ft/recipe.json",
+      "acquisition": {
+        "rail_qualification": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "highway_direction": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "crossing_extent": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "ego_body_side_and_station": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        },
+        "original_frame_and_camera_join": {
+          "entrypoint": "analysis.py",
+          "method": "analyze",
+          "evidence": "source-hashed original reviewed site, body, graph and four-view camera frame join"
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original rail qualification, near crossing edge and camera view may fail at this reviewed anchor; source-selected route tuning is required if original physical target/pixels fail."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/one_way_left_99ft/construction.json",
+          "construction_sha256": "1c5a9de7c92b80002d1ce2822914d00d07cc300c394728cd03de1aa5024ffce2",
+          "trigger": {
+            "source": "original rail-frames.jsonl and four-view pixels",
+            "metric": "body station/side, crossing overlap and actual-pixel visibility",
+            "failure_condition": "primary reviewed packet fails the exact requested body/crossing target or visible crossing evidence"
+          },
+          "changed_knobs": [
+            "source-reviewed alternate Native spawn/target-speed/camera packet path applied consistently across linked cases"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__one_way_left_99ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-one_way_left_99ft-fallback1-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "construction_sha256": "1c5a9de7c92b80002d1ce2822914d00d07cc300c394728cd03de1aa5024ffce2",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-one_way_left_99ft.log",
+            "log_sha256": "05d5bf3f94ded0e3fb50b97907df6f77a3016a80498439b901c21c99479e60d2"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C204980__NRS-484B-213-2b__motor_vehicle_driver/execution-manifest.json --case testing__C204980__NRS-484B-213-2b__motor_vehicle_driver__one_way_left_99ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c204980-owner-nov26/offline-one_way_left_99ft-primary-20261126-v2 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "9658d3a30aedaa6def243c7240e422e523d5b728290de78a3fb5869f2f269fdf",
+        "exit_code": 0,
+        "log": "proof-offline-primary-one_way_left_99ft.log",
+        "log_sha256": "40901059297d478b4dd7cfd6c57dfea020b9bb2171c3c76d9099af9618926806"
+      }
+    }
+  ]
+}

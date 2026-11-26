@@ -1,0 +1,76 @@
+{
+  "template_id": "NRS-484B-213-2b@motor_vehicle_driver",
+  "law_id": "NRS-484B-213-2b",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A vehicle must not be driven to the left side of the highway at any time: When approaching within 100 feet or traversing any intersection or railroad grade crossing. Subsection 2 does not apply upon a one-way highway.",
+  "structure": {
+    "law_id": "NRS-484B-213-2b",
+    "activation": {
+      "condition": "A vehicle approaches within 100 feet of or traverses a railroad grade crossing on a highway.",
+      "numeric_conditions": [
+        {
+          "variable": "distance to crossing",
+          "operator": "within",
+          "value": 100,
+          "unit": "feet"
+        }
+      ]
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Vehicle must not be driven to the left side of the highway during the stated condition.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Reviewed one-way highway designation",
+        "effect": "Subsection 2 does not apply",
+        "replacement_obligation": "No subsection 2 left-side prohibition inferred",
+        "source_clause": "Subsection 2 does not apply upon a one-way highway."
+      }
+    ],
+    "timing": {
+      "description": "Join original body-side, crossing extent, highway direction and camera frames over approach and traversal.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "left side of the highway",
+        "note": "Use original body corners and reviewed centerline without an invented legal lateral cutoff."
+      },
+      {
+        "phrase": "railroad grade crossing",
+        "note": "Require source-reviewed stationary rail carrier other than streetcar and actual highway crossing at grade."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_ego_side",
+      "kind": "controller",
+      "range_or_domain": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "name": "requested_probe_station_ft",
+      "kind": "controller",
+      "range_or_domain": [
+        -5,
+        99,
+        100,
+        101
+      ]
+    },
+    {
+      "name": "source_road_direction",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "two_way",
+        "one_way"
+      ]
+    }
+  ]
+}

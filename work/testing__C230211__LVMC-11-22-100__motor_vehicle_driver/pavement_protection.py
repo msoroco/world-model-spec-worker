@@ -66,6 +66,8 @@ def validate_scene(scene: Mapping, case: Case):
                   'employment', 'work_activity'):
         require(scene.get(field + '_source_sha256'),
                 'original context missing: ' + field)
+    require(number(scene.get('protection_placed_time_s')),
+            'physical protection placement time missing')
     if case.employee_engaged:
         require(scene.get('employee_pavement_id') == scene.get('pavement_id') and
                 scene.get('work_kind') in ('paving', 'repair') and
@@ -139,6 +141,8 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
     first = rows[0].get('original_frame')
     require(type(first) is int and number(rows[0].get('time_s')),
             'original frame/time identity missing')
+    require(scene['protection_placed_time_s'] <= rows[0]['time_s'],
+            'protection was placed after vehicle approach')
     vehicle_id = None
     visited = []
     for i, row in enumerate(rows):
@@ -146,17 +150,18 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
                 number(row.get('time_s')) and
                 abs(row['time_s'] - rows[0]['time_s'] - i / 20) <= .005,
                 'original frame/time join invalid')
-        for field in ('frame', 'vehicle_motion', 'pavement_condition',
-                      'pavement_extent', 'protection_geometry',
-                      'protection_placement_time', 'employment', 'work_activity'):
-            require(row.get(field + '_source_sha256'),
-                    'original measurement source missing: ' + field)
-        require(row.get('pavement_extent_source_sha256') ==
-                scene['pavement_extent_source_sha256'] and
-                row.get('protection') == case.protection and
+        require(row.get('protection') == case.protection and
                 row.get('employee_engaged') is case.employee_engaged,
                 'original pavement/protection context changed')
         require(row.get('vehicle_id'), 'vehicle identity missing')
+        require(row.get('protection_present') is True and
+                isinstance(row.get('warning_actor_ids'), list) and
+                row['warning_actor_ids'],
+                'physical warning not present during original passage')
+        if case.employee_engaged:
+            require(row.get('work_active') is True and
+                    row.get('employee_pavement_id') == scene['pavement_id'],
+                    'same-pavement employee work not active during passage')
         vehicle_id = vehicle_id or row['vehicle_id']
         require(vehicle_id == row['vehicle_id'], 'vehicle identity changed')
         visited.append(inside(row.get('vehicle_position_xy'),
