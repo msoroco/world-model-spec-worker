@@ -1,0 +1,358 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_prepared_pending_original_access_device_and_physical_review",
+  "cases": [
+    {
+      "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "construction": "draft-exact/witness_1/primary/construction.json",
+      "construction_sha256": "fe53551def287204a3f349a451f1e278aa9abf8ff5a523e40146a9c25945ee64",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original motor-vehicle steering can oscillate while crossing frontage, ramp and highway pavement, missing the requested edge-crossing point."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/witness_1/fallback1/construction.json",
+          "construction_sha256": "534fddaa013d54e20d2d27d3406591125f919ccbd340acd8f85fec282d1fdfe6",
+          "trigger": {
+            "source": "original actor-poses.jsonl, trace.jsonl and result.json",
+            "metric": "lateral tracking and measured highway-edge crossing x",
+            "failure_condition": "oscillation, off-pavement body motion, or measured crossing misses the selected target after source completeness review"
+          },
+          "changed_knobs": [
+            "common steering gain 0.10 to 0.07 across the pair; same map, sign, route target, cameras, duration and comparison variable"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "534fddaa013d54e20d2d27d3406591125f919ccbd340acd8f85fec282d1fdfe6",
+            "command": "runtime.py offline --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1 --candidate fallback1",
+            "log": "proofs/witness_1/fallback1-offline.log",
+            "log_sha256": "d8057ded436d7d2e2876111407a1439971cebba33144db5bfbc8e0ecdd209207"
+          },
+          "compatibility": {
+            "receipt": "proofs/witness_1/fallback1-compatibility.json",
+            "sha256": "fac2b90d054b9d9fdf604921b55798433967dfd2f00777685a3da023ee7b0103",
+            "log": "proofs/witness_1/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/witness_1/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/witness_1/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/diagnostic-witness_1-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "fe53551def287204a3f349a451f1e278aa9abf8ff5a523e40146a9c25945ee64",
+        "command": "runtime.py offline --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1 --candidate primary",
+        "log": "proofs/witness_1/primary-offline.log",
+        "log_sha256": "d8057ded436d7d2e2876111407a1439971cebba33144db5bfbc8e0ecdd209207"
+      },
+      "compatibility": {
+        "receipt": "proofs/witness_1/primary-compatibility.json",
+        "sha256": "51b250e15559045de94a56aa56fa0b062dcfd013c22a004e0b1102d22dcc5ea0",
+        "log": "proofs/witness_1/primary-compatibility-analysis.log",
+        "negative_log": "proofs/witness_1/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/witness_1/primary-negative-analysis.log",
+        "log_sha256": "409ff76e1d251326a876ca4ca500703aae1e1929bf55cdd62daaf84fffbabc94"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/witness_1/physical-preparation.json",
+        "sha256": "0814c5bb1015ada14d99c6ee4989fd89bab4afd7b1f75ccd8fa2ffb730c96e05"
+      },
+      "acquisition": {
+        "st.controlled_access": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "road.xodr",
+            "access-inventory.json",
+            "access-review.json",
+            "access-authority.txt",
+            "highway-dedication.txt",
+            "public-use.txt",
+            "jurisdiction.txt"
+          ]
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "device-review.json",
+            "device-authority.txt",
+            "device-content.txt",
+            "device-erection.txt",
+            "overview.mkv"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "device-review.json",
+            "entrance-extent.txt",
+            "road.xodr"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "actor-poses.jsonl",
+            "video_frames.jsonl",
+            "road.xodr"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "actor-poses.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.lane_connectivity": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "road.xodr",
+            "access-inventory.json",
+            "access-review.json",
+            "access-authority.txt"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "actor-poses.jsonl",
+            "video_frames.jsonl",
+            "overview.mkv"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.json --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+        "test_log": "proofs/witness_1/saved.log",
+        "test_log_sha256": "880c66e5a80d1600286e5b8fe250c6a40d76f338b8eeb9e441ae92f4615cefac",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_access_and_device_authority_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "16ef811a6b80700a1fd4fff9f806b94b9abcf59e3f6c3b846cac6ffc22297d49",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v11-compat-witness_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-saved-witness_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-delivery-witness_1-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/witness_1/delivery-positive.log",
+        "test_log_sha256": "708ab0f4abe6438ac9fa24d95054d5c9f4961eaba75522a35263788095394e6e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v11-compat-witness_1-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-saved-witness_1/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-delivery-witness_1-positive.json --diagnostic --omit-source device-authority.txt",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: device-authority.txt",
+        "negative_log": "proofs/witness_1/delivery-negative.log",
+        "negative_log_sha256": "cdad8c338e2336d2a9d3dd5e397ee2155190e81250342fae7d9378489ceeb5ac"
+      }
+    },
+    {
+      "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "construction": "draft-exact/witness_2/primary/construction.json",
+      "construction_sha256": "67d431b250f7bba2721ca89dae234f2ed1d4543dd31beac36da74d820f59c3e0",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original motor-vehicle steering can oscillate while crossing frontage, ramp and highway pavement, missing the requested edge-crossing point."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/witness_2/fallback1/construction.json",
+          "construction_sha256": "cb0a386dfffee8329e28d34b9f9c1745c77721d51772bd851f22a81341021bfb",
+          "trigger": {
+            "source": "original actor-poses.jsonl, trace.jsonl and result.json",
+            "metric": "lateral tracking and measured highway-edge crossing x",
+            "failure_condition": "oscillation, off-pavement body motion, or measured crossing misses the selected target after source completeness review"
+          },
+          "changed_knobs": [
+            "common steering gain 0.10 to 0.07 across the pair; same map, sign, route target, cameras, duration and comparison variable"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "cb0a386dfffee8329e28d34b9f9c1745c77721d51772bd851f22a81341021bfb",
+            "command": "runtime.py offline --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2 --candidate fallback1",
+            "log": "proofs/witness_2/fallback1-offline.log",
+            "log_sha256": "d8057ded436d7d2e2876111407a1439971cebba33144db5bfbc8e0ecdd209207"
+          },
+          "compatibility": {
+            "receipt": "proofs/witness_2/fallback1-compatibility.json",
+            "sha256": "9e6e6349fe7ee7a28f4a1c37a9b0c5508db4d8c0852e33c58ade5c7f5c37673a",
+            "log": "proofs/witness_2/fallback1-compatibility-analysis.log",
+            "negative_log": "proofs/witness_2/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "measurement_contract": "draft-exact/witness_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/diagnostic-witness_2-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "preparation_status": "selected_cpu_preparation",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "67d431b250f7bba2721ca89dae234f2ed1d4543dd31beac36da74d820f59c3e0",
+        "command": "runtime.py offline --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2 --candidate primary",
+        "log": "proofs/witness_2/primary-offline.log",
+        "log_sha256": "d8057ded436d7d2e2876111407a1439971cebba33144db5bfbc8e0ecdd209207"
+      },
+      "compatibility": {
+        "receipt": "proofs/witness_2/primary-compatibility.json",
+        "sha256": "a2790ce886f927a94579ed6461a116879707d2b69e29598e01dc2059f6681761",
+        "log": "proofs/witness_2/primary-compatibility-analysis.log",
+        "negative_log": "proofs/witness_2/primary-negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/witness_2/primary-negative-analysis.log",
+        "log_sha256": "17e1b11bbf96645dc3212c22e0244f5b08f60d2e06717c4eb4baefe6d263b4d4"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/witness_2/physical-preparation.json",
+        "sha256": "a799f7438c110bc1dec3d948580b8ccb5b1bfc8a8b55a867c2260202983e5448"
+      },
+      "acquisition": {
+        "st.controlled_access": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "road.xodr",
+            "access-inventory.json",
+            "access-review.json",
+            "access-authority.txt",
+            "highway-dedication.txt",
+            "public-use.txt",
+            "jurisdiction.txt"
+          ]
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "device-review.json",
+            "device-authority.txt",
+            "device-content.txt",
+            "device-erection.txt",
+            "overview.mkv"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "device-review.json",
+            "entrance-extent.txt",
+            "road.xodr"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "actor-poses.jsonl",
+            "video_frames.jsonl",
+            "road.xodr"
+          ]
+        },
+        "kin.path_length": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "actor-poses.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.lane_connectivity": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "road.xodr",
+            "access-inventory.json",
+            "access-review.json",
+            "access-authority.txt"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "finalize.py",
+          "method": "original Native road/body/frame/pixel join and separately reviewed access and device authority",
+          "evidence": [
+            "actor-poses.jsonl",
+            "video_frames.jsonl",
+            "overview.mkv"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/execution-manifest.json --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2",
+        "test_log": "proofs/witness_2/saved.log",
+        "test_log_sha256": "99091a935c2cf84d29471a8d8009d1c49f54e207c6553360e4e935e67d897bf9",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "separate_access_and_device_authority_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "16ef811a6b80700a1fd4fff9f806b94b9abcf59e3f6c3b846cac6ffc22297d49",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v11-compat-witness_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-saved-witness_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-delivery-witness_2-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "proofs/witness_2/delivery-positive.log",
+        "test_log_sha256": "4d376c9fa6aed20f2986b1718ae660a001fae849115aff00fecd7614953f48ae",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/delivery_audit.py --case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2 --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v11-compat-witness_2-primary --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-saved-witness_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-delivery-witness_2-positive.json --diagnostic --omit-source device-authority.txt",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: device-authority.txt",
+        "negative_log": "proofs/witness_2/delivery-negative.log",
+        "negative_log_sha256": "cdad8c338e2336d2a9d3dd5e397ee2155190e81250342fae7d9378489ceeb5ac"
+      }
+    }
+  ]
+}

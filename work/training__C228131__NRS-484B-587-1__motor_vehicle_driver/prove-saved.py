@@ -27,9 +27,9 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         suffix = case.split('__')[-1]
-        fixture = ROOT / '.runtime-work' / ('c228131-v7-saved-fixture-' + suffix)
-        attempt = ROOT / '.runtime-work' / ('c228131-v7-saved-attempt-' + suffix)
-        output = ROOT / '.runtime-work' / ('c228131-v7-saved-' + suffix)
+        fixture = ROOT / '.runtime-work' / ('c228131-v8-saved-fixture-' + suffix)
+        attempt = ROOT / '.runtime-work' / ('c228131-v8-saved-attempt-' + suffix)
+        output = ROOT / '.runtime-work' / ('c228131-v8-saved-' + suffix)
         run([sys.executable, str(ROOT / 'runtime.py'), 'fixture', '--recipe',
              str(HERE / ('diagnostic-' + suffix + '-recipe.json')), '--output', str(fixture)])
         run([sys.executable, str(ROOT / 'runtime.py'), 'materialize', '--manifest', str(MANIFEST),

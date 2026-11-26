@@ -28,12 +28,27 @@ def fixture(path,turn,reviewed=True,suffix=None):
         'beacon_and_sign_state_reviewed':False,'all_five_exceptions_reviewed':False,
         'path_is_kinematic':False,'fixture_kind':'synthetic_diagnostic_only'}
     if reviewed:
+        clock = {'operation_ceases_at': '2026-11-25T15:00:00-08:00',
+                 'next_operation_begins_at': '2026-11-26T08:00:00-08:00',
+                 'civil_time_at_capture': '2026-11-25T08:15:00-08:00'}
+        if suffix == 'exception_c':
+            clock['civil_time_at_capture'] = '2026-11-25T15:45:00-08:00'
+        elif suffix == 'exception_b':
+            clock = {'operation_ceases_at': '2026-11-27T15:00:00-08:00',
+                     'next_operation_begins_at': '2026-11-30T08:00:00-08:00',
+                     'civil_time_at_capture': '2026-11-28T12:00:00-08:00'}
         records={}
         (path/'review-sources').mkdir()
         for topic in REQUIRED:
             source=path/'review-sources'/(topic+'.json')
-            source.write_text(json.dumps({'topic':topic,'synthetic_fixture':True,
-                'case_context':branch['context']})+'\n')
+            payload = {'topic':topic,'synthetic_fixture':True,
+                       'case_context':branch['context']}
+            if topic == 'school_operation':
+                payload.update({key: clock[key] for key in
+                                ('operation_ceases_at', 'next_operation_begins_at')})
+            elif topic == 'civil_time':
+                payload['civil_time_at_capture'] = clock['civil_time_at_capture']
+            source.write_text(json.dumps(payload)+'\n')
             records[topic]={'topic':topic,'path':str(source.relative_to(path)),
                 'sha256':hashlib.sha256(source.read_bytes()).hexdigest(),
                 'reviewer':'synthetic-test',
@@ -50,6 +65,11 @@ def fixture(path,turn,reviewed=True,suffix=None):
                   'source_sha256': {topic: records[topic]['sha256'] for topic in topics},
                   'reviewer_reason': 'Synthetic source fact shape only; independent original review required'}
             for key, topics in FACT_TOPICS.items()}
+        context['independent_review']['operation_clock'] = {
+            **clock, 'source_topics': ['school_operation', 'civil_time'],
+            'source_sha256': {topic: records[topic]['sha256'] for topic in
+                              ('school_operation', 'civil_time')},
+            'reviewer_reason': 'Synthetic source timestamps at one-second precision; endpoint legal interpretation unresolved'}
         beacon_topics = ('beacon_configuration', 'beacon_lights', 'zone_sign')
         context['independent_review']['beacon_definition'] = {
             'yellow_light_count': 2, 'flashes_alternately': True,

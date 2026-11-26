@@ -1,4 +1,4 @@
-"""Bind selected adjacent-vehicle proof chain and original-source acquisition."""
+"""Bind exact selected entry packages and original-source acquisition mapping."""
 import hashlib
 import json
 from pathlib import Path
@@ -13,26 +13,26 @@ def sha(path):
 
 def main():
     manifest = json.loads((HERE / 'draft-execution-manifest.json').read_text())
-    manifest['status'] = 'cpu_prepared_pending_original_machine_classification_police_duty_and_physical_review'
+    manifest['status'] = 'cpu_prepared_pending_original_access_device_and_physical_review'
     evidence = {
-        'ru.subject': ['actor-poses.jsonl', 'video_frames.jsonl'],
-        'ru.motorcycle': ['lane-inventory.json', 'classification-review.json', 'actor-poses.jsonl'],
-        'ru.moped': ['lane-inventory.json', 'classification-review.json', 'actor-poses.jsonl'],
-        'st.lane_adjacency': ['road.xodr', 'lane-inventory.json', 'split-review.json'],
-        'rel.occupies': ['actor-poses.jsonl', 'lane-inventory.json', 'split-review.json'],
-        'drv.straddles_marking': ['road.xodr', 'actor-poses.jsonl', 'split-review.json'],
-        'rel.bearing': ['actor-poses.jsonl', 'video_frames.jsonl'],
-        'rel.longitudinal_overlap': ['actor-poses.jsonl', 'video_frames.jsonl'],
-        'ru.motor_vehicle': ['lane-inventory.json', 'actor-poses.jsonl'],
-        'kin.velocity': ['actor-poses.jsonl', 'video_frames.jsonl'],
-        'police_duty_context': ['duty-review.json', 'actor-poses.jsonl']}
+        'st.controlled_access': ['road.xodr', 'access-inventory.json',
+            'access-review.json', 'access-authority.txt', 'highway-dedication.txt',
+            'public-use.txt', 'jurisdiction.txt'],
+        'dev.regulatory_sign': ['device-review.json', 'device-authority.txt',
+            'device-content.txt', 'device-erection.txt', 'overview.mkv'],
+        'dev.governs': ['device-review.json', 'entrance-extent.txt', 'road.xodr'],
+        'rel.occupies': ['actor-poses.jsonl', 'video_frames.jsonl', 'road.xodr'],
+        'kin.path_length': ['actor-poses.jsonl', 'video_frames.jsonl'],
+        'st.lane_connectivity': ['road.xodr', 'access-inventory.json',
+            'access-review.json', 'access-authority.txt'],
+        'kin.position': ['actor-poses.jsonl', 'video_frames.jsonl', 'overview.mkv']}
     for entry in manifest['cases']:
         suffix = entry['case_id'].split('__')[-1]
         proof = HERE / 'proofs' / suffix
         entry['physical_preparation'] = {'receipt': str((proof / 'physical-preparation.json').relative_to(HERE)),
                                          'sha256': sha(proof / 'physical-preparation.json')}
         entry['acquisition'] = {name: {'entrypoint': 'finalize.py',
-            'method': 'original Native frame/body/map join and independent source review for ' + name,
+            'method': 'original Native road/body/frame/pixel join and separately reviewed access and device authority',
             'evidence': sources} for name, sources in evidence.items()}
         entry['post_capture'] = {'recorded_only': True,
             'command': 'runtime.py process-saved --manifest work/' + AID + '/execution-manifest.json --case ' + entry['case_id'] +
@@ -48,7 +48,8 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(item['content'])
     (HERE / 'construction.json').write_text(json.dumps(first, indent=2) + '\n')
-    print({'cases': len(manifest['cases']), 'fallbacks': sum(len(row['candidates']) for row in manifest['cases'])})
+    print({'cases': len(manifest['cases']),
+           'fallbacks': sum(len(row['candidates']) for row in manifest['cases'])})
 
 
 if __name__ == '__main__':

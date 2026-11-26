@@ -8,7 +8,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 BASE = ROOT / 'work/training__C394566__LVMC-11-48-060__motor_vehicle_driver/diagnostic-probe_01.json'
 AID = HERE.name
-CAMERAS = ('overview', 'approach', 'indicated_gate', 'highway_side')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 sys.path.insert(0, str(HERE / 'native'))
 from geometry import open_drive
 from route import target

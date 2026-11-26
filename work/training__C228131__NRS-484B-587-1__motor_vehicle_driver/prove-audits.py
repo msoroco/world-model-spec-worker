@@ -29,28 +29,27 @@ def main():
         case = entry['case_id']
         suffix = case.split('__')[-1]
         proof = HERE / 'proofs' / suffix
-        public_version = 'v8' if suffix == 'probe_3' else 'v6'
-        attempt = ROOT / '.runtime-work' / ('c228131-' + public_version + '-compat-' + suffix + '-primary')
-        processing = ROOT / '.runtime-work' / ('c228131-v7-saved-' + suffix) / 'v0001/processing.json'
+        attempt = ROOT / '.runtime-work' / ('c228131-v11-compat-' + suffix + '-primary')
+        processing = ROOT / '.runtime-work' / ('c228131-v8-saved-' + suffix) / 'v0001/processing.json'
         base = [PYTHON, str(script), '--case', case, '--candidate', 'primary',
                 '--attempt', str(attempt), '--processing', str(processing),
-                '--output', str(ROOT / '.runtime-work' / ('c228131-v7-delivery-' + suffix + '-positive.json')),
+                '--output', str(ROOT / '.runtime-work' / ('c228131-v8-delivery-' + suffix + '-positive.json')),
                 '--diagnostic']
         positive = proof / 'delivery-positive.log'
         negative = proof / 'delivery-negative.log'
         positive_exit = run(base, positive)
-        negative_tokens = base + ['--omit-source', 'split-review.json']
+        negative_tokens = base + ['--omit-source', 'device-authority.txt']
         negative_exit = run(negative_tokens, negative)
-        if positive_exit != 0 or negative_exit == 0 or 'Missing source: split-review.json' not in negative.read_text():
+        if positive_exit != 0 or negative_exit == 0 or 'Missing source: device-authority.txt' not in negative.read_text():
             raise ValueError('Delivery audit positive/negative proof failed: ' + case)
         entry['delivery_acceptance'] = {'case_id': case, 'sets': ['full-train'],
             'checks': ['native_source', 'all_participants', 'time_join', 'full_video_decode',
-                       'actual_pixels', 'physical_completion', 'separate_lane_classification_and_duty_review'],
+                       'actual_pixels', 'physical_completion', 'separate_access_and_device_authority_review'],
             'script': 'delivery_audit.py', 'script_sha256': sha(script),
             'command': ' '.join(base), 'test_exit_code': positive_exit,
             'test_log': str(positive.relative_to(HERE)), 'test_log_sha256': sha(positive),
             'negative_command': ' '.join(negative_tokens), 'negative_exit_code': negative_exit,
-            'negative_expected_error': 'Missing source: split-review.json',
+            'negative_expected_error': 'Missing source: device-authority.txt',
             'negative_log': str(negative.relative_to(HERE)), 'negative_log_sha256': sha(negative)}
     (HERE / 'execution-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     plan = json.loads((HERE / 'case-plan.json').read_text())
@@ -61,9 +60,9 @@ def main():
         command = [PYTHON, str(comparison_script), '--comparison', ident]
         for case in comparison['case_ids']:
             suffix = case.split('__')[-1]
-            processing = ROOT / '.runtime-work' / ('c228131-v7-saved-' + suffix) / 'v0001/processing.json'
+            processing = ROOT / '.runtime-work' / ('c228131-v8-saved-' + suffix) / 'v0001/processing.json'
             command += ['--processing', case + '=' + str(processing)]
-        command += ['--output', str(ROOT / '.runtime-work' / ('c228131-v7-comparison-' + token + '.json'))]
+        command += ['--output', str(ROOT / '.runtime-work' / ('c228131-v8-comparison-' + token + '.json'))]
         positive = HERE / 'proofs' / ('comparison-' + token + '-positive.log')
         negative = HERE / 'proofs' / ('comparison-' + token + '-negative.log')
         positive_exit = run(command, positive)

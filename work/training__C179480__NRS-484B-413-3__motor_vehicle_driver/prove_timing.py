@@ -51,7 +51,7 @@ def prove():
             assert result['signal_precedes_diagnostic_deceleration'] is before
             assert result['rear_same_lane_all_frames']
             assert not result['original_native_observed']
-            assert result['legal_verdict'] is None
+            assert 'legal_verdict' not in result
             rejected = []
             actor_path = folder / 'actor-sources.jsonl'
             original = actor_path.read_text()

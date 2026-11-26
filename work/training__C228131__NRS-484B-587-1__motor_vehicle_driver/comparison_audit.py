@@ -1,10 +1,14 @@
-"""Independent fixed-condition and exact adjacent-vehicle contrast audit."""
+"""Independent held-conditions and measured entry-location contrast audit."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+FIXED_SOURCES = ('road.xodr', 'access-authority.txt', 'device-authority.txt',
+    'device-content.txt', 'device-erection.txt', 'entrance-extent.txt',
+    'highway-dedication.txt', 'public-use.txt', 'jurisdiction.txt',
+    'vehicle-eligibility.txt')
 
 
 def sha(path):
@@ -22,10 +26,10 @@ def audit(comparison_id, processing_specs, omit_case=None):
     plan = read(HERE / 'case-plan.json')
     comparison = next((x for x in plan['comparisons'] if x['comparison_id'] == comparison_id), None)
     if comparison is None:
-        raise ValueError('Unknown comparison')
+        raise ValueError('Unknown entry comparison')
     paths = dict(item.split('=', 1) for item in processing_specs)
     if set(paths) != set(comparison['case_ids']) or omit_case:
-        raise ValueError('Missing comparison case: ' + str(omit_case or sorted(set(comparison['case_ids']) - set(paths))))
+        raise ValueError('Missing comparison case: ' + str(omit_case or sorted(set(comparison['case_ids'])-set(paths))))
     manifest = read(HERE / 'execution-manifest.json')
     observations = []
     for case in comparison['case_ids']:
@@ -35,68 +39,40 @@ def audit(comparison_id, processing_specs, omit_case=None):
                 saved.get('case_id') != case or saved.get('candidate_id') != 'primary' or
                 saved.get('native_revision', {}).get('construction_sha256') != selected['construction_sha256'] or
                 saved.get('timestamp_joins', {}).get('frames') != 600):
-            raise ValueError('Selected comparison source differs')
+            raise ValueError('Selected entry comparison source differs')
         stage = Path(saved['analysis_directory'])
-        config = read(stage / 'config.json')
-        report = read(stage / 'analysis-report.json')
-        result = read(stage / 'result.json')
+        config, report, result = (read(stage / name) for name in
+                                  ('config.json', 'analysis-report.json', 'result.json'))
         if result.get('case_id') != case:
-            raise ValueError('Comparison result identity differs')
+            raise ValueError('Entry comparison result identity differs')
         for item in report.get('measurements', {}).values():
             for name, digest in item.get('sources', {}).items():
                 if digest != sha(stage / name):
-                    raise ValueError('Comparison source changed: ' + name)
+                    raise ValueError('Entry comparison source changed: ' + name)
         value = result.get('measured_values', {})
-        if type(value.get('between_vehicle_frames')) is not int:
-            raise ValueError('Comparison lacks original body measurement')
+        if len(value.get('entry_events', [])) != 1:
+            raise ValueError('Entry comparison lacks original body event')
         observations.append((case, config, value, stage, sha(stage / 'analysis-report.json')))
     configs = [row[1] for row in observations]
     for field in ('law_id', 'cell_id', 'actor', 'rate_hz', 'duration_s', 'cameras',
                   'required_atoms', 'source_packets', 'steer_gain'):
         if any(config[field] != configs[0][field] for config in configs[1:]):
-            raise ValueError('Comparison fixed condition changed: ' + field)
-    for name in ('road.xodr',):
+            raise ValueError('Entry comparison fixed condition changed: ' + field)
+    for name in FIXED_SOURCES:
         if len({sha(row[3] / name) for row in observations}) != 1:
-            raise ValueError('Fixed road source changed: ' + name)
-    inventories = [read(row[3] / 'lane-inventory.json') for row in observations]
-    if any(item['lane_survey'] != inventories[0]['lane_survey'] for item in inventories[1:]):
-        raise ValueError('Fixed adjacent-lane survey changed')
-    suffix = comparison_id.split('__')[-1]
-    values = [row[2] for row in observations]
-    if suffix == 'stationary_position':
-        if ([config['split_case'] for config in configs] != ['beside', 'between'] or
-                values[0]['between_vehicle_frames'] != 0 or values[1]['between_vehicle_frames'] <= 0):
-            raise ValueError('Beside/between original body contrast differs')
-        for key in ('surrounding_mode', 'machine_candidate', 'police_duty_requested'):
-            if configs[0][key] != configs[1][key]:
-                raise ValueError('Stationary-position fixed context changed: ' + key)
-    elif suffix == 'moving_alternative':
-        if ([config['surrounding_mode'] for config in configs] != ['stationary', 'moving'] or
-                values[0]['left_vehicle_speed_mps_range'][1] != 0 or
-                values[1]['left_vehicle_speed_mps_range'][0] <= 0 or
-                values[1]['between_vehicle_frames'] <= 0):
-            raise ValueError('Stationary/moving original speed contrast differs')
-        for key in ('split_case', 'machine_candidate', 'police_duty_requested'):
-            if configs[0][key] != configs[1][key]:
-                raise ValueError('Moving alternative fixed context changed: ' + key)
-    elif suffix == 'moped_alternative':
-        if ([config['machine_candidate'] for config in configs] != ['motorcycle', 'moped'] or
-                [value['subject_kind_source_claim'] for value in values] != ['motorcycle', 'moped']):
-            raise ValueError('Motorcycle/moped source classification contrast differs')
-        for key in ('split_case', 'surrounding_mode', 'police_duty_requested'):
-            if configs[0][key] != configs[1][key]:
-                raise ValueError('Moped alternative fixed context changed: ' + key)
-    elif suffix == 'police_duty_exception':
-        if ([config['police_duty_requested'] for config in configs] != [False, True] or
-                [value['police_officer_source_claim'] for value in values] != [False, True] or
-                [value['performance_of_duty_source_claim'] for value in values] != [False, True]):
-            raise ValueError('Police identity and performance-of-duty contrast differs')
-        for key in ('split_case', 'surrounding_mode', 'machine_candidate'):
-            if configs[0][key] != configs[1][key]:
-                raise ValueError('Police-duty fixed context changed: ' + key)
-    else:
-        raise ValueError('Unknown exact comparison branch')
-    return {'format': 'c228131-independent-comparison-audit-v1',
+            raise ValueError('Entry comparison fixed source changed: ' + name)
+    inventories = [read(row[3] / 'access-inventory.json') for row in observations]
+    for key in ('road_survey', 'highway_road_id_candidate', 'frontage_road_id_candidate',
+                'paved_entry_road_id_candidate', 'device_actor_id', 'device_blueprint_id'):
+        if any(item[key] != inventories[0][key] for item in inventories[1:]):
+            raise ValueError('Entry comparison fixed Native inventory changed: ' + key)
+    if [config['entry_mode'] for config in configs] != ['witness_1', 'witness_2']:
+        raise ValueError('Selected entry modes differ')
+    events = [row[2]['entry_events'][0] for row in observations]
+    if ([event['within_indicated_entrance'] for event in events] != [True, False] or
+            abs(events[1]['measured_center_x_m']-events[0]['measured_center_x_m']-60) > .1):
+        raise ValueError('Measured indicated/outside entry contrast differs')
+    return {'format': 'c228131-independent-entry-comparison-audit-v1',
             'comparison_id': comparison_id, 'case_ids': comparison['case_ids'],
             'fixed_conditions_checked': True, 'differences_checked': True,
             'analysis_sha256': {row[0]: row[4] for row in observations},

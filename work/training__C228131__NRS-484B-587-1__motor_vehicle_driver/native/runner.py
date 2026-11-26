@@ -9,7 +9,7 @@ import subprocess
 from geometry import check as geometry_check, open_drive
 from route import CROSSING_X, FRAMES, RATE_HZ, target
 
-CAMERAS = ('overview', 'approach', 'indicated_gate', 'highway_side')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def check(config):
@@ -129,7 +129,7 @@ def execute(config, output_dir, host, port):
             'frontage_road_id_candidate': 2, 'paved_entry_road_id_candidate': 3,
             'official_status_reviewed': False, 'lane_connectivity_reviewed': False}, indent=2) + '\n')
         mounts = {'overview': (30, -20, 38, -45), 'approach': (-15, -13, 10, -18),
-                  'indicated_gate': (0, -12, 12, -30), 'highway_side': (35, 10, 22, -35)}
+                  'reference_corner': (0, -12, 12, -30), 'driver_reference': (35, 10, 22, -35)}
         for name in CAMERAS:
             x, y, z, pitch = mounts[name]
             spec = next(c for c in config['cameras'] if c['name'] == name)

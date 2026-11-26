@@ -7,7 +7,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 AID = HERE.name
-CAMERAS = ('overview', 'approach', 'indicated_gate', 'highway_side')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 CHANNELS = ('st.controlled_access', 'dev.regulatory_sign', 'dev.governs',
             'rel.occupies', 'kin.path_length', 'st.lane_connectivity', 'kin.position')
 SOURCES = ['road.xodr', 'access-inventory.json', 'access-review.json',
@@ -62,7 +62,7 @@ def main():
         files = [{'path': name, 'content': (HERE / 'native' / name).read_text()}
                  for name in ('runner.py', 'geometry.py', 'route.py', 'finalize.py',
                               'tests/test_native.py')]
-        files.append({'path': 'saved_entry.py', 'content': (HERE / 'saved_entry.py').read_text()})
+        files.append({'path': 'measure_entry.py', 'content': (HERE / 'native/measure_entry.py').read_text()})
         files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
         construction = {'case_id': case, 'law_id': 'NRS-484B-587-1',
             'cell_id': 'C228131', 'actor': 'motor_vehicle_driver',

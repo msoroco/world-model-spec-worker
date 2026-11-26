@@ -177,7 +177,19 @@
         "same authored highway/frontage/entrance geometry and device placement",
         "same motor vehicle, speed request, cameras, 600-frame duration and controller gains",
         "only requested crossing x changes relative to the sourced indicated entrance"
-      ]
+      ],
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "459dc470923ddf779c5f0487dbb646eb4427582ff3c0dc559b6f138c4232e987",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/comparison_audit.py --comparison training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_comparison --processing training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-saved-witness_1/v0001/processing.json --processing training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-saved-witness_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-comparison-witness_comparison.json",
+        "test_log": "proofs/comparison-witness_comparison-positive.log",
+        "test_log_sha256": "86f7b79ac878b2895a0d2f23a2a94071d8f39e4c1a74b6ae829a93217a61140e",
+        "test_exit_code": 0,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C228131__NRS-484B-587-1__motor_vehicle_driver/comparison_audit.py --comparison training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_comparison --processing training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_1=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-saved-witness_1/v0001/processing.json --processing training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2=/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-saved-witness_2/v0001/processing.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c228131-v8-comparison-witness_comparison.json --omit-case training__C228131__NRS-484B-587-1__motor_vehicle_driver__witness_2",
+        "negative_log": "proofs/comparison-witness_comparison-negative.log",
+        "negative_log_sha256": "20834f01fc8683fcc06399a9d5fc0c6179f479088599e9a3445db8d09717e011",
+        "negative_exit_code": 1
+      }
     }
   ],
   "mandatory_observation_terms": [
@@ -276,9 +288,8 @@
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
   "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
-  "source_observation_mapping": [
-    {
-      "term": "st.controlled_access",
+  "source_observation_mapping": {
+    "st.controlled_access": {
       "method": "native/finalize.py observation and sourced authority context",
       "evidence": [
         "road.xodr",
@@ -297,8 +308,7 @@
         "witness required_context"
       ]
     },
-    {
-      "term": "dev.regulatory_sign",
+    "dev.regulatory_sign": {
       "method": "native/finalize.py observation and sourced authority context",
       "evidence": [
         "road.xodr",
@@ -317,8 +327,7 @@
         "witness required_context"
       ]
     },
-    {
-      "term": "dev.governs",
+    "dev.governs": {
       "method": "native/finalize.py observation and sourced authority context",
       "evidence": [
         "road.xodr",
@@ -337,8 +346,7 @@
         "witness required_context"
       ]
     },
-    {
-      "term": "rel.occupies",
+    "rel.occupies": {
       "method": "native/finalize.py observation and sourced authority context",
       "evidence": [
         "road.xodr",
@@ -357,8 +365,7 @@
         "witness required_context"
       ]
     },
-    {
-      "term": "kin.path_length",
+    "kin.path_length": {
       "method": "native/finalize.py observation and sourced authority context",
       "evidence": [
         "road.xodr",
@@ -377,8 +384,7 @@
         "witness required_context"
       ]
     },
-    {
-      "term": "st.lane_connectivity",
+    "st.lane_connectivity": {
       "method": "native/finalize.py observation and sourced authority context",
       "evidence": [
         "road.xodr",
@@ -397,8 +403,7 @@
         "witness required_context"
       ]
     },
-    {
-      "term": "kin.position",
+    "kin.position": {
       "method": "native/finalize.py observation and sourced authority context",
       "evidence": [
         "road.xodr",
@@ -417,19 +422,37 @@
         "witness required_context"
       ]
     }
-  ],
+  },
   "camera_plan": {
+    "profile": "overview1080-capability",
     "duration_s": 30,
     "rate_hz": 20,
     "frames": 600,
-    "cameras": [
-      "overview",
-      "approach",
-      "indicated_gate",
-      "highway_side"
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "vehicle body, highway boundary and installed candidate device",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle approach from frontage toward highway",
+        "interval": "approach through entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "indicated entrance and physical candidate sign",
+        "interval": "approach through entry"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "highway-side body crossing and road extent",
+        "interval": "entry through end"
+      }
     ],
     "limitations": [
-      "Synthetic pixels do not establish official device content or highway status."
+      "Original pixel visibility, controlled-access status and official device authority require local review."
     ]
   }
 }

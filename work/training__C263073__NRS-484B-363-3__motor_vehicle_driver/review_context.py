@@ -66,7 +66,12 @@ def verified_sources(attempt, context):
             raise ValueError('Exception source topics incomplete: ' + exception)
         if not isinstance(item.get('reason'), str) or not item['reason'].strip():
             raise ValueError('Exception review reason missing: ' + exception)
-    return {'records': bound, 'exception_dispositions': dispositions}
+    case_context = review.get('case_context')
+    if not isinstance(case_context, str) or not case_context:
+        raise ValueError('Independent selected case context missing')
+    return {'records': bound, 'exception_dispositions': dispositions,
+            'case_context': case_context, 'case_facts': review.get('case_facts'),
+            'beacon_definition': review.get('beacon_definition')}
 
 
 def attach_original_review(output, source_dir):

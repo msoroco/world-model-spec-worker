@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+from datetime import datetime, timedelta
 from pathlib import Path
 from native.branch_cases import CASES, FACT_TOPICS, expected_facts
 
@@ -79,6 +80,30 @@ def audit(case, candidate, attempt, processing, diagnostic, omit_source):
                 item.get('source_topics') != list(topics) or
                 item.get('source_sha256') != {topic: records[topic]['sha256'] for topic in topics}):
             raise ValueError('Independent case fact differs: ' + key)
+    clock = review.get('operation_clock', {})
+    clock_topics = ('school_operation', 'civil_time')
+    if (clock.get('source_topics') != list(clock_topics) or
+            clock.get('source_sha256') != {topic: records[topic]['sha256'] for topic in clock_topics}):
+        raise ValueError('Independent school operation clock source binding differs')
+    operation_source = read(stage / records['school_operation']['path'])
+    civil_source = read(stage / records['civil_time']['path'])
+    names = ('operation_ceases_at', 'next_operation_begins_at')
+    if (any(operation_source.get(name) != clock.get(name) for name in names) or
+            civil_source.get('civil_time_at_capture') != clock.get('civil_time_at_capture')):
+        raise ValueError('Independent school operation clock differs from original sources')
+    end, next_start, civil = (datetime.fromisoformat(clock[name]) for name in
+                              (*names, 'civil_time_at_capture'))
+    if not end < next_start or any(value.utcoffset() is None for value in (end, next_start, civil)):
+        raise ValueError('Independent school operation chronology differs')
+    lower, upper = end + timedelta(minutes=30), next_start - timedelta(minutes=30)
+    if not lower < upper or civil in (lower, upper):
+        raise ValueError('Independent school operation endpoint legally unresolved')
+    inside = lower < civil < upper
+    if inside != facts['half_hour_operation_interval']['value']:
+        raise ValueError('Independent school operation interval fact differs')
+    if review['exception_dispositions']['c_operation_interval']['status'] != (
+            'applies' if inside else 'does_not_apply'):
+        raise ValueError('Independent school operation interval disposition differs')
     beacon = review.get('beacon_definition', {})
     beacon_topics = ('beacon_configuration', 'beacon_lights', 'zone_sign')
     if (type(beacon.get('yellow_light_count')) is not int or beacon['yellow_light_count'] < 2 or

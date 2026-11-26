@@ -1,4 +1,5 @@
 """Exact selected school-zone contexts; assertions are source-review targets."""
+from datetime import datetime, timedelta
 
 CASES = {
     'controlled_1': {'turn': False, 'child_actor': True, 'target_exception': None,
@@ -36,6 +37,42 @@ BASE_FACTS = {'children_present': True, 'school_session_day': True,
               'half_hour_operation_interval': False, 'beacon_operational': True,
               'class_hours': True, 'yellow_lights_flashing': True,
               'sign_limit_in_effect': True}
+
+
+def operation_window_position(clock):
+    """Locate civil time against the two statutory half-hour endpoints.
+
+    Equality is reported separately because the CPU fixture cannot decide a
+    legal interpretation of the endpoint wording.
+    """
+    names = ('operation_ceases_at', 'next_operation_begins_at',
+             'civil_time_at_capture')
+    if not isinstance(clock, dict) or any(not isinstance(clock.get(name), str) for name in names):
+        raise ValueError('School operation/civil time timestamps missing')
+    try:
+        end, next_start, civil = (datetime.fromisoformat(clock[name]) for name in names)
+    except ValueError as error:
+        raise ValueError('School operation/civil time timestamp invalid') from error
+    if any(value.tzinfo is None or value.utcoffset() is None for value in (end, next_start, civil)):
+        raise ValueError('School operation/civil time timezone missing')
+    if not end < next_start:
+        raise ValueError('Next school operation must follow cessation')
+    lower = end + timedelta(minutes=30)
+    upper = next_start - timedelta(minutes=30)
+    if not lower < upper:
+        raise ValueError('School operation gap has no half-hour interior')
+    if civil < lower:
+        position = 'before_lower'
+    elif civil == lower:
+        position = 'at_lower'
+    elif civil < upper:
+        position = 'interior'
+    elif civil == upper:
+        position = 'at_upper'
+    else:
+        position = 'after_upper'
+    return {'position': position, 'lower': lower.isoformat(),
+            'upper': upper.isoformat(), 'civil': civil.isoformat()}
 
 
 def expected_facts(case_suffix):
@@ -89,6 +126,22 @@ def check_review(review, case_suffix):
             raise ValueError('School context fact source hashes differ: ' + key)
         if not isinstance(item.get('reviewer_reason'), str) or not item['reviewer_reason'].strip():
             raise ValueError('School context fact reviewer reason missing: ' + key)
+    clock = review.get('operation_clock')
+    topics = ('school_operation', 'civil_time')
+    if (not isinstance(clock, dict) or clock.get('source_topics') != list(topics) or
+            clock.get('source_sha256') !=
+            {topic: review['records'][topic]['sha256'] for topic in topics} or
+            not isinstance(clock.get('reviewer_reason'), str) or
+            not clock['reviewer_reason'].strip()):
+        raise ValueError('School operation clock source binding differs')
+    window = operation_window_position(clock)
+    if window['position'] in ('at_lower', 'at_upper'):
+        raise ValueError('Selected source time is at a legally unresolved half-hour endpoint')
+    if (window['position'] == 'interior') != facts['half_hour_operation_interval']['value']:
+        raise ValueError('Selected half-hour operation fact differs from source timestamps')
+    expected_status = 'applies' if window['position'] == 'interior' else 'does_not_apply'
+    if dispositions['c_operation_interval']['status'] != expected_status:
+        raise ValueError('Operation interval disposition differs from source timestamps')
     definition = review.get('beacon_definition')
     if not isinstance(definition, dict):
         raise ValueError('Statutory speed-limit-beacon definition review missing')

@@ -19,20 +19,74 @@
   "summary_status": "recovered_requires_source_review",
   "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
   "witness_branches": [
-    "Intentional stop with a rear-driver recipient"
+    "Intentional stop with immediately-rear driver",
+    "Sudden decrease of speed with immediately-rear driver",
+    "Signal before stop or speed decrease",
+    "Vehicle immediately to the rear",
+    "Appropriate signal to rear driver"
   ],
-  "selected_branch": null,
+  "selected_branch": "Intentional stop with a rear-driver recipient",
   "requirement_dispositions": [
     {
       "requirement": "NRS-484B-413-3",
       "source": "NRS 484B.413(3)",
-      "branch": "Intentional stop with a rear-driver recipient",
+      "branch": "Intentional stop with immediately-rear driver",
       "status": "selected_required",
       "case_ids": [
         "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1",
         "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+      "evidence_or_gap": "Observed stop event and signal order; no legal appropriateness inferred."
+    },
+    {
+      "requirement": "NRS-484B-413-3",
+      "source": "NRS 484B.413(3)",
+      "branch": "Sudden decrease of speed with immediately-rear driver",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late"
+      ],
+      "evidence_or_gap": "Observed longitudinal acceleration and speed; 3 m/s\u00b2 is diagnostic, not statutory."
+    },
+    {
+      "requirement": "NRS-484B-413-3",
+      "source": "NRS 484B.413(3)",
+      "branch": "Signal before stop or speed decrease",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late"
+      ],
+      "evidence_or_gap": "Observed lamp or arm signal frame is compared with observed action frame; command timing is not substituted."
+    },
+    {
+      "requirement": "NRS-484B-413-3",
+      "source": "NRS 484B.413(3)",
+      "branch": "Vehicle immediately to the rear",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late"
+      ],
+      "evidence_or_gap": "Same-lane original rear actor, footprint gap and behind relation retained; legal immediately-rear judgment pending."
+    },
+    {
+      "requirement": "NRS-484B-413-3",
+      "source": "NRS 484B.413(3)",
+      "branch": "Appropriate signal to rear driver",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late"
+      ],
+      "evidence_or_gap": "Observed brake lamp and hand-signal source are retained; signal appropriateness requires independent original review."
     }
   ],
   "activation_conditions": [
@@ -42,7 +96,7 @@
   "timing_requirements": [
     {
       "kind": "ordering",
-      "requirement": "'without first giving' — the signal must precede the stop or the deceleration"
+      "requirement": "'without first giving' \u2014 the signal must precede the stop or the deceleration"
     },
     {
       "kind": "advance",
@@ -61,90 +115,89 @@
     {
       "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484B-413-3",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "driver signals rear vehicle before stopping",
-      "comparison_variable": "advance_rear_signal",
-      "source_branch": "Intentional stop with a rear-driver recipient",
+      "kind": "selected_native_cpu_draft",
+      "source_branch": "Intentional stop with immediately-rear driver",
+      "physical_target": "stop with early observed rear signal",
+      "comparison_variable": "signal timing relative to observed action",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
       ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "paved_road",
-          "maneuver": "stop_stand",
-          "control": "other_vehicle"
-        },
-        "activation_conditions_to_verify": [
-          "the subject stops or suddenly decreases speed",
-          "a vehicle is immediately to the rear"
-        ]
-      },
-      "controller": {
-        "requested_behavior": "driver signals rear vehicle before stopping"
-      },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
-      "expected_scenario_outcome": null,
-      "unresolved_judgment_calls": [
-        "'suddenly' is a judgement element: a deceleration bound must be declared",
-        "a brake lamp is an actuation, not the deceleration: the rule reads both"
-      ]
+      "construction": "native/bundles/witness_1/construction.json",
+      "offline_passed": true
     },
     {
       "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484B-413-3",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "driver stops before signaling rear vehicle",
-      "comparison_variable": "advance_rear_signal",
-      "source_branch": "Intentional stop with a rear-driver recipient",
+      "kind": "selected_native_cpu_draft",
+      "source_branch": "Intentional stop with immediately-rear driver",
+      "physical_target": "stop with late observed rear signal",
+      "comparison_variable": "signal timing relative to observed action",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
       ],
-      "world_setup": {
-        "frozen_cell": {
-          "layout": "paved_road",
-          "maneuver": "stop_stand",
-          "control": "other_vehicle"
-        },
-        "activation_conditions_to_verify": [
-          "the subject stops or suddenly decreases speed",
-          "a vehicle is immediately to the rear"
-        ]
-      },
-      "controller": {
-        "requested_behavior": "driver stops before signaling rear vehicle"
-      },
-      "subject_behavior": {
-        "value": null,
-        "status": "unobserved"
-      },
-      "expected_scenario_outcome": null,
-      "unresolved_judgment_calls": [
-        "'suddenly' is a judgement element: a deceleration bound must be declared",
-        "a brake lamp is an actuation, not the deceleration: the rule reads both"
-      ]
+      "construction": "native/bundles/witness_2/construction.json",
+      "offline_passed": true
+    },
+    {
+      "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early",
+      "target_law_id": "NRS-484B-413-3",
+      "kind": "selected_native_cpu_draft",
+      "source_branch": "Sudden decrease of speed with immediately-rear driver",
+      "physical_target": "suddenly decrease speed with early observed rear signal",
+      "comparison_variable": "signal timing relative to observed action",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction": "native/bundles/decrease_early/construction.json",
+      "offline_passed": true
+    },
+    {
+      "case_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late",
+      "target_law_id": "NRS-484B-413-3",
+      "kind": "selected_native_cpu_draft",
+      "source_branch": "Sudden decrease of speed with immediately-rear driver",
+      "physical_target": "suddenly decrease speed with late observed rear signal",
+      "comparison_variable": "signal timing relative to observed action",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction": "native/bundles/decrease_late/construction.json",
+      "offline_passed": true
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_comparison",
+      "comparison_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__stop_comparison",
       "case_ids": [
         "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_1",
         "training__C179480__NRS-484B-413-3__motor_vehicle_driver__witness_2"
       ],
       "deliberate_differences": [
-        "advance_rear_signal"
+        "signal command timing before versus after stop request"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "same map geometry except named comparison variable",
-        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
+        "frozen cell, law, actor, rear actor and shared lane",
+        "same stop speed profile and target action frame",
+        "four cameras, duration, rate and source channels"
+      ]
+    },
+    {
+      "comparison_id": "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_comparison",
+      "case_ids": [
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_early",
+        "training__C179480__NRS-484B-413-3__motor_vehicle_driver__decrease_late"
+      ],
+      "deliberate_differences": [
+        "signal command timing before versus after decrease request"
+      ],
+      "fixed_conditions": [
+        "frozen cell, law, actor, rear actor and shared lane",
+        "same decrease speed profile and target action frame",
+        "four cameras, duration, rate and source channels"
       ]
     }
   ],
@@ -246,12 +299,117 @@
     "Four camera views and saved channels can establish every decisive relation",
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
-  "blockers": [
-    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
-  ],
+  "blockers": [],
   "runtime_uncertainties": [
-    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
-    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+    "Original Native lamp state, rear separation, deceleration and physical timing remain unobserved; selected CPU drafts do not establish physical success.",
+    "The source gives no numeric minimum lead, suddenness deceleration or immediate-rear gap; declared values are diagnostics, not legal thresholds.",
+    "Appropriateness of an observed signal and public highway applicability require independent source review.",
+    "Hand/arm form appears in source observation terms, but no separate hand-signal alternative is stated in this exact subsection; none is invented from another provision."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "CPU-prepared construction and measurement drafts; original Native recording and legal review are unclaimed.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full paved road, ego and rear",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "same-lane rear relation and gap",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego signal and stopping region",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego and rear identity",
+        "interval": "all 600 frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "drv.stopped": {
+      "evidence": "Same-tick original Native source or separately reviewed source context; no legal verdict from authored controls.",
+      "channels": [
+        "drv.stopped"
+      ],
+      "source_refs": [
+        "actor-sources.jsonl original ego speed",
+        "four original camera videos"
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Same-tick original Native source or separately reviewed source context; no legal verdict from authored controls.",
+      "channels": [
+        "drv.hard_deceleration"
+      ],
+      "source_refs": [
+        "actor-sources.jsonl original acceleration",
+        "rear-signal-context.json diagnostic threshold"
+      ]
+    },
+    "kin.accel_longitudinal": {
+      "evidence": "Same-tick original Native source or separately reviewed source context; no legal verdict from authored controls.",
+      "channels": [
+        "kin.accel_longitudinal"
+      ],
+      "source_refs": [
+        "actor-sources.jsonl original acceleration"
+      ]
+    },
+    "sig.brake_lamp": {
+      "evidence": "Same-tick original Native source or separately reviewed source context; no legal verdict from authored controls.",
+      "channels": [
+        "sig.brake_lamp"
+      ],
+      "source_refs": [
+        "actor-sources.jsonl observed CARLA lamp state",
+        "four original camera videos"
+      ]
+    },
+    "sig.hand_signal": {
+      "evidence": "Same-tick original Native source or separately reviewed source context; no legal verdict from authored controls.",
+      "channels": [
+        "sig.hand_signal"
+      ],
+      "source_refs": [
+        "actor-sources.jsonl observed hand signal, none if not created",
+        "original pixel review"
+      ]
+    },
+    "drv.following": {
+      "evidence": "Same-tick original Native source or separately reviewed source context; no legal verdict from authored controls.",
+      "channels": [
+        "drv.following"
+      ],
+      "source_refs": [
+        "actor-sources.jsonl rear actor identity"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Same-tick original Native source or separately reviewed source context; no legal verdict from authored controls.",
+      "channels": [
+        "rel.ahead_behind_in_lane"
+      ],
+      "source_refs": [
+        "actor-sources.jsonl original lane and behind relation"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Same-tick original Native source or separately reviewed source context; no legal verdict from authored controls.",
+      "channels": [
+        "rel.surface_gap"
+      ],
+      "source_refs": [
+        "actor-sources.jsonl original body vertices and gap"
+      ]
+    }
+  }
 }

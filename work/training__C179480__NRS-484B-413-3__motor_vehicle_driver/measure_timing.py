@@ -81,10 +81,14 @@ def measure(root, expected_case, *, source_kind='synthetic_cpu'):
         'min_rear_surface_gap_m': min(float(r['surface_gap_m']) for r in actors),
         'source_sha256': {'actor-sources.jsonl': digest(actors_path),
                           'camera-frames.jsonl': digest(frames_path)},
+        'fixed_motion_sha256': hashlib.sha256(json.dumps([
+            (r['ego_speed_mps'], r['ego_accel_longitudinal_mps2'],
+             r['ego_lane_id'], r['rear_lane_id'], r['rear_is_behind'],
+             r['surface_gap_m']) for r in actors],
+            separators=(',', ':'), allow_nan=False).encode()).hexdigest(),
         'diagnostic_deceleration_mps2': 3,
         'diagnostic_threshold_is_law': False,
         'legal_appropriateness': None,
-        'legal_verdict': None,
         'original_native_observed': source_kind == 'original_native',
         'delivery_ready': False,
     }

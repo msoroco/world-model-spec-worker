@@ -108,4 +108,4 @@ def run_case(suffix):
 
 if __name__ == '__main__':
     print(json.dumps({'proofs': [run_case(s) for s in
-        ('probe_1', 'probe_2', 'probe_3', 'probe_4', 'probe_5')]}, indent=2))
+        ('witness_1', 'witness_2')]}, indent=2))

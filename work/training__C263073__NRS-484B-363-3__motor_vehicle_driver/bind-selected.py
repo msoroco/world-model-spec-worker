@@ -23,7 +23,7 @@ def main():
         case = entry['case_id']
         suffix = case.rsplit('__', 1)[-1]
         proof = HERE / 'proofs' / suffix
-        processing = REPO / '.runtime-work/c263073-owner' / ('saved-' + suffix + '-primary-v4/v0001/processing.json')
+        processing = REPO / '.runtime-work/c263073-owner' / ('saved-' + suffix + '-primary-v5/v0001/processing.json')
         receipt = json.loads(processing.read_text())
         if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True or
                 receipt.get('candidate_id') != 'primary' or receipt.get('case_id') != case or
@@ -66,19 +66,23 @@ def main():
     first = json.loads((HERE / manifest['cases'][0]['construction']).read_text())
     first['measurement_plan'] = {'entrypoint': 'finalize.py',
         'required_sources': ['native-motion.jsonl', 'school-context.json', 'trace.jsonl',
-                             'video_frames.jsonl', 'driver_reference.mkv',
-                             'review-sources/zone_designation.json',
-                             'review-sources/child_identity.json',
-                             'review-sources/school_session.json',
-                             'review-sources/school_operation.json',
-                             'review-sources/beacon_configuration.json',
-                             'review-sources/zone_sign.json']}
+                             'video_frames.jsonl', 'driver_reference.mkv'] +
+                            ['review-sources/' + topic + '.json' for topic in (
+                                'zone_designation', 'zone_boundaries', 'school_adjacency',
+                                'highway_status', 'driver_identity', 'driver_control',
+                                'vehicle_classification', 'child_identity', 'child_location',
+                                'school_session', 'school_operation', 'class_hours',
+                                'civil_time', 'beacon_configuration', 'beacon_lights',
+                                'zone_sign')]}
     first['static_checks'] = ['30 seconds at 20 Hz', 'four original RGB source cameras',
         '1920x1080 overview', 'five separate exception source records',
+        'source-hashed civil time strictly within both half-hour operation endpoints',
+        'below/at/above CPU probes for cessation and next-operation endpoints with legal equality unresolved',
+        'source-hashed subsection (9) beacon definition',
         'source-bound original body and heading measurement']
     first['termination_rules'] = ['600 joined Native frames', 'all encoders closed',
         'owned actors destroyed', 'world settings restored before capture seal']
-    first['mechanisms'] = ['same school-zone layout and source-review policy; requested turn alone varies',
+    first['mechanisms'] = ['same school-zone geometry and capture policy; selected turn and independently reviewed context vary by controlled comparison',
         'use vehicle control and measure original body/heading; defer legal status to review']
     for item in first['files']:
         dest = HERE / item['path']

@@ -9,7 +9,7 @@ class TimingConstructionTests(unittest.TestCase):
         before = target("witness_1")
         after = target("witness_2")
         self.assertEqual(before["brake_lamp_command_frame"], 100)
-        self.assertEqual(after["brake_lamp_command_frame"], 121)
+        self.assertEqual(after["brake_lamp_command_frame"], 160)
         self.assertEqual(before["action_frame"], after["action_frame"])
         for key in set(before) - {"case_suffix", "brake_lamp_command_frame"}:
             self.assertEqual(before[key], after[key], key)

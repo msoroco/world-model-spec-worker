@@ -4,9 +4,9 @@ import hashlib
 import json
 from pathlib import Path
 
-from saved_entry import measure
+from measure_entry import measure
 
-CAMERAS = ('overview', 'approach', 'indicated_gate', 'highway_side')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 AUTHORITY = ('access-authority.txt', 'device-authority.txt', 'device-content.txt',
              'device-erection.txt', 'entrance-extent.txt', 'highway-dedication.txt',
              'public-use.txt', 'jurisdiction.txt', 'vehicle-eligibility.txt')
@@ -157,7 +157,7 @@ def finalize(root, output):
         (channel_dir / (name + '.jsonl')).write_text(''.join(
             json.dumps({'time_s': i/20, 'value': value}) + '\n' for i in range(600)))
     intended = config['entry_mode'] == 'witness_1'
-    measured = fact['entry_events'][0]['within_indicated_gate']
+    measured = fact['entry_events'][0]['within_indicated_entrance']
     target = {'target': 'measured entry point relative to sourced indicated entrance',
               'requested': intended, 'measured': measured, 'method': 'original body/frame/access review join',
               'tolerance': 0, 'matched': intended == measured,

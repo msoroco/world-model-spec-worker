@@ -29,7 +29,7 @@ def target(case_suffix: str, plan: TimingPlan = TimingPlan()) -> dict:
     if case_suffix not in ("witness_1", "witness_2"):
         raise ValueError("Unknown selected case")
     signal_frame = (plan.action_frame - plan.signal_lead_frames
-                    if case_suffix == "witness_1" else plan.action_frame + 1)
+                    if case_suffix == "witness_1" else plan.action_frame + 40)
     return {
         "case_suffix": case_suffix,
         "rate_hz": plan.rate_hz,
