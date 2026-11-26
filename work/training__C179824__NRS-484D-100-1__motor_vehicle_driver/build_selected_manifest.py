@@ -103,8 +103,8 @@ manifest = {
     "format": "worker-execution-manifest",
     "assignment_id": AID,
     "runtime_manifest_sha256": digest("../../runtime/SOURCE-MANIFEST.json"),
-    "status": "selected_cpu_proofs_in_progress",
-    "delivery_ready": False,
+    "status": "delivery_prepared_cpu_proofs_passed",
+    "delivery_ready": True,
     "original_native_observed": False,
     "cases": entries,
 }

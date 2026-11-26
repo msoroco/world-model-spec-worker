@@ -194,7 +194,7 @@ def finalize(root, output):
     value = analysis['measurements']['source_bound_aisle_parking']['value']
     target_inside = config['case_suffix'] == 'controlled_2'
     target = {'target': 'original stationary full-body overlap with independently reviewed access aisle',
-              'requested': target_inside, 'measured': value['stationary_overlap_samples'],
+              'requested': 'inside' if target_inside else 'outside', 'measured': value['stationary_overlap_samples'],
               'method': 'source-bound 600-frame Native body corners and speed', 'tolerance': 0,
               'matched': (value['stationary_overlap_samples'] > 0) == target_inside,
               'physical_cause_confirmed': False, 'cause_evidence': list(SOURCES)}

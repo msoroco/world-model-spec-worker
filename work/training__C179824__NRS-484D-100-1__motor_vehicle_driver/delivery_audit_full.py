@@ -95,6 +95,13 @@ def check_review(review, case, hashes):
     return review
 
 
+def check_class_status(review, fields):
+    class_met = (all(value for key, value in fields.items() if key != "front_height_inches")
+                 and 24 <= fields["front_height_inches"] <= 54)
+    require((review["class_equipment_status"] == "met") == class_met,
+            "Class-specific equipment status contradicts original pixel findings")
+
+
 def audit(args):
     import sys
     sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "runtime" / "scenario_pipeline"))
@@ -126,9 +133,7 @@ def audit(args):
             review["class_pixel_source_sha256"] == sha(class_review_path),
             "Class-specific lamp source review hash changed")
     fields = class_report["measurements"]
-    if review["class_equipment_status"] == "met":
-        require(all(value for key, value in fields.items() if key != "front_height_inches"),
-                "Class-specific equipment status contradicts original pixel findings")
+    check_class_status(review, fields)
     output = Path(args.output).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     receipts = {}
@@ -174,6 +179,14 @@ def self_test(case, negative):
         check_review(review, case, hashes)
         raise AssertionError("Missing original person pixel review passed")
     check_review(review, case, hashes)
+    check_class_status(review, class_self_test(False)["measurements"])
+    inconsistent = dict(review, class_equipment_status="not_met")
+    try:
+        check_class_status(inconsistent, class_self_test(False)["measurements"])
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("Class sufficiency contradicted original pixels")
     for missing in ("class_law_source_sha256", "overview_video_sha256"):
         damaged = dict(review)
         damaged.pop(missing)

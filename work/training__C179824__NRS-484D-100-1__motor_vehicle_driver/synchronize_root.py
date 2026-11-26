@@ -17,7 +17,7 @@ manifest = load("execution-manifest.json")
 plan = load("case-plan.json")
 config = load("config.json")
 config["supported_case_ids"] = [item["case_id"] for item in manifest["cases"]]
-config["status"] = "selected_cpu_proofs_in_progress"
+config["status"] = "delivery_prepared_cpu_proofs_passed"
 config["recording_description"] = {
     "channels": [], "context_inputs": [],
     "limitations": ["Original Native capture, independent original pixels and legal disposition are not attested by CPU diagnostics"],
@@ -67,7 +67,7 @@ construction["measurement_plan"] = {
     "independent_review": "original four-view pixels, class equipment sufficiency, civil time, discernibility, device authority and parked exception",
     "legal_verdict_claimed": False,
 }
-construction["status"] = "selected_cpu_proofs_in_progress"
+construction["status"] = "delivery_prepared_cpu_proofs_passed"
 save("construction.json", construction)
 print(json.dumps({"supported_cases": len(config["supported_case_ids"]),
                   "root_channels": len(config["recording_description"]["channels"])}))

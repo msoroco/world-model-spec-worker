@@ -206,94 +206,83 @@
   ],
   "blockers": [],
   "source_context_review": "Access-aisle boundaries and designation must be evidenced; ordinary drive aisle or generic parking-lot stripe cannot substitute.",
-  "source_observation_mapping": [
-    {
-      "term": "st.parking_space",
-      "measurement": "official_access_aisle",
-      "evidence": "aisle-designation-review.json and reference_corner.mkv",
+  "source_observation_mapping": {
+    "st.parking_space": {
+      "evidence": "Independent official aisle designation, adjacent accessible bay and original premises geometry; synthetic source shape is diagnostic only.",
       "channels": [
         "st.parking_space"
       ],
       "source_refs": [
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/assignment.json",
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json"
+        "aisle-designation-review.json",
+        "aisle-context.json",
+        "road.xodr"
       ]
     },
-    {
-      "term": "st.lane_marking",
-      "measurement": "official_access_aisle",
-      "evidence": "aisle-designation-review.json and reference_corner.mkv",
+    "st.lane_marking": {
+      "evidence": "Contrasting marking or paving from separately reviewed source joined to original RGB pixels.",
       "channels": [
         "st.lane_marking"
       ],
       "source_refs": [
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/assignment.json",
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json"
+        "aisle-designation-review.json",
+        "reference_corner.mkv"
       ]
     },
-    {
-      "term": "drv.standing_or_parked",
-      "measurement": "parked_vehicle",
-      "evidence": "parking-review.json and native-vehicle.jsonl",
+    "drv.standing_or_parked": {
+      "evidence": "Original speed and independent parking activity, vehicle/responsible-person and purpose review.",
       "channels": [
         "drv.standing_or_parked"
       ],
       "source_refs": [
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/assignment.json",
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json"
+        "native-vehicle.jsonl",
+        "parking-review.json"
       ]
     },
-    {
-      "term": "rel.occupies",
-      "measurement": "body_aisle_overlap",
-      "evidence": "native-vehicle.jsonl and aisle-designation-review.json",
+    "rel.occupies": {
+      "evidence": "Original body coordinates joined to reviewed aisle bounds; no legal overlap cutoff.",
       "channels": [
         "rel.occupies"
       ],
       "source_refs": [
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/assignment.json",
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json"
+        "native-vehicle.jsonl",
+        "aisle-designation-review.json"
       ]
     },
-    {
-      "term": "kin.extent",
-      "measurement": "body_aisle_overlap",
-      "evidence": "native-vehicle.jsonl and aisle-designation-review.json",
+    "kin.extent": {
+      "evidence": "Original full-body corner geometry each Native frame.",
       "channels": [
         "kin.extent"
       ],
       "source_refs": [
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/assignment.json",
-        "inputs/training__C200542__LVMC-11-52-136__motor_vehicle_driver/witnesses.json"
+        "native-vehicle.jsonl"
       ]
     }
-  ],
+  },
   "camera_plan": {
-    "rate_hz": 20,
+    "profile": "overview1080-capability",
     "duration_s": 30,
-    "cameras": [
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
       {
-        "name": "overview",
-        "purpose": "Original premises, aisle, body and route pixels"
+        "subject": "public-access premises, adjacent accessible bay, whole vehicle and access aisle",
+        "interval": "full 30 second recording",
+        "view": "overview"
       },
       {
-        "name": "approach",
-        "purpose": "Original premises, aisle, body and route pixels"
+        "subject": "vehicle approach, ingress and egress and route connectivity",
+        "interval": "full 30 second recording",
+        "view": "approach"
       },
       {
-        "name": "reference_corner",
-        "purpose": "Original premises, aisle, body and route pixels"
+        "subject": "contrasting aisle markings or paving and conditional sign if used",
+        "interval": "full 30 second recording",
+        "view": "reference_corner"
       },
       {
-        "name": "driver_reference",
-        "purpose": "Original premises, aisle, body and route pixels"
+        "subject": "subject parking activity and whole-body footprint",
+        "interval": "full 30 second recording",
+        "view": "driver_reference"
       }
-    ],
-    "required_views": [
-      "official designation and adjacent accessible space",
-      "ingress/egress and route connectivity",
-      "whole parked body footprint",
-      "public-access premises context"
     ]
   }
 }

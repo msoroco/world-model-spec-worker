@@ -51,6 +51,9 @@ def main():
                   'candidate_id': 'primary', 'case': {'case_id': case_id},
                   'law_id': 'LVMC-11-52-136', 'cell_id': 'C200542', 'actor': 'motor_vehicle_driver',
                   'statutory_text': LAW, 'case_suffix': suffix, 'rate_hz': 20, 'duration_s': 30,
+                  'physical_completion': {'criterion': 'travel_progress', 'direction_xy': [1, 0],
+                      'minimum_progress_m': 20, 'minimum_samples': 600,
+                      'completion_goal_method': 'Authored 20 m parking-approach travel milestone; parking and aisle outcome require separate original review, not a legal cutoff.'},
                   'required_atoms': [], 'source_packets': [],
                   'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280, 'height': 1080 if name == 'overview' else 720,
                                'pose_strategy': 'fixed premises original RGB', 'fov_deg': 85}
