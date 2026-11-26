@@ -11,6 +11,7 @@ def scene(case):
          'official_vehicle_signal': True, 'steady_red': True,
          'green_turn_arrow': True,
          'other_device_display': case.other_device_display,
+         'walk_speed_target_mps': case.walk_speed_target_mps,
          'movement': case.movement,
          'pedestrian_route_xy': [[-3, 0], [-1, 0], [2, 0]],
          'highway_boundary_line_xy': [[0, -2], [0, 2]],
@@ -39,7 +40,8 @@ def rows(x, case):
              'pedestrian_id': 'walker', 'person_afoot': True,
              'facing_signal': True, 'official_steady_red': True,
              'official_green_turn_arrow': True,
-             'body_nearest_signed_boundary_m': 1 if case.movement == 'enter' and i >= 120 else -2}
+             'body_nearest_signed_boundary_m': 1 if case.movement == 'enter' and i >= 120 else -2,
+             'pedestrian_speed_mps': case.walk_speed_target_mps or (1 if case.movement == 'enter' else 0)}
             for i in range(900)]
 
 

@@ -63,6 +63,7 @@ def saved_result(attempt: Path, report: dict) -> dict:
             {"pedestrian_id": row["pedestrian_id"],
              "body_nearest_signed_boundary_m": row["body_nearest_signed_boundary_m"]}
             for row in rows],
+        "original_pedestrian_speed_mps": [row.get("pedestrian_speed_mps") for row in rows],
         "official red and green turn arrow": [
             {"official_steady_red": row["official_steady_red"],
              "official_green_turn_arrow": row["official_green_turn_arrow"],
@@ -101,7 +102,8 @@ def saved_result(attempt: Path, report: dict) -> dict:
         evidence.append({"name": item["name"], "unit": item["unit"],
                          "reference": "channels/context.json"})
     observed = report["measurements"]["pedestrian_signal_entry_observation"]["value"]
-    requested = case_id.endswith("__enter_no_other_device") or case_id.endswith("__enter_walk_display")
+    requested = next(item.movement == "enter" for item in CASES
+                     if case_id == ASSIGNMENT + "__" + item.case_id)
     measured = observed["first_original_entry_frame"] is not None
     result = {"case_id": case_id, "measured_values": observed,
         "target_checks": [{"target": "physical highway entry", "requested": requested,
@@ -118,7 +120,8 @@ def saved_result(attempt: Path, report: dict) -> dict:
                              "reference_corner.mkv", "driver_reference.mkv"],
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": description, "recording_evidence": evidence,
-        "realized_observables": {"pedestrian_highway_entry": observed}}
+        "realized_observables": {"pedestrian_highway_entry": observed,
+                                 "original_pedestrian_speed_mps": observed.get("original_pedestrian_speed_mps")}}
     result = physical_result(attempt, result)
     validate_result(result)
     return result

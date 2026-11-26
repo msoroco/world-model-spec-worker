@@ -65,7 +65,7 @@ def main() -> None:
         write(physical, {"format": "c228096-diagnostic-physical-preparation",
                          "case_id": case_id, "construction_sha256": source["construction_sha256"],
                          "source_kind": "synthetic_software_fixture", "fixtures": fixtures,
-                         "lifecycle": {"command": f".venv-cpu/bin/python work/{ASSIGNMENT}/prove_lifecycle.py --case {case_id} --attempt .runtime-work/c228096-owner/{compat.name} --saved-receipt .runtime-work/c228096-owner/saved2-{suffix}.log",
+                         "lifecycle": {"command": f".venv-cpu/bin/python work/{ASSIGNMENT}/prove_lifecycle.py --case {case_id} --attempt .runtime-work/c228096-owner/{compat.name} --saved-receipt .runtime-work/c228096-owner/saved-new2-{suffix}.stdout",
                                        "events": ["capture_finished", "encoders_closed", "restoration_verified", "native_exit", "owner_released", "saved_processing_started"],
                                        "exit_code": 0, "log": f"cases/{suffix}/{life.name}",
                                        "log_sha256": sha(life),

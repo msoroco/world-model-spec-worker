@@ -10,8 +10,8 @@ from delivery_audit import ASSIGNMENT, SOURCES
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
-BASE = REPO / "work/testing__C228096__NRS-484B-283-1b__pedestrian/cases/close_walk_into_path/diagnostic-spec.json"
-MAP = REPO / "work/testing__C228096__NRS-484B-283-1b__pedestrian/diagnostic-map.xodr"
+BASE = HERE / "cases/enter_no_other_device/diagnostic-spec.json"
+MAP = HERE / "diagnostic-map.xodr"
 
 
 def sha_bytes(data: bytes) -> str:
@@ -28,6 +28,7 @@ def scene(case):
             "official_vehicle_signal": True, "steady_red": True,
             "green_turn_arrow": True, "movement": case.movement,
             "other_device_display": case.other_device_display,
+            "walk_speed_target_mps": case.walk_speed_target_mps,
             "pedestrian_route_xy": [[-3, 0], [-1, 0], [2, 0]],
             "highway_boundary_line_xy": [[0, -2], [0, 2]], "inside_sign": -1,
             "start_signed_boundary_m": -2, "signal_facing_xy": [10, 0]}
@@ -46,6 +47,7 @@ def motion(case, item):
                "official_green_turn_arrow": True,
                "other_device_display": case.other_device_display,
                "body_nearest_signed_boundary_m": signed,
+               "pedestrian_speed_mps": case.walk_speed_target_mps or (1 if case.movement == "enter" else 0),
                "pedestrian_xy": [1 if signed > 0 else -3, 0]}
         for name in ("source", "pedestrian_body", "pedestrian_motion",
                      "highway_boundary", "signal_display", "other_device_display",
@@ -113,7 +115,7 @@ def main():
         write(directory / "diagnostic-recipe.json", recipe)
         if spec_path.stat().st_size > 2 * 1024 * 1024:
             raise ValueError("diagnostic spec exceeds returned file limit")
-    print("Built four bounded synthetic signal diagnostic recipes")
+    print(f"Built {len(CASES)} bounded synthetic signal diagnostic recipes")
 
 
 if __name__ == "__main__":

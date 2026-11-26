@@ -13,6 +13,7 @@ class Case:
     case_id: str
     movement: str
     other_device_display: str
+    walk_speed_target_mps: float | None = None
 
 
 CASES = (
@@ -20,6 +21,9 @@ CASES = (
     Case('wait_no_other_device', 'wait', 'none'),
     Case('enter_walk_display', 'enter', 'walk'),
     Case('wait_walk_display', 'wait', 'walk'),
+    Case('other_device_permission-0000', 'enter', 'walk', 0.8),
+    Case('other_device_permission-0001', 'enter', 'walk', 1.6),
+    Case('other_device_permission-0002', 'enter', 'walk', 1.2),
 )
 
 
@@ -43,6 +47,11 @@ def validate_scene(scene: Mapping, case: Case):
             'other-device case display differs')
     require(scene.get('movement') == case.movement,
             'pedestrian entry or wait case movement differs')
+    if case.walk_speed_target_mps is not None:
+        require(0.5 <= case.walk_speed_target_mps <= 2.0,
+                'authored walking-speed request outside tested physical bounds')
+        require(scene.get('walk_speed_target_mps') == case.walk_speed_target_mps,
+                'exact reviewed walking-speed station differs')
     for field in ('jurisdiction', 'highway_dedication', 'public_vehicle_use',
                   'highway_boundary', 'person_afoot', 'facing_orientation',
                   'official_signal', 'red_arrow_timing', 'other_device_inventory',
@@ -141,8 +150,17 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
     else:
         require(not entries, 'waiting case entered highway')
         entry_frame = None
+    speed_observation = None
+    if case.walk_speed_target_mps is not None:
+        samples = [row.get('pedestrian_speed_mps') for row in rows[120:240]]
+        require(len(samples) == 120 and all(number(value) and value >= 0 for value in samples),
+                'original pedestrian speed readback missing from steady approach')
+        speed_observation = {'value': sum(samples) / len(samples), 'unit': 'm/s',
+                             'method': 'mean of original body velocity readbacks from 6 through 12 seconds',
+                             'source_kind': 'original_native_frames'}
     return {'case_id': case.case_id, 'frame_count': 900,
             'first_original_entry_frame': entry_frame,
+            'original_pedestrian_speed_mps': speed_observation,
             'other_device_display_observed': case.other_device_display,
             'vehicle_arrow_is_pedestrian_permission': False,
             'pedestrian_permission_judgment': None, 'legal_judgment': None}

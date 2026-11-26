@@ -85,7 +85,7 @@ class AuditTests(unittest.TestCase):
     def test_four_source_bound_deliveries_and_three_comparisons(self):
         results = {case.case_id: deliver(self.root, self.attempt(case), self.video_probe)
                    for case in CASES}
-        self.assertEqual(len(results), 4)
+        self.assertEqual(len(results), len(CASES))
         self.assertTrue(all(value["other_device_permission_under_nrs_484b_283"] == "unresolved"
                             for value in results.values()))
         for comparison_id, (left, right, _) in PAIRS.items():

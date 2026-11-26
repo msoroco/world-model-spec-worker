@@ -20,6 +20,8 @@ AXES = {
 
 def preview() -> dict:
     proposal = json.loads((ROOT / "proposals/cases.json").read_text(encoding="utf-8"))
+    proposal["cases"] = [case for case in proposal["cases"]
+                         if case.get("target_type") != "judgment_sweep"]
     cases = {case["case_id"]: case for case in proposal["cases"]}
     grids = []
     for old in proposal["sweep_specs"]:
@@ -33,12 +35,21 @@ def preview() -> dict:
             "kind": "controller", "unit": "m/s", "value": values[0],
             "note": "Authored speed request; retain all original measured speeds separately",
         }
+        description = deepcopy(source["recording_description"])
+        description["channels"].append({
+            "name": observable, "unit": "m/s",
+            "method": "20 Hz original Native actor speed readback",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "Controller request is not guaranteed realized speed or legal outcome",
+        })
         grids.append({
             "sweep_id": old["sweep_id"], "target_law_id": old["target_law_id"],
             "judgment_refs": deepcopy(old["judgment_refs"]), "status": "complete",
             "mode": "one_dimensional", "landmarks": [],
             "rationale": "Bounded physical speed sampling; impediment and passing necessity remain legal review questions.",
-            "recording_description": deepcopy(source["recording_description"]),
+            "recording_description": description,
             "variable_assignments": assignments,
             "axes": [{
                 "variable": variable, "observable": observable, "unit": "m/s",

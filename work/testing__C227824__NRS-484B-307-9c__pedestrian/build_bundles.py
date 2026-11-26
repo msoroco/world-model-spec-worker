@@ -1,4 +1,4 @@
-"""Build four exact pedestrian signal diagnostic constructions and contracts."""
+"""Build the selected exact pedestrian signal constructions and contracts."""
 from __future__ import annotations
 
 import hashlib
@@ -54,6 +54,11 @@ def recording_description() -> dict:
                  "sampling_rate_hz": 20, "time_window": "45-second original episode",
                  "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review"}
                 for name, method in names]
+    channels.append({"name": "original_pedestrian_speed_mps", "unit": "m/s",
+                     "method": "Original Native body velocity each synchronized frame; retained raw stream and steady approach mean",
+                     "reference_frame": "same original Native frame and simulation time",
+                     "sampling_rate_hz": 20, "time_window": "45-second original episode",
+                     "uncertainty": "Controller request does not establish realized speed or legal permission"})
     context = [{"name": "reviewed highway, signal and device authority",
                 "unit": "source record", "method": "SHA-256-sealed original site, map and signal assets"}]
     return {"channels": channels, "context_inputs": context,
@@ -124,7 +129,7 @@ def main():
           {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
            "runtime_manifest_sha256": sha(REPO / "runtime/SOURCE-MANIFEST.json"),
            "diagnostic_only": True, "cases": entries})
-    print("Built four exact source-gated signal diagnostic constructions")
+    print(f"Built {len(CASES)} exact source-gated signal diagnostic constructions")
 
 
 if __name__ == "__main__":

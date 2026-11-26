@@ -70,10 +70,21 @@
           "unit": "categorical",
           "value": "enter"
         },
+        "original_pedestrian_speed_mps": {
+          "kind": "subject_behavior",
+          "unit": "m/s",
+          "value": null
+        },
         "other_device_display": {
           "kind": "world_setup",
           "unit": "categorical",
           "value": "none"
+        },
+        "walk_speed_target_mps": {
+          "kind": "controller",
+          "note": "inactive in the original categorical comparison",
+          "unit": "m/s",
+          "value": null
         }
       }
     },
@@ -156,10 +167,21 @@
           "unit": "categorical",
           "value": "enter"
         },
+        "original_pedestrian_speed_mps": {
+          "kind": "subject_behavior",
+          "unit": "m/s",
+          "value": null
+        },
         "other_device_display": {
           "kind": "world_setup",
           "unit": "categorical",
           "value": "none"
+        },
+        "walk_speed_target_mps": {
+          "kind": "controller",
+          "note": "inactive in the original categorical comparison",
+          "unit": "m/s",
+          "value": null
         }
       }
     },
@@ -242,10 +264,21 @@
           "unit": "categorical",
           "value": "wait"
         },
+        "original_pedestrian_speed_mps": {
+          "kind": "subject_behavior",
+          "unit": "m/s",
+          "value": null
+        },
         "other_device_display": {
           "kind": "world_setup",
           "unit": "categorical",
           "value": "none"
+        },
+        "walk_speed_target_mps": {
+          "kind": "controller",
+          "note": "inactive in the original categorical comparison",
+          "unit": "m/s",
+          "value": null
         }
       }
     },
@@ -328,10 +361,21 @@
           "unit": "categorical",
           "value": "enter"
         },
+        "original_pedestrian_speed_mps": {
+          "kind": "subject_behavior",
+          "unit": "m/s",
+          "value": null
+        },
         "other_device_display": {
           "kind": "world_setup",
           "unit": "categorical",
           "value": "walk"
+        },
+        "walk_speed_target_mps": {
+          "kind": "controller",
+          "note": "inactive in the original categorical comparison",
+          "unit": "m/s",
+          "value": null
         }
       }
     },
@@ -414,10 +458,378 @@
           "unit": "categorical",
           "value": "wait"
         },
+        "original_pedestrian_speed_mps": {
+          "kind": "subject_behavior",
+          "unit": "m/s",
+          "value": null
+        },
         "other_device_display": {
           "kind": "world_setup",
           "unit": "categorical",
           "value": "walk"
+        },
+        "walk_speed_target_mps": {
+          "kind": "controller",
+          "note": "inactive in the original categorical comparison",
+          "unit": "m/s",
+          "value": null
+        }
+      }
+    },
+    {
+      "case_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0000",
+      "deliberate_differences": [
+        "walk_speed_target_mps"
+      ],
+      "judgment_refs": [
+        {
+          "note": "WALK display is observed but permission under NRS 484B.283 requires independent source review.",
+          "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283"
+        }
+      ],
+      "paired_probe_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "walk_speed_target_mps",
+        "target_value_or_branch": {
+          "walk_speed_target_mps": 0.8
+        }
+      },
+      "rationale": "Sample finite pedestrian approach speeds while the separate device displays WALK; permission under NRS 484B.283 remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian body distance to reviewed highway boundary",
+            "name": "pedestrian and highway boundary",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original concurrent signal actor readback",
+            "name": "official red and green turn arrow",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz other-device and pedestrian-facing readback",
+            "name": "other device display and facing",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map and signal assets",
+            "name": "reviewed highway, signal and device authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "A green vehicle arrow is not pedestrian permission.",
+          "Another device's WALK display does not alone resolve NRS 484B.283 permission.",
+          "Actual highway dedication, public use, facing and signal assets require independent review."
+        ]
+      },
+      "selection_rank": 0,
+      "sweep_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "original 20 Hz pedestrian body velocity readback after departure, retaining the complete raw stream",
+            "statistic": "mean",
+            "time_window": "original seconds 6 through 12 after departure, excluding startup transient"
+          },
+          "observable": "original_pedestrian_speed_mps",
+          "unit": "m/s",
+          "variable": "walk_speed_target_mps"
+        }
+      ],
+      "sweep_point": {
+        "walk_speed_target_mps": 0.8
+      },
+      "sweep_spec_version": "0ea16ef04ca2b3287f3e3df533b43edfd6ea22640135cfa40b7ddff61d81e12d",
+      "target_law_id": "NRS-484B-307-9c",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "unless permitted to proceed by another device as provided in NRS 484B.283"
+      ],
+      "variable_assignments": {
+        "movement": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "enter"
+        },
+        "original_pedestrian_speed_mps": {
+          "kind": "subject_behavior",
+          "unit": "m/s",
+          "value": null
+        },
+        "other_device_display": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "walk_speed_target_mps": {
+          "kind": "controller",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "unit": "m/s",
+          "value": 0.8
+        }
+      }
+    },
+    {
+      "case_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0001",
+      "deliberate_differences": [
+        "walk_speed_target_mps"
+      ],
+      "judgment_refs": [
+        {
+          "note": "WALK display is observed but permission under NRS 484B.283 requires independent source review.",
+          "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283"
+        }
+      ],
+      "paired_probe_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "walk_speed_target_mps",
+        "target_value_or_branch": {
+          "walk_speed_target_mps": 1.6
+        }
+      },
+      "rationale": "Sample finite pedestrian approach speeds while the separate device displays WALK; permission under NRS 484B.283 remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian body distance to reviewed highway boundary",
+            "name": "pedestrian and highway boundary",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original concurrent signal actor readback",
+            "name": "official red and green turn arrow",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz other-device and pedestrian-facing readback",
+            "name": "other device display and facing",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map and signal assets",
+            "name": "reviewed highway, signal and device authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "A green vehicle arrow is not pedestrian permission.",
+          "Another device's WALK display does not alone resolve NRS 484B.283 permission.",
+          "Actual highway dedication, public use, facing and signal assets require independent review."
+        ]
+      },
+      "selection_rank": 1,
+      "sweep_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "original 20 Hz pedestrian body velocity readback after departure, retaining the complete raw stream",
+            "statistic": "mean",
+            "time_window": "original seconds 6 through 12 after departure, excluding startup transient"
+          },
+          "observable": "original_pedestrian_speed_mps",
+          "unit": "m/s",
+          "variable": "walk_speed_target_mps"
+        }
+      ],
+      "sweep_point": {
+        "walk_speed_target_mps": 1.6
+      },
+      "sweep_spec_version": "0ea16ef04ca2b3287f3e3df533b43edfd6ea22640135cfa40b7ddff61d81e12d",
+      "target_law_id": "NRS-484B-307-9c",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "unless permitted to proceed by another device as provided in NRS 484B.283"
+      ],
+      "variable_assignments": {
+        "movement": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "enter"
+        },
+        "original_pedestrian_speed_mps": {
+          "kind": "subject_behavior",
+          "unit": "m/s",
+          "value": null
+        },
+        "other_device_display": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "walk_speed_target_mps": {
+          "kind": "controller",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "unit": "m/s",
+          "value": 1.6
+        }
+      }
+    },
+    {
+      "case_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0002",
+      "deliberate_differences": [
+        "walk_speed_target_mps"
+      ],
+      "judgment_refs": [
+        {
+          "note": "WALK display is observed but permission under NRS 484B.283 requires independent source review.",
+          "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283"
+        }
+      ],
+      "paired_probe_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission",
+      "probe": {
+        "comparison_or_standard": "physical coverage; legal judgment unresolved",
+        "primary_variable": "walk_speed_target_mps",
+        "target_value_or_branch": {
+          "walk_speed_target_mps": 1.2
+        }
+      },
+      "rationale": "Sample finite pedestrian approach speeds while the separate device displays WALK; permission under NRS 484B.283 remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian body distance to reviewed highway boundary",
+            "name": "pedestrian and highway boundary",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original concurrent signal actor readback",
+            "name": "official red and green turn arrow",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz other-device and pedestrian-facing readback",
+            "name": "other device display and facing",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map and signal assets",
+            "name": "reviewed highway, signal and device authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "A green vehicle arrow is not pedestrian permission.",
+          "Another device's WALK display does not alone resolve NRS 484B.283 permission.",
+          "Actual highway dedication, public use, facing and signal assets require independent review."
+        ]
+      },
+      "selection_rank": 2,
+      "sweep_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission",
+      "sweep_measurements": [
+        {
+          "measurement": {
+            "method": "original 20 Hz pedestrian body velocity readback after departure, retaining the complete raw stream",
+            "statistic": "mean",
+            "time_window": "original seconds 6 through 12 after departure, excluding startup transient"
+          },
+          "observable": "original_pedestrian_speed_mps",
+          "unit": "m/s",
+          "variable": "walk_speed_target_mps"
+        }
+      ],
+      "sweep_point": {
+        "walk_speed_target_mps": 1.2
+      },
+      "sweep_spec_version": "0ea16ef04ca2b3287f3e3df533b43edfd6ea22640135cfa40b7ddff61d81e12d",
+      "target_law_id": "NRS-484B-307-9c",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "unless permitted to proceed by another device as provided in NRS 484B.283"
+      ],
+      "variable_assignments": {
+        "movement": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "enter"
+        },
+        "original_pedestrian_speed_mps": {
+          "kind": "subject_behavior",
+          "unit": "m/s",
+          "value": null
+        },
+        "other_device_display": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "walk_speed_target_mps": {
+          "kind": "controller",
+          "note": "Fixed physical sweep setpoint; actual behavior is measured separately",
+          "unit": "m/s",
+          "value": 1.2
         }
       }
     }
@@ -462,6 +874,32 @@
       "fixed_conditions": [
         "same highway boundary, pedestrian, official steady red/green turn arrow, route and camera/duration"
       ]
+    },
+    {
+      "case_ids": [
+        "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0000",
+        "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0001"
+      ],
+      "comparison_id": "sweep_walk_speed_0",
+      "deliberate_differences": [
+        "walk_speed_target_mps"
+      ],
+      "fixed_conditions": [
+        "same reviewed highway, pedestrian route, steady red/green turn arrow, other-device WALK display, cameras and duration"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0001",
+        "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0002"
+      ],
+      "comparison_id": "sweep_walk_speed_1",
+      "deliberate_differences": [
+        "walk_speed_target_mps"
+      ],
+      "fixed_conditions": [
+        "same reviewed highway, pedestrian route, steady red/green turn arrow, other-device WALK display, cameras and duration"
+      ]
     }
   ],
   "source_assignment": "inputs/testing__C227824__NRS-484B-307-9c__pedestrian/assignment.json",
@@ -469,21 +907,114 @@
   "status": "draft",
   "sweep_specs": [
     {
+      "axes": [
+        {
+          "feasibility_evidence": "NativeAdapter applies a source-gated walker control every original frame; local CPU tests exercise the three requests, while physical realization remains pending.",
+          "max": 1.6,
+          "measurement": {
+            "method": "original 20 Hz pedestrian body velocity readback after departure, retaining the complete raw stream",
+            "statistic": "mean",
+            "time_window": "original seconds 6 through 12 after departure, excluding startup transient"
+          },
+          "min": 0.8,
+          "observable": "original_pedestrian_speed_mps",
+          "range_rationale": "Three authored walking controller requests for the existing 45-second route and source-gated Native walker; no value defines legal permission.",
+          "spacing": 0.4,
+          "spacing_rationale": "Three separated physical setpoints permit measured approach variation while maintaining the same signal, route and cameras.",
+          "unit": "m/s",
+          "variable": "walk_speed_target_mps"
+        }
+      ],
       "judgment_refs": [
         {
           "note": "WALK display is observed but permission under NRS 484B.283 requires independent source review.",
           "phrase": "unless permitted to proceed by another device as provided in NRS 484B.283"
         }
       ],
-      "missing_inputs": [
-        "reviewed original signal and other-device assets",
-        "source-supported feasible physical display/timing controls and NRS 484B.283 permission authority"
+      "landmarks": [],
+      "mode": "one_dimensional",
+      "planned_case_count": 3,
+      "rationale": "Sample finite pedestrian approach speeds while the separate device displays WALK; permission under NRS 484B.283 remains unresolved.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original pedestrian body distance to reviewed highway boundary",
+            "name": "pedestrian and highway boundary",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original concurrent signal actor readback",
+            "name": "official red and green turn arrow",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz other-device and pedestrian-facing readback",
+            "name": "other device display and facing",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          },
+          {
+            "method": "20 Hz original Native RGB cameras",
+            "name": "four synchronized camera views",
+            "reference_frame": "same original Native frame and simulation time",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "NRS 484B.283 other-device permission and actual signal appearance require independent review",
+            "unit": "source observation"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "SHA-256-sealed original site, map and signal assets",
+            "name": "reviewed highway, signal and device authority",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "A green vehicle arrow is not pedestrian permission.",
+          "Another device's WALK display does not alone resolve NRS 484B.283 permission.",
+          "Actual highway dedication, public use, facing and signal assets require independent review."
+        ]
+      },
+      "selection_order": [
+        "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0000",
+        "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0001",
+        "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission-0002"
       ],
-      "rationale": "Frozen sources contain no exact C227824 judgment range or original device permission evidence.",
-      "status": "incomplete",
+      "spec_version": "0ea16ef04ca2b3287f3e3df533b43edfd6ea22640135cfa40b7ddff61d81e12d",
+      "status": "complete",
       "sweep_id": "testing__C227824__NRS-484B-307-9c__pedestrian__other_device_permission",
-      "target_law_id": "NRS-484B-307-9c"
+      "target_law_id": "NRS-484B-307-9c",
+      "variable_assignments": {
+        "movement": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "enter"
+        },
+        "other_device_display": {
+          "kind": "world_setup",
+          "unit": "categorical",
+          "value": "walk"
+        },
+        "walk_speed_target_mps": {
+          "kind": "controller",
+          "note": "Physical controller request; actual original speed is measured separately",
+          "unit": "m/s",
+          "value": 0.8
+        }
+      }
     }
   ],
-  "sweeps_expanded": false
+  "sweeps_expanded": true
 }

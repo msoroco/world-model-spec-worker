@@ -131,7 +131,8 @@ class NativeAdapter:
         scene = self.plan["scene"]
         pedestrian = self.pedestrian_route["actor"]
         direction, distance = self._direction()
-        speed = self.plan["motion_controls"]["walk_speed_mps"] if self.pedestrian_route["movement"] == "enter" and distance >= 0.5 and index >= 100 else 0.0
+        requested = self.plan["case"].walk_speed_target_mps
+        speed = (requested if requested is not None else self.plan["motion_controls"]["walk_speed_mps"]) if self.pedestrian_route["movement"] == "enter" and distance >= 0.5 and index >= 100 else 0.0
         pedestrian.apply_control(self.carla.WalkerControl(direction=direction, speed=speed))
         native_frame = self.world.tick()
         expected = {"red_signal_actor_id": self.carla.TrafficLightState.Red,
@@ -163,6 +164,9 @@ class NativeAdapter:
                "official_green_turn_arrow": self.signals["green_arrow_actor_id"].get_state() == self.carla.TrafficLightState.Green,
                "other_device_display": scene["other_device_display"],
                "body_nearest_signed_boundary_m": self._signed_boundary(pedestrian),
+               "pedestrian_speed_mps": math.sqrt(sum(value * value for value in
+                    (pedestrian.get_velocity().x, pedestrian.get_velocity().y,
+                     pedestrian.get_velocity().z))),
                "pedestrian_xy": [pedestrian.get_location().x, pedestrian.get_location().y],
                **source}
         self.motion_rows.append(row)

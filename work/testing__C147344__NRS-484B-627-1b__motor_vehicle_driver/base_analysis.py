@@ -60,6 +60,9 @@ def saved_result(attempt: Path, report: dict) -> dict:
     relation = json.loads((attempt / "relation.json").read_text(encoding="utf-8"))
     observations = right_lane_follower_observation(attempt, case_id)["observations"]
     channel_values = {
+        "ego_speed_mps": [row["ego_speed_mps"] for row in trace["frames"]],
+        "slower_vehicle_speed_mps": [row["slower_vehicle_speed_mps"]
+                                     for row in trace["frames"]],
         "marked highway lane identities": [
             {"rightmost_lane_id": row["rightmost_same_direction_lane_id"],
              "same_direction_marked_lane_count": row["same_direction_marked_lane_count"]}

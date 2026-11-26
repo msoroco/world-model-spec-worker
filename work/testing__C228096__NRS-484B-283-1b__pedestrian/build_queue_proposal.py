@@ -25,7 +25,7 @@ def main() -> None:
                    f'--job "$JOB_ID" --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"')
         accept = (f'{base} accept-delivery --repo "$PWD" --batch full-test-delivery '
                   f'--db "$DB" --assignment {ASSIGNMENT} --case {case} --run "$RUN" '
-                  f'--job "$JOB_ID" --attempt "$ATTEMPT" --audit "$AUDIT" --review-archive "$REVIEW_ARCHIVE"')
+                  f'--job "$JOB_ID" --attempt "$ATTEMPT" --audit "$AUDIT" --review-archive /external/archive')
         rows.append({"order": i, "assignment_id": ASSIGNMENT, "case_id": case,
                      "prepare_command": prepare, "execute_command": execute,
                      "capture_command": execute, "accept_command": accept,
@@ -37,13 +37,12 @@ def main() -> None:
                     "command": f'.venv-cpu/bin/python work/{ASSIGNMENT}/audit_cli.py --comparison {item["comparison_id"]} --authority-root "$SOURCE_ROOT" --receipts "$RECEIPTS" --output "$COMPARISON_AUDIT"'}
                    for item in plan["comparisons"]]
     value = {"format": "worker-assignment-gpu-queue-proposal", "assignment_id": ASSIGNMENT,
-             "status": "source_gated_not_dispatchable", "cases": rows,
+             "status": "cpu_prepared_original_review_pending", "cases": rows,
              "comparison_audit_commands": comparisons,
-             "preconditions": ["complete two source-supported judgment sweep plans",
-                               "obtain reviewed original curb/path site and source packet",
+             "preconditions": ["obtain reviewed original curb/path site and source packet",
                                "pass exact strict worker gate before local queue adoption"]}
     (ROOT / "gpu-queue-proposal.json").write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print("Drafted five exact case rows and four comparison audit commands")
+    print(f"Drafted {len(rows)} exact case rows and {len(comparisons)} comparison audit commands")
 
 
 if __name__ == "__main__":

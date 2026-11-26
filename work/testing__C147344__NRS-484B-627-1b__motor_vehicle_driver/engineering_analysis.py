@@ -5,8 +5,12 @@ import argparse
 import json
 from pathlib import Path
 
-from base_analysis import right_lane_follower_observation, saved_result, sha
+from base_analysis import right_lane_follower_observation as _observe, saved_result, sha
 from engineering_sweep_station import engineering_station
+
+
+def right_lane_follower_observation(attempt: Path, case_id: str) -> dict:
+    return _observe(attempt, case_id)
 
 
 def right_lane_follower_observation_report(attempt: Path, case_id: str) -> dict:
@@ -50,6 +54,15 @@ def main() -> None:
         "selected_case_id"]
     report = right_lane_follower_observation_report(args.attempt, case_id)
     result = saved_result(args.attempt, report)
+    measured = report["measurements"]["right_lane_follower_observation"]["value"]
+    speed_field = measured["speed_field"]
+    result.setdefault("realized_observables", {})[speed_field] = {
+        "value": measured["observed_mean_speed_mps"], "unit": "m/s",
+        "method": "original 20 Hz Native actor speed readback, with full trace retained",
+        "time_window": "entire original 45-second episode", "statistic": "mean",
+        "reference": "channels/" + speed_field + ".jsonl",
+        "sample_window_s": [0.0, 899 / 20],
+    }
     report["physical_checks"] = result["physical_checks"]
     report["realized_observables"] = result["realized_observables"]
     (args.attempt / "result.json").write_text(json.dumps(result, indent=2) + "\n",

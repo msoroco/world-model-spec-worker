@@ -29,6 +29,10 @@ def main() -> None:
                "range_or_domain": domain} for name, domain in (
                    ("movement", "enter or wait"),
                    ("other_device_display", "none or WALK display"))]
+    params.append({"kind": "controller", "name": "walk_speed_target_mps",
+                   "unit": "m/s", "range_or_domain": "authored finite pedestrian approach controls; no legal cutoff"})
+    params.append({"kind": "subject_behavior", "name": "original_pedestrian_speed_mps",
+                   "unit": "m/s", "range_or_domain": "measured original pedestrian motion"})
     judgment = {"phrase": "unless permitted to proceed by another device as provided in NRS 484B.283",
                 "note": "WALK display is observed but permission under NRS 484B.283 requires independent source review."}
     template = {"actor": "pedestrian", "law_id": LAW_ID, "parameter_refs": params,
@@ -45,11 +49,15 @@ def main() -> None:
                     "landmarks": [], "limitations": ["Another device's WALK display does not alone establish permission under NRS 484B.283."],
                     "observables": [{"name": "other device display and facing",
                                      "description": "20 Hz original Native display and pedestrian-facing readback",
-                                     "unit": "source observation"}],
+                                     "unit": "source observation"},
+                                    {"name": "original_pedestrian_speed_mps",
+                                     "description": "20 Hz original pedestrian body velocity readback after departure",
+                                     "unit": "m/s"}],
                     "recording_needs": [{"name": "other device display and facing",
                                          "description": "Original saved device and camera review",
                                          "unit": "source observation"}],
-                    "sweep_dimensions": []}
+                    "sweep_dimensions": [{"name": "original_pedestrian_speed_mps", "unit": "m/s",
+                                          "description": "Measured original pedestrian approach speed after startup, separate from device authority and legal permission"}]}
     write("judgment-0", {"note": judgment["note"], "phrase": judgment["phrase"],
                          "observable_requirements": requirements, "status": "draft",
                          "template_id": TEMPLATE_ID})
