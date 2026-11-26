@@ -26,6 +26,14 @@ DESC = {'channels': [
      'method': 'separate vehicular traffic speed, 20 Hz',
      'sampling_rate_hz': 20, 'time_window': 'all 900 frames',
      'reference_frame': 'original frame/time', 'uncertainty': 'traffic route review'},
+    {'name': 'traffic_speed_mps', 'unit': 'm/s',
+     'method': 'source-sealed separate vehicle speed, 20 Hz',
+     'sampling_rate_hz': 20, 'time_window': 'stopped loading frames',
+     'reference_frame': 'original frame/time', 'uncertainty': 'traffic actor and route review'},
+    {'name': 'bus_curb_angle_deg', 'unit': 'deg',
+     'method': 'source-sealed bus heading relative to reviewed curb tangent, 20 Hz',
+     'sampling_rate_hz': 20, 'time_window': 'stopped loading frames',
+     'reference_frame': 'original frame/time', 'uncertainty': 'body and curb geometry review'},
     {'name': 'camera_frame_identity', 'unit': 'frame ID',
      'method': 'four synchronized cameras, 20 Hz',
      'sampling_rate_hz': 20, 'time_window': 'all 900 frames',
@@ -89,7 +97,8 @@ def build():
                    'bus_speed_mps': 2 if index < 100 else 0,
                    'traffic_speed_mps': 3, 'loading_active': index >= 150,
                    'right_front_wheel_xy': [5, case.target_distance_m],
-                   'wheel_position_uncertainty_m': .001, 'bus_curb_angle_deg': 2}
+                   'wheel_position_uncertainty_m': .001,
+                   'bus_curb_angle_deg': case.heading_request_deg}
             for name in ('frame', 'bus_motion', 'traffic_motion', 'right_front_wheel',
                          'curb_geometry', 'location_designation', 'loading_activity'):
                 row[name + '_source_sha256'] = scene.get(name + '_source_sha256',

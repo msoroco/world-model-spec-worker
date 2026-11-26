@@ -28,8 +28,8 @@ def prove() -> None:
     for kind in KINDS:
         case = HERE / "cases" / kind
         case_id = HERE.name + "__" + kind
-        positive = SCRATCH / f"compat-{kind}-v7"
-        negative = SCRATCH / f"independent-negative-{kind}-v8"
+        positive = SCRATCH / f"compat-{kind}-v9b"
+        negative = SCRATCH / f"independent-negative-{kind}-v9b"
         if negative.exists():
             raise ValueError("Use a fresh negative attempt: " + str(negative))
         shutil.copytree(positive, negative, copy_function=os.link)

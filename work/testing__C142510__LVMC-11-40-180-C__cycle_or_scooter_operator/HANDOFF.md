@@ -1,3 +1,11 @@
+## 2026-11-25 source-gated judgment sweep completion
+
+The two law judgment phrases now have source-gated engineering grids in `case-plan.json` and `proposals/cases.json`. The yielding grid covers rider brake/pause versus advance and all three covered rider kinds. The audible grid covers pre-pass, late and silent emitter schedules and all three kinds. These are physical variation plans, not legal ranges. Six selected cases and three fixed comparisons remain unchanged.
+
+`qualitative_sweep_audit.py` binds each exact case and sweep to a SHA-sealed independent original delivery receipt, the reviewed connected sidewalk map and full source inventory, 900-frame passing bracket, original time intervals, independent pedestrian precedence/response or emitter/listening/microphone capability, and a reviewer-declared qualitative observation. It rejects absent or changed sources, missing capability, bad intervals and legal verdicts. Synthetic original-shaped fixtures test the software protocol only; no original motion, human audibility or legal outcome is claimed. `audit_original_cli.py` and `compare_original.py` expose local post-capture audits. `queue-proposal.json` lists six exact jobs, tested fallback candidates and three comparison audits.
+
+The focused suite passes 22 tests in `cpu-qualitative-sweep-tests-v25.log`; scoped static passes in `cpu-qualitative-sweep-static-v25.log`. Original connected sidewalk/site review, emitter and microphone capability, real 900-frame Native capture, independent physical/human review and legal interpretation remain local production requirements.
+
 # C142510 connected-sidewalk pedestrian overtaking
 
 ## Current handoff, 2026-11-25 production source-gated package

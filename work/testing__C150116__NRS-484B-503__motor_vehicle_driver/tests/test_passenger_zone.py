@@ -67,12 +67,35 @@ def rows(case, event_frame=300):
 
 class PassengerZoneTests(unittest.TestCase):
     def test_all_cases_construct_distinct_control_paths(self):
-        for case in zone.CASES:
+        for case in zone.CASES[:7]:
             adapter = Adapter()
             result = zone.build_case(adapter, site(case.hours == "effective"), case)
             self.assertEqual(result["case"], case.name)
             self.assertEqual([x[0] for x in adapter.calls], ["vehicle", "passenger", "route", "conduct", "action"])
             self.assertEqual(adapter.calls[-1][2]["release_delay_s"], case.release_delay_s)
+
+    def test_sweep_sources_rejected_before_native_spawn(self):
+        for case in (zone.CASES[7], zone.CASES[10], zone.CASES[13]):
+            adapter = Adapter()
+            with self.assertRaises(ValueError):
+                zone.build_case(adapter, site(case.hours == "effective"), case)
+            self.assertFalse(adapter.calls)
+
+    def test_original_survey_offset_and_clock_boundary_are_checked(self):
+        marked = site()
+        marked["zone"].update(parking_pose=[4, 2.5], boundary_offset_source_sha256="original-survey",
+                              feasible_boundary_offsets_m=[-0.5, 0.5])
+        zone.validate_site(marked, zone.CASES[7])
+        marked["zone"]["parking_pose"] = [4, 1]
+        with self.assertRaisesRegex(ValueError, "surveyed parking pose differs"):
+            zone.validate_site(marked, zone.CASES[7])
+        clocked = site(False)
+        clocked["clock"].update(effective_boundary_civil_iso="2026-11-23T12:30:00-08:00",
+                                effective_boundary_source_sha256="original-regulation")
+        zone.validate_site(clocked, zone.CASES[10])
+        clocked["clock"]["effective_boundary_civil_iso"] = "2026-11-23T13:00:00-08:00"
+        with self.assertRaisesRegex(ValueError, "sourced civil clock differs"):
+            zone.validate_site(clocked, zone.CASES[10])
 
     def test_bad_site_and_hours_rejected_before_spawn(self):
         for mutation in (lambda s: s["road"].update(one_way_readback=False),

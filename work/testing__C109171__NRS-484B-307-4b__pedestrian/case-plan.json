@@ -279,11 +279,31 @@
     }
   ],
   "observations": [
-    "original official vehicle-head phase and lit arrows per frame",
-    "original pedestrian-device indication and governed crossing per frame",
-    "pedestrian body position and sidewalk-to-highway boundary in map coordinates",
-    "first highway-entry frame with phase at that frame",
-    "camera evidence of arrow and pedestrian device; physical visibility remains unverified"
+    {
+      "name": "official_sole_arrow",
+      "mandatory": true,
+      "description": "original official vehicle-head phase and lit arrows per frame"
+    },
+    {
+      "name": "separate_device_timeline",
+      "mandatory": true,
+      "description": "original pedestrian-device indication and governed crossing per frame"
+    },
+    {
+      "name": "sampled_highway_entry",
+      "mandatory": true,
+      "description": "pedestrian body position and sidewalk-to-highway boundary in map coordinates"
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true,
+      "description": "first highway-entry frame with phase at that frame"
+    },
+    {
+      "name": "first_highway_entry_time_s",
+      "mandatory": false,
+      "description": "camera evidence of arrow and pedestrian device; physical visibility remains unverified"
+    }
   ],
   "sources": [
     {
@@ -386,14 +406,31 @@
     }
   ],
   "camera_plan": {
-    "fps": 20,
-    "duration_seconds": 45,
-    "sources": [
-      "overview",
-      "approach",
-      "reference_corner",
-      "driver_reference"
-    ],
-    "limitation": "Exact pixel coverage awaits Native site and camera review."
-  }
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "pedestrian, official sole green arrow, separate governing device, road and highway-entry boundary",
+        "interval": "all 900 original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian, official sole green arrow, separate governing device, road and highway-entry boundary",
+        "interval": "all 900 original frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "pedestrian, official sole green arrow, separate governing device, road and highway-entry boundary",
+        "interval": "all 900 original frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "pedestrian, official sole green arrow, separate governing device, road and highway-entry boundary",
+        "interval": "all 900 original frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
 }

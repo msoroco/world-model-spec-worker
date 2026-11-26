@@ -13,6 +13,8 @@ class Case:
     location: str
     activity: str
     target_distance_m: float
+    heading_request_deg: float = 0.0
+    traffic_lateral_request_m: float = 3.0
 
 
 CASES = (
@@ -23,6 +25,12 @@ CASES = (
     Case('passenger_zone_unload', 'passenger_zone', 'passenger_unloading', .4472),
     Case('origin_point_load', 'origin_point', 'passenger_loading', .4472),
     Case('destination_point_unload', 'destination_point', 'passenger_unloading', .4472),
+    Case('parallel_source_review-0000', 'bus_stop', 'passenger_loading', .4472, 0.0),
+    Case('parallel_source_review-0001', 'bus_stop', 'passenger_loading', .4472, 4.0),
+    Case('parallel_source_review-0002', 'bus_stop', 'passenger_loading', .4472, 8.0),
+    Case('traffic_impediment_source_review-0000', 'bus_stop', 'passenger_loading', .4472, 0.0, 2.0),
+    Case('traffic_impediment_source_review-0001', 'bus_stop', 'passenger_loading', .4472, 0.0, 3.0),
+    Case('traffic_impediment_source_review-0002', 'bus_stop', 'passenger_loading', .4472, 0.0, 4.0),
 )
 
 
@@ -61,6 +69,9 @@ def validate_scene(scene: Mapping, case: Case):
             scene.get('activity') == case.activity and
             scene.get('target_distance_m') == case.target_distance_m,
             'case variables changed')
+    require(scene.get('heading_request_deg', 0.0) == case.heading_request_deg and
+            scene.get('traffic_lateral_request_m', 3.0) == case.traffic_lateral_request_m,
+            'engineering sweep request changed')
     require(scene.get('location_designated') is True and
             scene.get('location_governs_bus') is True,
             'qualifying loading location missing')

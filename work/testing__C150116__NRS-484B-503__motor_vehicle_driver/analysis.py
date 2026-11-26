@@ -28,7 +28,7 @@ def measure_passenger_zone(rows, config, scene):
             raise ValueError('synthetic 20 Hz frame join changed')
         if row.get('case_id') != scene['case_id'] or row.get('conduct') != case['conduct']:
             raise ValueError('synthetic case or conduct changed')
-        if row.get('regulations_effective') != (case['hours'] == 'effective'):
+        if row.get('regulations_effective') != scene['regulations']['effective_at_civil_time']:
             raise ValueError('synthetic effective-hours condition changed')
         if row.get('ego_id') != 'ego' or row.get('passenger_id') != 'passenger':
             raise ValueError('synthetic actor identity changed')

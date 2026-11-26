@@ -88,11 +88,11 @@ def audit_attempt(packet_path: Path, attempt: Path, case_name: str) -> dict:
 
 
 def audit_comparisons(reports: dict[str, dict]) -> list[dict]:
-    """Bind all five declared pairs to independent original reports."""
+    """Bind every declared pair to independent original reports."""
     plan = load_json(HERE / 'case-plan.json')
     expected = {item['case_id'] for item in plan['cases']}
     if set(reports) != expected:
-        raise ValueError('seven exact original reports required')
+        raise ValueError('all exact original reports required')
     output = []
     for comparison in plan['comparisons']:
         pair = comparison['case_ids']
@@ -109,9 +109,16 @@ def audit_comparisons(reports: dict[str, dict]) -> list[dict]:
                any(not isinstance(value, str) or len(value) != 64
                    for value in hashes.values()) for hashes in source_hashes):
             raise ValueError('comparison source inventory missing')
+        allowed_changes = ({'bus_route'} if comparison['comparison_id'] ==
+                           'parallel_engineering_grid' else
+                           {'traffic_route'} if comparison['comparison_id'] ==
+                           'traffic_engineering_grid' else set())
         if any(source_hashes[0][name] != source_hashes[1][name]
-               for name in FIXED_COMPARISON_SOURCES):
+               for name in FIXED_COMPARISON_SOURCES if name not in allowed_changes):
             raise ValueError('comparison fixed original source changed')
+        if allowed_changes and all(source_hashes[0][name] == source_hashes[1][name]
+                                   for name in allowed_changes):
+            raise ValueError('comparison declared route change has no original source change')
         if any(item.get('legal_status') != 'unresolved' or
                item.get('physical_acceptance') is not False or
                item.get('measurement', {}).get('source_hashes') != item['source_hashes']
@@ -123,6 +130,12 @@ def audit_comparisons(reports: dict[str, dict]) -> list[dict]:
                                                for name in FIXED_COMPARISON_SOURCES},
                        'measured_wheel_curb_upper_bounds_m': [
                            item['measurement']['right_front_wheel_curb_upper_bound_m']
+                           for item in selected],
+                       'measured_bus_curb_angles_deg': [
+                           item['measurement']['maximum_bus_curb_angle_deg']
+                           for item in selected],
+                       'measured_other_traffic_speeds_mps': [
+                           item['measurement']['minimum_other_traffic_speed_mps']
                            for item in selected],
                        'legal_status': 'unresolved', 'physical_acceptance': False})
     return output

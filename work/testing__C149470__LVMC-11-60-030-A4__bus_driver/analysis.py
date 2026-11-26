@@ -48,6 +48,8 @@ def analyze(attempt):
                                          'active': row['loading_active'],
                                          'activity': row['activity']},
         'other_traffic': lambda row: {'traffic_speed_mps': row['traffic_speed_mps']},
+        'traffic_speed_mps': lambda row: {'traffic_speed_mps': row['traffic_speed_mps']},
+        'bus_curb_angle_deg': lambda row: {'bus_curb_angle_deg': row['bus_curb_angle_deg']},
         'camera_frame_identity': lambda row: {'frame': row['original_frame']}}
     for channel in channels:
         name = channel['name']

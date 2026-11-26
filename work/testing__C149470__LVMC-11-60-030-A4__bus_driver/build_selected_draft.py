@@ -3,13 +3,12 @@ import hashlib
 import json
 from pathlib import Path
 import shutil
+from bus_curb import CASES
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 AID = HERE.name
-NAMES = ('bus_stop_below', 'bus_stop_at', 'bus_stop_above',
-         'bus_stand_baggage', 'passenger_zone_unload',
-         'origin_point_load', 'destination_point_unload')
+NAMES = tuple(case.name for case in CASES)
 
 
 def sha(path):
@@ -21,7 +20,7 @@ def main():
     entries = []
     for name, original in zip(NAMES, diagnostic['cases']):
         assert original['case_id'] == AID + '__' + name
-        source = ROOT / '.runtime-work' / 'c149470' / ('compat-' + name)
+        source = ROOT / '.runtime-work' / 'c149470' / ('grid4-compat-' + name)
         target = HERE / 'proofs' / ('selected-' + name)
         target.mkdir(parents=True, exist_ok=True)
         for src, dst in [('compatibility.json', 'receipt.json'),
@@ -36,7 +35,7 @@ def main():
                                           'evidence': 'channel-' + channel['name'] + '.jsonl'}
                        for channel in construction['recording_description']['channels']}
         entries.append({**original, 'kind': 'delivery',
-                        'source_gate': 'reviewed original site and judgment sweep absent',
+                        'source_gate': 'reviewed original bus site, stopped loading and separate traffic motion required',
                         'acquisition': acquisition,
                         'native_handoff': {'python_env_var': 'CARLA_PYTHON',
                                            'host_env_var': 'CARLA_HOST',

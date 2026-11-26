@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+from math import radians, tan
 
 from bus_curb import CASES
 
@@ -43,8 +44,13 @@ def build():
                  'location_designated': True, 'location_governs_bus': True,
                  'curb_segment_xy': [[0.0, 0.0], [20.0, 0.0]],
                  'location_boundary_xy': [[0.0, 0.0], [20.0, 0.0]],
-                 'bus_route_xy': [[-5.0, 0.5], [5.0, case.target_distance_m]],
-                 'traffic_route_xy': [[-5.0, 3.0], [15.0, 3.0]],
+                 'heading_request_deg': case.heading_request_deg,
+                 'traffic_lateral_request_m': case.traffic_lateral_request_m,
+                 'bus_route_xy': [[-5.0, case.target_distance_m +
+                                   10.0 * tan(radians(case.heading_request_deg))],
+                                  [5.0, case.target_distance_m]],
+                 'traffic_route_xy': [[-5.0, case.traffic_lateral_request_m],
+                                      [15.0, case.traffic_lateral_request_m]],
                  'loading_actor_ids': ['diagnostic_loading_actor']}
         for source in SOURCES:
             scene[source + '_source_sha256'] = sha(note)
@@ -54,6 +60,8 @@ def build():
                   'source_packets': [],
                   'cameras': ['overview', 'approach', 'curb_wheel', 'traffic'],
                   'case': {'kind': case.name, 'case_id': case_id,
+                           'heading_request_deg': case.heading_request_deg,
+                           'traffic_lateral_request_m': case.traffic_lateral_request_m,
                            'location_kind': case.location, 'activity': case.activity}}
         description = {'status': 'diagnostic_only_original_capture_pending',
                        'observations': ['right front wheel and curb',
@@ -62,6 +70,8 @@ def build():
                                         'four synchronized cameras']}
         files = {'runner.py': (HERE / 'diagnostic_runner.py').read_text(),
                  'bus_curb.py': (HERE / 'bus_curb.py').read_text(),
+                 'native_capture.py': (HERE / 'native_capture.py').read_text(),
+                 'reviewed_source.py': (HERE / 'reviewed_source.py').read_text(),
                  'tests/test_bundle.py': (HERE / 'diagnostic_bundle_test.py').read_text(),
                  'config.json': json.dumps(config, indent=2) + '\n',
                  'scene.json': json.dumps(scene, indent=2) + '\n'}

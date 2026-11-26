@@ -1,3 +1,9 @@
+## 2026-11-25 current CPU delivery handoff
+
+Eight selected source-gated cases and six isolated comparisons are constructed. The four applicability sweep points cover the four cited NRS 484B.283 provision alternatives with exact provision identifiers and original-device applicability evidence required by the audit. Synthetic positive, negative, and missing-source checks exercise the engineering contracts without asserting a legal permission verdict. All eight current-hash offline bundles, compatibility replays, saved processing replays, independent delivery audits, and six comparison audits passed. The current test suite passed 80 tests. Original site, device, pedestrian signal, source review, and 900-frame Native capture remain required at local execution.
+
+Selected launch and comparison commands are in `queue-proposal.json`. The exact assignment gate must exit 0 before queue integration.
+
 # 2026-11-25 cited-device source review gate and refreshed selected proofs
 
 Status: partial. `permission_applicability.py` now verifies a separate, SHA-sealed original device packet against the exact C109171 site and route, and requires source-cited review rows for all four provisions NRS-484B-283-1d1 through 1d4. It preserves unresolved applicability and never asserts a legal verdict or permission at entry. `native_runner.py` calls this verifier before changing world settings or spawning a capture. The bundled exact runner requires the operator to supply `permission_review_ref`; the production independent delivery auditor rejects an original attempt lacking that ref. Synthetic positive and changed-site, missing-provision, conflated-device, changed-device, altered-law-source, premature-permission, and missing-production-review tests exercise the gate. These synthetic law strings test packet integrity only.

@@ -2,6 +2,7 @@ import importlib.util
 from pathlib import Path
 import sys
 import unittest
+from math import radians, tan
 
 
 path = Path(__file__).resolve().parents[1] / 'bus_curb.py'
@@ -17,11 +18,15 @@ def scene(case):
              tour_bus=False, public_street=True,
              location_kind=case.location, activity=case.activity,
              target_distance_m=case.target_distance_m,
+             heading_request_deg=case.heading_request_deg,
+             traffic_lateral_request_m=case.traffic_lateral_request_m,
              location_designated=True, location_governs_bus=True,
              location_boundary_xy=[[0, 0], [10, 0]],
              curb_segment_xy=[[0, 0], [10, 0]],
-             bus_route_xy=[[-5, 1], [5, 1]],
-             traffic_route_xy=[[-5, 4], [20, 4]],
+             bus_route_xy=[[-5, case.target_distance_m + 10*tan(radians(case.heading_request_deg))],
+                           [5, case.target_distance_m]],
+             traffic_route_xy=[[-5, case.traffic_lateral_request_m],
+                               [20, case.traffic_lateral_request_m]],
              loading_actor_ids=['passenger-or-baggage-1'])
     for field in ('jurisdiction', 'bus_class', 'tour_exclusion',
                   'operator', 'location_boundary', 'location_designation',
@@ -40,7 +45,7 @@ def rows(case, s):
                    traffic_speed_mps=3,
                    right_front_wheel_xy=[5,case.target_distance_m],
                    wheel_position_uncertainty_m=.001,
-                   bus_curb_angle_deg=2,
+                   bus_curb_angle_deg=case.heading_request_deg,
                    loading_active=i>=150,
                    curb_geometry_source_sha256=s['curb_geometry_source_sha256'])
         for field in ('frame', 'bus_motion', 'traffic_motion',

@@ -46,13 +46,13 @@ def build():
         for frame in range(900):
             event = None
             if config['case']['passenger_action'] == 'load':
-                start = 380 if name == 'load_delayed' else 330
+                start = 280 + round(float(config['case']['release_delay_s']) * 20)
                 event = 'boarding_started' if frame == start else ('boarding_completed' if frame == start + 20 else None)
             elif config['case']['passenger_action'] == 'unload':
                 event = 'alighting_started' if frame == 330 else ('alighting_completed' if frame == 350 else None)
             rows.append({'frame': frame, 'time_s': frame / 20, 'case_id': cid,
                          'conduct': config['case']['conduct'],
-                         'regulations_effective': config['case']['hours'] == 'effective',
+                         'regulations_effective': scene['regulations']['effective_at_civil_time'],
                          'ego_id': 'ego', 'passenger_id': 'passenger',
                          'zone_source_sha256': scene['zone']['marking_source_sha256'],
                          'inside_zone': 280 <= frame < 600,
