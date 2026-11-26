@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "LVMC 11.18.020",
+      "output_key": "school_marking_context",
+      "method": "measure_marking_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road_geometry.json",
+        "native_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "LVMC 11.18.020",
+      "output_key": "signed_school_crossing_entry",
+      "method": "measure_signed_entry",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road_geometry.json",
+        "native_samples.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "reviewed_school_entry",
+      "method": "measure_reviewed_scope",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "road_geometry.json"
+    ],
+    "error_contains": "Missing required source: road_geometry.json"
+  },
+  "physical_acceptance_claimed": false
+}

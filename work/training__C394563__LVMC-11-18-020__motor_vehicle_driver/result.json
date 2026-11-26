@@ -3,7 +3,7 @@
   "input_sha256": "c26fa421397172cff27291ce899fa7733b6b13dfafde25e03ee7e041d4e01b74",
   "applied_update": 16,
   "status": "partial",
-  "reason": "Authored 600-frame school-crossing requests and two exact unselected offline bundles pass diagnostic/offline checks; Native original capture, selected compatibility, actual process-saved and audits remain unproven.",
+  "reason": "Source-bound Native runner, exact measurement contracts, two 600-frame synthetic saved finalizations and independent diagnostic comparison/missing-source rejection pass CPU checks; selected compatibility, recorded-only processing, semantic proposals, audits and strict gate remain incomplete.",
   "readiness_kind": "implementation_checkpoint",
   "counts": {
     "source_topics": 3,
@@ -15,16 +15,48 @@
     "accepted_membership_rows": 0
   },
   "tests": [
-    "600-frame signed-crossing diagnostic and four negative source mutations passed",
-    "exact condition A and B unselected runtime.py offline passed; simulation_started=false"
+    {
+      "command": ".venv-cpu/bin/python -B -m unittest discover -s work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native -p test_*.py -v",
+      "exit_code": 0,
+      "log": "native/cpu-source-tests.log",
+      "sha256": "f34b3ee005b293e275ed1658e33a7ef27b453b38f2459b4b1e2a4fa6ed085812"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/native-draft-manifest.json --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a --output .runtime-work/c394563-native-a7 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "native/condition-a-native-offline.log",
+      "sha256": "dd61b58a9470fe8fb56e9d090a31ed83d0bca36a33c903b8d969e78678dc51da"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/native-draft-manifest.json --case training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b --output .runtime-work/c394563-native-b7 --python $PWD/.venv-cpu/bin/python",
+      "exit_code": 0,
+      "log": "native/condition-b-native-offline.log",
+      "sha256": "52b8493150d42f348dfb634f2e07bbdf78a5b0e18b5456f292a717f3b1a23b08"
+    },
+    {
+      "command": "source-bound synthetic saved finalizers for both exact cases, comparison audit and missing road_geometry.json rejection",
+      "exit_code": 0,
+      "log": "native/diagnostic-comparison.log",
+      "sha256": "cbcf7c18178d6151254234e9eda1aa8c6b6d2d03b75330c95b8127312600cbb5"
+    }
   ],
   "current_cpu_proof": {
-    "diagnostic": "native/school-xing-diagnostic-proof.json",
-    "offline_cases": [
-      "native/condition-a-offline.log",
-      "native/condition-b-offline.log"
-    ],
+    "draft_manifest": "native/native-draft-manifest.json",
+    "draft_manifest_sha256": "025394f2381a22b56854d248d9b3d2c3de0d02eb3e417a0fb838f4c2cd144a73",
+    "native_runner": "native/runner.py",
+    "native_runner_sha256": "3e9b9c7183d954174905a95e2cd5d654c5752573fd1f3ea94c9b8800e7aaeada",
+    "saved_meter": "native/saved_source.py",
+    "saved_meter_sha256": "6a80ad517ea9a6a0fa1505ccf18ed064bf945dff7f5a5661dc08a6ef4144dd8a",
     "native_executed": false,
-    "selected_delivery_proven": false
+    "selected_delivery_proven": false,
+    "measurement_contracts": {
+      "a": "d15443b9cd9494832a13af8049a94ae6bea30f41bb6162de79b2a9cfed10ea44",
+      "b": "478d533638689fdb0d04aaf3b3ebe59ee77585fe3fc0b45357ad784d9697eac4"
+    },
+    "diagnostic_recipes": {
+      "a": "4fb086e916b6f77425f98b210ee8d6f6e2afb00fb32a67138460cd1256ef9973",
+      "b": "b0051b2f0409a3fd46f0a689a3f7064697546db1844f794747ef62a88e54f572"
+    },
+    "diagnostic_comparison_log_sha256": "cbcf7c18178d6151254234e9eda1aa8c6b6d2d03b75330c95b8127312600cbb5"
   }
 }

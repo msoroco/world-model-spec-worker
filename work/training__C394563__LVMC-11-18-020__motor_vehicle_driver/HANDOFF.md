@@ -14,3 +14,29 @@ Law branch: LVMC 11.18.020 prohibits vehicle entry into a displayed School-Xing 
 ## Worker-owned remaining work
 
 Replace authored requests and unselected offline drafts with real Native crossing geometry, sign, ego/pedestrian controllers and original 600-frame four-camera captures for each exact selected case. Measure source-joined predicates, establish pedestrian intent from original evidence, run selected primary and fallbacks through offline and compatibility, process actual saved positives/negatives, and complete source-alternative and independent comparison audits. Keep status partial until the assignment-scoped strict delivery check passes.
+
+## 2026-11-26 source-bound Native construction checkpoint
+
+- Authored a straight two-direction OpenDRIVE road with a 3.6576 m crossing object, yellow marking attribute and a named School-Xing sign object 35 m in advance. `native/geometry.py` checks exact geometry; a fake-map test verifies original-map object readback, approach/opposing directions and rejects missing sign, changed marking and reversed approach. The CARLA import remains lazy.
+- `native/runner.py` now proposes ego and walker spawn/control, a 600-tick synchronized Native capture, four original 1920x1080/1280x720 source streams, exact camera-frame joins, original map survey, restoration and capture sealing, plus a source-bound body-history crossing-clearance criterion. This runner is an executable proposal; no CARLA attempt occurred here. The sign object may not render legible School-Xing text; pixel evidence and City Traffic Engineer authority still require independent local review.
+- `native/saved_source.py` and `native/finalize.py` source-join original body, person and camera frames; measure first ego front crossing entry and same-side person occupation/motion; reject authored/synthetic source in production; and compare occupied versus cleared entry while checking fixed sign geometry and person identity. No legal intent or verdict is inferred from walker motion. Ten CPU tests cover arithmetic and rejected missing/changed source paths.
+- Both exact cases were bundled with the new source files in `native/native-draft-manifest.json` and passed `runtime.py offline` on this runtime. These are unselected draft proofs with `simulation_started=false`. Validated exact-case measurement contracts for all three selected requirement dispositions now exist; positive/negative compatibility, saved-only conversion, physical audit, semantic proposals, selected execution manifest and strict readiness remain outstanding.
+
+### Exact current draft bindings
+
+| Case | Construction SHA-256 | Offline log SHA-256 |
+| --- | --- | --- |
+| condition_a | cb9e55a22e9f0bd244ea06c1bbe45394c1a832ef060fc20e87d7d5bc55532181 | dd61b58a9470fe8fb56e9d090a31ed83d0bca36a33c903b8d969e78678dc51da |
+| condition_b | 0a19b4e5db1d34a42ef7100aaef6a1bfa36de244b1bd0b6c8f7930da25fcbe43 | 52b8493150d42f348dfb634f2e07bbdf78a5b0e18b5456f292a717f3b1a23b08 |
+
+CPU source tests log SHA-256: `f34b3ee005b293e275ed1658e33a7ef27b453b38f2459b4b1e2a4fa6ed085812`.
+
+Next: materialize exact 600-frame diagnostic Native-shaped sources for each condition, exercise `runtime.py compatibility` positive and missing-source negative, bind the finalizer and source-joined physical criteria in selected manifests, complete semantic/independent delivery and comparison audits, then run the assignment-scoped strict gate. Keep `result.json` partial until that gate succeeds.
+
+- `measurement-contract-condition-a.json` and `measurement-contract-condition-b.json` pass the current runtime measurement-contract validator with three exact output methods and a missing road-geometry negative source. They are draft bindings awaiting selected compatibility receipts.
+
+## 2026-11-26 diagnostic saved-source checkpoint
+
+The two exact 600-frame synthetic recipes are `native/recipe-condition-a.json` and `native/recipe-condition-b.json`. The textual specifications are under 0.5 MiB each; generated source videos and temporary attempts stay under `.runtime-work/`. The saved finalizer completed for both diagnostic attempts, decoded all four 600-frame streams, and produced source-hashed measurements at Native frames 10240 (person in approach-side crosswalk) and 10420 (person cleared). `native/diagnostic-comparison.log` records the independent occupied/cleared comparison and a rejected missing `road_geometry.json` negative source. These are synthetic compatibility diagnostics only; they do not establish physical sign display, official marking, person intent, Native motion or canonical acceptance. The full selected `runtime.py compatibility` and recorded-only `process-saved` receipts remain outstanding.
+
+Diagnostic recipe SHA-256: condition_a `4fb086e916b6f77425f98b210ee8d6f6e2afb00fb32a67138460cd1256ef9973`; condition_b `b0051b2f0409a3fd46f0a689a3f7064697546db1844f794747ef62a88e54f572`. Comparison/negative log SHA-256: `cbcf7c18178d6151254234e9eda1aa8c6b6d2d03b75330c95b8127312600cbb5`.

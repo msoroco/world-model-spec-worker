@@ -7,7 +7,7 @@ import subprocess
 
 from route_measure import measure
 
-VIDEOS = ('overview.mkv', 'approach.mkv', 'exit.mkv', 'destination.mkv')
+VIDEOS = ('overview.mkv', 'approach.mkv', 'reference_corner.mkv', 'driver_reference.mkv')
 SOURCES = ('route-trace.jsonl', 'route-context.json', 'road.xodr', 'video_frames.jsonl')
 
 
@@ -22,18 +22,24 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def route_observation(folder):
+    sources = [required(folder, name) for name in SOURCES]
+    return {'method': 'route_observation',
+            'value': measure(*(path.read_bytes() for path in sources)),
+            'sources': {name: sha(path) for name, path in zip(SOURCES, sources)}}
+
+
 def analysis_report(folder, contract=None):
     config = json.loads(required(folder, 'config.json').read_text())
-    sources = [required(folder, name) for name in SOURCES]
-    facts = measure(*(path.read_bytes() for path in sources))
-    if config['case_id'] != json.loads(sources[1].read_text())['case_id']:
+    observation = route_observation(folder)
+    facts = observation['value']
+    if config['case_id'] != json.loads(required(folder, 'route-context.json').read_text())['case_id']:
         raise ValueError('exact case/source identity differs')
     if facts['authored_alternate_connected'] != config['alternate_possible']:
         raise ValueError('exact case route topology differs')
     return {'format': 'c230259-route-analysis-v1', 'case_id': config['case_id'],
             'analysis_complete': True, 'legal_verdict_claimed': False,
-            'measurements': {'route_observation': {'method': 'route_observation',
-                'value': facts, 'sources': {name: sha(path) for name, path in zip(SOURCES, sources)}}},
+            'measurements': {'route_observation': observation},
             'limitations': ['Authored road connectivity does not prove legal or practical route availability.',
                             'Legal controlled-access designation and actual impediment require independent review.',
                             'CPU diagnostics cannot prove physical pixels or CARLA motion.']}
@@ -132,10 +138,10 @@ def finalize(attempt, output):
         'recording_description': config['recording_description'],
         'recording_evidence': [{'name': name, 'unit': 'structured', 'reference': reference}
             for name, reference in channels.items()],
-        'realized_observables': {'alternate_route_road_observed': {
-            'value': facts['observed_alternate_road'], 'unit': 'bool',
+        'realized_observables': {'alternate_route_road_observed_frames': {
+            'value': facts['observed_alternate_road_frames'], 'unit': 'count',
             'method': 'original map road ID joined to vehicle and camera frames',
-            'time_window': '900 frames', 'statistic': 'any observed occupancy',
+            'time_window': '900 frames', 'statistic': 'count of original road 3 occupancy',
             'reference': 'route-trace.jsonl'}},
         'provenance_kind': provenance['provenance_kind'],
         'diagnostic_fixture': provenance['diagnostic_fixture'],

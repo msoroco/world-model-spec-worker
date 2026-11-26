@@ -26,7 +26,7 @@ def sha(path: Path) -> str:
 def source(folder: Path, name: str) -> Path:
     path = folder / name
     if not path.is_file():
-        raise ValueError("Missing required original source: " + name)
+        raise ValueError("Missing required source: " + name)
     return path
 
 
@@ -132,7 +132,16 @@ def audit_case(attempt: Path, case_id: str) -> dict:
     geometry = json.loads(geometry_path.read_text())
     native = read_rows(attempt, "native_samples.jsonl")
     mapping = read_rows(attempt, "video_frames.jsonl")
-    report = measure_rows(native, mapping, geometry)
+    fixture_path = attempt / "fixture-provenance.json"
+    diagnostic = fixture_path.is_file()
+    if diagnostic:
+        marker = json.loads(fixture_path.read_text())
+        if marker.get("frames") != EXPECTED_FRAMES or "diagnostic" not in marker.get("scope", "").lower():
+            raise ValueError("Unrecognized CPU diagnostic provenance")
+        if any(row.get("source_kind") != "synthetic_native_sample" for row in native):
+            raise ValueError("Diagnostic provenance and sample source disagree")
+    report = measure_rows(native, mapping, geometry, require_original=not diagnostic)
+    report["diagnostic_fixture"] = diagnostic
     report["case_id"] = case_id
     report["sources"] = {name: sha(source(attempt, name)) for name in (
         "config.json", "road_geometry.json", "native_samples.jsonl", "video_frames.jsonl")}

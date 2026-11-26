@@ -2,17 +2,264 @@
   "cell_id": "C228817",
   "actor": "motor_vehicle_driver",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__passenger_door_schedule",
+      "target_law_id": "NRS-484B-153-3",
+      "judgment_refs": [
+        {
+          "phrase": "closest to passing traffic",
+          "note": "Original road direction, passing vehicle trajectory and observed door side must be joined."
+        },
+        {
+          "phrase": "immediate loading or unloading of passengers or cargo",
+          "note": "Contemporaneous passenger or cargo transfer needs independently reviewed pixels."
+        },
+        {
+          "phrase": "longer than is necessary",
+          "note": "Observed open interval and activity context are recorded; legal necessity remains unresolved."
+        }
+      ],
+      "rationale": "Two fixed door-close requests for physical coverage; compare observed pixels and transfer context without a legal duration threshold.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "requested_close_frame",
+          "observable": "requested_close_frame",
+          "unit": "frame",
+          "min": 212,
+          "max": 400,
+          "spacing": 188,
+          "range_rationale": "Two authored close commands matched to the selected pair.",
+          "spacing_rationale": "188 frames separate the selected requests at 20 Hz.",
+          "feasibility_evidence": "Four exact CPU offline and synthetic saved-source checks pass.",
+          "measurement": {
+            "method": "Read requested actuation frame separately from reviewed actual door interval",
+            "time_window": "600 original Native frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "transfer_kind": {
+          "kind": "world_setup",
+          "value": "passenger",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "requested_close_frame": {
+          "kind": "controller",
+          "value": 212,
+          "unit": "frame",
+          "source": "selected Native actuation schedule"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, occupant transfer and camera visibility require original-source review",
+          "Legal necessity duration remains unresolved"
+        ]
+      },
+      "spec_version": "d38749b904afdaa60433f949e8b4fa1e884021f1b46dbd1cf6d22ba1a68e2a97",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1",
+        "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2"
+      ]
+    },
+    {
+      "sweep_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__cargo_door_schedule",
+      "target_law_id": "NRS-484B-153-3",
+      "judgment_refs": [
+        {
+          "phrase": "closest to passing traffic",
+          "note": "Original road direction, passing vehicle trajectory and observed door side must be joined."
+        },
+        {
+          "phrase": "immediate loading or unloading of passengers or cargo",
+          "note": "Contemporaneous passenger or cargo transfer needs independently reviewed pixels."
+        },
+        {
+          "phrase": "longer than is necessary",
+          "note": "Observed open interval and activity context are recorded; legal necessity remains unresolved."
+        }
+      ],
+      "rationale": "Two fixed door-close requests for physical coverage; compare observed pixels and transfer context without a legal duration threshold.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "requested_close_frame",
+          "observable": "requested_close_frame",
+          "unit": "frame",
+          "min": 212,
+          "max": 400,
+          "spacing": 188,
+          "range_rationale": "Two authored close commands matched to the selected pair.",
+          "spacing_rationale": "188 frames separate the selected requests at 20 Hz.",
+          "feasibility_evidence": "Four exact CPU offline and synthetic saved-source checks pass.",
+          "measurement": {
+            "method": "Read requested actuation frame separately from reviewed actual door interval",
+            "time_window": "600 original Native frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "transfer_kind": {
+          "kind": "world_setup",
+          "value": "cargo",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "requested_close_frame": {
+          "kind": "controller",
+          "value": 212,
+          "unit": "frame",
+          "source": "selected Native actuation schedule"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, occupant transfer and camera visibility require original-source review",
+          "Legal necessity duration remains unresolved"
+        ]
+      },
+      "spec_version": "6f5dde4b1bf6dfd070c6afb500b224beedd8251ec48da14a17dec96aaab26fd7",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
+        "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4"
+      ]
+    }
+  ],
   "sweeps_expanded": true,
   "cases": [
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484B-153-3",
-      "target_type": "boundary_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Compare requested door close timing with same transfer kind; original pixels and legal necessity require separate review",
       "variable_assignments": {
         "transfer_kind": {
-          "kind": "controlled_context",
+          "kind": "world_setup",
           "value": "passenger",
           "unit": "categorical",
           "source": "selected Native configuration"
@@ -25,9 +272,9 @@
         }
       },
       "unresolved_judgment_calls": [
-        "actual door motion and passing side",
-        "immediate loading or unloading activity",
-        "necessary open interval"
+        "closest to passing traffic",
+        "immediate loading or unloading of passengers or cargo",
+        "longer than is necessary"
       ],
       "recording_description": {
         "channels": [
@@ -92,22 +339,30 @@
           "Legal necessity duration remains unresolved"
         ]
       },
-      "paired_probe_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2",
+      "paired_probe_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__passenger_comparison",
       "deliberate_differences": [
-        "requested close frame 212 versus 400"
+        "requested_close_frame"
       ],
       "probe": {
-        "primary_variable": "requested_close_frame"
-      }
+        "primary_variable": "requested_close_frame",
+        "comparison_or_standard": "controlled requested actuation timing; legal necessity unresolved",
+        "target_value_or_branch": 212
+      },
+      "sweep_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__passenger_door_schedule",
+      "sweep_spec_version": "d38749b904afdaa60433f949e8b4fa1e884021f1b46dbd1cf6d22ba1a68e2a97",
+      "sweep_point": {
+        "requested_close_frame": 212.0
+      },
+      "selection_rank": 0
     },
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-153-3",
-      "target_type": "boundary_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Compare requested door close timing with same transfer kind; original pixels and legal necessity require separate review",
       "variable_assignments": {
         "transfer_kind": {
-          "kind": "controlled_context",
+          "kind": "world_setup",
           "value": "passenger",
           "unit": "categorical",
           "source": "selected Native configuration"
@@ -120,9 +375,9 @@
         }
       },
       "unresolved_judgment_calls": [
-        "actual door motion and passing side",
-        "immediate loading or unloading activity",
-        "necessary open interval"
+        "closest to passing traffic",
+        "immediate loading or unloading of passengers or cargo",
+        "longer than is necessary"
       ],
       "recording_description": {
         "channels": [
@@ -187,22 +442,30 @@
           "Legal necessity duration remains unresolved"
         ]
       },
-      "paired_probe_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_1",
+      "paired_probe_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__passenger_comparison",
       "deliberate_differences": [
-        "requested close frame 212 versus 400"
+        "requested_close_frame"
       ],
       "probe": {
-        "primary_variable": "requested_close_frame"
-      }
+        "primary_variable": "requested_close_frame",
+        "comparison_or_standard": "controlled requested actuation timing; legal necessity unresolved",
+        "target_value_or_branch": 400
+      },
+      "sweep_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__passenger_door_schedule",
+      "sweep_spec_version": "d38749b904afdaa60433f949e8b4fa1e884021f1b46dbd1cf6d22ba1a68e2a97",
+      "sweep_point": {
+        "requested_close_frame": 400.0
+      },
+      "selection_rank": 1
     },
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
       "target_law_id": "NRS-484B-153-3",
-      "target_type": "boundary_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Compare requested door close timing with same transfer kind; original pixels and legal necessity require separate review",
       "variable_assignments": {
         "transfer_kind": {
-          "kind": "controlled_context",
+          "kind": "world_setup",
           "value": "cargo",
           "unit": "categorical",
           "source": "selected Native configuration"
@@ -215,9 +478,9 @@
         }
       },
       "unresolved_judgment_calls": [
-        "actual door motion and passing side",
-        "immediate loading or unloading activity",
-        "necessary open interval"
+        "closest to passing traffic",
+        "immediate loading or unloading of passengers or cargo",
+        "longer than is necessary"
       ],
       "recording_description": {
         "channels": [
@@ -282,22 +545,30 @@
           "Legal necessity duration remains unresolved"
         ]
       },
-      "paired_probe_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4",
+      "paired_probe_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__cargo_comparison",
       "deliberate_differences": [
-        "requested close frame 212 versus 400"
+        "requested_close_frame"
       ],
       "probe": {
-        "primary_variable": "requested_close_frame"
-      }
+        "primary_variable": "requested_close_frame",
+        "comparison_or_standard": "controlled requested actuation timing; legal necessity unresolved",
+        "target_value_or_branch": 212
+      },
+      "sweep_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__cargo_door_schedule",
+      "sweep_spec_version": "6f5dde4b1bf6dfd070c6afb500b224beedd8251ec48da14a17dec96aaab26fd7",
+      "sweep_point": {
+        "requested_close_frame": 212.0
+      },
+      "selection_rank": 0
     },
     {
       "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_4",
       "target_law_id": "NRS-484B-153-3",
-      "target_type": "boundary_probe",
+      "target_type": "judgment_sweep",
       "rationale": "Compare requested door close timing with same transfer kind; original pixels and legal necessity require separate review",
       "variable_assignments": {
         "transfer_kind": {
-          "kind": "controlled_context",
+          "kind": "world_setup",
           "value": "cargo",
           "unit": "categorical",
           "source": "selected Native configuration"
@@ -310,9 +581,9 @@
         }
       },
       "unresolved_judgment_calls": [
-        "actual door motion and passing side",
-        "immediate loading or unloading activity",
-        "necessary open interval"
+        "closest to passing traffic",
+        "immediate loading or unloading of passengers or cargo",
+        "longer than is necessary"
       ],
       "recording_description": {
         "channels": [
@@ -377,12 +648,108 @@
           "Legal necessity duration remains unresolved"
         ]
       },
-      "paired_probe_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__probe_3",
+      "paired_probe_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__cargo_comparison",
       "deliberate_differences": [
-        "requested close frame 212 versus 400"
+        "requested_close_frame"
       ],
       "probe": {
-        "primary_variable": "requested_close_frame"
+        "primary_variable": "requested_close_frame",
+        "comparison_or_standard": "controlled requested actuation timing; legal necessity unresolved",
+        "target_value_or_branch": 400
+      },
+      "sweep_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__cargo_door_schedule",
+      "sweep_spec_version": "6f5dde4b1bf6dfd070c6afb500b224beedd8251ec48da14a17dec96aaab26fd7",
+      "sweep_point": {
+        "requested_close_frame": 400.0
+      },
+      "selection_rank": 1
+    },
+    {
+      "case_id": "training__C228817__NRS-484B-153-3__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": "NRS-484B-153-3",
+      "target_type": "baseline",
+      "rationale": "Shared neutral context reference for the two controlled request-time pairs; not a selected recording",
+      "variable_assignments": {
+        "transfer_kind": {
+          "kind": "world_setup",
+          "value": "passenger",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "requested_close_frame": {
+          "kind": "controller",
+          "value": 212,
+          "unit": "frame",
+          "source": "selected Native actuation schedule"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "closest to passing traffic",
+        "immediate loading or unloading of passengers or cargo",
+        "longer than is necessary"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, occupant transfer and camera visibility require original-source review",
+          "Legal necessity duration remains unresolved"
+        ]
       }
     }
   ]

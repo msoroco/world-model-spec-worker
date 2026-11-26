@@ -27,7 +27,7 @@ def source(alternate_possible, take_alternate):
         if index >= 700:
             road_id = 4
         x = -20 + index * .2
-        cameras = {name: native for name in ('overview', 'approach', 'exit', 'destination')}
+        cameras = {name: native for name in ('overview', 'approach', 'reference_corner', 'driver_reference')}
         rows.append({'video_frame': index, 'native_frame': native, 'time_s': index / 20,
             'camera_native_frames': cameras,
             'ego': {'actor_id': 'ego', 'xy_m': [x, 0], 'speed_mps': 4,
@@ -63,7 +63,7 @@ def prove():
     changed[40]['following'] = changed[40]['following'][:1]
     mutations['missing_following'] = [b''.join(encode(row) for row in changed), *base[1:]]
     changed = json.loads(json.dumps(rows))
-    changed[40]['camera_native_frames']['exit'] += 1
+    changed[40]['camera_native_frames']['reference_corner'] += 1
     mutations['wrong_camera_frame'] = [b''.join(encode(row) for row in changed), *base[1:]]
     for name, inputs in mutations.items():
         try:

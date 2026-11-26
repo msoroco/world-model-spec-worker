@@ -58,9 +58,12 @@
       "requirement": "reviewed-scope-0",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Vehicle entry at signed school crossing",
-      "status": "alternative_pending",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
-      "case_ids": []
+      "status": "selected_required",
+      "evidence_or_gap": "Two exact source-bound Native draft cases compare person occupation at vehicle entry; selected compatibility, independent audits and physical source review remain pending.",
+      "case_ids": [
+        "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_a",
+        "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b"
+      ]
     }
   ],
   "cases": [
@@ -70,7 +73,7 @@
       "target_type": "planned_delivery_comparison",
       "planning_status": "unverified",
       "source_branch": "Vehicle entry at signed school crossing",
-      "comparison_variable": "vehicle_entry_at_marked_school_crosswalk",
+      "comparison_variable": "same_side_person_occupancy_at_vehicle_entry",
       "condition_index": 0,
       "fixed_conditions": {
         "cell_id": "C394563",
@@ -92,7 +95,7 @@
       "target_type": "planned_delivery_comparison",
       "planning_status": "unverified",
       "source_branch": "Vehicle entry at signed school crossing",
-      "comparison_variable": "vehicle_entry_at_marked_school_crosswalk",
+      "comparison_variable": "same_side_person_occupancy_at_vehicle_entry",
       "condition_index": 1,
       "fixed_conditions": {
         "cell_id": "C394563",
@@ -117,7 +120,7 @@
         "training__C394563__LVMC-11-18-020__motor_vehicle_driver__selected_1290826d__condition_b"
       ],
       "deliberate_differences": [
-        "vehicle_entry_at_marked_school_crosswalk"
+        "same_side_person_occupancy_at_vehicle_entry"
       ],
       "fixed_conditions": {
         "cell_id": "C394563",
@@ -131,7 +134,7 @@
         ]
       },
       "status": "planned_only",
-      "audit_gap": "No Native construction, measured trace or independent saved audit exists."
+      "audit_gap": "Independent source meter authored; selected compatibility and complete independent saved comparison audit remain pending."
     }
   ],
   "observations": [
@@ -139,55 +142,55 @@
       "name": "st.crosswalk",
       "mandatory": true,
       "source_note": "the marked school crossing, about twelve feet wide",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_draft_not_physically_verified"
     },
     {
       "name": "dev.zone_sign",
       "mandatory": true,
       "source_note": "kind school_crossing — the 'School-Xing' sign or pavement legend",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_draft_not_physically_verified"
     },
     {
       "name": "dev.position",
       "mandatory": true,
       "source_note": "the sign, placed at least 100 feet in advance of the crosswalk",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_draft_not_physically_verified"
     },
     {
       "name": "ru.pedestrian",
       "mandatory": true,
       "source_note": "the person attempting to cross",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_draft_not_physically_verified"
     },
     {
       "name": "ru.child",
-      "mandatory": true,
+      "mandatory": false,
       "source_note": "the schoolchildren the crossing is for",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_draft_not_physically_verified"
     },
     {
       "name": "rel.bearing",
       "mandatory": true,
       "source_note": "'upon the side of the roadway on which the vehicle is coming'",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_draft_not_physically_verified"
     },
     {
       "name": "rel.occupies",
       "mandatory": true,
       "source_note": "the person in the crosswalk, and the subject entering it",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_draft_not_physically_verified"
     },
     {
       "name": "drv.entering_intersection",
       "mandatory": true,
       "source_note": "driving into the crosswalk",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_draft_not_physically_verified"
     },
     {
       "name": "drv.crossing_line",
       "mandatory": true,
       "source_note": "the crosswalk boundary",
-      "status": "unmapped_to_native_and_core"
+      "status": "source_bound_cpu_draft_not_physically_verified"
     }
   ],
   "sources": [
@@ -214,70 +217,106 @@
   ],
   "source_observation_mapping": {
     "st.crosswalk": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "native/geometry.py authored crossing and native/runner.py map-object readback, then saved-only geometry source",
+      "channels": [
+        "person_crosswalk_sign"
+      ],
       "source_refs": [
-        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json"
+        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/runner.py",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/saved_source.py"
       ]
     },
     "dev.zone_sign": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "native/runner.py reads named School-Xing map object; actual sign pixels and official authority remain for local review",
+      "channels": [
+        "person_crosswalk_sign"
+      ],
       "source_refs": [
-        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json"
+        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/runner.py",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/saved_source.py"
       ]
     },
     "dev.position": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "native/runner.py source-reads sign and crossing positions; saved_source.py checks at least 30.48 m advance",
+      "channels": [
+        "person_crosswalk_sign"
+      ],
       "source_refs": [
-        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json"
+        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/runner.py",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/saved_source.py"
       ]
     },
     "ru.pedestrian": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "native/runner.py records original walker identity, pose and velocity each frame; intent remains a semantic review",
+      "channels": [
+        "person_crosswalk_sign"
+      ],
       "source_refs": [
-        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json"
+        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/runner.py",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/saved_source.py"
       ]
     },
     "ru.child": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "City marking authority mentions schoolchildren but driver offense says any person; child status is sourced context, not a mandatory offense element",
+      "channels": [
+        "person_crosswalk_sign"
+      ],
       "source_refs": [
-        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json"
+        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/runner.py",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/saved_source.py"
       ]
     },
     "rel.bearing": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "saved_source.py computes person on ego approach-side half from original walker y and surveyed road geometry",
+      "channels": [
+        "person_crosswalk_sign"
+      ],
       "source_refs": [
-        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json"
+        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/runner.py",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/saved_source.py"
       ]
     },
     "rel.occupies": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "saved_source.py joins walker in crosswalk and ego front entry at the same original Native frame",
+      "channels": [
+        "ego_front_entry"
+      ],
       "source_refs": [
-        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json"
+        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/runner.py",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/saved_source.py"
       ]
     },
     "drv.entering_intersection": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "saved_source.py measures ego body front crossing the near edge of the school crosswalk; no intersection entry inferred",
+      "channels": [
+        "ego_front_entry"
+      ],
       "source_refs": [
-        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json"
+        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/runner.py",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/saved_source.py"
       ]
     },
     "drv.crossing_line": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "saved_source.py measures original ego front-footprint crossing of surveyed crosswalk near edge",
+      "channels": [
+        "ego_front_entry"
+      ],
       "source_refs": [
-        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json"
+        "inputs/training__C394563__LVMC-11-18-020__motor_vehicle_driver/assignment.json",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/runner.py",
+        "work/training__C394563__LVMC-11-18-020__motor_vehicle_driver/native/saved_source.py"
       ]
     }
   },
-  "legal_analysis_note": "Exact statutory conjunctions and conditional alternatives reviewed for this selected draft scope. All cases remain unverified and unselected; no physical applicability or legal outcome is asserted.",
+  "legal_analysis_note": "The source joins named School-Xing sign, advance geometry, an approach-side person attempting to cross and vehicle entry. The City authorization clause is context, and the operative offense says any person. Native and synthetic source probes do not prove official authority, legible pixels, intent or a legal verdict.",
   "readiness": "planning_only",
   "physical_prerequisites": "Prove the crosswalk is the marked school-area crossing addressed by the source, display a physical School-Xing sign, show a person attempting to cross within the approach-side half of the crosswalk, and measure the vehicle front footprint entering it. Record original sign/crosswalk/person pixels and source geometry; synthetic labels alone cannot establish official marking.",
   "legal_interpretation_limit": "The City Traffic Engineer authorization in text-0 is context. The text-1 vehicle prohibition applies only with the displayed School-Xing sign and a person attempting to cross on the approach side when the vehicle drives into the crosswalk. The source says person, so do not narrow this element to a schoolchild."

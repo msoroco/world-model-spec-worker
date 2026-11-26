@@ -42,6 +42,15 @@ def check(config: dict) -> dict:
         raise ValueError("Law, cell or actor differs")
     if (config.get("rate_hz"), config.get("duration_frames"), config.get("duration_s")) != (20, 600, 30):
         raise ValueError("Exact four-view duration differs")
+    if (config.get("school_xing_sign_x_m"), config.get("crosswalk_x_m"),
+        config.get("crosswalk_width_m")) != (SIGN_X_M, CROSSWALK_NEAR_X_M,
+                                             CROSSWALK_WIDTH_M):
+        raise ValueError("School-Xing sign/crossing configuration differs")
+    physical = config.get("physical_completion", {})
+    if (physical.get("criterion"), physical.get("motion_source"),
+        physical.get("body_key")) != ("intersection_clearance", "body_history.jsonl",
+                                      "body_vertices_m"):
+        raise ValueError("Source-bound crossing clearance criterion missing")
     cameras = camera_plan()
     if [(c["width"], c["height"]) for c in cameras] != [
         (1920, 1080), (1280, 720), (1280, 720), (1280, 720)]:
@@ -191,6 +200,7 @@ def execute(config: dict, output: Path, host: str, port: int) -> None:
                                   required_observations=config.get("required_atoms", []))
         start = world.get_snapshot().timestamp.elapsed_seconds
         with (output / "native_samples.jsonl").open("x") as samples, \
+             (output / "body_history.jsonl").open("x") as body_history, \
              FrameMap(output / "video_frames.jsonl") as frame_map:
             for index in range(600):
                 pose = ego.get_transform()
@@ -227,6 +237,9 @@ def execute(config: dict, output: Path, host: str, port: int) -> None:
                           "controller_request": command}
                 capture.capture(frame, time_s, extra={"school_crossing_native": sample})
                 samples.write(json.dumps(sample, allow_nan=False) + "\n")
+                body_history.write(json.dumps({"frame": frame, "time_s": time_s,
+                    "body_vertices_m": body, "pedestrian_actor_id": walker.id},
+                    allow_nan=False) + "\n")
                 joined = {}
                 for spec in camera_plan():
                     image = camera_queues[spec["name"]].get(timeout=30)

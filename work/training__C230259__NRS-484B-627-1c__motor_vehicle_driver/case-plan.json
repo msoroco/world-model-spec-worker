@@ -21,7 +21,7 @@
   "witness_branches": [
     "Alternate-route duty on a road established separately as controlled access."
   ],
-  "selected_branch": null,
+  "selected_branch": "Alternate-route duty on a road established separately as controlled access.",
   "requirement_dispositions": [
     {
       "requirement": "NRS-484B-627-1c",
@@ -32,18 +32,18 @@
         "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_1",
         "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+      "evidence_or_gap": "Executable exact route attempt with source-bound original position, actor, road topology and time channels; physical and legal facts await local review."
     },
     {
       "requirement": "NRS-484B-627-1c",
       "source": "NRS 484B.627(1)(c)",
       "branch": "where no alternate route is possible",
-      "status": "exception_pending",
+      "status": "selected_required",
       "case_ids": [
         "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_1",
         "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_2"
       ],
-      "evidence_or_gap": "Exact cited-law scope, actor eligibility, construction and observed evidence of this exception remain unverified; these are planning targets only."
+      "evidence_or_gap": "Executable exact route attempt with source-bound original position, actor, road topology and time channels; physical and legal facts await local review."
     }
   ],
   "activation_conditions": [
@@ -68,7 +68,7 @@
     {
       "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484B-627-1c",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "slow driver takes available alternate route at usable exit",
       "comparison_variable": "slow_vehicle_alternate_route",
@@ -99,12 +99,15 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "what counts as an available alternate route is a map and journey question, not a scene observation"
+      ],
+      "gap_ids": [
+        "unobserved_route_context"
       ]
     },
     {
       "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484B-627-1c",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "slow driver passes available exit and remains on controlled-access road",
       "comparison_variable": "slow_vehicle_alternate_route",
@@ -135,12 +138,15 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "what counts as an available alternate route is a map and journey question, not a scene observation"
+      ],
+      "gap_ids": [
+        "unobserved_route_context"
       ]
     },
     {
       "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_1",
       "target_law_id": "NRS-484B-627-1c",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "hold selected activation with where no alternate route is possible absent",
       "comparison_variable": "exception_1_applicability",
@@ -171,12 +177,15 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "what counts as an available alternate route is a map and journey question, not a scene observation"
+      ],
+      "gap_ids": [
+        "unobserved_route_context"
       ]
     },
     {
       "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_2",
       "target_law_id": "NRS-484B-627-1c",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "hold selected activation with where no alternate route is possible present",
       "comparison_variable": "exception_1_applicability",
@@ -207,6 +216,9 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "what counts as an available alternate route is a map and journey question, not a scene observation"
+      ],
+      "gap_ids": [
+        "unobserved_route_context"
       ]
     }
   ],
@@ -245,68 +257,73 @@
   "mandatory_observation_terms": [
     {
       "term": "drv.speed_below_traffic",
-      "purpose": "the impeding speed",
-      "status": "measurement_mapping_pending"
+      "purpose": "Actual same-frame subject/follower speeds and controller free-flow intent; legal impediment requires review.",
+      "status": "mapped_to_source_channel"
     },
     {
       "term": "drv.queue_behind",
-      "purpose": "the traffic behind",
-      "status": "measurement_mapping_pending"
+      "purpose": "Original actor IDs, positions, lanes and order on the approach; queue judgment requires review.",
+      "status": "mapped_to_source_channel"
     },
     {
       "term": "st.controlled_access",
-      "purpose": "the controlled-access highway",
-      "status": "measurement_mapping_pending"
+      "purpose": "Original road IDs joined to a separate designation source; no designation source is supplied yet.",
+      "status": "mapped_to_source_channel"
     },
     {
       "term": "st.lane_connectivity",
-      "purpose": "the alternate routes available",
-      "status": "measurement_mapping_pending"
+      "purpose": "Original OpenDRIVE branches and per-frame road occupancy; practical route usability remains unverified.",
+      "status": "mapped_to_source_channel"
     },
     {
       "term": "kin.path_length",
-      "purpose": "the route taken",
-      "status": "measurement_mapping_pending"
+      "purpose": "Original route trace positions and duration; travel distance can be derived without a legal threshold.",
+      "status": "mapped_to_source_channel"
     },
     {
       "term": "rel.occupies",
-      "purpose": "whether the subject leaves at an exit",
-      "status": "measurement_mapping_pending"
+      "purpose": "Original road ID occupancy on main or alternate route with camera/frame joins.",
+      "status": "mapped_to_source_channel"
     }
   ],
   "observations": [
     {
-      "name": "drv.speed_below_traffic",
+      "name": "participant_motion",
       "mandatory": true,
-      "reason": "the impeding speed"
+      "reason": "same-frame motor vehicle driver and immediate follower motion"
     },
     {
-      "name": "drv.queue_behind",
+      "name": "route_occupancy",
       "mandatory": true,
-      "reason": "the traffic behind"
-    },
-    {
-      "name": "st.controlled_access",
-      "mandatory": true,
-      "reason": "the controlled-access highway"
-    },
-    {
-      "name": "st.lane_connectivity",
-      "mandatory": true,
-      "reason": "the alternate routes available"
-    },
-    {
-      "name": "kin.path_length",
-      "mandatory": true,
-      "reason": "the route taken"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "whether the subject leaves at an exit"
+      "reason": "original route topology and observed road occupancy"
     }
   ],
-  "candidate_plans": [],
+  "candidate_plans": [
+    {
+      "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_1",
+      "primary": "draft-route/witness_1/primary/construction.json",
+      "fallback1": "draft-route/witness_1/fallback1/construction.json",
+      "risk": "Native route-turn or lane-following deviation needs local check"
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__witness_2",
+      "primary": "draft-route/witness_2/primary/construction.json",
+      "fallback1": "draft-route/witness_2/fallback1/construction.json",
+      "risk": "Native route-turn or lane-following deviation needs local check"
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_1",
+      "primary": "draft-route/exception_1_1/primary/construction.json",
+      "fallback1": "draft-route/exception_1_1/fallback1/construction.json",
+      "risk": "Native route-turn or lane-following deviation needs local check"
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-627-1c__motor_vehicle_driver__exception_1_2",
+      "primary": "draft-route/exception_1_2/primary/construction.json",
+      "fallback1": "draft-route/exception_1_2/fallback1/construction.json",
+      "risk": "Native route-turn or lane-following deviation needs local check"
+    }
+  ],
   "existing_evidence": [],
   "sources": [
     {
@@ -321,11 +338,99 @@
     "Legal context and exceptions can be represented without substituting authored targets for measurements"
   ],
   "blockers": [
-    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+    "Selected positive/negative compatibility, saved-only processing, semantic proposals, physical/lifecycle proofs and independent delivery/comparison audits remain CPU work."
   ],
   "runtime_uncertainties": [
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Executable Native drafts and offline proofs; no physical or legal outcome claimed.",
+  "evidence_review": {
+    "reviewer": "worker CPU source review",
+    "method": "Read frozen assignment, witness and empty accepted-recording inventory; no original accepted recordings are supplied for this exact assignment.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "unobserved_route_context",
+        "requirement": "NRS-484B-627-1c",
+        "source": "NRS 484B.627(1)(c)",
+        "why_existing_insufficient": "No accepted recording establishes a controlled-access designation, immediately following impeded traffic, or a possible route and its use."
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "drv.speed_below_traffic": {
+      "evidence": "Actual same-frame subject/follower speeds and controller free-flow intent; legal impediment requires review.",
+      "channels": [
+        "participant_motion"
+      ],
+      "source_refs": [
+        "inputs/training__C230259__NRS-484B-627-1c__motor_vehicle_driver/assignment.json",
+        "route-trace.jsonl",
+        "route-context.json",
+        "road.xodr"
+      ]
+    },
+    "drv.queue_behind": {
+      "evidence": "Original actor IDs, positions, lanes and order on the approach; queue judgment requires review.",
+      "channels": [
+        "participant_motion"
+      ],
+      "source_refs": [
+        "inputs/training__C230259__NRS-484B-627-1c__motor_vehicle_driver/assignment.json",
+        "route-trace.jsonl",
+        "route-context.json",
+        "road.xodr"
+      ]
+    },
+    "st.controlled_access": {
+      "evidence": "Original road IDs joined to a separate designation source; no designation source is supplied yet.",
+      "channels": [
+        "route_occupancy"
+      ],
+      "source_refs": [
+        "inputs/training__C230259__NRS-484B-627-1c__motor_vehicle_driver/assignment.json",
+        "route-trace.jsonl",
+        "route-context.json",
+        "road.xodr"
+      ]
+    },
+    "st.lane_connectivity": {
+      "evidence": "Original OpenDRIVE branches and per-frame road occupancy; practical route usability remains unverified.",
+      "channels": [
+        "route_occupancy"
+      ],
+      "source_refs": [
+        "inputs/training__C230259__NRS-484B-627-1c__motor_vehicle_driver/assignment.json",
+        "route-trace.jsonl",
+        "route-context.json",
+        "road.xodr"
+      ]
+    },
+    "kin.path_length": {
+      "evidence": "Original route trace positions and duration; travel distance can be derived without a legal threshold.",
+      "channels": [
+        "route_occupancy",
+        "participant_motion"
+      ],
+      "source_refs": [
+        "inputs/training__C230259__NRS-484B-627-1c__motor_vehicle_driver/assignment.json",
+        "route-trace.jsonl",
+        "route-context.json",
+        "road.xodr"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original road ID occupancy on main or alternate route with camera/frame joins.",
+      "channels": [
+        "route_occupancy"
+      ],
+      "source_refs": [
+        "inputs/training__C230259__NRS-484B-627-1c__motor_vehicle_driver/assignment.json",
+        "route-trace.jsonl",
+        "route-context.json",
+        "road.xodr"
+      ]
+    }
+  }
 }

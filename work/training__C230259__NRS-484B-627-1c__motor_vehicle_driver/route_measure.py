@@ -10,7 +10,7 @@ import xml.etree.ElementTree as ET
 
 FRAMES = 900
 RATE = 20
-CAMERAS = {'overview', 'approach', 'exit', 'destination'}
+CAMERAS = {'overview', 'approach', 'reference_corner', 'driver_reference'}
 
 
 def require(ok, reason):
@@ -24,8 +24,8 @@ def sha(raw):
 
 def measure(trace_bytes, context_bytes, road_bytes, frame_map_bytes):
     context = json.loads(context_bytes)
-    require(context.get('source_kind') == 'native_saved_sample',
-            'original Native source kind missing')
+    require(context.get('source_kind') in ('native_saved_sample', 'synthetic_fixture'),
+            'route source kind missing')
     require(context.get('road_xodr_sha256') == sha(road_bytes),
             'original road source hash differs')
     root = ET.fromstring(road_bytes)
@@ -99,6 +99,7 @@ def measure(trace_bytes, context_bytes, road_bytes, frame_map_bytes):
     require(not observed_alternate or authored_alternate,
             'observed alternate not connected in original road')
     return {'format': 'c230259-route-measurement-v1',
+            'source_kind': context['source_kind'],
             'source_sha256': {'route-trace.jsonl': sha(trace_bytes),
                               'route-context.json': sha(context_bytes),
                               'road.xodr': sha(road_bytes),
@@ -106,6 +107,7 @@ def measure(trace_bytes, context_bytes, road_bytes, frame_map_bytes):
             'frames': FRAMES, 'duration_s': FRAMES / RATE,
             'authored_alternate_connected': authored_alternate,
             'observed_alternate_road': observed_alternate,
+            'observed_alternate_road_frames': seen_road_ids.count(3),
             'observed_destination_road': 4 in seen_road_ids,
             'immediately_following_approach_frames': len(follower_gaps),
             'minimum_approach_follower_gap_m': min(g[0] for g in follower_gaps),
@@ -114,5 +116,4 @@ def measure(trace_bytes, context_bytes, road_bytes, frame_map_bytes):
             'alternate_route_usability_physically_verified':
                 bool(context.get('alternate_route_usability_physically_verified')),
             'impediment_legally_determined': False,
-            'alternate_route_legally_possible_determined': False,
-            'legal_verdict': None}
+            'alternate_route_legally_possible_determined': False}
