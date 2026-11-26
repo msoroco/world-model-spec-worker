@@ -1,6 +1,9 @@
 """Source-shaped Native lifecycle tests with an in-memory adapter."""
 import unittest
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / 'runtime' / 'scenario_pipeline'))
 
 from test_hydrant import Adapter
 from test_native_packet import PacketTest
@@ -11,11 +14,14 @@ from saved_audit import audit
 class Pipeline:
     def __init__(self, client, actor, output, case_id, required_observations):
         self.closed = False
+        self.trace = (Path(output) / 'trace.jsonl').open('x', encoding='utf-8')
 
     def capture(self, frame, elapsed):
+        self.trace.write('{"frame":' + str(frame) + ',"time_s":' + str(elapsed) + '}\n')
         return {'frame': frame, 'time_s': elapsed}
 
     def close(self, confirmed):
+        self.trace.close()
         self.closed = True
 
 
@@ -87,9 +93,15 @@ class NativeRunnerTest(unittest.TestCase):
     setUp = PacketTest.setUp
     save = PacketTest.save
 
+    def materialize(self, output):
+        output.mkdir()
+        for name in ('construction.json', 'config.json', 'runner.py'):
+            (output / name).write_text('fixture only\n', encoding='utf-8')
+
     def test_900_frame_source_join_and_saved_input(self):
         adapter = NativeAdapter(self.payload['site'])
         output = self.root / 'original-attempt'
+        self.materialize(output)
         receipt = capture_original(adapter, self.packet, self.case_id, output,
                                    pipeline_factory=Pipeline)
         self.assertEqual(receipt['frames'], 900)
@@ -104,6 +116,7 @@ class NativeRunnerTest(unittest.TestCase):
     def test_bad_camera_join_cleans_up(self):
         adapter = NativeAdapter(self.payload['site'])
         adapter.bad_cameras = True
+        self.materialize(self.root / 'bad-attempt')
         with self.assertRaisesRegex(ValueError, 'four cameras not joined'):
             capture_original(adapter, self.packet, self.case_id, self.root / 'bad-attempt',
                              pipeline_factory=Pipeline)

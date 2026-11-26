@@ -28,14 +28,14 @@
     {
       "case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
       "branch": "Manner of driving near a barrier",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "kind": "delivery",
+      "new_capture_selected": true,
       "gap_ids": [
         "unverified-law-coverage"
       ],
       "route_candidate": "wide",
       "construction_tool": "barrier_route.construct",
-      "construction_status": "connected_clear_route_selector_tested; actual source site unresolved",
+      "construction_status": "source_gated_native_bundle_cpu_preparation",
       "required_original_packets": [
         "city_highway_and_vehicle_identity",
         "barrier_geometry_and_road_bounds",
@@ -49,14 +49,14 @@
     {
       "case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance",
       "branch": "Manner of driving near a barrier",
-      "kind": "planned_controlled_construction",
-      "new_capture_selected": false,
+      "kind": "delivery",
+      "new_capture_selected": true,
       "gap_ids": [
         "unverified-law-coverage"
       ],
       "route_candidate": "near",
       "construction_tool": "barrier_route.construct",
-      "construction_status": "connected_clear_route_selector_tested; actual source site unresolved",
+      "construction_status": "source_gated_native_bundle_cpu_preparation",
       "required_original_packets": [
         "city_highway_and_vehicle_identity",
         "barrier_geometry_and_road_bounds",
@@ -79,12 +79,38 @@
         "same driver, motor vehicle, city highway, physical barrier, speed controller, duration and cameras"
       ],
       "deliberate_differences": [
-        "planned route lateral distance and observed vehicle body clearance to the barrier"
+        "body_clearance_m"
       ],
       "status": "planned_unbuilt"
     }
   ],
-  "observations": [],
+  "observations": [
+    {
+      "name": "ego_body_motion",
+      "method": "original 20 Hz vehicle footprint, position and speed",
+      "source": "original Native barrier capture"
+    },
+    {
+      "name": "barrier_body_clearance",
+      "method": "original body-to-source-barrier distance and contact readback",
+      "source": "original Native barrier capture"
+    },
+    {
+      "name": "highway_city_context",
+      "method": "sealed Native road, City status and surrounding conditions",
+      "source": "original Native barrier capture"
+    },
+    {
+      "name": "route_realization",
+      "method": "original approach and passage of selected connected route",
+      "source": "original Native barrier capture"
+    },
+    {
+      "name": "camera_frame_identity",
+      "method": "four original synchronized camera streams",
+      "source": "original Native barrier capture"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
@@ -126,7 +152,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_two_cases_tested_barrier_route_and_source_observation",
+  "planning_status": "two_selected_barrier_cases_source_gated_cpu_preparation",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -147,5 +173,69 @@
       ],
       "reason": "A barrier encounter can provide surrounding conditions for physical driving observations; barrier presence is not an element of this law."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "person drives or operates a vehicle",
+      "source": "inputs/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+        "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance"
+      ],
+      "evidence_or_gap": "original driver, vehicle and 20 Hz motion identity"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "on any highway in the City",
+      "source": "inputs/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+        "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance"
+      ],
+      "evidence_or_gap": "reviewed Native highway and City source status"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "careless or imprudent manner",
+      "source": "inputs/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+        "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance"
+      ],
+      "evidence_or_gap": "barrier and surrounding observations; legal judgment unresolved"
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "motor vehicle, barrier and highway",
+        "interval": "first through final original frame"
+      },
+      {
+        "view": "approach",
+        "subject": "approach motion and barrier edge",
+        "interval": "approach through barrier passage"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "body clearance and road edges",
+        "interval": "barrier encounter"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver vehicle trajectory and barrier",
+        "interval": "first through final original frame"
+      }
+    ],
+    "limitation": "Camera placement and physical visibility require original review"
+  }
 }

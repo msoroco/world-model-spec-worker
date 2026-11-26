@@ -23,12 +23,17 @@ def sha(path):
 
 
 def capture_original(adapter, packet_path, case_id, output_dir, *, pipeline_factory=None,
-                     adapter_module_path=None):
+                     adapter_module_path=None, seal_factory=None):
     """Capture original sources without overwriting an existing attempt."""
     packet_path, output = Path(packet_path).resolve(), Path(output_dir)
     site, case, hashes, cameras = validate_packet(packet_path, case_id)
     if output.exists():
-        raise ValueError('original Native attempt already exists')
+        if (not all((output / name).is_file() for name in
+                    ('construction.json', 'config.json', 'runner.py')) or
+                any((output / name).exists() for name in
+                    ('capture-seal.json', 'original-hydrant-history.jsonl',
+                     'reviewed-packet'))):
+            raise ValueError('original Native attempt already exists')
     if not callable(getattr(adapter, 'provenance', None)) or adapter.provenance() != 'original_native':
         raise ValueError('original Native adapter required')
     if not callable(getattr(adapter, 'verify_loaded_map', None)) or not adapter.verify_loaded_map(hashes['opendrive']):
@@ -36,7 +41,7 @@ def capture_original(adapter, packet_path, case_id, output_dir, *, pipeline_fact
     if pipeline_factory is None:
         from pipeline_capture import PipelineCapture
         pipeline_factory = PipelineCapture
-    output.mkdir(parents=True)
+    output.mkdir(parents=True, exist_ok=True)
     source_dir = output / 'reviewed-packet'
     source_dir.mkdir()
     shutil.copy2(packet_path, source_dir / 'reviewed-site.json')
@@ -143,20 +148,22 @@ def capture_original(adapter, packet_path, case_id, output_dir, *, pipeline_fact
                 finally:
                     if adapter.restore_world() is not True:
                         raise ValueError('original Native world restoration readback missing')
-    files = ('site.json', 'original-hydrant-history.jsonl', 'camera-frame-map.jsonl',
-             'video_frames.jsonl', *(name + '.mkv' for name in CAMERAS),
-             'reviewed-packet/reviewed-site.json',
-             *(str(Path('reviewed-packet') / item['path']) for item in packet['sources'].values()))
-    if adapter_module_path is not None:
-        files += ('reviewed-packet/native-adapter.py',)
-    seal = {'format': 'hydrant-original-native-seal-v1', 'case_id': case_id,
-            'provenance_kind': 'native', 'diagnostic_fixture': False,
-            'frames': FRAMES, 'capture_rate_hz': HZ,
-            'reviewed_packet_sha256': sha(packet_path),
-            'restoration': {'restored': True},
-            'sources': {name: sha(output / name) for name in files}}
+    (output / 'acquisition-provenance.json').write_text(json.dumps({
+        'provenance_kind': 'native', 'diagnostic_fixture': False,
+        'source_kind': 'original_native', 'physical_acceptance_claimed': False}) + '\n',
+        encoding='utf-8')
+    if seal_factory is None:
+        from worker_exchange.native_output import seal_capture
+        seal_factory = seal_capture
+    seal_factory(output, frames=FRAMES,
+                 restoration={'restored': True,
+                              'method': 'owned actors and sensors; Native world settings readback'},
+                 errors=[], encoder_exit_codes={name: 0 for name in CAMERAS},
+                 context={'case_id': case_id, 'reviewed_packet_sha256': sha(packet_path),
+                          'legal_distance_convention': 'unresolved_review'})
     seal_path = output / 'capture-seal.json'
-    seal_path.write_text(json.dumps(seal, sort_keys=True, indent=2) + '\n', encoding='utf-8')
+    if not seal_path.is_file():
+        raise ValueError('canonical original capture seal missing')
     return {'case_id': case_id, 'frames': FRAMES,
             'capture_seal_sha256': sha(seal_path),
             'original_history_sha256': sha(output / 'original-hydrant-history.jsonl'),

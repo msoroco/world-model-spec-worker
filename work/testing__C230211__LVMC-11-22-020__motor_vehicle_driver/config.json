@@ -1,0 +1,127 @@
+{
+  "assignment_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver",
+  "law_id": "LVMC-11-22-020",
+  "cell_id": "C230211",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed city highway, barrier and moving ego body"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed city highway, barrier and moving ego body"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed city highway, barrier and moving ego body"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "surveyed city highway, barrier and moving ego body"
+    }
+  ],
+  "supported_case_ids": [
+    "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+    "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance"
+  ],
+  "case": {
+    "case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+    "branch": "Manner of driving near a barrier",
+    "kind": "delivery",
+    "new_capture_selected": true,
+    "gap_ids": [
+      "unverified-law-coverage"
+    ],
+    "route_candidate": "wide",
+    "construction_tool": "barrier_route.construct",
+    "construction_status": "source_gated_native_bundle_cpu_preparation",
+    "required_original_packets": [
+      "city_highway_and_vehicle_identity",
+      "barrier_geometry_and_road_bounds",
+      "ego_body_motion_20hz",
+      "surrounding_conditions",
+      "four_camera_video"
+    ],
+    "physical_risk": "The real road may not provide a wide connected passage beside the barrier; source road bounds and realized body clearance require readback.",
+    "measurement": "Original barrier clearance, body motion, speed and surrounding conditions without inferring careless or imprudent.",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_body_motion",
+          "unit": "world meters/frame",
+          "method": "original 20 Hz vehicle footprint, position and speed",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second barrier approach and passage",
+          "reference_frame": "reviewed Native map, road bounds and barrier rectangle",
+          "uncertainty": "Physical measurements do not decide careless or imprudent driving"
+        },
+        {
+          "name": "barrier_body_clearance",
+          "unit": "meters/frame",
+          "method": "original body-to-source-barrier distance and contact readback",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second barrier approach and passage",
+          "reference_frame": "reviewed Native map, road bounds and barrier rectangle",
+          "uncertainty": "Physical measurements do not decide careless or imprudent driving"
+        },
+        {
+          "name": "highway_city_context",
+          "unit": "source record",
+          "method": "sealed Native road, City status and surrounding conditions",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second barrier approach and passage",
+          "reference_frame": "reviewed Native map, road bounds and barrier rectangle",
+          "uncertainty": "Physical measurements do not decide careless or imprudent driving"
+        },
+        {
+          "name": "route_realization",
+          "unit": "world meters/frame",
+          "method": "original approach and passage of selected connected route",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second barrier approach and passage",
+          "reference_frame": "reviewed Native map, road bounds and barrier rectangle",
+          "uncertainty": "Physical measurements do not decide careless or imprudent driving"
+        },
+        {
+          "name": "camera_frame_identity",
+          "unit": "original frame",
+          "method": "four original synchronized camera streams",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second barrier approach and passage",
+          "reference_frame": "reviewed Native map, road bounds and barrier rectangle",
+          "uncertainty": "Physical measurements do not decide careless or imprudent driving"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_native_barrier_site",
+          "unit": "source record",
+          "method": "sealed map, highway, barrier and surrounding-conditions packet"
+        }
+      ],
+      "limitations": [
+        "Synthetic fixtures prove software compatibility only.",
+        "Careless or imprudent remains for independent human legal review."
+      ]
+    }
+  }
+}

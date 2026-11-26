@@ -1,0 +1,280 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver",
+  "status": "physical_and_selected_cpu_proofs_bound_gpu_pending",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+      "kind": "delivery",
+      "construction": "construction-selected-wide_clearance.json",
+      "construction_sha256": "8985e48a943a763214fb2d010af3ac4b82338b91d3fb9301700831094db3867d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Realized body clearance beside the barrier may differ from planned clearance; slower controller speed may improve steer tracking without changing law, geometry, or selected route."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-wide_clearance.json",
+          "construction_sha256": "9f5f967221a2c0403e8056b8bd039a19ee8c27b2b04259f7f3ed5760a0faffa5",
+          "trigger": {
+            "source": "original 900-frame barrier packet, body geometry and four-camera source audit",
+            "metric": "realized body-to-barrier clearance and connected passage",
+            "failure_condition": "actual body clearance or connected passage is not established in original capture"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-fallback-offline-v1/wide_clearance --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-wide_clearance.log",
+            "log_sha256": "cbc8b24eb0fa5e1d5faa23423ac2a58c124d0abfccb8a2ff210051181fde8488",
+            "construction_sha256": "9f5f967221a2c0403e8056b8bd039a19ee8c27b2b04259f7f3ed5760a0faffa5"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-wide_clearance.json",
+            "sha256": "d9b26d5425732ddd43ab4a8fdedd64a7a4db8b139df89c7e15d24e5bd4b52faa",
+            "log": "proof-fallback-analysis-wide_clearance.log",
+            "negative_log": "proof-fallback-negative-wide_clearance.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/diagnostics/wide_clearance-recipe.json",
+      "measurement_contract": "diagnostics/wide_clearance-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original barrier body and route readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/selected-v5/offline/wide_clearance --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-wide_clearance.log",
+        "log_sha256": "d658c912c06200fafaa2bd40aa5f4de485d1133aa4726153ffddbfb9edb532d4",
+        "construction_sha256": "8985e48a943a763214fb2d010af3ac4b82338b91d3fb9301700831094db3867d"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-wide_clearance.json",
+        "sha256": "1ec8763fa9d0864362cf0dc3380edc603571c3b5be06188b2eeaa0ee44224698",
+        "log": "proof-compat-analysis-wide_clearance.log",
+        "negative_log": "proof-compat-negative-wide_clearance.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-wide_clearance.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-wide_clearance-receipt.json",
+        "sha256": "30b25136223868b8bcc441783956968cdf9fcded16d661b7f521e317960de961"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-wide_clearance.log",
+        "sha256": "00a58b4a9603ffd63db122131d6b9b1b2e43bb33c698fd81827c0223351cfd93"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/execution-manifest.json --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-wide_clearance.log",
+        "test_log_sha256": "00a58b4a9603ffd63db122131d6b9b1b2e43bb33c698fd81827c0223351cfd93"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-delivery-diagnostic-v1/wide_clearance --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/proofs/physical/wide_clearance/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-delivery-diagnostic-v1/wide_clearance/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-delivery-diagnostic-v1/wide_clearance --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/proofs/physical/wide_clearance/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-delivery-diagnostic-v1/wide_clearance/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "feb1894d07731f31863ec965ff8868b70c673c2aaf4283b356128a9f23eddacc",
+        "test_log": "proof-delivery-positive-wide_clearance.log",
+        "test_log_sha256": "4bff7121c5b08564bf9a8427645d383dc125c7d38a0875434a29edb48aa47d84",
+        "negative_log": "proof-delivery-negative-wide_clearance.log",
+        "negative_log_sha256": "f1418b7b3789c973d9c2574847e6b9e4a777231fbbe584cb5d66d8a63633f2c5",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230211_REVIEWED_SITE",
+        "adapter_module_env_var": "C230211_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "ego_body_motion": {
+          "entrypoint": "barrier_capture.py",
+          "method": "original 20 Hz body, position and speed readback",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        },
+        "barrier_body_clearance": {
+          "entrypoint": "barrier_route.py",
+          "method": "original body corner to source barrier readback",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        },
+        "highway_city_context": {
+          "entrypoint": "runner.py",
+          "method": "source-sealed Native highway and City status",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        },
+        "route_realization": {
+          "entrypoint": "barrier_capture.py",
+          "method": "original connected route passage",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "barrier_capture_audit.py",
+          "method": "four full decoded original streams and frame join",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance",
+      "kind": "delivery",
+      "construction": "construction-selected-near_clearance.json",
+      "construction_sha256": "152444fa14ffaf0571c69e5d467a5f9d73b5d58333c75685664707423b1e718c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Realized body clearance beside the barrier may differ from planned clearance; slower controller speed may improve steer tracking without changing law, geometry, or selected route."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-fallback1-near_clearance.json",
+          "construction_sha256": "d7540813f36201ec69a417d12cfe59bc1c1bb2754c44dd6d7340aa6f95eb7578",
+          "trigger": {
+            "source": "original 900-frame barrier packet, body geometry and four-camera source audit",
+            "metric": "realized body-to-barrier clearance and connected passage",
+            "failure_condition": "actual body clearance or connected passage is not established in original capture"
+          },
+          "changed_knobs": [
+            "controller target speed scale: 0.75"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-fallback-offline-v1/near_clearance --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "proof-fallback-offline-near_clearance.log",
+            "log_sha256": "ede8da4fa973f32b8aa3c312639a287723ee63a173c4466727b8fe9b8e714e07",
+            "construction_sha256": "d7540813f36201ec69a417d12cfe59bc1c1bb2754c44dd6d7340aa6f95eb7578"
+          },
+          "compatibility": {
+            "receipt": "proof-fallback-receipt-near_clearance.json",
+            "sha256": "5cf9c3253e5626576a8792e2ad7f6dfc7f1fce71583188e030f8850793543106",
+            "log": "proof-fallback-analysis-near_clearance.log",
+            "negative_log": "proof-fallback-negative-near_clearance.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/diagnostics/near_clearance-recipe.json",
+      "measurement_contract": "diagnostics/near_clearance-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original barrier body and route readback"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/execution-manifest.selected-draft.json --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/selected-v5/offline/near_clearance --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-selected-offline-near_clearance.log",
+        "log_sha256": "d923b405fca47a887321e109686c5f1554b6b64be161320f9968348798083f64",
+        "construction_sha256": "152444fa14ffaf0571c69e5d467a5f9d73b5d58333c75685664707423b1e718c"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-near_clearance.json",
+        "sha256": "5f0637d75566e9d8afc1e8bf530666809f00dc5895636b3c6baa862d8c789c1c",
+        "log": "proof-compat-analysis-near_clearance.log",
+        "negative_log": "proof-compat-negative-near_clearance.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-near_clearance.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-near_clearance-receipt.json",
+        "sha256": "b6bb850da6b6392c7679d1a88b4aa991d124a77ee03500e6b4f28faf3b3f0449"
+      },
+      "saved_replay": {
+        "log": "proof-selected-saved-near_clearance.log",
+        "sha256": "f8dad4ea3fca1a018fa3732a3c32d6365673afcd5804a6feb78034f499de56bb"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/execution-manifest.json --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-selected-saved-near_clearance.log",
+        "test_log_sha256": "f8dad4ea3fca1a018fa3732a3c32d6365673afcd5804a6feb78034f499de56bb"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-delivery-diagnostic-v1/near_clearance --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/proofs/physical/near_clearance/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-delivery-diagnostic-v1/near_clearance/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/delivery_audit.py --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__near_clearance --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-delivery-diagnostic-v1/near_clearance --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/proofs/physical/near_clearance/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230211-owner-nov26/barrier-delivery-diagnostic-v1/near_clearance/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "feb1894d07731f31863ec965ff8868b70c673c2aaf4283b356128a9f23eddacc",
+        "test_log": "proof-delivery-positive-near_clearance.log",
+        "test_log_sha256": "793bfcf1c2e756894c0a587b60ad988d360a12018b3daa5701b453b2efb05b31",
+        "negative_log": "proof-delivery-negative-near_clearance.log",
+        "negative_log_sha256": "f1418b7b3789c973d9c2574847e6b9e4a777231fbbe584cb5d66d8a63633f2c5",
+        "diagnostic_scope": "CPU protocol only; original Native evidence and human pixel review required on GPU"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C230211_REVIEWED_SITE",
+        "adapter_module_env_var": "C230211_NATIVE_ADAPTER_MODULE"
+      },
+      "acquisition": {
+        "ego_body_motion": {
+          "entrypoint": "barrier_capture.py",
+          "method": "original 20 Hz body, position and speed readback",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        },
+        "barrier_body_clearance": {
+          "entrypoint": "barrier_route.py",
+          "method": "original body corner to source barrier readback",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        },
+        "highway_city_context": {
+          "entrypoint": "runner.py",
+          "method": "source-sealed Native highway and City status",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        },
+        "route_realization": {
+          "entrypoint": "barrier_capture.py",
+          "method": "original connected route passage",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "barrier_capture_audit.py",
+          "method": "four full decoded original streams and frame join",
+          "evidence": "original-source-receipt.json, barrier-packet.json and synchronized 900-frame camera streams"
+        }
+      }
+    }
+  ]
+}

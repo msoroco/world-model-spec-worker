@@ -81,7 +81,8 @@ def verify_topology(source: dict, lane_role: str) -> dict:
             "map_id": source["map_id"], "map_sha256": source["map_sha256"]}
 
 
-def verify_original_history(history: dict, topology: dict, case_id: str) -> dict:
+def verify_original_history(history: dict, topology: dict, case_id: str,
+                            expected_frames: int = 900) -> dict:
     """Measure observed ring-lane occupation and actual departure from Native frames."""
     _require(history.get("source_kind") == "sealed_native_original_history", "missing original Native history")
     _require(history.get("case_id") == case_id, "case source mismatch")
@@ -92,8 +93,9 @@ def verify_original_history(history: dict, topology: dict, case_id: str) -> dict
     fixed_keys = ("vehicle_blueprint", "entry_id", "exit_id", "controller_sha256", "weather_sha256", "camera_plan_sha256")
     _require(all(history.get(key) for key in fixed_keys), "comparison fixed-condition source missing")
     frames = history.get("frames", [])
-    _require(len(frames) == 900, "full 900-frame original history required")
-    _require([f.get("frame") for f in frames] == list(range(900)), "original frame discontinuity")
+    _require(expected_frames in (9, 900), "unsupported history profile")
+    _require(len(frames) == expected_frames, "full expected original history required")
+    _require([f.get("frame") for f in frames] == list(range(expected_frames)), "original frame discontinuity")
     _require(all(f.get("actor_id") == history["actor_id"] for f in frames), "actor changed")
     times = [f.get("time_s") for f in frames]
     _require(all(isinstance(t, (int, float)) and math.isfinite(t) for t in times), "nonfinite time")

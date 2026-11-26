@@ -1,31 +1,22 @@
 {
   "assignment_id": "testing__C230211__LVMC-11-22-020__motor_vehicle_driver",
   "input_sha256": "15499f8bd127b06f69cd26433a8c274dd34b70b998e40ddf7f1136fbbf1c418a",
-  "status": "partial",
-  "readiness_kind": "barrier_route_geometry_and_original_motion_measurement",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "preflight.log",
-      "sha256": "153997c3ee4ac237dce6234c3c40cad725c921e40fbf889c243ee14ee0a665d7"
-    },
-    {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C230211__LVMC-11-22-020__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "log": "unittest.log",
-      "sha256": "284f6ee112107bdb69d018447c9b2a42b487c8e45e280336b8d6aee6ee9b8d27"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C230211__LVMC-11-22-020__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "static.log",
-      "sha256": "e2441bf50304d673e933b4b9854a35894449cea14a9aa51e52291468de8dbffb"
+      "log": "cpu-tests.log",
+      "sha256": "c738ea37c7cceb16a89a3723232b6e01f7b8b2e18606f939580ea5e993407703"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Original 900-frame Native CARLA highway, barrier and vehicle motion",
+    "Independent four-view pixel and physical completion review",
+    "Human interpretation of careless or imprudent manner"
   ],
-  "reason": "Two planned cases and a controlled comparison vary route clearance beside a physical barrier. Tested source-bound connected route construction and original-frame barrier distance measurement with six synthetic CPU tests. Actual highway and barrier source, original motion, exact bundles, compatibility, saved processing and independent audits remain CPU work; careless/imprudent judgment stays unresolved."
+  "reason": "Two exact barrier-route cases and one controlled comparison have selected offline, positive/negative compatibility, saved-only, physical, fallback, independent delivery and comparison CPU proofs. Original Native capture and human careless/imprudent judgment remain for GPU delivery.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C230211__LVMC-11-22-020__motor_vehicle_driver --case testing__C230211__LVMC-11-22-020__motor_vehicle_driver__wide_clearance --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

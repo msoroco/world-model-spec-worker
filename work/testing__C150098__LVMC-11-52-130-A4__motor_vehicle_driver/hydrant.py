@@ -168,9 +168,14 @@ def measure_original_history(rows,site: Mapping,case: Case):
         observed.append({'frame':first+i,'time_s':time,'side':side,
                          'longitudinal_body_hydrant_gap_m':distance,
                          'activity':row['activity_observation']})
+    target_activity={'stop':'stopped','stand':'standing','park':'parked'}[case.activity]
+    target_rows=[row for row in observed if row['side']==case.side and
+                 row['activity']==target_activity]
+    need(target_rows,'original target-side activity observation missing')
     return {'case_id':ASSIGNMENT+'__'+case.suffix,'frame_count':len(rows),
             'first_frame':first,'last_frame':first+len(rows)-1,
             'source_identity':fixed,'observed':observed,
-            'minimum_longitudinal_gap_m':min(x['longitudinal_body_hydrant_gap_m'] for x in observed),
+            'target_activity':target_activity,'target_frame_count':len(target_rows),
+            'minimum_longitudinal_gap_m':min(x['longitudinal_body_hydrant_gap_m'] for x in target_rows),
             'fifteen_feet_m_reference':FEET_15_M,
             'legal_distance_convention':'unresolved_review','legal_verdict_claimed':False}

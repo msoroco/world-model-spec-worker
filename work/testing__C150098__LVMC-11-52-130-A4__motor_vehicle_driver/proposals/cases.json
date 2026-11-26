@@ -1,0 +1,1481 @@
+{
+  "cell_id": "C150098",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "reviewed_hydrant_authority",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "judgment_refs": [
+        {
+          "phrase": "parallel parking is permitted",
+          "note": "Location-specific municipal parking permission must be reviewed."
+        },
+        {
+          "phrase": "necessary to avoid conflict with other traffic in compliance with law",
+          "note": "Original traffic conflict, necessity and lawful response require independent review."
+        },
+        {
+          "phrase": "directions of a police officer",
+          "note": "Original officer authority and direction must be reviewed."
+        },
+        {
+          "phrase": "directions of a traffic control device",
+          "note": "Original device authority and direction must be reviewed."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "joint",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "Municipal permission, physical hydrant and exception sources require local review before judgment sweep binding.",
+      "missing_inputs": [
+        "reviewed parallel-parking permission and hydrant survey",
+        "original traffic, officer and device direction source"
+      ],
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.422,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "park",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared one-way curb/hydrant context without legal finding.",
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.422,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "park",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_inside",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "upstream_inside",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 14.50787401574803
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.422,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "park",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_at",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "upstream_at",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 15.0
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.572,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "park",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_outside",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "upstream_outside",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 15.492125984251969
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.722,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "park",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_inside",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "downstream_inside",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 14.50787401574803
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "downstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.422,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "park",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_at",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "downstream_at",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 15.0
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "downstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.572,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "park",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__downstream_outside",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "downstream_outside",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 15.492125984251969
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "downstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.722,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "park",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stop",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "upstream_stop",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 14.50787401574803
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.422,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "stop",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_stand",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "upstream_stand",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 14.50787401574803
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.422,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "stand",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_traffic_exception",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "upstream_traffic_exception",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 14.50787401574803
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.422,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "stop",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "lawful_traffic_conflict",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_police_exception",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "upstream_police_exception",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 14.50787401574803
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.422,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "stop",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "police_direction",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C150098__LVMC-11-52-130-A4__motor_vehicle_driver__upstream_device_exception",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact parallel-parking hydrant boundary, activity and sourced exception observation; no legal verdict.",
+      "paired_probe_id": "parallel_hydrant_boundary_activity_exception",
+      "deliberate_differences": [
+        "hydrant_side",
+        "requested_body_hydrant_gap_m",
+        "vehicle_activity",
+        "exception_source_kind"
+      ],
+      "probe": {
+        "primary_variable": "requested_body_hydrant_gap_m",
+        "comparison_or_standard": "Compare original target-side body gap and sourced authority across exact cases.",
+        "target_value_or_branch": "upstream_device_exception",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "within",
+        "unit": "ft",
+        "test_value": 14.50787401574803
+      },
+      "epsilon_used": {
+        "value": 0.49212598425196846,
+        "unit": "ft",
+        "rationale": "Engineering target offset of 0.15 m around the exact fifteen-foot statutory value; not a legal tolerance."
+      },
+      "variable_assignments": {
+        "hydrant_side": {
+          "kind": "world_setup",
+          "value": "upstream",
+          "unit": "category"
+        },
+        "requested_body_hydrant_gap_m": {
+          "kind": "controller",
+          "value": 4.422,
+          "unit": "m"
+        },
+        "vehicle_activity": {
+          "kind": "controller",
+          "value": "stop",
+          "unit": "category"
+        },
+        "exception_source_kind": {
+          "kind": "world_setup",
+          "value": "traffic_device_direction",
+          "unit": "category"
+        },
+        "measured_original_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "parallel parking is permitted",
+        "necessary to avoid conflict with other traffic in compliance with law",
+        "directions of a police officer",
+        "directions of a traffic control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "longitudinal_hydrant_gap",
+            "unit": "metres",
+            "method": "original body edge and physical hydrant extent",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "parallel_parking_authority",
+            "unit": "reviewed source",
+            "method": "location-specific municipal permission",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "vehicle_activity",
+            "unit": "original observation",
+            "method": "stop, stand or park in complete history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "exception_source",
+            "unit": "reviewed source",
+            "method": "lawful traffic conflict, police or device direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "original Native frame, reviewed hydrant and map",
+            "uncertainty": "requested gap and synthetic fixtures do not establish legal or physical outcome"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "The legal distance convention requires independent source review.",
+          "Municipal permission and exception necessity require original authority sources."
+        ]
+      }
+    }
+  ]
+}

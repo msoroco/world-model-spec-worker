@@ -107,5 +107,25 @@ class HydrantTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'frame/time identity'):
             m.measure_original_history(rows,p,c)
 
+    def test_startup_transient_is_not_boundary_witness(self):
+        p=site();c=m.CASES[0]
+        fixed={'actor_id':11,'hydrant_actor_id':22,'map_sha256':'map','site_sha256':'site',
+               'hydrant_identity_sha256':'hydrant','hydrant_geometry_sha256':'geometry',
+               'parallel_parking_authority_sha256':'permission','camera_plan_sha256':'cameras'}
+        rows=[]
+        for i in range(3):
+            rows.append(dict(fixed,case_id=m.ASSIGNMENT+'__'+c.suffix,frame=100+i,
+                time_s=i*.05,hydrant_physically_present=True,
+                body_source_sha256='body',frame_map_sha256='frames',
+                body_west_x_m=-8.422 if i else -4,body_east_x_m=-4.422 if i else 0,
+                activity_observation='parked' if i else 'moving',exception_kind='none'))
+        measured=m.measure_original_history(rows,p,c)
+        self.assertAlmostEqual(measured['minimum_longitudinal_gap_m'],4.422)
+        self.assertEqual(measured['target_frame_count'],2)
+        for row in rows:
+            row['activity_observation']='moving'
+        with self.assertRaisesRegex(ValueError,'target-side activity'):
+            m.measure_original_history(rows,p,c)
+
 
 if __name__=='__main__':unittest.main()
