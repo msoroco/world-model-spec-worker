@@ -11,7 +11,8 @@ from pathlib import Path
 
 from measure_readiness import ASSIGNMENT, CAMERAS, FRAMES, lines
 from audit_capture import audit as audit_capture
-from scene import CASES, request
+from audit_capture import BRANCH_CASES, exact_request
+from scene import CASES
 
 
 FLAGS = ("emergency_flashing_visible", "emergency_motion_visible",
@@ -83,9 +84,12 @@ def process(directory):
             raise ValueError("Missing original source: " + path.name)
     captured_request = json.loads(request_path.read_text())
     condition = captured_request.get("requested_setting")
-    if condition not in CASES or captured_request != request(condition):
+    case_key = (captured_request["variant"] + "__" + condition
+                if captured_request.get("variant") is not None and isinstance(condition, str)
+                else condition)
+    if case_key not in CASES + BRANCH_CASES or captured_request != exact_request(case_key):
         raise ValueError("Original attempt request differs from exact construction")
-    capture_audit = audit_capture(directory, condition)
+    capture_audit = audit_capture(directory, case_key)
     review = json.loads(review_path.read_text())
     if review.get("assignment_id") != ASSIGNMENT or review.get("review_kind") != "original_source_review":
         raise ValueError("Independent original-source review required")

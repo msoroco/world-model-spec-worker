@@ -28,9 +28,10 @@ def check(config):
         raise ValueError('Exact electric device class required')
     if config.get('device_blueprint_filter') != config.get('source_bound_blueprint_id'):
         raise ValueError('Electric blueprint differs from source inventory')
-    source = Path(config.get('native_asset_source', ''))
-    if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != config.get('native_asset_sha256'):
-        raise ValueError('Electric Native asset source/hash unavailable')
+    for prefix in ('native_asset', 'legal_class', 'device_type', 'motor_power'):
+        source = Path(config.get(prefix + '_source', ''))
+        if not source.is_file() or hashlib.sha256(source.read_bytes()).hexdigest() != config.get(prefix + '_sha256'):
+            raise ValueError('Electric ' + prefix + ' source/hash unavailable')
     if config['pedestrian_microphone']['location'] != 'pedestrian_actor':
         raise ValueError('Audio must be measured at pedestrian location')
     if config['signal_frame'] is not None and not 0 <= config['signal_frame'] < 600:
@@ -120,6 +121,17 @@ def execute(config, output_dir, host, port):
         bicycle = world.spawn_actor(bicycle_bp, carla.Transform(
             carla.Location(x=-10,y=-4.5,z=1.0),carla.Rotation(yaw=0)))
         owned.append(bicycle)
+        if bicycle.type_id != config['source_bound_blueprint_id']:
+            raise RuntimeError('Original electric blueprint type readback differs')
+        (output/'electric-device-evidence.json').write_text(json.dumps({
+            'source_kind':'original_native_electric_device_binding',
+            'device_class_requested':config['device_class'],
+            'blueprint_id':bicycle.type_id,
+            'actor_id':bicycle.id,
+            'source_hashes':{prefix:config[prefix+'_sha256'] for prefix in
+                ('native_asset','legal_class','device_type','motor_power')},
+            'independent_class_review_complete':False,
+            'original_motor_power_measured':False}, indent=2)+'\n')
         pedestrians = library.filter(config['pedestrian_blueprint_filter'])
         if not pedestrians:
             raise RuntimeError('Pedestrian blueprint unavailable')
@@ -243,11 +255,12 @@ def execute(config, output_dir, host, port):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--config', type=Path, required=True)
     parser.add_argument('--output-dir')
     parser.add_argument('--host',default='127.0.0.1')
     parser.add_argument('--port',type=int,default=2000)
     args = parser.parse_args()
-    config = json.loads((HERE/'config.json').read_text())
+    config = json.loads(args.config.read_text())
     summary = check(config)
     policy = RiderPolicy(config)
     assert len([policy.request(i) for i in range(600)]) == 600

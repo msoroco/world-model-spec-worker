@@ -17,6 +17,8 @@ import sys
 import traceback
 
 from scene import ASSIGNMENT, CASES, CAMERA_DIMENSIONS, check_pair, request
+from branch_variants import VARIANTS, RESPONSES, check_pair as check_branch_pair, variant_request
+from indication_actors import apply_indication, spawn_indication_actor
 
 
 HERE = Path(__file__).resolve().parent
@@ -29,13 +31,26 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
+BRANCH_CASES = tuple(f"{variant}__{response}"
+                     for variant in VARIANTS for response in RESPONSES)
+
+
+def resolve_case(case):
+    if case in CASES:
+        return request(case), HERE / "requests" / (case + ".json")
+    if case in BRANCH_CASES:
+        variant, response = case.rsplit("__", 1)
+        return (variant_request(variant, response),
+                HERE / "branch-requests" / (case + ".json"))
+    raise ValueError("Unknown exact case")
+
+
 def check(case):
-    if case not in CASES:
-        raise ValueError("Unknown exact case")
-    pair = [request(name) for name in CASES]
-    check_pair(*pair)
-    item = request(case)
-    saved = HERE / "requests" / (case + ".json")
+    item, saved = resolve_case(case)
+    if case in CASES:
+        check_pair(*(request(name) for name in CASES))
+    else:
+        check_branch_pair(item["variant"])
     if json.loads(saved.read_text()) != item:
         raise ValueError("Saved source request differs from exact scene")
     if {c["name"]: (c["width"], c["height"]) for c in item["cameras"]} != CAMERA_DIMENSIONS:
@@ -99,6 +114,50 @@ def emergency_motion_control(speed_mps, target_mps, active):
     return min(.2, .05 + .2 * error), 0.0
 
 
+def branch_actors(carla, world, item, emergency):
+    """Build optional hand-signal or officer actors from the exact request."""
+    built = {}
+    for field in ("source_driver_proxy", "officer_actor"):
+        spec = item.get(field)
+        if spec is None:
+            continue
+        actor = spawn_indication_actor(carla, world, spec["blueprint"],
+                                       spec["spawn_xyz_m"],
+                                       emergency if field == "source_driver_proxy" else None)
+        built[field] = actor
+    return built
+
+
+def branch_indication(carla, item, built, index):
+    """Record requested pose and Native readback, never pixel visibility."""
+    rows = {}
+    for field, interval_key in (("source_driver_proxy", "signal_frames"),
+                                ("officer_actor", "direction_frames")):
+        actor = built.get(field)
+        if actor is None:
+            continue
+        spec = item[field]
+        first, last = spec[interval_key]
+        if index == first:
+            rows[field] = apply_indication(carla, actor, spec["arm_side"])
+        elif index == last + 1:
+            actor.hide_pose()
+            rows[field] = {"pose_hidden": True,
+                           "original_pixel_visibility_verified": False,
+                           "source_identity_verified": False}
+        elif first < index <= last:
+            names = {bone.name if hasattr(bone, "name") else bone[0]
+                     for bone in actor.get_bones().bone_transforms}
+            required = {f"crl_{part}__{spec['arm_side']}"
+                        for part in ("shoulder", "arm", "foreArm", "hand")}
+            if not required <= names:
+                raise RuntimeError("Native indication readback lost during requested interval")
+            rows[field] = {"native_bones_read_back": True,
+                           "original_pixel_visibility_verified": False,
+                           "source_identity_verified": False}
+    return rows
+
+
 def execute(case, output, host, port):
     check(case)
     root = Path(os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", "")).resolve()
@@ -118,7 +177,7 @@ def execute(case, output, host, port):
     from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
     from scenario_pipeline.worker_exchange.native_output import seal_capture
 
-    item = request(case)
+    item, _ = resolve_case(case)
     client = carla.Client(host, port)
     client.set_timeout(180)
     saved = snapshot(client)
@@ -154,6 +213,8 @@ def execute(case, output, host, port):
         emergency = world.spawn_actor(emergency_bp, carla.Transform(
             _native_location(carla, item["emergency_start_xyz_m"])))
         actors.append(emergency)
+        indication = branch_actors(carla, world, item, emergency)
+        actors.extend(indication.values())
         ego.apply_control(carla.VehicleControl(brake=1))
         emergency.apply_control(carla.VehicleControl(brake=1))
         for _ in range(30):
@@ -192,6 +253,7 @@ def execute(case, output, host, port):
              (output / "trace.jsonl").open("x") as trace_file, \
              (output / "video_frames.jsonl").open("x") as frame_file:
             for index in range(item["frames"]):
+                indication_readback = branch_indication(carla, item, indication, index)
                 target = item["ego_response_policy"]
                 brake = target["brake_command"] if (target["brake_onset_frame"] is not None
                            and index >= target["brake_onset_frame"]) else 0.0
@@ -225,6 +287,8 @@ def execute(case, output, host, port):
                                                 carla.VehicleLightState.Special1) and
                                            bool(emergency.get_light_state() &
                                                 carla.VehicleLightState.Special2),
+                    "indication_native_readback": indication_readback,
+                    "indication_source_review": "pending_original_identity_and_pixels",
                     "light_qualification": "pending_independent_source_review"}) + "\n")
                 motion_file.write(json.dumps({"frame": native_frame,
                     "time_s": index / 20,
@@ -294,7 +358,7 @@ def execute(case, output, host, port):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--case", choices=CASES)
+    parser.add_argument("--case", choices=CASES + BRANCH_CASES)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="127.0.0.1")
@@ -306,7 +370,7 @@ if __name__ == "__main__":
             parser.error('--case is required outside a materialized exact bundle')
         bundled = json.loads(config_path.read_text())
         args.case = bundled.get('requested_setting')
-        if args.case not in CASES or bundled.get('selected_case_id') != ASSIGNMENT + '__' + args.case:
+        if args.case not in CASES + BRANCH_CASES or bundled.get('selected_case_id') != ASSIGNMENT + '__' + args.case:
             parser.error('Materialized config does not select an exact case')
     if args.check:
         print(json.dumps(check(args.case), sort_keys=True))

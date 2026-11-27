@@ -5,6 +5,9 @@ This module does not equate a stationary interval with statutory standing or
 parking and does not decide whether a place was legally designated.
 """
 from math import isfinite
+import hashlib
+import json
+from pathlib import Path
 import re
 
 CAMERAS = ("front", "rear", "left", "right")
@@ -83,3 +86,68 @@ def measure(frames, context, *, source_kind):
         "designation_reference_present": zone["kind"] != "other_street",
         "standing_or_parking_judgment": "unresolved", "legal_judgment": "unresolved",
     }
+
+
+def measure_saved(root, *, source_kind="original_native"):
+    """Join original Native samples and four camera identities from saved bytes.
+
+    A designation document is only provenance for later independent review. Its
+    presence and hash never establish that a zone was officially designated.
+    """
+    root = Path(root)
+    def read(name):
+        path = root / name
+        if not path.resolve().is_relative_to(root.resolve()) or not path.is_file():
+            raise ValueError("missing required source: " + str(name))
+        return path.read_bytes()
+
+    context = json.loads(read("bus-context.json"))
+    zone = context.get("zone", {})
+    reference = zone.get("designation_source")
+    if zone.get("kind") != "other_street":
+        if not isinstance(reference, dict) or not reference.get("path"):
+            raise ValueError("location designation reference missing")
+        relative = Path(reference["path"])
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError("designation path escapes saved attempt")
+        actual_hash = hashlib.sha256(read(relative)).hexdigest()
+        if actual_hash != reference.get("sha256"):
+            raise ValueError("designation reference hash differs from saved source")
+    def lines(name):
+        return [json.loads(line) for line in read(name).splitlines()]
+    history = lines("bus-history.jsonl")
+    maps = lines("video_frames.jsonl")
+    camera_hashes = {name + ".mkv": hashlib.sha256(read(name + ".mkv")).hexdigest()
+                     for name in CAMERAS}
+    if len(history) != len(maps):
+        raise ValueError("Native history and camera frame map length differ")
+    frames = []
+    for index, (row, mapped) in enumerate(zip(history, maps)):
+        if row.get("video_frame") != index or mapped.get("video_frame") != index:
+            raise ValueError("Native history and camera frame map indices differ")
+        native = row.get("native_frame")
+        if mapped.get("native_frame") != native:
+            raise ValueError("Native history and camera frame identities differ")
+        camera_native = mapped.get("camera_native_frames")
+        frames.append({
+            "frame_id": index, "sim_time_s": row.get("time_s"),
+            "camera_frames": {name: index for name in CAMERAS}
+            if isinstance(camera_native, dict) and
+            set(camera_native) == set(CAMERAS) and
+            all(camera_native[name] == native for name in CAMERAS)
+            else camera_native,
+            "bus_speed_mps": row.get("bus_speed_mps"),
+            "parking_brake_applied": row.get("parking_brake_applied"),
+            "driver_present": row.get("driver_present"),
+            "occupied_zone_id": row.get("occupied_zone_id"),
+        })
+    result = measure(frames, context, source_kind=source_kind)
+    result["source_sha256"] = {
+        name: hashlib.sha256(read(name)).hexdigest()
+        for name in ("bus-context.json", "bus-history.jsonl", "video_frames.jsonl")
+    }
+    result["source_sha256"].update(camera_hashes)
+    if reference:
+        result["source_sha256"][reference["path"]] = reference["sha256"]
+    result["designation_authority_verified"] = False
+    return result

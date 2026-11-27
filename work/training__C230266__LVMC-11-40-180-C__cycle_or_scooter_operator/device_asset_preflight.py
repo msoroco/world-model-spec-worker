@@ -42,7 +42,7 @@ def validate_supplied_asset(entry):
         raise ValueError('Ordinary bicycle or gasoline Vespa cannot be relabeled electric')
     if not re.fullmatch(r'vehicle\.[a-zA-Z0-9_.-]+', entry['blueprint_id']):
         raise ValueError('Exact Native vehicle blueprint ID required')
-    for prefix in ('native_asset', 'legal_class'):
+    for prefix in ('native_asset', 'legal_class', 'device_type', 'motor_power'):
         path = Path(entry[prefix + '_source'])
         digest = entry[prefix + '_sha256']
         if not path.is_file() or not re.fullmatch(r'[0-9a-f]{64}', digest):
@@ -86,6 +86,10 @@ def selftest():
                      'native_asset_sha256': sha(source),
                      'legal_class_source': str(law),
                      'legal_class_sha256': sha(law),
+                     'device_type_source': str(law),
+                     'device_type_sha256': sha(law),
+                     'motor_power_source': str(law),
+                     'motor_power_sha256': sha(law),
                      'original_class_review_required': True}
         if validate_supplied_asset(candidate) != 'electric_bicycle':
             raise AssertionError('Exact electric bicycle asset contract rejected')

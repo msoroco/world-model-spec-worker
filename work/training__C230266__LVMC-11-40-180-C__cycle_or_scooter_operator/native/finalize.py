@@ -24,6 +24,31 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def validate_electric_sources(attempt, config):
+    """Fail closed on missing original device and source-backed type/power identity."""
+    if config.get('device_class') not in ('electric_bicycle', 'electric_scooter'):
+        raise ValueError('Exact electric device class required')
+    evidence = json.loads(required(attempt, 'electric-device-evidence.json').read_text())
+    if (evidence.get('source_kind') != 'original_native_electric_device_binding' or
+            evidence.get('device_class_requested') != config['device_class'] or
+            evidence.get('blueprint_id') != config.get('source_bound_blueprint_id')):
+        raise ValueError('Original electric class/type binding differs')
+    rows = [json.loads(line) for line in required(attempt, 'sidewalk-actors.jsonl').read_text().splitlines()]
+    if not rows or any(row.get('rider_device_blueprint') != evidence['blueprint_id'] or
+                       row.get('rider_id') != evidence.get('actor_id') for row in rows):
+        raise ValueError('Original electric actor/type readback differs')
+    for prefix in ('native_asset', 'legal_class', 'device_type', 'motor_power'):
+        path = Path(config.get(prefix + '_source', ''))
+        digest = config.get(prefix + '_sha256')
+        if not path.is_file() or sha(path) != digest or evidence.get('source_hashes', {}).get(prefix) != digest:
+            raise ValueError('Electric ' + prefix + ' source/hash binding missing or stale')
+    return {'device_class_requested': config['device_class'],
+            'blueprint_id': evidence['blueprint_id'],
+            'source_hashes': evidence['source_hashes'],
+            'independent_class_review_complete': False,
+            'original_motor_power_measured': False}
+
+
 def device_and_sidewalk(observed,context):
     return {'rider_id':observed['rider_id'],
             'pedestrian_id':observed['pedestrian_id'],
@@ -99,10 +124,14 @@ def finalize(attempt,output):
     if (config['cell_id'],config['law_id'],config['actor'])!= (
             'C230266','LVMC-11-40-180-C','cycle_or_scooter_operator'):
         raise ValueError('Frozen sidewalk assignment identity changed')
+    electric = validate_electric_sources(attempt, config) if config.get('device_class') in (
+        'electric_bicycle', 'electric_scooter') else None
     for name in SOURCES:required(attempt,name)
     observed=measure(attempt)
     stream_paths=observation_streams(attempt,config)
     source_hashes={name:sha(required(attempt,name)) for name in SOURCES}
+    if electric is not None:
+        source_hashes['electric-device-evidence.json'] = sha(required(attempt, 'electric-device-evidence.json'))
     microphone=json.loads(required(attempt,'pedestrian-microphone.json').read_text())
     source_hashes[microphone['pcm_path']]=sha(required(attempt,microphone['pcm_path']))
     contract=json.loads(required(attempt,'measurement-contract.json').read_text())
@@ -156,12 +185,16 @@ def finalize(attempt,output):
             'provenance_kind':provenance['provenance_kind'],
             'diagnostic_fixture':provenance['diagnostic_fixture'],
             'physical_acceptance_claimed':False,'legal_verdict_claimed':False}
+    if electric is not None:
+        result['electric_device_evidence'] = electric
     write_result(attempt,result)
     report={'format':'c230266-sidewalk-source-analysis-v1',
             'case_id':config['case_id'],'analysis_complete':True,
             'measurements':measurements,'source_hashes':source_hashes,
             'provenance':provenance,'legal_verdict_claimed':False,
             'physical_acceptance_claimed':False}
+    if electric is not None:
+        report['electric_device_evidence'] = electric
     output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
     return report
 

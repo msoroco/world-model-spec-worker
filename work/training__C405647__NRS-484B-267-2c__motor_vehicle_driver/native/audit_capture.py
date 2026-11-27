@@ -8,11 +8,24 @@ from pathlib import Path
 
 from measure_readiness import FRAMES, lines, sha
 from scene import CASES, request
+from branch_variants import VARIANTS, RESPONSES, variant_request
+
+
+BRANCH_CASES = tuple(f"{variant}__{response}"
+                     for variant in VARIANTS for response in RESPONSES)
+
+
+def exact_request(condition):
+    if condition in CASES:
+        return request(condition)
+    if condition in BRANCH_CASES:
+        variant, response = condition.rsplit("__", 1)
+        return variant_request(variant, response)
+    raise ValueError("Unknown exact condition")
 
 
 def audit(directory, condition):
-    if condition not in CASES:
-        raise ValueError("Unknown exact condition")
+    exact = exact_request(condition)
     root = Path(directory)
     paths = {name: root / name for name in (
         "native-request.json", "native-map-readback.json", "native-capture-report.json",
@@ -20,7 +33,6 @@ def audit(directory, condition):
     for name, path in paths.items():
         if not path.is_file():
             raise ValueError("Missing original capture source: " + name)
-    exact = request(condition)
     if json.loads(paths["native-request.json"].read_text()) != exact:
         raise ValueError("Capture request differs from exact construction")
     if paths["scene.xodr"].read_text().rstrip("\n") != exact["source_map"]:
@@ -76,6 +88,20 @@ def audit(directory, condition):
             raise ValueError("Original brake or lamp readback missing")
         if abs(brake - requested_brake) > .001 or row["lamp_state_observed"] != row["lamp_request"]:
             raise ValueError("Original brake or lamp request/readback mismatch")
+        if condition in BRANCH_CASES:
+            field = "source_driver_proxy" if exact["variant"] == "visible_driver_hand_signal" else "officer_actor"
+            interval = exact[field]["signal_frames" if field == "source_driver_proxy" else "direction_frames"]
+            indication_rows = row.get("indication_native_readback")
+            if not isinstance(indication_rows, dict):
+                raise ValueError("Native indication readback missing")
+            readback = indication_rows.get(field, {})
+            if interval[0] <= i <= interval[1] and readback.get("native_bones_read_back") is not True:
+                raise ValueError("Native indication pose readback missing")
+            if i == interval[1] + 1 and readback.get("pose_hidden") is not True:
+                raise ValueError("Native indication pose was not hidden")
+            if (field == "source_driver_proxy" and interval[0] <= i <= interval[1] and
+                    row["actors"]["emergency"]["native_speed_mps"] > .25):
+                raise ValueError("Hand-signal source moved during requested stationary interval")
         t = frame.get("time_s")
         if type(t) not in (int, float) or not math.isfinite(t) or abs(t - i / 20) > .005:
             raise ValueError("Original video cadence differs from 20 Hz")
@@ -95,6 +121,6 @@ def audit(directory, condition):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("directory")
-    parser.add_argument("condition", choices=CASES)
+    parser.add_argument("condition", choices=CASES + BRANCH_CASES)
     args = parser.parse_args()
     print(json.dumps(audit(args.directory, args.condition), sort_keys=True))

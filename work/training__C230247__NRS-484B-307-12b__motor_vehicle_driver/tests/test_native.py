@@ -1,25 +1,44 @@
-"""CPU regression for the red-X pair's exact source-bound metering."""
 import json
 from pathlib import Path
-import sys
 import unittest
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'native'))
-from signal_source import map_inventory
+from draft_runner import check as geometry_check, request
+from runner import check as capture_check
+from signal_source import map_inventory, observed_state
 from lane_red_x_meter import measure
 
-class RedXPackageTest(unittest.TestCase):
-    def test_both_exact_cases_and_governed_lane(self):
-        inventory = map_inventory((ROOT / 'native/road.xodr').read_text())
+class ExactRedXConstruction(unittest.TestCase):
+    def test_four_cameras_governance_and_lane_crossing_request(self):
+        cfg = json.loads(Path('config.json').read_text())
+        geometry = geometry_check(cfg)
+        capture = capture_check()
+        self.assertTrue(geometry['passed'])
+        self.assertTrue(capture['capture']['native_capture_implemented'])
+        self.assertFalse(capture['physical_acceptance_claimed'])
+        inventory = map_inventory(Path('road.xodr').read_text())
         self.assertEqual(inventory['lane_id'], -1)
-        for tag, lane in (('1', -2), ('2', -1)):
-            config = ROOT / ('config.json' if tag == '1' else 'cases/probe_2/config.json')
-            value = json.loads(config.read_text())
-            self.assertEqual(value['case']['target_lane_id'], lane)
-            self.assertEqual(value['rate_hz'] * value['duration_s'], 600)
-            self.assertEqual(len(value['cameras']), 4)
-    def test_missing_original_frames_rejected(self):
+        self.assertEqual(inventory['mount_lane_id'], -1)
+        cid = cfg['case_id']
+        self.assertEqual(request(0, cid)['start_lane_id'], -2)
+        if cid.endswith('probe_2'):
+            self.assertEqual(request(250, cid)['lateral_speed_mps'], .7)
+            self.assertEqual(request(100, cid)['lateral_speed_mps'], 0)
+            self.assertEqual(request(301, cid)['lateral_speed_mps'], 0)
+        else:
+            self.assertEqual(request(250, cid)['lateral_speed_mps'], 0)
+
+    def test_wrong_source_and_timing_rejected(self):
+        cfg = json.loads(Path('config.json').read_text())
+        cfg['rate_hz'] = 10
+        with self.assertRaisesRegex(ValueError, 'timing'):
+            geometry_check(cfg)
+        with self.assertRaisesRegex(ValueError, '600-frame'):
+            request(600, cfg['case_id'])
+        class Fake:
+            type_id = 'traffic.traffic_light'
+            attributes = {'opendrive_signal_id': '100', 'display_role': 'red_x'}
+        with self.assertRaisesRegex(ValueError, 'lane-control actor'):
+            observed_state(Fake(), map_inventory(Path('road.xodr').read_text()))
         with self.assertRaisesRegex(ValueError, '600 source frames'):
             measure({'frames': []})
 

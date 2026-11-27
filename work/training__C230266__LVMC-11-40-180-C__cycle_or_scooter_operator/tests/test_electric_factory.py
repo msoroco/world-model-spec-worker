@@ -28,6 +28,10 @@ class ConditionalFactoryChecks(unittest.TestCase):
                                'native_asset_sha256': hashlib.sha256(source.read_bytes()).hexdigest(),
                                'legal_class_source': str(law),
                                'legal_class_sha256': hashlib.sha256(law.read_bytes()).hexdigest(),
+                               **{prefix + '_source': str(law) for prefix in
+                                   ('device_type', 'motor_power')},
+                               **{prefix + '_sha256': hashlib.sha256(law.read_bytes()).hexdigest()
+                                  for prefix in ('device_type', 'motor_power')},
                                'original_class_review_required': True})
             inventory = folder / 'inventory.json'
             inventory.write_text(json.dumps({'assets': assets}))

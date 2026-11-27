@@ -119,6 +119,18 @@ class ElectricAssetTests(unittest.TestCase):
             electric_asset.bind_asset(Library('vehicle.other'),
                                       'electric_bicycle', self.review, self.root)
 
+    def test_unreviewed_or_unclassified_asset_fails_before_spawn(self):
+        for missing in ('reviewer', 'review_date', 'power_source_evidence',
+                        'device_geometry_evidence', 'source_refs'):
+            with self.subTest(missing=missing):
+                review = dict(self.review)
+                review.pop(missing)
+                world = World(review['blueprint_id'])
+                with self.assertRaisesRegex(ValueError, 'review|evidence|references'):
+                    electric_asset.spawn_asset(world, 'electric_bicycle', review,
+                                               self.root, object())
+                self.assertIsNone(world.spawned)
+
     def test_spawn_readback_rejects_wrong_actor(self):
         world = World(self.review['blueprint_id'])
         world.actor_id = 'vehicle.other'
