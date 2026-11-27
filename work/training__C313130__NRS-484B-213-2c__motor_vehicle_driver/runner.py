@@ -21,7 +21,9 @@ def check(bundle):
                          assignment["assignment_id"] + "__probe_2") or
             (config.get("law_id"), config.get("cell_id"), config.get("actor")) !=
             ("NRS-484B-213-2c", "C313130", "motor_vehicle_driver") or
-            (config.get("rate_hz"), config.get("duration_frames")) != (20, 600)):
+            (config.get("rate_hz"), config.get("duration_frames")) != (20, 600) or
+            (config.get("candidate_id"), config.get("controller_gain")) not in
+            (("primary", 1.5), ("fallback1", 2.0))):
         raise ValueError("Exact tunnel identity or duration changed")
     for key, name in (("assignment_sha256", "assignment-source.json"),
                       ("road_sha256", "road.xodr")):

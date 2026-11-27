@@ -59,7 +59,7 @@ def build(suffix):
         for i, row in enumerate(rows)])
     lines(out / "tunnel-rows.jsonl", rows)
     lines(out / "video_frames.jsonl", [{"video_frame": i,
-        "native_frame": i, "time_s": i / 20} for i in range(600)])
+        "native_frame": i, "carla_frame": i, "time_s": i / 20} for i in range(600)])
     traces = []
     evidence = []
     graphs = []
@@ -105,7 +105,7 @@ def build(suffix):
             "trace.jsonl": sha(out / "trace.jsonl")}})
     spec = {"files": {"capture/native/frames.jsonl": "".join(
         json.dumps(v, separators=(",", ":")) + "\n" for v in frame_rows),
-        "capture/recorder_info.txt": "synthetic CPU diagnostic; no CARLA recorder\nCreate 107: vehicle.tesla.model3 (0)\n"},
+        "capture/recorder_info.txt": "synthetic CPU diagnostic; no CARLA recorder\nCreate 107: vehicle.carlamotors.carlacola (0)\n"},
         "graphs": graphs, "videos": [{"path": name + ".mkv", "width":
             1920 if name == "overview" else 1280, "height":
             1080 if name == "overview" else 720, "fps": 20,
@@ -126,7 +126,9 @@ def build(suffix):
         "road_direction_survey_sha256": source_hashes["road-direction-survey.json"],
         "centreline_geometry_sha256": source_hashes["centreline-geometry.json"],
         "vehicle_extent_sha256": source_hashes["vehicle-extents.jsonl"],
-        "sight_ray_source_sha256": source_hashes["sight-rays.jsonl"]})
+        "sight_ray_source_sha256": source_hashes["sight-rays.jsonl"],
+        "tunnel_source_context": {"structure_kind": "tunnel",
+            "one_way_surveyed": False, "synthetic_diagnostic": True}})
     put(out / "tunnel-context.json", context)
     put(out / "acquisition-provenance.json", {"provenance_kind": "synthetic_fixture",
         "diagnostic_fixture": True, "original_native_observed": False})

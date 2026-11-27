@@ -1,9 +1,9 @@
 {
   "assignment_id": "training__C230259__NRS-484B-413-3__motor_vehicle_driver",
   "input_sha256": "ac2a91ebf92bf04018b716a39192678e2d9f6e8192bd9e00607415f7d24ea99b",
-  "status": "partial",
-  "reason": "Four selected 600-frame Native stop/sudden-decrease early/late signal constructions pass exact current-runtime offline. Public compatibility, recorded-only processing, semantic stages, independent audits and scoped strict remain open; original physical/legal evidence unverified.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": "Four selected cases passed exact current-runtime offline, public compatibility with missing-source negatives, recorded-only saved processing, physical/lifecycle and independent delivery/comparison CPU proofs. Scoped strict delivery gate passed; original Native and legal judgments remain for delivery review.",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 4,
   "candidate_count": 0,
   "source_law_review": "Exact NRS 484B.413(3) reviewed: stop or sudden decrease, signal before the action, appropriate signal to immediately rear driver. No numeric statutory lead/suddenness threshold.",
@@ -55,10 +55,28 @@
     }
   },
   "comparison_count": 2,
-  "selected_case_count": 0,
+  "selected_case_count": 4,
   "remaining_gpu_checks": [
     "Original Native route, immediate rear relation and observed signal/action timing",
     "Camera pixels and physical risk including rear gap and collision",
     "Signal appropriateness and suddenness require original source/legal review"
-  ]
+  ],
+  "offline_passed_case_count": 4,
+  "selected_measurement_contract_count": 4,
+  "selected_manifest": "execution-manifest.json",
+  "tests": [
+    {
+      "command": "PYTHONPATH=. ../../.venv-cpu/bin/python -B -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": "cpu-root-tests.log",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C230259__NRS-484B-413-3__motor_vehicle_driver/comparison_audit.py --self-test",
+      "exit_code": 0,
+      "log": "comparison-proof.log",
+      "sha256": "ba3115c9f795a0734f35727dfa83b8e031dca0d5f42d82d53e81ee47ed4dd51e"
+    }
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230259__NRS-484B-413-3__motor_vehicle_driver --case training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_early --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

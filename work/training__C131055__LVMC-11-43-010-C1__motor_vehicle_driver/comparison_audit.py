@@ -29,7 +29,8 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def compare(comparison_id, attempts, processing, diagnostic=False, missing_source=None):
+def compare(comparison_id, attempts, processing, diagnostic=False, missing_source=None,
+            diagnostic_geometry_change=False):
     plan = json.loads((HERE / 'case-plan.json').read_text())
     matches = [item for item in plan['comparisons'] if item['comparison_id'] == comparison_id]
     require(len(matches) == 1, 'Unknown exact statutory comparison')
@@ -51,6 +52,9 @@ def compare(comparison_id, attempts, processing, diagnostic=False, missing_sourc
                          'lane_ids': {row['actors'][0]['lane_id'] for row in actors
                                       if row['actors'][0]['road_id'] in (1, 2, 3, 4)}}
     a, b = (records[case] for case in members)
+    if diagnostic_geometry_change:
+        require(diagnostic, 'Synthetic geometry mutation requires diagnostic mode')
+        b['road_sha256'] = 'diagnostic-changed-road-source'
     require(a['road_sha256'] == b['road_sha256'] and a['map_sha256'] == b['map_sha256'],
             'Undeclared roundabout geometry or topology difference')
     for key in ('rate_hz', 'duration_s', 'frames', 'cameras', 'actor', 'cell_id',
@@ -83,6 +87,8 @@ if __name__ == '__main__':
     parser.add_argument('--processing', action='append', default=[], metavar='CASE=PATH')
     parser.add_argument('--diagnostic', action='store_true')
     parser.add_argument('--missing-source')
+    parser.add_argument('--diagnostic-geometry-change', action='store_true')
     args = parser.parse_args()
     print(json.dumps(compare(args.comparison, pairs(args.attempt), pairs(args.processing),
-                             args.diagnostic, args.missing_source), sort_keys=True))
+                             args.diagnostic, args.missing_source,
+                             args.diagnostic_geometry_change), sort_keys=True))

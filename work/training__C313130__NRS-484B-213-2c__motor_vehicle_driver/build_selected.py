@@ -67,6 +67,7 @@ def build(suffix):
         "vehicle_blueprint": request["vehicle"]["blueprint"],
         "tunnel_blueprint": request["tunnel"]["blueprint"],
         "occluder_blueprint": request["occluder"]["blueprint"],
+        "controller_gain": 1.5,
         "requested_left_side": suffix == "probe_2",
         "cameras": [{"name": name, "fps": 20, "width": width,
             "height": height, "fov_deg": 85, "pose_strategy":
@@ -90,6 +91,15 @@ def build(suffix):
         "status": "selected_cpu_construction"}
     name = "selected-construction-" + suffix + ".json"
     (HERE / name).write_text(encode(construction))
+    fallback = json.loads(encode(construction))
+    fallback_config = dict(config, candidate_id="fallback1", controller_gain=2.0)
+    for item in fallback["files"]:
+        if item["path"] == "config.json":
+            item["content"] = encode(fallback_config)
+    fallback["mechanisms"] = construction["mechanisms"] + [
+        "Predeclared stronger lateral feedback for measured tracking failure"]
+    fallback_name = "fallback-construction-" + suffix + ".json"
+    (HERE / fallback_name).write_text(encode(fallback))
     return {"case_id": case_id, "kind": "delivery", "id": "primary",
         "construction": name, "construction_sha256":
         hashlib.sha256((HERE / name).read_bytes()).hexdigest(),
@@ -99,7 +109,12 @@ def build(suffix):
                                   "output_schema": "worker-tunnel-selected-measurement"},
         "candidate_risk": {"status": "physical", "reason":
             "Tunnel prop, occlusion and lateral tracking require original Native review"},
-        "candidates": []}
+        "candidates": [{"id": "fallback1", "construction": fallback_name,
+            "construction_sha256": hashlib.sha256((HERE / fallback_name).read_bytes()).hexdigest(),
+            "trigger": {"source": "tunnel-rows.jsonl", "metric":
+                "full-body lateral discrepancy at 100-foot zone entry",
+                "failure_condition": "body remains over 1 m from requested lane center"},
+            "changed_knobs": ["controller_gain: 1.5 to 2.0"]}]}
 
 
 def main():

@@ -1,0 +1,258 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "selected_delivery_cpu_prepared",
+  "cases": [
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "selected-construction-probe_1.json",
+      "construction_sha256": "9290d7c998d9b7acc94ea61a85415d3907581340e61640940390fd250533297b",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-recipe-probe_1.json",
+      "measurement_contract": "selected-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-tunnel-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel prop, occlusion and lateral tracking require original Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-construction-probe_1.json",
+          "construction_sha256": "7bcad22dc20cdbc9ce9389a5d9d2c4188207f8682e5108ee5ee912ec4bd96bdf",
+          "trigger": {
+            "source": "tunnel-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1 --candidate fallback1 --output .runtime-work/c313130_offline_final_probe_1_fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "7bcad22dc20cdbc9ce9389a5d9d2c4188207f8682e5108ee5ee912ec4bd96bdf",
+            "log": "selected-proofs/probe_1-fallback1-offline.log",
+            "log_sha256": "e3988b6ac131e5473aa2efad744cebde416aa863a50f1a7d938e1ccfdb8e9998"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/probe_1-fallback1-compatibility.json",
+            "sha256": "1a594baa819a591d5497024952b94fc461b11ea444c8b7fc7eb0caf01c3e5105",
+            "log": "selected-proofs/probe_1-fallback1-analysis.log",
+            "negative_log": "selected-proofs/probe_1-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1 --candidate primary --output .runtime-work/c313130_offline_final_probe_1_primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "9290d7c998d9b7acc94ea61a85415d3907581340e61640940390fd250533297b",
+        "log": "selected-proofs/probe_1-primary-offline.log",
+        "log_sha256": "2c070d0d54e5a2f9894281ef929bbbf69e1a87195f8db752a19877797eb5f26e"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_1-primary-compatibility.json",
+        "sha256": "499eb0522ca661eec9435ffda6ba5f61a06543f16545929a333a2aceec9a2717",
+        "log": "selected-proofs/probe_1-primary-analysis.log",
+        "negative_log": "selected-proofs/probe_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_1-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/probe_1-primary-processing.json",
+        "sha256": "9ef0067f7f4a6280ab74f14161c963644edffa24e954f920a70cd3de35b36c48"
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/execution-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_1-primary-processing.json",
+        "test_log_sha256": "9ef0067f7f4a6280ab74f14161c963644edffa24e954f920a70cd3de35b36c48"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.elevated_structure": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.sight_distance": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.centre_line": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        }
+      },
+      "physical_preparation": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1",
+        "receipt": "physical-preparation-probe_1.json",
+        "sha256": "afdde1d6bc0b972745a33fc6746b4109cead4b4df0d402030323d6431476d1d5"
+      }
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_2",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "selected-construction-probe_2.json",
+      "construction_sha256": "198d82d7687e8ce3441e69d3bef9af62b784e6d1714864a41197b7ed56ad7af8",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-recipe-probe_2.json",
+      "measurement_contract": "selected-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-tunnel-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel prop, occlusion and lateral tracking require original Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-construction-probe_2.json",
+          "construction_sha256": "02d7846b7a54a1e0ed14f94423ad989594142d54f988c3e4e63e3d6cf8c35675",
+          "trigger": {
+            "source": "tunnel-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_2 --candidate fallback1 --output .runtime-work/c313130_offline_final_probe_2_fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "02d7846b7a54a1e0ed14f94423ad989594142d54f988c3e4e63e3d6cf8c35675",
+            "log": "selected-proofs/probe_2-fallback1-offline.log",
+            "log_sha256": "b519204aa0c66868eaef085cd6c0ceb3bf8c10679d64c58823b27ec6fa39622f"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/probe_2-fallback1-compatibility.json",
+            "sha256": "092c9a92d7fadfc7dcf02697f6798c8bfb7655f5ae836cfce09a5df2181dc7dc",
+            "log": "selected-proofs/probe_2-fallback1-analysis.log",
+            "negative_log": "selected-proofs/probe_2-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_2 --candidate primary --output .runtime-work/c313130_offline_final_probe_2_primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "198d82d7687e8ce3441e69d3bef9af62b784e6d1714864a41197b7ed56ad7af8",
+        "log": "selected-proofs/probe_2-primary-offline.log",
+        "log_sha256": "162ffa330108f3e52b89ec4d9055766279644a8b4e130ea7df7a2b92342c1bf2"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/probe_2-primary-compatibility.json",
+        "sha256": "4ceff49aca9bb602a9fbf6fe1143086958beb5364ecac2acc884fea61b500194",
+        "log": "selected-proofs/probe_2-primary-analysis.log",
+        "negative_log": "selected-proofs/probe_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/probe_2-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/probe_2-primary-processing.json",
+        "sha256": "fa93d9801b4da8a1e2a3f777eddd702a178b1781b2e856ca6b06733441e7d058"
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/execution-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_2 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/probe_2-primary-processing.json",
+        "test_log_sha256": "fa93d9801b4da8a1e2a3f777eddd702a178b1781b2e856ca6b06733441e7d058"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.elevated_structure": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.sight_distance": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.centre_line": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "native_capture.py",
+          "method": "20 Hz original Native tunnel portal, body, lane and four-camera acquisition",
+          "evidence": "tunnel-context.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        }
+      },
+      "physical_preparation": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_2",
+        "receipt": "physical-preparation-probe_2.json",
+        "sha256": "dc3ef460f958e1421579cacfc06cdc4a1ea5708c86154ee05cf2943c7b49b16b"
+      }
+    }
+  ]
+}

@@ -53,7 +53,7 @@ def open_drive():
     return ET.tostring(root, encoding="unicode")
 
 
-def scene_request(case, *, vehicle_blueprint="vehicle.tesla.model3",
+def scene_request(case, *, vehicle_blueprint="vehicle.carlamotors.carlacola",
                   tunnel_blueprint="static.prop.tunnel", occluder_blueprint="static.prop.hedge"):
     if case not in CASES:
         raise ValueError("Unknown tunnel comparison case")

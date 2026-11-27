@@ -1,15 +1,49 @@
 {
   "assignment_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver",
   "input_sha256": "aaa8c885481a5873d2bfffdf4d1d7dc0f0b3c02860efd28336378c8e12dd5ca0",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Four selected source-bound left-turn/U-turn lane cases have exact primary and fallback inline constructions; all eight current-runtime selected offline checks pass. Original Native, public positive/negative compatibility, recorded-only, canonical semantic, physical/lifecycle, independent delivery/comparison and scoped strict proofs remain.",
-  "readiness_kind": "implementation_checkpoint",
+  "reason": "Scoped strict CPU gate failed: ValueError: Four-view capture configuration differs from profile",
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 4,
   "cases_selected": 4,
-  "candidate_plans_proven": 0,
-  "comparison_audits_passed": 0,
+  "candidate_plans_proven": 8,
+  "comparison_audits_passed": 2,
   "carla_executed": false,
   "recordings_accepted": 0,
-  "cpu_diagnostic_proof": "roundabout-lane-proof.json"
+  "cpu_diagnostic_proof": {
+    "offline_candidates": 8,
+    "public_compatibility_candidates": 8,
+    "recorded_only_cases": 4,
+    "physical_fixture_cases": 4,
+    "delivery_audit_cases": 4,
+    "comparison_audit_pairs": 2,
+    "synthetic_only": true
+  },
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/prove_roundabout_lane.py",
+      "exit_code": 0,
+      "log": "roundabout-lane-cpu.log",
+      "sha256": "9a1f2e58b90545fdcb8cf5cecb782565751f684f822907cbbf497fbb216234e1"
+    },
+    {
+      "command": "cd work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver && ../../.venv-cpu/bin/python -B -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": "unit-cpu.log",
+      "sha256": "baf49b59538192f3e136ca0404cac516ecb8dd2fe5ba1416604056f3080fa49c"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c131055-direct-import .venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/prove_semantic.py",
+      "exit_code": 0,
+      "log": "semantic-cpu.log",
+      "sha256": "a22b3d87ca1ad7f8bffc704a172f19a1cf1596ee06e2c1302e1439d50bf8bba1"
+    }
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -B -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "remaining_gpu_checks": [
+    "Original Native roundabout geometry, lane occupancy, exit intent and route review",
+    "Original four-view pixels and physical completion assessment",
+    "Independent legal judgment and target-set acceptance"
+  ]
 }

@@ -305,52 +305,84 @@
       "measurement": "ego_speed_mps <= 0.05 diagnostic",
       "source_refs": [
         "ego_velocity_source_ref"
-      ]
+      ],
+      "channels": [
+        "drv.stopped"
+      ],
+      "evidence": "600 same-tick ego/rear Native source row and exact observation stream; context and original pixels remain for review"
     },
     "drv.hard_deceleration": {
       "measurement": "velocity-derived acceleration <= engineering probe threshold",
       "source_refs": [
         "ego_velocity_source_ref"
-      ]
+      ],
+      "channels": [
+        "drv.hard_deceleration"
+      ],
+      "evidence": "600 same-tick ego/rear Native source row and exact observation stream; context and original pixels remain for review"
     },
     "kin.accel_longitudinal": {
       "measurement": "20 Hz finite difference of source ego speed",
       "source_refs": [
         "ego_velocity_source_ref"
-      ]
+      ],
+      "channels": [
+        "kin.accel_longitudinal"
+      ],
+      "evidence": "600 same-tick ego/rear Native source row and exact observation stream; context and original pixels remain for review"
     },
     "sig.brake_lamp": {
       "measurement": "first observed requested lamp frame, separately from deceleration",
       "source_refs": [
         "signal_source_ref"
-      ]
+      ],
+      "channels": [
+        "sig.brake_lamp"
+      ],
+      "evidence": "600 same-tick ego/rear Native source row and exact observation stream; context and original pixels remain for review"
     },
     "sig.hand_signal": {
       "measurement": "source contract exists; Native arm observation and modality audit pending",
       "source_refs": [
         "signal_source_ref"
-      ]
+      ],
+      "channels": [
+        "sig.hand_signal"
+      ],
+      "evidence": "600 same-tick ego/rear Native source row and exact observation stream; context and original pixels remain for review"
     },
     "drv.following": {
       "measurement": "rear tracked actor same lane and behind at event",
       "source_refs": [
         "rear_pose_source_ref",
         "ego_pose_source_ref"
-      ]
+      ],
+      "channels": [
+        "drv.following"
+      ],
+      "evidence": "600 same-tick ego/rear Native source row and exact observation stream; context and original pixels remain for review"
     },
     "rel.ahead_behind_in_lane": {
       "measurement": "Native pose/lane join at event",
       "source_refs": [
         "rear_pose_source_ref",
         "ego_pose_source_ref"
-      ]
+      ],
+      "channels": [
+        "rel.ahead_behind_in_lane"
+      ],
+      "evidence": "600 same-tick ego/rear Native source row and exact observation stream; context and original pixels remain for review"
     },
     "rel.surface_gap": {
       "measurement": "rear actor to ego surface gap at event",
       "source_refs": [
         "rear_extent_source_ref",
         "ego_extent_source_ref"
-      ]
+      ],
+      "channels": [
+        "rel.surface_gap"
+      ],
+      "evidence": "600 same-tick ego/rear Native source row and exact observation stream; context and original pixels remain for review"
     }
   },
   "diagnostic_cpu_checkpoint": {
@@ -375,5 +407,32 @@
       "native/selected-offline-probe_2.log"
     ],
     "original_native_observed": false
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full route and both vehicles",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "rear actor, relative lane and surface gap",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "ego lamp and stopping/deceleration region",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego, rear and road identity",
+        "interval": "all 600 frames"
+      }
+    ]
   }
 }

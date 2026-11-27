@@ -47,7 +47,7 @@ def body(ego):
     return [list(p) for p in points]
 
 
-def control(carla, ego, target_y):
+def control(carla, ego, target_y, gain):
     transform = ego.get_transform()
     velocity = ego.get_velocity()
     speed = math.hypot(velocity.x, velocity.y)
@@ -55,7 +55,7 @@ def control(carla, ego, target_y):
     angle = math.atan2(target_y - transform.location.y, target_x - transform.location.x)
     error = math.atan2(math.sin(angle - math.radians(transform.rotation.yaw)),
                        math.cos(angle - math.radians(transform.rotation.yaw)))
-    return carla.VehicleControl(steer=max(-.7, min(.7, 1.5 * error)),
+    return carla.VehicleControl(steer=max(-.7, min(.7, gain * error)),
         throttle=max(0, min(1, .22 + .22 * (3.4 - speed))),
         brake=max(0, min(1, .4 * (speed - 3.4))))
 
@@ -179,7 +179,8 @@ def run(bundle, output, host, port):
              (output / "video_frames.jsonl").open("x") as frame_map:
             for index in range(600):
                 ego.apply_control(control(carla, ego,
-                    1.75 if case.endswith("__probe_2") else -1.75))
+                    1.75 if case.endswith("__probe_2") else -1.75,
+                    config["controller_gain"]))
                 native_frame = world.tick()
                 time_s = world.get_snapshot().timestamp.elapsed_seconds - start
                 velocity = ego.get_velocity()
@@ -208,7 +209,8 @@ def run(bundle, output, host, port):
                         height, width, 4)[:, :, :3][:, :, ::-1]
                     encoders[name].stdin.write(rgb.tobytes())
                 frame_map.write(json.dumps({"video_frame": index,
-                    "native_frame": native_frame, "time_s": time_s}, allow_nan=False) + "\n")
+                    "native_frame": native_frame, "carla_frame": native_frame,
+                    "time_s": time_s}, allow_nan=False) + "\n")
                 count += 1
     except BaseException as exc:
         error = {"type": type(exc).__name__, "message": str(exc),
@@ -256,7 +258,10 @@ def run(bundle, output, host, port):
                     "vehicle_extent_sha256": files["vehicle-extents.jsonl"],
                     "sight_ray_source_sha256": files["sight-rays.jsonl"],
                     "source_files": {name: name for name in SOURCES},
-                    "source_sha256": files, "physical_acceptance_claimed": False})
+                    "source_sha256": files, "physical_acceptance_claimed": False,
+                    "tunnel_source_context": {"structure_kind": "tunnel",
+                        "one_way_surveyed": False,
+                        "original_native_observed": True}})
                 sources = {name: output / (name + ".mkv") for name, *_ in CAMERAS}
                 put(output / "four-view-receipt.json", compose_four_views(
                     sources, output / "video_frames.jsonl", output / "raw.mkv"))
