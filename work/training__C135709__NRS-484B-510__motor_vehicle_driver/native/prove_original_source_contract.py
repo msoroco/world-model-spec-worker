@@ -9,7 +9,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from original_source_contract import AID, CAMERAS, FRAME_COUNT, FPS, sha, validate
+from original_source_contract import AID, CAMERAS, FRAME_COUNT, FPS, REVIEW_FINDINGS, sha, validate
 from geometry import SIGN_NAME, open_drive
 from finalize import run as finalize
 
@@ -74,18 +74,39 @@ def prove() -> dict:
                           "cameras": {name: i for name in CAMERAS}})
         rows(attempt / "actor-frames.jsonl", actors)
         rows(attempt / "camera-frames.jsonl", joins)
+        rows(attempt / "trace.jsonl", [
+            {"frame": 1000 + i, "time_s": i / FPS,
+             "position_m": [5.0, 2.0],
+             "position": {"x": 5.0, "y": 2.0, "z": 1.0},
+             "heading_deg": 0.0, "velocity_mps": [0.0, 0.0, 0.0],
+             "speed_mps": 0.0}
+            for i in range(FRAME_COUNT)])
+        rows(attempt / "video_frames.jsonl", [
+            {"video_frame": i, "carla_frame": 1000 + i,
+             "native_frame": 1000 + i, "time_s": i / FPS,
+             "camera_native_frames": {name: 1000 + i for name in CAMERAS}}
+            for i in range(FRAME_COUNT)])
         names = ("capture-manifest.json", "road.xodr", "zone-survey.json", "actor-frames.jsonl",
-                 "camera-frames.jsonl") + tuple(f"{name}.mkv" for name in CAMERAS)
+                 "camera-frames.jsonl", "trace.jsonl", "video_frames.jsonl") + tuple(f"{name}.mkv" for name in CAMERAS)
+        write(attempt / "capture-seal.json", {
+            "format": "worker-sealed-capture", "provenance_kind": "native",
+            "frames": FRAME_COUNT, "restoration": {"restored": True},
+            "encoder_exit_codes": {name: 0 for name in CAMERAS},
+            "events": ["capture_finished", "encoders_closed", "restoration_verified"],
+            "sources": {name: sha(attempt / name) for name in names}})
+        names += ("capture-seal.json",)
         review = attempt / "source-review.json"
         review_content = {"case_id": case_id,
                           "source_sha256": {name: sha(attempt / name) for name in names},
                           "reviewer": "controlled-fixture", "restricted_purpose": "test-purpose",
-                          "sign_authority": "unverified", "sign_pixel_status": "unverified"}
+                          "sign_authority": "unverified", "sign_pixel_status": "unverified",
+                          "original_findings": {name: {"status": "unverified", "source_refs": []}
+                                                for name in REVIEW_FINDINGS}}
         write(review, review_content)
         positive = validate(attempt, review)
         assert positive["stopped_in_zone_frames"] == FRAME_COUNT
         assert positive["nearby_passenger_identity_change_frames_with_door_request"] == 1
-        assert positive["actual_passenger_loading"] == "unverified"
+        assert positive["actual_passenger_loading"]["status"] == "unverified"
         assert positive["requested_waiting_or_entering_overlap_frames"] == 10
         assert positive["legal_conclusion"] is None
         assert positive["case_id"] == case_id
@@ -106,6 +127,16 @@ def prove() -> dict:
         negatives["wrong_case_review"] = expect_rejection(
             attempt, review, review,
             lambda path: write(path, dict(review_content, case_id=AID + "__witness_2")))
+        incomplete_review = copy.deepcopy(review_content)
+        del incomplete_review["original_findings"]["interference"]
+        negatives["missing_interference_review"] = expect_rejection(
+            attempt, review, review,
+            lambda path: write(path, incomplete_review))
+        unsourced_review = copy.deepcopy(review_content)
+        unsourced_review["original_findings"]["actual_passenger_loading"]["status"] = "verified"
+        negatives["unsourced_loading_claim"] = expect_rejection(
+            attempt, review, review,
+            lambda path: write(path, unsourced_review))
         negatives["stale_map"] = expect_rejection(
             attempt, review, attempt / "road.xodr",
             lambda path: path.write_text(path.read_text().replace("narrow-road", "changed-road"),
@@ -167,7 +198,7 @@ def prove() -> dict:
             negatives["missing_original_occupant"] = str(exc)
         else:
             raise AssertionError("accepted missing original nearby passenger identity")
-        assert len(negatives) == 9
+        assert len(negatives) == 11
         return {"format": "restricted-zone-original-source-fixture-proof-v1",
                 "positive": {"stopped_in_zone_frames": positive["stopped_in_zone_frames"],
                              "nearby_passenger_identity_change_frames_with_door_request": positive["nearby_passenger_identity_change_frames_with_door_request"],

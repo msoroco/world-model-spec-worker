@@ -1,0 +1,166 @@
+{
+  "assignment_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver",
+  "cell_id": "C150660",
+  "law_id": "NRS-484B-450-1h",
+  "actor": "motor_vehicle_driver",
+  "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a",
+  "selected_case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a",
+  "supported_case_ids": [
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between",
+    "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between"
+  ],
+  "frozen_cell": {
+    "layout": "one_way_road",
+    "maneuver": "stop_stand",
+    "control": "safety_zone"
+  },
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "frames": 600,
+  "duration_s": 30,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 85,
+      "pose_strategy": "surveyed_world"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "surveyed_world"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "surveyed_world"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "ego_attached"
+    }
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "position_request": "between",
+  "activity_request": "stop",
+  "exception_request": "none",
+  "requested_curb_end_gap_ft": null,
+  "brake_lead_seconds": 1.4,
+  "recording_description": {
+    "channels": [
+      {
+        "name": "drv.standing_or_parked",
+        "unit": "boolean proxy",
+        "method": "Native 20 Hz velocity and stop control",
+        "reference_frame": "authored one-way road with original Native map readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+      },
+      {
+        "name": "st.safety_zone",
+        "unit": "source geometry",
+        "method": "authored and Native map plus independent zone designation review",
+        "reference_frame": "authored one-way road with original Native map readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+      },
+      {
+        "name": "st.road_edge",
+        "unit": "m",
+        "method": "Native shoulder edge and independent curb review",
+        "reference_frame": "authored one-way road with original Native map readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "boolean geometry",
+        "method": "four-corner body footprint between zone and curb",
+        "reference_frame": "authored one-way road with original Native map readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+      },
+      {
+        "name": "rel.centre_distance",
+        "unit": "m",
+        "method": "footprint distance to both opposite curb-end points",
+        "reference_frame": "authored one-way road with original Native map readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+      },
+      {
+        "name": "kin.position",
+        "unit": "m",
+        "method": "original Native four-corner body footprint",
+        "reference_frame": "authored one-way road with original Native map readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+      },
+      {
+        "name": "drv.forced_halt",
+        "unit": "review source",
+        "method": "original traffic-conflict and halt-purpose review",
+        "reference_frame": "authored one-way road with original Native map readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+      },
+      {
+        "name": "dev.human_direction",
+        "unit": "review source",
+        "method": "original officer-direction review",
+        "reference_frame": "authored one-way road with original Native map readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+      },
+      {
+        "name": "exception_context",
+        "unit": "review source",
+        "method": "original law, traffic, officer and device review",
+        "reference_frame": "authored one-way road with original Native map readback",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames / 30 s",
+        "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+      }
+    ],
+    "context_inputs": [
+      "context-survey.json"
+    ],
+    "limitations": [
+      "Requested position is not realized distance; measure original footprint",
+      "Authored markers do not establish an official safety zone or adjacent curb",
+      "Every statutory exception and actual camera pixels require independent original-source review",
+      "CPU fixtures do not establish physical or legal acceptance"
+    ]
+  },
+  "legal_verdict": null,
+  "physical_acceptance_claimed": false
+}

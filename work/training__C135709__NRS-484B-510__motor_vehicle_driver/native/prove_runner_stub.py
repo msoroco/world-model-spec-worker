@@ -12,11 +12,12 @@ import subprocess
 import sys
 import tempfile
 from types import ModuleType, SimpleNamespace
+import shutil
 
 import runner
 from capture_plan import build
 from geometry import open_drive
-from original_source_contract import CAMERAS, sha, validate
+from original_source_contract import CAMERAS, REVIEW_FINDINGS, sha, validate
 
 
 class Blueprint:
@@ -174,6 +175,18 @@ def prove() -> dict:
     carla.VehicleDoor = SimpleNamespace(FR="front_right")
     carla.OpendriveGenerationParameters = lambda **kw: SimpleNamespace(**kw)
     package = ModuleType("worker_exchange")
+    package.__path__ = [str(Path(__file__).resolve().parents[3] /
+                            "runtime/scenario_pipeline/worker_exchange")]
+    capture_module = ModuleType("pipeline_capture")
+    class StubPipelineCapture:
+        def __init__(self, client, ego, output, case, required_observations):
+            self.frames = 0
+        def capture(self, frame, time_s):
+            self.frames += 1
+        def close(self, confirmed):
+            if confirmed:
+                assert self.frames == 600
+    capture_module.PipelineCapture = StubPipelineCapture
     world_restore = ModuleType("worker_exchange.world_restore")
     world_restore.snapshot = lambda client: {
         "settings": SimpleNamespace(synchronous_mode=False)}
@@ -184,16 +197,22 @@ def prove() -> dict:
 
     world_restore.restore = restore
     originals = {key: sys.modules.get(key) for key in
-                 ("carla", "worker_exchange", "worker_exchange.world_restore")}
+                 ("carla", "pipeline_capture", "worker_exchange", "worker_exchange.world_restore")}
     original_popen = runner.subprocess.Popen
     scratch = Path(os.environ.get("TMPDIR", ".runtime-work")).resolve()
     scratch.mkdir(parents=True, exist_ok=True)
     try:
-        sys.modules.update({"carla": carla, "worker_exchange": package,
+        sys.modules.update({"carla": carla, "pipeline_capture": capture_module,
+                            "worker_exchange": package,
                             "worker_exchange.world_restore": world_restore})
         runner.subprocess.Popen = Encoder
         with tempfile.TemporaryDirectory(prefix="c135709-native-stub-", dir=scratch) as temp:
             attempt = Path(temp)
+            pkg = Path(__file__).resolve().parent.parent
+            shutil.copy2(pkg / "native/runner.py", attempt / "runner.py")
+            shutil.copy2(pkg / "cases/exception_1_2/construction.json",
+                         attempt / "construction.json")
+            shutil.copy2(pkg / "cases/exception_1_2/config.json", attempt / "config.json")
             result = runner.execute(build("exception_1_2"), attempt, "127.0.0.1", 2000)
             manifest = json.loads((attempt / "capture-manifest.json").read_text())
             actors = [json.loads(line) for line in
@@ -217,15 +236,24 @@ def prove() -> dict:
                 manifest["video_sources"][name]["sha256"] = sha(attempt / f"{name}.mkv")
             (attempt / "capture-manifest.json").write_text(
                 json.dumps(manifest, sort_keys=True) + "\n", encoding="utf-8")
+            (attempt / "capture-seal.json").unlink()
+            from worker_exchange.native_output import seal_capture
+            from worker_exchange.saved_processing import record_native_exit
+            seal_capture(attempt, frames=600, restoration={"restored": True}, errors=[],
+                         encoder_exit_codes={name: 0 for name in CAMERAS})
+            record_native_exit(attempt)
             source_names = ("capture-manifest.json", "road.xodr", "zone-survey.json",
-                            "actor-frames.jsonl", "camera-frames.jsonl") + tuple(
+                            "actor-frames.jsonl", "camera-frames.jsonl", "trace.jsonl",
+                            "video_frames.jsonl", "capture-seal.json") + tuple(
                                 f"{name}.mkv" for name in CAMERAS)
             review_path = attempt / "source-review.json"
             review_path.write_text(json.dumps({
                 "case_id": result["case_id"],
                 "source_sha256": {name: sha(attempt / name) for name in source_names},
                 "reviewer": "controlled-fixture", "restricted_purpose": "test_purpose",
-                "sign_authority": "unverified", "sign_pixel_status": "unverified"},
+                "sign_authority": "unverified", "sign_pixel_status": "unverified",
+                "original_findings": {name: {"status": "unverified", "source_refs": []}
+                                      for name in REVIEW_FINDINGS}},
                 sort_keys=True) + "\n", encoding="utf-8")
             source_result = validate(attempt, review_path)
             assert source_result["case_id"] == result["case_id"]

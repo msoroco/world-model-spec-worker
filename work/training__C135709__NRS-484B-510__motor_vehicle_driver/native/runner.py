@@ -89,6 +89,8 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
         *(f"{name}.mkv" for name in CAMERAS))),
         "original source output already exists")
     import carla
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
 
     client = carla.Client(host, port)
@@ -99,6 +101,8 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
         actor.type_id.startswith(("vehicle.", "walker.", "sensor.", "controller."))
         for actor in prior.get_actors()), "exclusive idle asynchronous Native world required")
     owned, encoders, camera_queues = [], {}, {}
+    encoder_exit_codes = {}
+    pipeline_capture = None
     world_changed = finished = False
     try:
         world = client.generate_opendrive_world(open_drive(),
@@ -160,8 +164,12 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
         motion = ParkingPlan(target_center_x_m=request["parking_target_center_x_m"],
                              max_speed_mps=request["primary_max_speed_mps"])
         pedestrians = []
+        pipeline_capture = PipelineCapture(client, ego, output, request["case_id"],
+                                           required_observations=[])
         with (output / "actor-frames.jsonl").open("x", encoding="utf-8") as actor_rows, \
-                (output / "camera-frames.jsonl").open("x", encoding="utf-8") as camera_rows:
+                (output / "camera-frames.jsonl").open("x", encoding="utf-8") as camera_rows, \
+                (output / "trace.jsonl").open("x", encoding="utf-8") as trace_rows, \
+                FrameMap(output / "video_frames.jsonl") as frame_map:
             for index in range(FRAMES):
                 if request["passenger_exchange_request"] and index == 100:
                     bp = sorted(library.filter("walker.pedestrian.*"), key=lambda x: x.id)[0]
@@ -170,7 +178,10 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
                     if person is not None:
                         owned.append(person)
                         pedestrians.append(person)
-                control = command(motion, ego.get_transform().location.x, speed(ego))
+                departure_requested = (request["departure_frame"] is not None and
+                                       index >= request["departure_frame"])
+                control = ({"throttle": 0.35, "brake": 0.0} if departure_requested else
+                           command(motion, ego.get_transform().location.x, speed(ego)))
                 ego.apply_control(carla.VehicleControl(
                     throttle=control["throttle"], brake=control["brake"]))
                 if other is not None:
@@ -185,6 +196,7 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
                 native_frame = world.tick()
                 require(world.get_snapshot().frame == native_frame,
                         "Native frame/snapshot identity mismatch")
+                pipeline_capture.capture(native_frame, index / RATE)
                 cameras = {}
                 for name, q in camera_queues.items():
                     image = q.get(timeout=30)
@@ -194,6 +206,20 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
                             "original camera frame mismatch: " + name)
                     encoders[name].stdin.write(image.raw_data)
                     cameras[name] = index
+                frame_map.append(native_frame, index / RATE,
+                                 camera_native_frames={name: native_frame for name in CAMERAS})
+                ego_body = body(ego)
+                ego_pose = ego.get_transform()
+                ego_velocity = ego.get_velocity()
+                ego_speed = speed(ego)
+                trace_rows.write(json.dumps({"frame": native_frame, "time_s": index / RATE,
+                    "position_m": [(ego_body[0] + ego_body[2]) / 2,
+                                   (ego_body[1] + ego_body[3]) / 2],
+                    "position": {"x": ego_pose.location.x, "y": ego_pose.location.y,
+                                 "z": ego_pose.location.z},
+                    "heading_deg": ego_pose.rotation.yaw,
+                    "velocity_mps": [ego_velocity.x, ego_velocity.y, ego_velocity.z],
+                    "speed_mps": ego_speed}, sort_keys=True) + "\n")
                 nearby = [person.id for person in pedestrians if
                           person.get_location().distance(ego.get_location()) <= 5]
                 others = [] if other is None else [{"actor_id": other.id,
@@ -201,7 +227,8 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
                     "requesting_zone_entry": True}]
                 actor_rows.write(json.dumps({"frame": index,
                     "native_frame": native_frame, "elapsed_s": index / RATE,
-                    "ego_body_m": body(ego), "ego_speed_mps": speed(ego),
+                    "ego_body_m": ego_body, "ego_speed_mps": ego_speed,
+                    "departure_requested": departure_requested,
                     "passenger_actor_ids_near_vehicle": nearby,
                     "door_open_request": door_request, "other_vehicles": others},
                     sort_keys=True) + "\n")
@@ -211,10 +238,15 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
-            require(process.wait(timeout=180) == 0,
+            encoder_exit_codes[name] = process.wait(timeout=180)
+            require(encoder_exit_codes[name] == 0,
                     "original camera encoding failed: " + name + " " + stderr.decode()[-300:])
+        pipeline_capture.close(confirmed=True)
+        pipeline_capture = None
         finished = True
     finally:
+        if pipeline_capture is not None:
+            pipeline_capture.close(confirmed=False)
         for process in encoders.values():
             if process.poll() is None:
                 process.kill()
@@ -239,6 +271,10 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
                     for name in CAMERAS},
                 "sign_authority": "unverified", "actual_passenger_loading": "unverified",
                 "legal_conclusion": None}, sort_keys=True) + "\n", encoding="utf-8")
+            seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                         encoder_exit_codes=encoder_exit_codes,
+                         context={"case_id": request["case_id"],
+                                  "original_sign_authority": "unverified"})
     return {"case_id": request["case_id"], "frames": FRAMES,
             "independent_source_review_required": True,
             "physical_acceptance_claimed": False, "legal_conclusion": None}

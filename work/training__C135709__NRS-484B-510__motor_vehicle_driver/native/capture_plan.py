@@ -1,4 +1,4 @@
-"""Four controlled Native requests for the restricted-zone parking cell.
+"""Controlled Native requests for the restricted-zone parking cell.
 
 The requests encode construction differences, never observed purpose or legality.
 """
@@ -27,6 +27,12 @@ CASES = {
     "exception_1_2": {"requested_purpose": "passenger_loading",
                       "passenger_exchange_request": True, "waiting_vehicle_request": True,
                       "comparison_variable": "exception_1_applicability"},
+    "stop_only": {"requested_purpose": "unrelated_purpose",
+                  "passenger_exchange_request": False, "waiting_vehicle_request": False,
+                  "comparison_variable": "stationary_episode", "departure_frame": 300},
+    "stand_only": {"requested_purpose": "unrelated_purpose",
+                   "passenger_exchange_request": False, "waiting_vehicle_request": False,
+                   "comparison_variable": "stationary_episode", "departure_frame": 500},
 }
 
 
@@ -63,6 +69,7 @@ def build(suffix: str, *, stop_center_x_m: float = 5.0,
             "requested_purpose": case["requested_purpose"],
             "passenger_exchange_request": case["passenger_exchange_request"],
             "waiting_vehicle_request": case["waiting_vehicle_request"],
+            "departure_frame": case.get("departure_frame"),
             "comparison_variable": case["comparison_variable"],
             "original_source_requirements": [
                 "original OpenDRIVE bytes and restricted-zone survey",
@@ -86,8 +93,8 @@ def build(suffix: str, *, stop_center_x_m: float = 5.0,
 
 def validate_matrix() -> dict:
     plans = {suffix: build(suffix) for suffix in CASES}
-    require(len({p["case_id"] for p in plans.values()}) == 4,
-            "four distinct exact cases required")
+    require(len({p["case_id"] for p in plans.values()}) == len(CASES),
+            "distinct exact cases required")
     a, b = plans["witness_1"], plans["witness_2"]
     require(a["requested_purpose"] != b["requested_purpose"] and
             all(a[key] == b[key] for key in ("frames", "fps", "duration_s",
@@ -100,5 +107,13 @@ def validate_matrix() -> dict:
                                            "camera_sizes", "parking_target_center_x_m",
                                            "passenger_exchange_request", "requested_purpose")),
             "exception pair must isolate waiting vehicle request")
-    return {"plans": plans, "comparison_count": 2,
+    a, b, c = plans["stop_only"], plans["stand_only"], plans["witness_2"]
+    require((a["departure_frame"], b["departure_frame"], c["departure_frame"]) ==
+            (300, 500, None) and
+            all(a[key] == b[key] == c[key] for key in
+                ("requested_purpose", "passenger_exchange_request",
+                 "waiting_vehicle_request", "camera_sizes", "duration_s",
+                 "parking_target_center_x_m")),
+            "stationary episodes must isolate departure timing")
+    return {"plans": plans, "comparison_count": 4,
             "original_native_observed": False, "ready": False}

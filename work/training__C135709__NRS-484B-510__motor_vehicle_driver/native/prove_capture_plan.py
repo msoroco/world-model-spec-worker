@@ -21,7 +21,7 @@ def prove() -> dict:
         negatives["target_outside_zone"] = str(exc)
     else:
         raise AssertionError("outside-zone parking target accepted")
-    assert len(CASES) == len(checked["plans"]) == 4
+    assert len(CASES) == len(checked["plans"]) == 6
     assert all(plan["primary_max_speed_mps"] == 4.0 and
                plan["fallback1"]["max_speed_mps"] == 3.0 and
                plan["fallback1"]["same_case_and_observations"]

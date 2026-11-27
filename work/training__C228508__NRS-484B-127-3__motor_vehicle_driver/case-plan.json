@@ -14,7 +14,7 @@
         "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a",
         "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Four source-bound primary/fallback construction drafts and original-row saved meters are CPU checked. Selected public/saved/semantic/delivery proofs and physical/legal review remain unfinished."
     },
     {
       "requirement": "NRS-484B-127-3",
@@ -32,7 +32,8 @@
       "kind": "planned_only",
       "target_type": "compliant_attempt",
       "physical_target": "leave entry gap in caravan",
-      "comparison_variable": "caravan_entry_gap"
+      "comparison_variable": "caravan_entry_gap",
+      "construction_status": "four_candidate_paths_offline_cpu_passed_unselected"
     },
     {
       "case_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b",
@@ -40,7 +41,8 @@
       "kind": "planned_only",
       "target_type": "violating_attempt",
       "physical_target": "leave insufficient gap in same caravan geometry",
-      "comparison_variable": "caravan_entry_gap"
+      "comparison_variable": "caravan_entry_gap",
+      "construction_status": "four_candidate_paths_offline_cpu_passed_unselected"
     }
   ],
   "comparisons": [
@@ -132,8 +134,8 @@
     }
   ],
   "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Four exact primary/fallback inline constructions pass pinned offline --check; they remain unselected drafts. The route now authors PipelineCapture, four lossless camera streams and canonical FrameMap, but no Native run, full media decode, public compatibility, selected saved processing, semantic proposals or delivery/comparison audit has passed.",
+    "Caravan purpose, outside-business-district authority, physically coupled towing and actual entrant-without-danger judgment require independent original evidence."
   ],
   "statutory_text": "Motor vehicles being driven upon any highway outside of a business district in a caravan or motorcade, whether or not towing other vehicles, shall be operated to allow sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger.",
   "activation_conditions_from_unreviewed_summary": [
@@ -153,5 +155,119 @@
     "ru.trailer_or_combination",
     "drv.lane_change_feasible",
     "kin.speed"
-  ]
+  ],
+  "source_observation_mapping": {
+    "drv.following": {
+      "evidence": "Original Native body order and same-lane identity across 600 joined frames measure following; caravan membership remains independently unverified.",
+      "channels": [
+        "native_samples.jsonl.actors",
+        "video_frames.jsonl"
+      ],
+      "source_refs": [
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/finalize.py"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Both consecutive clear spaces derive from original four-corner body extents; tractor and trailer proxy extents are combined before measuring.",
+      "channels": [
+        "native_samples.jsonl.actors.*.native_body_xy_m",
+        "minimum_clear_space_m"
+      ],
+      "source_refs": [
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/finalize.py"
+      ]
+    },
+    "drv.queue_behind": {
+      "evidence": "Original lead, subject combination and rear order is checked on every frame; organized caravan purpose is not inferred from proximity.",
+      "channels": [
+        "native_samples.jsonl.actors",
+        "authored-context.json"
+      ],
+      "source_refs": [
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/finalize.py"
+      ]
+    },
+    "rel.same_direction": {
+      "evidence": "All three original caravan actor velocities and same-direction lane identity are sampled per frame; any observed reversal requires independent review.",
+      "channels": [
+        "native_samples.jsonl.actors.*.speed_mps",
+        "native_samples.jsonl.actors.*.native_lane_id"
+      ],
+      "source_refs": [
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/finalize.py"
+      ]
+    },
+    "ru.trailer_or_combination": {
+      "evidence": "Complete tractor and trailer-proxy body extents are measured separately, then combined; physical coupling and legal combination identity remain unverified.",
+      "channels": [
+        "native_samples.jsonl.actors.ego_combination",
+        "native_samples.jsonl.actors.trailer_proxy",
+        "trailer_coupling_verified"
+      ],
+      "source_refs": [
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/finalize.py"
+      ]
+    },
+    "drv.lane_change_feasible": {
+      "evidence": "Potential entrant body length and adjacent-lane position are joined to both available caravan spaces; static length surplus is not entry without danger.",
+      "channels": [
+        "native_samples.jsonl.actors.potential_entrant",
+        "minimum_static_length_surplus_m"
+      ],
+      "source_refs": [
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/finalize.py"
+      ]
+    },
+    "kin.speed": {
+      "evidence": "Original Native velocities are sampled for every caravan actor and entrant at 20 Hz; commanded speed is retained separately and cannot substitute for observation.",
+      "channels": [
+        "native_samples.jsonl.actors.*.speed_mps",
+        "native_samples.jsonl.requested_group_speed_mps"
+      ],
+      "source_refs": [
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/finalize.py",
+        "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/engineering.py"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "fps": 20,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "complete moving caravan, combination proxy and adjacent potential entrant",
+        "interval": "entire 30 s / 600 frame capture",
+        "source": "native/runner.py elevated ego-mounted camera; actual pixels unverified"
+      },
+      {
+        "view": "approach",
+        "subject": "forward consecutive body order and lead entry space",
+        "interval": "entire 30 s / 600 frame capture",
+        "source": "native/runner.py forward ego-mounted camera; actual pixels unverified"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "rear consecutive body order and rear entry space",
+        "interval": "entire 30 s / 600 frame capture",
+        "source": "native/runner.py rear ego-mounted camera; actual pixels unverified"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver proxy toward caravan lead and adjacent lane",
+        "interval": "entire 30 s / 600 frame capture",
+        "source": "native/runner.py driver-reference mount; actual pixels unverified"
+      }
+    ],
+    "physical_risk": "Four authored camera streams and FrameMap are CPU checked only; actual bodies, trailer coupling, frame decode and usable pixel coverage need local Native review."
+  }
 }

@@ -32,7 +32,7 @@
         "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1",
         "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2"
       ],
-      "evidence_or_gap": "Eight exact primary/fallback constructions and pinned offline checks pass; the original-source saved finalizer passes 600-frame ten-channel source joins and corrupt-source negatives. Final selected public/saved/semantic/audit chains remain CPU work. Original authority, purpose, actual loading and interference require independent review."
+      "evidence_or_gap": "Twelve primary/fallback construction requests include stop, stand, park and passenger-loading contrasts. Selected public, saved, semantic and independent audit proofs remain pending; sign authority, purpose, loading, other driver purpose, interference and temporariness require independent original-source findings."
     },
     {
       "requirement": "NRS-484B-510",
@@ -43,7 +43,7 @@
         "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1",
         "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2"
       ],
-      "evidence_or_gap": "Eight exact primary/fallback constructions and pinned offline checks pass; the original-source saved finalizer passes 600-frame ten-channel source joins and corrupt-source negatives. Final selected public/saved/semantic/audit chains remain CPU work. Original authority, purpose, actual loading and interference require independent review."
+      "evidence_or_gap": "Twelve primary/fallback construction requests include stop, stand, park and passenger-loading contrasts. Selected public, saved, semantic and independent audit proofs remain pending; sign authority, purpose, loading, other driver purpose, interference and temporariness require independent original-source findings."
     }
   ],
   "activation_conditions": [
@@ -207,6 +207,78 @@
       "unresolved_judgment_calls": [
         "the purpose a zone is restricted to is read from its sign; the subject's own purpose is interior state, evidenced only by a passenger exchange"
       ]
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only",
+      "target_law_id": "NRS-484B-510",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "controlled stop episode in the same restricted zone; departure request at frame 300",
+      "comparison_variable": "stationary_episode",
+      "source_branch": "stop, stand or park a vehicle",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "narrow_road",
+          "maneuver": "park",
+          "control": "parking_restriction_device"
+        },
+        "activation_conditions_to_verify": [
+          "the place is a restricted parking zone",
+          "the subject stops, stands or parks there for a purpose other than the one the zone is restricted to"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "hold the same parking target, then request departure at frame 300; the source trace must establish actual movement"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "the purpose a zone is restricted to is read from its sign; the subject's own purpose is interior state, evidenced only by a passenger exchange"
+      ],
+      "departure_request_frame": 300
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only",
+      "target_law_id": "NRS-484B-510",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "controlled stand episode in the same restricted zone; departure request at frame 500",
+      "comparison_variable": "stationary_episode",
+      "source_branch": "stop, stand or park a vehicle",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "narrow_road",
+          "maneuver": "park",
+          "control": "parking_restriction_device"
+        },
+        "activation_conditions_to_verify": [
+          "the place is a restricted parking zone",
+          "the subject stops, stands or parks there for a purpose other than the one the zone is restricted to"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "hold the same parking target, then request departure at frame 500; the source trace must establish actual movement"
+      },
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "expected_scenario_outcome": null,
+      "unresolved_judgment_calls": [
+        "the purpose a zone is restricted to is read from its sign; the subject's own purpose is interior state, evidenced only by a passenger exchange"
+      ],
+      "departure_request_frame": 500
     }
   ],
   "comparisons": [
@@ -239,6 +311,40 @@
         "same map geometry except named comparison variable",
         "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
       ]
+    },
+    {
+      "comparison_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stop_stand_comparison",
+      "case_ids": [
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only",
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only"
+      ],
+      "deliberate_differences": [
+        "departure_request_frame"
+      ],
+      "fixed_conditions": [
+        "same frozen narrow-road park cell and actor",
+        "same map, sign, restricted-zone geometry and parking target",
+        "same requested unrelated purpose, passenger and waiting actor controls",
+        "same 600-frame, 20 Hz four-camera observation window"
+      ],
+      "source_review": "Departure timing is an engineering contrast; actual movement and statutory stop/stand classification require original trace and independent review. No numeric legal threshold is asserted."
+    },
+    {
+      "comparison_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stand_park_comparison",
+      "case_ids": [
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only",
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2"
+      ],
+      "deliberate_differences": [
+        "departure_request_frame"
+      ],
+      "fixed_conditions": [
+        "same frozen narrow-road park cell and actor",
+        "same map, sign, restricted-zone geometry and parking target",
+        "same requested unrelated purpose, passenger and waiting actor controls",
+        "same 600-frame, 20 Hz four-camera observation window"
+      ],
+      "source_review": "Departure timing is an engineering contrast; actual movement and statutory stop/stand classification require original trace and independent review. No numeric legal threshold is asserted."
     }
   ],
   "mandatory_observation_terms": [
@@ -366,99 +472,119 @@
     "Four exact primary Native construction bundles pass pinned offline checks; selected positive/negative public and saved-only chains, tested fallback construction, semantic proposals and independent audits remain CPU work. Original sign authority, purpose, passenger exchange and interference remain unverified.",
     "CARLA has no original occupant count readback; retained nearby actor IDs and door requests need independent original pixel and purpose review."
   ],
-  "readiness_limitation": "Unselected construction return only; exact offline checks do not establish selected delivery readiness, physical outcome or a legal verdict.",
-  "source_observation_mapping": [
-    {
-      "term": "st.curb_zone",
+  "readiness_limitation": "Distinct statutory stop and stand alternatives and independent review facts remain unresolved; selected public/saved/semantic/audit proofs are CPU work. The four parking/exception construction requests are diagnostic only.",
+  "source_observation_mapping": {
+    "st.curb_zone": {
+      "evidence": "Authored restricted-zone geometry and original Native map hash; sign authority unverified",
+      "channels": [
+        "st.curb_zone"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "road.xodr + zone-survey.json:bounds_m,map_sha256",
-      "evidence": "Authored restricted-zone geometry and original Native map hash; sign authority unverified",
       "status": "native_source_mapping_with_independent_review_pending"
     },
-    {
-      "term": "dev.regulatory_sign",
+    "dev.regulatory_sign": {
+      "evidence": "Original map sign identity and name; visible pixels and public authority unverified",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "road.xodr signal id 510 + zone-survey.json:sign_text_readback",
-      "evidence": "Original map sign identity and name; visible pixels and public authority unverified",
       "status": "native_source_mapping_with_independent_review_pending"
     },
-    {
-      "term": "drv.condition_in_effect",
+    "drv.condition_in_effect": {
+      "evidence": "Independent effective-condition review required; Native construction cannot establish authority",
+      "channels": [
+        "drv.condition_in_effect"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "zone-survey.json:effective_conditions + source-review.json",
-      "evidence": "Independent effective-condition review required; Native construction cannot establish authority",
       "status": "native_source_mapping_with_independent_review_pending"
     },
-    {
-      "term": "drv.standing_or_parked",
+    "drv.standing_or_parked": {
+      "evidence": "Original full-body zone overlap and at-rest diagnostic; 0.05 m/s is engineering only",
+      "channels": [
+        "drv.standing_or_parked"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "actor-frames.jsonl:ego_body_m,ego_speed_mps",
-      "evidence": "Original full-body zone overlap and at-rest diagnostic; 0.05 m/s is engineering only",
       "status": "native_source_mapping_with_independent_review_pending"
     },
-    {
-      "term": "kin.time",
+    "kin.time": {
+      "evidence": "Original 600-frame clock and stopped-in-zone duration; no legal temporariness threshold",
+      "channels": [
+        "kin.time"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "actor-frames.jsonl:frame,elapsed_s",
-      "evidence": "Original 600-frame clock and stopped-in-zone duration; no legal temporariness threshold",
       "status": "native_source_mapping_with_independent_review_pending"
     },
-    {
-      "term": "ru.occupant_count",
+    "ru.occupant_count": {
+      "evidence": "CARLA does not provide occupant readback; original passenger exchange needs independent review",
+      "channels": [
+        "ru.occupant_count"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "source-review.json:actual_passenger_loading",
-      "evidence": "CARLA does not provide occupant readback; original passenger exchange needs independent review",
       "status": "native_source_mapping_with_independent_review_pending"
     },
-    {
-      "term": "sig.door_open",
+    "sig.door_open": {
+      "evidence": "Requested door control only; actual visible door state needs original pixel review",
+      "channels": [
+        "sig.door_open"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "actor-frames.jsonl:door_open_request",
-      "evidence": "Requested door control only; actual visible door state needs original pixel review",
       "status": "native_source_mapping_with_independent_review_pending"
     },
-    {
-      "term": "ru.pedestrian",
+    "ru.pedestrian": {
+      "evidence": "Original nearby pedestrian actor identities; association/loading unverified",
+      "channels": [
+        "ru.pedestrian"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "actor-frames.jsonl:passenger_actor_ids_near_vehicle",
-      "evidence": "Original nearby pedestrian actor identities; association/loading unverified",
       "status": "native_source_mapping_with_independent_review_pending"
     },
-    {
-      "term": "ru.motor_vehicle",
+    "ru.motor_vehicle": {
+      "evidence": "Original vehicle actor/body and blueprint request; passenger-vehicle classification reviewed separately",
+      "channels": [
+        "ru.motor_vehicle"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "actor-frames.jsonl:ego_body_m + Native blueprint",
-      "evidence": "Original vehicle actor/body and blueprint request; passenger-vehicle classification reviewed separately",
       "status": "native_source_mapping_with_independent_review_pending"
     },
-    {
-      "term": "drv.approaching",
+    "drv.approaching": {
+      "evidence": "Original other vehicle body/entry request; waiting driver purpose and interference unverified",
+      "channels": [
+        "drv.approaching"
+      ],
       "source_refs": [
         "inputs/training__C135709__NRS-484B-510__motor_vehicle_driver/assignment.json"
       ],
       "raw_source": "actor-frames.jsonl:other_vehicles + source-review.json",
-      "evidence": "Original other vehicle body/entry request; waiting driver purpose and interference unverified",
       "status": "native_source_mapping_with_independent_review_pending"
     }
-  ],
+  },
   "draft_saved_measurement": {
     "script": "native/restricted_zone_measure.py",
     "proof": "native/restricted-zone-proof.json",
@@ -471,5 +597,72 @@
       "rear"
     ],
     "selected_delivery_proof": false
+  },
+  "statutory_alternatives": [
+    {
+      "alternative": "stop",
+      "source": "NRS 484B.510: stop, stand or park",
+      "status": "constructed_unselected",
+      "case_ids": [
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only"
+      ],
+      "review": "A frame-300 departure request is a controlled stop episode. Actual cessation and subsequent movement must be measured from original body and speed; purpose and legal classification remain independent review."
+    },
+    {
+      "alternative": "stand",
+      "source": "NRS 484B.510: stop, stand or park",
+      "status": "constructed_unselected",
+      "case_ids": [
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only"
+      ],
+      "review": "A frame-500 departure request is a distinct controlled standing episode. Actual cessation and subsequent movement must be measured from original body and speed; duration is not a legal cutoff."
+    },
+    {
+      "alternative": "park",
+      "source": "NRS 484B.510: stop, stand or park",
+      "status": "constructed_unselected",
+      "case_ids": [
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1",
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2"
+      ],
+      "review": "Four exact parking constructions and offline CPU checks exist; selected public and saved proofs remain incomplete."
+    },
+    {
+      "alternative": "temporary passenger loading stop",
+      "source": "NRS 484B.510: except that a driver of a passenger vehicle may stop temporarily",
+      "status": "constructed_unselected",
+      "case_ids": [
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1",
+        "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2"
+      ],
+      "review": "Door requests and nearby pedestrians are only prompts. Actual loading, temporariness, waiting-driver restricted purpose and interference require distinct original review; no numeric legal duration cutoff is asserted."
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full restricted-zone geometry, ego and waiting vehicle",
+        "interval": "all 600 original frames"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach and full-body zone stop",
+        "interval": "startup through final observation"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "posted restriction and passenger exchange position",
+        "interval": "all 600 original frames; original pixels still require review"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "door side, nearby pedestrian and waiting vehicle",
+        "interval": "all 600 original frames; original pixels still require review"
+      }
+    ]
   }
 }

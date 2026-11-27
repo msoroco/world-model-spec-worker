@@ -35,14 +35,18 @@ def run(attempt, output):
     joins = [json.loads(line) for line in (attempt / "camera-frames.jsonl").read_text(encoding="utf-8").splitlines()]
     require(len(actors) == len(joins) == FRAME_COUNT, "original packet length changed")
     source_names = ("capture-manifest.json", "road.xodr", "zone-survey.json",
-                    "actor-frames.jsonl", "camera-frames.jsonl", "source-review.json")
+                    "actor-frames.jsonl", "camera-frames.jsonl", "trace.jsonl",
+                    "video_frames.jsonl", "source-review.json")
+    if (attempt / "capture-seal.json").is_file():
+        source_names += ("capture-seal.json",)
     source_hashes = {name: sha(attempt / name) for name in source_names}
     source_hashes.update({f"{name}.mkv": sha(attempt / f"{name}.mkv") for name in CAMERAS})
     channels = attempt / "channels"
     channels.mkdir(exist_ok=False)
     trace_path = attempt / "trace.jsonl"
     frame_map_path = attempt / "video_frames.jsonl"
-    require(not trace_path.exists() and not frame_map_path.exists(), "derived source already exists")
+    require(trace_path.is_file() and frame_map_path.is_file(),
+            "Missing required source: original trace.jsonl or video_frames.jsonl")
     evidence = []
     writers = {}
     try:
@@ -50,18 +54,10 @@ def run(attempt, output):
             writers[name] = (channels / (name + ".jsonl")).open("x", encoding="utf-8")
             evidence.append({"name": name, "unit": "structured",
                              "reference": "channels/" + name + ".jsonl"})
-        with trace_path.open("x", encoding="utf-8") as trace, frame_map_path.open("x", encoding="utf-8") as frame_map:
-            previous_nearby = None
-            for i, (actor, join) in enumerate(zip(actors, joins)):
+        previous_nearby = None
+        for i, (actor, join) in enumerate(zip(actors, joins)):
                 body = actor["ego_body_m"]
-                midpoint = [(body[0] + body[2]) / 2, (body[1] + body[3]) / 2]
                 time_s = actor["elapsed_s"]
-                source_frame = actor["native_frame"]
-                trace.write(json.dumps({"frame": source_frame, "time_s": time_s,
-                                        "position_m": midpoint, "speed_mps": actor["ego_speed_mps"]}) + "\n")
-                frame_map.write(json.dumps({"video_frame": i, "carla_frame": source_frame,
-                                            "native_frame": source_frame, "time_s": time_s,
-                                            "camera_native_frames": {name: source_frame for name in CAMERAS}}) + "\n")
                 nearby = actor["passenger_actor_ids_near_vehicle"]
                 values = {
                     "st.curb_zone": {"bounds_m": zone["bounds_m"], "survey_sha256": source_hashes["zone-survey.json"]},

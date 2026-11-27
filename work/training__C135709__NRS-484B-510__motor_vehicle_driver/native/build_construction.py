@@ -1,4 +1,4 @@
-"""Materialize the four exact restricted-zone Native request bundles.
+"""Materialize the six exact restricted-zone Native request bundles.
 
 This creates construction inputs only. It does not select a case for delivery or
 claim that the sign, purpose, passenger exchange, or interference was observed.
@@ -82,6 +82,7 @@ def main() -> None:
                   "requested_purpose": request["requested_purpose"],
                   "passenger_exchange_request": request["passenger_exchange_request"],
                   "waiting_vehicle_request": request["waiting_vehicle_request"],
+                  "departure_frame": request["departure_frame"],
                   "approach_speed_cap_mps": 4.0,
                   "physical_acceptance_claimed": False, "legal_verdict": None,
                   "recording_description": description,
@@ -99,8 +100,10 @@ def main() -> None:
                                              "source_review_required": True,
                                              "required_sources": ["road.xodr", "zone-survey.json",
                                                                   "actor-frames.jsonl", "camera-frames.jsonl",
-                                                                  "capture-manifest.json", "independent-review.json"]},
-                        "static_checks": ["Exact four-case restricted-purpose and exception request matrix",
+                                                                  "trace.jsonl", "video_frames.jsonl",
+                                                                  "capture-manifest.json", "capture-seal.json",
+                                                                  "source-review.json"]},
+                        "static_checks": ["Exact six-case restricted-purpose, stop, stand and exception request matrix",
                                           "30-second four-camera Native source joins",
                                           "Original sign authority and purpose remain independently reviewed"],
                         "mechanisms": ["Authored OpenDRIVE sign and restricted zone",

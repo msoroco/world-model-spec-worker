@@ -7,7 +7,7 @@ the Native map really establishes a safety zone or a stopping exception.
 
 from __future__ import annotations
 
-from math import hypot, isfinite
+from math import atan2, hypot, isfinite
 
 FRAME_COUNT = 600
 FRAME_RATE = 20
@@ -38,6 +38,18 @@ def _point_footprint_distance(point, corners):
     return min(_point_segment_distance(point, corners[i], corners[(i + 1) % len(corners)]) for i in range(len(corners)))
 
 
+def _ordered_footprint(corners):
+    """CARLA corner loops arrive in x-major order, not perimeter order."""
+    cx = sum(x for x, _ in corners) / 4
+    cy = sum(y for _, y in corners) / 4
+    ordered = sorted(corners, key=lambda p: atan2(p[1] - cy, p[0] - cx))
+    twice_area = sum(ordered[i][0] * ordered[(i + 1) % 4][1] -
+                     ordered[(i + 1) % 4][0] * ordered[i][1] for i in range(4))
+    if abs(twice_area) < 1e-8:
+        raise ValueError("degenerate vehicle footprint")
+    return ordered
+
+
 def measure_frame(corners: list, zone: dict) -> dict:
     if not zone.get("zone_map_source") or not zone.get("curb_map_source"):
         raise ValueError("safety zone and curb source provenance required")
@@ -51,6 +63,7 @@ def measure_frame(corners: list, zone: dict) -> dict:
         raise ValueError("invalid source geometry")
     if len(set(pts)) != 4:
         raise ValueError("degenerate vehicle footprint")
+    pts = _ordered_footprint(pts)
     opposite_start = (lo, curb)
     opposite_end = (hi, curb)
     distances = (_point_footprint_distance(opposite_start, pts), _point_footprint_distance(opposite_end, pts))

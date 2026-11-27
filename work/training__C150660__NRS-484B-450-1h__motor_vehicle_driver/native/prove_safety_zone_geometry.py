@@ -22,6 +22,18 @@ assert measure_frame(inside, zone)["fully_between_zone_and_curb"]
 assert not measure_frame(outside, zone)["fully_between_zone_and_curb"]
 assert not measure_frame(outside, zone)["within_30_feet_of_opposite_end_points"]
 assert THIRTY_FEET_M == 9.144
+for offset, expected in ((THIRTY_FEET_M - .001, True),
+                         (THIRTY_FEET_M, True),
+                         (THIRTY_FEET_M + .001, False)):
+    footprint = [(20 + offset, 0), (22 + offset, 0),
+                 (20 + offset, 1), (22 + offset, 1)]
+    assert measure_frame(footprint, zone)["within_30_feet_of_opposite_end_points"] is expected
+    # CARLA's x-major four-corner order must not create a crossing polygon.
+    assert measure_frame([footprint[i] for i in (0, 2, 1, 3)], zone)[
+        "within_30_feet_of_opposite_end_points"] is expected
+    start_footprint = [(-offset - 2, 0), (-offset, 0),
+                       (-offset - 2, 1), (-offset, 1)]
+    assert measure_frame(start_footprint, zone)["within_30_feet_of_opposite_end_points"] is expected
 rows = [{
     "frame": i, "time_s": i / FRAME_RATE,
     "vehicle_stopped": 100 <= i < 500,
@@ -54,4 +66,4 @@ reject(lambda: measure_trace(bad, zone), "stop-state source")
 bad_zone = dict(zone, zone_map_source="")
 reject(lambda: measure_trace(rows, bad_zone), "source provenance")
 reject(lambda: measure_frame([(0, 0)] * 4, zone), "degenerate")
-print("PASS: 600-frame safety-zone footprint and 30-foot geometry positive/negative CPU proof")
+print("PASS: 600-frame safety-zone footprint, both curb endpoints, 30-foot below/at/above and negative CPU proof")

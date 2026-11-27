@@ -2,11 +2,13 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'native'))
 from exit_candidate import CAMERAS, FRAMES, measure, target
 from exit_geometry import check as geometry_check
+from exit_finalize import AUTHORITY, observation
 
 
 def make_sources(mode):
@@ -81,6 +83,47 @@ class ExitCandidate(unittest.TestCase):
         repeated = ''.join(json.dumps(row) + '\n' for row in values).encode()
         with self.assertRaisesRegex(ValueError, 'Exactly one measured exit event'):
             measure(repeated, frame, context, road)
+
+    def test_separately_reviewed_exit_source_joins(self):
+        scratch = Path(__file__).resolve().parents[3] / '.runtime-work' / 'c228131-exit-tests'
+        scratch.mkdir(parents=True, exist_ok=True)
+        for mode, indicated in (('indicated_exit', True), ('outside_exit', False)):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory(dir=scratch) as temp:
+                root = Path(temp)
+                poses, frames, _, road = make_sources(mode)
+                data = {'actor-poses.jsonl': poses, 'video_frames.jsonl': frames,
+                        'road.xodr': road}
+                data.update({name: name.encode() for name in AUTHORITY})
+                for name, raw in data.items():
+                    (root / name).write_bytes(raw)
+                for name in CAMERAS:
+                    (root / (name + '.mkv')).write_bytes(b'diagnostic placeholder')
+                (root / 'fixture-provenance.json').write_text('{}\n')
+                digest = lambda name: hashlib.sha256(data[name]).hexdigest()
+                access = {'review_status': 'synthetic_diagnostic', 'reviewer': 'diagnostic-access',
+                          'source': 'diagnostic-access-source', 'road_sha256': digest('road.xodr'),
+                          'pose_sha256': digest('actor-poses.jsonl'),
+                          'source_sha256': {'access-authority.txt': digest('access-authority.txt')},
+                          'controlled_access_highway': True, 'highway_edge_y_m': -3.5}
+                device = {'review_status': 'synthetic_diagnostic', 'reviewer': 'diagnostic-device',
+                          'source': 'diagnostic-device-source', 'road_sha256': digest('road.xodr'),
+                          'frame_map_sha256': digest('video_frames.jsonl'),
+                          'source_sha256': {name: digest(name) for name in AUTHORITY[1:]},
+                          'device_official': True, 'device_erected': True,
+                          'device_indicates_exit': True, 'indicated_exit_x_interval_m': [-1, 1]}
+                (root / 'access-review.json').write_text(json.dumps(access) + '\n')
+                (root / 'device-review.json').write_text(json.dumps(device) + '\n')
+                facts = observation(root)
+                self.assertEqual(facts['exit_events'][0]['within_indicated_exit'], indicated)
+                self.assertFalse(facts['video_decode_verified'])
+                self.assertFalse(facts['original_device_pixels_verified'])
+                (root / 'exit-extent.txt').write_text('altered source\n')
+                with self.assertRaisesRegex(ValueError, 'Exit authority source differs'):
+                    observation(root)
+                (root / 'exit-extent.txt').write_bytes(data['exit-extent.txt'])
+                (root / 'device-review.json').unlink()
+                with self.assertRaisesRegex(ValueError, 'Missing original exit source'):
+                    observation(root)
 
 
 if __name__ == '__main__':

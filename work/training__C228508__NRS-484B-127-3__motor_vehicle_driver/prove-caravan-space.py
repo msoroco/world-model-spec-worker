@@ -7,6 +7,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
+SCRATCH = ROOT.parents[1] / '.runtime-work' / 'c228508-caravan-proofs'
+SCRATCH.mkdir(parents=True, exist_ok=True)
 spec = importlib.util.spec_from_file_location('measure_caravan_space', ROOT / 'native' / 'measure_caravan_space.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
@@ -50,7 +52,7 @@ def edit_rows(folder, edit, rehash=True):
 
 
 def reject(folder, edit, expected, rehash=True):
-    with tempfile.TemporaryDirectory() as scratch:
+    with tempfile.TemporaryDirectory(dir=SCRATCH) as scratch:
         trial = Path(scratch)
         for name in ('composition.json', 'actors.jsonl', 'sources.json'):
             (trial / name).write_bytes((folder / name).read_bytes())

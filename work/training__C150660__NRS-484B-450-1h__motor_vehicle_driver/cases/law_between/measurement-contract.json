@@ -1,0 +1,67 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between",
+  "status": "draft",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.450(1)(h)",
+      "kind": "sourced_context",
+      "method": "source_review",
+      "output_key": "curb_and_exception_context",
+      "value_type": "object",
+      "inputs": [
+        "zone_raw.json",
+        "context-survey.json",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "road.xodr",
+        "authored-road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.450(1)(h)",
+      "kind": "measured",
+      "method": "measure_safety_zone",
+      "output_key": "safety_zone_geometry",
+      "value_type": "object",
+      "inputs": [
+        "zone_raw.json",
+        "context-survey.json",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "road.xodr",
+        "authored-road.xodr"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "kind": "sourced_context",
+      "method": "source_review",
+      "output_key": "safety_zone_designation",
+      "value_type": "object",
+      "inputs": [
+        "zone_raw.json",
+        "context-survey.json",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "road.xodr",
+        "authored-road.xodr"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "zone_raw.json"
+    ],
+    "error_contains": "Missing required source: zone_raw.json"
+  }
+}
