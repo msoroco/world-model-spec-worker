@@ -81,7 +81,7 @@ def validate_source_packet(packet, case):
     return packet
 
 
-def planned_spawn(packet, case):
+def planned_spawn(packet, case, anchor_station_m=175.0):
     """Derive four spawn stations from surveyed Native body lengths and gaps."""
     validate_source_packet(packet, case)
     assets = packet['assets']
@@ -91,7 +91,7 @@ def planned_spawn(packet, case):
         lengths['ego'] += float(assets['group_towed_vehicle']['body_length_m'])
     if case.combination_entrant:
         lengths['entrant'] += float(assets['entrant_towed_vehicle']['body_length_m'])
-    centre = 175.0
+    centre = number(anchor_station_m, 'group route anchor')
     ego = centre
     front = ego + 0.5 * (lengths['ego'] + lengths['front']) + case.gap_target_m
     rear = ego - 0.5 * (lengths['ego'] + lengths['rear']) - case.gap_target_m
@@ -103,9 +103,10 @@ def planned_spawn(packet, case):
             'entrant_lateral_source': packet['route'].get('entrant_adjacent_lane_id')}
 
 
-def execute_case(adapter, packet, case):
+def execute_case(adapter, packet, case, engineering=None):
     """Request concrete actors and 600 synchronized ticks from a Native adapter."""
-    spawn = planned_spawn(packet, case)
+    engineering = engineering or {}
+    spawn = planned_spawn(packet, case, engineering.get('group_anchor_station_m', 175.0))
     require(spawn['entrant_lateral_source'], 'Native entrant adjacent lane required')
     adapter.open_route(packet['route'])
     for role in ('front', 'ego', 'rear'):
@@ -117,7 +118,10 @@ def execute_case(adapter, packet, case):
                           spawn['entrant_lateral_source'])
     if case.combination_entrant:
         adapter.attach_towed_vehicle('entrant', packet['assets']['entrant_towed_vehicle'])
-    adapter.set_group_motion(9.1, case.gap_target_m)
+    gain = number(engineering.get('group_gap_controller_gain', 1.0),
+                  'group gap controller gain')
+    require(0 < gain <= 2, 'group gap controller gain out of range')
+    adapter.set_group_motion(9.1, case.gap_target_m, gain)
     adapter.schedule_entrant_entry(start_s=14.0, end_s=20.0,
                                    target_gap_roles=('front', 'ego'))
     adapter.capture_original(case.suffix, 600, packet['camera_survey'])

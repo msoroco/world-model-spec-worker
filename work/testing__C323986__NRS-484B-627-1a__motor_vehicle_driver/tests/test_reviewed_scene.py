@@ -65,6 +65,12 @@ class ReviewedSceneTest(unittest.TestCase):
         variants = {suffix: dict(physical) for suffix in VARIANTS}
         variants["slow_center_narrow"]["paved_right_edge_m"] = 3.5
         variants["slow_center_obstruction_near"]["obstruction_station_m"] = 60
+        for index, speed in enumerate((4.0, 5.0, 6.0)):
+            variants[f"impediment-{index:04d}"]["ego_speed_mps"] = speed
+        for index, edge in enumerate((3.5, 4.1, 4.7)):
+            variants[f"paved_width-{index:04d}"]["paved_right_edge_m"] = edge
+        for index, offset in enumerate((0.0, 0.55, 1.1)):
+            variants[f"right_position-{index:04d}"]["ego_right_path_m"] = offset
         site = {"reviewed_original_site": True, "diagnostic_fixture": False,
                 "cpu_test_synthetic_only": True, "map_ref": map_ref, "road_id": "1",
                 "highway": True, "one_lane_each_direction": True,
@@ -92,6 +98,12 @@ class ReviewedSceneTest(unittest.TestCase):
             self.assertEqual(len([c for c in fake.calls if c[0] == "tick_and_capture"]), 3)
         no_follow = plan(self.root, self.site_ref, ASSIGNMENT + "__slow_center_no_follower")
         self.assertEqual(no_follow["actors"][1]["lane_id"], no_follow["opposite_lane_id"])
+        self.assertEqual([plan(self.root, self.site_ref, ASSIGNMENT + f"__impediment-{i:04d}")["actors"][0]["target_speed_mps"]
+                          for i in range(3)], [4.0, 5.0, 6.0])
+        self.assertEqual([plan(self.root, self.site_ref, ASSIGNMENT + f"__paved_width-{i:04d}")["paved_right_edge_m"]
+                          for i in range(3)], [3.5, 4.1, 4.7])
+        self.assertEqual([plan(self.root, self.site_ref, ASSIGNMENT + f"__right_position-{i:04d}")["actors"][0]["lateral_offset_m"]
+                          for i in range(3)], [0.0, 0.55, 1.1])
 
     def test_missing_or_stale_original_source_rejected(self):
         with self.assertRaisesRegex(ValueError, "hash changed"):
@@ -143,7 +155,7 @@ class ReviewedSceneTest(unittest.TestCase):
         frames = [{"frame": i, "time_s": i / 20,
                    "camera_frames": {name: i + 100 for name in
                        ("overview", "approach", "reference_corner", "driver_reference")}}
-                  for i in range(900)]
+                  for i in range(9)]
         frame_map = {"case_id": case_id, "source_kind": "original_native_frame_map", "frames": frames}
         map_path = self.root / "original-frame-map.json"
         map_path.write_text(json.dumps(frame_map))
@@ -151,24 +163,26 @@ class ReviewedSceneTest(unittest.TestCase):
                     "relation_basis_source": "synthetic CPU test",
                     "samples": [{"frame": i, "time_s": i / 20,
                                  "follower_actor_id": 11, "immediately_behind": True}
-                                for i in range(900)]}
+                                for i in range(9)]}
         motion = {"assignment_id": ASSIGNMENT, "case_id": case_id,
                   "original_trace_id": "synthetic-unit-test",
                   "original_frame_map_sha256": hashlib.sha256(map_path.read_bytes()).hexdigest(),
-                  "frames": [{**row, "frame": i, "time_s": i / 20} for i in range(900)]}
+                  "frames": [{**row, "frame": i, "time_s": i / 20} for i in range(9)]}
         (self.root / "original-relation.json").write_text(json.dumps(relation))
         (self.root / "original-motion.json").write_text(json.dumps(motion))
+        (self.root / "fixture-provenance.json").write_text(json.dumps({
+            "diagnostic_fixture": True, "physical_acceptance_claimed": False}))
         (self.root / "original-site.json").write_text(json.dumps({
             "case_id": case_id, "site_ref_sha256": self.site_ref["sha256"],
             "cpu_test_synthetic_only": True}))
         result = finalize(self.root, case_id)
-        self.assertEqual(result["original_frame_count"], 900)
-        self.assertEqual(result["observations"][12]["relative_closing_speed_mps"], 3)
+        self.assertEqual(result["original_frame_count"], 9)
+        self.assertEqual(result["observations"][5]["relative_closing_speed_mps"], 3)
         report = build_report(self.root, case_id)
-        self.assertEqual(report["measurements"]["following_motion_measurement"]["value"]["immediate_follower_frames"], 900)
+        self.assertEqual(report["measurements"]["following_motion_measurement"]["value"]["immediate_follower_frames"], 9)
         self.assertTrue(report["diagnostic_fixture"])
         (self.root / "original-relation.json").unlink()
-        with self.assertRaisesRegex(ValueError, "Missing required original source"):
+        with self.assertRaisesRegex(ValueError, "Missing required source"):
             finalize(self.root, case_id)
 
 

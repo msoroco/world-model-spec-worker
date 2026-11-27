@@ -77,7 +77,8 @@ def main():
     spec.loader.exec_module(module)
     adapter = module.open_native_adapter(args.host, args.port)
     try:
-        execute_case(adapter, packet, case)
+        config = json.loads((ROOT / 'config.json').read_text())
+        execute_case(adapter, packet, case, config.get('engineering'))
         args.output_dir.mkdir(parents=True, exist_ok=True)
         adapter.seal_original(args.output_dir)
     finally:

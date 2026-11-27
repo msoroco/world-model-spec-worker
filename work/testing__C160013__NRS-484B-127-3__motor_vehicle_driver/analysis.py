@@ -166,6 +166,9 @@ def analyze(root):
                                             'value': channels[name](row)}) + '\n'
                                 for row in history))
         evidence.append({'name': name, 'unit': channel['unit'], 'reference': path.name})
+    for item in config['case']['recording_description']['context_inputs']:
+        evidence.append({'name': item['name'], 'unit': item['unit'],
+                         'reference': 'caravan-context.json'})
     from worker_exchange.native_output import physical_result, write_result
     target = matches[0].gap_target_m
     checks = [

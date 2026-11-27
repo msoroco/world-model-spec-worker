@@ -1,0 +1,1909 @@
+{
+  "cell_id": "C160013",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_near",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "caravan of three qualifying motor vehicles, none towing, near requested group gaps and an independent vehicle entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "caravan",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "vehicle",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 18.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 18.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "caravan of three qualifying motor vehicles, none towing, middle requested group gaps and an independent vehicle entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "caravan",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "vehicle",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_far",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "caravan of three qualifying motor vehicles, none towing, far requested group gaps and an independent vehicle entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "caravan",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "vehicle",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 103.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 103.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_towing_middle",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "caravan of three qualifying motor vehicles, towing towing, middle requested group gaps and an independent vehicle entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "caravan",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "towing",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "vehicle",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle_combination_entrant",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "caravan of three qualifying motor vehicles, none towing, middle requested group gaps and an independent combination entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "caravan",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "combination",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_near",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "motorcade of three qualifying motor vehicles, none towing, near requested group gaps and an independent vehicle entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "motorcade",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "vehicle",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 18.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 18.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "motorcade of three qualifying motor vehicles, none towing, middle requested group gaps and an independent vehicle entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "motorcade",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "vehicle",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_far",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "motorcade of three qualifying motor vehicles, none towing, far requested group gaps and an independent vehicle entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "motorcade",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "vehicle",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 103.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 103.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_towing_middle",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "motorcade of three qualifying motor vehicles, towing towing, middle requested group gaps and an independent vehicle entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "motorcade",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "towing",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "vehicle",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant",
+      "target_law_id": "NRS-484B-127-3",
+      "target_type": "judgment_sweep",
+      "status": "draft",
+      "rationale": "motorcade of three qualifying motor vehicles, none towing, middle requested group gaps and an independent combination entry-and-occupancy opportunity",
+      "variable_assignments": {
+        "group_kind": {
+          "kind": "world_setup",
+          "value": "motorcade",
+          "unit": "category"
+        },
+        "towing_configuration": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "entrant_kind": {
+          "kind": "world_setup",
+          "value": "combination",
+          "unit": "category"
+        },
+        "front_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "rear_group_clear_gap_target_m": {
+          "kind": "controller",
+          "value": 60.0,
+          "unit": "m"
+        },
+        "group_speed_target_mps": {
+          "kind": "controller",
+          "value": 9.1,
+          "unit": "m/s"
+        },
+        "actual_front_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "actual_rear_group_clear_gap_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "entrant_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "event"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "sufficient space",
+        "without danger",
+        "caravan or motorcade membership",
+        "outside of a business district"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "sequential 20 Hz Native frame and seal",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "group_role_ids",
+            "unit": "Native identity",
+            "method": "independent ordered group membership roster and active role IDs",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "vehicle_inventory",
+            "unit": "Native identity",
+            "method": "all group, entrant, towing and outsider actor IDs/classes",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "original_body_vertices",
+            "unit": "metres",
+            "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "front_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body front-to-ego clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "rear_group_clear_gap_m",
+            "unit": "metres",
+            "method": "Native body ego-to-rear clear gap computed per original frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "velocity_history",
+            "unit": "m/s",
+            "method": "native actual velocity vector norms of every group and entrant actor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "entrant_entry_occupancy",
+            "unit": "interval and lane",
+            "method": "outsider lane and longitudinal interval over 14..20 s",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "coupling_history",
+            "unit": "Native identity",
+            "method": "native towing attachments and positions, including no-tow readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "collision_history",
+            "unit": "Native event",
+            "method": "native collision events over full trace",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "controller_commands",
+            "unit": "command",
+            "method": "group and entrant requested controls retained separately from actual motion",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized Native camera views and composed primary video",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 original frames",
+            "reference_frame": "source-reviewed directed highway route",
+            "uncertainty": "physical realization and legal judgment remain unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "public_highway_assumption",
+            "method": "external legal-source review"
+          },
+          {
+            "name": "outside_business_district_assumption",
+            "method": "external legal-region review including frontage/building-use definition"
+          },
+          {
+            "name": "group_membership_coordination",
+            "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+          }
+        ],
+        "limitations": [
+          "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+          "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+        ]
+      }
+    }
+  ]
+}

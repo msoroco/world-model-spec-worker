@@ -1,0 +1,195 @@
+{
+  "assignment_id": "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator",
+  "law_id": "NRS-484B-777-1",
+  "cell_id": "C229023",
+  "actor": "cycle_or_scooter_operator",
+  "selected_case_id": "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__standing_right_impeded",
+  "supported_case_ids": [
+    "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__moving_near_right",
+    "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__moving_left_offset",
+    "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__moving_right_impeded",
+    "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__moving_narrow_lane",
+    "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__moving_commensurate_speed",
+    "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__moving_left_preparation",
+    "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__standing_right_impeded",
+    "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__scooter_right_impeded"
+  ],
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "frame_count": 900,
+  "required_atoms": [],
+  "source_packets": [],
+  "source_gate": "reviewed_original_cycle_right_side_scene_required",
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 90,
+      "pose_strategy": "reviewed cycle/right-roadway boundary and passing participant"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "reviewed cycle/right-roadway boundary and passing participant"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "reviewed cycle/right-roadway boundary and passing participant"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 90,
+      "pose_strategy": "reviewed cycle/right-roadway boundary and passing participant"
+    }
+  ],
+  "case": {
+    "case_id": "testing__C229023__NRS-484B-777-1__cycle_or_scooter_operator__standing_right_impeded",
+    "kind": "delivery",
+    "target_law_id": "NRS-484B-777-1",
+    "case_kind": "physical_capture_probe",
+    "new_capture_selected": true,
+    "capture_frames": 900,
+    "fps": 20,
+    "gap_ids": [
+      "unverified-passing-coverage"
+    ],
+    "cycle_kind": "bicycle",
+    "requested_lateral_target_m": 1.75,
+    "right_impediment": "standing_vehicle",
+    "narrow_lane": false,
+    "traffic_speed_context": "not_commensurate",
+    "left_turn_preparation": false,
+    "target_motion": "standing",
+    "construction": "rightside.py:construct",
+    "measurement": "rightside.py:measure_original",
+    "physical_risk": "Native cycle and other-vehicle pass may miss behind/alongside/ahead phases or camera views; source-reviewed roadway/body geometry and right-side impediment must be confirmed at the original site.",
+    "candidate_risk": {
+      "status": "physical",
+      "reason": "Source-gated Native cycle pass may miss alongside phase or camera coverage."
+    },
+    "required_original_packets": [
+      "road_geometry",
+      "roadway_boundary",
+      "right_side_boundary",
+      "cycle_motion",
+      "other_vehicle_motion",
+      "body_geometry",
+      "right_impediment",
+      "lane_width",
+      "nearby_traffic",
+      "left_turn_preparation",
+      "four_camera_video"
+    ],
+    "construction_status": "source_gated_native_cpu_implementation",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "right_edge_distance",
+          "unit": "m",
+          "method": "cycle body right edge to reviewed roadway right boundary",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 original frames",
+          "reference_frame": "original Native roadway/world and frame map",
+          "uncertainty": "body geometry and legal judgments require original review"
+        },
+        {
+          "name": "relative_station",
+          "unit": "m",
+          "method": "cycle and target vehicle station across passing phase",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 original frames",
+          "reference_frame": "original Native roadway/world and frame map",
+          "uncertainty": "body geometry and legal judgments require original review"
+        },
+        {
+          "name": "surface_clearance",
+          "unit": "m",
+          "method": "original body surface clearance",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 original frames",
+          "reference_frame": "original Native roadway/world and frame map",
+          "uncertainty": "body geometry and legal judgments require original review"
+        },
+        {
+          "name": "cycle_speed",
+          "unit": "m/s",
+          "method": "original cycle speed and nearby traffic context",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 original frames",
+          "reference_frame": "original Native roadway/world and frame map",
+          "uncertainty": "body geometry and legal judgments require original review"
+        },
+        {
+          "name": "other_vehicle_speed",
+          "unit": "m/s",
+          "method": "original target vehicle speed",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 original frames",
+          "reference_frame": "original Native roadway/world and frame map",
+          "uncertainty": "body geometry and legal judgments require original review"
+        },
+        {
+          "name": "right_access_width",
+          "unit": "m",
+          "method": "original available right-side width",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 original frames",
+          "reference_frame": "original Native roadway/world and frame map",
+          "uncertainty": "body geometry and legal judgments require original review"
+        },
+        {
+          "name": "lane_width",
+          "unit": "m",
+          "method": "reviewed lane and cycle/vehicle body dimensions",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 original frames",
+          "reference_frame": "original Native roadway/world and frame map",
+          "uncertainty": "body geometry and legal judgments require original review"
+        },
+        {
+          "name": "left_turn_preparation",
+          "unit": "boolean",
+          "method": "source-sealed turn intent declaration and movement",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 original frames",
+          "reference_frame": "original Native roadway/world and frame map",
+          "uncertainty": "body geometry and legal judgments require original review"
+        },
+        {
+          "name": "camera_frame_identity",
+          "unit": "original frame ID",
+          "method": "four synchronized camera identities",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 original frames",
+          "reference_frame": "original Native roadway/world and frame map",
+          "uncertainty": "body geometry and legal judgments require original review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_roadway",
+          "unit": "source record",
+          "method": "source-hashed map, right boundary, lane/body dimensions and speed basis"
+        }
+      ],
+      "limitations": [
+        "No numeric legal due-care, practicability, safety or commensurate-speed cutoff.",
+        "Synthetic compatibility diagnostics do not establish original physical visibility."
+      ]
+    },
+    "disposition_indices": [
+      0,
+      3,
+      6
+    ]
+  }
+}

@@ -67,6 +67,12 @@ class ConstructionTest(unittest.TestCase):
                 self.assertEqual(names.count('attach_towed_vehicle'),
                                  int(case.towing) + int(case.combination_entrant))
                 self.assertIn('capture_original', names)
+                alternate = Adapter()
+                changed = execute_case(alternate, source, case,
+                                       {'group_anchor_station_m': 185.0,
+                                        'group_gap_controller_gain': 0.7})
+                self.assertAlmostEqual(changed['ego'], station['ego'] + 10.0)
+                self.assertEqual(next(call for call in alternate.calls if call[0]=='set_group_motion')[1][-1], 0.7)
 
     def test_missing_membership_and_route_sources_rejected(self):
         case = CASES[0]

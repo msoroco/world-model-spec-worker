@@ -22,6 +22,10 @@ VARIANTS = {
     "slow_center_no_follower": {"ego_path": "center", "follower": False, "pavement": "wide"},
     "slow_center_obstruction_near": {"ego_path": "center", "follower": True, "pavement": "wide", "obstruction": "near"},
 }
+for _index in range(3):
+    VARIANTS[f"impediment-{_index:04d}"] = {"ego_path": "center", "follower": True, "pavement": "wide"}
+    VARIANTS[f"paved_width-{_index:04d}"] = {"ego_path": "center", "follower": True, "pavement": "sweep"}
+    VARIANTS[f"right_position-{_index:04d}"] = {"ego_path": "right", "follower": True, "pavement": "wide"}
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
@@ -66,6 +70,10 @@ def plan(authority_root: Path, site_ref: dict, case_id: str) -> dict:
         "slow_center_obstruction_near": {"obstruction_station_m", "obstruction_left_edge_m",
                                           "obstruction_right_edge_m"},
     }
+    for index in range(3):
+        allowed_changes[f"impediment-{index:04d}"] = {"ego_speed_mps"}
+        allowed_changes[f"paved_width-{index:04d}"] = {"paved_right_edge_m", "highway_right_edge_m", "map_ref"}
+        allowed_changes[f"right_position-{index:04d}"] = {"ego_right_path_m"}
     for name, candidate in variants.items():
         if not isinstance(candidate, dict):
             raise ValueError("reviewed comparison variant malformed")

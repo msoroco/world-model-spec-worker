@@ -84,6 +84,7 @@ def measure_packet(packet: dict, source: dict) -> dict:
             "follower_along_route_body_gap_m": gap,
             "paved_right_edge_m": paved, "highway_right_edge_m": highway,
             "ego_body_right_edge_m": ego_right,
+            "ego_body_center_m": (ego_left + ego_right) / 2,
             "ego_to_paved_right_edge_m": paved - ego_right,
             "ego_to_highway_right_edge_m": highway - ego_right,
             "obstruction_lateral_edges_m": [obstacle_left, obstacle_right],

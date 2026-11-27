@@ -22,11 +22,20 @@ def finalize(attempt: Path, case_id: str) -> dict:
              ("original-motion.json", "original-relation.json", "original-frame-map.json")}
     for name, path in paths.items():
         if not path.is_file():
-            raise ValueError("Missing required original source: " + name)
+            raise ValueError("Missing required source: " + name)
     motion, motion_sha = _read(paths["original-motion.json"])
     relation, relation_sha = _read(paths["original-relation.json"])
     frame_map, frame_map_sha = _read(paths["original-frame-map.json"])
+    provenance = attempt / "fixture-provenance.json"
+    diagnostic = provenance.is_file()
+    if diagnostic:
+        fixture = json.loads(provenance.read_text(encoding="utf-8"))
+        if fixture.get("diagnostic_fixture") is not True or fixture.get("physical_acceptance_claimed") is not False:
+            raise ValueError("diagnostic fixture provenance invalid")
+    required_count = 9 if diagnostic else 900
     if (motion.get("assignment_id") != ASSIGNMENT or motion.get("case_id") != case_id or
+            motion.get("source_kind", "diagnostic_fixture" if diagnostic else "original_native") !=
+                ("diagnostic_fixture" if diagnostic else "original_native") or
             relation.get("case_id") != case_id or frame_map.get("case_id") != case_id or
             relation.get("source_kind") != "original_native_relation" or
             frame_map.get("source_kind") != "original_native_frame_map" or
@@ -35,8 +44,8 @@ def finalize(attempt: Path, case_id: str) -> dict:
     rows = motion.get("frames")
     relations = relation.get("samples")
     frames = frame_map.get("frames")
-    if (not all(isinstance(x, list) and len(x) == 900 for x in (rows, relations, frames))):
-        raise ValueError("original 900-frame source history required")
+    if (not all(isinstance(x, list) and len(x) == required_count for x in (rows, relations, frames))):
+        raise ValueError("original source frame history required")
     joined = []
     for index, (row, reading, frame) in enumerate(zip(rows, relations, frames)):
         if (row.get("frame") != index or reading.get("frame") != index or
@@ -59,5 +68,6 @@ def finalize(attempt: Path, case_id: str) -> dict:
          "relation_path": str(paths["original-relation.json"]), "relation_sha256": relation_sha,
          "frame_map_path": str(paths["original-frame-map.json"]), "frame_map_sha256": frame_map_sha})
     measured["format"] = "c323986-original-source-join-v1"
-    measured["original_frame_count"] = 900
+    measured["original_frame_count"] = required_count
+    measured["diagnostic_fixture"] = diagnostic
     return measured

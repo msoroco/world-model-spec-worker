@@ -197,6 +197,7 @@ class NativeAdapter:
             frame_map_sha = hashlib.sha256((self.output_dir / "original-frame-map.json").read_bytes()).hexdigest()
             save("original-motion.json", {"assignment_id": self.assignment_id,
                 "case_id": self.case_id, "original_trace_id": self.trace_id,
+                "source_kind": "original_native",
                 "original_frame_map_sha256": frame_map_sha,
                 "obstruction_readback": self.obstruction_readback,
                 "frames": self.motion_rows})
