@@ -30,12 +30,6 @@ for case in PLAN["cases"]:
     files = spec["files"]
     rows = [json.loads(row) for row in files["video_frames.jsonl"].splitlines()]
     trace = [json.loads(row) for row in files["trace.jsonl"].splitlines()]
-    for i, point in enumerate(trace):
-        point["position"]["x"] = X[i]
-        point["position"]["y"] = 0.0
-        point["position_m"][0:2] = [X[i], 0.0]
-        point["speed_mps"] = 0.0 if i == 2 and name != "sidewalk_roll" else 2.0
-    files["trace.jsonl"] = "\n".join(json.dumps(row, separators=(",", ":")) for row in trace) + "\n"
     provenance = json.loads(files["fixture-provenance.json"])
     provenance.update(diagnostic_fixture=True, physical_acceptance_claimed=False,
                       source_kind="synthetic_fixture", exact_case_id=case["case_id"])
@@ -79,7 +73,8 @@ for case in PLAN["cases"]:
                     "speed_mps": 3.0}
         activity.append({"frame": frame["carla_frame"], "time_s": frame["time_s"],
                          "ego": {"actor_id": "diagnostic-ego", "source": "synthetic fixture",
-                                 "xy_m": [X[i], 0], "speed_mps": trace[i]["speed_mps"]},
+                                 "xy_m": [X[i], 0],
+                                 "speed_mps": 0.0 if i == 2 and name != "sidewalk_roll" else 2.0},
                          "pedestrian": ped, "roadway_vehicle": road})
     originals = {
         "frame_map": {"frames": [{"video_frame": i, "frame": frame["carla_frame"],

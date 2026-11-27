@@ -62,7 +62,7 @@ def build_plan(site: dict, case_id: str, *, spawn_offset_m: float = 0.0) -> dict
     if not isinstance(sources, dict):
         raise ValueError("source-hashed site records missing")
     for key in ("private_way_ownership", "private_way_access", "highway_status",
-                "boundary_map", "connection_map"):
+                "boundary_map", "connection_map", "native_opendrive_map"):
         _source(sources.get(key), key)
     routes = site.get("routes", {})
     approaches = site.get("approaches", {})
@@ -95,6 +95,8 @@ def build_plan(site: dict, case_id: str, *, spawn_offset_m: float = 0.0) -> dict
         "connection_xy_m": _finite_point(site.get("connection_xy"), "connection"),
         "requested_control_policy": policy,
         "requested_spawn_offset_m": float(spawn_offset_m),
+        "approach_speed_requests_mps": {side: 2.0 if side == "left" else 1.2
+                                        for side in sides},
         "control_requests": {
             "approach_window_s": [8, 30],
             "ego_hold_window_s": [12, 25] if policy != "continue" else [],

@@ -29,9 +29,88 @@
   "topic_inventory": {
     "exact-text": "The following regulations pertain to the operation of vehicles within a roundabout: All vehicular travel shall be in a counterclockwise direction."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__counterclockwise",
+      "target_law_id": "LVMC-11-43-010-A",
+      "purpose": "Observe actual counterclockwise circulation on a source-reviewed roundabout roadway",
+      "gap_ids": [
+        "no_accepted_original_direction"
+      ],
+      "scenario_parameters": {
+        "direction_request": "counterclockwise",
+        "route_kind": "entry_ring_exit",
+        "island_center_source": "original Native map readback"
+      },
+      "construction_module": "direction.py",
+      "measurement_module": "direction.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A frozen catalog cell does not identify a source-reviewed roundabout with a drivable counterclockwise route and visible actor footprint. The opposing route may be unavailable or physically unsafe on the local map.",
+        "fallback_policy": "A bounded route-tracking throttle may be tuned after measured tracking failure; topology, direction and comparison conditions stay fixed."
+      }
+    },
+    {
+      "case_id": "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__clockwise",
+      "target_law_id": "LVMC-11-43-010-A",
+      "purpose": "Observe actual clockwise circulation on a source-reviewed roundabout roadway",
+      "gap_ids": [
+        "no_accepted_original_direction"
+      ],
+      "scenario_parameters": {
+        "direction_request": "clockwise",
+        "route_kind": "entry_ring_exit",
+        "island_center_source": "original Native map readback"
+      },
+      "construction_module": "direction.py",
+      "measurement_module": "direction.py",
+      "physical_risk_assessment": {
+        "status": "physical",
+        "risk": "A frozen catalog cell does not identify a source-reviewed roundabout with a drivable clockwise route and visible actor footprint. The opposing route may be unavailable or physically unsafe on the local map.",
+        "fallback_policy": "A bounded route-tracking throttle may be tuned after measured tracking failure; topology, direction and comparison conditions stay fixed."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "roundabout_circulation_direction",
+      "case_ids": [
+        "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__counterclockwise",
+        "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__clockwise"
+      ],
+      "fixed_conditions": [
+        "same source-hashed roundabout map, island, jurisdiction, entry lane and motor vehicle",
+        "same 20 Hz and 45 s Native capture, four cameras, body geometry and route controller",
+        "same mapped circular arc extent; direction is the sole requested movement difference"
+      ],
+      "deliberate_differences": [
+        "requested and independently measured counterclockwise versus clockwise travel around the central island"
+      ],
+      "status": "planned_unmeasured"
+    }
+  ],
+  "observations": [
+    {
+      "name": "original_roundabout_topology",
+      "mandatory": true,
+      "source": "source-hashed active OpenDRIVE map and Native map readback"
+    },
+    {
+      "name": "original_operator_identity",
+      "mandatory": true,
+      "source": "original actor blueprint, actor ID and vehicle role"
+    },
+    {
+      "name": "original_ring_trajectory",
+      "mandatory": true,
+      "source": "20 Hz original actor XY, lane and ring-section history"
+    },
+    {
+      "name": "original_four_camera_pixels",
+      "mandatory": true,
+      "source": "four synchronized original RGB callbacks"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver/assignment.json",
@@ -56,17 +135,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Frozen cell names no surveyed CARLA map, so a source-hashed live roundabout readback and both mapped routes remain required before Native launch.",
+    "Actual physical route completion, four-camera visibility, original site jurisdiction and later legal judgment remain unverified.",
+    "The 0.7 rad and per-frame alias checks in direction.py are engineering validity checks, not legal direction thresholds."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Read frozen evidence.json: zero accepted recordings. Reviewed exact law and witness; no existing direction trace can be reused.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no_accepted_original_direction",
+        "requirement": "Original roundabout geometry, actor identity, ring trajectory and observed travel direction for each controlled route",
+        "source": "LVMC 11.43.010(A); inputs/testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "The frozen accepted recording inventory is empty."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "selected_construction_in_progress",
   "witness_review": [
     {
       "source": "inputs/planning/law-split-demo-overlap-v2/reviews/LVMC-11-43-010-A.json",
@@ -82,5 +169,41 @@
       ],
       "reason": "Circulation around the traffic island can place the vehicle within an actual roundabout."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "Actual roundabout with central island and circulatory roadway in applicable jurisdiction",
+      "source": "LVMC 11.43.010(A)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__counterclockwise",
+        "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__clockwise"
+      ],
+      "evidence_or_gap": "Original source-bound map and 20 Hz actor trajectory needed; no accepted recording."
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Motor vehicle operated within ring; original actor and connected entry/ring/exit route",
+      "source": "LVMC 11.43.010(A)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__counterclockwise",
+        "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__clockwise"
+      ],
+      "evidence_or_gap": "Original source-bound map and 20 Hz actor trajectory needed; no accepted recording."
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Signed original circular travel direction around the surveyed island centre",
+      "source": "LVMC 11.43.010(A)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__counterclockwise",
+        "testing__C238432__LVMC-11-43-010-A__motor_vehicle_driver__clockwise"
+      ],
+      "evidence_or_gap": "Original source-bound map and 20 Hz actor trajectory needed; no accepted recording."
+    }
+  ],
+  "source_observation_mapping": {}
 }

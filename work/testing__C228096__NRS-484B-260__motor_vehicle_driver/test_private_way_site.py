@@ -4,6 +4,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 
@@ -16,6 +17,10 @@ construction_spec = importlib.util.spec_from_file_location(
     "private_way_construction", MODULE_PATH.with_name("private_way_construction.py"))
 construction = importlib.util.module_from_spec(construction_spec)
 construction_spec.loader.exec_module(construction)
+sys.path.insert(0, str(MODULE_PATH.parent))
+from private_way_motion import measure
+from native_acquisition import capture
+from native_operator import _station
 CASE = "testing__C228096__NRS-484B-260__motor_vehicle_driver__enter_right_wait"
 
 
@@ -46,13 +51,14 @@ class PrivateWaySiteTest(unittest.TestCase):
             "private_way_polygon": [[-10, -2], [-3, -2], [-3, 2], [-10, 2]],
             "highway_polygon": [[-2, -4], [10, -4], [10, 4], [-2, 4]],
             "connection_xy": [0, 0],
+            "highway_axis_xy": [1, 0],
             "routes": {
                 "enter": [[-8, 0], [0, 0], [5, 0]],
                 "cross": [[-8, 0], [0, 0], [12, 0]],
             },
             "approaches": {
-                "left": [[-1, -3], [-0.5, -1], [0, 0]],
-                "right": [[8, 2], [4, 1], [0, 0]],
+                "left": [[-1, -3], [0, 0], [2, 3]],
+                "right": [[8, 2], [0, 0], [-1, -2]],
             },
         }
         self.packet = self.root / "site.json"
@@ -126,6 +132,139 @@ class PrivateWaySiteTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "spawn offset"):
             construction.build_plan(self.site, self.site["case_id"],
                                     spawn_offset_m=8.0)
+
+    def test_highway_route_passes_connection(self):
+        for route in self.site["approaches"].values():
+            at_connection = _station(self.site["connection_xy"], route)
+            self.assertGreater(at_connection - _station(route[0], route), 0)
+            self.assertLess(at_connection - _station(route[-1], route), 0)
+
+    def _motion_fixture(self):
+        self.site["case_id"] = construction.ASSIGNMENT + "__enter_both_wait"
+        self.save()
+        (self.root / "site.json").write_text(self.packet.read_text())
+        rows = []
+        for index in range(9):
+            rows.append({
+                "case_id": self.site["case_id"], "frame": index,
+                "native_frame": 100 + index, "time_s": 5 + index / 20,
+                "ego_on_highway": index >= 5,
+                "ego_speed_mps": 0 if index < 5 else 3,
+                "highway_vehicles": [
+                    {"actor_id": "left-car", "side": "left",
+                     "distance_to_connection_m": 12 - index, "speed_mps": 4},
+                    {"actor_id": "right-car", "side": "right",
+                     "distance_to_connection_m": 14 - index, "speed_mps": 4},
+                ],
+            })
+        motion = self.root / "motion.jsonl"
+        motion.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+        seal = {"format": "worker-private-way-motion-seal",
+                "case_id": self.site["case_id"], "frame_count": 9,
+                "diagnostic_fixture": True,
+                "motion_sha256": hashlib.sha256(motion.read_bytes()).hexdigest(),
+                "site_sha256": hashlib.sha256((self.root / "site.json").read_bytes()).hexdigest()}
+        (self.root / "motion-seal.json").write_text(json.dumps(seal) + "\n")
+        return rows
+
+    def test_sealed_original_motion_and_missing_actor(self):
+        rows = self._motion_fixture()
+        observed = measure(self.root, self.site["case_id"])
+        self.assertEqual(observed["first_highway_frame"], 5)
+        self.assertEqual(set(observed["highway_actor_ids"]), {"left", "right"})
+        self.assertFalse(observed["physical_acceptance_claimed"])
+        rows[4]["highway_vehicles"].pop()
+        motion = self.root / "motion.jsonl"
+        motion.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+        seal_file = self.root / "motion-seal.json"
+        seal = json.loads(seal_file.read_text())
+        seal["motion_sha256"] = hashlib.sha256(motion.read_bytes()).hexdigest()
+        seal_file.write_text(json.dumps(seal) + "\n")
+        with self.assertRaisesRegex(ValueError, "actor missing"):
+            measure(self.root, self.site["case_id"])
+
+    def test_original_motion_hash_mismatch(self):
+        self._motion_fixture()
+        (self.root / "motion.jsonl").write_text("changed\n")
+        with self.assertRaisesRegex(ValueError, "source hash differs"):
+            measure(self.root, self.site["case_id"])
+
+    def test_diagnostic_native_acquisition_and_release(self):
+        self.site["case_id"] = construction.ASSIGNMENT + "__enter_both_wait"
+        self.save()
+
+        class FakeOperator:
+            native_attested = False
+            capture_cleanup_complete = False
+
+            def __init__(self, packet):
+                self.packet = packet
+                self.index = -1
+
+            def get_site_packet(self, case_id):
+                return self.packet
+
+            def get_opendrive_bytes(self):
+                return (self.packet.parent / "native_opendrive_map.txt").read_bytes()
+
+            def start(self, plan):
+                self.plan = plan
+
+            def read_actor_inventory(self):
+                return {"ego_vehicle_id": "ego", "highway_vehicles":
+                        {"left": "left-car", "right": "right-car"}}
+
+            def tick(self):
+                self.index += 1
+                return {"frame": 100 + self.index, "time_s": 5 + self.index / 20}
+
+            def read_motion(self, frame):
+                return {"native_frame": frame, "case_id": self.plan["case_id"],
+                        "source_kind": "original_native", "ego_vehicle_id": "ego",
+                        "ego_on_highway": self.index >= 5,
+                        "ego_speed_mps": 0 if self.index < 5 else 3,
+                        "highway_vehicles": [
+                            {"actor_id": "left-car", "side": "left",
+                             "distance_to_connection_m": 12 - self.index,
+                             "speed_mps": 4},
+                            {"actor_id": "right-car", "side": "right",
+                             "distance_to_connection_m": 14 - self.index,
+                             "speed_mps": 4},
+                        ]}
+
+            def read_cameras(self, frame):
+                return {name: {"frame": frame, "time_s": 5 + self.index / 20,
+                               "png": b"\x89PNG\r\n\x1a\nsynthetic"}
+                        for name in ("overview", "approach", "reference_corner",
+                                     "driver_reference")}
+
+            def brake(self):
+                self.braked = True
+
+            def cleanup(self):
+                self.cleaned = True
+
+            def encode_media(self, root, cameras, frames):
+                for name in (*cameras, "raw"):
+                    (root / (name + ".mkv")).write_bytes(b"synthetic fixture media")
+                return {name: str(root / (name + ".mkv"))
+                        for name in (*cameras, "raw")}
+
+        fake = FakeOperator(self.packet)
+        output = self.root / "attempt"
+        observed = capture(fake, self.site["case_id"], output,
+                           diagnostic_frames=9)
+        self.assertTrue(fake.braked and fake.cleaned and fake.capture_cleanup_complete)
+        self.assertEqual(observed["first_highway_frame"], 5)
+        self.assertEqual(observed["highway_actor_ids"],
+                         {"left": "left-car", "right": "right-car"})
+        self.assertEqual(len(list((output / "site-sources").iterdir())), 6)
+        self.assertEqual(site_module.load_site(output / "site.json",
+                                               self.site["case_id"])["case_id"],
+                         self.site["case_id"])
+        self.assertTrue((output / "inventory.json").is_file())
+        self.assertEqual(json.loads((output / "inventory.json").read_text())[
+            "source_kind"], "synthetic_fixture")
 
 
 if __name__ == "__main__":

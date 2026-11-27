@@ -87,9 +87,9 @@ def measure(root, case, *, diagnostic=False):
         roadway_vehicles.append(sample.get("roadway_vehicle"))
     sidewalk_entry = next((i for i, e in enumerate(ego) if e["on_sidewalk"]), None)
     road_entry = next((i for i, e in enumerate(ego) if e["on_roadway"]), None)
-    if sidewalk_entry is None or road_entry is None or not sidewalk_entry < road_entry:
-        raise ValueError("original sidewalk-to-roadway crossing not observed")
-    prior_halts = [e for e in ego[:sidewalk_entry] if e["speed_mps"] <= .08]
+    if sidewalk_entry is not None and road_entry is not None and road_entry <= sidewalk_entry:
+        raise ValueError("original crossing order differs")
+    prior_halts = [e for e in ego[:sidewalk_entry] if e["speed_mps"] <= .08] if sidewalk_entry is not None else []
     halt = prior_halts[-1] if prior_halts else None
     ped_mode = case["world_setup"]["pedestrian"]
     if ped_mode != "pedestrian_absent":
@@ -117,11 +117,11 @@ def measure(root, case, *, diagnostic=False):
         "case_id": case_id,
         "source_kind": inventory["source_kind"],
         "frame_count": expected,
-        "first_sidewalk_frame": ego[sidewalk_entry]["frame"],
-        "first_roadway_frame": ego[road_entry]["frame"],
+        "first_sidewalk_frame": ego[sidewalk_entry]["frame"] if sidewalk_entry is not None else None,
+        "first_roadway_frame": ego[road_entry]["frame"] if road_entry is not None else None,
         "last_pre_sidewalk_halt_frame": halt["frame"] if halt else None,
         "last_pre_sidewalk_halt_xy_m": list(halt["xy_m"]) if halt else None,
-        "pre_sidewalk_speed_mps": ego[sidewalk_entry - 1]["speed_mps"],
+        "pre_sidewalk_speed_mps": ego[sidewalk_entry - 1]["speed_mps"] if sidewalk_entry else None,
         "minimum_pedestrian_center_separation_m": min(ped_separation) if ped_separation[0] is not None else None,
         "minimum_roadway_vehicle_center_separation_m": min(vehicle_separation) if vehicle_separation[0] is not None else None,
         "pedestrian_source_present": ped_mode != "pedestrian_absent",

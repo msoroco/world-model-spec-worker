@@ -1,0 +1,64 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-410",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "highway_parking_context",
+      "range_or_domain": "source-reviewed public highway and permitted parking bay"
+    },
+    {
+      "kind": "world_setup",
+      "name": "approach_direction",
+      "range_or_domain": "rear or opposing source-reviewed approach route"
+    },
+    {
+      "kind": "world_setup",
+      "name": "approach_route_relation",
+      "range_or_domain": "intersecting or nonintersecting actual trajectories"
+    },
+    {
+      "kind": "controller",
+      "name": "departure_policy",
+      "range_or_domain": "wait until pass, start before pass, clear approach or nonconflicting route"
+    }
+  ],
+  "quote": "A person, except when stopping, standing or parking where no parking is permitted, shall not start a vehicle which is stopped, standing or parked on a highway nor enter upon a highway unless and until such movement can be made with safety.",
+  "structure": {
+    "activation": {
+      "condition": "A person controls an ordinary motor vehicle initially parked within a source-qualified highway.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "description": "Outside selected permitted-parking branch; applicable no-parking context requires independent source review.",
+        "source_clause": "except when stopping, standing or parking where no parking is permitted"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Selected branch is initially parked; verify highway boundaries, public dedication and original vehicle activity.",
+        "phrase": "stopped, standing or parked on a highway"
+      },
+      {
+        "note": "Retain location-specific parking rule and original date/time; selected cases require permitted parking.",
+        "phrase": "except when stopping, standing or parking where no parking is permitted"
+      },
+      {
+        "note": "Measure original trajectories, approach, gap and departure timing; safety has no invented numeric cutoff.",
+        "phrase": "unless and until such movement can be made with safety"
+      }
+    ],
+    "law_id": "NRS-484B-410",
+    "obligation": {
+      "description": "Do not start the parked vehicle into movement unless and until the movement can be made with safety.",
+      "numeric_conditions": [],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Original parked state, approaching vehicle and attempted departure are measured across one 45-second episode.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-410@motor_vehicle_driver"
+}

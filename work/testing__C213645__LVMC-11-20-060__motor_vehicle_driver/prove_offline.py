@@ -22,7 +22,7 @@ def sha(path):
 manifest = json.loads(MANIFEST.read_text())
 for entry in manifest["cases"]:
     name = entry["case_id"].split("__")[-1]
-    output = SCRATCH / ("offline-" + name + "-primary-v3")
+    output = SCRATCH / ("offline-" + name + "-primary-v4")
     command = [sys.executable, str(REPO / "runtime.py"), "offline",
                "--manifest", str(MANIFEST), "--case", entry["case_id"],
                "--output", str(output), "--python", sys.executable]

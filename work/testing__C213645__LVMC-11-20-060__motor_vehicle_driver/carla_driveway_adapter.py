@@ -261,8 +261,10 @@ class Session:
             raise RuntimeError("CARLA driveway cleanup failed: " + "; ".join(map(str, errors)))
 
 
-def open_session(case, packet_path, host, port):
+def open_session(case, packet_path, host, port, spawn_offset_m=0):
     packet, geometry = validate_packet(packet_path, case["case_id"])
+    if not 0 <= spawn_offset_m <= .75:
+        raise ValueError("fallback ego spawn offset outside surveyed envelope")
     # CARLA is imported only for the GPU command. CPU proofs use fake sessions.
     import carla
     client = carla.Client(host, int(port))
@@ -287,7 +289,10 @@ def open_session(case, packet_path, host, port):
                 continue
             spec = packet["actors"][kind]
             blueprint = library.find(spec["blueprint_id"])
-            transform = _transform(carla, spec["spawn_xyz_m"], spec["spawn_rpy_deg"])
+            spawn = list(spec["spawn_xyz_m"])
+            if kind == "ego":
+                spawn[2] += spawn_offset_m
+            transform = _transform(carla, spawn, spec["spawn_rpy_deg"])
             actor = world.try_spawn_actor(blueprint, transform)
             if actor is None:
                 raise ValueError("original actor spawn failed: " + kind)

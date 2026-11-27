@@ -1,5 +1,18 @@
 # Return report
 
+## 2026-11-27 13:34 UTC — C261489 published; private-way Native diagnostic tested
+
+- C261489 NRS-484B-363-4 passed the owner and independent lead scoped strict delivery gates. Its 12 cases and nine comparisons were syntax checked and published to the shared queue. The live queue is 229 ready assignments, 1,588 exact cases and 1,106 comparisons; 13 assignment results remain partial.
+- C228096 NRS-484B-260 remains partial. Its selected nine cases and six comparisons now have a source-hashed private-way/highway packet, all nine construction targets, a sealed original-motion reader and a Native acquisition path. Eleven focused synthetic tests pass, including missing-source, map/approach and actor-inventory negatives, and a nine-frame acquisition/cleanup fixture. Full 900-frame capture, valid videos, runtime compatibility, saved processing, semantic and independent audit proofs remain CPU work.
+- A generated C228096 `__pycache__` directory was removed immediately; subsequent tests set `PYTHONDONTWRITEBYTECODE=1`. No Git command was run.
+
+## 2026-11-27 13:28 UTC — C157964 published; C228096 construction started
+
+- C157964 NRS-484B-257-2 officer-control branch passed the owner and independent lead scoped strict delivery gates. Its six exact cases and five comparison commands were syntax checked and integrated into the shared queue. Original physical and legal outcomes remain unclaimed.
+- The live queue has 228 ready assignments, 1,576 exact cases and 1,097 comparison commands. The remaining 14 assignment results are partial. The full strict gate remains pending until every result is ready.
+- Lead-owned C228096 NRS-484B-260 now has nine selected exact cases, six controlled comparisons, a source-hashed private-way/highway site checker, all nine engineering target plans and eight focused CPU tests. Its result remains partial: Native acquisition, source-bound finalizer/compatibility, saved processing, semantic proposals and independent delivery/comparison receipts are still CPU work.
+- C261489 and C213645 remain with their owners for proof completion; C238432 now has a dedicated owner. No frozen inputs, runtime or batch files were changed and no Git command was run by the worker.
+
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
 ## 2026-11-27 13:20 UTC: C378707 business-alley package and C378132 bus A2 published

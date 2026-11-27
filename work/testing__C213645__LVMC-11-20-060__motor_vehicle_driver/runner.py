@@ -57,13 +57,16 @@ def main():
     from carla_driveway_adapter import open_session
     from native_acquisition import capture
     from pipeline_capture import PipelineCapture
-    session = open_session(case, Path(packet), args.host, args.port)
+    config = json.loads((root / "config.json").read_text())
+    session = open_session(case, Path(packet), args.host, args.port,
+                           spawn_offset_m=config.get("fallback_spawn_offset_m", 0))
     try:
         session.pipeline_capture = PipelineCapture(session.client, session.actors["ego"],
                                                    args.output_dir, case["case_id"])
         capture(session, case, args.output_dir / "original-attempt",
                 after_tick=session.pipeline_capture.capture)
         session.capture_complete = True
+        session.cleanup()
         from finalize_native import finalize
         finalize(args.output_dir, case_id=case["case_id"], restored=session.restored)
     finally:

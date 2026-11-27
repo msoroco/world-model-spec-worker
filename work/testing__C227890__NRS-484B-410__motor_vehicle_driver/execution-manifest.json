@@ -1,0 +1,529 @@
+{
+  "assignment_id": "testing__C227890__NRS-484B-410__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "approach_vehicle": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_vehicle.jsonl",
+          "method": "original other vehicle class, actor identity, trajectory, route and purpose"
+        },
+        "departure_safety": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/departure_safety.jsonl",
+          "method": "original same-tick ego and other body trajectories, crossing geometry, measured gaps and timing; legal judgment independent"
+        },
+        "driver_control": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/driver_control.jsonl",
+          "method": "original ego actor identity, control commands and readback"
+        },
+        "four_original_cameras": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_cameras.jsonl",
+          "method": "four synchronized original Native camera streams with source hashes and full frame map"
+        },
+        "highway_public_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/highway_public_status.jsonl",
+          "method": "source-hashed public dedication and public vehicular use plus original Native map identifiers"
+        },
+        "parked_not_exchange": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parked_not_exchange.jsonl",
+          "method": "original ego motion/gear/brake, driver occupancy, door/passenger/goods activity history"
+        },
+        "parking_permission": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parking_permission.jsonl",
+          "method": "source-hashed location/time parking rule, original signage and curb context"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Vehicle spawn and passing timing may not physically realize a safe or conflicting departure while preserving the same legal parking location and camera coverage.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "move the initial parked pose and entry/exit target to the source-reviewed alternate location within the same permitted bay"
+          ],
+          "construction": "cases/rear_wait/fallback1/construction.json",
+          "construction_sha256": "4f85f83ea6a6e4ad103809ee5614e7fa87e651bedb3386ad710c54b46274100e",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__rear_wait --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-rear_wait-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback1",
+            "construction_sha256": "4f85f83ea6a6e4ad103809ee5614e7fa87e651bedb3386ad710c54b46274100e",
+            "exit_code": 0,
+            "log": "cpu-offline-rear_wait-fallback1.log",
+            "log_sha256": "b407f9f94f7847cf781406dddc42304aec26ae34738d8969e45923b2ed0c46bc"
+          },
+          "trigger": {
+            "failure_condition": "primary parked pose cannot realize departure or complete source-visible views",
+            "metric": "parked and departing footprints, approach route and complete camera coverage",
+            "source": "original Native body, curb and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C227890__NRS-484B-410__motor_vehicle_driver__rear_wait",
+      "construction": "cases/rear_wait/construction.json",
+      "construction_sha256": "50b679dcc5b105763e7b5de258bf7e5250821bf03d28b55bdd2798e0769380f1",
+      "fixture_recipe": "work/testing__C227890__NRS-484B-410__motor_vehicle_driver/diagnostic-rear_wait-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-rear_wait.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original highway parking, driver and other-vehicle motion"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__rear_wait --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-rear_wait --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "50b679dcc5b105763e7b5de258bf7e5250821bf03d28b55bdd2798e0769380f1",
+        "exit_code": 0,
+        "log": "cpu-offline-rear_wait.log",
+        "log_sha256": "61d9da223761a13107e426c8b41dfdaafe578af15b58153b340d1b18ee7ad837"
+      }
+    },
+    {
+      "acquisition": {
+        "approach_vehicle": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_vehicle.jsonl",
+          "method": "original other vehicle class, actor identity, trajectory, route and purpose"
+        },
+        "departure_safety": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/departure_safety.jsonl",
+          "method": "original same-tick ego and other body trajectories, crossing geometry, measured gaps and timing; legal judgment independent"
+        },
+        "driver_control": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/driver_control.jsonl",
+          "method": "original ego actor identity, control commands and readback"
+        },
+        "four_original_cameras": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_cameras.jsonl",
+          "method": "four synchronized original Native camera streams with source hashes and full frame map"
+        },
+        "highway_public_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/highway_public_status.jsonl",
+          "method": "source-hashed public dedication and public vehicular use plus original Native map identifiers"
+        },
+        "parked_not_exchange": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parked_not_exchange.jsonl",
+          "method": "original ego motion/gear/brake, driver occupancy, door/passenger/goods activity history"
+        },
+        "parking_permission": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parking_permission.jsonl",
+          "method": "source-hashed location/time parking rule, original signage and curb context"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Vehicle spawn and passing timing may not physically realize a safe or conflicting departure while preserving the same legal parking location and camera coverage.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "move the initial parked pose and entry/exit target to the source-reviewed alternate location within the same permitted bay"
+          ],
+          "construction": "cases/rear_intrude/fallback1/construction.json",
+          "construction_sha256": "bdcf55dc93a39b7d57b698d6b4d22c045fb6e14312a193ab4f288fa221c6a034",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__rear_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-rear_intrude-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback1",
+            "construction_sha256": "bdcf55dc93a39b7d57b698d6b4d22c045fb6e14312a193ab4f288fa221c6a034",
+            "exit_code": 0,
+            "log": "cpu-offline-rear_intrude-fallback1.log",
+            "log_sha256": "cbc41bf1779d128e1365478456bb178adc9ba5a25c879b48e1b14318c179af1d"
+          },
+          "trigger": {
+            "failure_condition": "primary parked pose cannot realize departure or complete source-visible views",
+            "metric": "parked and departing footprints, approach route and complete camera coverage",
+            "source": "original Native body, curb and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C227890__NRS-484B-410__motor_vehicle_driver__rear_intrude",
+      "construction": "cases/rear_intrude/construction.json",
+      "construction_sha256": "5829ee7f03dfcb3900591c20d10515aa6d36744ce126c9fca84529feabec7a31",
+      "fixture_recipe": "work/testing__C227890__NRS-484B-410__motor_vehicle_driver/diagnostic-rear_intrude-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-rear_intrude.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original highway parking, driver and other-vehicle motion"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__rear_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-rear_intrude --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "5829ee7f03dfcb3900591c20d10515aa6d36744ce126c9fca84529feabec7a31",
+        "exit_code": 0,
+        "log": "cpu-offline-rear_intrude.log",
+        "log_sha256": "5ef6affa0ddb3d4fed9fd6269a6a049d403f8a04c4d0b60ef4f7085b3bbf2ccf"
+      }
+    },
+    {
+      "acquisition": {
+        "approach_vehicle": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_vehicle.jsonl",
+          "method": "original other vehicle class, actor identity, trajectory, route and purpose"
+        },
+        "departure_safety": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/departure_safety.jsonl",
+          "method": "original same-tick ego and other body trajectories, crossing geometry, measured gaps and timing; legal judgment independent"
+        },
+        "driver_control": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/driver_control.jsonl",
+          "method": "original ego actor identity, control commands and readback"
+        },
+        "four_original_cameras": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_cameras.jsonl",
+          "method": "four synchronized original Native camera streams with source hashes and full frame map"
+        },
+        "highway_public_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/highway_public_status.jsonl",
+          "method": "source-hashed public dedication and public vehicular use plus original Native map identifiers"
+        },
+        "parked_not_exchange": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parked_not_exchange.jsonl",
+          "method": "original ego motion/gear/brake, driver occupancy, door/passenger/goods activity history"
+        },
+        "parking_permission": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parking_permission.jsonl",
+          "method": "source-hashed location/time parking rule, original signage and curb context"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Vehicle spawn and passing timing may not physically realize a safe or conflicting departure while preserving the same legal parking location and camera coverage.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "move the initial parked pose and entry/exit target to the source-reviewed alternate location within the same permitted bay"
+          ],
+          "construction": "cases/rear_clear/fallback1/construction.json",
+          "construction_sha256": "48a032d40c57252d134f2f6bd9adf6dc2bc1a020709003026a790139be9ce665",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__rear_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-rear_clear-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback1",
+            "construction_sha256": "48a032d40c57252d134f2f6bd9adf6dc2bc1a020709003026a790139be9ce665",
+            "exit_code": 0,
+            "log": "cpu-offline-rear_clear-fallback1.log",
+            "log_sha256": "2eff5f70338df33739ba5fe91071094f3358e68033afab996dd8ea482a8317f9"
+          },
+          "trigger": {
+            "failure_condition": "primary parked pose cannot realize departure or complete source-visible views",
+            "metric": "parked and departing footprints, approach route and complete camera coverage",
+            "source": "original Native body, curb and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C227890__NRS-484B-410__motor_vehicle_driver__rear_clear",
+      "construction": "cases/rear_clear/construction.json",
+      "construction_sha256": "c7e13b6e435b7550cdafa254fed07fda92d7b3b64c62bb0931e47f2f7d850fa3",
+      "fixture_recipe": "work/testing__C227890__NRS-484B-410__motor_vehicle_driver/diagnostic-rear_clear-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-rear_clear.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original highway parking, driver and other-vehicle motion"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__rear_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-rear_clear --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "c7e13b6e435b7550cdafa254fed07fda92d7b3b64c62bb0931e47f2f7d850fa3",
+        "exit_code": 0,
+        "log": "cpu-offline-rear_clear.log",
+        "log_sha256": "52a60f84127e914132a3fec09ac19ce861f54ee64da8ce3b5622388b48a693bb"
+      }
+    },
+    {
+      "acquisition": {
+        "approach_vehicle": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_vehicle.jsonl",
+          "method": "original other vehicle class, actor identity, trajectory, route and purpose"
+        },
+        "departure_safety": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/departure_safety.jsonl",
+          "method": "original same-tick ego and other body trajectories, crossing geometry, measured gaps and timing; legal judgment independent"
+        },
+        "driver_control": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/driver_control.jsonl",
+          "method": "original ego actor identity, control commands and readback"
+        },
+        "four_original_cameras": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_cameras.jsonl",
+          "method": "four synchronized original Native camera streams with source hashes and full frame map"
+        },
+        "highway_public_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/highway_public_status.jsonl",
+          "method": "source-hashed public dedication and public vehicular use plus original Native map identifiers"
+        },
+        "parked_not_exchange": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parked_not_exchange.jsonl",
+          "method": "original ego motion/gear/brake, driver occupancy, door/passenger/goods activity history"
+        },
+        "parking_permission": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parking_permission.jsonl",
+          "method": "source-hashed location/time parking rule, original signage and curb context"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Vehicle spawn and passing timing may not physically realize a safe or conflicting departure while preserving the same legal parking location and camera coverage.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "move the initial parked pose and entry/exit target to the source-reviewed alternate location within the same permitted bay"
+          ],
+          "construction": "cases/opposing_wait/fallback1/construction.json",
+          "construction_sha256": "e79ff91b1a4611a33a99d51c7540761c5314b13ed8ba64196a9dfaf148d5362c",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__opposing_wait --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-opposing_wait-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback1",
+            "construction_sha256": "e79ff91b1a4611a33a99d51c7540761c5314b13ed8ba64196a9dfaf148d5362c",
+            "exit_code": 0,
+            "log": "cpu-offline-opposing_wait-fallback1.log",
+            "log_sha256": "5c451c81cb0e8bfa8360d38564d4ccd0358676c5de603cfa69f4a9a67dbd6b36"
+          },
+          "trigger": {
+            "failure_condition": "primary parked pose cannot realize departure or complete source-visible views",
+            "metric": "parked and departing footprints, approach route and complete camera coverage",
+            "source": "original Native body, curb and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C227890__NRS-484B-410__motor_vehicle_driver__opposing_wait",
+      "construction": "cases/opposing_wait/construction.json",
+      "construction_sha256": "25ed54bf63b9c4fb4b42cdcad21920fa703aa9f4d32f64a171e87dffccb259db",
+      "fixture_recipe": "work/testing__C227890__NRS-484B-410__motor_vehicle_driver/diagnostic-opposing_wait-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-opposing_wait.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original highway parking, driver and other-vehicle motion"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__opposing_wait --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-opposing_wait --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "25ed54bf63b9c4fb4b42cdcad21920fa703aa9f4d32f64a171e87dffccb259db",
+        "exit_code": 0,
+        "log": "cpu-offline-opposing_wait.log",
+        "log_sha256": "aecb8bd6c6e90b421287f5719f622de3ffe8ca4acc18208a7e735cd8398b281f"
+      }
+    },
+    {
+      "acquisition": {
+        "approach_vehicle": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_vehicle.jsonl",
+          "method": "original other vehicle class, actor identity, trajectory, route and purpose"
+        },
+        "departure_safety": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/departure_safety.jsonl",
+          "method": "original same-tick ego and other body trajectories, crossing geometry, measured gaps and timing; legal judgment independent"
+        },
+        "driver_control": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/driver_control.jsonl",
+          "method": "original ego actor identity, control commands and readback"
+        },
+        "four_original_cameras": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_cameras.jsonl",
+          "method": "four synchronized original Native camera streams with source hashes and full frame map"
+        },
+        "highway_public_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/highway_public_status.jsonl",
+          "method": "source-hashed public dedication and public vehicular use plus original Native map identifiers"
+        },
+        "parked_not_exchange": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parked_not_exchange.jsonl",
+          "method": "original ego motion/gear/brake, driver occupancy, door/passenger/goods activity history"
+        },
+        "parking_permission": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parking_permission.jsonl",
+          "method": "source-hashed location/time parking rule, original signage and curb context"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Vehicle spawn and passing timing may not physically realize a safe or conflicting departure while preserving the same legal parking location and camera coverage.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "move the initial parked pose and entry/exit target to the source-reviewed alternate location within the same permitted bay"
+          ],
+          "construction": "cases/opposing_intrude/fallback1/construction.json",
+          "construction_sha256": "495858671dde74050eafbb8135e243c3a47c4ea40bc3b74e6661fc07a96247b5",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__opposing_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-opposing_intrude-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback1",
+            "construction_sha256": "495858671dde74050eafbb8135e243c3a47c4ea40bc3b74e6661fc07a96247b5",
+            "exit_code": 0,
+            "log": "cpu-offline-opposing_intrude-fallback1.log",
+            "log_sha256": "c90ec42e35de373ddf175e0cc6af2ad39820ff7f38114ff0561fa4584c6d432e"
+          },
+          "trigger": {
+            "failure_condition": "primary parked pose cannot realize departure or complete source-visible views",
+            "metric": "parked and departing footprints, approach route and complete camera coverage",
+            "source": "original Native body, curb and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C227890__NRS-484B-410__motor_vehicle_driver__opposing_intrude",
+      "construction": "cases/opposing_intrude/construction.json",
+      "construction_sha256": "173e06b2100b5ed132bb09bbc103acbec7d98223d36ab30a971b98b0c1cb9ad5",
+      "fixture_recipe": "work/testing__C227890__NRS-484B-410__motor_vehicle_driver/diagnostic-opposing_intrude-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-opposing_intrude.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original highway parking, driver and other-vehicle motion"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__opposing_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-opposing_intrude --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "173e06b2100b5ed132bb09bbc103acbec7d98223d36ab30a971b98b0c1cb9ad5",
+        "exit_code": 0,
+        "log": "cpu-offline-opposing_intrude.log",
+        "log_sha256": "b432f25a4b238e3eabde3e7a7118e81cbca112cdedcbf472e7017de67d10664f"
+      }
+    },
+    {
+      "acquisition": {
+        "approach_vehicle": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/approach_vehicle.jsonl",
+          "method": "original other vehicle class, actor identity, trajectory, route and purpose"
+        },
+        "departure_safety": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/departure_safety.jsonl",
+          "method": "original same-tick ego and other body trajectories, crossing geometry, measured gaps and timing; legal judgment independent"
+        },
+        "driver_control": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/driver_control.jsonl",
+          "method": "original ego actor identity, control commands and readback"
+        },
+        "four_original_cameras": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_cameras.jsonl",
+          "method": "four synchronized original Native camera streams with source hashes and full frame map"
+        },
+        "highway_public_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/highway_public_status.jsonl",
+          "method": "source-hashed public dedication and public vehicular use plus original Native map identifiers"
+        },
+        "parked_not_exchange": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parked_not_exchange.jsonl",
+          "method": "original ego motion/gear/brake, driver occupancy, door/passenger/goods activity history"
+        },
+        "parking_permission": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/parking_permission.jsonl",
+          "method": "source-hashed location/time parking rule, original signage and curb context"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Vehicle spawn and passing timing may not physically realize a safe or conflicting departure while preserving the same legal parking location and camera coverage.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "move the initial parked pose and entry/exit target to the source-reviewed alternate location within the same permitted bay"
+          ],
+          "construction": "cases/opposing_nonconflict/fallback1/construction.json",
+          "construction_sha256": "656a7bf720ce344b98953bee54e8aca1f14f285116ab99b435b783d992d8be67",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__opposing_nonconflict --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-opposing_nonconflict-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 --candidate fallback1",
+            "construction_sha256": "656a7bf720ce344b98953bee54e8aca1f14f285116ab99b435b783d992d8be67",
+            "exit_code": 0,
+            "log": "cpu-offline-opposing_nonconflict-fallback1.log",
+            "log_sha256": "a63fad7795613d4f5b00f066d5cc5e165cca46a0ac795c86be609f30e374b245"
+          },
+          "trigger": {
+            "failure_condition": "primary parked pose cannot realize departure or complete source-visible views",
+            "metric": "parked and departing footprints, approach route and complete camera coverage",
+            "source": "original Native body, curb and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C227890__NRS-484B-410__motor_vehicle_driver__opposing_nonconflict",
+      "construction": "cases/opposing_nonconflict/construction.json",
+      "construction_sha256": "66ae9510c5c2b2ad81867d961867b265a28e195c120f453bcd03f822d80fd23f",
+      "fixture_recipe": "work/testing__C227890__NRS-484B-410__motor_vehicle_driver/diagnostic-opposing_nonconflict-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-opposing_nonconflict.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original highway parking, driver and other-vehicle motion"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C227890__NRS-484B-410__motor_vehicle_driver/execution-manifest.json --case testing__C227890__NRS-484B-410__motor_vehicle_driver__opposing_nonconflict --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c227890-offline-suite-v1/offline-opposing_nonconflict --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "66ae9510c5c2b2ad81867d961867b265a28e195c120f453bcd03f822d80fd23f",
+        "exit_code": 0,
+        "log": "cpu-offline-opposing_nonconflict.log",
+        "log_sha256": "74d1dea5f127a3640d54cab3c62cfe828f8c97f897252f1f18cdf54659525a5b"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
+}

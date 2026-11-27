@@ -1,0 +1,55 @@
+"""Build draft exact parked-departure execution manifest."""
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+PLAN = json.loads((ROOT / "case-plan.json").read_text())
+ASSIGNMENT = PLAN["assignment_id"]
+
+
+def _sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def build():
+    entries = []
+    for row in PLAN["cases"]:
+        variant = row["variant"]
+        primary = ROOT / "cases" / variant / "construction.json"
+        fallback = ROOT / "cases" / variant / "fallback1" / "construction.json"
+        description = json.loads(primary.read_text())["recording_description"]
+        entries.append({
+            "case_id": row["case_id"], "kind": "delivery",
+            "construction": str(primary.relative_to(ROOT)),
+            "construction_sha256": _sha(primary),
+            "candidate_risk": row["candidate_risk"],
+            "candidates": [{
+                "id": "fallback1", "construction": str(fallback.relative_to(ROOT)),
+                "construction_sha256": _sha(fallback),
+                "changed_knobs": ["move the initial parked pose and entry/exit target to the source-reviewed alternate location within the same permitted bay"],
+                "trigger": {"source": "original Native body, curb and four-camera history",
+                            "metric": "parked and departing footprints, approach route and complete camera coverage",
+                            "failure_condition": "primary parked pose cannot realize departure or complete source-visible views"},
+            }],
+            "measurement_contract": "measurement-" + variant + ".json",
+            "fixture_recipe": "work/" + ASSIGNMENT + "/diagnostic-" + variant + "-recipe.json",
+            "measurement_procedure": {"entrypoint": "analysis.py",
+                                      "method": "source-sealed original highway parking, driver and other-vehicle motion"},
+            "native_handoff": {"python_env_var": "CARLA_PYTHON", "host_env_var": "CARLA_HOST",
+                               "port_env_var": "CARLA_PORT"},
+            "acquisition": {channel["name"]: {"entrypoint": "analysis.py",
+                                              "method": channel["method"],
+                                              "evidence": "channels/" + channel["name"] + ".jsonl"}
+                            for channel in description["channels"]},
+        })
+    runtime_source = Path(__file__).resolve().parents[2] / "runtime/SOURCE-MANIFEST.json"
+    manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
+                "runtime_manifest_sha256": _sha(runtime_source), "cases": entries}
+    (ROOT / "execution-manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
+
+
+if __name__ == "__main__":
+    build()

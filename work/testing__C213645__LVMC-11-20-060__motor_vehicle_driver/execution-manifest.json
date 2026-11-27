@@ -7,12 +7,39 @@
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop",
       "kind": "delivery",
       "construction": "cases/sidewalk_stop/construction.json",
-      "construction_sha256": "ea246ead0315d5477308479cf70bad3fbd037e192d67aa3f696dc349758b8ea7",
+      "construction_sha256": "4837e19cd9bf9ab9f486e73f82fb70b705bd39dcf8235b51a1e76cefbccfb674",
       "candidate_risk": {
         "status": "physical",
         "reason": "The surveyed driveway-to-sidewalk-to-roadway path and participant clearance may be disrupted by a local CARLA map or collision placement; retain a same-law/camera/duration fallback with a measurable clearance trigger."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/sidewalk_stop/fallback1-construction.json",
+          "construction_sha256": "b20fac9a6ccb27c4d1b1d76c1f2b36a3b1c7660d4a139f2d3893cef39d7055c1",
+          "trigger": {
+            "source": "reviewed original spawn probe and CARLA spawn result",
+            "metric": "ego spawn collision clearance in meters",
+            "failure_condition": "primary spawn rejected or measured clearance below 0.5 m"
+          },
+          "changed_knobs": [
+            "ego spawn height offset raised from 0 to 0.5 m within reviewed driveway envelope"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-sidewalk_stop-fallback1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cpu-offline-sidewalk_stop-fallback1.log",
+            "log_sha256": "f094d1a2834c5ff3754cc2839b217debb3d83c0616b7461aa289eb1ff3cd03fc",
+            "construction_sha256": "b20fac9a6ccb27c4d1b1d76c1f2b36a3b1c7660d4a139f2d3893cef39d7055c1"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-sidewalk_stop-fallback1.json",
+            "sha256": "9fa4c91652ec864c6c9005776efecd1d66a2d3fcc3b4f7e9528f9c8085662d6d",
+            "log": "cpu-compat-sidewalk_stop-fallback1.log",
+            "negative_log": "cpu-compat-sidewalk_stop-fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-sidewalk_stop.json",
       "fixture_recipe": "work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/diagnostic-sidewalk_stop-recipe.json",
       "measurement_procedure": {
@@ -23,24 +50,122 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "acquisition": {
+        "driver_and_district_context": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "driveway_sidewalk_roadway_geometry": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "ego_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "pedestrian_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "approaching_vehicle_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "frame_map_and_cameras": {
+          "entrypoint": "native_acquisition.py",
+          "method": "capture",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        }
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-sidewalk_stop-primary-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-sidewalk_stop-primary-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
         "log": "cpu-offline-sidewalk_stop-primary.log",
-        "log_sha256": "0d500b3d7c293cfe68633083e9966218c7631e75418bb0fa67d88209e70278f6",
-        "construction_sha256": "ea246ead0315d5477308479cf70bad3fbd037e192d67aa3f696dc349758b8ea7"
+        "log_sha256": "e69f77536e0978861626a32db050044c60a82420533c069caa72ad570d20dcb2",
+        "construction_sha256": "4837e19cd9bf9ab9f486e73f82fb70b705bd39dcf8235b51a1e76cefbccfb674"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-sidewalk_stop-primary.json",
+        "sha256": "c6e58d8b41198c9be9735ce9f8de09ea2599b29179fd8885fc9d293a570d1ce4",
+        "log": "cpu-compat-sidewalk_stop-primary.log",
+        "negative_log": "cpu-compat-sidewalk_stop-primary-negative.log"
+      },
+      "negative": {
+        "log": "cpu-compat-sidewalk_stop-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-sidewalk_stop-receipt.json",
+        "sha256": "97ef9cc57b218e75f8d61b228477b583136d079291c04b1bfe6272a51258149b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "1ed132f344be08c9508ba653dbeb27a9775a8c38cca6908cd8abc4ee9137f87d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-sidewalk_stop-positive.log",
+        "test_log_sha256": "c8bf25564df7f50df2521a55c667304f969a49a163674bec5daa2d03200a5e36",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source absent or changed: overview",
+        "negative_log": "cpu-delivery-sidewalk_stop-negative.log",
+        "negative_log_sha256": "2d3136ba9d898bce2fe123639e54d5e475b0e395b7d7f9baedc1844e58604333",
+        "scope": "synthetic CPU source-audit proof; original pixel and physical acceptance are local gates"
       }
     },
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_roll",
       "kind": "delivery",
       "construction": "cases/sidewalk_roll/construction.json",
-      "construction_sha256": "1357edcaf6dec109f3e234d27b2125e7dfbce409ff39e1aa856e9ace2ea15167",
+      "construction_sha256": "49c73fc2bac6e2faa3f42a1498a383a431bee80f91e7f7e540fe723c200b9bff",
       "candidate_risk": {
         "status": "physical",
         "reason": "The surveyed driveway-to-sidewalk-to-roadway path and participant clearance may be disrupted by a local CARLA map or collision placement; retain a same-law/camera/duration fallback with a measurable clearance trigger."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/sidewalk_roll/fallback1-construction.json",
+          "construction_sha256": "4ed53f1ee56162b54029667af93ccdf3babfb5995eb3428943c992cc32c04959",
+          "trigger": {
+            "source": "reviewed original spawn probe and CARLA spawn result",
+            "metric": "ego spawn collision clearance in meters",
+            "failure_condition": "primary spawn rejected or measured clearance below 0.5 m"
+          },
+          "changed_knobs": [
+            "ego spawn height offset raised from 0 to 0.5 m within reviewed driveway envelope"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_roll --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-sidewalk_roll-fallback1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cpu-offline-sidewalk_roll-fallback1.log",
+            "log_sha256": "8d94cac0c317a83dd6e2775a5176eef093a10820b86d350d74db62a76206a060",
+            "construction_sha256": "4ed53f1ee56162b54029667af93ccdf3babfb5995eb3428943c992cc32c04959"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-sidewalk_roll-fallback1.json",
+            "sha256": "92c3d94d4e154d2b6aba67fc00013c8a688c6aee0a0f305cac7c68c9a6ca4f6b",
+            "log": "cpu-compat-sidewalk_roll-fallback1.log",
+            "negative_log": "cpu-compat-sidewalk_roll-fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-sidewalk_roll.json",
       "fixture_recipe": "work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/diagnostic-sidewalk_roll-recipe.json",
       "measurement_procedure": {
@@ -51,24 +176,122 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "acquisition": {
+        "driver_and_district_context": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "driveway_sidewalk_roadway_geometry": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "ego_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "pedestrian_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "approaching_vehicle_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "frame_map_and_cameras": {
+          "entrypoint": "native_acquisition.py",
+          "method": "capture",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        }
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_roll --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-sidewalk_roll-primary-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_roll --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-sidewalk_roll-primary-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
         "log": "cpu-offline-sidewalk_roll-primary.log",
-        "log_sha256": "cbc4898c539f8a411d9d0ddcd63b12fecd6280d54a2aef8f08131947fa59eaee",
-        "construction_sha256": "1357edcaf6dec109f3e234d27b2125e7dfbce409ff39e1aa856e9ace2ea15167"
+        "log_sha256": "6040dd8e35a1fbe4e5a7c396255a03aff3547967fd103449a3d368a060f552f9",
+        "construction_sha256": "49c73fc2bac6e2faa3f42a1498a383a431bee80f91e7f7e540fe723c200b9bff"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-sidewalk_roll-primary.json",
+        "sha256": "1dfad4a9f7b572f4d0af25e570f45c0a24e70b052774db7c21fabf2e9b81f6fe",
+        "log": "cpu-compat-sidewalk_roll-primary.log",
+        "negative_log": "cpu-compat-sidewalk_roll-primary-negative.log"
+      },
+      "negative": {
+        "log": "cpu-compat-sidewalk_roll-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-sidewalk_roll-receipt.json",
+        "sha256": "f094941b2219d6208b92f0a5216cfcb94328f36146ebffcb91ce7dba470bf860"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_roll",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "1ed132f344be08c9508ba653dbeb27a9775a8c38cca6908cd8abc4ee9137f87d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_roll",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-sidewalk_roll-positive.log",
+        "test_log_sha256": "df6c97f483ba7af5cd5e63bfa83400613cb492acf01e7a85bcef9141f5b95b4f",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_roll --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source absent or changed: overview",
+        "negative_log": "cpu-delivery-sidewalk_roll-negative.log",
+        "negative_log_sha256": "2d3136ba9d898bce2fe123639e54d5e475b0e395b7d7f9baedc1844e58604333",
+        "scope": "synthetic CPU source-audit proof; original pixel and physical acceptance are local gates"
       }
     },
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_yield",
       "kind": "delivery",
       "construction": "cases/pedestrian_yield/construction.json",
-      "construction_sha256": "9a6e4e78a8eb84d7861d59209904a36d8e6b73134f3c640efe48f98079a68c66",
+      "construction_sha256": "fa2e05c3dd397045990386a4f65ee031b128347637fe4da5bae253c1d1bd1d53",
       "candidate_risk": {
         "status": "physical",
         "reason": "The surveyed driveway-to-sidewalk-to-roadway path and participant clearance may be disrupted by a local CARLA map or collision placement; retain a same-law/camera/duration fallback with a measurable clearance trigger."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/pedestrian_yield/fallback1-construction.json",
+          "construction_sha256": "84d5bd02cee6daab9b4b789540419a89d9400dc8372ef3e4df4fc52ed70bfd19",
+          "trigger": {
+            "source": "reviewed original spawn probe and CARLA spawn result",
+            "metric": "ego spawn collision clearance in meters",
+            "failure_condition": "primary spawn rejected or measured clearance below 0.5 m"
+          },
+          "changed_knobs": [
+            "ego spawn height offset raised from 0 to 0.5 m within reviewed driveway envelope"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-pedestrian_yield-fallback1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cpu-offline-pedestrian_yield-fallback1.log",
+            "log_sha256": "1bf4081000e3902862c344208aaabaa60bb9758f45438ad42b3b7a2441393485",
+            "construction_sha256": "84d5bd02cee6daab9b4b789540419a89d9400dc8372ef3e4df4fc52ed70bfd19"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-pedestrian_yield-fallback1.json",
+            "sha256": "bf60ee966a008363e22e3893bbbf5dbf094179b71052660d71a5e682a7d216ef",
+            "log": "cpu-compat-pedestrian_yield-fallback1.log",
+            "negative_log": "cpu-compat-pedestrian_yield-fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-pedestrian_yield.json",
       "fixture_recipe": "work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/diagnostic-pedestrian_yield-recipe.json",
       "measurement_procedure": {
@@ -79,24 +302,122 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "acquisition": {
+        "driver_and_district_context": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "driveway_sidewalk_roadway_geometry": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "ego_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "pedestrian_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "approaching_vehicle_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "frame_map_and_cameras": {
+          "entrypoint": "native_acquisition.py",
+          "method": "capture",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        }
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-pedestrian_yield-primary-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-pedestrian_yield-primary-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
         "log": "cpu-offline-pedestrian_yield-primary.log",
-        "log_sha256": "fb1f78e7eed83ad7f0967c40d1bac9678625add65ca625a8c83a6e40fc9fb0f6",
-        "construction_sha256": "9a6e4e78a8eb84d7861d59209904a36d8e6b73134f3c640efe48f98079a68c66"
+        "log_sha256": "204f2a58b20a0575b662673d5109abb9b0e9543707548322d6b4bac4cfe8005d",
+        "construction_sha256": "fa2e05c3dd397045990386a4f65ee031b128347637fe4da5bae253c1d1bd1d53"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-pedestrian_yield-primary.json",
+        "sha256": "69b9d838ea3bfe7677c2f8b731feab875746c9c92deef44df307d9ef682f627f",
+        "log": "cpu-compat-pedestrian_yield-primary.log",
+        "negative_log": "cpu-compat-pedestrian_yield-primary-negative.log"
+      },
+      "negative": {
+        "log": "cpu-compat-pedestrian_yield-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-pedestrian_yield-receipt.json",
+        "sha256": "25ace76c1e286125caf61f06dffa48978de8adaa55cd9976ca55a7c1a007f870"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "1ed132f344be08c9508ba653dbeb27a9775a8c38cca6908cd8abc4ee9137f87d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_yield",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-pedestrian_yield-positive.log",
+        "test_log_sha256": "fc1ae375698e612e49e3111c1aea7f120f871e0b2ef7b6f9d43153d357c8f926",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_yield --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source absent or changed: overview",
+        "negative_log": "cpu-delivery-pedestrian_yield-negative.log",
+        "negative_log_sha256": "2d3136ba9d898bce2fe123639e54d5e475b0e395b7d7f9baedc1844e58604333",
+        "scope": "synthetic CPU source-audit proof; original pixel and physical acceptance are local gates"
       }
     },
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_intrude",
       "kind": "delivery",
       "construction": "cases/pedestrian_intrude/construction.json",
-      "construction_sha256": "93f568fe9c10ea40f39e0b07400848f15e6923e73f9e4eb8a2724e4d7f52ea57",
+      "construction_sha256": "ed32697378b7944f70fcf9a31ac2224261f18a0b1ab12e4148389e968ba77c7c",
       "candidate_risk": {
         "status": "physical",
         "reason": "The surveyed driveway-to-sidewalk-to-roadway path and participant clearance may be disrupted by a local CARLA map or collision placement; retain a same-law/camera/duration fallback with a measurable clearance trigger."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/pedestrian_intrude/fallback1-construction.json",
+          "construction_sha256": "2aa1b7f8797346e03556abf64a10144fe23dc465fa9980ed676ce40f9a1951f0",
+          "trigger": {
+            "source": "reviewed original spawn probe and CARLA spawn result",
+            "metric": "ego spawn collision clearance in meters",
+            "failure_condition": "primary spawn rejected or measured clearance below 0.5 m"
+          },
+          "changed_knobs": [
+            "ego spawn height offset raised from 0 to 0.5 m within reviewed driveway envelope"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-pedestrian_intrude-fallback1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cpu-offline-pedestrian_intrude-fallback1.log",
+            "log_sha256": "685fba387dd5c40bc315e903665355e39893af0926b77d39ee6fe383d8aa08e5",
+            "construction_sha256": "2aa1b7f8797346e03556abf64a10144fe23dc465fa9980ed676ce40f9a1951f0"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-pedestrian_intrude-fallback1.json",
+            "sha256": "096011f4a762f6b9df95761501a0a41c705f83b7ef83924f7db58e3ae6675414",
+            "log": "cpu-compat-pedestrian_intrude-fallback1.log",
+            "negative_log": "cpu-compat-pedestrian_intrude-fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-pedestrian_intrude.json",
       "fixture_recipe": "work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/diagnostic-pedestrian_intrude-recipe.json",
       "measurement_procedure": {
@@ -107,24 +428,122 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "acquisition": {
+        "driver_and_district_context": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "driveway_sidewalk_roadway_geometry": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "ego_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "pedestrian_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "approaching_vehicle_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "frame_map_and_cameras": {
+          "entrypoint": "native_acquisition.py",
+          "method": "capture",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        }
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-pedestrian_intrude-primary-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-pedestrian_intrude-primary-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
         "log": "cpu-offline-pedestrian_intrude-primary.log",
-        "log_sha256": "685fba387dd5c40bc315e903665355e39893af0926b77d39ee6fe383d8aa08e5",
-        "construction_sha256": "93f568fe9c10ea40f39e0b07400848f15e6923e73f9e4eb8a2724e4d7f52ea57"
+        "log_sha256": "5c0d96a7104a0f7b45b123e43c14269eadb275942011c8603154a5f11a6afb4c",
+        "construction_sha256": "ed32697378b7944f70fcf9a31ac2224261f18a0b1ab12e4148389e968ba77c7c"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-pedestrian_intrude-primary.json",
+        "sha256": "0074815182d7a0539498b1bdf2b4e908a0939dae7eaf2ab65cf5b48009121d7d",
+        "log": "cpu-compat-pedestrian_intrude-primary.log",
+        "negative_log": "cpu-compat-pedestrian_intrude-primary-negative.log"
+      },
+      "negative": {
+        "log": "cpu-compat-pedestrian_intrude-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-pedestrian_intrude-receipt.json",
+        "sha256": "fca3d223c2d62628b8e75ec36110035cd72ab009e02eba3ef96a16ea292ab693"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_intrude",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "1ed132f344be08c9508ba653dbeb27a9775a8c38cca6908cd8abc4ee9137f87d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_intrude",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-pedestrian_intrude-positive.log",
+        "test_log_sha256": "ae52e70f04bcf349d5c84414bb07139f6ef99e69437e650e8f55fd19dd719f73",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_intrude --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source absent or changed: overview",
+        "negative_log": "cpu-delivery-pedestrian_intrude-negative.log",
+        "negative_log_sha256": "2d3136ba9d898bce2fe123639e54d5e475b0e395b7d7f9baedc1844e58604333",
+        "scope": "synthetic CPU source-audit proof; original pixel and physical acceptance are local gates"
       }
     },
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield",
       "kind": "delivery",
       "construction": "cases/roadway_left_yield/construction.json",
-      "construction_sha256": "9f1ca228dc1e1894064e7be82d8af4f74f2b45dbec9dd8291cd3e33e84fc8efc",
+      "construction_sha256": "0ad48400d9b46d24b1e38bb670eddf6bca98c26e4a3a8ec094ff807e6e585229",
       "candidate_risk": {
         "status": "physical",
         "reason": "The surveyed driveway-to-sidewalk-to-roadway path and participant clearance may be disrupted by a local CARLA map or collision placement; retain a same-law/camera/duration fallback with a measurable clearance trigger."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/roadway_left_yield/fallback1-construction.json",
+          "construction_sha256": "8006f0e1a9a3a006e7ed8ef3899498dbba7f1d855a18eaa2dccfa8e53824b73b",
+          "trigger": {
+            "source": "reviewed original spawn probe and CARLA spawn result",
+            "metric": "ego spawn collision clearance in meters",
+            "failure_condition": "primary spawn rejected or measured clearance below 0.5 m"
+          },
+          "changed_knobs": [
+            "ego spawn height offset raised from 0 to 0.5 m within reviewed driveway envelope"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_left_yield-fallback1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cpu-offline-roadway_left_yield-fallback1.log",
+            "log_sha256": "13d4404eb7580ce6953e2991d03b2e2f5eebe79ec382a98bcf1249cfdad03daf",
+            "construction_sha256": "8006f0e1a9a3a006e7ed8ef3899498dbba7f1d855a18eaa2dccfa8e53824b73b"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-roadway_left_yield-fallback1.json",
+            "sha256": "daf735e12fb5e3394a7afa892c2dc5ee5faf443cdb0445e94e6deeca79e954ce",
+            "log": "cpu-compat-roadway_left_yield-fallback1.log",
+            "negative_log": "cpu-compat-roadway_left_yield-fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-roadway_left_yield.json",
       "fixture_recipe": "work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/diagnostic-roadway_left_yield-recipe.json",
       "measurement_procedure": {
@@ -135,24 +554,122 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "acquisition": {
+        "driver_and_district_context": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "driveway_sidewalk_roadway_geometry": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "ego_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "pedestrian_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "approaching_vehicle_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "frame_map_and_cameras": {
+          "entrypoint": "native_acquisition.py",
+          "method": "capture",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        }
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_left_yield-primary-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_left_yield-primary-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
         "log": "cpu-offline-roadway_left_yield-primary.log",
-        "log_sha256": "97b3615e9f10f9136e98c053813b1a25049c1f76c584d475cf2dc99035235031",
-        "construction_sha256": "9f1ca228dc1e1894064e7be82d8af4f74f2b45dbec9dd8291cd3e33e84fc8efc"
+        "log_sha256": "d44d9c66d95e84ce324afd3039c2a33a99909247e9e2c7f79101737129a79a23",
+        "construction_sha256": "0ad48400d9b46d24b1e38bb670eddf6bca98c26e4a3a8ec094ff807e6e585229"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-roadway_left_yield-primary.json",
+        "sha256": "00520d5ca37ac200024ec4eacfb059bcb61435e3c2b33c7a59aa6a8b2848b2ef",
+        "log": "cpu-compat-roadway_left_yield-primary.log",
+        "negative_log": "cpu-compat-roadway_left_yield-primary-negative.log"
+      },
+      "negative": {
+        "log": "cpu-compat-roadway_left_yield-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-roadway_left_yield-receipt.json",
+        "sha256": "c0f2fdf6cf50ac0b9dac49950b1f2cb41228d263c236c85162f48534d385909d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "1ed132f344be08c9508ba653dbeb27a9775a8c38cca6908cd8abc4ee9137f87d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-roadway_left_yield-positive.log",
+        "test_log_sha256": "327809447335604b1c9946ba16672a35f753b2ea6be85b7488932f93fdb334cf",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source absent or changed: overview",
+        "negative_log": "cpu-delivery-roadway_left_yield-negative.log",
+        "negative_log_sha256": "2d3136ba9d898bce2fe123639e54d5e475b0e395b7d7f9baedc1844e58604333",
+        "scope": "synthetic CPU source-audit proof; original pixel and physical acceptance are local gates"
       }
     },
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_intrude",
       "kind": "delivery",
       "construction": "cases/roadway_left_intrude/construction.json",
-      "construction_sha256": "47d57af9dd59c4283150a05c7d74de989d215ec37d09ebc80ac137ffcad28f4a",
+      "construction_sha256": "47e589d40d920f0a4ce8b2fc208df831ed6874c4b6d19f609f861f6990933641",
       "candidate_risk": {
         "status": "physical",
         "reason": "The surveyed driveway-to-sidewalk-to-roadway path and participant clearance may be disrupted by a local CARLA map or collision placement; retain a same-law/camera/duration fallback with a measurable clearance trigger."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/roadway_left_intrude/fallback1-construction.json",
+          "construction_sha256": "2879ee73e517dd869c5fb841f91172e2f719c0085d7499d2056251b71eefbba5",
+          "trigger": {
+            "source": "reviewed original spawn probe and CARLA spawn result",
+            "metric": "ego spawn collision clearance in meters",
+            "failure_condition": "primary spawn rejected or measured clearance below 0.5 m"
+          },
+          "changed_knobs": [
+            "ego spawn height offset raised from 0 to 0.5 m within reviewed driveway envelope"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_left_intrude-fallback1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cpu-offline-roadway_left_intrude-fallback1.log",
+            "log_sha256": "bfeb822f90d27f3083c3a911ea1cfc32183156dca7d3e139c866fae29714a683",
+            "construction_sha256": "2879ee73e517dd869c5fb841f91172e2f719c0085d7499d2056251b71eefbba5"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-roadway_left_intrude-fallback1.json",
+            "sha256": "1245b47e73a782ea20aa1babc3c9c967241bba8473af73ea7077d9ee204b8356",
+            "log": "cpu-compat-roadway_left_intrude-fallback1.log",
+            "negative_log": "cpu-compat-roadway_left_intrude-fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-roadway_left_intrude.json",
       "fixture_recipe": "work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/diagnostic-roadway_left_intrude-recipe.json",
       "measurement_procedure": {
@@ -163,24 +680,122 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "acquisition": {
+        "driver_and_district_context": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "driveway_sidewalk_roadway_geometry": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "ego_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "pedestrian_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "approaching_vehicle_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "frame_map_and_cameras": {
+          "entrypoint": "native_acquisition.py",
+          "method": "capture",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        }
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_left_intrude-primary-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_left_intrude-primary-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
         "log": "cpu-offline-roadway_left_intrude-primary.log",
-        "log_sha256": "f336c9a279e3ecf2865c1e018c11b379bdb0e4ddeb1a33855e75867cb5fb1ab5",
-        "construction_sha256": "47d57af9dd59c4283150a05c7d74de989d215ec37d09ebc80ac137ffcad28f4a"
+        "log_sha256": "f73e1c41316fadd5345509c68510276fa11842896d140031a49f96df996d86a8",
+        "construction_sha256": "47e589d40d920f0a4ce8b2fc208df831ed6874c4b6d19f609f861f6990933641"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-roadway_left_intrude-primary.json",
+        "sha256": "434d5bdb908e09d7363e3b13523538849258ee7305ede5d8cb37ff2e4c5a7b35",
+        "log": "cpu-compat-roadway_left_intrude-primary.log",
+        "negative_log": "cpu-compat-roadway_left_intrude-primary-negative.log"
+      },
+      "negative": {
+        "log": "cpu-compat-roadway_left_intrude-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-roadway_left_intrude-receipt.json",
+        "sha256": "5983b7cdb05203c4621278b8d80b0353329cbf650f5447e1a64f2408446ad2ce"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_intrude",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "1ed132f344be08c9508ba653dbeb27a9775a8c38cca6908cd8abc4ee9137f87d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_intrude",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-roadway_left_intrude-positive.log",
+        "test_log_sha256": "4f053776b4f7e0481dbecba120754f7d1f78e3e460f0bbc69bc52cbf4872d16d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_intrude --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source absent or changed: overview",
+        "negative_log": "cpu-delivery-roadway_left_intrude-negative.log",
+        "negative_log_sha256": "2d3136ba9d898bce2fe123639e54d5e475b0e395b7d7f9baedc1844e58604333",
+        "scope": "synthetic CPU source-audit proof; original pixel and physical acceptance are local gates"
       }
     },
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_yield",
       "kind": "delivery",
       "construction": "cases/roadway_right_yield/construction.json",
-      "construction_sha256": "fd6917d26531cc48d5e27a768dc08aec601f3fdc0361b2f01ee43e0708b139ec",
+      "construction_sha256": "678ddef6714409ec937a5b120de8260fcce9d412d6468879d7ff65ca10767396",
       "candidate_risk": {
         "status": "physical",
         "reason": "The surveyed driveway-to-sidewalk-to-roadway path and participant clearance may be disrupted by a local CARLA map or collision placement; retain a same-law/camera/duration fallback with a measurable clearance trigger."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/roadway_right_yield/fallback1-construction.json",
+          "construction_sha256": "53e4e296c4b20362669555b77e8466d19c9f00caa5a25a15a9336af55cfc5d0b",
+          "trigger": {
+            "source": "reviewed original spawn probe and CARLA spawn result",
+            "metric": "ego spawn collision clearance in meters",
+            "failure_condition": "primary spawn rejected or measured clearance below 0.5 m"
+          },
+          "changed_knobs": [
+            "ego spawn height offset raised from 0 to 0.5 m within reviewed driveway envelope"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_right_yield-fallback1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cpu-offline-roadway_right_yield-fallback1.log",
+            "log_sha256": "2d7ecbc5b5a95249502166ab75e9330940ed6a164d95e8b3edbe3469e50858cc",
+            "construction_sha256": "53e4e296c4b20362669555b77e8466d19c9f00caa5a25a15a9336af55cfc5d0b"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-roadway_right_yield-fallback1.json",
+            "sha256": "af79e2ea869a38ce2b75b48c210b9c2405f618d7e8f59e703d61f8a109e6d449",
+            "log": "cpu-compat-roadway_right_yield-fallback1.log",
+            "negative_log": "cpu-compat-roadway_right_yield-fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-roadway_right_yield.json",
       "fixture_recipe": "work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/diagnostic-roadway_right_yield-recipe.json",
       "measurement_procedure": {
@@ -191,24 +806,122 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "acquisition": {
+        "driver_and_district_context": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "driveway_sidewalk_roadway_geometry": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "ego_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "pedestrian_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "approaching_vehicle_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "frame_map_and_cameras": {
+          "entrypoint": "native_acquisition.py",
+          "method": "capture",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        }
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_right_yield-primary-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_yield --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_right_yield-primary-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
         "log": "cpu-offline-roadway_right_yield-primary.log",
-        "log_sha256": "1a6308486c6b642cfb15962080c2b937819e23ab5a61d6297b6c060ceefaf4ce",
-        "construction_sha256": "fd6917d26531cc48d5e27a768dc08aec601f3fdc0361b2f01ee43e0708b139ec"
+        "log_sha256": "0667008c2e44724920be5c59e4f937c465bbb39bbcf72f1c52667465db54f022",
+        "construction_sha256": "678ddef6714409ec937a5b120de8260fcce9d412d6468879d7ff65ca10767396"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-roadway_right_yield-primary.json",
+        "sha256": "7f31f0afed23a7fb260c935c34b15e3401c5b546c4ad163cd420eee2a7652d54",
+        "log": "cpu-compat-roadway_right_yield-primary.log",
+        "negative_log": "cpu-compat-roadway_right_yield-primary-negative.log"
+      },
+      "negative": {
+        "log": "cpu-compat-roadway_right_yield-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-roadway_right_yield-receipt.json",
+        "sha256": "28c7dda7617d4c57a8c3ac0b76263ba19c0dc1e79b4ec3f43bd32b76b99e9c95"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_yield",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "1ed132f344be08c9508ba653dbeb27a9775a8c38cca6908cd8abc4ee9137f87d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_yield",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-roadway_right_yield-positive.log",
+        "test_log_sha256": "7800a62b1e39cdd6d993f6b11053deb3b707e42c194225861d4cf3e31d9afa84",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_yield --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source absent or changed: overview",
+        "negative_log": "cpu-delivery-roadway_right_yield-negative.log",
+        "negative_log_sha256": "2d3136ba9d898bce2fe123639e54d5e475b0e395b7d7f9baedc1844e58604333",
+        "scope": "synthetic CPU source-audit proof; original pixel and physical acceptance are local gates"
       }
     },
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_intrude",
       "kind": "delivery",
       "construction": "cases/roadway_right_intrude/construction.json",
-      "construction_sha256": "6a611f1a23517c60526de27e8ef876a3f06d45d24e620e9b3159ecc428d81144",
+      "construction_sha256": "2afb2a8c375fc1ea5cf48c85c54d881efc4d7bbbcf39f04302d74213c6800061",
       "candidate_risk": {
         "status": "physical",
         "reason": "The surveyed driveway-to-sidewalk-to-roadway path and participant clearance may be disrupted by a local CARLA map or collision placement; retain a same-law/camera/duration fallback with a measurable clearance trigger."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/roadway_right_intrude/fallback1-construction.json",
+          "construction_sha256": "483c906ae5ba6164628fa794029895f26cc29cba3e2a448ffea089095c15772f",
+          "trigger": {
+            "source": "reviewed original spawn probe and CARLA spawn result",
+            "metric": "ego spawn collision clearance in meters",
+            "failure_condition": "primary spawn rejected or measured clearance below 0.5 m"
+          },
+          "changed_knobs": [
+            "ego spawn height offset raised from 0 to 0.5 m within reviewed driveway envelope"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_right_intrude-fallback1-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "cpu-offline-roadway_right_intrude-fallback1.log",
+            "log_sha256": "01b2e7d30779b712ff142778063d9871a48d60e1f291c259d26a52d0130b38ee",
+            "construction_sha256": "483c906ae5ba6164628fa794029895f26cc29cba3e2a448ffea089095c15772f"
+          },
+          "compatibility": {
+            "receipt": "cpu-compat-roadway_right_intrude-fallback1.json",
+            "sha256": "08070319aa0d9743fabb6f353fd54120e51ce136e5b301a53b7824c5e63e89a3",
+            "log": "cpu-compat-roadway_right_intrude-fallback1.log",
+            "negative_log": "cpu-compat-roadway_right_intrude-fallback1-negative.log"
+          }
+        }
+      ],
       "measurement_contract": "measurement-roadway_right_intrude.json",
       "fixture_recipe": "work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/diagnostic-roadway_right_intrude-recipe.json",
       "measurement_procedure": {
@@ -219,12 +932,83 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
+      "acquisition": {
+        "driver_and_district_context": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "driveway_sidewalk_roadway_geometry": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.geometry_packet",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "ego_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "pedestrian_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "approaching_vehicle_motion_and_body": {
+          "entrypoint": "carla_driveway_adapter.py",
+          "method": "Session.activity",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        },
+        "frame_map_and_cameras": {
+          "entrypoint": "native_acquisition.py",
+          "method": "capture",
+          "evidence": "original Native frame-joined source packet and camera image readback"
+        }
+      },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_right_intrude-primary-v3 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/execution-manifest.json --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_intrude --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c213645-owner/offline-roadway_right_intrude-primary-final --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate primary",
         "exit_code": 0,
         "log": "cpu-offline-roadway_right_intrude-primary.log",
-        "log_sha256": "bea9b64a871723b232a697b62fe5ad1e4f380e9bf765dea79c74fa4f22c27d08",
-        "construction_sha256": "6a611f1a23517c60526de27e8ef876a3f06d45d24e620e9b3159ecc428d81144"
+        "log_sha256": "3bd067a6b2a7d3f1e43c0528e33cb3f63f46a8bff91c71c3aaf4bd1c7f10b903",
+        "construction_sha256": "2afb2a8c375fc1ea5cf48c85c54d881efc4d7bbbcf39f04302d74213c6800061"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-roadway_right_intrude-primary.json",
+        "sha256": "e21e3073b1577d7893397865c346a0ada5ae1637cfc7879ac57b5279acd7b4f3",
+        "log": "cpu-compat-roadway_right_intrude-primary.log",
+        "negative_log": "cpu-compat-roadway_right_intrude-primary-negative.log"
+      },
+      "negative": {
+        "log": "cpu-compat-roadway_right_intrude-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cpu-physical-roadway_right_intrude-receipt.json",
+        "sha256": "e716265de540dad2ccea8d56a40df8d51e2ef443d66a5d69176332ac8472cb22"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_intrude",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "prove_delivery.py",
+        "script_sha256": "1ed132f344be08c9508ba653dbeb27a9775a8c38cca6908cd8abc4ee9137f87d",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_intrude",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-roadway_right_intrude-positive.log",
+        "test_log_sha256": "dc89ce9e134b56d2f04c19b893b93b31bf4dc0f826178968228e17315c1b6fde",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/prove_delivery.py --case testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_intrude --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original camera source absent or changed: overview",
+        "negative_log": "cpu-delivery-roadway_right_intrude-negative.log",
+        "negative_log_sha256": "2d3136ba9d898bce2fe123639e54d5e475b0e395b7d7f9baedc1844e58604333",
+        "scope": "synthetic CPU source-audit proof; original pixel and physical acceptance are local gates"
       }
     }
   ]

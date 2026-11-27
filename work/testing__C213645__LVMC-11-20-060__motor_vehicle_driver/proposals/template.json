@@ -1,0 +1,54 @@
+{
+  "template_id": "LVMC-11-20-060@motor_vehicle_driver",
+  "law_id": "LVMC-11-20-060",
+  "actor": "motor_vehicle_driver",
+  "quote": "The driver of a vehicle within a business or residence district emerging or entering an alley, driveway or building shall stop such vehicle immediately prior to driving onto a sidewalk or onto the sidewalk area extending across any alleyway or driveway, yielding the right-of-way to any pedestrian as may be necessary to avoid collision, and upon entering the roadway shall yield the right-of-way to all vehicles approaching on said roadway.",
+  "structure": {
+    "law_id": "LVMC-11-20-060",
+    "activation": {
+      "condition": "Driver of vehicle in a business or residence district emerges from alley, driveway or building toward sidewalk and roadway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Stop immediately prior to sidewalk or sidewalk area, yield to pedestrians as necessary to avoid collision, and yield to all approaching roadway vehicles upon entry.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Before sidewalk entry and upon roadway entry.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "immediately prior",
+        "note": "The law gives no distance or time cutoff for the stop location."
+      },
+      {
+        "phrase": "as may be necessary to avoid collision",
+        "note": "Pedestrian necessity requires the original motion and conflict context."
+      },
+      {
+        "phrase": "right-of-way to all vehicles approaching",
+        "note": "Approach and precedence require original roadway motion and context."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "ego_entry_behavior",
+      "kind": "controller",
+      "range_or_domain": "requested stop before sidewalk or requested rolling entry"
+    },
+    {
+      "name": "pedestrian_mode",
+      "kind": "world_setup",
+      "range_or_domain": "absent or crossing with authored yield/intrude response"
+    },
+    {
+      "name": "roadway_vehicle_mode",
+      "kind": "world_setup",
+      "range_or_domain": "clear or left/right approaching with authored yield/intrude response"
+    }
+  ]
+}

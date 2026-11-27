@@ -136,9 +136,17 @@ def save_result(attempt, report, inventory, sources, values, frames, diagnostic)
     for row in construction["recording_description"]["context_inputs"]:
         evidence.append({"name": row["name"], "unit": row["unit"],
                          "reference": str(context.relative_to(attempt))})
-    motion_status = "unverified" if diagnostic else "met"
+    observation = sources["activity"].get("observation_status", "complete")
+    if observation not in ("complete", "missing"):
+        raise ValueError("unknown original activity observation status")
+    if observation == "missing":
+        statuses = {key: "unverified" for key in ("setup", "target", "maneuver")}
+    else:
+        statuses = {"setup": "met", "target": "met" if values["first_sidewalk_frame"] is not None else "not_met",
+                    "maneuver": "met" if values["first_sidewalk_frame"] is not None and
+                    values["first_roadway_frame"] is not None else "not_met"}
     physical_checks = {key: {
-        "status": motion_status,
+        "status": status,
         "method": "source-joined original driveway samples; physical review remains local",
         "sources": {"original-attempt/" + name + ".json": digest
                     for name, digest in values["source_sha256"].items()},
@@ -146,7 +154,7 @@ def save_result(attempt, report, inventory, sources, values, frames, diagnostic)
         "detail": {"first_sidewalk_frame": values["first_sidewalk_frame"],
                    "first_roadway_frame": values["first_roadway_frame"],
                    "not_a_legal_threshold": True}}
-        for key in ("setup", "target", "maneuver")}
+        for key, status in statuses.items()}
     result = {
         "case_id": config["selected_case_id"],
         "measured_values": {name: item["value"] for name, item in report["measurements"].items()},
@@ -154,12 +162,12 @@ def save_result(attempt, report, inventory, sources, values, frames, diagnostic)
                            "requested": "source-bound original crossing",
                            "measured": values["first_roadway_frame"],
                            "method": "measure original frame-joined geometry and activity",
-                           "tolerance": 0, "matched": True,
+                           "tolerance": 0, "matched": statuses["maneuver"] == "met",
                            "physical_cause_confirmed": False,
                            "cause_evidence": values["source_sha256"]}],
-        "setup_confirmed": not diagnostic,
-        "behavior_attempted": not diagnostic,
-        "maneuver_completed": not diagnostic,
+        "setup_confirmed": statuses["setup"] == "met",
+        "behavior_attempted": statuses["target"] == "met",
+        "maneuver_completed": statuses["maneuver"] == "met",
         "termination_reason": "saved original driveway source measured; legal and physical review pending",
         "physical_failure_flags": [], "trace_reference": "trace.jsonl",
         "video_references": [name + ".mkv" for name in
@@ -167,7 +175,12 @@ def save_result(attempt, report, inventory, sources, values, frames, diagnostic)
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": construction["recording_description"],
         "recording_evidence": evidence,
-        "realized_observables": {"original_driveway_measurements": values},
+        "realized_observables": {"roadway_entry_frame": {
+            "unit": "original frame", "method": "source-joined driveway activity and roadway polygon",
+            "time_window": "full original episode", "statistic": "first entry",
+            "reference": "original-attempt/activity.json",
+            "value": values["first_roadway_frame"]}}
+        if statuses["maneuver"] == "met" else {},
         "physical_checks": physical_checks,
         "provenance_kind": "synthetic_fixture" if diagnostic else "native",
         "diagnostic_fixture": diagnostic,

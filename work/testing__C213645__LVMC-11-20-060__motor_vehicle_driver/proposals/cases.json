@@ -1,31 +1,25 @@
 {
-  "status": "draft",
   "cell_id": "C213645",
   "actor": "motor_vehicle_driver",
-  "sweep_specs": [],
+  "status": "draft",
   "cases": [
     {
-      "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop",
-      "target_law_id": "LVMC-11-20-060",
-      "target_type": "deterministic_probe",
-      "rationale": "stop_before_sidewalk; pedestrian_absent; roadway_clear",
+      "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Fixed clear residential driveway reference; no legal outcome label.",
       "variable_assignments": {
-        "world_setup": {
-          "district": "residence",
-          "access": "private_driveway",
-          "sidewalk": "intervening_sidewalk_area",
-          "roadway": "connected_two_direction_road",
-          "pedestrian": "pedestrian_absent",
-          "roadway_vehicle": "roadway_clear"
+        "ego_entry_behavior": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk"
         },
-        "controller": {
-          "entry_behavior": "stop_before_sidewalk",
-          "stop_target": "halt_before_sidewalk"
+        "pedestrian_mode": {
+          "kind": "world_setup",
+          "value": "pedestrian_absent"
         },
-        "subject_behavior": {
-          "realized_stop": null,
-          "realized_pedestrian_precedence": null,
-          "realized_roadway_precedence": null
+        "roadway_vehicle_mode": {
+          "kind": "world_setup",
+          "value": "roadway_clear"
         }
       },
       "unresolved_judgment_calls": [
@@ -33,6 +27,109 @@
         "as may be necessary to avoid collision",
         "right-of-way to all vehicles approaching"
       ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "driver_and_district_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original reviewed jurisdiction, frontage, actor and vehicle provenance",
+            "time_window": "full original 45 second episode",
+            "reference_frame": "original Native frame and map coordinates",
+            "uncertainty": "physical realization and camera coverage require local review"
+          },
+          {
+            "name": "driveway_sidewalk_roadway_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original native route and surveyed region polygons",
+            "time_window": "full original 45 second episode",
+            "reference_frame": "original Native frame and map coordinates",
+            "uncertainty": "physical realization and camera coverage require local review"
+          },
+          {
+            "name": "ego_motion_and_body",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original 20 Hz ego kinematics and body polygon",
+            "time_window": "full original 45 second episode",
+            "reference_frame": "original Native frame and map coordinates",
+            "uncertainty": "physical realization and camera coverage require local review"
+          },
+          {
+            "name": "pedestrian_motion_and_body",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original 20 Hz pedestrian activity in selected pedestrian cases",
+            "time_window": "full original 45 second episode",
+            "reference_frame": "original Native frame and map coordinates",
+            "uncertainty": "physical realization and camera coverage require local review"
+          },
+          {
+            "name": "approaching_vehicle_motion_and_body",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original 20 Hz roadway vehicle activity in selected roadway cases",
+            "time_window": "full original 45 second episode",
+            "reference_frame": "original Native frame and map coordinates",
+            "uncertainty": "physical realization and camera coverage require local review"
+          },
+          {
+            "name": "frame_map_and_cameras",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original synchronized Native frame map and four videos",
+            "time_window": "full original 45 second episode",
+            "reference_frame": "original Native frame and map coordinates",
+            "uncertainty": "physical realization and camera coverage require local review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_residential_driveway_context",
+            "unit": "source_packet",
+            "method": "reviewed original map, frontage, ownership and driver identity"
+          }
+        ],
+        "limitations": [
+          "Fixture packets verify software conversion only; original CARLA geometry and camera coverage need local verification.",
+          "No statutory cutoff is assigned to immediately prior, collision-avoidance necessity or right-of-way."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop",
+      "target_law_id": "LVMC-11-20-060",
+      "target_type": "boundary_probe",
+      "rationale": "stop_before_sidewalk; pedestrian_absent; roadway_clear",
+      "variable_assignments": {
+        "ego_entry_behavior": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk"
+        },
+        "pedestrian_mode": {
+          "kind": "world_setup",
+          "value": "pedestrian_absent"
+        },
+        "roadway_vehicle_mode": {
+          "kind": "world_setup",
+          "value": "roadway_clear"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediately prior",
+        "as may be necessary to avoid collision",
+        "right-of-way to all vehicles approaching"
+      ],
+      "paired_probe_id": "sidewalk",
+      "deliberate_differences": [
+        "ego_entry_behavior"
+      ],
+      "probe": {
+        "primary_variable": "ego_entry_behavior",
+        "comparison_or_standard": "fixed-condition source measurement without legal cutoff",
+        "target_value_or_branch": "sidewalk_stop"
+      },
       "recording_description": {
         "channels": [
           {
@@ -106,25 +203,20 @@
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_roll",
       "target_law_id": "LVMC-11-20-060",
-      "target_type": "deterministic_probe",
+      "target_type": "boundary_probe",
       "rationale": "roll_across_sidewalk; pedestrian_absent; roadway_clear",
       "variable_assignments": {
-        "world_setup": {
-          "district": "residence",
-          "access": "private_driveway",
-          "sidewalk": "intervening_sidewalk_area",
-          "roadway": "connected_two_direction_road",
-          "pedestrian": "pedestrian_absent",
-          "roadway_vehicle": "roadway_clear"
+        "ego_entry_behavior": {
+          "kind": "controller",
+          "value": "roll_across_sidewalk"
         },
-        "controller": {
-          "entry_behavior": "roll_across_sidewalk",
-          "stop_target": "moving_at_sidewalk"
+        "pedestrian_mode": {
+          "kind": "world_setup",
+          "value": "pedestrian_absent"
         },
-        "subject_behavior": {
-          "realized_stop": null,
-          "realized_pedestrian_precedence": null,
-          "realized_roadway_precedence": null
+        "roadway_vehicle_mode": {
+          "kind": "world_setup",
+          "value": "roadway_clear"
         }
       },
       "unresolved_judgment_calls": [
@@ -132,6 +224,15 @@
         "as may be necessary to avoid collision",
         "right-of-way to all vehicles approaching"
       ],
+      "paired_probe_id": "sidewalk",
+      "deliberate_differences": [
+        "ego_entry_behavior"
+      ],
+      "probe": {
+        "primary_variable": "ego_entry_behavior",
+        "comparison_or_standard": "fixed-condition source measurement without legal cutoff",
+        "target_value_or_branch": "sidewalk_roll"
+      },
       "recording_description": {
         "channels": [
           {
@@ -205,25 +306,20 @@
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_yield",
       "target_law_id": "LVMC-11-20-060",
-      "target_type": "deterministic_probe",
+      "target_type": "boundary_probe",
       "rationale": "stop_before_sidewalk; pedestrian_crossing_yield; roadway_clear",
       "variable_assignments": {
-        "world_setup": {
-          "district": "residence",
-          "access": "private_driveway",
-          "sidewalk": "intervening_sidewalk_area",
-          "roadway": "connected_two_direction_road",
-          "pedestrian": "pedestrian_crossing_yield",
-          "roadway_vehicle": "roadway_clear"
+        "ego_entry_behavior": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk"
         },
-        "controller": {
-          "entry_behavior": "stop_before_sidewalk",
-          "stop_target": "halt_before_sidewalk"
+        "pedestrian_mode": {
+          "kind": "world_setup",
+          "value": "pedestrian_crossing_yield"
         },
-        "subject_behavior": {
-          "realized_stop": null,
-          "realized_pedestrian_precedence": null,
-          "realized_roadway_precedence": null
+        "roadway_vehicle_mode": {
+          "kind": "world_setup",
+          "value": "roadway_clear"
         }
       },
       "unresolved_judgment_calls": [
@@ -231,6 +327,15 @@
         "as may be necessary to avoid collision",
         "right-of-way to all vehicles approaching"
       ],
+      "paired_probe_id": "pedestrian",
+      "deliberate_differences": [
+        "pedestrian_mode"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_mode",
+        "comparison_or_standard": "fixed-condition source measurement without legal cutoff",
+        "target_value_or_branch": "pedestrian_yield"
+      },
       "recording_description": {
         "channels": [
           {
@@ -304,25 +409,20 @@
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_intrude",
       "target_law_id": "LVMC-11-20-060",
-      "target_type": "deterministic_probe",
+      "target_type": "boundary_probe",
       "rationale": "stop_before_sidewalk; pedestrian_crossing_intrude; roadway_clear",
       "variable_assignments": {
-        "world_setup": {
-          "district": "residence",
-          "access": "private_driveway",
-          "sidewalk": "intervening_sidewalk_area",
-          "roadway": "connected_two_direction_road",
-          "pedestrian": "pedestrian_crossing_intrude",
-          "roadway_vehicle": "roadway_clear"
+        "ego_entry_behavior": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk"
         },
-        "controller": {
-          "entry_behavior": "stop_before_sidewalk",
-          "stop_target": "halt_before_sidewalk"
+        "pedestrian_mode": {
+          "kind": "world_setup",
+          "value": "pedestrian_crossing_intrude"
         },
-        "subject_behavior": {
-          "realized_stop": null,
-          "realized_pedestrian_precedence": null,
-          "realized_roadway_precedence": null
+        "roadway_vehicle_mode": {
+          "kind": "world_setup",
+          "value": "roadway_clear"
         }
       },
       "unresolved_judgment_calls": [
@@ -330,6 +430,15 @@
         "as may be necessary to avoid collision",
         "right-of-way to all vehicles approaching"
       ],
+      "paired_probe_id": "pedestrian",
+      "deliberate_differences": [
+        "pedestrian_mode"
+      ],
+      "probe": {
+        "primary_variable": "pedestrian_mode",
+        "comparison_or_standard": "fixed-condition source measurement without legal cutoff",
+        "target_value_or_branch": "pedestrian_intrude"
+      },
       "recording_description": {
         "channels": [
           {
@@ -403,25 +512,20 @@
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield",
       "target_law_id": "LVMC-11-20-060",
-      "target_type": "deterministic_probe",
+      "target_type": "boundary_probe",
       "rationale": "stop_before_sidewalk; pedestrian_absent; left_approach_yield",
       "variable_assignments": {
-        "world_setup": {
-          "district": "residence",
-          "access": "private_driveway",
-          "sidewalk": "intervening_sidewalk_area",
-          "roadway": "connected_two_direction_road",
-          "pedestrian": "pedestrian_absent",
-          "roadway_vehicle": "left_approach_yield"
+        "ego_entry_behavior": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk"
         },
-        "controller": {
-          "entry_behavior": "stop_before_sidewalk",
-          "stop_target": "halt_before_sidewalk"
+        "pedestrian_mode": {
+          "kind": "world_setup",
+          "value": "pedestrian_absent"
         },
-        "subject_behavior": {
-          "realized_stop": null,
-          "realized_pedestrian_precedence": null,
-          "realized_roadway_precedence": null
+        "roadway_vehicle_mode": {
+          "kind": "world_setup",
+          "value": "left_approach_yield"
         }
       },
       "unresolved_judgment_calls": [
@@ -429,6 +533,15 @@
         "as may be necessary to avoid collision",
         "right-of-way to all vehicles approaching"
       ],
+      "paired_probe_id": "roadway_left",
+      "deliberate_differences": [
+        "roadway_vehicle_mode"
+      ],
+      "probe": {
+        "primary_variable": "roadway_vehicle_mode",
+        "comparison_or_standard": "fixed-condition source measurement without legal cutoff",
+        "target_value_or_branch": "roadway_left_yield"
+      },
       "recording_description": {
         "channels": [
           {
@@ -502,25 +615,20 @@
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_intrude",
       "target_law_id": "LVMC-11-20-060",
-      "target_type": "deterministic_probe",
+      "target_type": "boundary_probe",
       "rationale": "stop_before_sidewalk; pedestrian_absent; left_approach_intrude",
       "variable_assignments": {
-        "world_setup": {
-          "district": "residence",
-          "access": "private_driveway",
-          "sidewalk": "intervening_sidewalk_area",
-          "roadway": "connected_two_direction_road",
-          "pedestrian": "pedestrian_absent",
-          "roadway_vehicle": "left_approach_intrude"
+        "ego_entry_behavior": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk"
         },
-        "controller": {
-          "entry_behavior": "stop_before_sidewalk",
-          "stop_target": "halt_before_sidewalk"
+        "pedestrian_mode": {
+          "kind": "world_setup",
+          "value": "pedestrian_absent"
         },
-        "subject_behavior": {
-          "realized_stop": null,
-          "realized_pedestrian_precedence": null,
-          "realized_roadway_precedence": null
+        "roadway_vehicle_mode": {
+          "kind": "world_setup",
+          "value": "left_approach_intrude"
         }
       },
       "unresolved_judgment_calls": [
@@ -528,6 +636,15 @@
         "as may be necessary to avoid collision",
         "right-of-way to all vehicles approaching"
       ],
+      "paired_probe_id": "roadway_left",
+      "deliberate_differences": [
+        "roadway_vehicle_mode"
+      ],
+      "probe": {
+        "primary_variable": "roadway_vehicle_mode",
+        "comparison_or_standard": "fixed-condition source measurement without legal cutoff",
+        "target_value_or_branch": "roadway_left_intrude"
+      },
       "recording_description": {
         "channels": [
           {
@@ -601,25 +718,20 @@
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_yield",
       "target_law_id": "LVMC-11-20-060",
-      "target_type": "deterministic_probe",
+      "target_type": "boundary_probe",
       "rationale": "stop_before_sidewalk; pedestrian_absent; right_approach_yield",
       "variable_assignments": {
-        "world_setup": {
-          "district": "residence",
-          "access": "private_driveway",
-          "sidewalk": "intervening_sidewalk_area",
-          "roadway": "connected_two_direction_road",
-          "pedestrian": "pedestrian_absent",
-          "roadway_vehicle": "right_approach_yield"
+        "ego_entry_behavior": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk"
         },
-        "controller": {
-          "entry_behavior": "stop_before_sidewalk",
-          "stop_target": "halt_before_sidewalk"
+        "pedestrian_mode": {
+          "kind": "world_setup",
+          "value": "pedestrian_absent"
         },
-        "subject_behavior": {
-          "realized_stop": null,
-          "realized_pedestrian_precedence": null,
-          "realized_roadway_precedence": null
+        "roadway_vehicle_mode": {
+          "kind": "world_setup",
+          "value": "right_approach_yield"
         }
       },
       "unresolved_judgment_calls": [
@@ -627,6 +739,15 @@
         "as may be necessary to avoid collision",
         "right-of-way to all vehicles approaching"
       ],
+      "paired_probe_id": "roadway_right",
+      "deliberate_differences": [
+        "roadway_vehicle_mode"
+      ],
+      "probe": {
+        "primary_variable": "roadway_vehicle_mode",
+        "comparison_or_standard": "fixed-condition source measurement without legal cutoff",
+        "target_value_or_branch": "roadway_right_yield"
+      },
       "recording_description": {
         "channels": [
           {
@@ -700,25 +821,20 @@
     {
       "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_intrude",
       "target_law_id": "LVMC-11-20-060",
-      "target_type": "deterministic_probe",
+      "target_type": "boundary_probe",
       "rationale": "stop_before_sidewalk; pedestrian_absent; right_approach_intrude",
       "variable_assignments": {
-        "world_setup": {
-          "district": "residence",
-          "access": "private_driveway",
-          "sidewalk": "intervening_sidewalk_area",
-          "roadway": "connected_two_direction_road",
-          "pedestrian": "pedestrian_absent",
-          "roadway_vehicle": "right_approach_intrude"
+        "ego_entry_behavior": {
+          "kind": "controller",
+          "value": "stop_before_sidewalk"
         },
-        "controller": {
-          "entry_behavior": "stop_before_sidewalk",
-          "stop_target": "halt_before_sidewalk"
+        "pedestrian_mode": {
+          "kind": "world_setup",
+          "value": "pedestrian_absent"
         },
-        "subject_behavior": {
-          "realized_stop": null,
-          "realized_pedestrian_precedence": null,
-          "realized_roadway_precedence": null
+        "roadway_vehicle_mode": {
+          "kind": "world_setup",
+          "value": "right_approach_intrude"
         }
       },
       "unresolved_judgment_calls": [
@@ -726,6 +842,15 @@
         "as may be necessary to avoid collision",
         "right-of-way to all vehicles approaching"
       ],
+      "paired_probe_id": "roadway_right",
+      "deliberate_differences": [
+        "roadway_vehicle_mode"
+      ],
+      "probe": {
+        "primary_variable": "roadway_vehicle_mode",
+        "comparison_or_standard": "fixed-condition source measurement without legal cutoff",
+        "target_value_or_branch": "roadway_right_intrude"
+      },
       "recording_description": {
         "channels": [
           {
@@ -796,5 +921,53 @@
         ]
       }
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "unresolved-1",
+      "target_law_id": "LVMC-11-20-060",
+      "judgment_refs": [
+        {
+          "phrase": "immediately prior",
+          "note": "The law gives no distance or time cutoff for the stop location."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Source has no authoritative numeric legal cutoff or reviewed physical sweep range.",
+      "missing_inputs": [
+        "reviewed original physical feasibility range and source-backed spacing for immediately prior"
+      ]
+    },
+    {
+      "sweep_id": "unresolved-2",
+      "target_law_id": "LVMC-11-20-060",
+      "judgment_refs": [
+        {
+          "phrase": "as may be necessary to avoid collision",
+          "note": "Pedestrian necessity requires the original motion and conflict context."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Source has no authoritative numeric legal cutoff or reviewed physical sweep range.",
+      "missing_inputs": [
+        "reviewed original physical feasibility range and source-backed spacing for as may be necessary to avoid collision"
+      ]
+    },
+    {
+      "sweep_id": "unresolved-3",
+      "target_law_id": "LVMC-11-20-060",
+      "judgment_refs": [
+        {
+          "phrase": "right-of-way to all vehicles approaching",
+          "note": "Approach and precedence require original roadway motion and context."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Source has no authoritative numeric legal cutoff or reviewed physical sweep range.",
+      "missing_inputs": [
+        "reviewed original physical feasibility range and source-backed spacing for right-of-way to all vehicles approaching"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
 }

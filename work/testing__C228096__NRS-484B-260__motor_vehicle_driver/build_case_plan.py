@@ -122,7 +122,7 @@ def main():
             ]
         ],
     }
-    plan["source_observation_mapping"] = []
+    plan["source_observation_mapping"] = {}
     plan["planning_status"] = "selected_cpu_construction_in_progress"
     plan["runtime_uncertainties"] = [
         "Original private ownership, public highway designation, routes and actor approach must be reviewed from actual site sources.",

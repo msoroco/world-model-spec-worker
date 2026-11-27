@@ -18,6 +18,7 @@ REQUIRED_SOURCES = (
     "highway_status",
     "boundary_map",
     "connection_map",
+    "native_opendrive_map",
 )
 SIDES = ("left", "right")
 
@@ -74,7 +75,7 @@ def load_site(path: Path, expected_case: str) -> dict:
         raise ValueError("site packet belongs to a different exact case")
     sources = site.get("sources")
     if not isinstance(sources, dict) or set(sources) != set(REQUIRED_SOURCES):
-        raise ValueError("all five original site sources are required")
+        raise ValueError("all six original site sources are required")
     for name in REQUIRED_SOURCES:
         entry = sources[name]
         source_path = (path.parent / entry["path"]).resolve()
@@ -115,15 +116,31 @@ def load_site(path: Path, expected_case: str) -> dict:
     approaches = site.get("approaches")
     if not isinstance(approaches, dict) or set(approaches) != set(SIDES):
         raise ValueError("both highway approach directions are required")
+    axis = _point(site.get("highway_axis_xy"), "highway axis")
+    axis_length = math.hypot(*axis)
+    if axis_length < .1:
+        raise ValueError("reviewed highway axis is degenerate")
+    axis = [value / axis_length for value in axis]
     for side in SIDES:
         route = approaches[side]
-        if not isinstance(route, list) or len(route) < 2:
+        if not isinstance(route, list) or len(route) < 3:
             raise ValueError("missing highway approach path: " + side)
         points = [_point(item, side + " approach") for item in route]
         if not all(_inside(item, highway) for item in points):
             raise ValueError("approach leaves highway: " + side)
-        if _distance(points[0], connection) <= _distance(points[-1], connection):
-            raise ValueError("approach is not directed toward connection: " + side)
+        distances = [_distance(point, connection) for point in points]
+        nearest = min(range(len(points)), key=lambda i: distances[i])
+        if nearest == 0 or nearest == len(points) - 1 or distances[nearest] > 1 or \
+                distances[0] < distances[nearest] + 2 or \
+                distances[-1] < distances[nearest] + 2:
+            raise ValueError("approach is not directed through connection: " + side)
+        initial_projection = sum((points[0][i] - connection[i]) * axis[i]
+                                 for i in range(2))
+        final_projection = sum((points[-1][i] - connection[i]) * axis[i]
+                               for i in range(2))
+        if ((side == "left" and not (initial_projection < -.5 and final_projection > .5)) or
+                (side == "right" and not (initial_projection > .5 and final_projection < -.5))):
+            raise ValueError("approach side is not directed through connection: " + side)
     return site
 
 
@@ -160,7 +177,9 @@ def assess_approaching(history: list[dict], required_sides: list[str]) -> dict:
         by_actor = {}
         for identifier, frame, distance in rows:
             by_actor.setdefault(identifier, []).append((frame, distance))
-        if not any(len(samples) >= 2 and samples[0][1] > samples[-1][1] >= 0
+        if not any(len(samples) >= 2 and
+                   any(samples[i][1] > samples[i + 1][1] and samples[i][1] >= 0
+                       for i in range(len(samples) - 1))
                    for samples in by_actor.values()):
             raise ValueError("no measured progression toward connection: " + side)
     return {"observed_sides": sorted(observed),
