@@ -3,7 +3,7 @@
   "law_id": "NRS-484B-267-2e",
   "cell_id": "C405647",
   "actor": "motor_vehicle_driver",
-  "source_law_text": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If possible, drive in a lane that is not adjacent to the lane in which the authorized emergency vehicle or official vehicle of a regulatory agency is moving, unless roadway, traffic, weather or other conditions make doing so unsafe or impossible. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.",
+  "source_law_text": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If possible, drive in a lane that is not adjacent to the lane in which the authorized emergency vehicle or official vehicle of a regulatory agency is moving, unless roadway, traffic, weather or other conditions make doing so unsafe or impossible. As used in this section, \u201cpreparing to move\u201d means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.",
   "source_law_citation": "NRS 484B.267(2)(e); with 484B.267(4)",
   "summary_status": "recovered_requires_source_review",
   "selected_branch": "moving/preparing emergency or regulatory vehicle",
@@ -71,26 +71,104 @@
       "selection_status": "not_selected",
       "expected_label": null,
       "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_04",
+      "target_law_id": "NRS-484B-267-2e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "visible driver hand signal while authorized vehicle prepares to move",
+      "comparison_variable": "preparation indication",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_05",
+      "target_law_id": "NRS-484B-267-2e",
+      "kind": "planned_only",
+      "target_type": "controlled_attempt",
+      "physical_target": "officer direction to remain adjacent during approach",
+      "comparison_variable": "officer direction exception",
+      "selection_status": "not_selected",
+      "expected_label": null,
+      "construction_status": "unproven"
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__planned_comparison",
+      "comparison_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__move_vs_adjacent",
       "case_ids": [
         "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_01",
+        "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02"
+      ],
+      "deliberate_differences": [
+        "requested ego nonadjacent lane change"
+      ],
+      "fixed_conditions": [
+        "emergency moving with reviewed qualifying lamps",
+        "lane topology",
+        "authorization",
+        "camera policy",
+        "recording rate and duration",
+        "roadway, traffic, weather and officer context"
+      ]
+    },
+    {
+      "comparison_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__adverse_condition",
+      "case_ids": [
         "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02",
         "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_03"
       ],
       "deliberate_differences": [
-        "nonadjacent-lane feasibility"
+        "source-reviewed adverse roadway, traffic or weather condition"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "physical route topology",
-        "participant identities",
+        "emergency moving with reviewed qualifying lamps",
+        "lane topology",
+        "authorization",
         "camera policy",
         "recording rate and duration",
-        "nonvariable context"
+        "ego adjacent request",
+        "officer context"
+      ]
+    },
+    {
+      "comparison_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__preparing_signal",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02",
+        "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_04"
+      ],
+      "deliberate_differences": [
+        "moving emergency vehicle versus visible driver hand signal preparing to move"
+      ],
+      "fixed_conditions": [
+        "ego adjacent request",
+        "lane topology",
+        "authorization",
+        "qualifying lamps",
+        "camera policy",
+        "recording rate and duration",
+        "roadway, traffic, weather and officer context"
+      ]
+    },
+    {
+      "comparison_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__officer_direction",
+      "case_ids": [
+        "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02",
+        "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_05"
+      ],
+      "deliberate_differences": [
+        "source-reviewed law enforcement officer direction"
+      ],
+      "fixed_conditions": [
+        "emergency moving with reviewed qualifying lamps",
+        "lane topology",
+        "authorization",
+        "camera policy",
+        "recording rate and duration",
+        "ego adjacent request",
+        "roadway, traffic and weather context"
       ]
     }
   ],
@@ -157,10 +235,9 @@
     "Conditional safety/possibility is unresolved judgment; do not label feasibility from lane count alone. Moving emergency actor and light state need Native proof."
   ],
   "runtime_gaps": [
-    "Probe_01 has an unselected moving-emergency Native draft passing pinned offline; original lane topology, lighting, approach and safety remain unverified.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No accepted recording membership is listed for this assignment; new exact source proof is required."
+    "Five exact selected-law alternatives are now explicitly planned; construction and CPU proofs remain unfinished.",
+    "No original emergency authorization, qualifying flashing lamp, visible hand-signal, lane feasibility/safety or officer-direction source has been accepted.",
+    "Existing probe_01 Native draft imports retired runtime/pipeline and does not meet current four-view video capture profile."
   ],
   "observations": [
     {
@@ -246,5 +323,21 @@
       ],
       "evidence_or_gap": "Unselected probe_01 Native draft passes pinned offline and synthetic moving-emergency lane observations pass positive/negative CPU proof. Original authorization, flashing qualification/pixels, lane topology, approach, conditions, selected-case compatibility/saved audits and physical realization remain unverified."
     }
-  ]
+  ],
+  "law_alternative_review": {
+    "source": "NRS 484B.267(2)(e), (4) and DEF-NRS-484A-480-3",
+    "text_reviewed": true,
+    "moving_approach_cases": [
+      "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_01",
+      "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02",
+      "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_03",
+      "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_05"
+    ],
+    "visible_preparation_by_hand_signal_case": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_04",
+    "vehicle_movement_as_preparation": "Moving branch cases include original emergency-vehicle motion; a visibly preparing but stationary hand signal is distinct in probe_04.",
+    "conditional_possible_safe_review": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_01, training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02, training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_03",
+    "officer_direction_exception_case": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_05",
+    "numeric_legal_cutoffs_invented": false,
+    "original_source_status": "unobserved_cpu_plan"
+  }
 }

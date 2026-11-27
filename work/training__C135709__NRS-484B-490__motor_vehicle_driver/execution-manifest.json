@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C135709__NRS-484B-490__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "draft_cpu_preparation",
+  "status": "cpu_prepared_original_capture_pending",
   "cases": [
     {
       "case_id": "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_01",
@@ -14,12 +14,12 @@
         "reason": "This two-position comparison uses one fixed road, device and camera policy; no alternate Native knob preserves the exact authority/extent question if original source review fails."
       },
       "candidates": [],
-      "delivery_readiness": "compatibility_and_saved_passed_physical_semantic_audits_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending",
       "offline": {
         "exit_code": 0,
         "construction_sha256": "391c8d81e4ba5238d09e09006acaa9543eeb06162d51c1d9e317ca9ca9f54313",
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C135709__NRS-484B-490__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-490__motor_vehicle_driver__probe_01 --output .runtime-work/c135709-check/offline-probe_01-v5",
-        "log": "native/offline-probe_01.log",
+        "log": "native/probe_01-offline.log",
         "log_sha256": "c728bdc8f4ac2f774da1320fef61cd45888048cc25fb79050d6005f59e74bf9b"
       },
       "measurement_contract": "cases/probe_01/measurement-contract.json",
@@ -51,6 +51,67 @@
         "test_log_sha256": "6dab4106f8f2975b10600a827c10041ff0a3ba11ba29fdd9b2f96a0df4c6d8d7",
         "processing_receipt": "native/proofs/probe_01/processing.json",
         "processing_receipt_sha256": "6dab4106f8f2975b10600a827c10041ff0a3ba11ba29fdd9b2f96a0df4c6d8d7"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_01/physical/proof.json",
+        "sha256": "1f7608c64c2ea29d014a8df2be6f854a8f23c8a7fa402a049c9f738208f4eb06"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3fc666670ffec5a030f50ac775dfcae39a63ef82fdbbb43c2ea20618075cb29b",
+        "command": ".venv-cpu/bin/python -B work/training__C135709__NRS-484B-490__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-490__motor_vehicle_driver__probe_01 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_01/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C135709__NRS-484B-490__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-490__motor_vehicle_driver__probe_01 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_01/delivery/negative.log",
+        "negative_log_sha256": "38853ff62c2672b248d6ff9c2c9e8ce45f44dcd1c16bd84e21920e8cb3479c73"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "Record synchronized original camera views of the erected parking device; source review verifies exact sign identity and pixel visibility",
+          "evidence": "capture/overview.mkv, capture/approach.mkv, road-review.json, source_context/device_erection.txt"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "source_review.py",
+          "method": "Join original authority, erection and device-content source hashes to source review",
+          "evidence": "source_context/official_authority.txt, source_context/device_erection.txt, source_context/device_content.txt"
+        },
+        "dev.governs": {
+          "entrypoint": "source_review.py",
+          "method": "Join original governed-extent source and reviewed device content to vehicle footprint",
+          "evidence": "source_context/governed_extent.txt, road-review.json, capture/vehicle-poses.json"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "Record original stationary vehicle pose, speed, brakes and frame identity for complete interval",
+          "evidence": "capture/vehicle-poses.json, capture/frame-map.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "parking_saved_measure.py",
+          "method": "Join source-reviewed governed extent to per-frame vehicle bounding footprint without legal verdict",
+          "evidence": "capture/vehicle-poses.json, source_context/governed_extent.txt"
+        },
+        "st.lane_width": {
+          "entrypoint": "source_review.py",
+          "method": "Join original road geometry and narrow-highway designation source",
+          "evidence": "road.xodr, road-context.json, source_context/narrow_designation.txt"
+        }
       }
     },
     {
@@ -63,12 +124,12 @@
         "reason": "This two-position comparison uses one fixed road, device and camera policy; no alternate Native knob preserves the exact authority/extent question if original source review fails."
       },
       "candidates": [],
-      "delivery_readiness": "compatibility_and_saved_passed_physical_semantic_audits_pending",
+      "delivery_readiness": "cpu_prepared_original_capture_pending",
       "offline": {
         "exit_code": 0,
         "construction_sha256": "ffeb243748fe0135e2e4014f74ac45d9c107c939cabf5858e64d70103617bade",
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C135709__NRS-484B-490__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-490__motor_vehicle_driver__probe_02 --output .runtime-work/c135709-check/offline-probe_02-v5",
-        "log": "native/offline-probe_02.log",
+        "log": "native/probe_02-offline.log",
         "log_sha256": "fc9d9e2bbd7dc2a49946f70f5aa2e22c64ed43a52b520741d4e92b4c97bb1bac"
       },
       "measurement_contract": "cases/probe_02/measurement-contract.json",
@@ -100,6 +161,67 @@
         "test_log_sha256": "af06d7a23ba134b32ec3d2d7eca60849b7cf4349e09d994ca491b53fedbd95ec",
         "processing_receipt": "native/proofs/probe_02/processing.json",
         "processing_receipt_sha256": "af06d7a23ba134b32ec3d2d7eca60849b7cf4349e09d994ca491b53fedbd95ec"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_02/physical/proof.json",
+        "sha256": "d645e886cd92caf4616a668774d254745084467f009020dd5d3983b6c1a61931"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3fc666670ffec5a030f50ac775dfcae39a63ef82fdbbb43c2ea20618075cb29b",
+        "command": ".venv-cpu/bin/python -B work/training__C135709__NRS-484B-490__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-490__motor_vehicle_driver__probe_02 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_02/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C135709__NRS-484B-490__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-490__motor_vehicle_driver__probe_02 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_02/delivery/negative.log",
+        "negative_log_sha256": "38853ff62c2672b248d6ff9c2c9e8ce45f44dcd1c16bd84e21920e8cb3479c73"
+      },
+      "acquisition": {
+        "dev.zone_sign": {
+          "entrypoint": "runner.py",
+          "method": "Record synchronized original camera views of the erected parking device; source review verifies exact sign identity and pixel visibility",
+          "evidence": "capture/overview.mkv, capture/approach.mkv, road-review.json, source_context/device_erection.txt"
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "source_review.py",
+          "method": "Join original authority, erection and device-content source hashes to source review",
+          "evidence": "source_context/official_authority.txt, source_context/device_erection.txt, source_context/device_content.txt"
+        },
+        "dev.governs": {
+          "entrypoint": "source_review.py",
+          "method": "Join original governed-extent source and reviewed device content to vehicle footprint",
+          "evidence": "source_context/governed_extent.txt, road-review.json, capture/vehicle-poses.json"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "Record original stationary vehicle pose, speed, brakes and frame identity for complete interval",
+          "evidence": "capture/vehicle-poses.json, capture/frame-map.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "parking_saved_measure.py",
+          "method": "Join source-reviewed governed extent to per-frame vehicle bounding footprint without legal verdict",
+          "evidence": "capture/vehicle-poses.json, source_context/governed_extent.txt"
+        },
+        "st.lane_width": {
+          "entrypoint": "source_review.py",
+          "method": "Join original road geometry and narrow-highway designation source",
+          "evidence": "road.xodr, road-context.json, source_context/narrow_designation.txt"
+        }
       }
     }
   ]

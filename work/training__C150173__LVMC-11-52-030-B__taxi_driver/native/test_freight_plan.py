@@ -24,6 +24,7 @@ def config(suffix):
             'requested_purpose': PURPOSES[suffix], 'duration_s': 30,
             'rate_hz': 20, 'frames': 600,
             'civil_start_local': '2026-11-26T10:00:00',
+            'taxi_stop_x_m': 5.25,
             'commercial_classification': 'pending_original_review',
             'sign_source_status': 'authored_proposal_unverified',
             'legal_verdict': None, 'cameras': CAMERAS}

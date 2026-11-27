@@ -1,55 +1,690 @@
 {
-  "assignment_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C261468",
-  "law_id": "NRS-484B-363-4",
-  "selected_branch": null,
-  "scope_branches": [
+  "assignment_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver",
+  "branch_gap_review": {
+    "covered_by_existing_plan": [
+      "base prohibition",
+      "exception (a): school not in session"
+    ],
+    "covered_by_expanded_plan": [
+      "school and school-crossing designation",
+      "session-day exception (a)",
+      "29/30/31 minute after-end and 31/30/29 minute before-start exception (b) probes",
+      "operational sign-plus-two-yellow-light beacon flashing pair (c)",
+      "nonbeacon sign effective-state pair (d)"
+    ],
+    "implementation_status": "expanded planned cases only; all new cases are unselected and unconstructed",
+    "legal_threshold_note": "The half-hour period is statutory; route station crossings and 20 Hz cadence are measurement conventions, not legal thresholds.",
+    "method": "Read exact frozen text including subsection (9) beacon definition; compared each exception with the two existing proposed cases. No accepted recordings are in the frozen membership.",
+    "reviewer": "portable CPU worker",
+    "source": "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json",
+    "source_observation_needed": [
+      "signed zone boundary and zone kind",
+      "same-direction complete pass episode",
+      "sourced school calendar and operation schedule",
+      "civil time tied to each saved frame",
+      "beacon/sign physical state and class hours"
+    ],
+    "still_needed_as_distinct_controlled_comparisons": []
+  },
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "all 600 joined frames",
+        "subject": "entire school-zone pass and installed sign",
+        "view": "overview"
+      },
+      {
+        "interval": "all 600 joined frames",
+        "subject": "zone approach, other vehicle and sign",
+        "view": "approach"
+      },
+      {
+        "interval": "all 600 joined frames",
+        "subject": "zone boundary and same-direction overtaking",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "all 600 joined frames",
+        "subject": "driver sightline, yellow lamps and sign",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
+  },
+  "cases": [
     {
-      "law_id": "NRS-484B-363-4",
-      "cell_id": "C261468",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-363-4",
-      "branch": "School zone; another vehicle traveling in the same direction.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 500,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "training"
-    }
-  ],
-  "source_law_text": "The driver of a vehicle shall not overtake and pass another vehicle traveling in the same direction in an area designated as a school zone or school crossing zone except: (a) On a day on which the school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect. As used in this section, \u201cspeed limit beacon\u201d means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
-  "source_law_citation": "NRS 484B.363(4); with 484B.363(9)",
-  "summary_status": "recovered_requires_source_review",
-  "summary_conflicts": "Do not adopt summary or witness as legal authority; exact law controls. Unreviewed historical summaries remain provisional.",
-  "requirement_dispositions": [
-    {
-      "requirement": "text-0",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
-      "case_ids": [
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_crossing_zone_active"
-      ]
+      "case_description": "designated school zone; ego overtakes same-direction vehicle; beacon state fixed within timing comparison",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
+      "comparison_unit": "category",
+      "comparison_variable": "school_zone_pass_timing",
+      "fixed_context": "Keep cell C261468, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. designated school zone; ego overtakes same-direction vehicle; beacon state fixed within timing comparison",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "pupils_in_class": true,
+        "school_in_session": true,
+        "school_operating_at_pass": true,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "school_in_session_active",
+      "selected": true,
+      "source_topic_ids": [
+        "text-0",
+        "text-5",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
     },
     {
-      "requirement": "text-1",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
+      "case_description": "designated school zone; ego overtakes same-direction vehicle; beacon state fixed within timing comparison",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_not_in_session",
+      "comparison_unit": "category",
+      "comparison_variable": "school_zone_pass_timing",
+      "fixed_context": "Keep cell C261468, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. designated school zone; ego overtakes same-direction vehicle; beacon state fixed within timing comparison",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "pupils_in_class": false,
+        "school_in_session": false,
+        "school_operating_at_pass": false,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "school_not_in_session",
+      "selected": true,
+      "source_topic_ids": [
+        "text-1",
+        "text-5",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_after_operation_end: 29 minutes after end",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_29min",
+      "comparison_unit": "category",
+      "comparison_variable": "half_hour_after_operation_end",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "minutes_after_operation_end": 29,
+        "minutes_before_next_operation": 120,
+        "pupils_in_class": false,
+        "school_in_session": true,
+        "school_operating_at_pass": false,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "29 minutes after end",
+      "selected": true,
+      "source_topic_ids": [
+        "text-2",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_after_operation_end: 30 minutes after end",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_30min",
+      "comparison_unit": "category",
+      "comparison_variable": "half_hour_after_operation_end",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "minutes_after_operation_end": 30,
+        "minutes_before_next_operation": 120,
+        "pupils_in_class": false,
+        "school_in_session": true,
+        "school_operating_at_pass": false,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "30 minutes after end",
+      "selected": true,
+      "source_topic_ids": [
+        "text-2",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_after_operation_end: 31 minutes after end",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_31min",
+      "comparison_unit": "category",
+      "comparison_variable": "half_hour_after_operation_end",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "minutes_after_operation_end": 31,
+        "minutes_before_next_operation": 120,
+        "pupils_in_class": false,
+        "school_in_session": true,
+        "school_operating_at_pass": false,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "31 minutes after end",
+      "selected": true,
+      "source_topic_ids": [
+        "text-2",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_before_next_operation: 31 minutes before next start",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_31min",
+      "comparison_unit": "category",
+      "comparison_variable": "half_hour_before_next_operation",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "minutes_after_operation_end": 120,
+        "minutes_before_next_operation": 31,
+        "pupils_in_class": false,
+        "school_in_session": true,
+        "school_operating_at_pass": false,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "31 minutes before next start",
+      "selected": true,
+      "source_topic_ids": [
+        "text-2",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_before_next_operation: 30 minutes before next start",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min",
+      "comparison_unit": "category",
+      "comparison_variable": "half_hour_before_next_operation",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "minutes_after_operation_end": 120,
+        "minutes_before_next_operation": 30,
+        "pupils_in_class": false,
+        "school_in_session": true,
+        "school_operating_at_pass": false,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "30 minutes before next start",
+      "selected": true,
+      "source_topic_ids": [
+        "text-2",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_before_next_operation: 29 minutes before next start",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_29min",
+      "comparison_unit": "category",
+      "comparison_variable": "half_hour_before_next_operation",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "minutes_after_operation_end": 120,
+        "minutes_before_next_operation": 29,
+        "pupils_in_class": false,
+        "school_in_session": true,
+        "school_operating_at_pass": false,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "29 minutes before next start",
+      "selected": true,
+      "source_topic_ids": [
+        "text-2",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; operational_beacon_class_hours: alternating yellow lights flashing",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_flashing",
+      "comparison_unit": "category",
+      "comparison_variable": "operational_beacon_class_hours",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "pupils_in_class": true,
+        "school_in_session": true,
+        "school_operating_at_pass": true,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "alternating yellow lights flashing",
+      "selected": true,
+      "source_topic_ids": [
+        "text-3",
+        "text-5",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; operational_beacon_class_hours: alternating yellow lights not flashing",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_not_flashing",
+      "comparison_unit": "category",
+      "comparison_variable": "operational_beacon_class_hours",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": false,
+        "beacon_yellow_lights": 2,
+        "pupils_in_class": true,
+        "school_in_session": true,
+        "school_operating_at_pass": true,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "alternating yellow lights not flashing",
+      "selected": true,
+      "source_topic_ids": [
+        "text-3",
+        "text-5",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; nonbeacon_sign_effect: sign indicates speed limit effective",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_effective",
+      "comparison_unit": "category",
+      "comparison_variable": "nonbeacon_sign_effect",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": false,
+        "beacon_with_sign": false,
+        "beacon_yellow_alternating": false,
+        "beacon_yellow_lights": null,
+        "pupils_in_class": true,
+        "school_in_session": true,
+        "school_operating_at_pass": true,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "sign indicates speed limit effective",
+      "selected": true,
+      "source_topic_ids": [
+        "text-4",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; nonbeacon_sign_effect: sign indicates speed limit not effective",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_inactive",
+      "comparison_unit": "category",
+      "comparison_variable": "nonbeacon_sign_effect",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": false,
+        "beacon_with_sign": false,
+        "beacon_yellow_alternating": false,
+        "beacon_yellow_lights": null,
+        "pupils_in_class": true,
+        "school_in_session": true,
+        "school_operating_at_pass": true,
+        "sign_says_limit_in_effect": false,
+        "zone_kind": "school_zone"
+      },
+      "requested_setting": "sign indicates speed limit not effective",
+      "selected": true,
+      "source_topic_ids": [
+        "text-4",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    },
+    {
+      "case_description": "Sourced designated school zone and complete same-direction pass; designated_zone_kind: school crossing zone",
+      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_crossing_zone_active",
+      "comparison_unit": "category",
+      "comparison_variable": "designated_zone_kind",
+      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
+      "planning_status": "selected_cpu_draft_original_source_pending",
+      "recorded_value": null,
+      "requested_context": {
+        "beacon_operational": true,
+        "beacon_with_sign": true,
+        "beacon_yellow_alternating": true,
+        "beacon_yellow_lights": 2,
+        "pupils_in_class": true,
+        "school_in_session": true,
+        "school_operating_at_pass": true,
+        "sign_says_limit_in_effect": true,
+        "zone_kind": "school_crossing_zone"
+      },
+      "requested_setting": "school crossing zone",
+      "selected": true,
+      "source_topic_ids": [
+        "text-0",
+        "text-5",
+        "reviewed-scope-0"
+      ],
+      "target_law_id": "NRS-484B-363-4",
+      "target_type": "attempt"
+    }
+  ],
+  "cell_id": "C261468",
+  "comparisons": [
+    {
+      "audit": {
+        "command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_session",
+        "negative_command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_session --inject-unlisted-difference",
+        "negative_exit_code": 1,
+        "negative_log": "native/proofs/cpu-comparison-school_session-negative.log",
+        "negative_log_sha256": "cbc2bbea25a44e995bc8c99efaa229b78ff24a1f04e4f4ebb36b5ff767368359",
+        "positive_exit_code": 0,
+        "positive_log": "native/proofs/cpu-comparison-school_session.log",
+        "positive_log_sha256": "2de48876a36815facb7500d7649292390b0791d31bd1fd08f358861a706a3b84",
+        "scope": "synthetic source isolation only; original comparison not accepted",
+        "script": "native/audit_comparisons.py",
+        "script_sha256": "8ae7637bc3b487cfc3f23e96a52feacfb4a125c6cf0fae45ab994f8c34398be8"
+      },
       "case_ids": [
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_not_in_session"
-      ]
+      ],
+      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_session",
+      "deliberate_differences": [
+        "source-reviewed school session day"
+      ],
+      "fixed_conditions": [
+        "same operational beacon and active sign",
+        "frozen C261468 road and actor",
+        "same-direction complete pass",
+        "four cameras at 20 Hz for 600 frames",
+        "source-reviewed zone designation"
+      ],
+      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown.",
+      "status": "cpu_diagnostic_isolation_passed_original_source_pending"
     },
     {
-      "requirement": "text-2",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
+      "audit": {
+        "command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_30min",
+        "negative_command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_30min --inject-unlisted-difference",
+        "negative_exit_code": 1,
+        "negative_log": "native/proofs/cpu-comparison-after_end_30min-negative.log",
+        "negative_log_sha256": "cbc2bbea25a44e995bc8c99efaa229b78ff24a1f04e4f4ebb36b5ff767368359",
+        "positive_exit_code": 0,
+        "positive_log": "native/proofs/cpu-comparison-after_end_30min.log",
+        "positive_log_sha256": "2115aea0c81515417c37f85aa226e045c878ec1e9d0a54deaff90c0f51b297ad",
+        "scope": "synthetic source isolation only; original comparison not accepted",
+        "script": "native/audit_comparisons.py",
+        "script_sha256": "8ae7637bc3b487cfc3f23e96a52feacfb4a125c6cf0fae45ab994f8c34398be8"
+      },
+      "case_ids": [
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_29min",
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_30min",
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_31min"
+      ],
+      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_30min",
+      "deliberate_differences": [
+        "minutes after school operation end: 29, 30, 31"
+      ],
+      "fixed_conditions": [
+        "same sourced sign/beacon and school calendar type; one operation boundary timestamp varies to set the pass offset",
+        "same beacon/sign state",
+        "frozen C261468 road and actor",
+        "same-direction complete pass",
+        "four cameras at 20 Hz for 600 frames",
+        "source-reviewed zone designation"
+      ],
+      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown.",
+      "status": "cpu_diagnostic_isolation_passed_original_source_pending"
+    },
+    {
+      "audit": {
+        "command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min",
+        "negative_command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min --inject-unlisted-difference",
+        "negative_exit_code": 1,
+        "negative_log": "native/proofs/cpu-comparison-before_start_30min-negative.log",
+        "negative_log_sha256": "cbc2bbea25a44e995bc8c99efaa229b78ff24a1f04e4f4ebb36b5ff767368359",
+        "positive_exit_code": 0,
+        "positive_log": "native/proofs/cpu-comparison-before_start_30min.log",
+        "positive_log_sha256": "7de912e0d75624849ae035ade4b59960ddf3083c4c26e219bd4a8e8b71a1b556",
+        "scope": "synthetic source isolation only; original comparison not accepted",
+        "script": "native/audit_comparisons.py",
+        "script_sha256": "8ae7637bc3b487cfc3f23e96a52feacfb4a125c6cf0fae45ab994f8c34398be8"
+      },
+      "case_ids": [
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_31min",
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min",
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_29min"
+      ],
+      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min",
+      "deliberate_differences": [
+        "minutes before next operation: 31, 30, 29"
+      ],
+      "fixed_conditions": [
+        "same sourced sign/beacon and school calendar type; one operation boundary timestamp varies to set the pass offset",
+        "same beacon/sign state",
+        "frozen C261468 road and actor",
+        "same-direction complete pass",
+        "four cameras at 20 Hz for 600 frames",
+        "source-reviewed zone designation"
+      ],
+      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown.",
+      "status": "cpu_diagnostic_isolation_passed_original_source_pending"
+    },
+    {
+      "audit": {
+        "command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__class_beacon_state",
+        "negative_command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__class_beacon_state --inject-unlisted-difference",
+        "negative_exit_code": 1,
+        "negative_log": "native/proofs/cpu-comparison-class_beacon_state-negative.log",
+        "negative_log_sha256": "cbc2bbea25a44e995bc8c99efaa229b78ff24a1f04e4f4ebb36b5ff767368359",
+        "positive_exit_code": 0,
+        "positive_log": "native/proofs/cpu-comparison-class_beacon_state.log",
+        "positive_log_sha256": "7e221605cff0d932fa48237372fac9c702049cab52f7b6d92ef0f1f0dbaef301",
+        "scope": "synthetic source isolation only; original comparison not accepted",
+        "script": "native/audit_comparisons.py",
+        "script_sha256": "8ae7637bc3b487cfc3f23e96a52feacfb4a125c6cf0fae45ab994f8c34398be8"
+      },
+      "case_ids": [
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_flashing",
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_not_flashing"
+      ],
+      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__class_beacon_state",
+      "deliberate_differences": [
+        "source-observed alternating yellow flash state"
+      ],
+      "fixed_conditions": [
+        "school in session",
+        "pupils in class",
+        "same operational two-yellow-light beacon and sign",
+        "frozen C261468 road and actor",
+        "same-direction complete pass",
+        "four cameras at 20 Hz for 600 frames",
+        "source-reviewed zone designation"
+      ],
+      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown.",
+      "status": "cpu_diagnostic_isolation_passed_original_source_pending"
+    },
+    {
+      "audit": {
+        "command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_state",
+        "negative_command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_state --inject-unlisted-difference",
+        "negative_exit_code": 1,
+        "negative_log": "native/proofs/cpu-comparison-nonbeacon_sign_state-negative.log",
+        "negative_log_sha256": "cbc2bbea25a44e995bc8c99efaa229b78ff24a1f04e4f4ebb36b5ff767368359",
+        "positive_exit_code": 0,
+        "positive_log": "native/proofs/cpu-comparison-nonbeacon_sign_state.log",
+        "positive_log_sha256": "193c3b4eb22eb6d7622329b8dda83dc0351fcb2d506c8c6802dda00c4a13a557",
+        "scope": "synthetic source isolation only; original comparison not accepted",
+        "script": "native/audit_comparisons.py",
+        "script_sha256": "8ae7637bc3b487cfc3f23e96a52feacfb4a125c6cf0fae45ab994f8c34398be8"
+      },
+      "case_ids": [
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_effective",
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_inactive"
+      ],
+      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_state",
+      "deliberate_differences": [
+        "source-observed sign effective state"
+      ],
+      "fixed_conditions": [
+        "school in session",
+        "same nonbeacon sign and no operational beacon",
+        "frozen C261468 road and actor",
+        "same-direction complete pass",
+        "four cameras at 20 Hz for 600 frames",
+        "source-reviewed zone designation"
+      ],
+      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown.",
+      "status": "cpu_diagnostic_isolation_passed_original_source_pending"
+    },
+    {
+      "audit": {
+        "command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__zone_kind",
+        "negative_command": ".venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver/native/audit_comparisons.py --folder /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C261468__NRS-484B-363-4__motor_vehicle_driver --comparison training__C261468__NRS-484B-363-4__motor_vehicle_driver__zone_kind --inject-unlisted-difference",
+        "negative_exit_code": 1,
+        "negative_log": "native/proofs/cpu-comparison-zone_kind-negative.log",
+        "negative_log_sha256": "cbc2bbea25a44e995bc8c99efaa229b78ff24a1f04e4f4ebb36b5ff767368359",
+        "positive_exit_code": 0,
+        "positive_log": "native/proofs/cpu-comparison-zone_kind.log",
+        "positive_log_sha256": "f815aaea43f2d9daab4037de8894e4c30164a9fd982149c9c8182dfdb417e2fa",
+        "scope": "synthetic source isolation only; original comparison not accepted",
+        "script": "native/audit_comparisons.py",
+        "script_sha256": "8ae7637bc3b487cfc3f23e96a52feacfb4a125c6cf0fae45ab994f8c34398be8"
+      },
+      "case_ids": [
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_crossing_zone_active"
+      ],
+      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__zone_kind",
+      "deliberate_differences": [
+        "source-designated school versus school crossing zone"
+      ],
+      "fixed_conditions": [
+        "school in session",
+        "same operational beacon/sign state",
+        "frozen C261468 road and actor",
+        "same-direction complete pass",
+        "four cameras at 20 Hz for 600 frames",
+        "source-reviewed zone designation"
+      ],
+      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown.",
+      "status": "cpu_diagnostic_isolation_passed_original_source_pending"
+    }
+  ],
+  "existing_evidence": [
+    {
+      "membership_rows": 0,
+      "reuse_receipt": null,
+      "set_id": "full-train",
+      "status": "unreviewed_membership_only"
+    }
+  ],
+  "law_id": "NRS-484B-363-4",
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "ego_pose",
+      "purpose": "Actual pose, trajectory and footprint over full event",
+      "unit": "m,deg"
+    },
+    {
+      "mandatory": true,
+      "name": "school_zone_pass_timing",
+      "purpose": "Record school calendar and operation hours, beacon state, pass event and zone boundary.",
+      "unit": "category"
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_crossing_zone_active"
+      ],
       "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
+        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_not_in_session"
+      ],
+      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
+    },
+    {
       "case_ids": [
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_29min",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_30min",
@@ -57,44 +692,44 @@
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_31min",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_29min"
-      ]
+      ],
+      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
+      "requirement": "text-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
     },
     {
-      "requirement": "text-3",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
       "case_ids": [
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_flashing",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_not_flashing"
-      ]
+      ],
+      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
+      "requirement": "text-3",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
     },
     {
-      "requirement": "text-4",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
       "case_ids": [
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_effective",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_inactive"
-      ]
+      ],
+      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
+      "requirement": "text-4",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
     },
     {
-      "requirement": "text-5",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
       "case_ids": [
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_flashing",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_not_flashing",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_crossing_zone_active"
-      ]
+      ],
+      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
+      "requirement": "text-5",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
     },
     {
-      "requirement": "reviewed-scope-0",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "selected_required",
-      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
       "case_ids": [
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_not_in_session",
@@ -109,601 +744,141 @@
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_effective",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_inactive",
         "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_crossing_zone_active"
-      ]
+      ],
+      "evidence_or_gap": "Exact law branch is planned in distinct source-conditioned comparisons; Native construction, original designation/calendar/device provenance, selected CPU proofs and legal review remain pending.",
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required"
     }
   ],
-  "cases": [
+  "runtime_uncertainties": [
+    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
+    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
+    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
+    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
+    "Saved-source pass checker passes synthetic episode, four exception-observation variants, half-hour timing boundary and nine negative tests; exact Native and source authority remain unproved.",
+    "Expanded 13-case statutory plan is not selected delivery; all exact Native construction and CPU proofs remain worker-owned."
+  ],
+  "scope_branches": [
     {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "school_zone_pass_timing",
-      "comparison_unit": "category",
-      "requested_setting": "school_in_session_active",
-      "recorded_value": null,
-      "case_description": "designated school zone; ego overtakes same-direction vehicle; beacon state fixed within timing comparison",
-      "fixed_context": "Keep cell C261468, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. designated school zone; ego overtakes same-direction vehicle; beacon state fixed within timing comparison",
-      "source_topic_ids": [
-        "text-0",
-        "text-5",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "beacon_operational": true,
-        "pupils_in_class": true,
-        "beacon_yellow_alternating": true,
-        "sign_says_limit_in_effect": true,
-        "school_operating_at_pass": true,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_not_in_session",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "school_zone_pass_timing",
-      "comparison_unit": "category",
-      "requested_setting": "school_not_in_session",
-      "recorded_value": null,
-      "case_description": "designated school zone; ego overtakes same-direction vehicle; beacon state fixed within timing comparison",
-      "fixed_context": "Keep cell C261468, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. designated school zone; ego overtakes same-direction vehicle; beacon state fixed within timing comparison",
-      "source_topic_ids": [
-        "text-1",
-        "text-5",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": false,
-        "beacon_operational": true,
-        "beacon_yellow_alternating": true,
-        "sign_says_limit_in_effect": true,
-        "school_operating_at_pass": false,
-        "pupils_in_class": false,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_29min",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "half_hour_after_operation_end",
-      "comparison_unit": "category",
-      "requested_setting": "29 minutes after end",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_after_operation_end: 29 minutes after end",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-2",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "minutes_after_operation_end": 29,
-        "minutes_before_next_operation": 120,
-        "beacon_operational": true,
-        "beacon_yellow_alternating": true,
-        "school_operating_at_pass": false,
-        "pupils_in_class": false,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2,
-        "sign_says_limit_in_effect": true
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_30min",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "half_hour_after_operation_end",
-      "comparison_unit": "category",
-      "requested_setting": "30 minutes after end",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_after_operation_end: 30 minutes after end",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-2",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "minutes_after_operation_end": 30,
-        "minutes_before_next_operation": 120,
-        "beacon_operational": true,
-        "beacon_yellow_alternating": true,
-        "school_operating_at_pass": false,
-        "pupils_in_class": false,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2,
-        "sign_says_limit_in_effect": true
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_31min",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "half_hour_after_operation_end",
-      "comparison_unit": "category",
-      "requested_setting": "31 minutes after end",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_after_operation_end: 31 minutes after end",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-2",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "minutes_after_operation_end": 31,
-        "minutes_before_next_operation": 120,
-        "beacon_operational": true,
-        "beacon_yellow_alternating": true,
-        "school_operating_at_pass": false,
-        "pupils_in_class": false,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2,
-        "sign_says_limit_in_effect": true
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_31min",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "half_hour_before_next_operation",
-      "comparison_unit": "category",
-      "requested_setting": "31 minutes before next start",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_before_next_operation: 31 minutes before next start",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-2",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "minutes_after_operation_end": 120,
-        "minutes_before_next_operation": 31,
-        "beacon_operational": true,
-        "beacon_yellow_alternating": true,
-        "school_operating_at_pass": false,
-        "pupils_in_class": false,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2,
-        "sign_says_limit_in_effect": true
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "half_hour_before_next_operation",
-      "comparison_unit": "category",
-      "requested_setting": "30 minutes before next start",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_before_next_operation: 30 minutes before next start",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-2",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "minutes_after_operation_end": 120,
-        "minutes_before_next_operation": 30,
-        "beacon_operational": true,
-        "beacon_yellow_alternating": true,
-        "school_operating_at_pass": false,
-        "pupils_in_class": false,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2,
-        "sign_says_limit_in_effect": true
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_29min",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "half_hour_before_next_operation",
-      "comparison_unit": "category",
-      "requested_setting": "29 minutes before next start",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; half_hour_before_next_operation: 29 minutes before next start",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-2",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "minutes_after_operation_end": 120,
-        "minutes_before_next_operation": 29,
-        "beacon_operational": true,
-        "beacon_yellow_alternating": true,
-        "school_operating_at_pass": false,
-        "pupils_in_class": false,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2,
-        "sign_says_limit_in_effect": true
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_flashing",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "operational_beacon_class_hours",
-      "comparison_unit": "category",
-      "requested_setting": "alternating yellow lights flashing",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; operational_beacon_class_hours: alternating yellow lights flashing",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-3",
-        "text-5",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "pupils_in_class": true,
-        "beacon_operational": true,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2,
-        "beacon_yellow_alternating": true,
-        "school_operating_at_pass": true,
-        "sign_says_limit_in_effect": true
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_not_flashing",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "operational_beacon_class_hours",
-      "comparison_unit": "category",
-      "requested_setting": "alternating yellow lights not flashing",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; operational_beacon_class_hours: alternating yellow lights not flashing",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-3",
-        "text-5",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "pupils_in_class": true,
-        "beacon_operational": true,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2,
-        "beacon_yellow_alternating": false,
-        "school_operating_at_pass": true,
-        "sign_says_limit_in_effect": true
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_effective",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "nonbeacon_sign_effect",
-      "comparison_unit": "category",
-      "requested_setting": "sign indicates speed limit effective",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; nonbeacon_sign_effect: sign indicates speed limit effective",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-4",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "pupils_in_class": true,
-        "beacon_operational": false,
-        "sign_says_limit_in_effect": true,
-        "school_operating_at_pass": true,
-        "beacon_with_sign": false,
-        "beacon_yellow_lights": null,
-        "beacon_yellow_alternating": false
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_inactive",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "nonbeacon_sign_effect",
-      "comparison_unit": "category",
-      "requested_setting": "sign indicates speed limit not effective",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; nonbeacon_sign_effect: sign indicates speed limit not effective",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-4",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_zone",
-        "school_in_session": true,
-        "pupils_in_class": true,
-        "beacon_operational": false,
-        "sign_says_limit_in_effect": false,
-        "school_operating_at_pass": true,
-        "beacon_with_sign": false,
-        "beacon_yellow_lights": null,
-        "beacon_yellow_alternating": false
-      }
-    },
-    {
-      "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_crossing_zone_active",
-      "target_law_id": "NRS-484B-363-4",
-      "planning_status": "selected_cpu_draft_original_source_pending",
-      "target_type": "attempt",
-      "comparison_variable": "designated_zone_kind",
-      "comparison_unit": "category",
-      "requested_setting": "school crossing zone",
-      "recorded_value": null,
-      "case_description": "Sourced designated school zone and complete same-direction pass; designated_zone_kind: school crossing zone",
-      "fixed_context": "Frozen C261468 road, motor-vehicle subject, same-direction other vehicle, pass path, 20 Hz and four cameras; only the named source-reviewed condition varies within its comparison.",
-      "source_topic_ids": [
-        "text-0",
-        "text-5",
-        "reviewed-scope-0"
-      ],
-      "selected": true,
-      "requested_context": {
-        "zone_kind": "school_crossing_zone",
-        "school_in_session": true,
-        "beacon_operational": true,
-        "beacon_with_sign": true,
-        "beacon_yellow_lights": 2,
-        "beacon_yellow_alternating": true,
-        "school_operating_at_pass": true,
-        "pupils_in_class": true,
-        "sign_says_limit_in_effect": true
-      }
+      "actor": "motor_vehicle_driver",
+      "branch": "School zone; another vehicle traveling in the same direction.",
+      "cell_id": "C261468",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-363-4",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-363-4",
+      "scenario_partition": "training",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 500,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ],
-  "comparisons": [
-    {
-      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_session",
-      "case_ids": [
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_not_in_session"
-      ],
-      "deliberate_differences": [
-        "source-reviewed school session day"
-      ],
-      "fixed_conditions": [
-        "same operational beacon and active sign",
-        "frozen C261468 road and actor",
-        "same-direction complete pass",
-        "four cameras at 20 Hz for 600 frames",
-        "source-reviewed zone designation"
-      ],
-      "status": "planned_unverified",
-      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown."
-    },
-    {
-      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_30min",
-      "case_ids": [
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_29min",
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_30min",
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__after_end_31min"
-      ],
-      "deliberate_differences": [
-        "minutes after school operation end: 29, 30, 31"
-      ],
-      "fixed_conditions": [
-        "same sourced operation end and next start",
-        "same beacon/sign state",
-        "frozen C261468 road and actor",
-        "same-direction complete pass",
-        "four cameras at 20 Hz for 600 frames",
-        "source-reviewed zone designation"
-      ],
-      "status": "planned_unverified",
-      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown."
-    },
-    {
-      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min",
-      "case_ids": [
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_31min",
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min",
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_29min"
-      ],
-      "deliberate_differences": [
-        "minutes before next operation: 31, 30, 29"
-      ],
-      "fixed_conditions": [
-        "same sourced operation end and next start",
-        "same beacon/sign state",
-        "frozen C261468 road and actor",
-        "same-direction complete pass",
-        "four cameras at 20 Hz for 600 frames",
-        "source-reviewed zone designation"
-      ],
-      "status": "planned_unverified",
-      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown."
-    },
-    {
-      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__class_beacon_state",
-      "case_ids": [
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_flashing",
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_not_flashing"
-      ],
-      "deliberate_differences": [
-        "source-observed alternating yellow flash state"
-      ],
-      "fixed_conditions": [
-        "school in session",
-        "pupils in class",
-        "same operational two-yellow-light beacon and sign",
-        "frozen C261468 road and actor",
-        "same-direction complete pass",
-        "four cameras at 20 Hz for 600 frames",
-        "source-reviewed zone designation"
-      ],
-      "status": "planned_unverified",
-      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown."
-    },
-    {
-      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_state",
-      "case_ids": [
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_effective",
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_inactive"
-      ],
-      "deliberate_differences": [
-        "source-observed sign effective state"
-      ],
-      "fixed_conditions": [
-        "school in session",
-        "same nonbeacon sign and no operational beacon",
-        "frozen C261468 road and actor",
-        "same-direction complete pass",
-        "four cameras at 20 Hz for 600 frames",
-        "source-reviewed zone designation"
-      ],
-      "status": "planned_unverified",
-      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown."
-    },
-    {
-      "comparison_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__zone_kind",
-      "case_ids": [
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_in_session_active",
-        "training__C261468__NRS-484B-363-4__motor_vehicle_driver__school_crossing_zone_active"
-      ],
-      "deliberate_differences": [
-        "source-designated school versus school crossing zone"
-      ],
-      "fixed_conditions": [
-        "school in session",
-        "same operational beacon/sign state",
-        "frozen C261468 road and actor",
-        "same-direction complete pass",
-        "four cameras at 20 Hz for 600 frames",
-        "source-reviewed zone designation"
-      ],
-      "status": "planned_unverified",
-      "measurement_method": "Join original pass samples, civil time, school calendar, installed device/sign and zone boundary; keep physical and legal outcomes unknown."
-    }
+  "selected_branch": null,
+  "selection_targets": [
+    "full-train"
   ],
-  "observations": [
-    {
-      "name": "ego_pose",
-      "unit": "m,deg",
-      "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
-    },
-    {
-      "name": "school_zone_pass_timing",
-      "unit": "category",
-      "mandatory": true,
-      "purpose": "Record school calendar and operation hours, beacon state, pass event and zone boundary."
-    }
-  ],
+  "source_law_citation": "NRS 484B.363(4); with 484B.363(9)",
+  "source_law_text": "The driver of a vehicle shall not overtake and pass another vehicle traveling in the same direction in an area designated as a school zone or school crossing zone except: (a) On a day on which the school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect. As used in this section, \u201cspeed limit beacon\u201d means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
   "source_observation_mapping": {
-    "dev.zone_sign": {
-      "evidence": "Proposed capture only: kind school or school_crossing. No Native channel or Core atom proof yet.",
-      "channels": [
-        "school_zone_pass_timing"
-      ],
-      "source_refs": [
-        "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json"
-      ]
-    },
-    "drv.within_signed_zone": {
-      "evidence": "Proposed capture only: inside such a zone. No Native channel or Core atom proof yet.",
-      "channels": [
-        "school_zone_pass_timing"
-      ],
-      "source_refs": [
-        "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json"
-      ]
-    },
-    "drv.overtaking": {
-      "evidence": "Proposed capture only: the prohibited pass. No Native channel or Core atom proof yet.",
-      "channels": [
-        "school_zone_pass_timing"
-      ],
-      "source_refs": [
-        "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json"
-      ]
-    },
-    "rel.same_direction": {
-      "evidence": "Proposed capture only: the overtaken vehicle travels the same way. No Native channel or Core atom proof yet.",
-      "channels": [
-        "school_zone_pass_timing"
-      ],
-      "source_refs": [
-        "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json"
-      ]
-    },
-    "rel.longitudinal_overlap": {
-      "evidence": "Proposed capture only: the abreast phase. No Native channel or Core atom proof yet.",
-      "channels": [
-        "school_zone_pass_timing"
-      ],
-      "source_refs": [
-        "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json"
-      ]
-    },
     "dev.speed_limit_beacon": {
-      "evidence": "Proposed capture only: its flashing attribute. No Native channel or Core atom proof yet.",
+      "channels": [
+        "original_beacon_lamp_state"
+      ],
+      "evidence": "Exact original survey and saved 20 Hz source join; original legal condition remains pending",
+      "source_refs": [
+        "context-survey.json",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "school_zone_context.json"
+      ]
+    },
+    "dev.zone_sign": {
       "channels": [
         "school_zone_pass_timing"
       ],
+      "evidence": "Installed sign/designation and camera pixels are original survey source references; saved pass timing is derived only after source join and does not itself prove visibility.",
       "source_refs": [
-        "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json"
+        "context-survey.json",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "school_zone_context.json"
       ]
     },
     "drv.condition_in_effect": {
-      "evidence": "Proposed capture only: whether the zone's condition holds. No Native channel or Core atom proof yet.",
       "channels": [
+        "school_zone_pass_timing",
+        "original_beacon_lamp_state"
+      ],
+      "evidence": "Exact original survey and saved 20 Hz source join; original legal condition remains pending",
+      "source_refs": [
+        "context-survey.json",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "school_zone_context.json"
+      ]
+    },
+    "drv.overtaking": {
+      "channels": [
+        "original_ego_other_pose",
         "school_zone_pass_timing"
       ],
+      "evidence": "Exact original survey and saved 20 Hz source join; original legal condition remains pending",
       "source_refs": [
-        "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json"
+        "context-survey.json",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "school_zone_context.json"
+      ]
+    },
+    "drv.within_signed_zone": {
+      "channels": [
+        "original_ego_other_pose",
+        "school_zone_pass_timing"
+      ],
+      "evidence": "Exact original survey and saved 20 Hz source join; original legal condition remains pending",
+      "source_refs": [
+        "context-survey.json",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "school_zone_context.json"
       ]
     },
     "env.civil_time": {
-      "evidence": "Proposed capture only: the date and time of day. No Native channel or Core atom proof yet.",
       "channels": [
         "school_zone_pass_timing"
       ],
+      "evidence": "Exact original survey and saved 20 Hz source join; original legal condition remains pending",
       "source_refs": [
-        "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json"
+        "context-survey.json",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "school_zone_context.json"
+      ]
+    },
+    "rel.longitudinal_overlap": {
+      "channels": [
+        "original_ego_other_pose"
+      ],
+      "evidence": "Exact original survey and saved 20 Hz source join; original legal condition remains pending",
+      "source_refs": [
+        "context-survey.json",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "school_zone_context.json"
+      ]
+    },
+    "rel.same_direction": {
+      "channels": [
+        "original_ego_other_pose"
+      ],
+      "evidence": "Exact original survey and saved 20 Hz source join; original legal condition remains pending",
+      "source_refs": [
+        "context-survey.json",
+        "trace.jsonl",
+        "video_frames.jsonl",
+        "school_zone_context.json"
       ]
     }
   },
@@ -721,49 +896,6 @@
       "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
     }
   ],
-  "existing_evidence": [
-    {
-      "set_id": "full-train",
-      "membership_rows": 0,
-      "status": "unreviewed_membership_only",
-      "reuse_receipt": null
-    }
-  ],
-  "runtime_uncertainties": [
-    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
-    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
-    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
-    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
-    "Saved-source pass checker passes synthetic episode, four exception-observation variants, half-hour timing boundary and nine negative tests; exact Native and source authority remain unproved.",
-    "Expanded 13-case statutory plan is not selected delivery; all exact Native construction and CPU proofs remain worker-owned."
-  ],
-  "selection_targets": [
-    "full-train"
-  ],
-  "branch_gap_review": {
-    "reviewer": "portable CPU worker",
-    "source": "inputs/training__C261468__NRS-484B-363-4__motor_vehicle_driver/assignment.json",
-    "method": "Read exact frozen text including subsection (9) beacon definition; compared each exception with the two existing proposed cases. No accepted recordings are in the frozen membership.",
-    "covered_by_existing_plan": [
-      "base prohibition",
-      "exception (a): school not in session"
-    ],
-    "still_needed_as_distinct_controlled_comparisons": [],
-    "source_observation_needed": [
-      "signed zone boundary and zone kind",
-      "same-direction complete pass episode",
-      "sourced school calendar and operation schedule",
-      "civil time tied to each saved frame",
-      "beacon/sign physical state and class hours"
-    ],
-    "legal_threshold_note": "The half-hour period is statutory; route station crossings and 20 Hz cadence are measurement conventions, not legal thresholds.",
-    "covered_by_expanded_plan": [
-      "school and school-crossing designation",
-      "session-day exception (a)",
-      "29/30/31 minute after-end and 31/30/29 minute before-start exception (b) probes",
-      "operational sign-plus-two-yellow-light beacon flashing pair (c)",
-      "nonbeacon sign effective-state pair (d)"
-    ],
-    "implementation_status": "expanded planned cases only; all new cases are unselected and unconstructed"
-  }
+  "summary_conflicts": "Do not adopt summary or witness as legal authority; exact law controls. Unreviewed historical summaries remain provisional.",
+  "summary_status": "recovered_requires_source_review"
 }

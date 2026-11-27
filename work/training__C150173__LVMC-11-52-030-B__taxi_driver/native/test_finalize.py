@@ -32,6 +32,8 @@ def fixture(folder):
     review = {'source_kind': 'synthetic_cpu_fixture',
               'source_basis': 'synthetic shape test only', 'legal_verdict': None}
     write(folder / 'taxicab-review.json', {**review, 'observed_taxicab': True})
+    write(folder / 'commercial-status-review.json', {**review, 'taxi_actor_id': 1,
+        'observed_taxicab': True, 'observed_commercial_use': None})
     write(folder / 'sign-review.json', {**review, 'observed_curb_color': 'yellow',
                                        'posted_hours_start': '09:00', 'posted_hours_end': '17:00'})
     write(folder / 'passenger-purpose-review.json', {**review,
@@ -81,12 +83,16 @@ def structural_original_fixture(folder):
         for row in rows:
             row['source_kind'] = 'original_native'
         (folder / name).write_text(''.join(json.dumps(row) + '\n' for row in rows))
-    for name in ('taxicab-review.json', 'sign-review.json',
+    for name in ('taxicab-review.json', 'commercial-status-review.json', 'sign-review.json',
                  'passenger-purpose-review.json', 'ordinary-rules-review.json'):
         value = json.loads((folder / name).read_text())
         value['source_kind'] = 'original_native'
         if name == 'sign-review.json':
             value['observed_sign_content'] = 'TAXI PASSENGERS 09:00-17:00 PROPOSAL'
+        if name == 'commercial-status-review.json':
+            value['source_refs'] = {
+                'yellow-zone-native.jsonl': sha(folder / 'yellow-zone-native.jsonl'),
+                'overview.mkv': sha(folder / 'overview.mkv')}
         write(folder / name, value)
     write(folder / 'capture-seal.json', {
         'provenance_kind': 'native', 'diagnostic_fixture': False, 'frames': 600,
