@@ -9,7 +9,8 @@ from pathlib import Path
 VIEWS = {'overview': (1920, 1080), 'approach': (1280, 720),
          'reference_corner': (1280, 720), 'driver_reference': (1280, 720)}
 REVIEWS = ('taxicab-review.json', 'sign-review.json',
-           'passenger-purpose-review.json', 'ordinary-rules-review.json')
+           'passenger-purpose-review.json', 'ordinary-rules-review.json',
+           'commercial-status-review.json')
 ROWS = ('yellow-zone-native.jsonl', 'observed-passenger-activity.jsonl',
         'video_frames.jsonl', 'trace.jsonl')
 SOURCES = (*ROWS, 'road.xodr', 'yellow-road.xodr',
@@ -81,6 +82,7 @@ def audit(attempt):
                 review.get('legal_verdict') is not None):
             raise ValueError('Independent original review missing: ' + name)
     if (reviews['taxicab-review.json'].get('observed_taxicab') is not True or
+            reviews['commercial-status-review.json'].get('taxi_actor_id') is None or
             reviews['sign-review.json'].get('observed_curb_color') != 'yellow' or
             not reviews['sign-review.json'].get('observed_sign_content') or
             reviews['passenger-purpose-review.json'].get('observed_purpose') not in
@@ -90,6 +92,13 @@ def audit(attempt):
     if any(len(rows) != 600 for rows in (native, activity, mapping, trace)):
         raise ValueError('Full 600-frame original source join required')
     taxi_actor = native[0].get('taxi_actor_id')
+    commercial = reviews['commercial-status-review.json']
+    refs = commercial.get('source_refs')
+    if (commercial['taxi_actor_id'] != taxi_actor or
+            not isinstance(refs, dict) or
+            not {'yellow-zone-native.jsonl', 'overview.mkv'} <= set(refs) or
+            any(bound.get(name) != digest for name, digest in refs.items())):
+        raise ValueError('Commercial classification review lacks original taxi actor source')
     passenger_actor = native[0].get('passenger_proxy_id')
     if (type(taxi_actor) is not int or type(passenger_actor) is not int or
             taxi_actor == passenger_actor):

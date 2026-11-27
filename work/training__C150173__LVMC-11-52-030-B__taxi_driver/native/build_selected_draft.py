@@ -7,7 +7,7 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parent.parent
 ROOT = BASE.parents[1]
 NAMES = ('st.curb_zone', 'dev.regulatory_sign', 'drv.condition_in_effect',
-         'env.civil_time', 'ru.taxicab', 'drv.standing_or_parked',
+         'env.civil_time', 'ru.commercial_motor_vehicle', 'ru.taxicab', 'drv.standing_or_parked',
          'sig.door_open', 'ru.occupant_count', 'kin.time')
 
 
@@ -46,6 +46,16 @@ def selected(source, desc):
     return result
 
 
+def selected_freight(source):
+    result = copy.deepcopy(source)
+    result['status'] = 'selected_cpu_proofs_pending'
+    config_file = next(item for item in result['files'] if item['path'] == 'config.json')
+    config = json.loads(config_file['content'])
+    config['case']['recording_description'] = result['recording_description']
+    config_file['content'] = json.dumps(config, indent=2) + '\n'
+    return result
+
+
 def main():
     draft = json.loads((BASE / 'native-draft-manifest.json').read_text())
     prior_path = BASE / 'selected-draft-manifest.json'
@@ -79,6 +89,33 @@ def main():
             for key in ('physical_preparation',):
                 if key in previous:
                     entry[key] = previous[key]
+        entries.append(entry)
+    freight = json.loads((BASE / 'native-freight-draft-manifest.json').read_text())
+    for item in freight['cases']:
+        case = item['case_id']
+        suffix = case.rsplit('__', 1)[1]
+        primary = json.loads((BASE / item['construction']).read_text())
+        fallback = json.loads((BASE / item['candidates'][0]['construction']).read_text())
+        selected_primary = BASE / 'native-selected' / suffix / 'construction.json'
+        selected_fallback = BASE / 'native-selected' / suffix / 'fallback1-construction.json'
+        write(selected_primary, selected_freight(primary))
+        write(selected_fallback, selected_freight(fallback))
+        candidate = copy.deepcopy(item['candidates'][0])
+        candidate['construction'] = str(selected_fallback.relative_to(BASE))
+        candidate['construction_sha256'] = sha(selected_fallback)
+        recipe = BASE / 'native/freight-diagnostic' / suffix / 'fixture-recipe.json'
+        contract = BASE / 'native-selected' / suffix / 'measurement-contract.json'
+        entry = {'case_id': case, 'kind': 'delivery',
+            'construction': str(selected_primary.relative_to(BASE)),
+            'construction_sha256': sha(selected_primary),
+            'fixture_recipe': str(recipe.relative_to(ROOT)),
+            'measurement_contract': str(contract.relative_to(BASE)),
+            'measurement_procedure': {'entrypoint': 'freight_finalize.py'},
+            'candidate_risk': item['candidate_risk'], 'candidates': [candidate]}
+        previous = by_case.get(case, {})
+        if previous.get('construction_sha256') == entry['construction_sha256']:
+            if 'physical_preparation' in previous:
+                entry['physical_preparation'] = previous['physical_preparation']
         entries.append(entry)
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': BASE.name,
         'runtime_manifest_sha256': sha(ROOT / 'runtime/SOURCE-MANIFEST.json'),

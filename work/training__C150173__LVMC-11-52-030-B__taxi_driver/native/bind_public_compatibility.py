@@ -19,8 +19,7 @@ def main():
         case = entry['case_id']
         suffix = case.rsplit('__', 1)[1]
         for candidate in ('primary', 'fallback1'):
-            version = 15 if suffix in ('probe_a', 'probe_c') else 16
-            source = SCRATCH / f'selected-compatibility-{suffix}-{candidate}-v{version}'
+            source = SCRATCH / f'selected-compatibility-{suffix}-{candidate}-v18'
             receipt = json.loads((source / 'compatibility.json').read_text())
             construction_sha = (entry['construction_sha256'] if candidate == 'primary'
                                 else entry['candidates'][0]['construction_sha256'])

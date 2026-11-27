@@ -30,6 +30,8 @@ def check_request(config, road_text):
             config.get('duration_s') != 30 or config.get('rate_hz') != 20 or
             config.get('frames') != 600 or config.get('legal_verdict') is not None):
         raise ValueError('Exact light-express taxi request differs')
+    if config.get('taxi_stop_x_m') not in (5.25, 4.75):
+        raise ValueError('Exact taxi stop/camera visibility choice differs')
     if config.get('commercial_classification') != 'pending_original_review':
         raise ValueError('Commercial status must await original review')
     if config.get('sign_source_status') != 'authored_proposal_unverified':
@@ -74,7 +76,7 @@ def measure_saved(rows, config):
         if (row.get('video_frame') != i or
                 not math.isclose(row.get('time_s', -1), (i + 1) / 20, abs_tol=1e-4) or
                 row.get('source_kind') not in ('original_native', 'synthetic_cpu_fixture') or
-                row.get('observed_purpose') != purpose or
+                row.get('requested_purpose') != purpose or
                 row.get('taxi_actor_id') is None or row.get('cargo_actor_id') is None):
             raise ValueError('Freight source identity/frame join differs')
         if datetime.fromisoformat(row['civil_time_local']) != start + timedelta(seconds=(i + 1) / 20):
@@ -93,7 +95,7 @@ def measure_saved(rows, config):
         last = centre
         transfer_frames += bool(row.get('cargo_transfer_motion_observed'))
     displacement = math.dist(first, last)
-    return {'case_id': config['case_id'], 'observed_purpose': purpose,
+    return {'case_id': config['case_id'], 'requested_purpose': purpose,
             'frames': 600, 'cargo_displacement_m': displacement,
             'cargo_transfer_motion_frames': transfer_frames,
             'source_kind': rows[0]['source_kind'],

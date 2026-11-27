@@ -20,8 +20,8 @@ def write(path, data):
 def main():
     draft = json.loads((BASE / 'selected-draft-manifest.json').read_text())
     case_plan = json.loads((BASE / 'case-plan.json').read_text())
-    if len(draft['cases']) != 4 or len(case_plan['comparisons']) != 3:
-        raise ValueError('Exact four-case taxi plan required')
+    if len(draft['cases']) != 7 or len(case_plan['comparisons']) != 5:
+        raise ValueError('Exact seven-case passenger/freight plan required')
     public_summary = BASE / 'native-selected' / 'public-compatibility-summary.json'
     saved_summary = BASE / 'native-selected' / 'saved-processing-summary.json'
     comparison_summary = BASE / 'native-selected' / 'saved-comparison-summary.json'
@@ -32,41 +32,17 @@ def main():
     for item in draft['cases']:
         case_id = item['case_id']
         suffix = case_id.rsplit('__', 1)[1]
-        contract = {
-            'format': 'worker-measurement-contract', 'case_id': case_id,
-            'requirements': [{
-                'disposition_index': 0, 'requirement': 'LVMC-11-52-030-B',
-                'source': 'LVMC 11.52.030(B)',
-                'output_key': 'taxi_yellow_zone_measurement',
-                'method': 'source_join_measurement', 'kind': 'measured', 'value_type': 'object',
-                'inputs': ['yellow-zone-native.jsonl', 'sign-review.json',
-                           'passenger-purpose-review.json', 'ordinary-rules-review.json',
-                           'observed-passenger-activity.jsonl']}],
-            'negative': {'remove': ['observed-passenger-activity.jsonl'],
-                         'error_contains': 'Missing required source: observed-passenger-activity.jsonl'},
-            'frame_count': 600, 'sampling_rate_hz': 20, 'duration_s': 30,
-            'physical_acceptance_claimed': False,
-            'source_required': ['original Native taxi body and velocity',
-                                '600 aligned original frames from four cameras',
-                                'source-based taxicab identity review',
-                                'source-based yellow curb and posted sign review',
-                                'source-based passenger-purpose review',
-                                'source-based ordinary-rule review'],
-            'measured_channels': ['stopped_frames', 'yellow_zone_body_frames',
-                                  'posted_active_stopped_frames', 'observed_purpose'],
-            'source_finalizer': 'native/finalize_original.py',
-            'review_sealer': 'native/seal_review.py',
-            'original_native_observed': False, 'legal_verdict': None,
-            'outside_posted_hours': 'ordinary rules unresolved',
-            'commercial_freight_alternative': 'requires separate compatible actor binding'}
         contract_path = BASE / 'native-selected' / suffix / 'measurement-contract.json'
-        write(contract_path, contract)
-        recipe_path = BASE / 'native' / 'diagnostic' / suffix / 'fixture-recipe.json'
+        if not contract_path.is_file():
+            raise ValueError('Missing selected measurement contract: ' + suffix)
+        recipe_path = (BASE / 'native' /
+                       ('freight-diagnostic' if suffix.startswith('freight_') else 'diagnostic') /
+                       suffix / 'fixture-recipe.json')
         if not recipe_path.is_file():
             raise ValueError('Missing exact taxi CPU diagnostic recipe: ' + suffix)
         receipt_map = {}
         for candidate in ('primary', 'fallback1'):
-            source = SCRATCH / f'selected-offline-{suffix}-{candidate}-v14' / 'offline.log'
+            source = SCRATCH / f'selected-offline-{suffix}-{candidate}-v18' / 'offline.log'
             if not source.exists() or 'OK' not in source.read_text():
                 raise ValueError('Missing passing exact offline check: ' + suffix + ' ' + candidate)
             retained = BASE / 'native-selected' / suffix / (candidate + '-offline.log')

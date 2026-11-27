@@ -135,9 +135,9 @@ def finalize(attempt, output):
     channels.mkdir(exist_ok=False)
     evidence = []
     names = [x['name'] for x in config['recording_description']['channels']]
-    if names != ['original_ego_other_pose', 'original_beacon_lamp_state', 'four_source_cameras']:
+    if names != ['original_ego_other_pose', 'original_beacon_lamp_state']:
         raise ValueError('Saved channels differ from selected recording plan')
-    for name in names[:2]:
+    for name in names:
         path = channels / (name + '.jsonl')
         with path.open('x') as stream:
             for i, row in enumerate(trace):
@@ -146,21 +146,28 @@ def finalize(attempt, output):
                           'ego_lateral_m': row['ego_lateral_m'],
                           'other_lateral_m': row['other_lateral_m']}
                          if name == 'original_ego_other_pose' else
-                         (lamps[i]['yellow_lit'] if lamps is not None else None))
+                         (lamps[i]['yellow_lit'] if lamps is not None else []))
                 stream.write(json.dumps({'time_s': i / 20, 'value': value}) + '\n')
         evidence.append({'name': name, 'unit': 'structured',
                          'reference': 'channels/' + path.name})
-    evidence.append({'name': 'four_source_cameras', 'unit': 'video',
-                     'reference': 'raw.mkv'})
     review_path = channels / 'source_review.json'
     review_path.write_text(json.dumps({
+        'four_source_cameras': list(CAMERAS),
+        'original_school_designation': context['zone_kind'],
+        'original_school_calendar': {'school_in_session': context['school_in_session'],
+                                     'pupils_in_class': context['pupils_in_class']},
+        'original_civil_time': context['civil_time_unix_s'],
+        'original_sign_beacon': {'operational': context['beacon_operational'],
+                                 'effective': context['sign_says_limit_in_effect']},
+        'original_route': context['route_direction_id'],
         'original_sources': facts['sources'],
         'school_calendar_and_designation_confirmed': False,
         'beacon_yellow_pixels_confirmed': False,
         'physical_pass_and_zone_confirmed': False,
         'legal_verdict': None}) + '\n')
-    evidence.append({'name': 'source_review', 'unit': 'structured',
-                     'reference': 'channels/source_review.json'})
+    for item in config['recording_description']['context_inputs']:
+        evidence.append({'name': item['name'], 'unit': item['unit'],
+                         'reference': 'channels/source_review.json'})
     from worker_exchange.native_output import physical_result, write_result
     result = {
         'case_id': case, 'measured_values': facts,

@@ -16,10 +16,11 @@ def main():
     selected = {item['case_id']: item for item in
                 json.loads((BASE / 'selected-draft-manifest.json').read_text())['cases']}
     cases = []
-    for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
-        stem = f'saved-{suffix}-positive-v15-output'
+    for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d',
+                   'freight_load', 'freight_unload', 'freight_wait'):
+        stem = f'saved-{suffix}-positive-v18-output'
         source = SCRATCH / stem / 'v0001'
-        negative_stem = f'saved-{suffix}-negative-v15-output'
+        negative_stem = f'saved-{suffix}-negative-v18-output'
         negative_source = SCRATCH / negative_stem / 'v0001'
         positive = json.loads((source / 'processing.json').read_text())
         negative = json.loads((negative_source / 'processing.json').read_text())
@@ -37,7 +38,9 @@ def main():
                 positive.get('missing_evidence') is not False or
                 negative.get('missing_evidence') is not True or
                 positive['timestamp_joins'].get('frames') != 600 or
-                'Missing required source: observed-passenger-activity.jsonl'
+                ('Missing required source: freight-purpose-review.json'
+                 if suffix.startswith('freight_') else
+                 'Missing required source: observed-passenger-activity.jsonl')
                 not in feedback.get('error', '')):
             raise ValueError('Taxi recorded-only pair differs: ' + suffix)
         destination = BASE / 'native-selected' / suffix

@@ -22,9 +22,13 @@
       "requirement": "Commercial vehicle freight-loading alternative",
       "source": "LVMC 11.52.030(B)(1)",
       "branch": "commercial freight alternative",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Frozen actor is taxi_driver. A commercial freight vehicle and actual freight purpose need separate actor/cell source binding; taxi passenger requests cannot be relabeled as freight."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_load",
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_unload",
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_wait"
+      ],
+      "evidence_or_gap": "Three selected same-cell taxi/light-express cargo constructions contrast loading, unloading and no transfer with original taxi and cargo actor IDs, saved body vertices, four cameras and independent classification, sign and purpose source reviews. Original commercial status, sign authority and actual freight purpose remain unresolved."
     }
   ],
   "cases": [
@@ -59,6 +63,30 @@
       "target_type": "measurement_attempt",
       "physical_target": "taxi stopped at same yellow curb during posted hours with a passenger unloading request and a walker motion cue; actual passenger exchange and legal eligibility require original review",
       "comparison_variable": "taxi_passenger_purpose"
+    },
+    {
+      "case_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_load",
+      "target_law_id": "LVMC-11-52-030-B",
+      "kind": "planned_only",
+      "target_type": "measurement_attempt",
+      "physical_target": "stopped taxi with light-express cargo moved toward taxi; commercial identity, effective sign and actual loading require original review",
+      "comparison_variable": "light_express_freight_transfer"
+    },
+    {
+      "case_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_unload",
+      "target_law_id": "LVMC-11-52-030-B",
+      "kind": "planned_only",
+      "target_type": "measurement_attempt",
+      "physical_target": "stopped taxi with light-express cargo moved away from taxi; commercial identity, effective sign and actual unloading require original review",
+      "comparison_variable": "light_express_freight_transfer"
+    },
+    {
+      "case_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_wait",
+      "target_law_id": "LVMC-11-52-030-B",
+      "kind": "planned_only",
+      "target_type": "measurement_attempt",
+      "physical_target": "same stopped taxi and cargo proxy without transfer; negative control, original purpose and identity unresolved",
+      "comparison_variable": "light_express_freight_transfer"
     }
   ],
   "comparisons": [
@@ -111,6 +139,48 @@
       ],
       "deliberate_differences": [
         "waiting versus unloading passenger request and walker cue"
+      ]
+    },
+    {
+      "comparison_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_load_comparison",
+      "case_ids": [
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_wait",
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_load"
+      ],
+      "fixed_conditions": [
+        "same taxi-driver actor role and authored one-way yellow curb",
+        "same proposed commercial-freight 09:00–17:00 sign",
+        "same requested taxi stop and cargo proxy blueprint",
+        "same 10:00 civil time, four 20 Hz views and 600-frame interval"
+      ],
+      "deliberate_differences": [
+        "no cargo transfer versus cargo toward taxi"
+      ],
+      "independent_source_review_required": [
+        "original taxi identity and commercial-use classification",
+        "actual freight cargo and purpose",
+        "effective authoritative sign and curb zone"
+      ]
+    },
+    {
+      "comparison_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_unload_comparison",
+      "case_ids": [
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_wait",
+        "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_unload"
+      ],
+      "fixed_conditions": [
+        "same taxi-driver actor role and authored one-way yellow curb",
+        "same proposed commercial-freight 09:00–17:00 sign",
+        "same requested taxi stop and cargo proxy blueprint",
+        "same 10:00 civil time, four 20 Hz views and 600-frame interval"
+      ],
+      "deliberate_differences": [
+        "no cargo transfer versus cargo away from taxi"
+      ],
+      "independent_source_review_required": [
+        "original taxi identity and commercial-use classification",
+        "actual freight cargo and purpose",
+        "effective authoritative sign and curb zone"
       ]
     }
   ],
@@ -272,10 +342,13 @@
       ]
     },
     "ru.commercial_motor_vehicle": {
-      "evidence": "Requires a separately compatible commercial-freight actor binding; the taxi request does not observe this alternative.",
-      "channels": [],
+      "evidence": "The original taxi actor ID must join source-based identity and commercial-use classification; the actor role or case label is insufficient.",
+      "channels": [
+        "ru.commercial_motor_vehicle"
+      ],
       "source_refs": [
-        "inputs/training__C150173__LVMC-11-52-030-B__taxi_driver/assignment.json"
+        "freight-native.jsonl",
+        "commercial-status-review.json"
       ]
     },
     "ru.taxicab": {

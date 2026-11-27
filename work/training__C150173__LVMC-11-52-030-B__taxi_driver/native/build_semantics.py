@@ -31,7 +31,7 @@ def make():
     relevance = {**base, 'relevant_laws': [{
         'law_id': LAW_ID, 'quote': LAW['text'], 'applies_to': [ACTOR],
         'relevance_type': 'specific_match', 'confidence': 'high',
-        'notes': 'Frozen taxi role and yellow-curb cell; sign authority, vehicle identity and passenger purpose need original review.'}],
+        'notes': 'Frozen taxi role and yellow-curb cell; sign authority, taxi/commercial identity and actual passenger or freight purpose need original review.'}],
         'borderline_excluded': []}
     relevance_ref = write('relevance.json', relevance)
     write('relevance-batch.json', relevance)
@@ -45,6 +45,9 @@ def make():
         {'phrase': 'for the purpose of loading, unloading or waiting for passengers',
          'note': 'Requested walker motion is not observed passenger exchange or purpose. Retain original activity and independent purpose review over the standing interval.',
          'observables': ['sig.door_open', 'ru.occupant_count']},
+        {'phrase': 'Commercial vehicles ... loading or unloading freight',
+         'note': 'A taxicab role does not establish commercial classification. Bind the same original taxi actor identity to independent commercial-use evidence and original cargo movement; no-transfer remains a controlled negative.',
+         'observables': ['ru.commercial_motor_vehicle', 'sig.door_open']},
     ]
     template = {
         'template_id': TEMPLATE_ID, 'law_id': LAW_ID, 'actor': ACTOR,
@@ -52,12 +55,12 @@ def make():
         'structure': {
             'activation': {'description': 'A vehicle stops, stands or parks in an established yellow zone with an accompanying sign.',
                            'source_clause': 'Yellow indicates a zone for:'},
-            'obligation': {'description': 'Measure taxi standing, observed purpose, sign terms and civil time without a legal verdict.',
+            'obligation': {'description': 'Measure taxi standing, passenger or light-express cargo purpose, sign terms and civil time without a legal verdict.',
                            'type': 'conditional_permission',
                            'source_clause': 'Taxicabs to stop, stand, park for the purpose of loading, unloading or waiting for passengers in accordance with the conditions and times posted on an accompanying sign.',
                            'numeric_conditions': []},
             'exceptions': [
-                {'description': 'Commercial vehicles loading or unloading freight require a compatible commercial actor and purpose source.',
+                {'description': 'Commercial vehicles loading or unloading freight require independent commercial identity, original cargo transfer and posted-sign sources.',
                  'source_clause': 'Commercial vehicles to stop, stand or park for the purpose of loading or unloading freight in accordance with the conditions and times posted on an accompanying sign;'},
                 {'description': 'Taxi passenger loading, unloading or waiting subject to the source-reviewed posted conditions and times.',
                  'source_clause': 'Taxicabs to stop, stand, park for the purpose of loading, unloading or waiting for passengers in accordance with the conditions and times posted on an accompanying sign.'}
@@ -68,6 +71,7 @@ def make():
         'parameter_refs': [
             {'name': 'civil_start_local', 'kind': 'world_setup', 'range_or_domain': 'source-joined civil clock time'},
             {'name': 'requested_passenger_purpose', 'kind': 'controller', 'range_or_domain': 'waiting, loading or unloading request'},
+            {'name': 'requested_freight_purpose', 'kind': 'controller', 'range_or_domain': 'light-express loading, unloading or no-transfer request'},
             {'name': 'taxi_stop_x_m', 'kind': 'controller', 'range_or_domain': 'stop target along the same authored yellow zone'}
         ]}
     template_ref = write('template.json', template)
@@ -93,13 +97,15 @@ def make():
         'variable_parameters': [
             {'name': 'civil_start_local', 'kind': 'world_setup', 'range_or_domain': '10:00 or 18:00 local civil time', 'used_by_laws': [LAW_ID]},
             {'name': 'requested_passenger_purpose', 'kind': 'controller', 'range_or_domain': 'waiting, loading or unloading request', 'used_by_laws': [LAW_ID]},
+            {'name': 'requested_freight_purpose', 'kind': 'controller', 'range_or_domain': 'loading, unloading or waiting without freight transfer', 'used_by_laws': [LAW_ID]},
             {'name': 'taxi_stop_x_m', 'kind': 'controller', 'range_or_domain': 'stop position along yellow curb', 'used_by_laws': [LAW_ID]}
         ]}
     bindings_ref = write('bindings.json', bindings)
     description = construction('probe_a')['recording_description']
-    def assigned(clock, purpose, x=5.25):
+    def assigned(clock, purpose, x=5.25, freight=None):
         return {'civil_start_local': {'kind': 'world_setup', 'value': clock},
                 'requested_passenger_purpose': {'kind': 'controller', 'value': purpose},
+                'requested_freight_purpose': {'kind': 'controller', 'value': freight},
                 'taxi_stop_x_m': {'kind': 'controller', 'value': x}}
     cases = [{
         'case_id': ASSIGNMENT['assignment_id'] + '__baseline',
@@ -126,11 +132,27 @@ def make():
                       'comparison_or_standard': 'controlled taxi yellow-zone source review',
                       'target_value_or_branch': suffix},
             'recording_description': exact['recording_description']})
+    for suffix, purpose in [('freight_load', 'loading_light_express'),
+                            ('freight_unload', 'unloading_light_express'),
+                            ('freight_wait', 'waiting_without_transfer')]:
+        exact = construction(suffix)
+        cases.append({
+            'case_id': exact['case_id'], 'target_law_id': LAW_ID,
+            'target_type': 'judgment_sweep',
+            'rationale': 'Measure same taxi actor, cargo body transfer, independent commercial identity, freight sign and original purpose without a legal finding.',
+            'variable_assignments': assigned('2026-11-26T10:00:00', None, freight=purpose),
+            'unresolved_judgment_calls': [j['phrase'] for j in judgments],
+            'paired_probe_id': 'taxi-light-express-freight-contrast',
+            'deliberate_differences': ['requested_freight_purpose'],
+            'probe': {'primary_variable': 'requested_freight_purpose',
+                      'comparison_or_standard': 'controlled freight transfer versus no-transfer original source review',
+                      'target_value_or_branch': suffix},
+            'recording_description': exact['recording_description']})
     sweep_specs = [{
         'sweep_id': f'taxi-yellow-{index}', 'target_law_id': LAW_ID,
         'judgment_refs': [{k: item[k] for k in ('phrase', 'note')}],
         'status': 'incomplete',
-        'rationale': 'The four selected requests are source-shaped contrasts; physical and official classification need original source review before a complete judgment sweep can be frozen.',
+        'rationale': 'Seven selected requests contrast passenger and light-express freight purposes; physical and official classification need original source review before a complete judgment sweep can be frozen.',
         'missing_inputs': [item['note']]}
         for index, item in enumerate(judgments, 1)]
     cases_ref = write('cases.json', {**base, 'sweep_specs': sweep_specs,

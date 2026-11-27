@@ -1,0 +1,54 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C150173__LVMC-11-52-030-B__taxi_driver__freight_wait",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "Commercial vehicle freight-loading alternative",
+      "source": "LVMC 11.52.030(B)(1)",
+      "output_key": "freight_yellow_zone_measurement",
+      "method": "source_measurement",
+      "kind": "measured",
+      "value_type": "object",
+      "inputs": [
+        "freight-native.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "road.xodr",
+        "yellow-freight-road.xodr",
+        "sign-authority-pending.json",
+        "commercial-status-review.json",
+        "sign-review.json",
+        "freight-purpose-review.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "freight-purpose-review.json"
+    ],
+    "error_contains": "Missing required source: freight-purpose-review.json"
+  },
+  "frame_count": 600,
+  "sampling_rate_hz": 20,
+  "duration_s": 30,
+  "physical_acceptance_claimed": false,
+  "source_required": [
+    "original Native taxi and cargo actor identity/body traces",
+    "original taxi commercial-use classification source",
+    "authoritative freight sign and cargo-purpose review"
+  ],
+  "measured_channels": [
+    "cargo_displacement_m",
+    "cargo_transfer_motion_frames",
+    "observed_purpose"
+  ],
+  "source_finalizer": "native/freight_finalize.py",
+  "review_sealer": "native/freight_seal_review.py",
+  "original_native_observed": false,
+  "legal_verdict": null
+}

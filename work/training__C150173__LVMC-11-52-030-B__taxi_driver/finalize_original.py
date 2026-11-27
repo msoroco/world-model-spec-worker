@@ -8,7 +8,7 @@ from pathlib import Path
 from yellow_plan import VIEWS, check
 
 REVIEWS = ('taxicab-review.json', 'sign-review.json', 'passenger-purpose-review.json',
-           'ordinary-rules-review.json')
+           'ordinary-rules-review.json', 'commercial-status-review.json')
 SOURCES = ('yellow-zone-native.jsonl', 'observed-passenger-activity.jsonl',
            'video_frames.jsonl', 'trace.jsonl',
            'road.xodr', 'yellow-road.xodr', 'sign-authority-pending.json',
@@ -64,11 +64,20 @@ def inspect(attempt, manifest_path, expected_source_kind='original_native'):
     sign = json.loads((attempt / 'sign-review.json').read_text())
     purpose = json.loads((attempt / 'passenger-purpose-review.json').read_text())
     ordinary = json.loads((attempt / 'ordinary-rules-review.json').read_text())
-    for name, review in zip(REVIEWS, (taxi, sign, purpose, ordinary)):
+    commercial = json.loads((attempt / 'commercial-status-review.json').read_text())
+    for name, review in zip(REVIEWS, (taxi, sign, purpose, ordinary, commercial)):
         if (review.get('source_kind') != expected_source_kind or
                 not review.get('source_basis') or review.get('legal_verdict') is not None):
             raise ValueError('Independent source review missing: ' + name)
+    if expected_source_kind == 'original_native':
+        refs = commercial.get('source_refs')
+        required_refs = {'yellow-zone-native.jsonl', 'overview.mkv'}
+        if not isinstance(refs, dict) or not required_refs <= set(refs) or any(
+                source not in declared or digest != declared[source]
+                for source, digest in refs.items()):
+            raise ValueError('Original commercial classification lacks actor-bound source hashes')
     if (taxi.get('observed_taxicab') is not True or
+            commercial.get('taxi_actor_id') is None or
             sign.get('observed_curb_color') != 'yellow' or
             sign.get('posted_hours_start') != '09:00' or
             sign.get('posted_hours_end') != '17:00' or
@@ -80,6 +89,8 @@ def inspect(attempt, manifest_path, expected_source_kind='original_native'):
     trace = read_rows(attempt / 'trace.jsonl')
     if not all(len(rows) == 600 for rows in (native, activity, frames, trace)):
         raise ValueError('Full 600-frame original source join required')
+    if any(row.get('taxi_actor_id') != commercial['taxi_actor_id'] for row in native):
+        raise ValueError('Original commercial review does not bind taxi actor')
     start = datetime.fromisoformat(config['civil_start_local'])
     active = stopped = body_in_yellow = door_open = 0
     occupants = []
@@ -140,6 +151,8 @@ def inspect(attempt, manifest_path, expected_source_kind='original_native'):
             'observed_occupant_count_last': occupants[-1],
             'observed_occupant_count_change': occupants[-1] - occupants[0],
             'taxicab_identity_reviewed': expected_source_kind == 'original_native',
+            'commercial_classification_source_basis': commercial['source_basis'],
+            'commercial_classification_observed': commercial.get('observed_commercial_use'),
             'sign_source_reviewed': expected_source_kind == 'original_native',
             'outside_hours_ordinary_rules_status': ordinary.get('review_status', 'unresolved'),
             'source_manifest_sha256': sha(manifest_path),

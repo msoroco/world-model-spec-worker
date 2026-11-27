@@ -2,26 +2,377 @@
   "cell_id": "C229422",
   "actor": "motor_vehicle_driver",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_lamp_request",
+      "target_law_id": "NRS-484B-473-2",
+      "judgment_refs": [
+        {
+          "phrase": "lawfully parked at nighttime upon any highway",
+          "note": "Join original highway geometry, parking-rule composition, civil clock and sunset/sunrise sources; sun altitude alone is insufficient."
+        },
+        {
+          "phrase": "such lights shall be depressed or dimmed",
+          "note": "Independent four-camera optical review must establish emitted lamp state throughout the interval, separate from CARLA request bits."
+        },
+        {
+          "phrase": "in the event cowl or parking lamps are not used",
+          "note": "Review actual cowl or parking lamp use; parking lamp use exercises the disjunctive exception, not a headlamp-intensity cutoff."
+        }
+      ],
+      "rationale": "Two source-reviewed CARLA request endpoints at fixed nighttime parking context; no legal dimness threshold inferred.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "headlamp_high",
+          "observable": "headlamp_high",
+          "unit": "index",
+          "min": 0,
+          "max": 1,
+          "spacing": 1,
+          "range_rationale": "Both supported discrete CARLA request endpoints for this comparison.",
+          "spacing_rationale": "One index separates the two distinct request states.",
+          "feasibility_evidence": "Four selected Native offline and public source-shaped compatibility checks passed.",
+          "measurement": {
+            "method": "Read requested CARLA lamp state separately from independent original optical observation",
+            "time_window": "600 original Native frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "headlamp_high": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "index",
+          "source": "selected exact Native config"
+        },
+        "parking_on": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "index",
+          "source": "selected exact Native config"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "sig.position_lamp",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "env.darkness",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original-scene-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "lamp-pixel-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-civil_clock.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-sunset_sunrise.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-highway.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-parking_rule.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          }
+        ],
+        "limitations": [
+          "CARLA light requests and sun altitude do not establish reviewed optical or civil-time facts",
+          "lawful parking requires original highway geometry and cited rule composition review"
+        ]
+      },
+      "spec_version": "5f3fef28172a20d87c701bb6e0b1e1c5ded64db63cf4494aefade566426940b6",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_1",
+        "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_2"
+      ]
+    },
+    {
+      "sweep_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_lamp_request",
+      "target_law_id": "NRS-484B-473-2",
+      "judgment_refs": [
+        {
+          "phrase": "lawfully parked at nighttime upon any highway",
+          "note": "Join original highway geometry, parking-rule composition, civil clock and sunset/sunrise sources; sun altitude alone is insufficient."
+        },
+        {
+          "phrase": "such lights shall be depressed or dimmed",
+          "note": "Independent four-camera optical review must establish emitted lamp state throughout the interval, separate from CARLA request bits."
+        },
+        {
+          "phrase": "in the event cowl or parking lamps are not used",
+          "note": "Review actual cowl or parking lamp use; parking lamp use exercises the disjunctive exception, not a headlamp-intensity cutoff."
+        }
+      ],
+      "rationale": "Two source-reviewed CARLA request endpoints at fixed nighttime parking context; no legal dimness threshold inferred.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "parking_on",
+          "observable": "parking_on",
+          "unit": "index",
+          "min": 0,
+          "max": 1,
+          "spacing": 1,
+          "range_rationale": "Both supported discrete CARLA request endpoints for this comparison.",
+          "spacing_rationale": "One index separates the two distinct request states.",
+          "feasibility_evidence": "Four selected Native offline and public source-shaped compatibility checks passed.",
+          "measurement": {
+            "method": "Read requested CARLA lamp state separately from independent original optical observation",
+            "time_window": "600 original Native frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "headlamp_high": {
+          "kind": "controller",
+          "value": 1,
+          "unit": "index",
+          "source": "selected exact Native config"
+        },
+        "parking_on": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "index",
+          "source": "selected exact Native config"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "sig.position_lamp",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "env.darkness",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original-scene-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "lamp-pixel-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-civil_clock.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-sunset_sunrise.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-highway.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-parking_rule.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          }
+        ],
+        "limitations": [
+          "CARLA light requests and sun altitude do not establish reviewed optical or civil-time facts",
+          "lawful parking requires original highway geometry and cited rule composition review"
+        ]
+      },
+      "spec_version": "77f4504954c862aa6c283c5882caa68c7435049a74e45df55a330d9078a8a584",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_1",
+        "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_2"
+      ]
+    }
+  ],
   "sweeps_expanded": true,
   "cases": [
     {
       "case_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484B-473-2",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Controlled original lamp-state request while highway parking and civil nighttime stay fixed; optical outcome independently reviewed",
       "variable_assignments": {
-        "lamp_mode": {
+        "headlamp_high": {
           "kind": "controller",
-          "value": "depressed_low_beam",
-          "unit": "categorical",
-          "source": "selected Native configuration"
+          "value": 0,
+          "unit": "index",
+          "source": "selected exact Native config"
+        },
+        "parking_on": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "index",
+          "source": "selected exact Native config"
         }
       },
       "unresolved_judgment_calls": [
-        "lawfully parked",
-        "depressed or dimmed",
-        "at nighttime"
+        "lawfully parked at nighttime upon any highway",
+        "such lights shall be depressed or dimmed",
+        "in the event cowl or parking lamps are not used"
       ],
       "recording_description": {
         "channels": [
@@ -99,36 +450,81 @@
           }
         ],
         "context_inputs": [
-          "original-scene-review.json",
-          "lamp-pixel-review.json",
-          "original-civil_clock.json",
-          "original-sunset_sunrise.json",
-          "original-highway.json",
-          "original-parking_rule.json"
+          {
+            "name": "original-scene-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "lamp-pixel-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-civil_clock.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-sunset_sunrise.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-highway.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-parking_rule.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          }
         ],
         "limitations": [
           "CARLA light requests and sun altitude do not establish reviewed optical or civil-time facts",
           "lawful parking requires original highway geometry and cited rule composition review"
         ]
-      }
+      },
+      "paired_probe_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_lamp_request",
+      "deliberate_differences": [
+        "headlamp_high"
+      ],
+      "probe": {
+        "primary_variable": "headlamp_high",
+        "comparison_or_standard": "controlled Native lamp request with common original scene and independent optical review",
+        "target_value_or_branch": 0
+      },
+      "sweep_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_lamp_request",
+      "sweep_spec_version": "5f3fef28172a20d87c701bb6e0b1e1c5ded64db63cf4494aefade566426940b6",
+      "sweep_point": {
+        "headlamp_high": 0.0
+      },
+      "selection_rank": 0
     },
     {
       "case_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484B-473-2",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Controlled original lamp-state request while highway parking and civil nighttime stay fixed; optical outcome independently reviewed",
       "variable_assignments": {
-        "lamp_mode": {
+        "headlamp_high": {
           "kind": "controller",
-          "value": "undepressed_high_beam",
-          "unit": "categorical",
-          "source": "selected Native configuration"
+          "value": 1,
+          "unit": "index",
+          "source": "selected exact Native config"
+        },
+        "parking_on": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "index",
+          "source": "selected exact Native config"
         }
       },
       "unresolved_judgment_calls": [
-        "lawfully parked",
-        "depressed or dimmed",
-        "at nighttime"
+        "lawfully parked at nighttime upon any highway",
+        "such lights shall be depressed or dimmed",
+        "in the event cowl or parking lamps are not used"
       ],
       "recording_description": {
         "channels": [
@@ -206,36 +602,81 @@
           }
         ],
         "context_inputs": [
-          "original-scene-review.json",
-          "lamp-pixel-review.json",
-          "original-civil_clock.json",
-          "original-sunset_sunrise.json",
-          "original-highway.json",
-          "original-parking_rule.json"
+          {
+            "name": "original-scene-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "lamp-pixel-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-civil_clock.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-sunset_sunrise.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-highway.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-parking_rule.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          }
         ],
         "limitations": [
           "CARLA light requests and sun altitude do not establish reviewed optical or civil-time facts",
           "lawful parking requires original highway geometry and cited rule composition review"
         ]
-      }
+      },
+      "paired_probe_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_lamp_request",
+      "deliberate_differences": [
+        "headlamp_high"
+      ],
+      "probe": {
+        "primary_variable": "headlamp_high",
+        "comparison_or_standard": "controlled Native lamp request with common original scene and independent optical review",
+        "target_value_or_branch": 1
+      },
+      "sweep_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_lamp_request",
+      "sweep_spec_version": "5f3fef28172a20d87c701bb6e0b1e1c5ded64db63cf4494aefade566426940b6",
+      "sweep_point": {
+        "headlamp_high": 1.0
+      },
+      "selection_rank": 1
     },
     {
       "case_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_1",
       "target_law_id": "NRS-484B-473-2",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Controlled original lamp-state request while highway parking and civil nighttime stay fixed; optical outcome independently reviewed",
       "variable_assignments": {
-        "lamp_mode": {
+        "headlamp_high": {
           "kind": "controller",
-          "value": "undepressed_high_beam",
-          "unit": "categorical",
-          "source": "selected Native configuration"
+          "value": 1,
+          "unit": "index",
+          "source": "selected exact Native config"
+        },
+        "parking_on": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "index",
+          "source": "selected exact Native config"
         }
       },
       "unresolved_judgment_calls": [
-        "lawfully parked",
-        "depressed or dimmed",
-        "at nighttime"
+        "lawfully parked at nighttime upon any highway",
+        "such lights shall be depressed or dimmed",
+        "in the event cowl or parking lamps are not used"
       ],
       "recording_description": {
         "channels": [
@@ -313,36 +754,81 @@
           }
         ],
         "context_inputs": [
-          "original-scene-review.json",
-          "lamp-pixel-review.json",
-          "original-civil_clock.json",
-          "original-sunset_sunrise.json",
-          "original-highway.json",
-          "original-parking_rule.json"
+          {
+            "name": "original-scene-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "lamp-pixel-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-civil_clock.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-sunset_sunrise.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-highway.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-parking_rule.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          }
         ],
         "limitations": [
           "CARLA light requests and sun altitude do not establish reviewed optical or civil-time facts",
           "lawful parking requires original highway geometry and cited rule composition review"
         ]
-      }
+      },
+      "paired_probe_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_lamp_request",
+      "deliberate_differences": [
+        "parking_on"
+      ],
+      "probe": {
+        "primary_variable": "parking_on",
+        "comparison_or_standard": "controlled Native lamp request with common original scene and independent optical review",
+        "target_value_or_branch": 0
+      },
+      "sweep_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_lamp_request",
+      "sweep_spec_version": "77f4504954c862aa6c283c5882caa68c7435049a74e45df55a330d9078a8a584",
+      "sweep_point": {
+        "parking_on": 0.0
+      },
+      "selection_rank": 0
     },
     {
       "case_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_2",
       "target_law_id": "NRS-484B-473-2",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Controlled original lamp-state request while highway parking and civil nighttime stay fixed; optical outcome independently reviewed",
       "variable_assignments": {
-        "lamp_mode": {
+        "headlamp_high": {
           "kind": "controller",
-          "value": "parking_lamps",
-          "unit": "categorical",
-          "source": "selected Native configuration"
+          "value": 1,
+          "unit": "index",
+          "source": "selected exact Native config"
+        },
+        "parking_on": {
+          "kind": "controller",
+          "value": 1,
+          "unit": "index",
+          "source": "selected exact Native config"
         }
       },
       "unresolved_judgment_calls": [
-        "lawfully parked",
-        "depressed or dimmed",
-        "at nighttime"
+        "lawfully parked at nighttime upon any highway",
+        "such lights shall be depressed or dimmed",
+        "in the event cowl or parking lamps are not used"
       ],
       "recording_description": {
         "channels": [
@@ -420,12 +906,188 @@
           }
         ],
         "context_inputs": [
-          "original-scene-review.json",
-          "lamp-pixel-review.json",
-          "original-civil_clock.json",
-          "original-sunset_sunrise.json",
-          "original-highway.json",
-          "original-parking_rule.json"
+          {
+            "name": "original-scene-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "lamp-pixel-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-civil_clock.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-sunset_sunrise.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-highway.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-parking_rule.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          }
+        ],
+        "limitations": [
+          "CARLA light requests and sun altitude do not establish reviewed optical or civil-time facts",
+          "lawful parking requires original highway geometry and cited rule composition review"
+        ]
+      },
+      "paired_probe_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_lamp_request",
+      "deliberate_differences": [
+        "parking_on"
+      ],
+      "probe": {
+        "primary_variable": "parking_on",
+        "comparison_or_standard": "controlled Native lamp request with common original scene and independent optical review",
+        "target_value_or_branch": 1
+      },
+      "sweep_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_lamp_request",
+      "sweep_spec_version": "77f4504954c862aa6c283c5882caa68c7435049a74e45df55a330d9078a8a584",
+      "sweep_point": {
+        "parking_on": 1.0
+      },
+      "selection_rank": 1
+    },
+    {
+      "case_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected shared parked highway context without legal outcome",
+      "variable_assignments": {
+        "headlamp_high": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "index",
+          "source": "selected exact Native config"
+        },
+        "parking_on": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "index",
+          "source": "selected exact Native config"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "lawfully parked at nighttime upon any highway",
+        "such lights shall be depressed or dimmed",
+        "in the event cowl or parking lamps are not used"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "sig.position_lamp",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "env.darkness",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "method": "original Native trace, civil-clock source and independent saved four-camera optical review",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 parked frames",
+            "reference_frame": "original Native tick and camera map",
+            "uncertainty": "requested light state or dark weather does not establish optical dimming, lawful parking or legal compliance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original-scene-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "lamp-pixel-review.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-civil_clock.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-sunset_sunrise.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-highway.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          },
+          {
+            "name": "original-parking_rule.json",
+            "unit": "structured",
+            "method": "source-bound original review or cited original source"
+          }
         ],
         "limitations": [
           "CARLA light requests and sun altitude do not establish reviewed optical or civil-time facts",

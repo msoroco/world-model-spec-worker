@@ -19,7 +19,8 @@ def offline_check(root):
             row.get('video_frame') != i or
             row.get('requested_purpose') != config['requested_purpose'] or
             row.get('source_kind') != 'authored_native_request' or
-            row.get('requested_cargo_proxy') != config['cargo_blueprint_filter']
+            row.get('requested_cargo_proxy') != config['cargo_blueprint_filter'] or
+            row.get('requested_stop_x_m') != config['taxi_stop_x_m']
             for i, row in enumerate(rows)):
         raise ValueError('Full source-shaped light-express request missing')
     result['request_frames'] = 600
@@ -83,7 +84,7 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
         taxi_bp = vehicles[0]
         taxi_bp.set_attribute('role_name', 'c150173_taxi_commercial_identity_pending')
         taxi = world.spawn_actor(taxi_bp, carla.Transform(
-            carla.Location(x=5.25, y=10, z=2), carla.Rotation(yaw=90)))
+            carla.Location(x=config['taxi_stop_x_m'], y=10, z=2), carla.Rotation(yaw=90)))
         cargo_bp = cargo_props[0]
         initial_x = 5.5 if config['requested_purpose'] == 'unloading_light_express' else 8.0
         cargo = world.spawn_actor(cargo_bp, carla.Transform(
@@ -164,7 +165,7 @@ def capture(config, output_dir, host='127.0.0.1', port=2000):
                        'cargo_actor_id': cargo.id, 'cargo_blueprint_id': cargo.type_id,
                        'cargo_body_vertices_xyz_m': [[v.x, v.y, v.z] for v in cargo_vertices],
                        'cargo_transfer_motion_observed': transferring,
-                       'observed_purpose': config['requested_purpose'],
+                       'requested_purpose': config['requested_purpose'],
                        'source_cameras': camera_frames,
                        'commercial_status_verified': False,
                        'freight_purpose_verified': False,

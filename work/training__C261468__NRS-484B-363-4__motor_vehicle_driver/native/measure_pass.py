@@ -207,6 +207,7 @@ def measure(root):
     return {
         'format': 'saved-school-zone-pass-observation', 'assignment_id': ASSIGNMENT,
         'source_kind': context['review_kind'],
+        'zone_kind': context['zone_kind'],
         'sources': {'video_frames.jsonl': sha(frame_path), 'pass_trace.jsonl': sha(trace_path),
                     'school_zone_context.json': sha(context_path),
                     **({'beacon_lamps.jsonl': sha(root / 'beacon_lamps.jsonl')} if lamp_states is not None else {}),

@@ -1,10 +1,12 @@
 """Materialize three source-shaped taxi/light-express freight constructions."""
 from datetime import datetime, timedelta
+import copy
 import hashlib
 import json
 from pathlib import Path
 
 from build_draft import CAMERAS
+from build_selected_draft import NAMES
 from freight_plan import PREFIX, PURPOSES, check_request
 
 HERE = Path(__file__).resolve().parent
@@ -30,6 +32,7 @@ def build(suffix):
               'civil_start_local': start.isoformat(),
               'timezone': 'America/Los_Angeles',
               'requested_purpose': PURPOSES[suffix],
+              'taxi_stop_x_m': 5.25,
               'cargo_blueprint_filter': 'static.prop.*box*',
               'commercial_classification': 'pending_original_review',
               'sign_source_status': 'authored_proposal_unverified',
@@ -43,6 +46,7 @@ def build(suffix):
              'civil_time_local': (start + timedelta(seconds=(i + 1) / 20)).isoformat(timespec='milliseconds'),
              'requested_taxi_role': 'taxi_unverified',
              'requested_purpose': PURPOSES[suffix],
+             'requested_stop_x_m': config['taxi_stop_x_m'],
              'requested_cargo_proxy': config['cargo_blueprint_filter'],
              'commercial_classification': 'pending_original_review',
              'sign_authority': 'pending_original_review'} for i in range(600)]
@@ -50,6 +54,8 @@ def build(suffix):
     files = [{'path': target, 'content': (HERE / source).read_text()}
              for source, target in (('freight_runner.py', 'runner.py'),
                                     ('freight_plan.py', 'freight_plan.py'),
+                                    ('freight_finalize.py', 'freight_finalize.py'),
+                                    ('freight_seal_review.py', 'freight_seal_review.py'),
                                     ('yellow-freight-road.xodr', 'yellow-freight-road.xodr'))]
     test = '''import unittest\nfrom pathlib import Path\nfrom runner import offline_check\n\nclass FreightRequest(unittest.TestCase):\n def test_exact_source_request(self):\n  result=offline_check(Path('.'))\n  self.assertEqual(result['request_frames'],600)\n  self.assertFalse(result['commercial_status_verified'])\n  self.assertFalse(result['sign_authority_verified'])\n'''
     files.extend(({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'},
@@ -63,6 +69,15 @@ def build(suffix):
                     'recording_description': {
                         'duration_s': 30, 'rate_hz': 20,
                         'source_cameras': [c['name'] for c in CAMERAS],
+                        'channels': [{'name': name, 'unit': 'source observation',
+                                      'method': 'saved Native frame, body and independent review join',
+                                      'reference_frame': 'C150173 taxi, cargo and curb source frames',
+                                      'sampling_rate_hz': 20, 'time_window': '600 frames / 30 s',
+                                      'uncertainty': 'Original identity, freight status, sign and legal eligibility require review'}
+                                     for name in NAMES],
+                        'context_inputs': [],
+                        'limitations': ['Synthetic CPU sources prove software behavior only',
+                                        'Commercial classification, effective sign and actual freight purpose require original review'],
                         'yellow_curb_and_freight_sign_source_required': True,
                         'taxicab_and_commercial_status_independent_review_required': True,
                         'actual_freight_transfer_source_required': True,
@@ -77,8 +92,29 @@ def build(suffix):
                     'status': 'source_shaped_freight_draft'}
     path = BASE / 'native-freight-draft' / suffix / 'construction.json'
     write(path, construction)
+    fallback = copy.deepcopy(construction)
+    fallback['candidate_id'] = 'fallback1'
+    fallback_config = {**config, 'candidate_id': 'fallback1', 'taxi_stop_x_m': 4.75}
+    check_request(fallback_config, road)
+    for row in fallback['files']:
+        if row['path'] == 'config.json':
+            row['content'] = json.dumps(fallback_config, indent=2) + '\n'
+        if row['path'] == 'requested-track.jsonl':
+            row['content'] = ''.join(json.dumps({**item, 'requested_stop_x_m': 4.75}, sort_keys=True) + '\n'
+                                    for item in rows)
+    fallback_path = BASE / 'native-freight-draft' / suffix / 'fallback1-construction.json'
+    write(fallback_path, fallback)
     return {'case_id': case_id, 'construction': str(path.relative_to(BASE)),
-            'construction_sha256': sha(path), 'status': 'source_shaped_freight_draft'}
+            'construction_sha256': sha(path), 'status': 'source_shaped_freight_draft',
+            'candidate_risk': {'status': 'physical',
+                               'reason': 'Taxi or cargo may obscure freight sign in original reference view.'},
+            'candidates': [{'id': 'fallback1',
+                            'construction': str(fallback_path.relative_to(BASE)),
+                            'construction_sha256': sha(fallback_path),
+                            'trigger': {'source': 'original reference_corner.mkv and sign review',
+                                        'metric': 'visible freight sign near stopped taxi',
+                                        'failure_condition': 'original taxi/cargo pose obscures sign or curb'},
+                            'changed_knobs': ['taxi stop x coordinate 5.25 to 4.75 m; freight purpose, four views and sign fixed']}]}
 
 
 def main():

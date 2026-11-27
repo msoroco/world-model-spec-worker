@@ -14,7 +14,7 @@ def seal(attempt):
     for name in SOURCES:
         if not (attempt / name).is_file():
             raise ValueError('Missing original or review source: ' + name)
-    for name in ('taxicab-review.json', 'sign-review.json',
+    for name in ('taxicab-review.json', 'commercial-status-review.json', 'sign-review.json',
                  'passenger-purpose-review.json', 'ordinary-rules-review.json'):
         review = json.loads((attempt / name).read_text())
         if review.get('source_kind') != 'original_native' or not review.get('source_basis'):

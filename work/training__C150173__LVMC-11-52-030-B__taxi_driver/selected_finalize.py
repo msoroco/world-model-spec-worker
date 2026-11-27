@@ -11,6 +11,7 @@ VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 def source_join_measurement(attempt):
     attempt = Path(attempt)
     for name in ('yellow-zone-native.jsonl', 'sign-review.json',
+                 'commercial-status-review.json',
                  'passenger-purpose-review.json', 'ordinary-rules-review.json',
                  'observed-passenger-activity.jsonl'):
         if not (attempt / name).is_file():
@@ -26,6 +27,7 @@ def source_join_measurement(attempt):
             raise ValueError('Unsealed acquisition is not a declared diagnostic')
         kind = 'synthetic_cpu_fixture'
         for name in ('taxicab-review.json', 'sign-review.json',
+                     'commercial-status-review.json',
                      'passenger-purpose-review.json', 'ordinary-rules-review.json'):
             if json.loads((attempt / name).read_text()).get('synthetic_cpu_fixture') is not True:
                 raise ValueError('Unsealed diagnostic review differs: ' + name)
@@ -53,6 +55,7 @@ def finalize(attempt, output):
         raise ValueError('Measured taxi case identity differs')
     sources = {name: sha(attempt / name) for name in
                ('yellow-zone-native.jsonl', 'sign-review.json',
+                'commercial-status-review.json',
                 'passenger-purpose-review.json', 'ordinary-rules-review.json',
                 'observed-passenger-activity.jsonl')}
     expected = 0 if case.endswith('__probe_b') else 600
@@ -73,6 +76,7 @@ def finalize(attempt, output):
         raise ValueError('Original passenger activity frame join differs')
     sign = json.loads((attempt / 'sign-review.json').read_text())
     taxi = json.loads((attempt / 'taxicab-review.json').read_text())
+    commercial = json.loads((attempt / 'commercial-status-review.json').read_text())
     if not sign.get('observed_sign_content'):
         raise ValueError('Missing source-observed sign content')
     observed = []
@@ -87,6 +91,10 @@ def finalize(attempt, output):
                          else action['observed_door_open'] if name == 'sig.door_open'
                          else action['observed_occupant_count'] if name == 'ru.occupant_count'
                          else taxi['observed_taxicab'] if name == 'ru.taxicab'
+                         else {'actor_id': commercial['taxi_actor_id'],
+                               'classification_review': commercial.get('observed_commercial_use'),
+                               'source_basis': commercial['source_basis']}
+                              if name == 'ru.commercial_motor_vehicle'
                          else sign['observed_curb_color'] if name == 'st.curb_zone'
                          else sign['observed_sign_content'] if name == 'dev.regulatory_sign'
                          else row['civil_time_local'][11:16] < '17:00' and

@@ -16,7 +16,7 @@
     "text": "Whenever lights are displayed upon a vehicle lawfully parked at nighttime upon any highway, such lights shall be depressed or dimmed, in the event cowl or parking lamps are not used.",
     "sha256": "67cdbb0a46252d0c22fd0e719867fb6fc4e680bb65dde188ffca81f1776e803b"
   },
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "exact_source_reviewed_for_selected_construction",
   "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
   "witness_branches": [
     "Displayed lights without cowl or parking lamps"
@@ -62,7 +62,7 @@
     }
   ],
   "unresolved_judgment_calls": [
-    "'lawfully parked' is a reference to the parking rules \u2014 rule composition"
+    "'lawfully parked' is a reference to the parking rules — rule composition"
   ],
   "neutral_baseline": {
     "kind": "unselected_baseline",
@@ -102,9 +102,9 @@
       },
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "'lawfully parked' is a reference to the parking rules \u2014 rule composition"
+        "'lawfully parked' is a reference to the parking rules — rule composition"
       ],
-      "status": "construction_in_progress_original_capture_pending"
+      "status": "cpu_prepared_original_capture_pending"
     },
     {
       "case_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_2",
@@ -139,9 +139,9 @@
       },
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "'lawfully parked' is a reference to the parking rules \u2014 rule composition"
+        "'lawfully parked' is a reference to the parking rules — rule composition"
       ],
-      "status": "construction_in_progress_original_capture_pending"
+      "status": "cpu_prepared_original_capture_pending"
     },
     {
       "case_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_1",
@@ -176,9 +176,9 @@
       },
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "'lawfully parked' is a reference to the parking rules \u2014 rule composition"
+        "'lawfully parked' is a reference to the parking rules — rule composition"
       ],
-      "status": "construction_in_progress_original_capture_pending"
+      "status": "cpu_prepared_original_capture_pending"
     },
     {
       "case_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_2",
@@ -213,9 +213,9 @@
       },
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
-        "'lawfully parked' is a reference to the parking rules \u2014 rule composition"
+        "'lawfully parked' is a reference to the parking rules — rule composition"
       ],
-      "status": "construction_in_progress_original_capture_pending"
+      "status": "cpu_prepared_original_capture_pending"
     }
   ],
   "comparisons": [
@@ -226,13 +226,33 @@
         "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_2"
       ],
       "deliberate_differences": [
-        "parked_night_lamp_dimming"
+        "low versus high headlamp state with no parking lamps"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "same map geometry except named comparison variable",
-        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
-      ]
+        "frozen road/park/lane_marking cell and motor_vehicle_driver actor",
+        "original lawful highway parking and civil nighttime review",
+        "four camera poses and 600-frame 20-Hz interval"
+      ],
+      "status": "source_shaped_cpu_audit_passed_original_pending",
+      "independent_cpu_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "aaf37d01c495f229b9c407caba9f9f2da51265b75f2149425d496c6ca88d0132",
+        "diagnostic_proof": "native/comparison-proof.json",
+        "diagnostic_proof_sha256": "4e3d766cea05727652ac564886a1d3056f785d09e058a2733da4e200d31abaf3",
+        "test_log": "native/comparison-proof.log",
+        "test_log_sha256": "1621c13bc057a696ec188c0fc275968d58d59747d12a0134995d92aa34606ac0",
+        "positive_pairs": [
+          [
+            "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_1",
+            "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_2"
+          ],
+          [
+            "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_1",
+            "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_2"
+          ]
+        ],
+        "negative_mutation": "altered fixed camera plan rejected"
+      }
     },
     {
       "comparison_id": "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_comparison",
@@ -241,13 +261,33 @@
         "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_2"
       ],
       "deliberate_differences": [
-        "exception_1_applicability"
+        "parking lamp use with undimmed high headlamps fixed"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "same map geometry except named comparison variable",
-        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
-      ]
+        "frozen road/park/lane_marking cell and motor_vehicle_driver actor",
+        "original lawful highway parking and civil nighttime review",
+        "four camera poses and 600-frame 20-Hz interval"
+      ],
+      "status": "source_shaped_cpu_audit_passed_original_pending",
+      "independent_cpu_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "aaf37d01c495f229b9c407caba9f9f2da51265b75f2149425d496c6ca88d0132",
+        "diagnostic_proof": "native/comparison-proof.json",
+        "diagnostic_proof_sha256": "4e3d766cea05727652ac564886a1d3056f785d09e058a2733da4e200d31abaf3",
+        "test_log": "native/comparison-proof.log",
+        "test_log_sha256": "1621c13bc057a696ec188c0fc275968d58d59747d12a0134995d92aa34606ac0",
+        "positive_pairs": [
+          [
+            "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_1",
+            "training__C229422__NRS-484B-473-2__motor_vehicle_driver__witness_2"
+          ],
+          [
+            "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_1",
+            "training__C229422__NRS-484B-473-2__motor_vehicle_driver__exception_1_2"
+          ]
+        ],
+        "negative_mutation": "altered fixed camera plan rejected"
+      }
     }
   ],
   "mandatory_observation_terms": [
@@ -258,7 +298,7 @@
     },
     {
       "term": "sig.headlamp",
-      "purpose": "state low_beam or high_beam \u2014 the lights displayed",
+      "purpose": "state low_beam or high_beam — the lights displayed",
       "status": "measurement_mapping_pending"
     },
     {
@@ -296,7 +336,7 @@
     {
       "name": "sig.headlamp",
       "mandatory": true,
-      "reason": "state low_beam or high_beam \u2014 the lights displayed"
+      "reason": "state low_beam or high_beam — the lights displayed"
     },
     {
       "name": "sig.position_lamp",

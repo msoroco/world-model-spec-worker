@@ -44,7 +44,7 @@ def rows(suffix):
                   (-.2, -.2, .4), (.2, -.2, .4), (-.2, .2, .4), (.2, .2, .4))]
         result.append({'video_frame': i, 'time_s': (i + 1) / 20,
             'source_kind': 'synthetic_cpu_fixture',
-            'observed_purpose': PURPOSES[suffix],
+            'requested_purpose': PURPOSES[suffix],
             'taxi_actor_id': 11, 'cargo_actor_id': 12,
             'civil_time_local': (start + timedelta(seconds=(i + 1) / 20)).isoformat(timespec='milliseconds'),
             'taxi_body_vertices_xyz_m': TAXI,

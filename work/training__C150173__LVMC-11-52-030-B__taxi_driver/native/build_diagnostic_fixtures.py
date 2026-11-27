@@ -105,6 +105,9 @@ def build(suffix):
     review = {'source_kind': 'synthetic_cpu_fixture', 'synthetic_cpu_fixture': True,
               'source_basis': 'Source-shaped diagnostic only', 'legal_verdict': None}
     write(sources / 'taxicab-review.json', {**review, 'observed_taxicab': True})
+    write(sources / 'commercial-status-review.json', {
+        **review, 'taxi_actor_id': 42, 'observed_commercial_use': None,
+        'classification_status': 'original_identity_and_use_source_required'})
     write(sources / 'sign-review.json', {**review, 'observed_curb_color': 'yellow',
         'posted_hours_start': '09:00', 'posted_hours_end': '17:00',
         'observed_sign_content': 'synthetic proposed taxi passenger hours'})
