@@ -32,7 +32,9 @@
       "evidence_or_gap": "Selected exact cases measure the road-to-private-driveway sidewalk-stop and pedestrian-yield portion of the statutory text. Separate roadway-entry yield portion remains pending in the roadway-entry-yield disposition; no full-law coverage claim.",
       "case_ids": [
         "training__C213851__LVMC-11-20-060__motor_vehicle_driver__stop_before_sidewalk",
-        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__cross_without_stop"
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__cross_without_stop",
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__yield_to_approaching",
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__enter_without_yield"
       ]
     },
     {
@@ -48,9 +50,12 @@
     {
       "requirement": "roadway-entry-yield",
       "source": "inputs/coverage/candidate-cells.json",
-      "status": "alternative_pending",
-      "evidence_or_gap": "C213851 exit_road cases do not establish roadway-entry yield: current exact requests never return to roadway and runner spawns no approaching vehicle (native/same-cell-return-feasibility.json). The unused C195651 private_way/enter_road catalog row has an empty actor list; current branch_coverage.assignments requires explicit motor_vehicle_driver membership and would reject supplemental binding. A permitted input refresh or complete separately proved same-cell redesign is needed.",
-      "case_ids": []
+      "status": "selected_required",
+      "evidence_or_gap": "Two draft same-cell road-exit-then-return constructions add a separate approaching roadway vehicle and vary only the requested pre-entry dwell. Original Native movement, pixel visibility and legal yield remain unverified.",
+      "case_ids": [
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__yield_to_approaching",
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__enter_without_yield"
+      ]
     }
   ],
   "cases": [
@@ -87,6 +92,38 @@
         "reviewed-scope-0"
       ],
       "selected": false
+    },
+    {
+      "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__yield_to_approaching",
+      "target_law_id": "LVMC-11-20-060",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "roadway_entry_yield_dwell",
+      "comparison_unit": "category",
+      "requested_setting": "yield_to_approaching",
+      "recorded_value": null,
+      "case_description": "Residence-district driver first exits roadway across sidewalk into private driveway, dwells, then returns across that sidewalk to the roadway with a separate approaching vehicle.",
+      "fixed_context": "Hold authored road, driveway, district, sidewalk, pedestrian, approaching-vehicle trajectory, actor and 60 s camera profile fixed; vary only requested pre-entry dwell. Preserve observed Native outcome and legal necessity as unknown.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "selected": false
+    },
+    {
+      "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__enter_without_yield",
+      "target_law_id": "LVMC-11-20-060",
+      "planning_status": "unverified_definition",
+      "target_type": "attempt",
+      "comparison_variable": "roadway_entry_yield_dwell",
+      "comparison_unit": "category",
+      "requested_setting": "enter_without_yield",
+      "recorded_value": null,
+      "case_description": "Residence-district driver first exits roadway across sidewalk into private driveway, dwells, then returns across that sidewalk to the roadway with a separate approaching vehicle.",
+      "fixed_context": "Hold authored road, driveway, district, sidewalk, pedestrian, approaching-vehicle trajectory, actor and 60 s camera profile fixed; vary only requested pre-entry dwell. Preserve observed Native outcome and legal necessity as unknown.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "selected": false
     }
   ],
   "comparisons": [
@@ -111,6 +148,26 @@
       ],
       "status": "planned_unverified",
       "measurement_method": "Compare the original frame-joined ego speed and footprint against the source-verified sidewalk boundary, and the synchronized pedestrian trace. Roadway-entry yield is outside this road-exit comparison."
+    },
+    {
+      "comparison_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__roadway_entry_yield_comparison",
+      "case_ids": [
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__yield_to_approaching",
+        "training__C213851__LVMC-11-20-060__motor_vehicle_driver__enter_without_yield"
+      ],
+      "deliberate_differences": [
+        "roadway_entry_yield_dwell"
+      ],
+      "fixed_conditions": [
+        "same authored road and driveway",
+        "same residence district",
+        "same sidewalk and pedestrian",
+        "same approaching vehicle actor and trajectory",
+        "same road-exit phase",
+        "same 60 s four-camera capture profile"
+      ],
+      "status": "planned_unverified",
+      "measurement_method": "Compare original frame-joined ego body and speed at the roadway boundary with the approaching vehicle trajectory; report measured spacing and timing without a legal yield cutoff."
     }
   ],
   "observations": [

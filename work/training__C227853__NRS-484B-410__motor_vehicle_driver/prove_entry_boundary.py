@@ -52,8 +52,14 @@ def main():
             'starts_highway': ('trace', lambda x: x[0].update(ego_origin_side=False, ego_highway_side=True)),
             'no_crossing': ('trace', lambda x: x[2].update(ego_origin_side=True, ego_highway_side=False)),
             'missing_traffic_join': ('trace', lambda x: [r.pop('approaching_traffic_native_frame') for r in x]),
+            'partial_traffic_join': ('trace', lambda x: x[2].pop('approaching_traffic_native_frame')),
             'bad_time': ('trace', lambda x: x[2].update(time_s=0.04)),
             'side_distance_mismatch': ('trace', lambda x: x[2].update(ego_boundary_signed_distance_m=-0.5)),
+            'return_off_highway': ('trace', lambda x: x.append({
+                **x[2], 'frame': 3, 'native_frame': 104, 'time_s': 0.15,
+                'ego_origin_side': True, 'ego_highway_side': False,
+                'ego_boundary_signed_distance_m': -0.5,
+                'approaching_traffic_native_frame': 104})),
         }
         for label, (target, mutate) in variants.items():
             m, t = copy.deepcopy(manifest), copy.deepcopy(trace)

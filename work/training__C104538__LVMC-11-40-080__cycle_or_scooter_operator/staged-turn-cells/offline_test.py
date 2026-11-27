@@ -244,7 +244,13 @@ class SourcePreflightTest(unittest.TestCase):
                    'native_road_id': 1 if i < 310 else exit_road} for i in range(600)]
         measured = assess_geometry(native, config)
         self.assertTrue(measured['engineering_geometry_matched'])
+        self.assertTrue(measured['continuous_original_trajectory_checked'])
         self.assertFalse(measured['official_sign_authorization_verified'])
+        retained = native[300]['native_center_xy_m']
+        native[300]['native_center_xy_m'] = [60.0, 60.0]
+        with self.assertRaisesRegex(ValueError, 'trajectory has a discontinuity'):
+            assess_geometry(native, config)
+        native[300]['native_center_xy_m'] = retained
         if direction == 'left' and behavior == 'turn':
             for index, row in enumerate(native[550:570]):
                 row['native_heading_deg'] = 179 if index % 2 else -179

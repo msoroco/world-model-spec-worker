@@ -65,7 +65,9 @@ def audit(manifest_path, trace_path):
     first = crossings[0]
     if any(r['ego_highway_side'] for r in rows[:first['frame']]):
         raise ValueError('Entry boundary ordering differs')
-    if not any(r.get('approaching_traffic_native_frame') == r['native_frame'] for r in rows):
+    if any(r['ego_origin_side'] for r in rows[first['frame']:]):
+        raise ValueError('Entry returns off highway after first crossing')
+    if not all(r.get('approaching_traffic_native_frame') == r['native_frame'] for r in rows):
         raise ValueError('Original approaching traffic join missing')
     if not any(r.get('ego_moving') is False for r in rows[:first['frame']]):
         raise ValueError('Pre-movement interval missing')

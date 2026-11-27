@@ -57,6 +57,26 @@ def assess_geometry(native, config):
         raise ValueError('Original Native heading/body source missing') from exc
     if not all(math.isfinite(v) for v in (start_heading, exit_heading, delta, *start_xy, *exit_xy)):
         raise ValueError('Original Native geometry is nonfinite')
+    try:
+        points = [r['native_center_xy_m'] for r in native]
+        if any(not isinstance(point, list) or len(point) != 2 or
+               not all(isinstance(v, (int, float)) and math.isfinite(v) for v in point)
+               for point in points):
+            raise ValueError('Original Native trajectory source invalid')
+        if any(math.dist(a, b) > 1.5 for a, b in zip(points, points[1:])):
+            raise ValueError('Original Native trajectory has a discontinuity')
+        junction_points = [point for point in points if -8 <= point[1] <= 8]
+        if not junction_points:
+            raise ValueError('Original Native junction traversal absent')
+        if behavior == 'obey':
+            if any(abs(point[0]) > 2.5 for point in junction_points):
+                raise ValueError('Original Native obey route deviates laterally')
+        else:
+            side = 1 if direction == 'right' else -1
+            if any(side * point[0] < -2 for point in junction_points):
+                raise ValueError('Original Native turn enters opposite side')
+    except (KeyError, TypeError) as exc:
+        raise ValueError('Original Native trajectory source missing') from exc
     expected_road = 2 if behavior == 'obey' else (3 if direction == 'right' else 4)
     if exit_roads != {expected_road}:
         raise ValueError('Original Native destination road differs')
@@ -72,6 +92,7 @@ def assess_geometry(native, config):
             'approach_heading_deg': start_heading, 'exit_heading_deg': exit_heading,
             'approach_xy_m': start_xy, 'exit_xy_m': exit_xy,
             'destination_road_id': expected_road, 'engineering_geometry_matched': True,
+            'continuous_original_trajectory_checked': True,
             'engineering_tolerances_not_legal': True,
             'posture_verified': False, 'official_sign_authorization_verified': False}
 

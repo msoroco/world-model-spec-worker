@@ -16,6 +16,24 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def measure_roadway_return(attempt, measured):
+    names = ('native-rows.jsonl', 'captured-source-hashes.json',
+             *CORE_FILES, 'original-entry-site-review.json')
+    return {'method': 'measure_roadway_return', 'value': measured,
+            'sources': {name: sha(attempt / name) for name in names}}
+
+
+def source_verified_entry_site(attempt, site):
+    names = ('original-site-review.json', 'original-entry-site-review.json',
+             'site-review.json', 'road.xodr', *SITE_SOURCES.values())
+    return {'method': 'source_verified_entry_site',
+            'value': {'district': site['district'],
+                      'roadway_connection_reviewed': True,
+                      'approaching_lane_reviewed': True,
+                      'legal_scope_verified': False},
+            'sources': {name: sha(attempt / name) for name in names}}
+
+
 def finalize(attempt, output):
     attempt, output = Path(attempt), Path(output)
     if output.exists() or (attempt / 'result.json').exists():
@@ -99,24 +117,9 @@ def finalize(attempt, output):
     report = {
         'format': 'worker-analysis-report', 'case_id': case_id,
         'measurements': {
-            'roadway_entry_observation': {
-                'method': 'measure_roadway_return', 'value': measured,
-                'sources': {name: sha(attempt / name) for name in
-                            ('native-rows.jsonl', 'captured-source-hashes.json',
-                             *CORE_FILES, 'original-entry-site-review.json')},
-            },
-            'site_scope_context': {
-                'method': 'source_verified_entry_site',
-                'value': {'district': site['district'],
-                          'roadway_connection_reviewed': True,
-                          'approaching_lane_reviewed': True,
-                          'legal_scope_verified': False},
-                'sources': {name: sha(attempt / name) for name in
-                            ('original-site-review.json',
-                             'original-entry-site-review.json',
-                             'site-review.json', 'road.xodr',
-                             *SITE_SOURCES.values())},
-            },
+            'roadway_entry_observation':
+                measure_roadway_return(attempt, measured),
+            'site_scope_context': source_verified_entry_site(attempt, site),
         },
         'source_complete': True,
         'physical_or_legal_acceptance': False,

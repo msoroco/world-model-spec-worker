@@ -3,6 +3,21 @@
   "applied_update": 16,
   "assignment_id": "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator",
   "candidate_count": 4,
+  "conditional_opposite_turn_geometry": {
+    "builder": "native/conditional_opposite_turn.py",
+    "builder_sha256": "785c87fa0cb9ee6f50fc759aa9c8430aae3ec0eec11729d11f1af18b5b3d4925",
+    "controlled_negatives_rejected": 3,
+    "eligible_binding_verified": false,
+    "log": "conditional-turn/cpu-proof.log",
+    "log_sha256": "0e33f38bde921764ca6c29fa8a4cb846c549d279d438a10897d621d56e4934c2",
+    "map": "conditional-turn/authored-right-turn.xodr",
+    "map_sha256": "e220a4f2e38f45f1052d43b16ed0df2cd11b4cab09b1269c1e00a32169123eb7",
+    "physical_import_verified": false,
+    "proof": "conditional-turn/geometry-proof.json",
+    "proof_sha256": "657fc0c439823dfc86080248a577ade99564b44787bb5c116db232392b99d4e3",
+    "selected": false,
+    "status": "source_bound_geometry_cpu_proved"
+  },
   "construction_draft": "native/construction-draft.json",
   "cpu_proof": {
     "command": ".venv-cpu/bin/python work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/native/prove_cycles.py",
@@ -220,6 +235,14 @@
     "probe_2_log": "draft-probe-2-offline.log",
     "probe_2_log_sha256": "7dffa9b9e343131253acf1f8a0a8511e10b93abac4601c011ecd54ef75db1af5"
   },
+  "external_dependency": {
+    "branch_validator": "runtime/scenario_pipeline/worker_exchange/branch_coverage.py:25",
+    "branch_validator_sha256": "3e0cedbb2b4619c3ab801cd0207393f468df67b18a88652da503cce1c1c201f9",
+    "frozen_catalog": "inputs/coverage/candidate-cells.json",
+    "frozen_catalog_sha256": "f423fecd577eef1f4113835a23d79dd05f4bddeab8ec816dad761f67788a97da",
+    "prerequisite": "Source-authorized actor-eligible inoperative-signal turn cell or accepted source-hashed reuse",
+    "requirement": "opposite-direction turn alternative in NRS 484B.307(9)(b)"
+  },
   "input_sha256": "202fd2e663f60f1b47a1b6f03bea92b48c1f5714106fe61629e9bd7a1a4ced0f",
   "live_yield_actor_checkpoint": {
     "log": "native/live-acquisition-proof.log",
@@ -302,10 +325,49 @@
     "receipt_sha256": "266f1a2636adadf849c9a4b9051c931e74b39dc88d142a4456a69ace1cd5986b",
     "synthetic_source_only": true
   },
+  "opposite_turn_binding_review": {
+    "actor_eligible_inoperative_turn_candidate_count": 0,
+    "alternative_pending": true,
+    "frozen_straight_cell_preserved": true,
+    "path": "opposite-turn-binding-review.json",
+    "sha256": "8442b5405261af9d462a3cd587474dc20ec9e24cd6b7e70014b73d136ffe49b0"
+  },
+  "opposite_turn_eligibility_cpu_proof": {
+    "command": ".venv-cpu/bin/python work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/prove-opposite-turn-binding.py",
+    "exit_code": 0,
+    "receipt": "opposite-turn-eligibility-proof.json",
+    "receipt_sha256": "0af488e77477ea46d9884364506a3e7f473ffe37be1c28c97e6840d5fcc244a2",
+    "script_sha256": "42d33eba6222638006620151f3344d9715d17899ce6208391167fa5683bde3d1"
+  },
+  "original_attempt_preparation_checkpoint": {
+    "cpu_proof": "native/original-attempt-preparation-proof.json",
+    "cpu_proof_sha256": "c2b8118f66e5b4328690693f25e841c72e4429aedf2db7455871ded5bea86341",
+    "cpu_test_log": "native/original-attempt-preparation.log",
+    "cpu_test_log_sha256": "cb93d36b7cf8eb98d2ee828423059d9e5b0937e9b2cd3020433c0c20e947e685",
+    "manifest_sha256": "51892294817e992059586fee6d6ab8c2f35ab6fa41b32cc989ce41c741aa0556",
+    "original_native_observed": false,
+    "script": "native/prepare_original_attempt.py",
+    "script_sha256": "58a3f1507e74b28edd52939cd5888f2a158dbba6a9dff84a6a6f57a832315dde"
+  },
+  "original_delivery_rejection_cpu_proof": {
+    "command": ".venv-cpu/bin/python work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/prove-original-delivery-rejection.py",
+    "exit_code": 0,
+    "receipt": "original-delivery-rejection-proof.json",
+    "receipt_sha256": "fd4fb289f4ca0908bc30e6d9777826b620ecf0c0f81afd3bd9df0c4f9bc9435e",
+    "script_sha256": "94497e74ee69da784fcb97f7ca4bd30af0f60ad5a6143a0db3d5799fd8515d8a"
+  },
   "planned_case_count": 4,
   "readiness_kind": "delivery_preparation_partial",
-  "reason": "Four exact straight cases have selected primary/fallback offline and public compatibility proofs; primaries have recorded-only processing, source-bound physical/lifecycle fixtures, semantic proposals and independent delivery/comparison CPU audits. The law also permits an opposite-direction turn, but the frozen catalog offers no actor-eligible inoperative-signal turn cell and the batch has no same-law turn assignment. A source-authorized cell binding or accepted source-hashed reuse is required. Original Native detector cause, lawful participants, pixels and physical completion remain local GPU/review checks; no physical acceptance is claimed.",
+  "reason": "Four exact straight cases retain selected CPU proofs. An unselected source-bound right-turn connector and geometry proof now cover construction for the opposite direction to the frozen green left arrow, but the frozen C111071 maneuver is straight, the catalog has no actor-eligible inoperative-signal right-turn cell, and the batch has no same-law turn assignment or accepted source-hashed reuse. A source-authorized binding or accepted reuse is required before turn selection and strict readiness. Original Native detector cause, lawful participants, pixels and physical completion remain local checks; no physical acceptance is claimed.",
   "reuse_count": 0,
+  "root_package_checkpoint": {
+    "config_sha256": "3cb462da49e0ca1bf5301961176a08d997fac296f96cb4cabf18f9f3941aa8ba",
+    "construction": "construction.json",
+    "construction_sha256": "a4338f94d31e2ed4f17a6195fe11d81505f98e157ed60279f7d859d43ddf04a6",
+    "tests_log": "root-cpu-tests.log",
+    "tests_log_sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0",
+    "tests_passed": 3
+  },
   "saved_measurement_cpu_proof": {
     "analyzer": "native/saved_measurement.py",
     "analyzer_sha256": "ce40c76f566eabfcc52332057630c60acd08452d3bb8fa1f6aa28631d9ba574f",
@@ -334,185 +396,24 @@
     "strict_error": "Preparation acceptance failed: partial/missing packages remain",
     "strict_exit_code": 1
   },
-  "selected_native_offline_checkpoint": {
-    "case_count": 4,
-    "construction_sha256": {
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "840cb9e03804a6df1b01ef588278d189343e32dd5750dfb33b5711c3437c9a6a",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "7dccb6ff3d16f71837c4d4826d7cb7bf133d614bb9895131dc2760b4ef036fae",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "485f1eb7ebbc40f502c3a0b550cfc31b05ffed5e170f5ecda337f525d85ef303",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "1d8a8a72707aa24b92f1230cc9f07c4164ad12aac9d641f48074f54b9eb14814"
-    },
-    "manifest": "execution-manifest.json",
-    "manifest_sha256": "de07224233d135c42aa12c4a63917febdccb6d3883238277c0993766dfc28374",
-    "offline_passed_case_ids": [
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy"
-    ],
-    "selected_delivery_ready": false,
-    "selected_public_compatibility_passed": true,
-    "selected_saved_processing_passed": true,
-    "compatibility_sha256": {
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "a80d686f205059f6d14ecd8cbdabc5406d5027b098c3163a31f185bb893456b9",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "84e8f5a6e06993c47d0f6308ce688e653d11e6580c7267a138f86fb57c0ea9c4",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "b257da4c1688c1b56e7e3369664d6a7b14d039e461c6acdd274294004f8581e2",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "d7545ee5914c055d7f4736f764def2d4f5f0b020a80b335a9b16d9ba4eb2a51c"
-    },
-    "saved_proof_sha256": {
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "cbcae2640017ff07ec14f049819b0a77409fe43fe0764f71779de3cc678bfbc1",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "d59f86eee7dd63981dd582c719374fe4d962eb7f3a86b39c1054f0998ba61617",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "491157a612178b048ee706838ae08b950b9962ebfe58b60e5b952edd34c8e823",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "18c20dff9e0db917bb2e536b998d9f3cdb27256b9bd78f97e2209b8b614ac08b"
-    },
-    "physical_fixture_receipts_sha256": {
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "3943c89550626622a1cc66fa5942df0a7346626433356327f15aaf2db72de9a0",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "1d43e94536dca0a7f875f803ca157e1f20f7d1c76d47242fda944e677183c425",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "961697c39a56c298691a2673ca3f6ef867a88ee741847d950f22ecd5e2210275",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "194684a314c65ae76ebbe035ea8c8fae5e24c9f28c0d01126bfbe0512dd27ef8"
-    },
-    "fallback_offline_compatibility_sha256": {
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "cf46f168b3d10bec3f66345d469df8de0d7856c837db62e006c005ef46c2821e",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "d13db6dca11a8fe99d4f0c09e54aaaceda3b298141e2c9c07fc631e328c2d3db",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "14abe8edd5428afed2c3d175184d5636bdf3a9288129862a66030e948a944092",
-      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "3d0f32f0a2fe04989e2aacddfdcd4127edf9440e6a1bf6f7e282b88483dec26c"
-    }
-  },
-  "source_law_review": "Exact law text retained from frozen assignment; extracted summary is recovered_requires_source_review",
-  "status": "partial",
-  "straight_comparison_checkpoint": {
-    "negative": "straight-comparison-negative.log",
-    "negative_sha256": "cce9e91f02e61e5862ee1897a762be7d30f63a9fdc7e63bba98aa52f478840a1",
-    "positive": "straight-comparison-proof.json",
-    "positive_sha256": "fcd05b69134e0ad349e9c400ea14a347448cfbd65c753d7dd87304c10951514e",
-    "scope": "synthetic source-shaped comparison only"
-  },
-  "unresolved_branch_count": 1,
-  "yield_branch_checkpoint": {
-    "case_count": 2,
-    "frames": 600,
-    "measurement_contract_sha256": "d0ac9f2ac34867e0dde536187b56c3deed5d5d914049d494f29742c9eb0e30fd",
-    "native_executed": false,
-    "negative_rejections": 5,
-    "proof_path": "native/yield-proof.json",
-    "proof_sha256": "0219dca575984ff56f3cc3495a13a7de34be7317884746a2982920caca28b23d",
-    "rate_hz": 20,
-    "script_sha256": "e5b2781a0c1af8f743ca419354822e1f02aafaa4c5f46c353c2510c4ac2a88ea",
-    "selected_delivery_claimed": false,
-    "status": "authored_diagnostic_passed"
-  },
-  "yield_comparison_checkpoint": {
-    "negative": "yield-comparison-negative.log",
-    "negative_sha256": "1cd51db7a8c72e16c66cb7cebdbba4ad870dddcc4f03f140ebc80a492ef03665",
-    "positive": "yield-comparison-proof.json",
-    "positive_sha256": "cf220b1caeebcc866b08c653c3ef9b37a655e63b92eb8d5957cd0862c7ed645f",
-    "scope": "synthetic source-shaped comparison only"
-  },
-  "yield_source_chain_audit": {
-    "frozen_binding": true,
-    "mapped_terms": 14,
-    "physical_acceptance_claimed": false,
-    "receipt": "yield-source-chain-audit.json",
-    "receipt_sha256": "e98235baea1bd5497eabbe565d20614d25292ae4a801a2fe880808be1b5f2841",
-    "source_kind": "synthetic_native_shaped_diagnostic"
-  },
-  "semantic_proposal_checkpoint": {
-    "stage_count": 6,
-    "selected_cases": 4,
-    "index": "proposals/semantic-index.json",
-    "index_sha256": "852ff2933e7221ea6192e90621d4f782c55140e9e0e1abf3c3b6505346669064",
-    "proof_log": "semantic-proposal-proof.log",
-    "proof_log_sha256": "46557c57d500209a932befcd32f7d22d20b2c6a56c95460145be888ac4fa4e77",
-    "original_native_observed": false
-  },
-  "root_package_checkpoint": {
-    "construction": "construction.json",
-    "construction_sha256": "a4338f94d31e2ed4f17a6195fe11d81505f98e157ed60279f7d859d43ddf04a6",
-    "config_sha256": "3cb462da49e0ca1bf5301961176a08d997fac296f96cb4cabf18f9f3941aa8ba",
-    "tests_log": "root-cpu-tests.log",
-    "tests_log_sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0",
-    "tests_passed": 3
-  },
-  "tests": [
-    {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c111071-root TMPDIR=.runtime-work PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. ../../.venv-cpu/bin/python -m unittest discover -s tests (cwd work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator)",
-      "exit_code": 0,
-      "log": "root-cpu-tests.log",
-      "sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
-    }
-  ],
-  "selected_delivery_audit_checkpoint": {
-    "manifest_sha256": "51892294817e992059586fee6d6ab8c2f35ab6fa41b32cc989ce41c741aa0556",
-    "proof": "selected-delivery-audit-proof.json",
-    "proof_sha256": "0c1c247012f426eb4b4172c80eda178b12be2816a22eec26c02aa9cc5cae38b3",
-    "script": "delivery_audit.py",
-    "script_sha256": "3a6db528ab65402666b6c1655b1f5f76cb2338422466d70c233b8b7c71e818c1",
-    "case_count": 4,
-    "positive_diagnostic_only": true,
-    "negative_missing_original_source_rejected": true,
-    "execution_manifest_validated": true,
-    "semantic_validated": true,
-    "delivery_receipts_validated": true,
-    "package_compatibility_validated": true,
-    "original_native_observed": false
-  },
-  "selected_comparison_cpu_checkpoint": {
-    "proof": "selected-comparison-cpu-proof.json",
-    "proof_sha256": "85064fb7be5295c4d764bba9f6ac0940d99844e87fcc8a47191c6b07ec851ec0",
-    "log": "selected-comparison-cpu-proof.log",
-    "log_sha256": "8436615be8612a1d2d02e3c6ac86ca937ee6f167dc28397b4bc99f00154f6f1a",
-    "auditor": "audit-selected-comparisons.py",
-    "auditor_sha256": "06155968ebcc1a4a30fa83d9bacac1c08cd2bf2c49e2ebb02e8413753b7db771",
-    "comparisons": 2,
-    "negative_mutations_rejected": 6,
-    "original_native_observed": false,
-    "original_attempt_cli_authored": true
-  },
-  "original_attempt_preparation_checkpoint": {
-    "manifest_sha256": "51892294817e992059586fee6d6ab8c2f35ab6fa41b32cc989ce41c741aa0556",
-    "script": "native/prepare_original_attempt.py",
-    "script_sha256": "58a3f1507e74b28edd52939cd5888f2a158dbba6a9dff84a6a6f57a832315dde",
-    "cpu_proof": "native/original-attempt-preparation-proof.json",
-    "cpu_proof_sha256": "c2b8118f66e5b4328690693f25e841c72e4429aedf2db7455871ded5bea86341",
-    "cpu_test_log": "native/original-attempt-preparation.log",
-    "cpu_test_log_sha256": "cb93d36b7cf8eb98d2ee828423059d9e5b0937e9b2cd3020433c0c20e947e685",
-    "original_native_observed": false
-  },
-  "opposite_turn_binding_review": {
-    "path": "opposite-turn-binding-review.json",
-    "sha256": "8442b5405261af9d462a3cd587474dc20ec9e24cd6b7e70014b73d136ffe49b0",
-    "frozen_straight_cell_preserved": true,
-    "actor_eligible_inoperative_turn_candidate_count": 0,
-    "alternative_pending": true
-  },
-  "opposite_turn_eligibility_cpu_proof": {
-    "command": ".venv-cpu/bin/python work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/prove-opposite-turn-binding.py",
-    "exit_code": 0,
-    "receipt": "opposite-turn-eligibility-proof.json",
-    "receipt_sha256": "0af488e77477ea46d9884364506a3e7f473ffe37be1c28c97e6840d5fcc244a2",
-    "script_sha256": "42d33eba6222638006620151f3344d9715d17899ce6208391167fa5683bde3d1"
-  },
-  "original_delivery_rejection_cpu_proof": {
-    "command": ".venv-cpu/bin/python work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator/prove-original-delivery-rejection.py",
-    "exit_code": 0,
-    "receipt": "original-delivery-rejection-proof.json",
-    "receipt_sha256": "fd4fb289f4ca0908bc30e6d9777826b620ecf0c0f81afd3bd9df0c4f9bc9435e",
-    "script_sha256": "94497e74ee69da784fcb97f7ca4bd30af0f60ad5a6143a0db3d5799fd8515d8a"
-  },
   "scoped_strict_gate": {
     "command": ".venv-cpu/bin/python worker_check.py --assignment training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator --complete --require-delivery-ready",
     "exit_code": 1,
+    "failure": "Preparation acceptance failed: partial/missing packages remain",
     "log": "scoped-strict-gate.log",
-    "log_sha256": "d2929cd361a0bd1fb47cb67e009250981e9b9a159c8f52b614476bc8bf5f67ba",
-    "failure": "Preparation acceptance failed: partial/missing packages remain"
+    "log_sha256": "d2929cd361a0bd1fb47cb67e009250981e9b9a159c8f52b614476bc8bf5f67ba"
   },
-  "external_dependency": {
-    "requirement": "opposite-direction turn alternative in NRS 484B.307(9)(b)",
-    "frozen_catalog": "inputs/coverage/candidate-cells.json",
-    "frozen_catalog_sha256": "f423fecd577eef1f4113835a23d79dd05f4bddeab8ec816dad761f67788a97da",
-    "branch_validator": "runtime/scenario_pipeline/worker_exchange/branch_coverage.py:25",
-    "branch_validator_sha256": "3e0cedbb2b4619c3ab801cd0207393f468df67b18a88652da503cce1c1c201f9",
-    "prerequisite": "Source-authorized actor-eligible inoperative-signal turn cell or accepted source-hashed reuse"
+  "selected_comparison_cpu_checkpoint": {
+    "auditor": "audit-selected-comparisons.py",
+    "auditor_sha256": "06155968ebcc1a4a30fa83d9bacac1c08cd2bf2c49e2ebb02e8413753b7db771",
+    "comparisons": 2,
+    "log": "selected-comparison-cpu-proof.log",
+    "log_sha256": "8436615be8612a1d2d02e3c6ac86ca937ee6f167dc28397b4bc99f00154f6f1a",
+    "negative_mutations_rejected": 6,
+    "original_attempt_cli_authored": true,
+    "original_native_observed": false,
+    "proof": "selected-comparison-cpu-proof.json",
+    "proof_sha256": "85064fb7be5295c4d764bba9f6ac0940d99844e87fcc8a47191c6b07ec851ec0"
   },
   "selected_cpu_proof_inventory": [
     {
@@ -571,5 +472,119 @@
       "path": "selected-native/yield_enter_during_occupancy/saved-proof.json",
       "sha256": "18c20dff9e0db917bb2e536b998d9f3cdb27256b9bd78f97e2209b8b614ac08b"
     }
-  ]
+  ],
+  "selected_delivery_audit_checkpoint": {
+    "case_count": 4,
+    "delivery_receipts_validated": true,
+    "execution_manifest_validated": true,
+    "manifest_sha256": "51892294817e992059586fee6d6ab8c2f35ab6fa41b32cc989ce41c741aa0556",
+    "negative_missing_original_source_rejected": true,
+    "original_native_observed": false,
+    "package_compatibility_validated": true,
+    "positive_diagnostic_only": true,
+    "proof": "selected-delivery-audit-proof.json",
+    "proof_sha256": "0c1c247012f426eb4b4172c80eda178b12be2816a22eec26c02aa9cc5cae38b3",
+    "script": "delivery_audit.py",
+    "script_sha256": "3a6db528ab65402666b6c1655b1f5f76cb2338422466d70c233b8b7c71e818c1",
+    "semantic_validated": true
+  },
+  "selected_native_offline_checkpoint": {
+    "case_count": 4,
+    "compatibility_sha256": {
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "a80d686f205059f6d14ecd8cbdabc5406d5027b098c3163a31f185bb893456b9",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "84e8f5a6e06993c47d0f6308ce688e653d11e6580c7267a138f86fb57c0ea9c4",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "d7545ee5914c055d7f4736f764def2d4f5f0b020a80b335a9b16d9ba4eb2a51c",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "b257da4c1688c1b56e7e3369664d6a7b14d039e461c6acdd274294004f8581e2"
+    },
+    "construction_sha256": {
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "840cb9e03804a6df1b01ef588278d189343e32dd5750dfb33b5711c3437c9a6a",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "7dccb6ff3d16f71837c4d4826d7cb7bf133d614bb9895131dc2760b4ef036fae",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "1d8a8a72707aa24b92f1230cc9f07c4164ad12aac9d641f48074f54b9eb14814",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "485f1eb7ebbc40f502c3a0b550cfc31b05ffed5e170f5ecda337f525d85ef303"
+    },
+    "fallback_offline_compatibility_sha256": {
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "cf46f168b3d10bec3f66345d469df8de0d7856c837db62e006c005ef46c2821e",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "d13db6dca11a8fe99d4f0c09e54aaaceda3b298141e2c9c07fc631e328c2d3db",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "3d0f32f0a2fe04989e2aacddfdcd4127edf9440e6a1bf6f7e282b88483dec26c",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "14abe8edd5428afed2c3d175184d5636bdf3a9288129862a66030e948a944092"
+    },
+    "manifest": "execution-manifest.json",
+    "manifest_sha256": "de07224233d135c42aa12c4a63917febdccb6d3883238277c0993766dfc28374",
+    "offline_passed_case_ids": [
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy"
+    ],
+    "physical_fixture_receipts_sha256": {
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "3943c89550626622a1cc66fa5942df0a7346626433356327f15aaf2db72de9a0",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "1d43e94536dca0a7f875f803ca157e1f20f7d1c76d47242fda944e677183c425",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "194684a314c65ae76ebbe035ea8c8fae5e24c9f28c0d01126bfbe0512dd27ef8",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "961697c39a56c298691a2673ca3f6ef867a88ee741847d950f22ecd5e2210275"
+    },
+    "saved_proof_sha256": {
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_1": "cbcae2640017ff07ec14f049819b0a77409fe43fe0764f71779de3cc678bfbc1",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__probe_2": "d59f86eee7dd63981dd582c719374fe4d962eb7f3a86b39c1054f0998ba61617",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_enter_during_occupancy": "18c20dff9e0db917bb2e536b998d9f3cdb27256b9bd78f97e2209b8b614ac08b",
+      "training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator__yield_wait_for_clearance": "491157a612178b048ee706838ae08b950b9962ebfe58b60e5b952edd34c8e823"
+    },
+    "selected_delivery_ready": false,
+    "selected_public_compatibility_passed": true,
+    "selected_saved_processing_passed": true
+  },
+  "semantic_proposal_checkpoint": {
+    "index": "proposals/semantic-index.json",
+    "index_sha256": "852ff2933e7221ea6192e90621d4f782c55140e9e0e1abf3c3b6505346669064",
+    "original_native_observed": false,
+    "proof_log": "semantic-proposal-proof.log",
+    "proof_log_sha256": "46557c57d500209a932befcd32f7d22d20b2c6a56c95460145be888ac4fa4e77",
+    "selected_cases": 4,
+    "stage_count": 6
+  },
+  "source_law_review": "Exact law text retained from frozen assignment; extracted summary is recovered_requires_source_review",
+  "status": "partial",
+  "straight_comparison_checkpoint": {
+    "negative": "straight-comparison-negative.log",
+    "negative_sha256": "cce9e91f02e61e5862ee1897a762be7d30f63a9fdc7e63bba98aa52f478840a1",
+    "positive": "straight-comparison-proof.json",
+    "positive_sha256": "fcd05b69134e0ad349e9c400ea14a347448cfbd65c753d7dd87304c10951514e",
+    "scope": "synthetic source-shaped comparison only"
+  },
+  "tests": [
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c111071-root TMPDIR=.runtime-work PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=. ../../.venv-cpu/bin/python -m unittest discover -s tests (cwd work/training__C111071__NRS-484B-307-9b__motorcycle_or_moped_operator)",
+      "exit_code": 0,
+      "log": "root-cpu-tests.log",
+      "sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
+    }
+  ],
+  "unresolved_branch_count": 1,
+  "yield_branch_checkpoint": {
+    "case_count": 2,
+    "frames": 600,
+    "measurement_contract_sha256": "d0ac9f2ac34867e0dde536187b56c3deed5d5d914049d494f29742c9eb0e30fd",
+    "native_executed": false,
+    "negative_rejections": 5,
+    "proof_path": "native/yield-proof.json",
+    "proof_sha256": "0219dca575984ff56f3cc3495a13a7de34be7317884746a2982920caca28b23d",
+    "rate_hz": 20,
+    "script_sha256": "e5b2781a0c1af8f743ca419354822e1f02aafaa4c5f46c353c2510c4ac2a88ea",
+    "selected_delivery_claimed": false,
+    "status": "authored_diagnostic_passed"
+  },
+  "yield_comparison_checkpoint": {
+    "negative": "yield-comparison-negative.log",
+    "negative_sha256": "1cd51db7a8c72e16c66cb7cebdbba4ad870dddcc4f03f140ebc80a492ef03665",
+    "positive": "yield-comparison-proof.json",
+    "positive_sha256": "cf220b1caeebcc866b08c653c3ef9b37a655e63b92eb8d5957cd0862c7ed645f",
+    "scope": "synthetic source-shaped comparison only"
+  },
+  "yield_source_chain_audit": {
+    "frozen_binding": true,
+    "mapped_terms": 14,
+    "physical_acceptance_claimed": false,
+    "receipt": "yield-source-chain-audit.json",
+    "receipt_sha256": "e98235baea1bd5497eabbe565d20614d25292ae4a801a2fe880808be1b5f2841",
+    "source_kind": "synthetic_native_shaped_diagnostic"
+  }
 }

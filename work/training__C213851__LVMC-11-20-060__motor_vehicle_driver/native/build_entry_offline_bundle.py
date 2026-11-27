@@ -106,15 +106,21 @@ class EntryReturnRequest(unittest.TestCase):
                 {'name': 'ego_pose_speed_footprint', 'unit': 'structured',
                  'sampling_rate_hz': 20,
                  'method': 'original frame-joined ego pose, speed and bounding box',
-                 'time_window': 'entire 60 s original Native capture'},
+                 'time_window': 'entire 60 s original Native capture',
+                 'reference_frame': 'source-verified map and original frame times',
+                 'uncertainty': '50 ms sampling; physical and pixel review pending'},
                 {'name': 'approaching_vehicle_trace', 'unit': 'structured',
                  'sampling_rate_hz': 20,
                  'method': 'original frame-joined approaching vehicle pose and speed',
-                 'time_window': 'entire 60 s original Native capture'},
+                 'time_window': 'entire 60 s original Native capture',
+                 'reference_frame': 'source-verified roadway lane and original frame times',
+                 'uncertainty': '50 ms sampling; physical and pixel review pending'},
                 {'name': 'pedestrian_trace', 'unit': 'structured',
                  'sampling_rate_hz': 20,
                  'method': 'original frame-joined separate pedestrian pose',
-                 'time_window': 'entire 60 s original Native capture'},
+                 'time_window': 'entire 60 s original Native capture',
+                 'reference_frame': 'source-verified sidewalk and original frame times',
+                 'uncertainty': '50 ms sampling; physical and pixel review pending'},
             ],
             'context_inputs': [
                 {'name': 'roadway_entry_geometry', 'unit': 'structured',
@@ -178,7 +184,30 @@ def main():
                 'diagnostic_only': True}
     path = NATIVE / 'entry_return/offline-manifest.json'
     path.write_text(json.dumps(manifest, indent=2) + '\n')
-    return {'manifest': str(path.relative_to(ROOT)), 'cases': cases}
+    repo = ROOT.parents[1]
+    public = {
+        'format': 'worker-execution-manifest',
+        'assignment_id': AID,
+        'runtime_manifest_sha256': sha(repo / 'runtime/SOURCE-MANIFEST.json'),
+        'cases': [],
+        'diagnostic_only': True,
+    }
+    for case in cases:
+        policy = case['case_id'].rsplit('__', 1)[-1]
+        public['cases'].append({
+            'case_id': case['case_id'],
+            'construction': 'native/entry_return/' + policy + '/construction.json',
+            'construction_sha256': case['construction_sha256'],
+            'measurement_contract':
+                'native/entry_return/' + policy + '/measurement-contract.json',
+            'measurement_procedure': case['measurement_procedure'],
+            'fixture_recipe':
+                f'work/{AID}/native/entry_return/{policy}/diagnostic/fixture-recipe.json',
+        })
+    public_path = ROOT / 'entry-return-compat-manifest.json'
+    public_path.write_text(json.dumps(public, indent=2) + '\n')
+    return {'manifest': str(path.relative_to(ROOT)),
+            'public_manifest': str(public_path.relative_to(ROOT)), 'cases': cases}
 
 
 if __name__ == '__main__':
