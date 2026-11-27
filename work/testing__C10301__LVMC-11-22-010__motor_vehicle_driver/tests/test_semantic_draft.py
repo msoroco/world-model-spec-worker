@@ -18,9 +18,10 @@ class SemanticDraftTests(unittest.TestCase):
         proposal = HERE / "proposals"
         read = lambda name: json.loads((proposal / (name + ".json")).read_text())
         index = read("semantic-index")
-        for item in index["stages"].values():
-            path = HERE / item["path"]
-            self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), item["sha256"])
+        for stage in index["stages"].values():
+            for item in stage if isinstance(stage, list) else [stage]:
+                path = HERE / item["path"]
+                self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), item["sha256"])
         law = "LVMC-11-22-010"
         actor = "motor_vehicle_driver"
         cell = {"cell_id": "C10301"}
@@ -51,6 +52,7 @@ class SemanticDraftTests(unittest.TestCase):
     def test_no_attention_surrogate_or_numeric_range(self):
         cases = json.loads((HERE / "proposals/cases.json").read_text())
         self.assertEqual(cases["sweep_specs"][0]["status"], "incomplete")
+        self.assertTrue(cases["sweeps_expanded"])
         self.assertFalse(cases["sweep_specs"][0].get("axes"))
         for case in cases["cases"]:
             self.assertIsNone(case["variable_assignments"]["observed_attention_state"]["value"])

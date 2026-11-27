@@ -1,7 +1,7 @@
 """Exact-case saved alley finalizer over audited original sources.
 
-Exterior operation measurements remain observations. They do not establish a
-person's interior attention or a legal conclusion.
+Exterior operation and source-reviewed interior gaze remain observations.
+They do not establish a legal conclusion.
 """
 from __future__ import annotations
 
@@ -37,7 +37,8 @@ def finalize(attempt: Path, case_id: str, allow_diagnostic: bool = False) -> dic
         "decoded_original_pngs": original["decoded_original_pngs"],
         "diagnostic_fixture": original["diagnostic_fixture"],
         "operation_measurement": measured,
-        "attention_state": "unobserved",
+        "interior_source_audit": original["interior_source_audit"],
+        "attention_state": original["attention_state"],
         "legal_judgment": "unresolved",
     }
     contract = Path(__file__).resolve().parent / ("measurement-contract-" + case_id.rsplit("__", 1)[1] + ".json")
@@ -96,7 +97,11 @@ def analyze(attempt: Path, case_id: str) -> tuple[dict, dict]:
     result = {
         "case_id": case_id,
         "measured_values": {"operation_frames": measurement["original_frames"],
-                            "attention_state": "unobserved", "legal_judgment": "unresolved"},
+                            "attention_state": measurement["attention_state"],
+                            "original_eyes_off_road_duration_s":
+                                None if diagnostic_video_only or measurement.get("interior_source_audit") is None
+                                else measurement["interior_source_audit"]["measured_duration_s"],
+                            "legal_judgment": "unresolved"},
         "target_checks": [{"target": "source-bound alley operation", "requested": True,
                            "measured": measurement["original_frames"] == 900,
                            "method": "saved original same-frame operation join", "tolerance": 0,
@@ -130,7 +135,7 @@ def analyze(attempt: Path, case_id: str) -> tuple[dict, dict]:
               "realized_observables": result["realized_observables"],
               "provenance_kind": result["provenance_kind"],
               "diagnostic_fixture": result["diagnostic_fixture"],
-              "limitations": ["Exterior observation does not establish interior attention or legal status."],
+              "limitations": ["Original gaze duration does not determine the legal full-time-attention standard."],
               "analysis_complete": True}
     return report, result
 

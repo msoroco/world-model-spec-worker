@@ -31,7 +31,8 @@ def _write_source(root, relative, value):
     path = root / relative
     path.parent.mkdir(parents=True, exist_ok=True)
     raw = _encoded(value)
-    path.write_bytes(raw)
+    with path.open("xb") as stream:
+        stream.write(raw)
     return {"path": relative, "sha256": hashlib.sha256(raw).hexdigest()}
 
 
@@ -114,7 +115,8 @@ def capture(*, case_id, packet, world, ego, route_reader, ray_reader,
                 relative = f"original-cameras/{name}/{original_frame:08d}.png"
                 target = root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(raw)
+                with target.open("xb") as stream:
+                    stream.write(raw)
                 camera_row["sources"][name] = {
                     "path": relative, "sha256": hashlib.sha256(raw).hexdigest()}
             camera_map.append(camera_row)

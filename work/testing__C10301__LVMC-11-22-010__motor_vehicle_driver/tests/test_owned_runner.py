@@ -15,6 +15,14 @@ CASE = HERE.name + "__steady_travel"
 
 
 class OwnedRunnerTests(unittest.TestCase):
+    def setUp(self):
+        for name, value in (("_stage_attention_packet", Path("staged-attention.json")),
+                            ("validate_attention", {"axis": {"min": 0}}),
+                            ("AttentionSweepCapture", Mock())):
+            patched = patch.object(MODULE, name, return_value=value)
+            patched.start()
+            self.addCleanup(patched.stop)
+
     def test_reviewed_site_bound_and_actor_destroyed(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -29,7 +37,8 @@ class OwnedRunnerTests(unittest.TestCase):
                     patch.object(MODULE, "capture", return_value={"case_id": CASE, "diagnostic_fixture": True}) as capture:
                 receipt = MODULE.capture_reviewed(session, site, CASE, output,
                     pipeline_factory=lambda *args, **kwargs: nullcontext(object()),
-                    publisher=lambda *args: {"published": True})
+                    publisher=lambda *args: {"published": True},
+                    attention_packet_path=site)
             spawn.assert_called_once_with(session.world, session.carla, source, CASE)
             self.assertEqual(capture.call_args.args[3:6], (source, CASE, "person-1"))
             actor.destroy.assert_called_once()
@@ -49,7 +58,8 @@ class OwnedRunnerTests(unittest.TestCase):
                     patch.object(MODULE, "capture", side_effect=ValueError("camera failure")):
                 with self.assertRaisesRegex(ValueError, "camera failure"):
                     MODULE.capture_reviewed(session, site, CASE, root / "attempt",
-                        pipeline_factory=lambda *args, **kwargs: nullcontext(object()))
+                        pipeline_factory=lambda *args, **kwargs: nullcontext(object()),
+                        attention_packet_path=site)
             actor.destroy.assert_called_once()
 
     def test_unsourced_or_existing_attempt_refused(self):
@@ -80,7 +90,8 @@ class OwnedRunnerTests(unittest.TestCase):
                     patch.object(MODULE, "capture", return_value={"case_id": CASE}):
                 MODULE.capture_reviewed(session, site, CASE, output,
                     pipeline_factory=lambda *args, **kwargs: nullcontext(object()),
-                    publisher=lambda *args: {"published": True})
+                    publisher=lambda *args: {"published": True},
+                    attention_packet_path=site)
             actor.destroy.assert_called_once()
             self.assertTrue((output / "site-source.json").is_file())
             with self.assertRaisesRegex(ValueError, "already contains original acquisition"):

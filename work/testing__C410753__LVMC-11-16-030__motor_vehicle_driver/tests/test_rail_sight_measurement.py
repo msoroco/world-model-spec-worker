@@ -12,7 +12,9 @@ HERE = Path(__file__).resolve().parents[1]
 REPO = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 from rail_sight_measurement import measure
-from rail_native_capture import CAMERAS, capture
+from rail_native_capture import CAMERAS, _write_source, capture
+from rail_camera_adapter import CameraAdapter
+from rail_saved_measurement import verify_camera_row, verify_saved
 from rail_route_reader import ReviewedRailRouteReader
 from rail_ray_reader import ReviewedRailRayReader
 from rail_exception_reader import ReviewedRailExceptionReader
@@ -120,6 +122,72 @@ class RailSightTests(unittest.TestCase):
         (self.root / "exception-6.json").write_text("changed\n")
         with self.assertRaisesRegex(ValueError, "exception source"):
             measure(self.root, self.packet, self.road, self.frames)
+
+    def test_original_capture_source_cannot_be_overwritten(self):
+        _write_source(self.root, "original-frames/00000100.json", {"frame": 100})
+        original = (self.root / "original-frames/00000100.json").read_bytes()
+        with self.assertRaises(FileExistsError):
+            _write_source(self.root, "original-frames/00000100.json", {"frame": 999})
+        self.assertEqual((self.root / "original-frames/00000100.json").read_bytes(), original)
+
+    def test_four_camera_adapter_joins_original_frame_and_timestamp(self):
+        class Sensor:
+            def listen(self, callback):
+                self.callback = callback
+
+            def stop(self):
+                self.stopped = True
+
+        sensors = {name: Sensor() for name in CAMERAS}
+        adapter = CameraAdapter(sensors)
+        adapter.start()
+        for name, (width, height) in CAMERAS.items():
+            sensors[name].callback(SimpleNamespace(
+                frame=100, timestamp=2.5, width=width, height=height,
+                raw_data=bytes((0, 0, 0, 255)) * (width * height)))
+        snapshot = SimpleNamespace(timestamp=SimpleNamespace(elapsed_seconds=2.5))
+        images = adapter.read(100, snapshot)
+        self.assertEqual(set(images), set(CAMERAS))
+        self.assertTrue(all(item[0] == 100 and item[1].startswith(b"\x89PNG")
+                            for item in images.values()))
+        adapter.stop()
+        self.assertTrue(all(sensor.stopped for sensor in sensors.values()))
+
+    def test_four_camera_adapter_stops_attached_sensors_on_start_failure(self):
+        class Sensor:
+            def __init__(self, fail=False):
+                self.fail = fail
+                self.stopped = False
+
+            def listen(self, callback):
+                if self.fail:
+                    raise RuntimeError("sensor attachment failed")
+
+            def stop(self):
+                self.stopped = True
+
+        sensors = {name: Sensor(fail=(index == 2))
+                   for index, name in enumerate(CAMERAS)}
+        with self.assertRaisesRegex(RuntimeError, "attachment failed"):
+            CameraAdapter(sensors).start()
+        self.assertTrue(sensors["overview"].stopped)
+        self.assertTrue(sensors["approach"].stopped)
+
+    def test_saved_camera_row_requires_original_hashed_four_views(self):
+        from PIL import Image
+        row = {"original_frame": 100, "sources": {}}
+        for name, dimensions in CAMERAS.items():
+            source = self.root / (name + ".png")
+            Image.new("RGB", dimensions).save(source, "PNG")
+            row["sources"][name] = {"path": source.name, "sha256": sha(source)}
+        self.assertEqual(set(verify_camera_row(self.root, row, 100)), set(CAMERAS))
+        row["sources"]["track_left"]["sha256"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "source missing or changed"):
+            verify_camera_row(self.root, row, 100)
+
+    def test_saved_measurement_rejects_missing_original_receipt(self):
+        with self.assertRaisesRegex(ValueError, "receipt missing"):
+            verify_saved(self.root, self.packet, HERE.name + "__obscured_14mph")
 
     def test_original_capture_writes_frame_ray_and_four_camera_sources(self):
         from PIL import Image

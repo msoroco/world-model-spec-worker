@@ -21,7 +21,8 @@ def _sha(data: bytes) -> str:
 
 
 def capture(adapter, actor, carla, site: dict, case_id: str, person_id: str,
-            output: Path, frames: int = FRAMES, pipeline_capture=None) -> dict:
+            output: Path, frames: int = FRAMES, pipeline_capture=None,
+            attention_capture=None) -> dict:
     """Request control, tick, read original state/context and four same-tick PNGs.
 
     Adapter API: tick() -> world snapshot; image(camera, frame) -> same-tick
@@ -49,8 +50,15 @@ def capture(adapter, actor, carla, site: dict, case_id: str, person_id: str,
     image_dir.mkdir(exist_ok=False)
     for index in range(frames):
         request_control(actor, carla, case_id, index / FPS)
+        if attention_capture is not None:
+            attention_capture.request(adapter, actor, index)
         snapshot = adapter.tick()
         ego = sample_original(actor, snapshot, case_id, person_id)
+        if attention_capture is not None:
+            interior = attention_capture.read(adapter, actor, snapshot)
+            if (interior["native_frame"] != ego["native_frame"] or
+                    abs(interior["native_time_s"] - ego["native_time_s"]) > .001):
+                raise ValueError("original interior source differs from ego frame or time")
         if pipeline_capture is not None:
             original = pipeline_capture.capture(ego["native_frame"], ego["native_time_s"])
             if original.get("frame") != ego["native_frame"] or abs(original.get("time_s", -1) - ego["native_time_s"]) > .001:
@@ -99,6 +107,11 @@ def capture(adapter, actor, carla, site: dict, case_id: str, person_id: str,
               "context": write_rows("context.jsonl", context_rows),
               "operation": write_rows("operation.jsonl", measurement_rows),
               "camera_frame_map": write_rows("camera-frame-map.jsonl", image_rows)}
+    interior_receipt = None
+    if attention_capture is not None:
+        interior_receipt = attention_capture.finish(output, expected_frames=frames)
+        hashes["interior_control"] = interior_receipt["control_source_sha256"]
+        hashes["interior_original"] = interior_receipt["measured"]["source_sha256"]
     result = {"format": "worker-alley-native-capture", "case_id": case_id,
               "source_kind": "original_native_capture",
               "diagnostic_fixture": site.get("diagnostic_fixture") is not False,
@@ -114,6 +127,8 @@ def capture(adapter, actor, carla, site: dict, case_id: str, person_id: str,
               "operation_source_sha256": hashes["operation"],
               "nominal_speed_m_s": 2.0,
               "requested_lateral_profile": CASE_PROFILES[case_id],
-              "attention_state": "unobserved", "legal_judgment": "unresolved"}
+              "attention_state": "unresolved" if interior_receipt else "unobserved",
+              "interior_capture": interior_receipt,
+              "legal_judgment": "unresolved"}
     (output / "capture.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     return result

@@ -48,6 +48,7 @@ def main():
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
     parser.add_argument("--site-packet")
+    parser.add_argument("--attention-packet")
     parser.add_argument("--adapter")
     parser.add_argument("--host", default="localhost")
     parser.add_argument("--port", type=int, default=2000)
@@ -57,16 +58,18 @@ def main():
         print("diagnostic alley bundle passed: " + case)
         return
     site_packet = args.site_packet or os.environ.get("SCENARIO_NATIVE_SITE_PACKET")
+    attention_packet = args.attention_packet or os.environ.get("SCENARIO_NATIVE_ATTENTION_PACKET")
     adapter_name = args.adapter or os.environ.get("SCENARIO_NATIVE_ADAPTER")
-    if not args.output_dir or not site_packet or not adapter_name:
-        raise ValueError("Reviewed Native site and original camera source required; diagnostic capture refused")
+    if not args.output_dir or not site_packet or not attention_packet or not adapter_name:
+        raise ValueError("Reviewed Native site, interior attention and original camera source required; diagnostic capture refused")
     adapter = importlib.import_module(adapter_name)
     if not hasattr(adapter, "open_session"):
         raise ValueError("Operator-owned Native adapter lacks open_session")
     from owned_runner import capture_reviewed
     try:
         with adapter.open_session(case, site_packet, args.host, args.port) as session:
-            capture_reviewed(session, site_packet, case, args.output_dir)
+            capture_reviewed(session, site_packet, case, args.output_dir,
+                             attention_packet_path=attention_packet)
         from runtime_publication import seal_reviewed
         seal_reviewed(Path(args.output_dir), getattr(session, "restoration_receipt", None))
     except Exception as error:
@@ -126,6 +129,10 @@ def build() -> None:
                  "native_operation.py": (HERE / "native_operation.py").read_text(),
                  "native_context.py": (HERE / "native_context.py").read_text(),
                  "native_capture.py": (HERE / "native_capture.py").read_text(),
+                 "interior_attention.py": (HERE / "interior_attention.py").read_text(),
+                 "reviewed_attention_intake.py": (HERE / "reviewed_attention_intake.py").read_text(),
+                 "attention_sweep_capture.py": (HERE / "attention_sweep_capture.py").read_text(),
+                 "attention_source_audit.py": (HERE / "attention_source_audit.py").read_text(),
                  "owned_runner.py": (HERE / "owned_runner.py").read_text(),
                  "runtime_publication.py": (HERE / "runtime_publication.py").read_text(),
                  "saved_delivery.py": (HERE / "saved_delivery.py").read_text(),

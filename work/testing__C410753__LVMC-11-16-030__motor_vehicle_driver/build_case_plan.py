@@ -21,6 +21,12 @@ def build():
         ("signal_nonwarning_16mph", 16, "obscured", "visible_nonwarning_signal"),
         ("signal_warning_16mph", 16, "obscured", "visible_warning_signal"),
     )
+    branches = {
+        "none": branch,
+        "flagman_on_duty": "On-duty flagman exception during grade-crossing traversal.",
+        "visible_nonwarning_signal": "Clearly visible installed nonwarning crossing-signal exception during traversal.",
+        "visible_warning_signal": "Warning crossing signal during traversal; nonwarning exception is not established.",
+    }
     plan["selected_branch"] = branch
     plan["source_observation_mapping"] = {}
     review = plan.setdefault("evidence_review", {})
@@ -31,7 +37,10 @@ def build():
     }]
     plan["cases"] = [
         {"case_id": AID + "__" + name, "target_law_id": "LVMC-11-16-030",
-         "kind": "delivery", "branch": branch, "engineering_target_traversal_mph": mph,
+         "kind": "delivery",
+         "branch": ("Clear-view comparison outside the sight-conditioned branch."
+                    if sight == "clear" else branches[exception]),
+         "engineering_target_traversal_mph": mph,
          "engineering_sight_setup": sight, "exception_setup": exception,
          "candidate_risk": {"status": "physical", "reason":
              "Reviewed original grade-crossing geometry, sight rays and speed may miss the requested condition; actual Native readback determines feasibility."},

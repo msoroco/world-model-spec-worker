@@ -105,6 +105,17 @@ def publish_original(output: Path, case_id: str, *, expected_frames: int = 900,
         "evidence": _rows(capture_root / "evidence.jsonl"),
         "graphs": _rows(capture_root / "native/frames.jsonl"),
     }
+    interior_audit = None
+    if original.get("interior_capture") is not None:
+        from attention_source_audit import audit as audit_interior
+        interior_audit = audit_interior(
+            output, output / "interior-sources/packet.json",
+            original["interior_capture"],
+            allow_diagnostic=original.get("diagnostic_fixture") is True,
+            expected_frames=expected_frames)
+        sources["interior"] = _rows(output / "interior-original.jsonl")
+    if original.get("diagnostic_fixture") is False and interior_audit is None:
+        raise ValueError("original interior attention source required for publication")
     if any(len(rows) != expected_frames for rows in sources.values()):
         raise ValueError("Original trace, graph, context or camera frame count differs")
     for index in range(expected_frames):
@@ -118,6 +129,10 @@ def publish_original(output: Path, case_id: str, *, expected_frames: int = 900,
             raise ValueError("Original frame identities differ")
         if sources["camera"][index].get("native_frame") != frame:
             raise ValueError("Original camera frame differs")
+        if interior_audit is not None and (
+                sources["interior"][index].get("native_frame") != frame or
+                abs(sources["interior"][index].get("native_time_s", -1) - time_s) > .001):
+            raise ValueError("Original interior frame differs from exterior acquisition")
         if (abs(sources["trace"][index]["time_s"] - time_s) > .001 or
                 abs(sources["context"][index].get("native_time_s", -1) - time_s) > .001 or
                 abs(sources["camera"][index].get("native_time_s", -1) - time_s) > .001):
@@ -159,7 +174,10 @@ def publish_original(output: Path, case_id: str, *, expected_frames: int = 900,
     result = {
         "case_id": case_id,
         "measured_values": {"operation_frames": expected_frames,
-                            "attention_state": "unobserved", "legal_judgment": "unresolved"},
+                            "attention_state": "unresolved" if interior_audit else "unobserved",
+                            "original_eyes_off_road_duration_s":
+                                interior_audit["measured_duration_s"] if interior_audit else None,
+                            "legal_judgment": "unresolved"},
         "target_checks": [{"target": "source-bound alley operation", "requested": True,
                            "measured": len(sources["operation"]) == expected_frames,
                            "method": "original same-frame operation and PipelineCapture join",

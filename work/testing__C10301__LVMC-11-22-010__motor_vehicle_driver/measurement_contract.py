@@ -23,8 +23,15 @@ def check(contract_path: Path, attempt: Path, measurement: dict) -> dict:
         raise ValueError("exact measurement case mismatch")
     if measurement.get("selected_requirement") != "LVMC-11-22-010":
         raise ValueError("selected statutory requirement mismatch")
-    if measurement.get("attention_state") != "unobserved" or measurement.get("legal_judgment") != "unresolved":
+    interior = measurement.get("interior_source_audit")
+    expected_state = "unresolved" if interior is not None else "unobserved"
+    if measurement.get("attention_state") != expected_state or measurement.get("legal_judgment") != "unresolved":
         raise ValueError("unsupported interior attention or legal judgment")
+    if interior is not None:
+        if (interior.get("case_id") != case_id or interior.get("original_frames") != 900
+                or interior.get("legal_judgment") != "unresolved"
+                or interior.get("physical_acceptance_claimed") is not False):
+            raise ValueError("original interior measurement contract differs")
     if measurement.get("original_frames") != 900 or measurement.get("decoded_original_pngs") != 3600:
         raise ValueError("incomplete original capture window")
     hashes = measurement.get("source_sha256", {})

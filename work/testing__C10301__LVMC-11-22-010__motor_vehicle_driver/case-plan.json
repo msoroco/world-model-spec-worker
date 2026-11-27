@@ -1,131 +1,37 @@
 {
-  "assignment_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C10301",
-  "law_id": "LVMC-11-22-010",
-  "selected_branches": [
-    {
-      "law_id": "LVMC-11-22-010",
-      "cell_id": "C10301",
-      "actor": "motor_vehicle_driver",
-      "requirement": "LVMC-11-22-010",
-      "branch": "Vehicle operation on an alley route",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 276,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "A person shall, when operating a vehicle, give his full time and attention to the operation of the vehicle.",
-  "law_source": "LVMC 11.22.010",
-  "topic_inventory": {
-    "exact-text": "A person shall, when operating a vehicle, give his full time and attention to the operation of the vehicle."
+  "assignment_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45-second original operation",
+        "subject": "ego alley trajectory and access-aisle context",
+        "view": "overview"
+      },
+      {
+        "interval": "full 45-second original operation",
+        "subject": "ego body and alley approach",
+        "view": "approach"
+      },
+      {
+        "interval": "full 45-second original operation",
+        "subject": "marked parking access aisle",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full 45-second original operation",
+        "subject": "driver and ego reference",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
-      "target_law_id": "LVMC-11-22-010",
-      "target_type": "judgment_observation",
-      "judgment_refs": [
-        {
-          "phrase": "full time and attention",
-          "note": ""
-        }
-      ],
-      "physical_risk_assessment": {
-        "status": "unverified",
-        "reason": "Alley clearance and access-aisle markings require construction and Native verification; no fallback chosen without a measured failure."
-      },
-      "physical_acceptance_claimed": false,
-      "legal_judgment": "unresolved",
-      "gap_ids": [
-        "G1",
-        "G2"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "kin.position",
-            "unit": "m",
-            "rate_hz": 20,
-            "method": "original ego pose"
-          },
-          {
-            "name": "kin.yaw_rate",
-            "unit": "rad/s",
-            "rate_hz": 20,
-            "method": "original ego angular velocity"
-          },
-          {
-            "name": "kin.speed",
-            "unit": "m/s",
-            "rate_hz": 20,
-            "method": "original ego velocity"
-          },
-          {
-            "name": "kin.accel_longitudinal",
-            "unit": "m/s2",
-            "rate_hz": 20,
-            "method": "original ego acceleration"
-          },
-          {
-            "name": "drv.straddles_marking",
-            "unit": "boolean",
-            "rate_hz": 20,
-            "method": "body footprint versus sourced aisle marking"
-          },
-          {
-            "name": "drv.hard_deceleration",
-            "unit": "boolean",
-            "rate_hz": 20,
-            "method": "source-bound acceleration diagnostic"
-          },
-          {
-            "name": "drv.time_to_conflict",
-            "unit": "s or null",
-            "rate_hz": 20,
-            "method": "source-bound actor path conflict diagnostic"
-          },
-          {
-            "name": "dev.traffic_signal",
-            "unit": "state",
-            "rate_hz": 20,
-            "method": "original nearby device state"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "person_vehicle_operation",
-            "unit": "identity and interval",
-            "method": "original Native participant and operation history"
-          },
-          {
-            "name": "municipal_applicability",
-            "unit": "source citation",
-            "method": "map and jurisdiction review"
-          },
-          {
-            "name": "alley_access_aisle_geometry",
-            "unit": "m",
-            "method": "source geometry and original scene review"
-          }
-        ],
-        "limitations": [
-          "Exterior behavior does not establish an interior attention state or legal compliance.",
-          "Access aisle adjacency does not imply parking intent or occupation."
-        ]
-      },
       "case_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
       "draft_variables": {
-        "world_setup": {
-          "layout": "alley",
-          "maneuver": "travel",
-          "control": "access_aisle",
-          "marked_access_aisle": "adjacent to designated handicapped parking; contrasting stripes; not an ordinary lane",
-          "municipal_applicability": "requires source review"
-        },
         "controller": {
           "lateral_request": "constant alley-route center tracking",
           "nominal_speed_m_s": 2.0
@@ -133,95 +39,98 @@
         "subject_behavior": {
           "actual_lateral_path": null,
           "full_time_and_attention": null
+        },
+        "world_setup": {
+          "control": "access_aisle",
+          "layout": "alley",
+          "maneuver": "travel",
+          "marked_access_aisle": "adjacent to designated handicapped parking; contrasting stripes; not an ordinary lane",
+          "municipal_applicability": "requires source review"
         }
       },
-      "preparation_status": "native_ego_acquisition_cpu_tested_context_and_delivery_pending"
-    },
-    {
-      "target_law_id": "LVMC-11-22-010",
-      "target_type": "judgment_observation",
-      "judgment_refs": [
-        {
-          "phrase": "full time and attention",
-          "note": ""
-        }
-      ],
-      "physical_risk_assessment": {
-        "status": "unverified",
-        "reason": "Alley clearance and access-aisle markings require construction and Native verification; no fallback chosen without a measured failure."
-      },
-      "physical_acceptance_claimed": false,
-      "legal_judgment": "unresolved",
       "gap_ids": [
         "G1",
         "G2"
       ],
+      "judgment_refs": [
+        {
+          "note": "",
+          "phrase": "full time and attention"
+        }
+      ],
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "reason": "Alley clearance and access-aisle markings require construction and Native verification; no fallback chosen without a measured failure.",
+        "status": "unverified"
+      },
+      "preparation_status": "native_ego_acquisition_cpu_tested_context_and_delivery_pending",
       "recording_description": {
         "channels": [
           {
+            "method": "original ego pose",
             "name": "kin.position",
-            "unit": "m",
             "rate_hz": 20,
-            "method": "original ego pose"
+            "unit": "m"
           },
           {
+            "method": "original ego angular velocity",
             "name": "kin.yaw_rate",
-            "unit": "rad/s",
             "rate_hz": 20,
-            "method": "original ego angular velocity"
+            "unit": "rad/s"
           },
           {
+            "method": "original ego velocity",
             "name": "kin.speed",
-            "unit": "m/s",
             "rate_hz": 20,
-            "method": "original ego velocity"
+            "unit": "m/s"
           },
           {
+            "method": "original ego acceleration",
             "name": "kin.accel_longitudinal",
-            "unit": "m/s2",
             "rate_hz": 20,
-            "method": "original ego acceleration"
+            "unit": "m/s2"
           },
           {
+            "method": "body footprint versus sourced aisle marking",
             "name": "drv.straddles_marking",
-            "unit": "boolean",
             "rate_hz": 20,
-            "method": "body footprint versus sourced aisle marking"
+            "unit": "boolean"
           },
           {
+            "method": "source-bound acceleration diagnostic",
             "name": "drv.hard_deceleration",
-            "unit": "boolean",
             "rate_hz": 20,
-            "method": "source-bound acceleration diagnostic"
+            "unit": "boolean"
           },
           {
+            "method": "source-bound actor path conflict diagnostic",
             "name": "drv.time_to_conflict",
-            "unit": "s or null",
             "rate_hz": 20,
-            "method": "source-bound actor path conflict diagnostic"
+            "unit": "s or null"
           },
           {
+            "method": "original nearby device state",
             "name": "dev.traffic_signal",
-            "unit": "state",
             "rate_hz": 20,
-            "method": "original nearby device state"
+            "unit": "state"
           }
         ],
         "context_inputs": [
           {
+            "method": "original Native participant and operation history",
             "name": "person_vehicle_operation",
-            "unit": "identity and interval",
-            "method": "original Native participant and operation history"
+            "unit": "identity and interval"
           },
           {
+            "method": "map and jurisdiction review",
             "name": "municipal_applicability",
-            "unit": "source citation",
-            "method": "map and jurisdiction review"
+            "unit": "source citation"
           },
           {
+            "method": "source geometry and original scene review",
             "name": "alley_access_aisle_geometry",
-            "unit": "m",
-            "method": "source geometry and original scene review"
+            "unit": "m"
           }
         ],
         "limitations": [
@@ -229,15 +138,12 @@
           "Access aisle adjacency does not imply parking intent or occupation."
         ]
       },
+      "target_law_id": "LVMC-11-22-010",
+      "target_type": "judgment_observation"
+    },
+    {
       "case_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation",
       "draft_variables": {
-        "world_setup": {
-          "layout": "alley",
-          "maneuver": "travel",
-          "control": "access_aisle",
-          "marked_access_aisle": "adjacent to designated handicapped parking; contrasting stripes; not an ordinary lane",
-          "municipal_applicability": "requires source review"
-        },
         "controller": {
           "lateral_request": "preplanned mild steering variation while traversing the same alley route",
           "nominal_speed_m_s": 2.0
@@ -245,29 +151,152 @@
         "subject_behavior": {
           "actual_lateral_path": null,
           "full_time_and_attention": null
+        },
+        "world_setup": {
+          "control": "access_aisle",
+          "layout": "alley",
+          "maneuver": "travel",
+          "marked_access_aisle": "adjacent to designated handicapped parking; contrasting stripes; not an ordinary lane",
+          "municipal_applicability": "requires source review"
         }
       },
-      "preparation_status": "native_ego_acquisition_cpu_tested_context_and_delivery_pending"
+      "gap_ids": [
+        "G1",
+        "G2"
+      ],
+      "judgment_refs": [
+        {
+          "note": "",
+          "phrase": "full time and attention"
+        }
+      ],
+      "legal_judgment": "unresolved",
+      "physical_acceptance_claimed": false,
+      "physical_risk_assessment": {
+        "reason": "Alley clearance and access-aisle markings require construction and Native verification; no fallback chosen without a measured failure.",
+        "status": "unverified"
+      },
+      "preparation_status": "native_ego_acquisition_cpu_tested_context_and_delivery_pending",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original ego pose",
+            "name": "kin.position",
+            "rate_hz": 20,
+            "unit": "m"
+          },
+          {
+            "method": "original ego angular velocity",
+            "name": "kin.yaw_rate",
+            "rate_hz": 20,
+            "unit": "rad/s"
+          },
+          {
+            "method": "original ego velocity",
+            "name": "kin.speed",
+            "rate_hz": 20,
+            "unit": "m/s"
+          },
+          {
+            "method": "original ego acceleration",
+            "name": "kin.accel_longitudinal",
+            "rate_hz": 20,
+            "unit": "m/s2"
+          },
+          {
+            "method": "body footprint versus sourced aisle marking",
+            "name": "drv.straddles_marking",
+            "rate_hz": 20,
+            "unit": "boolean"
+          },
+          {
+            "method": "source-bound acceleration diagnostic",
+            "name": "drv.hard_deceleration",
+            "rate_hz": 20,
+            "unit": "boolean"
+          },
+          {
+            "method": "source-bound actor path conflict diagnostic",
+            "name": "drv.time_to_conflict",
+            "rate_hz": 20,
+            "unit": "s or null"
+          },
+          {
+            "method": "original nearby device state",
+            "name": "dev.traffic_signal",
+            "rate_hz": 20,
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "original Native participant and operation history",
+            "name": "person_vehicle_operation",
+            "unit": "identity and interval"
+          },
+          {
+            "method": "map and jurisdiction review",
+            "name": "municipal_applicability",
+            "unit": "source citation"
+          },
+          {
+            "method": "source geometry and original scene review",
+            "name": "alley_access_aisle_geometry",
+            "unit": "m"
+          }
+        ],
+        "limitations": [
+          "Exterior behavior does not establish an interior attention state or legal compliance.",
+          "Access aisle adjacency does not imply parking intent or occupation."
+        ]
+      },
+      "target_law_id": "LVMC-11-22-010",
+      "target_type": "judgment_observation"
     }
   ],
+  "cell_id": "C10301",
   "comparisons": [
     {
-      "comparison_id": "alley_lateral_control_observation",
       "case_ids": [
         "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
         "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation"
+      ],
+      "comparison_id": "alley_lateral_control_observation",
+      "deliberate_differences": [
+        "requested lateral controller profile only; measure actual yaw rate and position without labeling attention"
       ],
       "fixed_conditions": [
         "same alley route and vehicle clearance",
         "same marked access aisle adjacent to designated handicapped parking",
         "same actor, vehicle, start, weather, nominal speed, four cameras, duration and municipal-context review"
-      ],
-      "deliberate_differences": [
-        "requested lateral controller profile only; measure actual yaw rate and position without labeling attention"
       ]
     }
   ],
-  "observations": [
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "G1",
+        "requirement": "Source-backed original operation on a physically realized alley route with adjacent marked access aisle and municipal applicability",
+        "source": "inputs/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/witnesses.json",
+        "why_existing_insufficient": "The frozen inventory contains zero accepted recordings and no current physical realization."
+      },
+      {
+        "id": "G2",
+        "requirement": "Actual exterior observations across contrasting control profiles while retaining uncertainty about full time and attention",
+        "source": "inputs/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "No original recording or source-bound measurements exist; exterior traces cannot directly establish interior attention."
+      }
+    ],
+    "method": "Read the frozen evidence inventory (zero accepted recordings), exact assignment/law and source-hashed witness. No source-backed existing-evidence reuse is available; physical and mental-state coverage remain open.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "LVMC-11-22-010",
+  "law_source": "LVMC 11.22.010",
+  "law_text": "A person shall, when operating a vehicle, give his full time and attention to the operation of the vehicle.",
+  "observation_notes": [
     "person and vehicle identity",
     "actual operation interval",
     "municipal applicability",
@@ -275,6 +304,123 @@
     "original exterior behavior and device streams",
     "unobserved interior attention state"
   ],
+  "observations": [
+    {
+      "evidence": "original ego pose",
+      "mandatory": true,
+      "name": "kin.position",
+      "unit": "m"
+    },
+    {
+      "evidence": "original ego angular velocity",
+      "mandatory": true,
+      "name": "kin.yaw_rate",
+      "unit": "rad/s"
+    },
+    {
+      "evidence": "original ego velocity",
+      "mandatory": true,
+      "name": "kin.speed",
+      "unit": "m/s"
+    },
+    {
+      "evidence": "original ego acceleration",
+      "mandatory": true,
+      "name": "kin.accel_longitudinal",
+      "unit": "m/s2"
+    },
+    {
+      "evidence": "body footprint versus sourced aisle marking",
+      "mandatory": true,
+      "name": "drv.straddles_marking",
+      "unit": "boolean"
+    },
+    {
+      "evidence": "source-bound acceleration diagnostic",
+      "mandatory": true,
+      "name": "drv.hard_deceleration",
+      "unit": "boolean"
+    },
+    {
+      "evidence": "source-bound actor path conflict diagnostic",
+      "mandatory": true,
+      "name": "drv.time_to_conflict",
+      "unit": "s or null"
+    },
+    {
+      "evidence": "original nearby device state",
+      "mandatory": true,
+      "name": "dev.traffic_signal",
+      "unit": "state"
+    }
+  ],
+  "planning_status": "partial_two_case_comparison_and_source_bound_measurement_draft",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
+        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation"
+      ],
+      "evidence_or_gap": "Source-bound original exterior measurement planned; original reviewed municipal site and interior attention evidence remain unresolved.",
+      "requirement": "person operating a vehicle during the alley route",
+      "source": "LVMC 11.22.010",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
+        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation"
+      ],
+      "evidence_or_gap": "Source-bound original exterior measurement planned; original reviewed municipal site and interior attention evidence remain unresolved.",
+      "requirement": "original exterior observations are source bound",
+      "source": "LVMC 11.22.010",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
+        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation"
+      ],
+      "evidence_or_gap": "Source-bound original exterior measurement planned; original reviewed municipal site and interior attention evidence remain unresolved.",
+      "requirement": "four original camera sources cover the complete operating interval",
+      "source": "LVMC 11.22.010",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
+        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation"
+      ],
+      "evidence_or_gap": "Source-bound original exterior measurement planned; original reviewed municipal site and interior attention evidence remain unresolved.",
+      "requirement": "full time and attention is an interior judgment not established by exterior traces",
+      "source": "LVMC 11.22.010",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Municipal applicability and any incorporated state definitions remain unresolved in supplied sources.",
+    "Physical alley/access-aisle realization and actual camera coverage require later CARLA verification.",
+    "No exact construction/controller, canonical semantic proposals, compatibility receipt, saved-only proof, or independent delivery/comparison audit yet exists.",
+    "Exterior measurements cannot decide the internal full-time-and-attention judgment."
+  ],
+  "selected_branch": "Vehicle operation on an alley route",
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Vehicle operation on an alley route",
+      "cell_id": "C10301",
+      "coverage_status": "pending_review",
+      "law_id": "LVMC-11-22-010",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "LVMC-11-22-010",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 276,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/assignment.json",
@@ -297,42 +443,15 @@
       "sha256": "ad4efa8e87e3c42acda75b5648be00c3223ee1df2165a61459df11da9cd38031"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Municipal applicability and any incorporated state definitions remain unresolved in supplied sources.",
-    "Physical alley/access-aisle realization and actual camera coverage require later CARLA verification.",
-    "No exact construction/controller, canonical semantic proposals, compatibility receipt, saved-only proof, or independent delivery/comparison audit yet exists.",
-    "Exterior measurements cannot decide the internal full-time-and-attention judgment."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Read the frozen evidence inventory (zero accepted recordings), exact assignment/law and source-hashed witness. No source-backed existing-evidence reuse is available; physical and mental-state coverage remain open.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "G1",
-        "requirement": "Source-backed original operation on a physically realized alley route with adjacent marked access aisle and municipal applicability",
-        "source": "inputs/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/witnesses.json",
-        "why_existing_insufficient": "The frozen inventory contains zero accepted recordings and no current physical realization."
-      },
-      {
-        "id": "G2",
-        "requirement": "Actual exterior observations across contrasting control profiles while retaining uncertainty about full time and attention",
-        "source": "inputs/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/assignment.json",
-        "why_existing_insufficient": "No original recording or source-bound measurements exist; exterior traces cannot directly establish interior attention."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "A person shall, when operating a vehicle, give his full time and attention to the operation of the vehicle."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_two_case_comparison_and_source_bound_measurement_draft",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 276,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Vehicle operation on an alley route",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "Alley travel can involve active vehicle operation; the marked access aisle does not itself activate this duty.",
       "required_context": [
         "Do not infer parking intent or access-aisle occupation.",
         "Do not infer parking intent or aisle occupation.",
@@ -345,50 +464,9 @@
         "Provide an alley route with vehicle clearance and document its relationship to the access aisle.",
         "Realize the access aisle as an area adjacent to designated handicapped parking, designed for unobstructed access and marked by contrasting stripes or a distinctive paving change; an ordinary travel lane is insufficient."
       ],
-      "reason": "Alley travel can involve active vehicle operation; the marked access aisle does not itself activate this duty."
-    }
-  ],
-  "source_observation_mapping": {},
-  "requirement_dispositions": [
-    {
-      "requirement": "person operating a vehicle during the alley route",
-      "source": "LVMC 11.22.010",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
-        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation"
-      ],
-      "evidence_or_gap": "Source-bound original exterior measurement planned; original reviewed municipal site and interior attention evidence remain unresolved."
-    },
-    {
-      "requirement": "original exterior observations are source bound",
-      "source": "LVMC 11.22.010",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
-        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation"
-      ],
-      "evidence_or_gap": "Source-bound original exterior measurement planned; original reviewed municipal site and interior attention evidence remain unresolved."
-    },
-    {
-      "requirement": "four original camera sources cover the complete operating interval",
-      "source": "LVMC 11.22.010",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
-        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation"
-      ],
-      "evidence_or_gap": "Source-bound original exterior measurement planned; original reviewed municipal site and interior attention evidence remain unresolved."
-    },
-    {
-      "requirement": "full time and attention is an interior judgment not established by exterior traces",
-      "source": "LVMC 11.22.010",
-      "status": "selected_required",
-      "case_ids": [
-        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel",
-        "testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation"
-      ],
-      "evidence_or_gap": "Source-bound original exterior measurement planned; original reviewed municipal site and interior attention evidence remain unresolved."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 276,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

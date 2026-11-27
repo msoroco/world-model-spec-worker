@@ -143,7 +143,7 @@
     },
     {
       "path": "tests/test_bundle.py",
-      "content": "\"\"\"Exact source-gated Native bundle check.\"\"\"\nimport unittest\nfrom runner import check\n\nclass BundleTest(unittest.TestCase):\n    def test_exact_bundle(self):\n        case_id, case = check()\n        self.assertEqual(case_id, 'testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material')\n        self.assertEqual(case.name, 'stop_no_material')\n"
+      "content": "\"\"\"Exact source-gated Native bundle check.\"\"\"\nimport unittest\nimport sys\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom runner import check\n\nclass BundleTest(unittest.TestCase):\n    def test_exact_bundle(self):\n        case_id, case = check()\n        self.assertEqual(case_id, 'testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material')\n        self.assertEqual(case.name, 'stop_no_material')\n"
     }
   ]
 }

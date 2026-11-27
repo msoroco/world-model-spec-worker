@@ -1,12 +1,31 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver",
   "input_sha256": "c7966653889cd2214c5c61fdc5d5cf0732ff1ec4d35eb2c126409d5a2e772953",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
-  "applied_update": 0,
-  "tests": [],
+  "readiness_kind": "officer_exception_source_gated_cpu_checkpoint",
+  "reason": "The immutable C157964 cell has active police_officer control, an express NRS 484B.257(2) exception, while its assigned within-intersection/approaching-hazard branch requires sign governance without officer or signal control. Source-hashed allocation audit verifies the existing ready C158208 yield-sign package has seven selected within/approaching cases and four comparisons. C157964 has no accepted original evidence; this checkpoint adds source-bound saved-only officer-control interval measurement and nine CPU tests, but original reviewed officer/video source and a coherent exception-branch allocation remain required. It would be false to label the C157964 officer cell as the sign-governed branch or to claim C158208 physical evidence as its own.",
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "status": "partial",
+  "tests": [
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c157964-officer/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-officer-all-tests.log",
+      "sha256": "61c929bc25ddf653d4dd3bba35bbca5a18b341fd147291e711d9e8348ae54ee8"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c157964-officer/preflight PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-officer-binding-preflight.log",
+      "sha256": "82752861db5171e56121a6941a2e95ed39837464f80f2b81fb7dd5e62d01be80"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/officer_exception_binding_audit.py --repo $PWD",
+      "exit_code": 0,
+      "log": "officer-exception-binding-audit.json",
+      "sha256": "e0650c3821180cd46375d65562ea4531ba4673ecac923baaa29fd85435ebae89"
+    }
+  ]
 }

@@ -3,7 +3,7 @@
   "assignment_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver",
   "input_sha256": "d016fa0e3e1bb665756b4270d0ba9f3495e35bf6a0a3c95bd0a2a7acaa14f6f4",
   "readiness_kind": "source_bound_measurement_checkpoint",
-  "reason": "Source-bound admission, signal measurement and three historical accepted-pair comparison audits are implemented; 30 CPU tests pass. Six frozen C178244 memberships are left-turn metadata, and original trace/video sources are absent on this worker host, so no original distance or comparison outcome is claimed. The only selected branch is business-district right turn, incompatible with frozen C178244 paved_road/left_turn/other_vehicle. Compatible C378304 right-turn batch package is ready; shared coverage reconciliation is lead-owned. C178244 remains partial until truthful allocation and source review support its own exact strict gate.",
+  "reason": "The source-sealed allocation audit proves fixed C178244 is left_turn whereas its immutable assigned branch is business-district right_turn. Existing ready C378304 is business_district/right_turn and has five selected CPU cases covering 80/100/101 ft, signal continuity and weather with three comparisons. The six C178244 accepted memberships are left-turn metadata and original trace/video bytes remain absent; they cannot establish the selected right-turn branch. Source-bound accepted-data review and independent comparison code are CPU-tested (33 tests), but the frozen branch/cell allocation must be reconciled before this assignment can honestly select a delivery manifest or pass its exact strict gate.",
   "remaining_gpu_checks": [
     "After CPU delivery readiness: actual CARLA motion, original signal readback, course-change onset, district frontage, full-duration four-camera decode and visibility"
   ],
@@ -92,6 +92,24 @@
       "exit_code": 0,
       "log": "cpu-accepted-source-tests.log",
       "sha256": "22740bf1a8e1ac146f4e46aaf5528909739dacc265798c520e706568ccc6acef"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c178244-binding/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov27-binding-tests.log",
+      "sha256": "5203145b2a9fba836f9aca23c52e97267ddfac9e77ed8c62521d27fb5c301a59"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c178244-binding/preflight PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-nov27-binding-preflight.log",
+      "sha256": "98572f4c859224804281754dd7ccb2fea67faad4b23eff15eb9c5d66d7b9cdf5"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/right_turn_binding_audit.py --repo $PWD",
+      "exit_code": 0,
+      "log": "right-turn-binding-audit.json",
+      "sha256": "bde18ff5acae9166c3059717b115f0c9b10079e248ef39d48a9ad65bb2b82210"
     }
   ]
 }

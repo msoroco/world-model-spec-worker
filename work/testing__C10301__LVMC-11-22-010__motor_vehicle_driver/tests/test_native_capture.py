@@ -16,6 +16,7 @@ import native_capture
 import saved_delivery
 import saved_finalizer
 import measurement_contract
+from attention_sweep_capture import AttentionSweepCapture
 
 SITE = {"fps": 20, "site_source_sha256": "b" * 64,
         "alley_route_source_sha256": "c" * 64,
@@ -82,6 +83,76 @@ def context(*args):
 
 
 class NativeCaptureTests(unittest.TestCase):
+    def test_original_interior_stream_joins_selected_capture_and_saved_audit(self):
+        case_id = next(iter(native_capture.CASE_PROFILES))
+        carla = types.SimpleNamespace(VehicleControl=lambda **kwargs: kwargs)
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            stage = output / "interior-sources"
+            stage.mkdir()
+            records = {
+                "municipal_jurisdiction": {"format": "diagnostic-municipal-source"},
+                "original_site": {"format": "diagnostic-site-source"},
+                "interior_sensor": {"format": "reviewed-original-interior-sensor",
+                                    "native_verified": True, "sensor_id": "diagnostic-interior-1",
+                                    "observable": "original_eyes_off_road_duration_s",
+                                    "frame_join": "original_native_frame", "sampling_rate_hz": 20},
+                "control_feasibility": {"format": "reviewed-attention-control-feasibility",
+                                        "native_verified": True, "minimum_s": 0,
+                                        "maximum_s": 4, "resolution_s": 2},
+            }
+            sources = {}
+            for key, document in records.items():
+                path = stage / (key + ".json")
+                path.write_text(json.dumps(document) + "\n")
+                sources[key] = {"path": path.name,
+                                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                                "citation": "CPU diagnostic fixture", "review_status": "reviewed"}
+            packet = stage / "packet.json"
+            packet.write_text(json.dumps({
+                "format": "worker-reviewed-attention-sweep", "assignment_id": ROOT.name,
+                "law_id": "LVMC-11-22-010", "diagnostic_fixture": True,
+                "sources": sources,
+                "axis": {"variable": "interior_distraction_target_s",
+                         "observable": "original_eyes_off_road_duration_s", "unit": "s",
+                         "min": 0, "max": 4, "spacing": 2,
+                         "measurement": {"method": "original interior sensor cumulative duration history",
+                                         "statistic": "max",
+                                         "time_window": "full original 45-second alley operation"},
+                         "range_rationale": "diagnostic fixture", "spacing_rationale": "diagnostic fixture"}
+            }) + "\n")
+            interior = AttentionSweepCapture(packet, case_id, 0, allow_diagnostic=True)
+            sensor_sha = sources["interior_sensor"]["sha256"]
+
+            class InteriorAdapter(Adapter):
+                def set_interior_attention(self, actor, selected, index, sensor, requested):
+                    return {"source_kind": "original_native_interior_control", "case_id": selected,
+                            "frame_index": index, "sensor_id": sensor,
+                            "sensor_source_sha256": sensor_sha,
+                            "requested_eyes_off_road": requested, "native_verified": True}
+
+                def read_interior(self, actor, snapshot, sensor):
+                    return {"source_kind": "original_native_interior", "case_id": case_id,
+                            "native_frame": snapshot.frame,
+                            "native_time_s": snapshot.timestamp.elapsed_seconds,
+                            "sensor_id": sensor, "sensor_source_sha256": sensor_sha,
+                            "eyes_off_road": snapshot.frame < 42, "native_verified": True}
+
+            with patch.object(native_capture, "sample_from_native", side_effect=context):
+                receipt = native_capture.capture(
+                    InteriorAdapter(), Actor(), carla, SITE, case_id,
+                    "person-test", output, attention_capture=interior)
+            self.assertEqual(receipt["interior_capture"]["measured"][
+                "original_eyes_off_road_duration_s"], .1)
+            audited = saved_delivery.audit(output, case_id)
+            self.assertEqual(audited["interior_source_audit"]["measured_duration_s"], .1)
+            self.assertEqual(audited["attention_state"], "unresolved")
+            stream = output / "interior-original.jsonl"
+            raw = stream.read_bytes()
+            stream.write_bytes(raw.replace(b'"native_frame": 40', b'"native_frame": 50', 1))
+            with self.assertRaisesRegex(ValueError, "original interior sensor source changed"):
+                saved_delivery.audit(output, case_id)
+
     def test_pipeline_collector_joins_same_original_ticks(self):
         case_id = next(iter(native_capture.CASE_PROFILES))
         carla = types.SimpleNamespace(VehicleControl=lambda **kwargs: kwargs)

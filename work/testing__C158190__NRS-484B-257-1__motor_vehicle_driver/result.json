@@ -3,7 +3,7 @@
   "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "input_sha256": "8ffaac8f74a9d8cb5b03196bf077f095b876662e3acf3cfc3809406fc87e7d94",
   "readiness_kind": "source_gated_selected_cpu_preparation",
-  "reason": "Source-hashed catalog route audit proves C158190 is fixed stop_sign and its assigned yield nearest-view branch has exactly one compatible same-layout/maneuver/role yield_sign cell, C158208, already a batch assignment. The three source-gated yield CPU cases remain diagnostic; stop/crosswalk accepted metadata lacks original trace/video and cannot substitute for this branch. Coordinate branch allocation into existing C158208 package; C158190 remains partial until its own strict gate passes.",
+  "reason": "Current source-hashed allocation audit proves frozen C158190 is stop_sign and only same-layout/maneuver/actor yield_sign cell C158208 has CPU-prepared the assigned yield nearest-view branch with three selected cases and a comparison. C158190 cannot claim C158208 original evidence or relabel its stop-sign cell. Its existing three yield-sign diagnostics are CPU-tested but cannot be dispatched against the fixed stop-sign identity. A reviewed original compatible stop-sign branch allocation or an authorized correction of this conflicting frozen assignment is required before this assignment can honestly become delivery-ready; original traces/video remain absent.",
   "remaining_gpu_checks": [
     "Authorized original yield-governed site and route Native capture: actual 900-frame motion, nearest-view visibility, four camera views and independent physical review."
   ],
@@ -170,6 +170,24 @@
       "exit_code": 0,
       "log": "catalog-route.log",
       "sha256": "3d25553a055a3d2218b99d0839d43a0ed7db7e390d5244a5da10fbc1621de3f8"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-route-audit/output TMPDIR=$PWD/.runtime-work/c158190-route-audit/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov27-route-tests.log",
+      "sha256": "e93c4ca0558c6ba689102ecbee40d7ee5be70044f5623428e861d9e1db7f4f1e"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-route-audit/preflight PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-nov27-preflight.log",
+      "sha256": "151c2fc46578f737b1c7cdad8efa94301d4c5cd63d649229ec2bcdf9f4264265"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/compatible_binding_audit.py --repo $PWD",
+      "exit_code": 0,
+      "log": "compatible-binding-audit.json",
+      "sha256": "c578df3e091d5dc0084bd2dfbe71f331510baddad6ec2e3c4d5808a8f9d37979"
     }
   ]
 }

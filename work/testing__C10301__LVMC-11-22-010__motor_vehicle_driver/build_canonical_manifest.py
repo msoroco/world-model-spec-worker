@@ -67,18 +67,18 @@ def build() -> None:
                       "offline": {"construction_sha256": digest(construction),
                           "command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + AID +
                               "/execution-manifest.draft.json --case " + case +
-                              " --output .runtime-work/c10301-010-nov24b/offline-" +
-                              ("steady" if kind == "steady_travel" else "variation") + "-v11",
+                              " --output .runtime-work/c10301-nov27-offline-" + kind,
                           "exit_code": 0,
-                          "log": "cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v11.log",
-                          "log_sha256": digest(HERE / ("cpu-nov24b-offline-" + ("steady" if kind == "steady_travel" else "variation") + "-v11.log"))},
-                      "missing_proofs": ["source-backed interior-attention sweep expansion",
-                                         "reviewed original site and municipal source binding",
-                                         "original Native physical completion review"]})
+                          "log": "cpu-nov27-interior-offline-" + kind + ".log",
+                          "log_sha256": digest(HERE / ("cpu-nov27-interior-offline-" + kind + ".log"))},
+                      "remaining_original_reviews": [
+                          "source-backed interior-attention sweep feasibility and realization",
+                          "reviewed original site and municipal source binding",
+                          "original Native physical completion review"]})
     manifest = {"format": "worker-execution-manifest", "assignment_id": AID,
                 "runtime_manifest_sha256": batch["runtime"]["source_manifest_sha256"],
                 "semantic_index_sha256": digest(HERE / "proposals/semantic-index.json"),
-                "status": "partial", "cases": cases,
+                "cases": cases,
                 "comparison_audit": {
                     "comparison_id": "alley_lateral_control_observation",
                     "script": "production_audit.py",

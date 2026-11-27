@@ -1,7 +1,7 @@
 """Audit original alley attempts before any local delivery decision.
 
-The receipt records source integrity and exterior measurements. It never labels
-interior attention, physical completion, or statutory compliance.
+The receipt records source integrity and exterior and interior measurements.
+It never labels physical completion or statutory compliance.
 """
 from __future__ import annotations
 
@@ -54,7 +54,10 @@ def audit_case(case_id: str, attempt: Path) -> dict:
             "case_id": case_id, "construction_sha256": entry["construction_sha256"],
             "capture_sha256": capture_sha, "source_audit": source,
             "physical_completion": "pending_independent_review",
-            "attention_state": "unobserved", "legal_judgment": "unresolved"}
+            "attention_state": source["attention_state"],
+            "original_eyes_off_road_duration_s":
+                source["interior_source_audit"]["measured_duration_s"],
+            "legal_judgment": "unresolved"}
 
 
 def audit_pair(steady: Path, variation: Path) -> dict:
@@ -73,7 +76,7 @@ def audit_pair(steady: Path, variation: Path) -> dict:
             "assignment_id": HERE.name,
             "capture_sha256": {STEADY: steady_sha, VARIATION: variation_sha},
             "comparison": result, "physical_completion": "pending_independent_review",
-            "attention_state": "unobserved", "legal_judgment": "unresolved"}
+            "attention_state": "unresolved", "legal_judgment": "unresolved"}
 
 
 def main(argv: list[str] | None = None) -> int:

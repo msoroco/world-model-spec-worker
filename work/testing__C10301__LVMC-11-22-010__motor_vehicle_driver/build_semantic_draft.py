@@ -120,7 +120,8 @@ def build() -> None:
     for name, value in stages.items():
         path = proposal_dir / (name + ".json")
         digest = write(path, value)
-        index["stages"][name] = {"path": "proposals/" + path.name, "sha256": digest}
+        reference = {"path": "proposals/" + path.name, "sha256": digest}
+        index["stages"][name] = [reference] if name == "judgment_observables" else reference
     write(proposal_dir / "semantic-index.json", index)
     print("source-preserving semantic drafts: baseline plus two exact alley cases")
 

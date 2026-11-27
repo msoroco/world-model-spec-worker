@@ -1,6 +1,7 @@
 """Independent original-source audit before local alley delivery promotion.
 
-This never claims interior attention, legal compliance, or physical acceptance.
+This measures original interior gaze when its reviewed source is present.
+It never infers legal compliance or physical acceptance.
 """
 from __future__ import annotations
 
@@ -12,6 +13,7 @@ from PIL import Image
 
 from native_capture import CAMERAS, FPS, FRAMES
 from native_operation import CASE_PROFILES, assemble_measurement_rows, validate_history
+from attention_source_audit import audit as audit_interior
 
 DELIVERY_DIMENSIONS = {"overview": (1920, 1080),
                        "alley_approach": (1280, 720),
@@ -93,10 +95,32 @@ def audit(directory: Path, case_id: str, require_delivery: bool = False) -> dict
                 if require_delivery and image.size != DELIVERY_DIMENSIONS[camera]:
                     raise ValueError("original camera delivery dimensions differ")
                 image.load()
+    interior = None
+    receipt = meta.get("interior_capture")
+    packet = directory / "interior-sources" / "packet.json"
+    if receipt is not None:
+        packet = _original_path(directory, "interior-sources/packet.json")
+        interior = audit_interior(directory, packet, receipt,
+                                  allow_diagnostic=not require_delivery,
+                                  expected_frames=FRAMES)
+        interior_rows = _read(_original_path(directory, "interior-original.jsonl"),
+                              digests.get("interior_original"))
+        control_rows = _read(_original_path(directory, "interior-control.jsonl"),
+                             digests.get("interior_control"))
+        if len(interior_rows) != FRAMES or len(control_rows) != FRAMES:
+            raise ValueError("complete original interior sources required")
+        for exterior, inside in zip(ego, interior_rows):
+            if (inside["native_frame"] != exterior["native_frame"] or
+                    abs(inside["native_time_s"] - exterior["native_time_s"]) > .001):
+                raise ValueError("saved interior and exterior frame join differs")
+    if require_delivery and interior is None:
+        raise ValueError("reviewed original interior attention source required for delivery")
     return {"format": "worker-alley-saved-audit", "case_id": case_id,
             "original_frames": FRAMES, "decoded_original_pngs": FRAMES * len(CAMERAS),
             "source_sha256": digests, "diagnostic_fixture": meta["diagnostic_fixture"],
-            "attention_state": "unobserved", "legal_judgment": "unresolved"}
+            "attention_state": "unresolved" if interior else "unobserved",
+            "interior_source_audit": interior,
+            "legal_judgment": "unresolved"}
 
 
 def audit_comparison(directories: dict, require_delivery: bool = False) -> dict:
