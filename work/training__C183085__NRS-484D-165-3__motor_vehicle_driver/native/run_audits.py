@@ -33,7 +33,8 @@ def main():
     for entry in manifest["cases"]:
         case = entry["case_id"]
         suffix = case.split("__")[-1]
-        attempt = REPO / (".runtime-work/c183085-compat-v6-" + suffix)
+        version = "v7" if suffix.startswith(("numeric_2_", "numeric_3_")) else "v6"
+        attempt = REPO / (".runtime-work/c183085-compat-" + version + "-" + suffix)
         processing = NATIVE / ("selected-" + suffix + "-saved-processing.json")
         output = SCRATCH / (suffix + "-delivery.json")
         command = [".venv-cpu/bin/python", str(delivery_script.relative_to(REPO)),

@@ -1,11 +1,11 @@
 {
   "assignment_id": "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver",
   "input_sha256": "0676ae37fa59a45158c02ecd0f45b38b5fc5af1fce7d674e5327844c26d0b5a6",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Two selected right-exit lane constructions and current-runtime primary offline checks pass, but public positive/missing-source compatibility, saved processing, semantic proposals, physical/lifecycle and independent delivery/comparison audits remain CPU work. Accepted membership has no exported original source bytes or equivalence receipts.",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
+  "reason": "CPU delivery package prepared; original Native and independent legal acceptance remain future GPU work.",
   "planned_case_count": 2,
-  "candidate_count": 2,
+  "candidate_count": 4,
   "selected_delivery_case_count": 2,
   "reuse_count": 0,
   "source_law_review": "Exact statutory text retained; recovered summary remains unreviewed; witness and membership are contextual only.",
@@ -38,8 +38,50 @@
     "original_native_executed": false
   },
   "remaining_gpu_checks": [
-    "Original Native right first-exit route and complete ring-lane occupancy",
-    "Four original source camera pixels and full 30-second decode",
-    "Physical completion and independent legal judgment"
-  ]
+    "Original Native right first-exit geometry, lane occupancy, intent and route review",
+    "Original four source camera pixels and physical completion assessment",
+    "Independent legal judgment and target-set acceptance"
+  ],
+  "cases_planned": 2,
+  "cases_selected": 2,
+  "candidate_plans_proven": 4,
+  "comparison_audits_passed": 1,
+  "carla_executed": false,
+  "recordings_accepted": 0,
+  "cpu_diagnostic_proof": {
+    "offline_candidates": 4,
+    "public_compatibility_candidates": 4,
+    "recorded_only_cases": 2,
+    "physical_fixture_cases": 2,
+    "delivery_audit_cases": 2,
+    "comparison_audit_pairs": 1,
+    "synthetic_only": true
+  },
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/native/prove_right_exit.py",
+      "exit_code": 0,
+      "log": "native/right-exit-construction-proof.log",
+      "sha256": "f181bedb58f75e7ef00e68251851b5004ba46c395e6052aa99532f68200a31b0"
+    },
+    {
+      "command": "cd work/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver && ../../.venv-cpu/bin/python -B -m unittest discover -s tests",
+      "exit_code": 0,
+      "log": "unit-cpu.log",
+      "sha256": "0f7e4b97443e54aca647179972594d13bb587afcbf151fab8228148587ea844a"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c131055-c2/output-root .venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/prove_semantic.py",
+      "exit_code": 0,
+      "log": "proposals/semantic-proof.log",
+      "sha256": "776789c5a5f84fadbe2b1485bf407aa9fe47eca8653d7b1e3b66ea39a944686d"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/native/prove_saved_source.py --right-fixture .runtime-work/c131055-c2/right-fixture --left-fixture .runtime-work/c131055-c2/left-fixture",
+      "exit_code": 0,
+      "log": "native/saved-source-proof.log",
+      "sha256": "aec74e46a71b8518ea840238aee87b73e59e1627d50f3aba290fa76db27cc7df"
+    }
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -B -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver --case training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__right_lane --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

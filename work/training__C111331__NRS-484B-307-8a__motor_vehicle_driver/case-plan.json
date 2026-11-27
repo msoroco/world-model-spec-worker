@@ -14,7 +14,7 @@
         "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a",
         "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Existing membership describes requested stop/no-stop pair but has no original source-hashed receipts; selected pair still lacks complete delivery package."
+      "evidence_or_gap": "Exact CPU construction, compatibility and saved-only proofs exist; original Native signal/stop-reference and pixel observations remain pending local capture and independent review."
     },
     {
       "requirement": "text-1",
@@ -25,15 +25,15 @@
         "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a",
         "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Existing membership describes requested stop/no-stop pair but has no original source-hashed receipts; selected pair still lacks complete delivery package."
+      "evidence_or_gap": "Exact CPU construction, compatibility and saved-only proofs exist; original Native signal/stop-reference and pixel observations remain pending local capture and independent review."
     }
   ],
   "cases": [
     {
       "case_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484B-307-8a",
-      "kind": "planned_only",
-      "target_type": "physical_probe",
+      "kind": "delivery",
+      "target_type": "judgment_sweep",
       "physical_target": "full halt before sourced applicable stop reference and remain stopped while red until observed green",
       "comparison_variable": "steady_red_stop_and_hold",
       "fixed_context": "C111331 travel through traffic-light intersection; no turn exception asserted",
@@ -48,8 +48,8 @@
     {
       "case_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-307-8a",
-      "kind": "planned_only",
-      "target_type": "physical_probe",
+      "kind": "delivery",
+      "target_type": "judgment_sweep",
       "physical_target": "continue through the same sourced applicable stop reference while governing signal remains steady red",
       "comparison_variable": "steady_red_stop_and_hold",
       "fixed_context": "C111331 travel through traffic-light intersection; no turn exception asserted",
@@ -79,7 +79,7 @@
         "same road and control identities",
         "same four-camera policy"
       ],
-      "status": "planned_unverified"
+      "status": "cpu_prepared_original_comparison_pending"
     }
   ],
   "observations": [
@@ -187,9 +187,9 @@
     }
   ],
   "runtime_uncertainties": [
-    "Canonical C111331 pair remains planned only: no CARLA construction, four-camera capture, offline/public positive/missing-source negative receipts, saved-only, semantic, physical or delivery proof exists.",
-    "statutory-review.json lists 24 planning variants and 12 comparisons for full-source review; they are not selected case IDs and do not imply runnable work.",
-    "Turn clauses need the compatible right-turn assignment or a separately allocated left-turn cell; C111331 travel identity is frozen.",
+    "Original Native signal, stop-reference, physical-motion and four-camera pixel evidence remain pending; diagnostic fixture tests do not establish legal or physical completion of a captured scenario.",
+    "The 24-case statutory review is planning analysis, separate from the selected C111331 straight-travel pair.",
+    "Turn permissions and yield conditions are routed by scoped_topic_routing; this pair does not assert right-turn or left-turn coverage.",
     "No source-hashed original receipt for four accepted memberships is supplied; source review cannot establish reuse."
   ],
   "statutory_text": "Where the signal is a steady red signal alone: Vehicular traffic facing the signal must stop before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made, or in the absence of any such crosswalk, sign or marking, then before entering the intersection, and, except as otherwise provided in paragraphs (c) and (d) [(c) is appended below, NRS-484B-307-8d], must remain stopped or standing until the green signal is shown. After complying with the requirement to stop, vehicular traffic facing such a signal and situated on the extreme right of the highway may proceed into the intersection for a right turn only when the intersecting highway is two-directional or one-way to the right, or vehicular traffic facing such a signal and situated on the extreme left of a one-way highway may proceed into the intersection for a left turn only when the intersecting highway is one-way to the left, but must yield the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection.",
@@ -463,5 +463,19 @@
         "interval": "frames 0-479"
       }
     ]
-  }
+  },
+  "scoped_topic_routing": [
+    {
+      "topic_id": "text-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "scope": "Post-stop right/left turn permissions and yield conditions are statutory alternatives, not part of this C111331 straight-travel comparison. The right-turn portion belongs to training__C110919__NRS-484B-307-8a__motor_vehicle_driver, whose frozen maneuver is right_turn. The left-turn portion requires its own compatible frozen cell and is not claimed here. Paragraph (d) cross-reference is not resolved by this pair.",
+      "status": "other_assignment_or_compatible_cell_required"
+    },
+    {
+      "topic_id": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "scope": "The reviewed right_turn_after_stop witness maps to training__C110919__NRS-484B-307-8a__motor_vehicle_driver, not to C111331 straight travel; no right-turn observation is claimed by probe_a or probe_b.",
+      "status": "other_assignment"
+    }
+  ]
 }

@@ -263,44 +263,22 @@
   ],
   "observations": [
     {
-      "name": "st.roundabout",
+      "name": "ego_pose",
+      "unit": "m,deg",
       "mandatory": true,
-      "reason": "the roundabout and its exits"
+      "purpose": "Original subject pose, trajectory and body extent across all 600 frames"
     },
     {
-      "name": "st.lane",
+      "name": "roundabout_lane_occupancy",
+      "unit": "structured",
       "mandatory": true,
-      "reason": "the circulatory lanes"
+      "purpose": "Source map lane topology and frame-joined original subject body occupancy"
     },
     {
-      "name": "st.lane_adjacency",
+      "name": "entry_exit_intent",
+      "unit": "structured",
       "mandatory": true,
-      "reason": "which is the right lane"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "the lane the subject uses"
-    },
-    {
-      "name": "drv.turning",
-      "mandatory": true,
-      "reason": "the right-turn movement"
-    },
-    {
-      "name": "kin.heading",
-      "mandatory": true,
-      "reason": "the exit direction relative to the entry"
-    },
-    {
-      "name": "drv.lane_change",
-      "mandatory": true,
-      "reason": "a move between circulatory lanes"
-    },
-    {
-      "name": "kin.path_length",
-      "mandatory": true,
-      "reason": "the arc travelled"
+      "purpose": "Requested right exit and independently observed first east exit"
     }
   ],
   "sources": [
@@ -340,15 +318,34 @@
   ],
   "requirement_dispositions": [
     {
-      "requirement": "LVMC-11-43-010-C2",
-      "source": "preserved_accepted_membership",
-      "branch": "roundabout exit intention",
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
       "case_ids": [
         "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__right_lane",
         "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__left_lane"
       ],
-      "evidence_or_gap": "Selected source-bound right-exit lane pair; original Native motion, camera pixels and legal outcome unverified."
+      "evidence_or_gap": "statutory_text: The following regulations pertain to the operation of vehicles within a roundabout: | Original Native trajectory, lane use, pixels and legal outcome unverified."
+    },
+    {
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__right_lane",
+        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__left_lane"
+      ],
+      "evidence_or_gap": "statutory_text: The operator of a vehicle who intends to exit a roundabout: | Original Native trajectory, lane use, pixels and legal outcome unverified."
+    },
+    {
+      "requirement": "text-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__right_lane",
+        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__left_lane"
+      ],
+      "evidence_or_gap": "statutory_text: Shall use the right lane to turn right. | Original Native trajectory, lane use, pixels and legal outcome unverified."
     }
   ],
   "roundabout_source_capture_checkpoint": {

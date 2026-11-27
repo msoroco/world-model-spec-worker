@@ -25,7 +25,7 @@
         "receipt": "native/selected-witness_1-compatibility.json",
         "log": "native/selected-witness_1-compatibility-analysis.log",
         "negative_log": "native/selected-witness_1-negative-analysis.log",
-        "sha256": "74859b60a9ecd11c2cb6c17add82cfa0ba623c9cf98883d4520a7bf2f905362f"
+        "sha256": "9b1efc5f5cdce921eb48eb15bacdc3ebf772ae92195cbb01360693a10e9ad2b9"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_1 --output .runtime-work/c183085-offline/v6-witness_1",
@@ -36,7 +36,7 @@
       },
       "negative": {
         "log": "native/selected-witness_1-negative-analysis.log",
-        "log_sha256": "3493207d7721f8a851b1c55105050f47b64979a6fc77e800e9e8b5190b58b167"
+        "log_sha256": "47b996a2b4be5eafa2f2cf5731814cb89d9bb7f75005c1933dd4ffe1d9e1fcb4"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -152,17 +152,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-witness_1/physical-preparation.json",
-        "sha256": "da510347cb270c6a8ef0d95fab9e11541df23401cb11af2cfd3e6e541ddbaa20"
+        "sha256": "2ef6f2195477b93c6841d65d4ef631f6c3d499ce089ba12cfffc3ab4e83ae3fc"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_1",
         "test_log": "native/selected-witness_1-saved.log",
-        "test_log_sha256": "4d6fbb5ae10518ce3949b1d21d7cf01e5f28ee4593e4228f68af5d88bc405801",
+        "test_log_sha256": "e881e18cf7bd2d04c03828c1dea2d2d3815b9bcf4a65744ca603747c917fbc7a",
         "test_exit_code": 0,
         "receipt": "native/selected-witness_1-saved-processing.json",
-        "receipt_sha256": "4d6fbb5ae10518ce3949b1d21d7cf01e5f28ee4593e4228f68af5d88bc405801"
+        "receipt_sha256": "e881e18cf7bd2d04c03828c1dea2d2d3815b9bcf4a65744ca603747c917fbc7a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_1 --candidate primary --attempt .runtime-work/c183085-compat-v6-witness_1 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-witness_1-saved-processing.json --output .runtime-work/c183085-audits-v6/witness_1-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-witness_1-delivery-positive.log",
+        "test_log_sha256": "198c7db2f6d918a2f02021097992356ed44b9a88cbac632ab27fb552e7b4921e",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_1 --candidate primary --attempt .runtime-work/c183085-compat-v6-witness_1 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-witness_1-saved-processing.json --output .runtime-work/c183085-audits-v6/witness_1-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-witness_1-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/witness_comparison-comparison-positive.log",
+        "positive_log_sha256": "e557c3886334767dfb9a88d8d145a12ace25a19bfff15e11606bc453c5c25b93",
+        "negative_log": "native/witness_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -186,7 +220,7 @@
         "receipt": "native/selected-witness_2-compatibility.json",
         "log": "native/selected-witness_2-compatibility-analysis.log",
         "negative_log": "native/selected-witness_2-negative-analysis.log",
-        "sha256": "d3f7d853eb33ae8a363bbe40c7ccbb768a26788bcaeddac82b21b75f8ddfaa97"
+        "sha256": "cebb6c93dcf68296cf97ad022939c07e0f95184b87e31d90c02029625cbe8986"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_2 --output .runtime-work/c183085-offline/v6-witness_2",
@@ -197,7 +231,7 @@
       },
       "negative": {
         "log": "native/selected-witness_2-negative-analysis.log",
-        "log_sha256": "f777d02d442284d592946dc32514858ed697b7180b03d415f26c96a7291d99a8"
+        "log_sha256": "61ddc77c753dee535fa3a2b5ee36472faa13c61c8ecda71469a94239698078fa"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -313,17 +347,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-witness_2/physical-preparation.json",
-        "sha256": "115d94e3475b24af5218409cc805d2cbe47c2d262f3d9aee2341e5ff0d2f9793"
+        "sha256": "f18d25598b888bfc4e9fb15dd0cf26625a26f96ebaeb02fc22ce108f74a12bf9"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_2",
         "test_log": "native/selected-witness_2-saved.log",
-        "test_log_sha256": "dc730c8d38c8ac9f2857640c8601b144ec06252b2d7ab4720a58a68851e2594f",
+        "test_log_sha256": "fec1d5665d61c941a617b79db59ae0a97f8491dc2005b11c1ef88c72153a6f33",
         "test_exit_code": 0,
         "receipt": "native/selected-witness_2-saved-processing.json",
-        "receipt_sha256": "dc730c8d38c8ac9f2857640c8601b144ec06252b2d7ab4720a58a68851e2594f"
+        "receipt_sha256": "fec1d5665d61c941a617b79db59ae0a97f8491dc2005b11c1ef88c72153a6f33"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_2 --candidate primary --attempt .runtime-work/c183085-compat-v6-witness_2 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-witness_2-saved-processing.json --output .runtime-work/c183085-audits-v6/witness_2-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-witness_2-delivery-positive.log",
+        "test_log_sha256": "397477c809d98a210cef4c2757832b2779bced6b18e95fc132e02bca4d39115a",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_2 --candidate primary --attempt .runtime-work/c183085-compat-v6-witness_2 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-witness_2-saved-processing.json --output .runtime-work/c183085-audits-v6/witness_2-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-witness_2-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/witness_comparison-comparison-positive.log",
+        "positive_log_sha256": "e557c3886334767dfb9a88d8d145a12ace25a19bfff15e11606bc453c5c25b93",
+        "negative_log": "native/witness_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -347,7 +415,7 @@
         "receipt": "native/selected-numeric_1_0-compatibility.json",
         "log": "native/selected-numeric_1_0-compatibility-analysis.log",
         "negative_log": "native/selected-numeric_1_0-negative-analysis.log",
-        "sha256": "b1b04aaf75a02a59b01ab5f97d35e3a89b3add45f9fb55ac4f516029744b2b41"
+        "sha256": "235c79e7eaba532033f26cda8c72badc1be7682724815e587e41ccb69413e72f"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_0 --output .runtime-work/c183085-offline/v6-numeric_1_0",
@@ -358,7 +426,7 @@
       },
       "negative": {
         "log": "native/selected-numeric_1_0-negative-analysis.log",
-        "log_sha256": "0427ad8a5684f2d7c361b22aa2e431e15cb60c976ceb264017a3d3c0810e338e"
+        "log_sha256": "5f81250b7f8bcf46d395fe8f4bcd3d6519eddf595e052589fee0ad7cac5c2c6e"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -474,17 +542,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-numeric_1_0/physical-preparation.json",
-        "sha256": "7d725d376b69cf26e03365a3f7a5a98c909fbfafec85bc8226551cb46c8eefe2"
+        "sha256": "e9dfe288d4b3ed9734a3974e128c2ae893a289ef2b774f64691c7102c7125027"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_0 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_0",
         "test_log": "native/selected-numeric_1_0-saved.log",
-        "test_log_sha256": "3c031c406b2f9cf9c4bb240ba7e7cfa87ff398b0f48ae14b38e9c7f291ed38dd",
+        "test_log_sha256": "e7484a3e145b1f89a694c8bb30396265325d60e2ffe318fc95892c9ba6ff4024",
         "test_exit_code": 0,
         "receipt": "native/selected-numeric_1_0-saved-processing.json",
-        "receipt_sha256": "3c031c406b2f9cf9c4bb240ba7e7cfa87ff398b0f48ae14b38e9c7f291ed38dd"
+        "receipt_sha256": "e7484a3e145b1f89a694c8bb30396265325d60e2ffe318fc95892c9ba6ff4024"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_0",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_0 --candidate primary --attempt .runtime-work/c183085-compat-v6-numeric_1_0 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_1_0-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_1_0-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-numeric_1_0-delivery-positive.log",
+        "test_log_sha256": "4d81eb8e712b55390caff1a2149b013f75f9dfedb809c1b14681db2511d37a9f",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_0 --candidate primary --attempt .runtime-work/c183085-compat-v6-numeric_1_0 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_1_0-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_1_0-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-numeric_1_0-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/numeric_1_comparison-comparison-positive.log",
+        "positive_log_sha256": "9a58cd2e367f43c8b2dede513213d5464dd933e38e133ef41153256a7723a588",
+        "negative_log": "native/numeric_1_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -508,7 +610,7 @@
         "receipt": "native/selected-numeric_1_1-compatibility.json",
         "log": "native/selected-numeric_1_1-compatibility-analysis.log",
         "negative_log": "native/selected-numeric_1_1-negative-analysis.log",
-        "sha256": "e3af8600ba164a1b81043e59e21d3bd56383f5923d523ade225323b509cb5058"
+        "sha256": "b55aea0a1e0567eeb6ff73b4131932f56bf6f132bf285ffd1ce7aa2a5e9da543"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_1 --output .runtime-work/c183085-offline/v6-numeric_1_1",
@@ -519,7 +621,7 @@
       },
       "negative": {
         "log": "native/selected-numeric_1_1-negative-analysis.log",
-        "log_sha256": "1c78257dcf89abe0f728dcdc16faedc4e7df13d3a2daa6eb346323ab38dee9e7"
+        "log_sha256": "d10ea3a5a647d4dbf43cda473acd803080a0b37a05c7f110e41559420f63de2c"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -635,17 +737,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-numeric_1_1/physical-preparation.json",
-        "sha256": "b690cffaec4f05ba27ab0f4a07c8321e22f6921baebeb7065bab511ee9637076"
+        "sha256": "bcadc4a1957990464fff36a40874b92ff4b4a981170e59f924ac15f8739e6f31"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_1",
         "test_log": "native/selected-numeric_1_1-saved.log",
-        "test_log_sha256": "217e29f9d5f9200aba135f1d9bcb8329cb8ab84e7dd1cd8d6ff0c8a50e75d4da",
+        "test_log_sha256": "f391e71e683f473022cfbd89e3b844351b6fe057bb2457c0627d6075c4a8caf5",
         "test_exit_code": 0,
         "receipt": "native/selected-numeric_1_1-saved-processing.json",
-        "receipt_sha256": "217e29f9d5f9200aba135f1d9bcb8329cb8ab84e7dd1cd8d6ff0c8a50e75d4da"
+        "receipt_sha256": "f391e71e683f473022cfbd89e3b844351b6fe057bb2457c0627d6075c4a8caf5"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_1 --candidate primary --attempt .runtime-work/c183085-compat-v6-numeric_1_1 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_1_1-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_1_1-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-numeric_1_1-delivery-positive.log",
+        "test_log_sha256": "79d70344a5295674d8c665425a653e8800043990b5856db0b0bd7852d415e182",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_1 --candidate primary --attempt .runtime-work/c183085-compat-v6-numeric_1_1 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_1_1-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_1_1-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-numeric_1_1-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/numeric_1_comparison-comparison-positive.log",
+        "positive_log_sha256": "9a58cd2e367f43c8b2dede513213d5464dd933e38e133ef41153256a7723a588",
+        "negative_log": "native/numeric_1_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -669,7 +805,7 @@
         "receipt": "native/selected-numeric_1_2-compatibility.json",
         "log": "native/selected-numeric_1_2-compatibility-analysis.log",
         "negative_log": "native/selected-numeric_1_2-negative-analysis.log",
-        "sha256": "dcc918866444f43cd60c34acb32542b8f820947ae6d50eb79c67f882a00d5201"
+        "sha256": "ad4dc9c78b031b0d255b7bdeff059c688e52ef322183746163e588a2df043104"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_2 --output .runtime-work/c183085-offline/v6-numeric_1_2",
@@ -680,7 +816,7 @@
       },
       "negative": {
         "log": "native/selected-numeric_1_2-negative-analysis.log",
-        "log_sha256": "7889175c451cf0c0f6d960c8732b6388cce4199098f749ba2312ff6b8522910d"
+        "log_sha256": "aa620470d7f2f51407bdac2501674a9bf0d9715900258e713dc397881e7bbe08"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -796,17 +932,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-numeric_1_2/physical-preparation.json",
-        "sha256": "740dd6962057769ab5321f494813fe00621c67c677507521b1ae1b5d28d65883"
+        "sha256": "b12ca3c03e5202f09eebc085b009771b76e0116150528b9752c9f9b23f55be7b"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_2",
         "test_log": "native/selected-numeric_1_2-saved.log",
-        "test_log_sha256": "b081fc328b9174bdaa612cb5704a6962d7d11a67a4982005fdb5e8eed493cc27",
+        "test_log_sha256": "ffdbf20244fa97897dfe0174f9e9d901100a9ed6b4948aeb8c674aa34cdb8f49",
         "test_exit_code": 0,
         "receipt": "native/selected-numeric_1_2-saved-processing.json",
-        "receipt_sha256": "b081fc328b9174bdaa612cb5704a6962d7d11a67a4982005fdb5e8eed493cc27"
+        "receipt_sha256": "ffdbf20244fa97897dfe0174f9e9d901100a9ed6b4948aeb8c674aa34cdb8f49"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_2 --candidate primary --attempt .runtime-work/c183085-compat-v6-numeric_1_2 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_1_2-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_1_2-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-numeric_1_2-delivery-positive.log",
+        "test_log_sha256": "5b73b39c487dd01f557b61224fd587b50ee901e57a49b4fdf89eaa609b64bdc5",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_2 --candidate primary --attempt .runtime-work/c183085-compat-v6-numeric_1_2 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_1_2-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_1_2-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-numeric_1_2-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/numeric_1_comparison-comparison-positive.log",
+        "positive_log_sha256": "9a58cd2e367f43c8b2dede513213d5464dd933e38e133ef41153256a7723a588",
+        "negative_log": "native/numeric_1_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -830,7 +1000,7 @@
         "receipt": "native/selected-numeric_2_0-compatibility.json",
         "log": "native/selected-numeric_2_0-compatibility-analysis.log",
         "negative_log": "native/selected-numeric_2_0-negative-analysis.log",
-        "sha256": "76df3cb01a26160fea69cf59bdf5bf1e76bb1fae07aec37a036e7be06b2b0df2"
+        "sha256": "00c1f8f88f0e054e573df6b3a0e27ccd0cf95dd5d6af3fec67f8966bf3519291"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_0 --output .runtime-work/c183085-offline/v6-numeric_2_0",
@@ -841,7 +1011,7 @@
       },
       "negative": {
         "log": "native/selected-numeric_2_0-negative-analysis.log",
-        "log_sha256": "da77ffc945fbebbce0f466ed1632cc343393064cd3eb46a2f59789e914007a57"
+        "log_sha256": "07a41eae57301830f81d4c342f2e5a90432486c37dbd3f63cbee7b9d9a628e21"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -957,17 +1127,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-numeric_2_0/physical-preparation.json",
-        "sha256": "c7d1c2a79541616142cbf0d460819094d9ad97e374a3da08785e38d15d1b6205"
+        "sha256": "c52f8b9a0af03c6bb40a41e50a5a0653c614ece145ddc13cca09fad52c1caef6"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_0 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_0",
         "test_log": "native/selected-numeric_2_0-saved.log",
-        "test_log_sha256": "ac048b690800a10da71abf09fad8d0e8e28f76f551f68593baa8135797239066",
+        "test_log_sha256": "09d6531a55a6322ec4398a4a57eedad8a4445b1eee7113c13188a3d7c572fb71",
         "test_exit_code": 0,
         "receipt": "native/selected-numeric_2_0-saved-processing.json",
-        "receipt_sha256": "ac048b690800a10da71abf09fad8d0e8e28f76f551f68593baa8135797239066"
+        "receipt_sha256": "09d6531a55a6322ec4398a4a57eedad8a4445b1eee7113c13188a3d7c572fb71"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_0",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_0 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_2_0 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_2_0-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_2_0-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-numeric_2_0-delivery-positive.log",
+        "test_log_sha256": "c3099d340bf29bac707a6154b915ab1163cbe0a0291a78d9090b670bcf1eb376",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_0 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_2_0 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_2_0-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_2_0-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-numeric_2_0-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/numeric_2_comparison-comparison-positive.log",
+        "positive_log_sha256": "3ae3334b118bd189ef571c02d8f9aec31ef993009d00bf366b0098e468b9fa52",
+        "negative_log": "native/numeric_2_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -991,7 +1195,7 @@
         "receipt": "native/selected-numeric_2_1-compatibility.json",
         "log": "native/selected-numeric_2_1-compatibility-analysis.log",
         "negative_log": "native/selected-numeric_2_1-negative-analysis.log",
-        "sha256": "20b11187d6d3056f413d70979ee886f9807a21c1290e8dd1b42fa49a8f7fcc68"
+        "sha256": "7e90ec0678d40483568025f2efec8bb741474040f5dc2881b395b51a6a0e0c5c"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_1 --output .runtime-work/c183085-offline/v6-numeric_2_1",
@@ -1002,7 +1206,7 @@
       },
       "negative": {
         "log": "native/selected-numeric_2_1-negative-analysis.log",
-        "log_sha256": "77911909b51300879774e11d9ef45af17ae3826859ffeae2ddbd3954af866ceb"
+        "log_sha256": "e9eb7e6c976de5b7197d96896aefca63f96292014706093fc9b4240742861d74"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -1118,17 +1322,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-numeric_2_1/physical-preparation.json",
-        "sha256": "257c3f055c92dc02e8a1a2987f4503966d63e1704f1fa1186020f0d0dbe9f648"
+        "sha256": "fe041006046e3c58242bf6ee20aadd8424a88efc477070e62df308a548b2028f"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_1",
         "test_log": "native/selected-numeric_2_1-saved.log",
-        "test_log_sha256": "858fb692e9203eab851879e0f22959f53d1a624bb7a6d7eee4745c3801c0b8d7",
+        "test_log_sha256": "3af579840ff5d2c37a952a3404c28218073cfdefe974f8e4ab6d7cdbebd3bd15",
         "test_exit_code": 0,
         "receipt": "native/selected-numeric_2_1-saved-processing.json",
-        "receipt_sha256": "858fb692e9203eab851879e0f22959f53d1a624bb7a6d7eee4745c3801c0b8d7"
+        "receipt_sha256": "3af579840ff5d2c37a952a3404c28218073cfdefe974f8e4ab6d7cdbebd3bd15"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_1 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_2_1 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_2_1-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_2_1-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-numeric_2_1-delivery-positive.log",
+        "test_log_sha256": "9adee308f564de837c9d3904ec922528b694a64228c060ae36a677abf78efbc0",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_1 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_2_1 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_2_1-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_2_1-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-numeric_2_1-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/numeric_2_comparison-comparison-positive.log",
+        "positive_log_sha256": "3ae3334b118bd189ef571c02d8f9aec31ef993009d00bf366b0098e468b9fa52",
+        "negative_log": "native/numeric_2_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -1152,7 +1390,7 @@
         "receipt": "native/selected-numeric_2_2-compatibility.json",
         "log": "native/selected-numeric_2_2-compatibility-analysis.log",
         "negative_log": "native/selected-numeric_2_2-negative-analysis.log",
-        "sha256": "3588d3539ebcf95d637b8965a7d1506d01d8c91b0656fa2ae92129d9ad5e1992"
+        "sha256": "5c95e631f457adc6701674b4f0af4eb60b0c85333fd0c240903451451026ebf5"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_2 --output .runtime-work/c183085-offline/v6-numeric_2_2",
@@ -1163,7 +1401,7 @@
       },
       "negative": {
         "log": "native/selected-numeric_2_2-negative-analysis.log",
-        "log_sha256": "edd9fb243bc49fb8e2b6244e2029028a14b85756090d4e636a2943508fdf230e"
+        "log_sha256": "c72a9ecf2ba921633ead8b5f13b051c098e91f446248b5bb86f5beca402c1d83"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -1279,17 +1517,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-numeric_2_2/physical-preparation.json",
-        "sha256": "2cb104e6d554ee98f2ff7460d92ac54fe628fda60688db4da22a913371bb5e17"
+        "sha256": "0df82985d7ec72d9ddcc3d9089f0ebb69f48922469766d28ee97042b6c61fc91"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_2",
         "test_log": "native/selected-numeric_2_2-saved.log",
-        "test_log_sha256": "21dcdca84dcfb1daa84b3f25483f06c80b7ba8c1fae782b41be0ede034c1b327",
+        "test_log_sha256": "445765270951caaf83846ec7caa19c05134327539486297c7dd2a91de2fc2a89",
         "test_exit_code": 0,
         "receipt": "native/selected-numeric_2_2-saved-processing.json",
-        "receipt_sha256": "21dcdca84dcfb1daa84b3f25483f06c80b7ba8c1fae782b41be0ede034c1b327"
+        "receipt_sha256": "445765270951caaf83846ec7caa19c05134327539486297c7dd2a91de2fc2a89"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_2 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_2_2 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_2_2-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_2_2-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-numeric_2_2-delivery-positive.log",
+        "test_log_sha256": "f4c5536fc2a23df9df4bae916dba1fd13f54c23aa3dda8eef6e02e18386e2bed",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_2 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_2_2 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_2_2-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_2_2-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-numeric_2_2-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/numeric_2_comparison-comparison-positive.log",
+        "positive_log_sha256": "3ae3334b118bd189ef571c02d8f9aec31ef993009d00bf366b0098e468b9fa52",
+        "negative_log": "native/numeric_2_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -1313,7 +1585,7 @@
         "receipt": "native/selected-numeric_3_0-compatibility.json",
         "log": "native/selected-numeric_3_0-compatibility-analysis.log",
         "negative_log": "native/selected-numeric_3_0-negative-analysis.log",
-        "sha256": "6463220a86d0d03439e1985a39f22231bd8a02a90d43bd38bc0ee1f2d261bcce"
+        "sha256": "92fff61a4d1535d082ff8f2443c71a3b54829e2110d7563e75900683f4190fda"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_0 --output .runtime-work/c183085-offline/v6-numeric_3_0",
@@ -1324,7 +1596,7 @@
       },
       "negative": {
         "log": "native/selected-numeric_3_0-negative-analysis.log",
-        "log_sha256": "1d3b8fe3bbc9c7e69b98b607cc97febfa4133bab087e19a7bbb8a8d8241c7d4c"
+        "log_sha256": "47b1010cf7ddf05ff1bfef6be6264d7eec8a1625e82b9f1bdd2baf8b8b3a4047"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -1440,17 +1712,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-numeric_3_0/physical-preparation.json",
-        "sha256": "f8cef1f1fdd2adf501f9f7ddc300eea97399b1ef0034bb6a3482f40d1fbc8985"
+        "sha256": "98ed2448d7d39186b66b3e3d66ef517eef7f81b42034c4322198641b959104ed"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_0 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_0",
         "test_log": "native/selected-numeric_3_0-saved.log",
-        "test_log_sha256": "1faf2a83f936065f09e8dbfc85fee15d39af534d881302f6f9f479bd8bffcd97",
+        "test_log_sha256": "ffe08d7dc31b1e16826bb968ac1f1ba608bdfc8f0dc8e10f9f1da0fc23d3acd5",
         "test_exit_code": 0,
         "receipt": "native/selected-numeric_3_0-saved-processing.json",
-        "receipt_sha256": "1faf2a83f936065f09e8dbfc85fee15d39af534d881302f6f9f479bd8bffcd97"
+        "receipt_sha256": "ffe08d7dc31b1e16826bb968ac1f1ba608bdfc8f0dc8e10f9f1da0fc23d3acd5"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_0",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_0 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_3_0 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_3_0-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_3_0-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-numeric_3_0-delivery-positive.log",
+        "test_log_sha256": "9dc450333cd58b736bb2678ee840501066e7d3adfe430c8652650af2edb7231c",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_0 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_3_0 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_3_0-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_3_0-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-numeric_3_0-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/numeric_3_comparison-comparison-positive.log",
+        "positive_log_sha256": "03967599a3c366ac37c83d81ea778eb098879ee46654c5c0f77a99b653422ac3",
+        "negative_log": "native/numeric_3_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -1474,7 +1780,7 @@
         "receipt": "native/selected-numeric_3_1-compatibility.json",
         "log": "native/selected-numeric_3_1-compatibility-analysis.log",
         "negative_log": "native/selected-numeric_3_1-negative-analysis.log",
-        "sha256": "f61241d5a70d6e8a36d92965caf8d4535676075d6ea4dfca9472340a40f9901c"
+        "sha256": "5a12702bad79842de5c3ed2c294ecf2f999b24bcfeb8e4c09fb805dbed48fc7d"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_1 --output .runtime-work/c183085-offline/v6-numeric_3_1",
@@ -1485,7 +1791,7 @@
       },
       "negative": {
         "log": "native/selected-numeric_3_1-negative-analysis.log",
-        "log_sha256": "bd00432c3b0faa7c023a9017b07ca438feff1532bc0238a0bf3fad59a0993bf2"
+        "log_sha256": "e945fcbf604c879cb674fb3659dc3ba1d086a56e01209436e8a2709c1e906af7"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -1601,17 +1907,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-numeric_3_1/physical-preparation.json",
-        "sha256": "0c35cd29c266ea89d0e2d29c4fb186f24c9115d6d5c8ea4ee3b650ba11e7ff79"
+        "sha256": "cb822f08a07f24fd0b74d831e5a53666ea34bcec91ed082292dd3d829fa516ef"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_1",
         "test_log": "native/selected-numeric_3_1-saved.log",
-        "test_log_sha256": "d5bfc96375e1b2071543f053c48d1ac159a33e38ac4cbe9d09ca45fd2f642547",
+        "test_log_sha256": "0a91c46023af874befef031d9322844cb50a3943fc8dce5a186e5daa11adaee4",
         "test_exit_code": 0,
         "receipt": "native/selected-numeric_3_1-saved-processing.json",
-        "receipt_sha256": "d5bfc96375e1b2071543f053c48d1ac159a33e38ac4cbe9d09ca45fd2f642547"
+        "receipt_sha256": "0a91c46023af874befef031d9322844cb50a3943fc8dce5a186e5daa11adaee4"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_1 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_3_1 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_3_1-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_3_1-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-numeric_3_1-delivery-positive.log",
+        "test_log_sha256": "32171339e5213bc4e0d1c9ebc1cc762f9112bb3af7635c9a5ed852997040ec1f",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_1 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_3_1 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_3_1-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_3_1-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-numeric_3_1-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/numeric_3_comparison-comparison-positive.log",
+        "positive_log_sha256": "03967599a3c366ac37c83d81ea778eb098879ee46654c5c0f77a99b653422ac3",
+        "negative_log": "native/numeric_3_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     },
     {
@@ -1635,7 +1975,7 @@
         "receipt": "native/selected-numeric_3_2-compatibility.json",
         "log": "native/selected-numeric_3_2-compatibility-analysis.log",
         "negative_log": "native/selected-numeric_3_2-negative-analysis.log",
-        "sha256": "1bb9d966bbf050fc4e5fa70ca6fbfbd0c8326a28265d4275491f2f12b92ef289"
+        "sha256": "7bf4297e94d0f4479c751c0e0c84f6dfc4247387a8dedddfc499e46d51816c96"
       },
       "offline": {
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_2 --output .runtime-work/c183085-offline/v6-numeric_3_2",
@@ -1646,7 +1986,7 @@
       },
       "negative": {
         "log": "native/selected-numeric_3_2-negative-analysis.log",
-        "log_sha256": "d0d7de375aac8595ee5b67d4605dc27acd2a7438a1e148d0fdeca41ac0f4bfb9"
+        "log_sha256": "1e13f8753d3ba424889d619e49cfc4b2f10933878ef84459074e6ac8160f4b00"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -1762,17 +2102,51 @@
       },
       "physical_preparation": {
         "receipt": "native/physical-numeric_3_2/physical-preparation.json",
-        "sha256": "43c2186a0c51e2faca1d203e7e7ef13eede05b5d152bcef4258775c4e2544557"
+        "sha256": "6871800700f2a66579339cd6f46541ea4fe51f413d897b7b8a6a8cc46d61532a"
       },
       "post_capture": {
         "recorded_only": true,
         "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/selected-shoulder-draft-manifest.json --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
         "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_2",
         "test_log": "native/selected-numeric_3_2-saved.log",
-        "test_log_sha256": "82dd6f6fe3ead3caa730133bfd98bad615f85b65e129c949780a6d9cddc6715c",
+        "test_log_sha256": "2c9f8db698f0ecef33cd48b1cc58e3b39c0fac3ce0c62ac976dd7da49dd39edb",
         "test_exit_code": 0,
         "receipt": "native/selected-numeric_3_2-saved-processing.json",
-        "receipt_sha256": "82dd6f6fe3ead3caa730133bfd98bad615f85b65e129c949780a6d9cddc6715c"
+        "receipt_sha256": "2c9f8db698f0ecef33cd48b1cc58e3b39c0fac3ce0c62ac976dd7da49dd39edb"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_optical_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f167ed76a9b532725e8d472d3adddfbcac7a1a0d957824c477f7a869ae0df98b",
+        "command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_2 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_3_2 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_3_2-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_3_2-delivery.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/selected-numeric_3_2-delivery-positive.log",
+        "test_log_sha256": "8532b6aa03baa8fd08a03e0ca0d5dda2393a2fcbdeeeabaf4eb1551dc322fd0d",
+        "negative_command": ".venv-cpu/bin/python work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/delivery_audit.py --case training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_2 --candidate primary --attempt .runtime-work/c183085-compat-v7-numeric_3_2 --processing work/training__C183085__NRS-484D-165-3__motor_vehicle_driver/native/selected-numeric_3_2-saved-processing.json --output .runtime-work/c183085-audits-v6/numeric_3_2-delivery.json --diagnostic --omit-source optical_measurements.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: optical_measurements.json",
+        "negative_log": "native/selected-numeric_3_2-delivery-negative.log",
+        "negative_log_sha256": "64882d0e0c3d879db75c5342be0e478b7a33c3d284d9ddd855526d886f08d45d"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "3f958de9a6fee44e85edcc867e6ad714937167a35eda1b73acb7789767546c98",
+        "positive_log": "native/numeric_3_comparison-comparison-positive.log",
+        "positive_log_sha256": "03967599a3c366ac37c83d81ea778eb098879ee46654c5c0f77a99b653422ac3",
+        "negative_log": "native/numeric_3_comparison-comparison-negative.log",
+        "negative_log_sha256": "4b2821a57153b79de1957730c59d4a29fb1433ef8e6b950bbf4fbe224a7c89f1"
       }
     }
   ],

@@ -23,8 +23,9 @@ def main():
     manifest = json.loads(path.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].split("__")[-1]
-        public = REPO / (".runtime-work/c183085-compat-v6-" + suffix)
-        saved = REPO / (".runtime-work/c183085-saved-v6-" + suffix)
+        version = "v7" if suffix.startswith(("numeric_2_", "numeric_3_")) else "v6"
+        public = REPO / (".runtime-work/c183085-compat-" + version + "-" + suffix)
+        saved = REPO / (".runtime-work/c183085-saved-" + version + "-" + suffix)
         sources = {
             "compatibility.json": "compatibility.json",
             "compatibility-analysis.log": "compatibility-analysis.log",

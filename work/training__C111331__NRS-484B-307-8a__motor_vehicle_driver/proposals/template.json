@@ -1,0 +1,60 @@
+{
+  "template_id": "NRS-484B-307-8a@motor_vehicle_driver",
+  "law_id": "NRS-484B-307-8a",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Where the signal is a steady red signal alone: Vehicular traffic facing the signal must stop before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made, or in the absence of any such crosswalk, sign or marking, then before entering the intersection, and, except as otherwise provided in paragraphs (c) and (d) [(c) is appended below, NRS-484B-307-8d], must remain stopped or standing until the green signal is shown. After complying with the requirement to stop, vehicular traffic facing such a signal and situated on the extreme right of the highway may proceed into the intersection for a right turn only when the intersecting highway is two-directional or one-way to the right, or vehicular traffic facing such a signal and situated on the extreme left of a one-way highway may proceed into the intersection for a left turn only when the intersecting highway is one-way to the left, but must yield the right-of-way to pedestrians and other traffic proceeding as directed by the signal at the intersection.",
+  "structure": {
+    "activation": {
+      "condition": "steady red signal alone governs vehicular traffic facing the signal",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Stop before the applicable sourced reference and remain stopped until green, subject to the quoted exceptions.",
+      "source_clause": "Vehicular traffic facing the signal must stop before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made, or in the absence of any such crosswalk, sign or marking, then before entering the intersection, and, except as otherwise provided in paragraphs (c) and (d) [(c) is appended below, NRS-484B-307-8d], must remain stopped or standing until the green signal is shown.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "name": "post_stop_right_turn",
+        "source_clause": "After complying with the requirement to stop, vehicular traffic facing such a signal and situated on the extreme right of the highway may proceed into the intersection for a right turn only when the intersecting highway is two-directional or one-way to the right",
+        "status": "routed_to_C110919_right_turn_cell"
+      },
+      {
+        "name": "post_stop_left_turn",
+        "source_clause": "vehicular traffic facing such a signal and situated on the extreme left of a one-way highway may proceed into the intersection for a left turn only when the intersecting highway is one-way to the left",
+        "status": "incompatible_with_frozen_travel_maneuver_pending_separate_binding"
+      },
+      {
+        "name": "paragraph_c_or_d_reference",
+        "source_clause": "except as otherwise provided in paragraphs (c) and (d)",
+        "status": "operative_paragraph_d_text_not_in_frozen_record; not adjudicated by straight-travel pair"
+      }
+    ],
+    "timing": {
+      "description": "original signal-head red and green frame intervals joined to full-body stop and crossing intervals",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "must stop before entering the crosswalk on the nearest side of the intersection where the sign or pavement marking indicates where the stop must be made, or in the absence of any such crosswalk, sign or marking, then before entering the intersection",
+        "note": "Compare original surveyed crosswalk/sign/marking hierarchy with full-body halt and crossing frames; no authored numeric legal cutoff."
+      },
+      {
+        "phrase": "must remain stopped or standing until the green signal is shown",
+        "note": "Compare original governing-head color, stopped body intervals and first departure; preserve cited turn and paragraph (d) exceptions for separate review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "steady_red_stop_and_hold",
+      "kind": "controller",
+      "range_or_domain": [
+        "halt_until_green",
+        "continue_on_red"
+      ]
+    }
+  ]
+}

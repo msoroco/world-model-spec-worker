@@ -1,0 +1,521 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "368ca52fd33233316bd54a606a0c259bb40e5ad31c4f4e2d312a6e5676426847",
+      "measurement_contract": "probe_a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/probe_a-diagnostic-recipe.json",
+      "candidates": [],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No fallback has yet been proven for this source-bound primary build."
+      },
+      "delivery_readiness": "cpu_prepared_original_capture_pending",
+      "offline": {
+        "case_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a",
+        "construction_sha256": "368ca52fd33233316bd54a606a0c259bb40e5ad31c4f4e2d312a6e5676426847",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/draft-compatibility-manifest.json --case training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a --output .runtime-work/c111331-scratch/probe-a-offline-v3",
+        "log": "proofs/probe_a/offline.log",
+        "log_sha256": "0904e7096dc9ff545f59b6e7f714a977f47b655f03e34ae43129d8fa673efa3d"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_a/compatibility.json",
+        "sha256": "c6e5b70f0a470b0f212227bc45b9658c8a0367ac50361fc67863393d26ccf671",
+        "log": "proofs/probe_a/compatibility-analysis.log",
+        "negative_log": "proofs/probe_a/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_a/negative-analysis.log",
+        "log_sha256": "10296aa60d14b181bb78f6f370ef6d86e2eda122f12841fb976929b8c57e8c3a"
+      },
+      "physical_preparation": {
+        "receipt": "physical/probe_a/receipt.json",
+        "sha256": "01b1110082869a4a130af7de51b889d70c9c6838d1a23a5935af2b10cb7c1a4f"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego body position joined to governing signal",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego speed and controller readback",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "governing_signal_and_stop_reference": {
+          "entrypoint": "runner.py",
+          "method": "Original governing-head and crosswalk/sign/marking survey",
+          "evidence": [
+            "signal_survey.json",
+            "steady-red-native-samples.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "runner.py",
+          "method": "Four synchronized original RGB sources",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.crossing_line": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.entering_intersection": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.extreme_lane": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.yields_to": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.lane_enters": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.stop_line": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_a/saved-analysis.log",
+        "test_log_sha256": "be712cb16493fde9974d868bb3b0074147104d5db94ab7f0b2c185fbe7f33c7f"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "522e279445ca3665c23fbee31c00f31f57dd4f1f07dc11ce7ac7877dc749a672",
+        "command": ".venv-cpu/bin/python -B work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/delivery_audit.py --case training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/probe_a-positive.log",
+        "test_log_sha256": "e2b96566642bd31cea69db0aaa16472662919e2d8df4c7d5ee567e121689d36c",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/delivery_audit.py --case training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "negative_log": "delivery-audit/probe_a-negative.log",
+        "negative_log_sha256": "8fb8d913fc00e60103339b083e27b1b39daeae31a47e86d482d2ddb32e61d3b8"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending"
+    },
+    {
+      "case_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "construction": "cases/probe_b/construction.json",
+      "construction_sha256": "42b3e1e733365f7fc0ffa68c48124f4850d207060e37f52a2e3070a8a0828f17",
+      "measurement_contract": "probe_b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/probe_b-diagnostic-recipe.json",
+      "candidates": [],
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No fallback has yet been proven for this source-bound primary build."
+      },
+      "delivery_readiness": "cpu_prepared_original_capture_pending",
+      "offline": {
+        "case_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b",
+        "construction_sha256": "42b3e1e733365f7fc0ffa68c48124f4850d207060e37f52a2e3070a8a0828f17",
+        "exit_code": 0,
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/draft-compatibility-manifest.json --case training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b --output .runtime-work/c111331-scratch/probe-b-offline-v3",
+        "log": "proofs/probe_b/offline.log",
+        "log_sha256": "d0d5fa74478ca381214f2409f1faadd2b766aea062824d3d3529577d17fe11ec"
+      },
+      "compatibility": {
+        "receipt": "proofs/probe_b/compatibility.json",
+        "sha256": "983142e03aee18cf0c32a77780f6058a5062a8368dcc41ca450b72701509a84e",
+        "log": "proofs/probe_b/compatibility-analysis.log",
+        "negative_log": "proofs/probe_b/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/probe_b/negative-analysis.log",
+        "log_sha256": "13aabe8c6d801615fd4682a865487ca6cb311fd90c9ec3ba1cbb185584d4dea1"
+      },
+      "physical_preparation": {
+        "receipt": "physical/probe_b/receipt.json",
+        "sha256": "3baed4bba06502cadcfb06d5f805fdd18c041e685d3db500c797a8b39751796f"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego body position joined to governing signal",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "Original Native ego speed and controller readback",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "governing_signal_and_stop_reference": {
+          "entrypoint": "runner.py",
+          "method": "Original governing-head and crosswalk/sign/marking survey",
+          "evidence": [
+            "signal_survey.json",
+            "steady-red-native-samples.jsonl"
+          ]
+        },
+        "four_camera_video": {
+          "entrypoint": "runner.py",
+          "method": "Four synchronized original RGB sources",
+          "evidence": [
+            "overview.mkv",
+            "approach.mkv",
+            "reference_corner.mkv",
+            "driver_reference.mkv",
+            "video_frames.jsonl"
+          ]
+        },
+        "dev.governs": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.crossing_line": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.entering_intersection": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.extreme_lane": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.stopped": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "drv.yields_to": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.crosswalk": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.intersection": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.lane_enters": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "st.stop_line": {
+          "entrypoint": "runner.py",
+          "method": "Original Native 20-Hz source observation joined to signal survey, trace and four camera frame map",
+          "evidence": [
+            "steady-red-native-samples.jsonl",
+            "signal_survey.json",
+            "trace.jsonl",
+            "video_frames.jsonl"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/execution-manifest.json --case training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b --attempt $ORIGINAL_ATTEMPT --output $DERIVED_OUTPUT --library runtime/library --validator $LEAN_VALIDATOR",
+        "feedback_command": "test -f $DERIVED_OUTPUT/v0001/feedback.json && cat $DERIVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/probe_b/saved-analysis.log",
+        "test_log_sha256": "b244b5462f36d95d08c3ea8797409661b16335c50f91de3c58803efaed14aa4b"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "522e279445ca3665c23fbee31c00f31f57dd4f1f07dc11ce7ac7877dc749a672",
+        "command": ".venv-cpu/bin/python -B work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/delivery_audit.py --case training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit/probe_b-positive.log",
+        "test_log_sha256": "78d91a9adfd3a0c38e6685309716fda77099957d78e7dec2f3069577694852c7",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/delivery_audit.py --case training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_b --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "negative_log": "delivery-audit/probe_b-negative.log",
+        "negative_log_sha256": "8fb8d913fc00e60103339b083e27b1b39daeae31a47e86d482d2ddb32e61d3b8"
+      },
+      "preparation_status": "cpu_proven_original_delivery_pending"
+    }
+  ]
+}
