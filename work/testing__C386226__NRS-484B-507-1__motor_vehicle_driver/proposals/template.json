@@ -1,0 +1,97 @@
+{
+  "template_id": "NRS-484B-507-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-507-1",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A person shall not stop, stand or park a vehicle for any purpose or length of time other than for the expeditious unloading and delivery or pickup and loading of materials in any place marked as a freight curb loading zone during hours when the provisions applicable to such zones are in effect. The driver of a vehicle may stop temporarily at a place marked as a freight curb loading zone for the purpose of and while actually engaged in loading or unloading passengers, when such stopping does not interfere with any motor vehicle used for the transportation of materials which is waiting to enter or about to enter such zone.",
+  "structure": {
+    "law_id": "NRS-484B-507-1",
+    "activation": {
+      "condition": "Vehicle stops, stands or parks in a marked freight curb loading zone while applicable provisions are effective.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not stop, stand or park for another purpose or length of time.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Expeditious unloading and delivery or pickup and loading of materials",
+        "effect": "Limited materials handling exception",
+        "replacement_obligation": "Observe actual task purpose and chronology without a fabricated legal cutoff",
+        "source_clause": "other than for the expeditious unloading and delivery or pickup and loading of materials"
+      },
+      {
+        "trigger": "Actual temporary passenger loading/unloading without interference to material-transport vehicle waiting or about to enter",
+        "effect": "Limited temporary passenger stop permission",
+        "replacement_obligation": "Remain actually engaged and do not interfere with qualifying vehicle entry",
+        "source_clause": "The driver of a vehicle may stop temporarily at a place marked as a freight curb loading zone for the purpose of and while actually engaged in loading or unloading passengers, when such stopping does not interfere with any motor vehicle used for the transportation of materials which is waiting to enter or about to enter such zone."
+      }
+    ],
+    "timing": {
+      "description": "Join original civil effective hours, halt, material/passenger events and freight entry chronology.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "expeditious unloading and delivery or pickup and loading of materials",
+        "note": "Original halt and material transfer chronology requires review; no legal duration cutoff is provided."
+      },
+      {
+        "phrase": "place marked as a freight curb loading zone",
+        "note": "Original freight designation, curb adjacency, marking and polygon need source/pixel review."
+      },
+      {
+        "phrase": "during hours when the provisions applicable to such zones are in effect",
+        "note": "Original jurisdiction-specific provision, civil time and timezone must be joined."
+      },
+      {
+        "phrase": "stop temporarily",
+        "note": "Original passenger stop duration and event history require review without a numeric legal threshold."
+      },
+      {
+        "phrase": "does not interfere with any motor vehicle used for the transportation of materials which is waiting to enter or about to enter such zone",
+        "note": "Original waiting/about-to-enter vehicle route and obstruction history require review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "conduct",
+      "kind": "world_setup",
+      "range_or_domain": "stop, stand, park",
+      "unit": "category"
+    },
+    {
+      "name": "material_action",
+      "kind": "world_setup",
+      "range_or_domain": "none, pickup_load, unload_deliver",
+      "unit": "category"
+    },
+    {
+      "name": "activity_delay_s",
+      "kind": "world_setup",
+      "range_or_domain": "engineering request for activity start, not legal cutoff",
+      "unit": "s"
+    },
+    {
+      "name": "provisions_effective",
+      "kind": "world_setup",
+      "range_or_domain": "true or false from original provision and civil clock",
+      "unit": "boolean"
+    },
+    {
+      "name": "passenger_action",
+      "kind": "world_setup",
+      "range_or_domain": "none, board, alight",
+      "unit": "category"
+    },
+    {
+      "name": "freight_arrival",
+      "kind": "world_setup",
+      "range_or_domain": "none, waiting, about_to_enter",
+      "unit": "category"
+    }
+  ]
+}

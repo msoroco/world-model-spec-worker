@@ -123,10 +123,14 @@ def load_review(packet_path: str | Path, source_root: str | Path, case_id: str) 
     route, district = loaded['pedestrian_route'], loaded['district_frontage']
     if (not roadway.get('roadway_id') or not roadway.get('roadway_polygon_xy_m') or
             not roadway.get('intersection_polygons_xy_m') or
+            not roadway.get('start_curb_zone_polygon_xy_m') or
+            not roadway.get('opposite_curb_zone_polygon_xy_m') or
             not roadway.get('public_access_source') or
             not roadway.get('jurisdiction_source')):
-        raise ValueError('reviewed roadway, public-access, jurisdiction and intersection source required')
+        raise ValueError('reviewed roadway, both curb zones, public-access, jurisdiction and intersection source required')
     _polygon(roadway['roadway_polygon_xy_m'])
+    for field in ('start_curb_zone_polygon_xy_m', 'opposite_curb_zone_polygon_xy_m'):
+        _polygon(roadway[field])
     for polygon in roadway['intersection_polygons_xy_m']:
         _polygon(polygon)
     if (inventory.get('roadway_id') != roadway['roadway_id'] or
@@ -141,12 +145,20 @@ def load_review(packet_path: str | Path, source_root: str | Path, case_id: str) 
     if (route.get('roadway_id') != roadway['roadway_id'] or
             not route.get('pedestrian_actor_id') or
             not route.get('approach_xy_m') or not route.get('exit_xy_m') or
-            not route.get('crossing_point_xy_m') or not route.get('route_xy_m')):
+            not route.get('crossing_point_xy_m') or not route.get('route_xy_m') or
+            type(route.get('spawn_z_m')) not in (int, float)):
         raise ValueError('reviewed complete pedestrian crossing route required')
     if not point_in_polygon(route['crossing_point_xy_m'], roadway['roadway_polygon_xy_m']):
         raise ValueError('pedestrian crossing point is not in reviewed roadway')
     for point in route['route_xy_m']:
         _point(point)
+    if (not point_in_polygon(route['approach_xy_m'],
+                             roadway['start_curb_zone_polygon_xy_m']) or
+            not point_in_polygon(route['exit_xy_m'],
+                                 roadway['opposite_curb_zone_polygon_xy_m']) or
+            route['route_xy_m'][0] != route['approach_xy_m'] or
+            route['route_xy_m'][-1] != route['exit_xy_m']):
+        raise ValueError('reviewed complete route must connect both curb zones')
     if (district.get('roadway_id') != roadway['roadway_id'] or
             district.get('highway_span_ft') != 600 or
             district.get('reading_assumption') is None or

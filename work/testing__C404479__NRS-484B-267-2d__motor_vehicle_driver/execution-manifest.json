@@ -67,6 +67,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -78,6 +83,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-moving_hold_behind-fallback1.log",
+            "negative_log": "cpu-compat-negative-moving_hold_behind-fallback1.log",
+            "receipt": "cpu-compat-moving_hold_behind-fallback1-receipt.json",
+            "sha256": "b64cf3f87949d46302fbf4ed6beb6e007e3669e2108d15b1430be9447d86d9e1"
+          },
           "construction": "construction-moving_hold_behind-fallback1.json",
           "construction_sha256": "9497d60bd8dc57b546dcf03f6481d2e942f5758c0e005b4ed908281af565e94d",
           "id": "fallback1",
@@ -92,18 +103,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-moving_hold_behind-fallback1-receipt.json",
-            "sha256": "b64cf3f87949d46302fbf4ed6beb6e007e3669e2108d15b1430be9447d86d9e1",
-            "log": "cpu-compat-analysis-moving_hold_behind-fallback1.log",
-            "negative_log": "cpu-compat-negative-moving_hold_behind-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_hold_behind",
+      "compatibility": {
+        "log": "cpu-compat-analysis-moving_hold_behind.log",
+        "receipt": "cpu-compat-moving_hold_behind-receipt.json",
+        "sha256": "8ac6f2e1a04ddb4463b872649cbc1e8d3cd163e5339653102423dd3b55bc9e5a"
+      },
       "construction": "construction-moving_hold_behind.json",
       "construction_sha256": "faa7ebfa96af798baa653847edf6076db8536cd6f3356f1cae63ec5c082447de",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_hold_behind",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_hold_behind --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-moving_hold_behind-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/moving_hold_behind-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_hold_behind --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/moving_hold_behind-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/moving_hold_behind-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-moving_hold_behind-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-moving_hold_behind.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/moving_hold_behind-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/moving_hold_behind-measurement-contract.json",
@@ -114,6 +151,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-moving_hold_behind.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_hold_behind --output $OUTPUT --python $CPU_PYTHON",
@@ -126,15 +166,20 @@
         "receipt": "physical-moving_hold_behind-receipt.json",
         "sha256": "49619191799ba7b1e0d51838f0609495df9e0ec139677cd17b7b52a67e997c71"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-moving_hold_behind-receipt.json",
-        "sha256": "8ac6f2e1a04ddb4463b872649cbc1e8d3cd163e5339653102423dd3b55bc9e5a",
-        "log": "cpu-compat-analysis-moving_hold_behind.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_hold_behind --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-moving_hold_behind-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-moving_hold_behind-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_hold_behind --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-moving_hold_behind-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-moving_hold_behind-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-moving_hold_behind-missing.log",
+        "feedback_log_sha256": "72dadc10267054bf287ab54fc33147ef85696fdf6ca76b3ed48d97dea47008d2",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-moving_hold_behind.log",
+        "test_log_sha256": "527e1742157d821e4feb1a26ceb6047d1c5e54d540c7025d151ebd63757d0392"
       },
-      "negative": {
-        "log": "cpu-compat-negative-moving_hold_behind.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -202,6 +247,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -213,6 +263,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-moving_overtake-fallback1.log",
+            "negative_log": "cpu-compat-negative-moving_overtake-fallback1.log",
+            "receipt": "cpu-compat-moving_overtake-fallback1-receipt.json",
+            "sha256": "6dcef623ec220c66a4c531b6a4e4c90ce9cd9704534dc485d7b810d180f7faa2"
+          },
           "construction": "construction-moving_overtake-fallback1.json",
           "construction_sha256": "c15d2c12e1c0ca6b726af75e8061a2eb0272e2df69e20f7119014885824eb8e6",
           "id": "fallback1",
@@ -227,18 +283,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-moving_overtake-fallback1-receipt.json",
-            "sha256": "6dcef623ec220c66a4c531b6a4e4c90ce9cd9704534dc485d7b810d180f7faa2",
-            "log": "cpu-compat-analysis-moving_overtake-fallback1.log",
-            "negative_log": "cpu-compat-negative-moving_overtake-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_overtake",
+      "compatibility": {
+        "log": "cpu-compat-analysis-moving_overtake.log",
+        "receipt": "cpu-compat-moving_overtake-receipt.json",
+        "sha256": "2612a80b3936015226042d871ebe381adda2c9db4a470000303805ba092206df"
+      },
       "construction": "construction-moving_overtake.json",
       "construction_sha256": "714c4606025f2fa6cb0d10d4d4aee4cb8d7145c54a4b1fc6cb5c8f165c89ee4c",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_overtake",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_overtake --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-moving_overtake-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/moving_overtake-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_overtake --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/moving_overtake-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/moving_overtake-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-moving_overtake-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-moving_overtake.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/moving_overtake-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/moving_overtake-measurement-contract.json",
@@ -249,6 +331,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-moving_overtake.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_overtake --output $OUTPUT --python $CPU_PYTHON",
@@ -261,15 +346,20 @@
         "receipt": "physical-moving_overtake-receipt.json",
         "sha256": "b5df81a2ff36ee905889848952ff41cac3fe7b094ad8742076854bd333f9e5c2"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-moving_overtake-receipt.json",
-        "sha256": "2612a80b3936015226042d871ebe381adda2c9db4a470000303805ba092206df",
-        "log": "cpu-compat-analysis-moving_overtake.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_overtake --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-moving_overtake-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-moving_overtake-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_overtake --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-moving_overtake-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-moving_overtake-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-moving_overtake-missing.log",
+        "feedback_log_sha256": "447a6093840a0a2fb86ad4d55823da5273aec24b4f4de25cc2dc6f546f08d78a",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-moving_overtake.log",
+        "test_log_sha256": "7f23e503b2c856d3e60f7c756c04c024569ce3bbd000f53e0cfa51c13d9cf2d7"
       },
-      "negative": {
-        "log": "cpu-compat-negative-moving_overtake.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -337,6 +427,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -348,6 +443,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-moving_abreast-fallback1.log",
+            "negative_log": "cpu-compat-negative-moving_abreast-fallback1.log",
+            "receipt": "cpu-compat-moving_abreast-fallback1-receipt.json",
+            "sha256": "6d4404df6f075d3b51c5ca0acb2e6e07de8387d29d3fda519a26c4fbf155d64b"
+          },
           "construction": "construction-moving_abreast-fallback1.json",
           "construction_sha256": "0b283b2cb607341df4ed9b096a6b3bccd334fb2b7dbabe776d3e6660e346b863",
           "id": "fallback1",
@@ -362,18 +463,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-moving_abreast-fallback1-receipt.json",
-            "sha256": "6d4404df6f075d3b51c5ca0acb2e6e07de8387d29d3fda519a26c4fbf155d64b",
-            "log": "cpu-compat-analysis-moving_abreast-fallback1.log",
-            "negative_log": "cpu-compat-negative-moving_abreast-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_abreast",
+      "compatibility": {
+        "log": "cpu-compat-analysis-moving_abreast.log",
+        "receipt": "cpu-compat-moving_abreast-receipt.json",
+        "sha256": "531732e6a9bf85b04285d06e6488822814f3041e2418facb419e5771dca8219f"
+      },
       "construction": "construction-moving_abreast.json",
       "construction_sha256": "c06812232d104659b069ee749897ded911493e9c8316184525af9a3223b53ba1",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_abreast",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_abreast --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-moving_abreast-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/moving_abreast-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_abreast --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/moving_abreast-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/moving_abreast-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-moving_abreast-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-moving_abreast.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/moving_abreast-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/moving_abreast-measurement-contract.json",
@@ -384,6 +511,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-moving_abreast.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_abreast --output $OUTPUT --python $CPU_PYTHON",
@@ -396,15 +526,20 @@
         "receipt": "physical-moving_abreast-receipt.json",
         "sha256": "b1f89b164e5f9682efc83a0e5ff089f5a0cb694af6d37b66d70343ec31009664"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-moving_abreast-receipt.json",
-        "sha256": "531732e6a9bf85b04285d06e6488822814f3041e2418facb419e5771dca8219f",
-        "log": "cpu-compat-analysis-moving_abreast.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_abreast --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-moving_abreast-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-moving_abreast-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_abreast --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-moving_abreast-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-moving_abreast-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-moving_abreast-missing.log",
+        "feedback_log_sha256": "b61dea7bc3f973b2e65ea2416d4c09023d5fe909aa83b9800e31fa237ec3d043",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-moving_abreast.log",
+        "test_log_sha256": "758b7f4b4166713aa01dd10b1dfaca039c2fabdc43b5f2cae88c65692d18af22"
       },
-      "negative": {
-        "log": "cpu-compat-negative-moving_abreast.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -472,6 +607,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -483,6 +623,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-unit_overtakes_ego-fallback1.log",
+            "negative_log": "cpu-compat-negative-unit_overtakes_ego-fallback1.log",
+            "receipt": "cpu-compat-unit_overtakes_ego-fallback1-receipt.json",
+            "sha256": "1d334752acac9cb28488a099202d3b386c24384a62afe89ac0b7d2473b498b00"
+          },
           "construction": "construction-unit_overtakes_ego-fallback1.json",
           "construction_sha256": "130f494d644411e4d7edbfd845889966f0154ce1fec16b92b208f8b574fe980b",
           "id": "fallback1",
@@ -497,18 +643,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-unit_overtakes_ego-fallback1-receipt.json",
-            "sha256": "1d334752acac9cb28488a099202d3b386c24384a62afe89ac0b7d2473b498b00",
-            "log": "cpu-compat-analysis-unit_overtakes_ego-fallback1.log",
-            "negative_log": "cpu-compat-negative-unit_overtakes_ego-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__unit_overtakes_ego",
+      "compatibility": {
+        "log": "cpu-compat-analysis-unit_overtakes_ego.log",
+        "receipt": "cpu-compat-unit_overtakes_ego-receipt.json",
+        "sha256": "984a1b7069792defd14881f144ddaec0f11c2df783802eeab9dedce1b23b912c"
+      },
       "construction": "construction-unit_overtakes_ego.json",
       "construction_sha256": "e3b7bad454b8fff8491b7134333ad596fd2642c9791b128c78ad332f935c6854",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__unit_overtakes_ego",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__unit_overtakes_ego --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-unit_overtakes_ego-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/unit_overtakes_ego-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__unit_overtakes_ego --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/unit_overtakes_ego-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/unit_overtakes_ego-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-unit_overtakes_ego-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-unit_overtakes_ego.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/unit_overtakes_ego-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/unit_overtakes_ego-measurement-contract.json",
@@ -519,6 +691,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-unit_overtakes_ego.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__unit_overtakes_ego --output $OUTPUT --python $CPU_PYTHON",
@@ -531,15 +706,20 @@
         "receipt": "physical-unit_overtakes_ego-receipt.json",
         "sha256": "0b9f19a0c71885a998b7f1636ebb579c57bd93d9248931b3de0fb2fbfb0ddcf2"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-unit_overtakes_ego-receipt.json",
-        "sha256": "984a1b7069792defd14881f144ddaec0f11c2df783802eeab9dedce1b23b912c",
-        "log": "cpu-compat-analysis-unit_overtakes_ego.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__unit_overtakes_ego --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-unit_overtakes_ego-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-unit_overtakes_ego-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__unit_overtakes_ego --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-unit_overtakes_ego-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-unit_overtakes_ego-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-unit_overtakes_ego-missing.log",
+        "feedback_log_sha256": "f6584e7769a1199dd89381d121f8bbc9f447f42903375165e3cc575ecaad2d28",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-unit_overtakes_ego.log",
+        "test_log_sha256": "0e967da89500d099f01da2f62239d88bfc89d8f70e88ad537f12bd1c25305931"
       },
-      "negative": {
-        "log": "cpu-compat-negative-unit_overtakes_ego.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -607,6 +787,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -618,6 +803,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-preparing_visible_hand_signal-fallback1.log",
+            "negative_log": "cpu-compat-negative-preparing_visible_hand_signal-fallback1.log",
+            "receipt": "cpu-compat-preparing_visible_hand_signal-fallback1-receipt.json",
+            "sha256": "125cbc1bde53f8a8e156067c3c5e33a429c252ea2061b2fbfdeb93a2fe7b272a"
+          },
           "construction": "construction-preparing_visible_hand_signal-fallback1.json",
           "construction_sha256": "e685a99ce3d3ec1dcf75b27aa59dcf95eb30e860bb9d67cacd683ca36a62ecdb",
           "id": "fallback1",
@@ -632,18 +823,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-preparing_visible_hand_signal-fallback1-receipt.json",
-            "sha256": "125cbc1bde53f8a8e156067c3c5e33a429c252ea2061b2fbfdeb93a2fe7b272a",
-            "log": "cpu-compat-analysis-preparing_visible_hand_signal-fallback1.log",
-            "negative_log": "cpu-compat-negative-preparing_visible_hand_signal-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_hand_signal",
+      "compatibility": {
+        "log": "cpu-compat-analysis-preparing_visible_hand_signal.log",
+        "receipt": "cpu-compat-preparing_visible_hand_signal-receipt.json",
+        "sha256": "5ccb4250e37a0ce9f9eef5f8411521a9b504caf493c72b23f95b1beae7213d55"
+      },
       "construction": "construction-preparing_visible_hand_signal.json",
       "construction_sha256": "a912fc4bde70fcc30a116cb9a7ff9c23c98621a5e69faa944934ad46d605dcff",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_hand_signal",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_hand_signal --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-preparing_visible_hand_signal-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/preparing_visible_hand_signal-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_hand_signal --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/preparing_visible_hand_signal-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/preparing_visible_hand_signal-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-preparing_visible_hand_signal-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-preparing_visible_hand_signal.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/preparing_visible_hand_signal-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/preparing_visible_hand_signal-measurement-contract.json",
@@ -654,6 +871,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-preparing_visible_hand_signal.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_hand_signal --output $OUTPUT --python $CPU_PYTHON",
@@ -666,15 +886,20 @@
         "receipt": "physical-preparing_visible_hand_signal-receipt.json",
         "sha256": "5d6787b6e9a9660117d7680a911811373954265f39a885c5426d509d93a3fd88"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-preparing_visible_hand_signal-receipt.json",
-        "sha256": "5ccb4250e37a0ce9f9eef5f8411521a9b504caf493c72b23f95b1beae7213d55",
-        "log": "cpu-compat-analysis-preparing_visible_hand_signal.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_hand_signal --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-preparing_visible_hand_signal-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-preparing_visible_hand_signal-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_hand_signal --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-preparing_visible_hand_signal-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-preparing_visible_hand_signal-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-preparing_visible_hand_signal-missing.log",
+        "feedback_log_sha256": "42eeae4e25be9c477524f5d7091c5c4cd9b06aa7def08d913efa9e1c0bb915bd",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-preparing_visible_hand_signal.log",
+        "test_log_sha256": "9bcda1cb7671ddc41c13a3194f248457b360ffb01cdb2de6f24d8f780dc6dd90"
       },
-      "negative": {
-        "log": "cpu-compat-negative-preparing_visible_hand_signal.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -742,6 +967,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -753,6 +983,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-preparing_visible_vehicle_movement-fallback1.log",
+            "negative_log": "cpu-compat-negative-preparing_visible_vehicle_movement-fallback1.log",
+            "receipt": "cpu-compat-preparing_visible_vehicle_movement-fallback1-receipt.json",
+            "sha256": "f252cd82b9a59c9aa1c2f636115216b0e7000f4ee339978b8670f465b7507c2f"
+          },
           "construction": "construction-preparing_visible_vehicle_movement-fallback1.json",
           "construction_sha256": "efc4bdef94c663c35e55ac9ecb331e96e662d3ad140d4f0b181fc208ed3653eb",
           "id": "fallback1",
@@ -767,18 +1003,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-preparing_visible_vehicle_movement-fallback1-receipt.json",
-            "sha256": "f252cd82b9a59c9aa1c2f636115216b0e7000f4ee339978b8670f465b7507c2f",
-            "log": "cpu-compat-analysis-preparing_visible_vehicle_movement-fallback1.log",
-            "negative_log": "cpu-compat-negative-preparing_visible_vehicle_movement-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_vehicle_movement",
+      "compatibility": {
+        "log": "cpu-compat-analysis-preparing_visible_vehicle_movement.log",
+        "receipt": "cpu-compat-preparing_visible_vehicle_movement-receipt.json",
+        "sha256": "a772f7f3dd695bfd69ff05b3d25e1dad07579d3346a8c3b89e4c07465c53c630"
+      },
       "construction": "construction-preparing_visible_vehicle_movement.json",
       "construction_sha256": "ebac1abc962c1af47e4620df6c7224de37973421ca70269bf130a0033a3dcc46",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_vehicle_movement",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_vehicle_movement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-preparing_visible_vehicle_movement-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/preparing_visible_vehicle_movement-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_vehicle_movement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/preparing_visible_vehicle_movement-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/preparing_visible_vehicle_movement-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-preparing_visible_vehicle_movement-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-preparing_visible_vehicle_movement.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/preparing_visible_vehicle_movement-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/preparing_visible_vehicle_movement-measurement-contract.json",
@@ -789,6 +1051,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-preparing_visible_vehicle_movement.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_vehicle_movement --output $OUTPUT --python $CPU_PYTHON",
@@ -801,15 +1066,20 @@
         "receipt": "physical-preparing_visible_vehicle_movement-receipt.json",
         "sha256": "477296bd036f15dc1a262f2d31c83e0016a1e1321b5fe9f278a386e54526a2c7"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-preparing_visible_vehicle_movement-receipt.json",
-        "sha256": "a772f7f3dd695bfd69ff05b3d25e1dad07579d3346a8c3b89e4c07465c53c630",
-        "log": "cpu-compat-analysis-preparing_visible_vehicle_movement.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_vehicle_movement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-preparing_visible_vehicle_movement-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-preparing_visible_vehicle_movement-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_vehicle_movement --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-preparing_visible_vehicle_movement-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-preparing_visible_vehicle_movement-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-preparing_visible_vehicle_movement-missing.log",
+        "feedback_log_sha256": "039b3780dca63a695f2ae50ec892dad7f850f1427c7dd0a3500eb0bb24a54d9d",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-preparing_visible_vehicle_movement.log",
+        "test_log_sha256": "626069829bb34e6aba043eb3e731f64075fc76db01d3d91b790ba389a855570e"
       },
-      "negative": {
-        "log": "cpu-compat-negative-preparing_visible_vehicle_movement.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -877,6 +1147,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -888,6 +1163,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-lights_inactive-fallback1.log",
+            "negative_log": "cpu-compat-negative-lights_inactive-fallback1.log",
+            "receipt": "cpu-compat-lights_inactive-fallback1-receipt.json",
+            "sha256": "71258faecd94be663eafa6ba865e441cb12c4917876eaaba07abc9f67e9d449b"
+          },
           "construction": "construction-lights_inactive-fallback1.json",
           "construction_sha256": "9aeeac4a6775d1e42af97d06a025dcd9d3d190d93d32761b1c04dcd8a855f8c6",
           "id": "fallback1",
@@ -902,18 +1183,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-lights_inactive-fallback1-receipt.json",
-            "sha256": "71258faecd94be663eafa6ba865e441cb12c4917876eaaba07abc9f67e9d449b",
-            "log": "cpu-compat-analysis-lights_inactive-fallback1.log",
-            "negative_log": "cpu-compat-negative-lights_inactive-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_inactive",
+      "compatibility": {
+        "log": "cpu-compat-analysis-lights_inactive.log",
+        "receipt": "cpu-compat-lights_inactive-receipt.json",
+        "sha256": "7d6e11391f3e8c3ee4cb2ab0f86e47a2b7cde76c69a30cf5ac890073e9c53e24"
+      },
       "construction": "construction-lights_inactive.json",
       "construction_sha256": "d5f4f8a01d6754b13e9c42d9ce475de3fc2c8ae827fde433cec133611b128843",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_inactive",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_inactive --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-lights_inactive-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/lights_inactive-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_inactive --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/lights_inactive-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/lights_inactive-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-lights_inactive-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-lights_inactive.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/lights_inactive-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/lights_inactive-measurement-contract.json",
@@ -924,6 +1231,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-lights_inactive.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_inactive --output $OUTPUT --python $CPU_PYTHON",
@@ -936,15 +1246,20 @@
         "receipt": "physical-lights_inactive-receipt.json",
         "sha256": "d74490b8da848871a7a70c17bcbda643411d57c25338be6904f47d60b35b0234"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-lights_inactive-receipt.json",
-        "sha256": "7d6e11391f3e8c3ee4cb2ab0f86e47a2b7cde76c69a30cf5ac890073e9c53e24",
-        "log": "cpu-compat-analysis-lights_inactive.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_inactive --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-lights_inactive-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-lights_inactive-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_inactive --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-lights_inactive-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-lights_inactive-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-lights_inactive-missing.log",
+        "feedback_log_sha256": "cf92f8e26e1d5329aa5ae0431431bb670b435195ad6b6803684c9242fd14a409",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-lights_inactive.log",
+        "test_log_sha256": "db713b2f114276edf2a1866d88bf53649003bd6a83f3e143d75627ce78137d2c"
       },
-      "negative": {
-        "log": "cpu-compat-negative-lights_inactive.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -1012,6 +1327,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -1023,6 +1343,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-lights_unqualified-fallback1.log",
+            "negative_log": "cpu-compat-negative-lights_unqualified-fallback1.log",
+            "receipt": "cpu-compat-lights_unqualified-fallback1-receipt.json",
+            "sha256": "852c7203bbe18bf9baf3f65665b733488f59694ce0ff36722e34f265e2f12192"
+          },
           "construction": "construction-lights_unqualified-fallback1.json",
           "construction_sha256": "0c8d375101b7214d6c4bd07c262d9bade18edad464e104756e5b512fc9edab0c",
           "id": "fallback1",
@@ -1037,18 +1363,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-lights_unqualified-fallback1-receipt.json",
-            "sha256": "852c7203bbe18bf9baf3f65665b733488f59694ce0ff36722e34f265e2f12192",
-            "log": "cpu-compat-analysis-lights_unqualified-fallback1.log",
-            "negative_log": "cpu-compat-negative-lights_unqualified-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_unqualified",
+      "compatibility": {
+        "log": "cpu-compat-analysis-lights_unqualified.log",
+        "receipt": "cpu-compat-lights_unqualified-receipt.json",
+        "sha256": "0f5a03b67627614d2c441ffb7535c7a479383687f214a8263009decf4c5f9c00"
+      },
       "construction": "construction-lights_unqualified.json",
       "construction_sha256": "6139e017ed07f7e022969d0759a0fd0b900a979ef3f99adf5e55abf126f2bf68",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_unqualified",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_unqualified --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-lights_unqualified-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/lights_unqualified-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_unqualified --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/lights_unqualified-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/lights_unqualified-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-lights_unqualified-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-lights_unqualified.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/lights_unqualified-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/lights_unqualified-measurement-contract.json",
@@ -1059,6 +1411,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-lights_unqualified.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_unqualified --output $OUTPUT --python $CPU_PYTHON",
@@ -1071,15 +1426,20 @@
         "receipt": "physical-lights_unqualified-receipt.json",
         "sha256": "8d42b8caede201aaccb8c58339dd67e290a27e25b5c43ee3bfb623dc6979ad46"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-lights_unqualified-receipt.json",
-        "sha256": "0f5a03b67627614d2c441ffb7535c7a479383687f214a8263009decf4c5f9c00",
-        "log": "cpu-compat-analysis-lights_unqualified.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_unqualified --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-lights_unqualified-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-lights_unqualified-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_unqualified --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-lights_unqualified-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-lights_unqualified-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-lights_unqualified-missing.log",
+        "feedback_log_sha256": "317c3a2dd03c1cd7210bab97fe18ea78998e559ef2f05cddd73ffa1abe456524",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-lights_unqualified.log",
+        "test_log_sha256": "91289fa95ca3a71d2c929e3e1b5e9b9a200fafc149485af53723d7c124250a2e"
       },
-      "negative": {
-        "log": "cpu-compat-negative-lights_unqualified.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -1147,6 +1507,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -1158,6 +1523,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-officer_directs_otherwise-fallback1.log",
+            "negative_log": "cpu-compat-negative-officer_directs_otherwise-fallback1.log",
+            "receipt": "cpu-compat-officer_directs_otherwise-fallback1-receipt.json",
+            "sha256": "2b691e51f15a56a4f69342674bb9dc0867047bdd215088c6d7935302e0245214"
+          },
           "construction": "construction-officer_directs_otherwise-fallback1.json",
           "construction_sha256": "2a3d705d5b47859c12a0bfc31f30619bfd5fab50481e33c39d160fad04675aef",
           "id": "fallback1",
@@ -1172,18 +1543,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-officer_directs_otherwise-fallback1-receipt.json",
-            "sha256": "2b691e51f15a56a4f69342674bb9dc0867047bdd215088c6d7935302e0245214",
-            "log": "cpu-compat-analysis-officer_directs_otherwise-fallback1.log",
-            "negative_log": "cpu-compat-negative-officer_directs_otherwise-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__officer_directs_otherwise",
+      "compatibility": {
+        "log": "cpu-compat-analysis-officer_directs_otherwise.log",
+        "receipt": "cpu-compat-officer_directs_otherwise-receipt.json",
+        "sha256": "6db5c798f4336ccb5b30869b1d56ead8e3fac07b9685502527d62b8fd7cd2884"
+      },
       "construction": "construction-officer_directs_otherwise.json",
       "construction_sha256": "4780c40e79f1c17691506e825a1b0d0c0ca1effe669768ad9df1c80334698cdd",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__officer_directs_otherwise",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__officer_directs_otherwise --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-officer_directs_otherwise-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/officer_directs_otherwise-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__officer_directs_otherwise --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/officer_directs_otherwise-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/officer_directs_otherwise-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-officer_directs_otherwise-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-officer_directs_otherwise.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/officer_directs_otherwise-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/officer_directs_otherwise-measurement-contract.json",
@@ -1194,6 +1591,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-officer_directs_otherwise.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__officer_directs_otherwise --output $OUTPUT --python $CPU_PYTHON",
@@ -1206,15 +1606,20 @@
         "receipt": "physical-officer_directs_otherwise-receipt.json",
         "sha256": "0cba224a03c034593c35d612def94dab6a7f992a6cb677f00be3e7efbe4be546"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-officer_directs_otherwise-receipt.json",
-        "sha256": "6db5c798f4336ccb5b30869b1d56ead8e3fac07b9685502527d62b8fd7cd2884",
-        "log": "cpu-compat-analysis-officer_directs_otherwise.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__officer_directs_otherwise --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-officer_directs_otherwise-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-officer_directs_otherwise-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__officer_directs_otherwise --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-officer_directs_otherwise-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-officer_directs_otherwise-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-officer_directs_otherwise-missing.log",
+        "feedback_log_sha256": "90123599affedbfec0710007b7af2c1d9daa2b8dfc8a1d8cadc5bfbf4e258291",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-officer_directs_otherwise.log",
+        "test_log_sha256": "d515c99f2744232da006a77acac158b51ed0864498961e7b49dd009787be4047"
       },
-      "negative": {
-        "log": "cpu-compat-negative-officer_directs_otherwise.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -1282,6 +1687,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -1293,6 +1703,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-regulatory_official_hold_behind-fallback1.log",
+            "negative_log": "cpu-compat-negative-regulatory_official_hold_behind-fallback1.log",
+            "receipt": "cpu-compat-regulatory_official_hold_behind-fallback1-receipt.json",
+            "sha256": "d6de9495f9a7503b65b0ec1e2f46407be5e74c7136293c8191a766294caf98e4"
+          },
           "construction": "construction-regulatory_official_hold_behind-fallback1.json",
           "construction_sha256": "15eb81a2af0c06eb87f8843174d1820a47ff5aec5c33d62c578d8d592a017bc6",
           "id": "fallback1",
@@ -1307,18 +1723,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-regulatory_official_hold_behind-fallback1-receipt.json",
-            "sha256": "d6de9495f9a7503b65b0ec1e2f46407be5e74c7136293c8191a766294caf98e4",
-            "log": "cpu-compat-analysis-regulatory_official_hold_behind-fallback1.log",
-            "negative_log": "cpu-compat-negative-regulatory_official_hold_behind-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__regulatory_official_hold_behind",
+      "compatibility": {
+        "log": "cpu-compat-analysis-regulatory_official_hold_behind.log",
+        "receipt": "cpu-compat-regulatory_official_hold_behind-receipt.json",
+        "sha256": "98b07dd70625282b0774eba632a41dfa4c9d42cb18a3b1b21b3768d4058c5ad9"
+      },
       "construction": "construction-regulatory_official_hold_behind.json",
       "construction_sha256": "91b9eb867e5558bf6503b3a11d0f943d4342af954deb9e68954ef458f639bcaf",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__regulatory_official_hold_behind",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__regulatory_official_hold_behind --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-regulatory_official_hold_behind-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/regulatory_official_hold_behind-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__regulatory_official_hold_behind --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/regulatory_official_hold_behind-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/regulatory_official_hold_behind-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-regulatory_official_hold_behind-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-regulatory_official_hold_behind.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/regulatory_official_hold_behind-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/regulatory_official_hold_behind-measurement-contract.json",
@@ -1329,6 +1771,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-regulatory_official_hold_behind.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__regulatory_official_hold_behind --output $OUTPUT --python $CPU_PYTHON",
@@ -1341,15 +1786,20 @@
         "receipt": "physical-regulatory_official_hold_behind-receipt.json",
         "sha256": "2d11421851a3733dc82914a7abc59d10456050a9a6110a17c5be25e9f9f003ba"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-regulatory_official_hold_behind-receipt.json",
-        "sha256": "98b07dd70625282b0774eba632a41dfa4c9d42cb18a3b1b21b3768d4058c5ad9",
-        "log": "cpu-compat-analysis-regulatory_official_hold_behind.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__regulatory_official_hold_behind --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-regulatory_official_hold_behind-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-regulatory_official_hold_behind-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__regulatory_official_hold_behind --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-regulatory_official_hold_behind-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-regulatory_official_hold_behind-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-regulatory_official_hold_behind-missing.log",
+        "feedback_log_sha256": "7aa2c060186b1807203cf5b15851ef5d0f86e0f05c714442a3d9776b3ed28288",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-regulatory_official_hold_behind.log",
+        "test_log_sha256": "76f55c9a2002b29ba2627b7b3c134885ad6c1f0ae2900f9716cecb05a1640287"
       },
-      "negative": {
-        "log": "cpu-compat-negative-regulatory_official_hold_behind.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     },
     {
       "acquisition": {
@@ -1417,6 +1867,11 @@
           "entrypoint": "runner.py",
           "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs.",
           "method": "capture_original"
+        },
+        "driver_view_movement_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick original driver-view cue state joined to unit pose, ego control and four camera frame IDs; reviewed Native adapter source is required."
         }
       },
       "candidate_risk": {
@@ -1428,6 +1883,12 @@
           "changed_knobs": [
             "require a separately reviewed connected alternate unit route with identical direction and immediacy"
           ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-no_approach-fallback1.log",
+            "negative_log": "cpu-compat-negative-no_approach-fallback1.log",
+            "receipt": "cpu-compat-no_approach-fallback1-receipt.json",
+            "sha256": "45bcd330ca9880e8d48ef766773186db26f3b967e33373e47b13a296eea66f82"
+          },
           "construction": "construction-no_approach-fallback1.json",
           "construction_sha256": "2e36ab8905858234a1667dea7cd2bcd93c40a8aab942c0fd95044bd3f242375f",
           "id": "fallback1",
@@ -1442,18 +1903,44 @@
             "failure_condition": "primary route is unavailable or does not realize the requested relative approach",
             "metric": "unit route connectedness, direction and approach realization",
             "source": "original Native map and actor route readbacks"
-          },
-          "compatibility": {
-            "receipt": "cpu-compat-no_approach-fallback1-receipt.json",
-            "sha256": "45bcd330ca9880e8d48ef766773186db26f3b967e33373e47b13a296eea66f82",
-            "log": "cpu-compat-analysis-no_approach-fallback1.log",
-            "negative_log": "cpu-compat-negative-no_approach-fallback1.log"
           }
         }
       ],
       "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__no_approach",
+      "compatibility": {
+        "log": "cpu-compat-analysis-no_approach.log",
+        "receipt": "cpu-compat-no_approach-receipt.json",
+        "sha256": "881588886abbf44eae090f3c90ba4cb7cf0da3277f209281d316273c1b7093b3"
+      },
       "construction": "construction-no_approach.json",
       "construction_sha256": "37e43a0788e74bbe93644a45f814a56c27243067be9d1c000e8774145a096f08",
+      "delivery_acceptance": {
+        "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__no_approach",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__no_approach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-no_approach-v8 --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/no_approach-delivery.json",
+        "diagnostic_fixture": true,
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/delivery_audit.py --case-id testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__no_approach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/no_approach-missing --plan /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/case-plan.json --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/audits-v8/no_approach-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: original-emergency-movement-history.jsonl",
+        "negative_log": "cpu-delivery-no_approach-negative.log",
+        "negative_log_sha256": "812a3016636b5f7f3162c0ed39fd9df7d50b4d94c5df20fa182fe1caffa2ac0f",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "18e8ffa62f59f547de129df53b181f78ff0e12034e1ff7271fe3c7cdfe1b98d8",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-no_approach.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
       "fixture_recipe": "work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/diagnostics/no_approach-recipe.json",
       "kind": "delivery",
       "measurement_contract": "diagnostics/no_approach-measurement-contract.json",
@@ -1464,6 +1951,9 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-no_approach.log"
       },
       "offline": {
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__no_approach --output $OUTPUT --python $CPU_PYTHON",
@@ -1476,15 +1966,20 @@
         "receipt": "physical-no_approach-receipt.json",
         "sha256": "6ee5ea5c9db291dae39bb4febca9dc20e4cdcf505ce906877aaa8e2b5bf44600"
       },
-      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required",
-      "compatibility": {
-        "receipt": "cpu-compat-no_approach-receipt.json",
-        "sha256": "881588886abbf44eae090f3c90ba4cb7cf0da3277f209281d316273c1b7093b3",
-        "log": "cpu-compat-analysis-no_approach.log"
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__no_approach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/compat-no_approach-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-no_approach-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "diagnostic_fixture": true,
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/execution-manifest.json --case testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__no_approach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-attempt-no_approach-v8 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c404479-2d/saved-missing-no_approach-v8 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck",
+        "feedback_log": "cpu-saved-no_approach-missing.log",
+        "feedback_log_sha256": "650e3f5f6a4d5a230c34cdab2851d28ae22a3cc05f9553ec40d40e1f5cedd7e9",
+        "feedback_test_exit_code": 0,
+        "physical_acceptance_claimed": false,
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-no_approach.log",
+        "test_log_sha256": "247bcd420df911980ce3f2f0028fff1e85187bc560f7bcab10f922cfe0285392"
       },
-      "negative": {
-        "log": "cpu-compat-negative-no_approach.log"
-      }
+      "source_gate": "reviewed adjacent traversable lanes, same-direction routes, actor body extents, authority, qualifying flashing lights, moving or visibly preparing unit, officer context and four camera poses required"
     }
   ],
   "comparisons": [],

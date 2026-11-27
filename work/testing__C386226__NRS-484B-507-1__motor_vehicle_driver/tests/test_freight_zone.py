@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from freight_zone import CASES, build_case, measure_history, validate_site
 from finalize_saved import finalize
 from original_runner import construct
+from delivery_audit import audit_attempt, audit_comparisons
 
 
 def site(effective=True):
@@ -201,6 +202,50 @@ class FreightZoneTest(unittest.TestCase):
                 "original_history_sha256": hashlib.sha256(history_path.read_bytes()).hexdigest()}) + "\n")
             with self.assertRaisesRegex(ValueError, "material_event source"):
                 finalize(history_path, site_path, seal_path, root / "rejected.json")
+
+    def test_independent_audit_rejects_missing_original_attempt(self):
+        scratch = Path.cwd() / ".runtime-work" / "c386226-5071-tests" / "never-created-attempt"
+        aid = Path(__file__).resolve().parents[1].name
+        with self.assertRaisesRegex(ValueError, "original attempt missing"):
+            audit_attempt(scratch, aid + "__" + CASES[0].name)
+
+    def test_comparison_rejects_fixed_source_change(self):
+        aid = Path(__file__).resolve().parents[1].name
+        reports = {}
+        fixed = {"road_source_sha256": "road", "zone_source_sha256": "zone",
+                 "regulations_source_sha256": "regulation", "effective_hours_source_sha256": "hours",
+                 "camera_plan_sha256": "camera", "vehicle_blueprint": "car",
+                 "passenger_blueprint": "passenger", "freight_vehicle_blueprint": "truck",
+                 "materials_inventory_source_sha256": "inventory",
+                 "freight_entry_source_sha256": "freight-entry",
+                 "traffic_and_official_directions_source_sha256": "traffic",
+                 "clock_source_sha256": "clock", "civil_time_iso": "2026-11-26T12:00:00-08:00"}
+        for c in CASES:
+            cid = aid + "__" + c.name
+            report = {"format": "c386226-independent-original-audit-v1", "case_id": cid,
+                      "source_kind": "original_native_capture", "legal_status": "unresolved",
+                      "physical_acceptance": False,
+                      "comparison_record": {"case_id": cid, "frame_count": 900,
+                          "original_history_sha256": "history-" + c.name,
+                          "site_sha256": "site-" + c.name, **fixed,
+                          "conduct": c.conduct, "material_action": c.material_action,
+                          "activity_delay_s": c.activity_delay_s,
+                          "passenger_action": c.passenger_action,
+                          "freight_arrival": c.freight_arrival,
+                          "regulations_effective": c.hours == "effective",
+                          "material_events": [c.material_action] if c.material_action != "none" else [],
+                          "halt_to_material_event_s": c.activity_delay_s if c.material_action != "none" else None,
+                          "passenger_events": [c.passenger_action] if c.passenger_action != "none" else [],
+                          "freight_events": [c.freight_arrival] if c.freight_arrival != "none" else []}}
+            if c.hours != "effective":
+                report["comparison_record"]["civil_time_iso"] = "2026-11-26T03:00:00-08:00"
+            reports[cid] = report
+        passed = audit_comparisons(reports)
+        self.assertEqual(len(passed), 6)
+        broken = copy.deepcopy(reports)
+        broken[aid + "__stand_no_material"]["comparison_record"]["road_source_sha256"] = "changed-road"
+        with self.assertRaisesRegex(ValueError, "fixed comparison condition changed"):
+            audit_comparisons(broken)
 
 
 if __name__ == "__main__":
