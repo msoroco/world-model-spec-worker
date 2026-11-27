@@ -1,6 +1,6 @@
 # testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator
 
-Status: partial CPU delivery preparation. Eight exact cases and six comparisons are authored; original recording remains source gated.
+Status: ready CPU delivery preparation. Eight exact cases and six comparisons passed the scoped strict worker gate; original recording remains source gated.
 
 Exact law: NRS 486.351(1) — A person, except a police officer in the performance of his or her duty, shall not drive a motorcycle or moped between moving or stationary vehicles occupying adjacent traffic lanes.
 Assigned branch(es): One-way multilane between-vehicle driving.
@@ -8,18 +8,16 @@ Cell: C145696 (one_way_multilane, lane_split, other_vehicle); actor: motorcycle_
 Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
 Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
 
-## Next CPU actions
+## Prepared delivery sequence
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+1. Use `gpu-queue-proposal.json` for the eight exact case rows and six comparison audits. Its selected manifest hash binds the completed proof package.
+2. Supply an independently reviewed original one-way adjacent-lane map and OpenDRIVE survey, motorcycle or moped blueprint, actor/route sources, operator identity, police status and performance-of-duty sources, and reviewed four-view camera poses before Native capture.
+3. Execute one canonical selected job at a time. Inspect the original three-actor 900-frame motion, all four actual camera streams, independent pixel review, source hashes and physical completion; apply the upstream-spawn fallback only on its documented trigger.
+4. Run the saved original-source delivery and comparison audits, then canonical acceptance. The diagnostic CPU receipts establish software compatibility only and make no legal or physical acceptance claim.
 
-## Proven checks and dependency boundary
+## CPU proof status
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+All sixteen selected primary/fallback offline checks and compatibility checks passed. The eight exact physical-preparation receipts each cover complete, incomplete and missing-evidence outcomes plus ordered lifecycle events. Eight delivery and six comparison audits passed both positive diagnostic integrity and negative rejection checks. Canonical semantic proposals passed the pinned stage validator. The exact scoped strict command exited 0 on 2026-11-26 after the bound receipts were sealed. No original Native capture is claimed.
 
 ## 2026-11-23 executable branch checkpoint
 
@@ -35,6 +33,12 @@ Remaining CPU work: select/source a Native map and supported motorcycle/moped bl
 
 The current bundle has eight exact primary constructions and eight source-hashed fallback constructions. A reviewed original scene packet gates map and OpenDRIVE identity, one-way adjacent lane survey, body clearance, participant blueprints, chapter vehicle classification, operator identity, police status, and performance of duty. The original runner creates three physical Native actors, records actual actor and lane readbacks for 900 consecutive 20 Hz frames, captures four synchronized FFV1 cameras, seals source hashes, restores world settings, and defers legal and physical interpretation to saved review. The fallback shifts the ego spawn three metres upstream only after an original spawn or incomplete-passage trigger; exact case variables and capture contract stay fixed.
 
-Canonical relevance, template, binding and case proposals passed the pinned semantic stage validator. The source-shaped diagnostic specifications are synthetic, explicitly marked diagnostic, and each generates 900 participant/trace/frame rows, four 900-frame videos and a Native adapter graph per frame. All 16 exact primary/fallback offline checks passed. Eight three-outcome physical probes and ordered capture/owner/saved lifecycle probes passed, and their formal receipts passed the pinned physical-preparation validator. The first primary and fallback case passed full positive/negative package compatibility through saved analysis, Native validation, Core conversion, Lean decoder, render and video decode. Other exact cases remain in progress; status is partial until each receipt and the strict scoped gate pass.
+Canonical relevance, template, binding and case proposals passed the pinned semantic stage validator. The source-shaped diagnostic specifications are synthetic, explicitly marked diagnostic, and each generates 900 participant/trace/frame rows, four 900-frame videos and a Native adapter graph per frame. All 16 exact primary/fallback offline checks passed. Eight three-outcome physical probes and ordered capture/owner/saved lifecycle probes passed, and their formal receipts passed the pinned physical-preparation validator. All eight primary and eight fallback cases passed full positive/negative package compatibility through saved analysis, Native validation, Core conversion, Lean decoder, render and video decode. The scoped strict gate subsequently passed.
 
 The independent `delivery_audit.py` accepts only case-bound, source-hashed 900-frame/four-camera diagnostic integrity as a CPU positive; its original-only mode rejects diagnostics. Original delivery additionally requires original acquisition seals, an independent pixel review packet, and physical completion. `comparison_audit.py` checks the six fixed-condition contrasts against the saved source streams, with independent original duty/classification hashes required when those recordings exist. The CPU proof driver will bind positive and negative case and comparison logs after the remaining compatibility runs complete.
+
+## 2026-11-26 strict CPU acceptance
+
+`SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c145696/pipeline TMPDIR=$PWD/.runtime-work/c145696 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C145696__NRS-486-351-1__motorcycle_or_moped_operator --complete --require-delivery-ready` exited 0 and reported `static_checks_passed: true` for this exact assignment. Pinned direct checks also passed execution manifest (eight cases), semantic chain (five stages and eight selected cases), all eight delivery contracts, and package compatibility. `source_observation_mapping` is the exact empty mapping for the frozen zero source-observation terms.
+
+The `gpu-queue-proposal.json` file provides eight exact cases and six comparison commands. `execution-manifest.json` SHA-256 is `cd1a516f111c2ba4e2358abec9ea50a06e8f84c418dc53b2e1c295c90fdb06c4`. Original Native map, camera pixels and statutory context still require local source review and capture.

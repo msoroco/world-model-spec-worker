@@ -100,7 +100,7 @@ def main():
                  'target_law_id': LAW, 'status': 'incomplete',
                  'judgment_refs': [{'phrase': phrase, 'note': ''}
                                    for phrase, _ in JUDGMENTS],
-                 'rationale': 'Seven controlled original-source cases probe geometry, traffic motion and exception context without a legal numeric cutoff.',
+                 'rationale': 'Nine controlled original-source cases probe geometry, traffic motion and exception context without a legal numeric cutoff.',
                  'missing_inputs': ['No source-established finite numeric sweep bounds for either judgment phrase; retain qualitative controlled probes and original physical review.']}]}
     baseline = {
         'excavation_relation': {'kind': 'world_setup', 'value': 'alongside'},

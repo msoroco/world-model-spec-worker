@@ -83,7 +83,7 @@ def compatibility(entry, suffix, candidate):
     receipt = json.loads(original.read_text())
     receipt["log_sha256"] = log_hash
     receipt["negative_log_sha256"] = negative_hash
-    target = ROOT / f"compatibility-{stem}.json"
+    target = ROOT / f"cpu-compatibility-receipt-{stem}.json"
     write(target, receipt)
     return {"receipt": target.name, "sha256": sha(target),
             "log": log.name, "negative_log": negative.name}

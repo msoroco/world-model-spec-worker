@@ -115,8 +115,29 @@ def audit(attempt, case_id, require_original=False):
                 'consent_source_sha256', 'subsection_3_source_sha256')),
             'Exact case or independent context source missing')
     require(scene['ego_vehicle_class'] == 'motorcycle' and
-            scene['subsection_3_status'] in ('unresolved', 'reviewed'),
+            scene['subsection_3_status'] in ('applies', 'does_not_apply', 'unresolved'),
             'Vehicle class or subsection 3 status differs')
+    if original:
+        if case_id.endswith('__three_abreast'):
+            third_source = scene.get('sources', {}).get('third_classification', {})
+            require(scene.get('third_blueprint_id') and
+                    scene.get('third_vehicle_class') in ('motorcycle', 'moped') and
+                    scene.get('third_classification_source_sha256') == third_source.get('sha256') and
+                    third_source.get('path'),
+                    'Third rider needs independent motorcycle or moped classification')
+        archived_scene = attempt / 'reviewed-scene-packet/scene.json'
+        archived_name = str(archived_scene.relative_to(attempt))
+        require(archived_scene.is_file() and
+                acquisition.get(archived_name, {}).get('sha256') == sha(archived_scene) and
+                all(row.get('scene_source_sha256') == sha(archived_scene)
+                    for row in history),
+                'Original reviewed scene packet or frame source binding differs')
+        for item in scene['sources'].values():
+            source = (attempt / 'reviewed-scene-packet' / item['path']).resolve()
+            require(source.is_relative_to(attempt) and source.is_file() and
+                    sha(source) == item['sha256'] and
+                    acquisition.get(str(source.relative_to(attempt)), {}).get('sha256') == sha(source),
+                    'Archived independent context source missing or changed')
     cameras = {name: camera(attempt / (name + '.mkv'), dims)
                for name, dims in CAMERAS.items()}
     pixel_reviewed = False

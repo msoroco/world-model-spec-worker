@@ -11,6 +11,7 @@ from lane_use import CASES, construct, measure_original, validate_site
 
 
 HERE = Path(__file__).resolve().parents[1]
+AID = "testing__C147339__NRS-486-341__motor_vehicle_driver"
 
 
 def site():
@@ -68,7 +69,7 @@ class LaneUseTests(unittest.TestCase):
 
     def test_all_exact_cases_construct_and_measure(self):
         plan = json.loads((HERE / "case-plan.json").read_text())
-        self.assertEqual({row["case_id"].removeprefix(HERE.name + "__") for row in plan["cases"]},
+        self.assertEqual({row["case_id"].removeprefix(AID + "__") for row in plan["cases"]},
                          {case.case_id for case in CASES})
         self.assertEqual(len(plan["comparisons"]), 4)
         measurements = {}

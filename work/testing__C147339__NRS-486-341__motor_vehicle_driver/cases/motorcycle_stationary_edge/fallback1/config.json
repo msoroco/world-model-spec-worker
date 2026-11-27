@@ -1,0 +1,135 @@
+{
+  "assignment_id": "testing__C147339__NRS-486-341__motor_vehicle_driver",
+  "selected_case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge",
+  "supported_case_ids": [
+    "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_adjacent_clear",
+    "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach",
+    "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_deep_encroach",
+    "testing__C147339__NRS-486-341__motor_vehicle_driver__moped_edge_encroach",
+    "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge"
+  ],
+  "law_id": "NRS-486-341",
+  "cell_id": "C147339",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed view of both one-way lanes and protected actor",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego approach and sourced lane boundary",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "original body-box relation to protected lane",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego-mounted forward participant view",
+      "fov_deg": 90
+    }
+  ],
+  "engineering": {
+    "ego_start_shift_m": -3
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 3,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true
+  },
+  "case": {
+    "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge",
+    "protected_kind": "motorcycle",
+    "ego_path": "edge",
+    "protected_driven": false,
+    "recording_description": {
+      "channels": [
+        {
+          "name": "occupied_lane",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s encounter",
+          "reference_frame": "original CARLA frame and elapsed time",
+          "uncertainty": "20 Hz sampling; legal full-use judgment and pixels need independent review"
+        },
+        {
+          "name": "body_intrusion",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s encounter",
+          "reference_frame": "original CARLA frame and elapsed time",
+          "uncertainty": "20 Hz sampling; legal full-use judgment and pixels need independent review"
+        },
+        {
+          "name": "protected_motion",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s encounter",
+          "reference_frame": "original CARLA frame and elapsed time",
+          "uncertainty": "20 Hz sampling; legal full-use judgment and pixels need independent review"
+        },
+        {
+          "name": "participant_class",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s encounter",
+          "reference_frame": "original CARLA frame and elapsed time",
+          "uncertainty": "20 Hz sampling; legal full-use judgment and pixels need independent review"
+        },
+        {
+          "name": "four_camera_visibility",
+          "unit": "original-frame structured record",
+          "sampling_rate_hz": 20,
+          "method": "source-bound original Native participant and map readback",
+          "time_window": "entire one-way 45s encounter",
+          "reference_frame": "original CARLA frame and elapsed time",
+          "uncertainty": "20 Hz sampling; legal full-use judgment and pixels need independent review"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "jurisdiction",
+          "unit": "source packet",
+          "method": "independently reviewed original source bytes"
+        },
+        {
+          "name": "site_source",
+          "unit": "source packet",
+          "method": "independently reviewed original source bytes"
+        },
+        {
+          "name": "chapter_vehicle_classification_source",
+          "unit": "source packet",
+          "method": "independently reviewed original source bytes"
+        }
+      ],
+      "limitations": [
+        "Body intrusion is physical context, not a legal deprivation cutoff.",
+        "Actual protected motion, pixels and source classifications require Native review."
+      ]
+    }
+  }
+}

@@ -1,25 +1,21 @@
-# C229405 excavation parking checkpoint
+# C229405 excavation stopping, standing and parking handoff
 
-Status: partial. Exact strict gate exits 1 because this result remains partial.
+Status: CPU delivery prepared. The exact assignment strict gate passes. Original Nevada highway excavation, authority context, CARLA motion, pixel visibility and legal judgment remain for GPU delivery review.
 
-## Constructed CPU scope
+## Selected coverage
 
-Seven exact probes cover alongside/opposite placement, engineered narrow/open passage, stop/stand/park and the conflict, officer, device and law exception contexts. `excavation_park.py` source-gates highway, actor, excavation, routes and authorities, constructs a motor vehicle plus moving traffic, and cleans up actors on failure. Its 900-frame finalizer joins original frame/time and source identities, checks geometry and traffic movement, and returns physical gap/passage metrics with legal obstruction and exception judgments unresolved.
+Nine exact cases cover alongside/opposite relation, narrow/open physical passage, ordinary park/stop/stand, conflict avoidance, officer direction, official traffic-control device, and compliance with law. Ten comparisons include isolated ordinary activity and exception contrasts. The original statute supplies no numeric obstruction cutoff, so the semantic sweep remains explicitly incomplete while the qualitative selected-case branch is runnable. The canonical cases proposal has been deterministically expanded without inventing numeric sweep points.
 
-The cases and six controlled comparisons are in `case-plan.json`. No accepted recording exists in the frozen evidence inventory. The original law contains no numeric obstruction threshold; engineered passage widths are probes, not legal cutoffs.
+## Construction and CPU proof
 
-## CPU proof receipts
+Each case has source-hashed primary and fallback1 constructions. The fallback reduces ego approach throttle from 0.25 to 0.18 and starts braking earlier using factor 4.0 instead of 5.0. All eighteen exact candidate offline and positive/negative compatibility proofs pass. All nine primary cases have complete, incomplete and missing-motion synthetic physical outcome receipts plus ordered capture closure, Native exit, owner release and saved-processing lifecycle receipts. All nine saved-only diagnostic replays and delivery audit positive/missing-source negative probes pass. Ten independent original-only comparison auditors have positive report-shape and changed-source rejection probes. These fixtures establish CPU protocol behavior only; they do not claim original physical or legal acceptance.
 
-- `case-plan.json` SHA256 `35a0399fb00c3ea4112d0155781fd5f3f5aa7ae2cded280916bf379bdfe0bedd`
-- `excavation_park.py` SHA256 `b4f4b0b1ca5a2c97cc17c4e9aa62dcac1d3ba94a2bc804bb97654d2acbdb3ef0`
-- `tests/test_excavation_park.py` SHA256 `f8f70844205dffde9a8eab3ce4483319cbd19bceca76f5030521282e8c760386`
-- `cpu-tests.log` SHA256 `f17f5fe3f8a4ace6b71da1fe6e45a3a388367d99e08ad8bd48f08b2ce1f2c0e9`
-- `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`
-- `cpu-static-check.log` SHA256 `4289641082f9c650199c6696d0590f3f4bb75f8367a63ad1f9dc4acf0cc08251`
-- `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+The original Native route requires a reviewed site packet with source hashes for map, highway, excavation, traffic and authority records. The independent audit requires original 900-frame joins, retained acquisition hashes, reviewed site equivalence, body-derived passage width, participant movement, source-decode verification and actual-pixel review. `gpu-queue-proposal.json` gives exact-case capture, processing, owner-release, source audit, preparation, fallback and acceptance commands for lead integration.
 
-Commands: `.venv-cpu/bin/python -m unittest discover -s work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/tests -v` exit 0 (3 tests); `.venv-cpu/bin/python runtime.py preflight` exit 0; `.venv-cpu/bin/python worker_check.py --assignment testing__C229405__NRS-484B-450-1k__motor_vehicle_driver` exit 0; same scoped command with `--complete --require-delivery-ready` exit 1 on partial status. Logs retained above. `result.json.tests` records only passing tests/preflight/static checks with package-relative log paths, exact commands, exit code 0 and matching SHA256. The strict failure is retained for diagnosis only.
+## Verification
 
-## Remaining CPU work
+- `.venv-cpu/bin/python -m unittest discover -s work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/tests -v`: seven tests pass.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C229405__NRS-484B-450-1k__motor_vehicle_driver --complete --require-delivery-ready`: exit 0, `static_checks_passed: true`.
+- Exact manifest: `execution-manifest.json`; semantic stage hashes: `proposals/semantic-index.json`; independent audit: `delivery_audit.py`; queue proposal: `gpu-queue-proposal.json`.
 
-Create canonical selected-case execution bundles and source-bound positive/negative compatibility inputs; implement saved-only processing, semantic proposals, and independent delivery/comparison audits for all exact cases. Then rerun the scoped strict gate. Actual CARLA motion, traffic obstruction and camera coverage remain physical review after CPU preparation.
+All diagnostic scratch, decoder build, generated video and temporary attempts are under `.runtime-work/`. No work artifact claims an accepted original capture.
