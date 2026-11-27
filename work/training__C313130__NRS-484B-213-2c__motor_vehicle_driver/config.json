@@ -1,0 +1,254 @@
+{
+  "format": "c313130-tunnel-selected-v1",
+  "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1",
+  "selected_case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1",
+  "supported_case_ids": [
+    "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1",
+    "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_2"
+  ],
+  "candidate_id": "primary",
+  "law_id": "NRS-484B-213-2c",
+  "cell_id": "C313130",
+  "actor": "motor_vehicle_driver",
+  "assignment_sha256": "37126b90eaa16554490d65ff3fa9577a0d08813323ff018829ee372f467a0654",
+  "road_sha256": "accb9d352acf5a7f939093a94fcef63c6968ddbcb92b81930cd1007ad951d3c9",
+  "rate_hz": 20,
+  "duration_frames": 600,
+  "duration_s": 30,
+  "required_atoms": [
+    "kin.position",
+    "kin.heading",
+    "rel.occupies"
+  ],
+  "source_packets": [],
+  "mandatory_channels": [
+    "st.elevated_structure",
+    "drv.approaching",
+    "rel.centre_distance",
+    "st.sight_distance",
+    "drv.sight_distance_adequate",
+    "st.centre_line",
+    "rel.occupies",
+    "st.one_way_roadway"
+  ],
+  "native_execution_integrated": true,
+  "original_native_observed": false,
+  "physical_verified": false,
+  "legal_verdict": null,
+  "vehicle_blueprint": "vehicle.carlamotors.carlacola",
+  "tunnel_blueprint": "static.prop.tunnel",
+  "occluder_blueprint": "static.prop.hedge",
+  "controller_gain": 1.5,
+  "requested_left_side": false,
+  "cameras": [
+    {
+      "name": "overview",
+      "fps": 20,
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 85,
+      "pose_strategy": "world"
+    },
+    {
+      "name": "approach",
+      "fps": 20,
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "world"
+    },
+    {
+      "name": "reference_corner",
+      "fps": 20,
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "world"
+    },
+    {
+      "name": "driver_reference",
+      "fps": 20,
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 85,
+      "pose_strategy": "ego"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "st.elevated_structure",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Native tunnel prop bounds, authored portal and original four-view review",
+        "time_window": "all original 600 Native frames / 30 seconds",
+        "reference_frame": "original Native road, actor and camera frame",
+        "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+      },
+      {
+        "name": "drv.approaching",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native ego speed and complete footprint before tunnel portal",
+        "time_window": "all original 600 Native frames / 30 seconds",
+        "reference_frame": "original Native road, actor and camera frame",
+        "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+      },
+      {
+        "name": "rel.centre_distance",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Observed body front distance to portal in metres, with exact 30.48 m comparison",
+        "time_window": "all original 600 Native frames / 30 seconds",
+        "reference_frame": "original Native road, actor and camera frame",
+        "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+      },
+      {
+        "name": "st.sight_distance",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native incoming-lane sight ray and source camera pixels; unknown if unavailable",
+        "time_window": "all original 600 Native frames / 30 seconds",
+        "reference_frame": "original Native road, actor and camera frame",
+        "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+      },
+      {
+        "name": "drv.sight_distance_adequate",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "No automatic judgment from ray proxy; independent view review needed",
+        "time_window": "all original 600 Native frames / 30 seconds",
+        "reference_frame": "original Native road, actor and camera frame",
+        "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+      },
+      {
+        "name": "st.centre_line",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Authored centerline and original opposed-lane Native map readback",
+        "time_window": "all original 600 Native frames / 30 seconds",
+        "reference_frame": "original Native road, actor and camera frame",
+        "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native four-corner vehicle footprint relative to reviewed highway center",
+        "time_window": "all original 600 Native frames / 30 seconds",
+        "reference_frame": "original Native road, actor and camera frame",
+        "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+      },
+      {
+        "name": "st.one_way_roadway",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "Original Native opposed-lane direction readback",
+        "time_window": "all original 600 Native frames / 30 seconds",
+        "reference_frame": "original Native road, actor and camera frame",
+        "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "tunnel_source_context",
+        "unit": "structured",
+        "method": "Source-hashed original map, portal bounds and road direction readback"
+      }
+    ],
+    "limitations": [
+      "A tunnel prop and virtual ray do not establish a real public highway or legal obstruction",
+      "Original pixels, portal identity, ray validity and body trajectory require review"
+    ]
+  },
+  "case": {
+    "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "st.elevated_structure",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Native tunnel prop bounds, authored portal and original four-view review",
+          "time_window": "all original 600 Native frames / 30 seconds",
+          "reference_frame": "original Native road, actor and camera frame",
+          "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+        },
+        {
+          "name": "drv.approaching",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original Native ego speed and complete footprint before tunnel portal",
+          "time_window": "all original 600 Native frames / 30 seconds",
+          "reference_frame": "original Native road, actor and camera frame",
+          "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+        },
+        {
+          "name": "rel.centre_distance",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Observed body front distance to portal in metres, with exact 30.48 m comparison",
+          "time_window": "all original 600 Native frames / 30 seconds",
+          "reference_frame": "original Native road, actor and camera frame",
+          "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+        },
+        {
+          "name": "st.sight_distance",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original Native incoming-lane sight ray and source camera pixels; unknown if unavailable",
+          "time_window": "all original 600 Native frames / 30 seconds",
+          "reference_frame": "original Native road, actor and camera frame",
+          "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+        },
+        {
+          "name": "drv.sight_distance_adequate",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "No automatic judgment from ray proxy; independent view review needed",
+          "time_window": "all original 600 Native frames / 30 seconds",
+          "reference_frame": "original Native road, actor and camera frame",
+          "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+        },
+        {
+          "name": "st.centre_line",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Authored centerline and original opposed-lane Native map readback",
+          "time_window": "all original 600 Native frames / 30 seconds",
+          "reference_frame": "original Native road, actor and camera frame",
+          "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+        },
+        {
+          "name": "rel.occupies",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original Native four-corner vehicle footprint relative to reviewed highway center",
+          "time_window": "all original 600 Native frames / 30 seconds",
+          "reference_frame": "original Native road, actor and camera frame",
+          "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+        },
+        {
+          "name": "st.one_way_roadway",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "Original Native opposed-lane direction readback",
+          "time_window": "all original 600 Native frames / 30 seconds",
+          "reference_frame": "original Native road, actor and camera frame",
+          "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "tunnel_source_context",
+          "unit": "structured",
+          "method": "Source-hashed original map, portal bounds and road direction readback"
+        }
+      ],
+      "limitations": [
+        "A tunnel prop and virtual ray do not establish a real public highway or legal obstruction",
+        "Original pixels, portal identity, ray validity and body trajectory require review"
+      ]
+    }
+  }
+}

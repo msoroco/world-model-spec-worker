@@ -1,138 +1,9 @@
 {
-  "cell_id": "C272412",
   "actor": "motor_vehicle_driver",
-  "status": "draft",
-  "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__baseline",
-      "target_law_id": null,
-      "target_type": "baseline",
-      "rationale": "Neutral definition only; no selected delivery or legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 3.9370078740157477
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "dashed"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 340
-        }
-      },
-      "recording_description": {
-        "channels": [
-          {
-            "method": "saved original actor/body, frame and road readback",
-            "name": "ego_body",
-            "reference_frame": "Native road",
-            "sampling_rate_hz": 20,
-            "time_window": "full 600-frame pass",
-            "uncertainty": "50 ms samples; between-frame gap and legal safety unverified",
-            "unit": "original-source-derived"
-          },
-          {
-            "method": "saved original actor/body, frame and road readback",
-            "name": "scooter_body",
-            "reference_frame": "Native road",
-            "sampling_rate_hz": 20,
-            "time_window": "full 600-frame pass",
-            "uncertainty": "50 ms samples; between-frame gap and legal safety unverified",
-            "unit": "original-source-derived"
-          },
-          {
-            "method": "saved original actor/body, frame and road readback",
-            "name": "body_surface_gap",
-            "reference_frame": "Native road",
-            "sampling_rate_hz": 20,
-            "time_window": "full 600-frame pass",
-            "uncertainty": "50 ms samples; between-frame gap and legal safety unverified",
-            "unit": "original-source-derived"
-          },
-          {
-            "method": "saved original actor/body, frame and road readback",
-            "name": "left_pass",
-            "reference_frame": "Native road",
-            "sampling_rate_hz": 20,
-            "time_window": "full 600-frame pass",
-            "uncertainty": "50 ms samples; between-frame gap and legal safety unverified",
-            "unit": "original-source-derived"
-          },
-          {
-            "method": "saved original actor/body, frame and road readback",
-            "name": "right_return",
-            "reference_frame": "Native road",
-            "sampling_rate_hz": 20,
-            "time_window": "full 600-frame pass",
-            "uncertainty": "50 ms samples; between-frame gap and legal safety unverified",
-            "unit": "original-source-derived"
-          },
-          {
-            "method": "saved original actor/body, frame and road readback",
-            "name": "center_marking",
-            "reference_frame": "Native road",
-            "sampling_rate_hz": 20,
-            "time_window": "full 600-frame pass",
-            "uncertainty": "50 ms samples; between-frame gap and legal safety unverified",
-            "unit": "original-source-derived"
-          }
-        ],
-        "context_inputs": [
-          {
-            "method": "original scooter survey and cited-law operator review",
-            "name": "source_review",
-            "unit": "source context"
-          }
-        ],
-        "limitations": [
-          "Sampled body gap is not continuous physical clearance",
-          "No judgment of due care, safely clear or safe center crossing"
-        ]
-      },
-      "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
-      ]
-    },
-    {
       "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__witness_1",
-      "target_law_id": "NRS-484B-270-2b",
-      "target_type": "boundary_probe",
-      "paired_probe_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__witness",
-      "deliberate_differences": [
-        "requested_body_gap_ft"
-      ],
-      "probe": {
-        "primary_variable": "requested_body_gap_ft",
-        "comparison_or_standard": "Fixed physical target and original source measurement; no legal verdict",
-        "target_value_or_branch": 3.9370078740157477
-      },
-      "rationale": "Original actor/body and road sources required; requested setpoint is not measured legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 3.9370078740157477
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "dashed"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 340
-        }
-      },
+      "rationale": "driver passes scooter rider left with at least 3-foot observed gap",
       "recording_description": {
         "channels": [
           {
@@ -202,44 +73,19 @@
           "No judgment of due care, safely clear or safe center crossing"
         ]
       },
+      "target_law_id": "NRS-484B-270-2b",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
-      ]
+        "'safe distance' beyond the stated 3 feet, and 'safely clear', are judgement elements; the 3 feet is the one concrete bound the text gives"
+      ],
+      "variable_assignments": {
+        "case_suffix": "witness_1",
+        "comparison_variable": "cycle_pass_clearance"
+      }
     },
     {
       "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__witness_2",
-      "target_law_id": "NRS-484B-270-2b",
-      "target_type": "boundary_probe",
-      "paired_probe_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__witness",
-      "deliberate_differences": [
-        "requested_body_gap_ft"
-      ],
-      "probe": {
-        "primary_variable": "requested_body_gap_ft",
-        "comparison_or_standard": "Fixed physical target and original source measurement; no legal verdict",
-        "target_value_or_branch": 2.6246719160104988
-      },
-      "rationale": "Original actor/body and road sources required; requested setpoint is not measured legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 2.6246719160104988
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "dashed"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 340
-        }
-      },
+      "rationale": "driver passes scooter rider left with less than 3-foot observed gap",
       "recording_description": {
         "channels": [
           {
@@ -309,44 +155,19 @@
           "No judgment of due care, safely clear or safe center crossing"
         ]
       },
+      "target_law_id": "NRS-484B-270-2b",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
-      ]
+        "'safe distance' beyond the stated 3 feet, and 'safely clear', are judgement elements; the 3 feet is the one concrete bound the text gives"
+      ],
+      "variable_assignments": {
+        "case_suffix": "witness_2",
+        "comparison_variable": "cycle_pass_clearance"
+      }
     },
     {
       "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__exception_1_1",
-      "target_law_id": "NRS-484B-270-2b",
-      "target_type": "boundary_probe",
-      "paired_probe_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__exception",
-      "deliberate_differences": [
-        "requested_body_gap_ft"
-      ],
-      "probe": {
-        "primary_variable": "requested_body_gap_ft",
-        "comparison_or_standard": "Fixed physical target and original source measurement; no legal verdict",
-        "target_value_or_branch": 3.9370078740157477
-      },
-      "rationale": "Original actor/body and road sources required; requested setpoint is not measured legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 3.9370078740157477
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "dashed"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 340
-        }
-      },
+      "rationale": "hold selected activation with crossing the centre of the highway or a no-passing zone is authorized for such a pass, if it is safe and the 3-foot clearance is kept, subject to the left-side and no-passing-zone rules the text cites absent",
       "recording_description": {
         "channels": [
           {
@@ -416,44 +237,19 @@
           "No judgment of due care, safely clear or safe center crossing"
         ]
       },
+      "target_law_id": "NRS-484B-270-2b",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
-      ]
+        "'safe distance' beyond the stated 3 feet, and 'safely clear', are judgement elements; the 3 feet is the one concrete bound the text gives"
+      ],
+      "variable_assignments": {
+        "case_suffix": "exception_1_1",
+        "comparison_variable": "exception_1_applicability"
+      }
     },
     {
       "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__exception_1_2",
-      "target_law_id": "NRS-484B-270-2b",
-      "target_type": "boundary_probe",
-      "paired_probe_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__exception",
-      "deliberate_differences": [
-        "center_marking_mode"
-      ],
-      "probe": {
-        "primary_variable": "center_marking_mode",
-        "comparison_or_standard": "Fixed physical target and original source measurement; no legal verdict",
-        "target_value_or_branch": "solid"
-      },
-      "rationale": "Original actor/body and road sources required; requested setpoint is not measured legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 3.9370078740157477
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "solid"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 340
-        }
-      },
+      "rationale": "hold selected activation with crossing the centre of the highway or a no-passing zone is authorized for such a pass, if it is safe and the 3-foot clearance is kept, subject to the left-side and no-passing-zone rules the text cites present",
       "recording_description": {
         "channels": [
           {
@@ -523,48 +319,19 @@
           "No judgment of due care, safely clear or safe center crossing"
         ]
       },
+      "target_law_id": "NRS-484B-270-2b",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
-      ]
+        "'safe distance' beyond the stated 3 feet, and 'safely clear', are judgement elements; the 3 feet is the one concrete bound the text gives"
+      ],
+      "variable_assignments": {
+        "case_suffix": "exception_1_2",
+        "comparison_variable": "exception_1_applicability"
+      }
     },
     {
       "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric_1_0",
-      "target_law_id": "NRS-484B-270-2b",
-      "target_type": "boundary_probe",
-      "paired_probe_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric",
-      "deliberate_differences": [
-        "requested_body_gap_ft"
-      ],
-      "probe": {
-        "primary_variable": "requested_body_gap_ft",
-        "comparison_or_standard": "Fixed physical target and original source measurement; no legal verdict",
-        "target_value_or_branch": 2.9,
-        "threshold_ref": "obligation.numeric_conditions[0]",
-        "operator": ">=",
-        "unit": "ft",
-        "test_value": 2.9
-      },
-      "rationale": "Original actor/body and road sources required; requested setpoint is not measured legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 2.9
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "dashed"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 340
-        }
-      },
+      "rationale": "minimum bicycle/scooter pass gap requested at 2.9 feet; actual measured value and uncertainty required",
       "recording_description": {
         "channels": [
           {
@@ -634,49 +401,19 @@
           "No judgment of due care, safely clear or safe center crossing"
         ]
       },
+      "target_law_id": "NRS-484B-270-2b",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
+        "'safe distance' beyond the stated 3 feet, and 'safely clear', are judgement elements; the 3 feet is the one concrete bound the text gives"
       ],
-      "epsilon_used": 0.1
+      "variable_assignments": {
+        "case_suffix": "numeric_1_0",
+        "comparison_variable": "minimum_bicycle/scooter_pass_gap"
+      }
     },
     {
       "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric_1_1",
-      "target_law_id": "NRS-484B-270-2b",
-      "target_type": "boundary_probe",
-      "paired_probe_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric",
-      "deliberate_differences": [
-        "requested_body_gap_ft"
-      ],
-      "probe": {
-        "primary_variable": "requested_body_gap_ft",
-        "comparison_or_standard": "Fixed physical target and original source measurement; no legal verdict",
-        "target_value_or_branch": 3.0,
-        "threshold_ref": "obligation.numeric_conditions[0]",
-        "operator": ">=",
-        "unit": "ft",
-        "test_value": 3.0
-      },
-      "rationale": "Original actor/body and road sources required; requested setpoint is not measured legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 3.0
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "dashed"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 340
-        }
-      },
+      "rationale": "minimum bicycle/scooter pass gap requested at 3 feet; actual measured value and uncertainty required",
       "recording_description": {
         "channels": [
           {
@@ -746,49 +483,19 @@
           "No judgment of due care, safely clear or safe center crossing"
         ]
       },
+      "target_law_id": "NRS-484B-270-2b",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
+        "'safe distance' beyond the stated 3 feet, and 'safely clear', are judgement elements; the 3 feet is the one concrete bound the text gives"
       ],
-      "epsilon_used": 0.1
+      "variable_assignments": {
+        "case_suffix": "numeric_1_1",
+        "comparison_variable": "minimum_bicycle/scooter_pass_gap"
+      }
     },
     {
       "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric_1_2",
-      "target_law_id": "NRS-484B-270-2b",
-      "target_type": "boundary_probe",
-      "paired_probe_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric",
-      "deliberate_differences": [
-        "requested_body_gap_ft"
-      ],
-      "probe": {
-        "primary_variable": "requested_body_gap_ft",
-        "comparison_or_standard": "Fixed physical target and original source measurement; no legal verdict",
-        "target_value_or_branch": 3.1,
-        "threshold_ref": "obligation.numeric_conditions[0]",
-        "operator": ">=",
-        "unit": "ft",
-        "test_value": 3.1
-      },
-      "rationale": "Original actor/body and road sources required; requested setpoint is not measured legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 3.1
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "dashed"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 340
-        }
-      },
+      "rationale": "minimum bicycle/scooter pass gap requested at 3.1 feet; actual measured value and uncertainty required",
       "recording_description": {
         "channels": [
           {
@@ -858,45 +565,19 @@
           "No judgment of due care, safely clear or safe center crossing"
         ]
       },
+      "target_law_id": "NRS-484B-270-2b",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
+        "'safe distance' beyond the stated 3 feet, and 'safely clear', are judgement elements; the 3 feet is the one concrete bound the text gives"
       ],
-      "epsilon_used": 0.1
+      "variable_assignments": {
+        "case_suffix": "numeric_1_2",
+        "comparison_variable": "minimum_bicycle/scooter_pass_gap"
+      }
     },
     {
       "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__ordering_1",
-      "target_law_id": "NRS-484B-270-2b",
-      "target_type": "boundary_probe",
-      "paired_probe_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__return_order",
-      "deliberate_differences": [
-        "requested_right_return_frame"
-      ],
-      "probe": {
-        "primary_variable": "requested_right_return_frame",
-        "comparison_or_standard": "Fixed physical target and original source measurement; no legal verdict",
-        "target_value_or_branch": 190
-      },
-      "rationale": "Original actor/body and road sources required; requested setpoint is not measured legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 3.9370078740157477
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "dashed"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 190
-        }
-      },
+      "rationale": "start moving right while still longitudinally abreast of the scooter",
       "recording_description": {
         "channels": [
           {
@@ -966,44 +647,19 @@
           "No judgment of due care, safely clear or safe center crossing"
         ]
       },
+      "target_law_id": "NRS-484B-270-2b",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
-      ]
+        "'safe distance' beyond the stated 3 feet, and 'safely clear', are judgement elements; the 3 feet is the one concrete bound the text gives"
+      ],
+      "variable_assignments": {
+        "case_suffix": "ordering_1",
+        "comparison_variable": "right_return_timing"
+      }
     },
     {
       "case_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__ordering_2",
-      "target_law_id": "NRS-484B-270-2b",
-      "target_type": "boundary_probe",
-      "paired_probe_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__return_order",
-      "deliberate_differences": [
-        "requested_right_return_frame"
-      ],
-      "probe": {
-        "primary_variable": "requested_right_return_frame",
-        "comparison_or_standard": "Fixed physical target and original source measurement; no legal verdict",
-        "target_value_or_branch": 340
-      },
-      "rationale": "Original actor/body and road sources required; requested setpoint is not measured legal outcome",
-      "variable_assignments": {
-        "requested_body_gap_ft": {
-          "kind": "controller",
-          "unit": "ft",
-          "value": 3.9370078740157477
-        },
-        "center_marking_mode": {
-          "kind": "world_setup",
-          "unit": "category",
-          "value": "dashed"
-        },
-        "requested_right_return_frame": {
-          "kind": "controller",
-          "unit": "count",
-          "value": 340
-        }
-      },
+      "rationale": "remain left until after last longitudinal abreast sample, then move right",
       "recording_description": {
         "channels": [
           {
@@ -1073,41 +729,20 @@
           "No judgment of due care, safely clear or safe center crossing"
         ]
       },
+      "target_law_id": "NRS-484B-270-2b",
+      "target_type": "controlled_attempt",
       "unresolved_judgment_calls": [
-        "exercise due care",
-        "safe distance",
-        "safely clear",
-        "if it is safe"
-      ]
+        "'safe distance' beyond the stated 3 feet, and 'safely clear', are judgement elements; the 3 feet is the one concrete bound the text gives"
+      ],
+      "variable_assignments": {
+        "case_suffix": "ordering_2",
+        "comparison_variable": "right_return_timing"
+      }
     }
   ],
-  "sweep_specs": [
-    {
-      "sweep_id": "c272412-due-care-safety-judgments",
-      "target_law_id": "NRS-484B-270-2b",
-      "judgment_refs": [
-        {
-          "phrase": "exercise due care",
-          "note": "Driver behavior and original hazards require independent source review"
-        },
-        {
-          "phrase": "safe distance",
-          "note": "At least 3 feet is numeric floor; additional safety remains a judgment"
-        },
-        {
-          "phrase": "safely clear",
-          "note": "Longitudinal ordering is measured; legal clearance remains a judgment"
-        },
-        {
-          "phrase": "if it is safe",
-          "note": "Conditional center/no-passing authorization needs original road and traffic review"
-        }
-      ],
-      "rationale": "Original hazards, continuous clearance and cited-rule facts require source-grounded judgment sampling",
-      "status": "incomplete",
-      "missing_inputs": [
-        "Original independent safe-distance, due-care, safely-clear and center/no-passing context sources; no legal cutoff may be invented"
-      ]
-    }
-  ]
+  "cell_id": "C272412",
+  "format": "worker-cases-proposal",
+  "status": "draft",
+  "sweep_specs": [],
+  "sweeps_expanded": true
 }

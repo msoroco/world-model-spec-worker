@@ -54,8 +54,10 @@ def check_review(review, case, video, mapping, metric):
     if any(findings.get(key) is not True for key in required):
         raise ValueError('Original source finding missing')
     if case.endswith('exception_1_1') or case.endswith('exception_1_2'):
-        if findings.get('center_or_no_passing_designation_confirmed') is not True or findings.get('cited_213_217_applicability_reviewed') is not True or findings.get('safe_exception_passage_confirmed') is not True:
-            raise ValueError('Conditional center/no-passing authority unreviewed')
+        if findings.get('centerline_crossing_confirmed') is not True or findings.get('cited_213_217_applicability_reviewed') is not True or findings.get('safe_exception_passage_confirmed') is not True:
+            raise ValueError('Conditional centerline authority unreviewed')
+    if case.endswith('exception_1_2') and findings.get('no_passing_zone_designation_confirmed') is not True:
+        raise ValueError('Original no-passing-zone designation unreviewed')
     if review.get('decisive_frames', {}).get('first_abreast') != metric['first_abreast_frame'] or review.get('decisive_frames', {}).get('last_abreast') != metric['last_abreast_frame']:
         raise ValueError('Original decisive pass frames differ')
 
@@ -85,6 +87,20 @@ def audit(args):
     for pose in poses:
         if not all(pose.get(actor, {}).get('body_xy_m') for actor in ('ego', 'scooter')):
             raise ValueError('Original participant body history missing')
+    if args.case.endswith(('exception_1_1', 'exception_1_2')):
+        context = read(inside(attempt, 'pass-context.json'))
+        survey_path = Path(context.get('survey_path', ''))
+        if not survey_path.is_file() or sha(survey_path) != context.get('survey_sha256'):
+            raise ValueError('Original crossing survey binding missing')
+        survey = read(survey_path)
+        if not survey.get('cited_213_217_applicability_source'):
+            raise ValueError('Original NRS 484B.213/.217 applicability source missing')
+        if args.case.endswith('exception_1_2') and (not survey.get('no_passing_zone_source') or
+                                                     survey.get('no_passing_zone_designated') is not True):
+            raise ValueError('Original no-passing-zone designation source missing')
+        if not any(max(point[1] for point in pose['ego']['body_xy_m']) > 0
+                   for pose in poses[metric['first_abreast_frame']:metric['last_abreast_frame'] + 1]):
+            raise ValueError('Original centerline crossing body geometry absent')
     video = inside(attempt, args.video)
     trace = inside(attempt, args.trace)
     review = inside(attempt, args.review)

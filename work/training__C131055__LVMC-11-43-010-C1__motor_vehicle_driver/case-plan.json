@@ -385,92 +385,103 @@
       "name": "ego_pose",
       "unit": "m,deg",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "Original subject pose, trajectory and footprint across all 600 frames"
     },
     {
-      "name": "exit_lane_choice",
-      "unit": "category",
+      "name": "roundabout_lane_occupancy",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Record lane topology, ego lane occupancy and exit path."
+      "purpose": "Source map lane topology and frame-joined original subject body occupancy"
+    },
+    {
+      "name": "entry_exit_intent",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Requested exit intention and separately observed entry, ring movement and exit"
     }
   ],
   "source_observation_mapping": {
     "st.roundabout": {
-      "evidence": "Proposed capture only: the roundabout and its exits. No Native channel or Core atom proof yet.",
+      "evidence": "Authored original Native map, control-intent, actor and frame sources feed the named channels; original motion, pixels and statutory conclusion remain unverified.",
       "channels": [
-        "exit_lane_choice"
+        "entry_exit_intent",
+        "roundabout_lane_occupancy"
       ],
       "source_refs": [
         "inputs/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane": {
-      "evidence": "Proposed capture only: the circulatory lanes. No Native channel or Core atom proof yet.",
+      "evidence": "Authored original Native map, control-intent, actor and frame sources feed the named channels; original motion, pixels and statutory conclusion remain unverified.",
       "channels": [
-        "exit_lane_choice"
+        "roundabout_lane_occupancy"
       ],
       "source_refs": [
         "inputs/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane_adjacency": {
-      "evidence": "Proposed capture only: which is the left lane. No Native channel or Core atom proof yet.",
+      "evidence": "Authored original Native map, control-intent, actor and frame sources feed the named channels; original motion, pixels and statutory conclusion remain unverified.",
       "channels": [
-        "exit_lane_choice"
+        "roundabout_lane_occupancy"
       ],
       "source_refs": [
         "inputs/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: the lane the subject uses. No Native channel or Core atom proof yet.",
+      "evidence": "Authored original Native map, control-intent, actor and frame sources feed the named channels; original motion, pixels and statutory conclusion remain unverified.",
       "channels": [
-        "exit_lane_choice"
+        "roundabout_lane_occupancy"
       ],
       "source_refs": [
         "inputs/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.turning": {
-      "evidence": "Proposed capture only: the left-turn movement through the roundabout. No Native channel or Core atom proof yet.",
+      "evidence": "Authored original Native map, control-intent, actor and frame sources feed the named channels; original motion, pixels and statutory conclusion remain unverified.",
       "channels": [
-        "exit_lane_choice"
+        "entry_exit_intent",
+        "roundabout_lane_occupancy"
       ],
       "source_refs": [
         "inputs/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.u_turn": {
-      "evidence": "Proposed capture only: or the U-turn. No Native channel or Core atom proof yet.",
+      "evidence": "Authored original Native map, control-intent, actor and frame sources feed the named channels; original motion, pixels and statutory conclusion remain unverified.",
       "channels": [
-        "exit_lane_choice"
+        "entry_exit_intent",
+        "roundabout_lane_occupancy"
       ],
       "source_refs": [
         "inputs/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.heading": {
-      "evidence": "Proposed capture only: the exit direction relative to the entry. No Native channel or Core atom proof yet.",
+      "evidence": "Authored original Native map, control-intent, actor and frame sources feed the named channels; original motion, pixels and statutory conclusion remain unverified.",
       "channels": [
-        "exit_lane_choice"
+        "ego_pose",
+        "entry_exit_intent"
       ],
       "source_refs": [
         "inputs/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.path_length": {
-      "evidence": "Proposed capture only: how far round the subject travels. No Native channel or Core atom proof yet.",
+      "evidence": "Authored original Native map, control-intent, actor and frame sources feed the named channels; original motion, pixels and statutory conclusion remain unverified.",
       "channels": [
-        "exit_lane_choice"
+        "ego_pose",
+        "entry_exit_intent"
       ],
       "source_refs": [
         "inputs/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.lane_change": {
-      "evidence": "Proposed capture only: a move between circulatory lanes. No Native channel or Core atom proof yet.",
+      "evidence": "Authored original Native map, control-intent, actor and frame sources feed the named channels; original motion, pixels and statutory conclusion remain unverified.",
       "channels": [
-        "exit_lane_choice"
+        "roundabout_lane_occupancy"
       ],
       "source_refs": [
         "inputs/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/assignment.json"
@@ -579,22 +590,22 @@
       {
         "view": "overview",
         "subject": "whole roundabout ring, both circulatory lanes, subject body and south/west exits",
-        "interval": "all 600 original Native frames, 0–30 s"
+        "interval": "all 600 original Native frames, 0\u201330 s"
       },
       {
         "view": "approach",
         "subject": "south entry and subject approach/entry body",
-        "interval": "all 600 original Native frames, 0–30 s"
+        "interval": "all 600 original Native frames, 0\u201330 s"
       },
       {
         "view": "reference_corner",
         "subject": "inner and outer circulatory lane occupancy and west/south exit links",
-        "interval": "all 600 original Native frames, 0–30 s"
+        "interval": "all 600 original Native frames, 0\u201330 s"
       },
       {
         "view": "driver_reference",
         "subject": "subject driver view of entry, circulating lanes and intended exit",
-        "interval": "all 600 original Native frames, 0–30 s"
+        "interval": "all 600 original Native frames, 0\u201330 s"
       }
     ]
   }

@@ -25,7 +25,7 @@ def rows(path):
     if len(value) != 600:
         raise ValueError('Comparison lacks 600 source frames')
     for index, row in enumerate(value):
-        if row.get('video_frame') != index or row.get('time_s') != index / 20:
+        if row.get('video_frame') != index or abs(row.get('time_s', -999) - index / 20) > .001:
             raise ValueError('Comparison frame/time source changed')
         if not all(k in row for k in ('ego', 'scooter', 'authored_center_marking')):
             raise ValueError('Comparison participant/road source missing')
@@ -102,6 +102,20 @@ def audit(group, attempts, output):
         source = attempt / 'participant-poses.jsonl'
         if sha(source) != metric.get('source_sha256', {}).get(source.name):
             raise ValueError('Original rider/driver source hash differs')
+        if group == 'exception_1_comparison':
+            context = read(attempt / 'pass-context.json')
+            survey_path = Path(context.get('survey_path', ''))
+            if not survey_path.is_file() or sha(survey_path) != context.get('survey_sha256'):
+                raise ValueError('Original exception survey binding differs')
+            survey = read(survey_path)
+            if not survey.get('cited_213_217_applicability_source'):
+                raise ValueError('Original NRS 484B.213/.217 source missing')
+            if suffix == 'exception_1_2' and (not survey.get('no_passing_zone_source') or
+                                               survey.get('no_passing_zone_designated') is not True):
+                raise ValueError('Original no-passing-zone designation source missing')
+            if not any(max(point[1] for point in row['ego']['body_xy_m']) > 0
+                       for row in rows(source)[metric['first_abreast_frame']:metric['last_abreast_frame'] + 1]):
+                raise ValueError('Original centerline crossing geometry missing')
         source_rows.append(rows(source))
         digests.append(sha(source))
     checked = check(group, source_rows)

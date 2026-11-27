@@ -59,7 +59,7 @@ def main():
                   "cameras": [{"name": name, "width": width, "height": height,
                                "pose_strategy": "survey-gated fixed corridor view", "fov_deg": 85}
                               for name, width, height in CAMERAS],
-                  "required_atoms": ["ru.motor_vehicle", "ru.electric_scooter",
+                  "required_atoms": ["ru.motor_vehicle",
                                      "kin.position", "kin.heading", "kin.speed",
                                      "rel.surface_gap", "st.lane_adjacency"],
                   "source_packets": [], "case": {"case_id": case,
@@ -110,8 +110,8 @@ def main():
                         "fixture_recipe": "work/" + AID + "/diagnostic/" + suffix + "/fixture-recipe.json",
                         "native_handoff": {"python_env_var": "CARLA_PYTHON",
                                            "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
-                        "candidate_risk": {"status": "physical", "reason":
-                                           "Surveyed scooter availability, body gap and four camera views need original readback"},
+                        "candidate_risk": {"status": "none", "reason":
+                                           "No distinct local fallback removes the original scooter survey and physical readback requirements; these remain delivery gates"},
                         "candidates": [], "delivery_readiness": "incomplete"})
         proposal_cases["cases"].append({"case_id": case, "target_law_id": config["law_id"],
             "target_type": "controlled_attempt", "rationale": planned["physical_target"],
