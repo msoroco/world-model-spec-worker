@@ -1,6 +1,6 @@
 # C378809 / NRS 484B.477(1)(a) CPU handoff
 
-Status: **partial**. Three exact source-gated Native constructions are selected for CPU preparation and pass current-runtime offline checks. Current-runtime public compatibility and recorded-only Core/video processing pass for all three diagnostic cases. Semantic and physical/lifecycle CPU mock validators pass; independent delivery proof and final manifest binding remain incomplete. No physical or legal acceptance is claimed.
+Status: **CPU delivery prepared**. Three exact source-gated Native constructions pass current-runtime offline, public positive/missing-source-negative compatibility, recorded-only Core/video, semantic, physical/lifecycle CPU mock, independent comparison and delivery CPU audits. The scoped strict gate exited zero on 2026-11-26. Original Native physical and legal acceptance remains pending source review.
 
 ## Exact law and cell
 
@@ -12,14 +12,13 @@ Status: **partial**. Three exact source-gated Native constructions are selected 
 
 - Current runtime verification and preflight passed. `native/selected_plan.py` defines three exact requests at the frozen cell: observed goods-motion attempt, no-goods request, and goods-motion followed by idle. `compare()` enforces fixed surveyed site, park point, actor context, and ordinance source; it never returns a legal result or an expeditiousness threshold. Negative tests reject absent ordinance/goods sources and changed comparison parking position.
 - `native/selected_runner.py` uses the current `runtime/scenario_pipeline` import path supplied by runtime execution, 600 original 20 Hz frame identities, four pinned camera views, lossless per-view FFV1, and synchronized four-view primary composition. It requests source-aligned goods-prop motion only in probes 01/03 and records that this does not verify a real goods transfer. `native/selected_finalize.py` joins source-reviewed survey, full-interval independent goods review, original trace/frame map and four video hashes; diagnostic positive and missing-source/frame-join negatives pass. Its output leaves expeditiousness, physical completion and legal outcome unresolved.
-- `native/build_selected.py` materializes three case-specific bundles under `native-selected/`. Pinned `runtime.py offline` passed for each final construction with `simulation_started: false`. Earlier offline logs are in `native-selected/probe_0*/primary-offline.log`; construction and manifest metadata subsequently changed, so fresh final-byte offline receipts must be rebound before readiness. These are selected CPU constructions, not delivery-ready packages.
+- `native/build_selected.py` materializes three case-specific bundles under `native-selected/`. Pinned `runtime.py offline` passed for each final construction with `simulation_started: false`; final-byte receipts are bound in `native-selected/probe_0*/primary-offline.log` and `selected-draft-manifest.json`. These are source-gated selected CPU constructions for later original Native capture.
 - `case-plan.json` now has separate goods versus no-goods and goods versus post-goods-idle comparisons, exact pinned camera plan, and source-observation mapping. The local-ordinance override has no supplied authoritative finding; it remains a separate source-dependent statutory alternative. No case asserts an ordinance outcome.
 
-## Exact remaining CPU preparation
+## Strict CPU gate and remaining original-source work
 
-1. Rebuild final-byte offline receipts, semantic proposal/index checks, physical/lifecycle tests, and independent delivery and controlled comparison audits. Bind complete receipts to `execution-manifest.json`; retain original authority and physical review as unresolved.
-2. Run recorded-only missing-source fixture after the three positive saved runs, and verify all selected receipt hashes against final construction bytes.
-3. Run `.venv-cpu/bin/python -B worker_check.py --assignment training__C378809__NRS-484B-477-1a__motor_vehicle_driver --complete --require-delivery-ready` on final bytes. Keep `result.json` partial until the entire check exits zero.
+- `execution-manifest.json` binds all three selected cases to current offline, public compatibility, recorded-only, semantic, physical/lifecycle, independent comparison and delivery CPU receipts. The scoped `worker_check.py --complete --require-delivery-ready` exited zero on 2026-11-26; no accepted recording or original Native physical result is claimed.
+- Original alley/business-district site survey, local ordinance authority, full-interval actual goods transfer and stopping evidence, synchronized original videos and owner release remain to be supplied and reviewed at delivery. The public missing-source negative and delivery audit reject absent original source. Expeditiousness remains a qualitative legal judgment with no numeric cutoff.
 
 ### Measured comparison and contract update
 

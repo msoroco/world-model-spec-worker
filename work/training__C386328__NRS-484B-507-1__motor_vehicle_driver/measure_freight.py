@@ -13,7 +13,7 @@ from pathlib import Path
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "zone_sign", "loading_side"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 
 
 def finite(value, name):
@@ -59,7 +59,7 @@ def measure(context, rows):
         if abs(finite(row.get("time_s"), "Native time") - index / RATE_HZ) > 1e-6:
             raise ValueError("Native time join failed")
         cameras = row.get("source_cameras")
-        if not isinstance(cameras, dict) or set(cameras) != CAMERAS or any(cameras[name] != index for name in CAMERAS):
+        if not isinstance(cameras, dict) or set(cameras) != CAMERAS or any(cameras[name] != native for name in CAMERAS):
             raise ValueError("Four source camera frame join failed")
         local_minute = finite(row.get("civil_minute_local"), "civil time")
         if not 0 <= local_minute < 1440:

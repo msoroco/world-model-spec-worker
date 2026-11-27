@@ -16,7 +16,7 @@ FRAMES = 600
 RATE_HZ = 20
 WINDOW_S = 3600.0
 LIMIT_S = 1800.0
-CAMERAS = {"overview", "ego_front", "alley_entrance", "parking_side"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 
 
 def finite(value, name):

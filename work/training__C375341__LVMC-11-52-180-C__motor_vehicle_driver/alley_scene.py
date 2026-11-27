@@ -16,7 +16,7 @@ ROAD_START_X_M = -60
 ROAD_LENGTH_M = 120
 LANE_WIDTH_M = 4.0
 CASES = {"probe_1": 1500, "probe_2": 2100}
-CAMERAS = {"overview", "ego_front", "alley_entrance", "parking_side"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 
 
 def open_drive():
@@ -65,9 +65,9 @@ def scene_request(case, *, vehicle_blueprint="vehicle.tesla.model3",
                    "curb_requests_xyz": [[-20, -5, 0], [20, -5, 0]]},
         "cameras": [
             {"name": "overview", "xyz": [-15, -12, 20], "yaw": 35, "pitch": -50, "size": [1920, 1080]},
-            {"name": "ego_front", "xyz": [1, 0, 2], "yaw": 0, "pitch": -8, "size": [1280, 720], "attach_to_vehicle": True},
-            {"name": "alley_entrance", "xyz": [-42, -8, 7], "yaw": 0, "pitch": -20, "size": [1280, 720]},
-            {"name": "parking_side", "xyz": [4, 8, 7], "yaw": 180, "pitch": -20, "size": [1280, 720]},
+            {"name": "approach", "xyz": [1, 0, 2], "yaw": 0, "pitch": -8, "size": [1280, 720], "attach_to_vehicle": True},
+            {"name": "reference_corner", "xyz": [-42, -8, 7], "yaw": 0, "pitch": -20, "size": [1280, 720]},
+            {"name": "driver_reference", "xyz": [4, 8, 7], "yaw": 180, "pitch": -20, "size": [1280, 720]},
         ],
         "rate_hz": 20, "duration_s": 30, "planned_frames": 600,
         "separate_original_hour_ledger_required": True,

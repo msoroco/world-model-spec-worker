@@ -69,7 +69,7 @@ if __name__ == "__main__":
     negatives.append(reject("outside_alley_interval", context(), parking, capture(), "alley/lawful"))
     negatives.append(reject("short_capture", context(), ledger([(0, 1500)]), capture()[:-1], "Incomplete 30-second"))
     rows = capture()
-    rows[300]["source_cameras"].pop("parking_side")
+    rows[300]["source_cameras"].pop("driver_reference")
     negatives.append(reject("missing_camera", context(), ledger([(0, 1500)]), rows, "Four source camera"))
     rows = capture()
     rows[300]["native_frame"] = rows[299]["native_frame"]

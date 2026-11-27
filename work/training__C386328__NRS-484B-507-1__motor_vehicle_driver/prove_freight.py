@@ -27,7 +27,7 @@ def context():
 def trace(*, material="none_observed", passenger="none_observed",
           waiting="none_observed", civil_minute=600):
     return [{"video_frame": i, "native_frame": 30000 + i,
-             "time_s": i / 20, "source_cameras": {name: i for name in CAMERAS},
+             "time_s": i / 20, "source_cameras": {name: 30000 + i for name in CAMERAS},
              "civil_minute_local": civil_minute + i / 1200,
              "vehicle_id": "diagnostic_vehicle_1", "zone_occupancy": "within_marked_zone",
              "observed_speed_mps": 0.0,
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     negatives.append(reject("invalid_hours", source, trace(), "sign hours"))
     negatives.append(reject("short_capture", context(), trace()[:-1], "Incomplete 30-second"))
     rows = trace()
-    rows[300]["source_cameras"].pop("zone_sign")
+    rows[300]["source_cameras"].pop("approach")
     negatives.append(reject("missing_camera", context(), rows, "Four source camera"))
     rows = trace()
     rows[300]["native_frame"] = rows[299]["native_frame"]

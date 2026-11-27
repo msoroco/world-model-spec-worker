@@ -1,269 +1,327 @@
 {
-  "assignment_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver",
-  "law_id": "LVMC-11-52-180-C",
-  "cell_id": "C375341",
   "actor": "motor_vehicle_driver",
-  "frozen_cell": {
-    "layout": "alley",
-    "maneuver": "park",
-    "control": "alley_entrance"
-  },
-  "selection_targets": [
-    "full-train"
+  "assignment_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver",
+  "blockers": [
+    "Original hour ledger and independent otherwise-lawful source are operator-supplied for Native capture; CPU construction and proof work ongoing."
   ],
-  "source_law": {
-    "source": "LVMC 11.52.180(C)",
-    "text": "A vehicle otherwise lawfully parked in an alley shall not park for a greater period than thirty minutes within any one-hour period.",
-    "sha256": "8c8bc3fc3f8e5c78485c725d2835441836bd04c3ec3b7a1c805eb463067ee020"
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 30 s",
+        "subject": "alley, parked vehicle and boundary",
+        "view": "overview"
+      },
+      {
+        "interval": "full 30 s",
+        "subject": "alley entrance and parked vehicle",
+        "view": "approach"
+      },
+      {
+        "interval": "full 30 s",
+        "subject": "parking footprint and alley boundary",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full 30 s",
+        "subject": "driver-side alley view and occupancy",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
   },
-  "summary_status": "recovered_requires_source_review",
-  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
-  "witness_branches": [
-    "alley parking duration"
-  ],
-  "requirement_dispositions": [
-    {
-      "requirement": "LVMC-11-52-180-C",
-      "source": "LVMC 11.52.180(C)",
-      "branch": "alley parking duration",
-      "status": "selected_required",
-      "case_ids": [
-        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_1",
-        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_2"
-      ],
-      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-    },
-    {
-      "requirement": "LVMC-11-52-180-C",
-      "source": "LVMC 11.52.180(C)",
-      "branch": "rolling one-hour period",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
-    },
-    {
-      "requirement": "LVMC-11-52-180-C",
-      "source": "LVMC 11.52.180(C)",
-      "branch": "otherwise lawful prerequisite",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
-    }
-  ],
-  "neutral_baseline": {
-    "kind": "unselected_baseline",
-    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
-  },
+  "candidate_plans": [],
   "cases": [
     {
       "case_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_1",
-      "target_law_id": "LVMC-11-52-180-C",
-      "kind": "planned_only",
-      "target_type": "below",
-      "physical_target": "otherwise lawful alley parking for 25 minutes in one hour",
       "comparison_variable": "parked_minutes_in_rolling_hour",
-      "source_branch": "alley parking duration",
+      "kind": "delivery",
+      "physical_target": "source-gated alley parking, requested 25 cumulative minutes in a rolling hour; actual source ledger decides",
       "requested_not_measured": true,
+      "requested_parked_seconds_in_rolling_hour": 1500,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "source_branch": "alley parking duration",
+      "target_law_id": "LVMC-11-52-180-C",
+      "target_type": "boundary_probe"
+    },
+    {
+      "case_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_at_30",
+      "comparison_variable": "parked_minutes_in_rolling_hour",
+      "kind": "delivery",
+      "physical_target": "source-gated alley parking, requested exactly 30 cumulative minutes in a rolling hour; actual source ledger decides",
+      "requested_not_measured": true,
+      "requested_parked_seconds_in_rolling_hour": 1800,
+      "selection_targets": [
+        "full-train"
+      ],
+      "source_branch": "alley parking duration",
+      "target_law_id": "LVMC-11-52-180-C",
+      "target_type": "boundary_probe"
     },
     {
       "case_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_2",
-      "target_law_id": "LVMC-11-52-180-C",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "otherwise lawful alley parking for 35 minutes in same hour",
       "comparison_variable": "parked_minutes_in_rolling_hour",
-      "source_branch": "alley parking duration",
+      "kind": "delivery",
+      "physical_target": "source-gated alley parking, requested 35 cumulative minutes in a rolling hour; actual source ledger decides",
       "requested_not_measured": true,
+      "requested_parked_seconds_in_rolling_hour": 2100,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "source_branch": "alley parking duration",
+      "target_law_id": "LVMC-11-52-180-C",
+      "target_type": "boundary_probe"
     }
   ],
+  "cell_id": "C375341",
   "comparisons": [
     {
-      "comparison_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__comparison",
       "case_ids": [
         "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_1",
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_at_30",
         "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_2"
       ],
+      "comparison_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__comparison",
       "deliberate_differences": [
-        "parked_minutes_in_rolling_hour"
+        "requested total parked duration in the original rolling-hour ledger: 25, 30, 35 minutes"
       ],
       "fixed_conditions": [
-        "frozen cell, actor and physical road context",
-        "other participants, controller policy and camera policy except law-relevant target"
+        "same frozen alley/park/alley_entrance cell and motor_vehicle_driver role",
+        "same surveyed alley boundary, vehicle identity, source time base and independent otherwise-lawful review",
+        "same 20 Hz, 30-second four-view capture policy and stationary hold controller",
+        "only the original ledger parked intervals and associated observed cumulative duration may differ"
       ]
     }
   ],
+  "existing_evidence": [],
+  "frozen_cell": {
+    "control": "alley_entrance",
+    "layout": "alley",
+    "maneuver": "park"
+  },
+  "law_id": "LVMC-11-52-180-C",
   "mandatory_observation_terms": [
     {
-      "term": "st.alley",
       "purpose": "the alley",
-      "status": "measurement_mapping_pending"
+      "status": "source_gated_acquisition_planned",
+      "term": "st.alley"
     },
     {
-      "term": "drv.standing_or_parked",
       "purpose": "the vehicle parked in it",
-      "status": "measurement_mapping_pending"
+      "status": "source_gated_acquisition_planned",
+      "term": "drv.standing_or_parked"
     },
     {
-      "term": "kin.time",
       "purpose": "the parked duration, against thirty minutes",
-      "status": "measurement_mapping_pending"
+      "status": "source_gated_acquisition_planned",
+      "term": "kin.time"
     },
     {
-      "term": "env.civil_time",
       "purpose": "the one-hour window the limit is measured within",
-      "status": "measurement_mapping_pending"
+      "status": "source_gated_acquisition_planned",
+      "term": "env.civil_time"
     },
     {
-      "term": "rel.occupies",
       "purpose": "the resting position",
-      "status": "measurement_mapping_pending"
+      "status": "source_gated_acquisition_planned",
+      "term": "rel.occupies"
     },
     {
-      "term": "kin.position",
       "purpose": "whether a move counts as leaving the alley",
-      "status": "measurement_mapping_pending"
+      "status": "source_gated_acquisition_planned",
+      "term": "kin.position"
     }
   ],
-  "candidate_plans": [],
-  "existing_evidence": [],
-  "sources": [
-    {
-      "path": "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
-      "sha256": "b61a7237ca9dec234edc0f57263116cdbdc2d79562618c33092d47a61f0977ee"
-    }
-  ],
-  "unverified_physical_assumptions": [
-    "Native map can realize the fixed cell and legal mechanism",
-    "Actor blueprint and route can realize each requested target",
-    "Cameras can inspect the decisive physical distinction"
-  ],
-  "blockers": [
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ],
-  "selected_branch": null,
+  "measurement_contract": "alley-measurement-contract.json",
+  "neutral_baseline": {
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording.",
+    "kind": "unselected_baseline"
+  },
   "observations": [
     {
-      "name": "st.alley",
       "mandatory": true,
+      "name": "st.alley",
       "reason": "the alley"
     },
     {
-      "name": "drv.standing_or_parked",
       "mandatory": true,
+      "name": "drv.standing_or_parked",
       "reason": "the vehicle parked in it"
     },
     {
-      "name": "kin.time",
       "mandatory": true,
+      "name": "kin.time",
       "reason": "the parked duration, against thirty minutes"
     },
     {
-      "name": "env.civil_time",
       "mandatory": true,
+      "name": "env.civil_time",
       "reason": "the one-hour window the limit is measured within"
     },
     {
-      "name": "rel.occupies",
       "mandatory": true,
+      "name": "rel.occupies",
       "reason": "the resting position"
     },
     {
-      "name": "kin.position",
       "mandatory": true,
+      "name": "kin.position",
       "reason": "whether a move counts as leaving the alley"
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "branch": "alley parking duration",
+      "case_ids": [
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_1",
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_at_30",
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_2"
+      ],
+      "disposition_index": 0,
+      "evidence_or_gap": "Three exact source-gated selected cases test 25, 30, and 35 requested minutes; actual ledger measurement is independent of request.",
+      "requirement": "LVMC-11-52-180-C",
+      "source": "LVMC 11.52.180(C)",
+      "status": "selected_required"
+    },
+    {
+      "branch": "rolling one-hour period",
+      "case_ids": [
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_1",
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_at_30",
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_2"
+      ],
+      "disposition_index": 1,
+      "evidence_or_gap": "Every selected finalizer requires an original at-least-one-hour ledger and computes all rolling windows, including split stays.",
+      "requirement": "LVMC-11-52-180-C",
+      "source": "LVMC 11.52.180(C)",
+      "status": "selected_required"
+    },
+    {
+      "branch": "otherwise lawful prerequisite",
+      "case_ids": [
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_1",
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_at_30",
+        "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_2"
+      ],
+      "disposition_index": 2,
+      "evidence_or_gap": "Every selected case requires independently reviewed original otherwise-lawful source; missing or unknown source rejects the result.",
+      "requirement": "LVMC-11-52-180-C",
+      "source": "LVMC 11.52.180(C)",
+      "status": "selected_required"
     }
   ],
   "runtime_uncertainties": [
     "Native map can realize the fixed cell and legal mechanism",
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Original hour ledger and independent otherwise-lawful source are operator-supplied for Native capture; CPU construction and proof work ongoing."
   ],
+  "selected_branch": null,
+  "selection_targets": [
+    "full-train"
+  ],
+  "source_law": {
+    "sha256": "8c8bc3fc3f8e5c78485c725d2835441836bd04c3ec3b7a1c805eb463067ee020",
+    "source": "LVMC 11.52.180(C)",
+    "text": "A vehicle otherwise lawfully parked in an alley shall not park for a greater period than thirty minutes within any one-hour period."
+  },
   "source_observation_mapping": {
-    "st.alley": {
-      "measurement": "source-surveyed alley boundary and original map",
-      "channels": [
-        "original_native_parking_ledger",
-        "original_civil_time_join",
-        "original_source_camera_join"
-      ],
-      "source_refs": [
-        "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
-        "alley-measurement-contract.json"
-      ],
-      "evidence": "CPU numeric/source-shaped proof only; original Native ledger and capture pending"
-    },
     "drv.standing_or_parked": {
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "evidence": "Source-gated Native capture and saved hour-ledger finalizer; original source and legal effect remain operator reviewed.",
       "measurement": "source-ledger intervals of the same vehicle parked within the alley",
-      "channels": [
-        "original_native_parking_ledger",
-        "original_civil_time_join",
-        "original_source_camera_join"
-      ],
       "source_refs": [
         "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
-        "alley-measurement-contract.json"
-      ],
-      "evidence": "CPU numeric/source-shaped proof only; original Native ledger and capture pending"
-    },
-    "kin.time": {
-      "measurement": "parked interval start/end timestamps integrated over rolling windows",
-      "channels": [
-        "original_native_parking_ledger",
-        "original_civil_time_join",
-        "original_source_camera_join"
-      ],
-      "source_refs": [
-        "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
-        "alley-measurement-contract.json"
-      ],
-      "evidence": "CPU numeric/source-shaped proof only; original Native ledger and capture pending"
+        "original_alley_context.json",
+        "original_parking_ledger.json",
+        "capture/evidence.jsonl"
+      ]
     },
     "env.civil_time": {
+      "channels": [
+        "env.civil_time"
+      ],
+      "evidence": "Source-gated Native capture and saved hour-ledger finalizer; original source and legal effect remain operator reviewed.",
       "measurement": "civil/Native time source and capture-to-ledger join",
-      "channels": [
-        "original_native_parking_ledger",
-        "original_civil_time_join",
-        "original_source_camera_join"
-      ],
       "source_refs": [
         "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
-        "alley-measurement-contract.json"
-      ],
-      "evidence": "CPU numeric/source-shaped proof only; original Native ledger and capture pending"
-    },
-    "rel.occupies": {
-      "measurement": "source alley occupancy for every parked interval and capture frame",
-      "channels": [
-        "original_native_parking_ledger",
-        "original_civil_time_join",
-        "original_source_camera_join"
-      ],
-      "source_refs": [
-        "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
-        "alley-measurement-contract.json"
-      ],
-      "evidence": "CPU numeric/source-shaped proof only; original Native ledger and capture pending"
+        "original_alley_context.json",
+        "original_parking_ledger.json",
+        "capture/evidence.jsonl"
+      ]
     },
     "kin.position": {
-      "measurement": "vehicle identity and position history retained across moves; move does not reset rolling time",
       "channels": [
-        "original_native_parking_ledger",
-        "original_civil_time_join",
-        "original_source_camera_join"
+        "kin.position"
       ],
+      "evidence": "Source-gated Native capture and saved hour-ledger finalizer; original source and legal effect remain operator reviewed.",
+      "measurement": "vehicle identity and position history retained across moves; move does not reset rolling time",
       "source_refs": [
         "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
-        "alley-measurement-contract.json"
+        "original_alley_context.json",
+        "original_parking_ledger.json",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "kin.time": {
+      "channels": [
+        "kin.time"
       ],
-      "evidence": "CPU numeric/source-shaped proof only; original Native ledger and capture pending"
+      "evidence": "Source-gated Native capture and saved hour-ledger finalizer; original source and legal effect remain operator reviewed.",
+      "measurement": "parked interval start/end timestamps integrated over rolling windows",
+      "source_refs": [
+        "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
+        "original_alley_context.json",
+        "original_parking_ledger.json",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "rel.occupies": {
+      "channels": [
+        "rel.occupies"
+      ],
+      "evidence": "Source-gated Native capture and saved hour-ledger finalizer; original source and legal effect remain operator reviewed.",
+      "measurement": "source alley occupancy for every parked interval and capture frame",
+      "source_refs": [
+        "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
+        "original_alley_context.json",
+        "original_parking_ledger.json",
+        "capture/evidence.jsonl"
+      ]
+    },
+    "st.alley": {
+      "channels": [
+        "st.alley"
+      ],
+      "evidence": "Source-gated Native capture and saved hour-ledger finalizer; original source and legal effect remain operator reviewed.",
+      "measurement": "source-surveyed alley boundary and original map",
+      "source_refs": [
+        "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
+        "original_alley_context.json",
+        "original_parking_ledger.json",
+        "capture/evidence.jsonl"
+      ]
     }
   },
-  "measurement_contract": "alley-measurement-contract.json"
+  "sources": [
+    {
+      "path": "inputs/training__C375341__LVMC-11-52-180-C__motor_vehicle_driver/assignment.json",
+      "sha256": "b61a7237ca9dec234edc0f57263116cdbdc2d79562618c33092d47a61f0977ee"
+    }
+  ],
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "summary_status": "recovered_requires_source_review",
+  "unverified_physical_assumptions": [
+    "Native map can realize the fixed cell and legal mechanism",
+    "Actor blueprint and route can realize each requested target",
+    "Cameras can inspect the decisive physical distinction"
+  ],
+  "witness_branches": [
+    "alley parking duration"
+  ]
 }
