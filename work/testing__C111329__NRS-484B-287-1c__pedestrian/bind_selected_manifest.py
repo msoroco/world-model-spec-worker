@@ -144,12 +144,19 @@ def bind():
         }
         entry["post_capture"] = {
             "recorded_only": True,
-            "command": entry["saved_processing"]["positive_command"],
-            "feedback_command": (f".venv-cpu/bin/python runtime.py feedback --manifest work/{ROOT.name}/execution-manifest.json "
-                                 f"--case {case} --attempt \"$ORIGINAL_ATTEMPT\""),
+            "command": (f".venv-cpu/bin/python runtime.py process-saved --manifest work/{ROOT.name}/execution-manifest.json "
+                        f"--case {case} --attempt \"$ATTEMPT\" --output \"$PROCESSED\" "
+                        "--library runtime/library --validator \"$LEAN_VALIDATOR\" "
+                        "--owner-release-receipt \"$OWNER_RELEASE_RECEIPT\""),
+            "feedback_command": (f".venv-cpu/bin/python runtime.py process-saved --manifest work/{ROOT.name}/execution-manifest.json "
+                                 f"--case {case} --attempt \"$ATTEMPT\" --output \"$PROCESSED\" "
+                                 "--library runtime/library --validator \"$LEAN_VALIDATOR\" "
+                                 "--owner-release-receipt \"$OWNER_RELEASE_RECEIPT\""),
             "test_exit_code": 0,
-            "test_log": f"cases/{short}/cpu-saved-positive-analysis.log",
-            "test_log_sha256": digest(case_dir / "cpu-saved-positive-analysis.log"),
+            "test_log": f"cases/{short}/cpu-saved-positive-processing.json",
+            "test_log_sha256": digest(case_dir / "cpu-saved-positive-processing.json"),
+            "feedback_test_log": f"cases/{short}/cpu-saved-negative-feedback.json",
+            "feedback_test_log_sha256": digest(case_dir / "cpu-saved-negative-feedback.json"),
         }
     manifest["format"] = "worker-execution-manifest"
     manifest["status"] = "source_gated_cpu_prepared_original_native_pending"

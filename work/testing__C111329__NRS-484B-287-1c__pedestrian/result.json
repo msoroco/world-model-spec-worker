@@ -4,7 +4,7 @@
   "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C111329__NRS-484B-287-1c__pedestrian --case testing__C111329__NRS-484B-287-1c__pedestrian__midblock_unmarked_operating --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "2932c84bb38141f8c24e785be11e7b7f14e9ba762f570ef845db2e636939c172",
   "readiness_kind": "delivery_prepared",
-  "reason": null,
+  "reason": "Three exact source-gated cases and two comparisons are CPU prepared. Every case has current saved-only processing and feedback commands; exact commands succeed on copied synthetic sources and emit case-bound feedback on missing originals. Original Native capture, physical/pixel review and legal exception review remain local checks.",
   "remaining_gpu_checks": [
     "Source-supported selection of the original fixed C111329 two-junction site, complete marking survey, official device authority and operation, and NRS 484B.290 exception review",
     "Original Native 900-frame crossing capture with four camera streams and separately sealed source-bound independent physical and comparison reviews"
@@ -12,16 +12,22 @@
   "status": "ready",
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1c__pedestrian/tests -v",
-      "exit_code": 0,
-      "log": "cpu-current-tests.log",
-      "sha256": "b2ff0d8c3f432feeda3b40ac9a1ab5589b4d372ad60cc991325cfa1a11ae292e"
-    },
-    {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "cpu-current-preflight.log",
       "sha256": "0e0bee4532568ab3b637917d9f06920b623981ecfd4a2124144d49b1033ac000"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C111329__NRS-484B-287-1c__pedestrian/prove_post_capture.py",
+      "exit_code": 0,
+      "log": "cpu-post-capture-20261127.log",
+      "sha256": "8861ddeddf0e579fb60d0d3b5eb1745451af56ab6c248166c2f2c25bbb520e08"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C111329__NRS-484B-287-1c__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-post-capture-20261127.log",
+      "sha256": "582079d2859fafc57a399eab1d8a867414042423b008e76a6118564346c95931"
     }
   ]
 }

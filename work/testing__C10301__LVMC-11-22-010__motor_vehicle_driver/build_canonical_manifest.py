@@ -71,6 +71,21 @@ def build() -> None:
                           "exit_code": 0,
                           "log": "cpu-nov27-interior-offline-" + kind + ".log",
                           "log_sha256": digest(HERE / ("cpu-nov27-interior-offline-" + kind + ".log"))},
+                      "post_capture": {
+                          "recorded_only": True,
+                          "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/" + AID +
+                              "/execution-manifest.json --case " + case +
+                              ' --attempt "$ATTEMPT" --output "$PROCESSED"'
+                              ' --library runtime/library --validator "$LEAN_VALIDATOR"'
+                              ' --owner-release-receipt "$OWNER_RELEASE_RECEIPT"',
+                          "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/" + AID +
+                              "/execution-manifest.json --case " + case +
+                              ' --attempt "$ATTEMPT" --output "$PROCESSED"'
+                              ' --library runtime/library --validator "$LEAN_VALIDATOR"'
+                              ' --owner-release-receipt "$OWNER_RELEASE_RECEIPT"',
+                          "test_exit_code": 0,
+                          "test_log": "cpu-nov27-post-saved-pair.log",
+                          "test_log_sha256": digest(HERE / "cpu-nov27-post-saved-pair.log")},
                       "remaining_original_reviews": [
                           "source-backed interior-attention sweep feasibility and realization",
                           "reviewed original site and municipal source binding",

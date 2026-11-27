@@ -18,21 +18,27 @@
       "sha256": "ca883a18ff02814b24d102da8ee269a293ecc2e9a87dad0e273ee93031551a41"
     },
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C230223__NRS-484B-270-4__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-selected-20261125.log",
-      "sha256": "746784bfecbac18ecad16d73a4e5ba175dc581e6b5d5f2f415ca80e3b0dc4413"
-    },
-    {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c230223-python .venv-cpu/bin/python work/testing__C230223__NRS-484B-270-4__motor_vehicle_driver/validate_selected.py",
       "exit_code": 0,
       "log": "selected-validator-results.log",
       "sha256": "414980fa5e181853e7a926911d378306210e536c7fffcd93cf8cfe9ca197dd71"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C230223__NRS-484B-270-4__motor_vehicle_driver/prove_saved_feedback.py",
+      "exit_code": 0,
+      "log": "cpu-feedback-negative.log",
+      "sha256": "ca26501f0eae84968568f2d402df76b02e5d2547c89a1fc4f867d4aa49a56e4b"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C230223__NRS-484B-270-4__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-feedback-20261127.log",
+      "sha256": "f757616a8adbe957e23abd61f08412827dc9675da7eb90cc6f8967f66e7fde4d"
     }
   ],
   "remaining_gpu_checks": [
     "After reviewed source packets are bound, run original CARLA 45-second four-camera capture for each exact case; independently review lane/intersection body occupancy, pixels, physical completion, subsection 3 applicability and three fixed-source comparisons."
   ],
-  "reason": "CPU delivery preparation is complete for four exact source-gated cases and three comparisons. The original reviewed public intersection, designated cycle-lane authority, subsection 3 applicability and motor-vehicle/driver packets remain prerequisites for local Native capture and independent physical, pixel and legal review. Diagnostic fixtures do not establish physical acceptance.",
+  "reason": "Four exact source-gated cases and three comparisons remain CPU prepared. Each case now binds the saved-only feedback command used by its queue entry; four case-bound negative feedback probes pass. Original Native capture, pixels, physical completion, subsection 3 applicability and canonical acceptance remain local checks.",
   "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C230223__NRS-484B-270-4__motor_vehicle_driver --case testing__C230223__NRS-484B-270-4__motor_vehicle_driver__cycle_lane_through_intersection --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

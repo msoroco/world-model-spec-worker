@@ -131,10 +131,18 @@ def bind():
             "negative": {"log": str(negative_log.relative_to(ROOT))},
             "post_capture": {"recorded_only": True, "test_exit_code": 0,
                              "test_log": str(saved_log.relative_to(ROOT)), "test_log_sha256": saved_hash,
+                             "feedback_test_log": "cpu-feedback-negative.log",
+                             "feedback_test_log_sha256": sha(ROOT / "cpu-feedback-negative.log"),
                              "command": ".venv-cpu/bin/python runtime.py process-saved --manifest " +
                                         str((ROOT / "execution-manifest.json").relative_to(REPO)) +
                                         " --case " + case_id + " --attempt $ATTEMPT --output $DERIVED" +
-                                        " --library runtime/library --validator $VALIDATOR"},
+                                        " --library runtime/library --validator $VALIDATOR",
+                             "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest " +
+                                                 str((ROOT / "execution-manifest.json").relative_to(REPO)) +
+                                                 " --case " + case_id +
+                                                 " --attempt \"$ATTEMPT\" --output \"$PROCESSED\"" +
+                                                 " --library runtime/library --validator \"$LEAN_VALIDATOR\"" +
+                                                 " --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\""},
             "physical_preparation": {"receipt": str(physical_path.relative_to(ROOT)),
                                      "sha256": sha(physical_path)},
             "delivery_acceptance": delivery,
