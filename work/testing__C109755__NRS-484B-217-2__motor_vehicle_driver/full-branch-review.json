@@ -1,0 +1,56 @@
+{
+  "format": "c109755-independent-full-law-branch-review-v1",
+  "assignment_id": "testing__C109755__NRS-484B-217-2__motor_vehicle_driver",
+  "source": {
+    "path": "inputs/testing__C109755__NRS-484B-217-2__motor_vehicle_driver/assignment.json",
+    "sha256": "22cfa75681ad2a5cc2842edfeb0501590e834d37ba907a4feec3910110df435f",
+    "law_text_sha256": "d00bf2542a89af95bac14f1c81f22d0a0c54cbfe1ac7cf868dfa76df2669fd0e"
+  },
+  "fixed_cell": {
+    "layout": "intersection",
+    "maneuver": "left_turn",
+    "control": "pavement_striping",
+    "actor": "motor_vehicle_driver"
+  },
+  "observed_branches": [
+    {
+      "clause": "conditional left-turn crossing: advance turn signal",
+      "comparison_id": "turn_signal_before_stripe",
+      "case_count": 2,
+      "proof": "original-source signal/crossing comparison audit; exact scoped strict gate passed"
+    },
+    {
+      "clause": "conditional left-turn crossing: safety and no impediment to oncoming or following traffic",
+      "comparison_id": null,
+      "proof": "nine one-factor traffic variants for both exact cases; original-only sweep auditor recomputes body gaps and speed response; positive diagnostic passed, missing-pair negative rejected; no legal cutoff or physical verdict",
+      "physical_variants": 9
+    }
+  ],
+  "not_isolated_by_current_case_plan": [
+    {
+      "clause": "general prohibition on driving on the left side within the zone or across/on the striping throughout its length",
+      "reason": "fixed left_turn and two current routes both cross the stripe; no traversal or zone-entry comparison case exists",
+      "candidate_cell_id": "C6755",
+      "candidate_cell_contract": "adjacent_lanes/travel/pavement_striping, motor_vehicle_driver, allocated_sets empty; candidate only"
+    },
+    {
+      "clause": "permission to cross stripe to an adjoining highway with prior signal and no traffic impediment",
+      "reason": "current route has no proven destination classification as an adjoining highway and no paired destination alternative",
+      "candidate_cell_id": "C5210",
+      "candidate_cell_contract": "adjacent_lanes/left_turn/pavement_striping, motor_vehicle_driver, allocated_sets empty; candidate only"
+    },
+    {
+      "clause": "subsections 3 and 4 and otherwise-provided exception applicability",
+      "reason": "referenced subsection text and a site authority/destination record are not exported in this assignment; current package fails closed before Native attempt without a reviewed ZONE_REVIEW_PACKET"
+    }
+  ],
+  "cpu_recheck": {
+    "focused_unittests": 34,
+    "focused_exit_code": 0,
+    "strict_assignment_exit_code": 0,
+    "sweep_positive_exit_code": 0,
+    "sweep_negative_exit_code": 1,
+    "negative_expected_error": "sweep omits or duplicates an exact variant/case pair"
+  },
+  "disposition": "Keep current ready package unchanged. The missing distinct general-zone and adjoining-highway comparisons require source-backed additional binding or new exact cases with full proofs; existing two signal cases cannot truthfully be relabeled as those comparisons."
+}

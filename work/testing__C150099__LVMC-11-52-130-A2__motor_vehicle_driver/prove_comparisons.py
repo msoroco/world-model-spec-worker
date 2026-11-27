@@ -9,7 +9,7 @@ from comparison_audit import audit_pair
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-TEMP = REPO / '.runtime-work/c150099-comparison-source-v3'
+TEMP = REPO / '.runtime-work/c150099-comparison-source-v4'
 
 
 def serial(value: dict) -> str:
@@ -44,11 +44,13 @@ def source(case_id: str) -> dict:
 
 def main() -> None:
     plan = json.loads((ROOT / 'case-plan.json').read_text())
-    cases = {case_id for comparison in plan['comparisons']
+    pairs = [comparison for comparison in plan['comparisons']
+             if len(comparison['case_ids']) == 2]
+    cases = {case_id for comparison in pairs
              for case_id in comparison['case_ids']}
     sources = {case_id: source(case_id) for case_id in sorted(cases)}
     receipts = []
-    for comparison in plan['comparisons']:
+    for comparison in pairs:
         left, right = [sources[case_id] for case_id in comparison['case_ids']]
         proof = audit_pair(plan, comparison['comparison_id'], left, right)
         proof['diagnostic_fixture'] = True

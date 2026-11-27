@@ -238,22 +238,46 @@ class FreightZoneTest(unittest.TestCase):
                           "site_sha256": "site-" + c.name, **fixed,
                           "conduct": c.conduct, "material_action": c.material_action,
                           "activity_delay_s": c.activity_delay_s,
+                          "zone_boundary_offset_m": c.zone_boundary_offset_m,
+                          "civil_clock_offset_min": c.civil_clock_offset_min,
+                          "passenger_dwell_s": c.passenger_dwell_s,
+                          "freight_entry_headway_s": c.freight_entry_headway_s,
+                          "marked_boundary_anchor_source_sha256": "boundary",
+                          "effective_boundary_source_sha256": "clock-boundary",
+                          "passenger_dwell_controller_source_sha256": "dwell-controller",
+                          "freight_headway_controller_source_sha256": "headway-controller",
                           "passenger_action": c.passenger_action,
                           "freight_arrival": c.freight_arrival,
                           "regulations_effective": c.hours == "effective",
                           "material_events": [c.material_action] if c.material_action != "none" else [],
                           "halt_to_material_event_s": c.activity_delay_s if c.material_action != "none" else None,
+                          "marked_zone_signed_distance_m": [c.zone_boundary_offset_m] if c.zone_boundary_offset_m is not None else [],
+                          "civil_boundary_offset_min": c.civil_clock_offset_min,
+                          "observed_passenger_dwell_s": c.passenger_dwell_s,
+                          "observed_freight_entry_headway_s": c.freight_entry_headway_s,
                           "passenger_events": [c.passenger_action] if c.passenger_action != "none" else [],
                           "freight_events": [c.freight_arrival] if c.freight_arrival != "none" else []}}
             if c.hours != "effective":
                 report["comparison_record"]["civil_time_iso"] = "2026-11-26T03:00:00-08:00"
             reports[cid] = report
         passed = audit_comparisons(reports)
-        self.assertEqual(len(passed), 6)
+        self.assertEqual(len(passed), 11)
         broken = copy.deepcopy(reports)
         broken[aid + "__stand_no_material"]["comparison_record"]["road_source_sha256"] = "changed-road"
         with self.assertRaisesRegex(ValueError, "fixed comparison condition changed"):
             audit_comparisons(broken)
+        for case_name, field, rejected in (
+            ("sweep_material_delay-0001", "halt_to_material_event_s", None),
+            ("sweep_marked_boundary-0001", "marked_boundary_anchor_source_sha256", "changed-boundary"),
+            ("sweep_effective_hours-0001", "effective_boundary_source_sha256", "changed-clock-boundary"),
+            ("sweep_passenger_dwell-0001", "observed_passenger_dwell_s", None),
+            ("sweep_freight_headway-0001", "freight_headway_controller_source_sha256", "changed-headway"),
+        ):
+            with self.subTest(case_name=case_name):
+                broken = copy.deepcopy(reports)
+                broken[aid + "__" + case_name]["comparison_record"][field] = rejected
+                with self.assertRaises(ValueError):
+                    audit_comparisons(broken)
 
 
 class FreightSweepTest(unittest.TestCase):

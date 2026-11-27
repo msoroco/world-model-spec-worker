@@ -193,6 +193,14 @@ def audit_attempt(attempt, case_id):
                       'original_history_sha256': sha(history_path), **fixed,
                       'conduct': case.conduct, 'material_action': case.material_action,
                       'activity_delay_s': case.activity_delay_s,
+                      'zone_boundary_offset_m': case.zone_boundary_offset_m,
+                      'civil_clock_offset_min': case.civil_clock_offset_min,
+                      'passenger_dwell_s': case.passenger_dwell_s,
+                      'freight_entry_headway_s': case.freight_entry_headway_s,
+                      'marked_boundary_anchor_source_sha256': site['zone'].get('boundary_anchor_source_sha256'),
+                      'effective_boundary_source_sha256': site['clock'].get('effective_boundary_source_sha256'),
+                      'passenger_dwell_controller_source_sha256': site.get('passenger_dwell_controller_source_sha256'),
+                      'freight_headway_controller_source_sha256': site['road'].get('freight_headway_controller_source_sha256'),
                       'passenger_action': case.passenger_action,
                       'freight_arrival': case.freight_arrival,
                       'material_events': measured['material_events'],
@@ -200,6 +208,10 @@ def audit_attempt(attempt, case_id):
                       'freight_events': measured['freight_events'],
                       'freight_entry_blocked_frames': measured['freight_entry_blocked_frames'],
                       'halt_to_material_event_s': measured['halt_to_material_event_s'],
+                      'marked_zone_signed_distance_m': measured['marked_zone_signed_distance_m'],
+                      'civil_boundary_offset_min': measured['civil_boundary_offset_min'],
+                      'observed_passenger_dwell_s': measured['observed_passenger_dwell_s'],
+                      'observed_freight_entry_headway_s': measured['observed_freight_entry_headway_s'],
                       'regulations_effective': site['regulations']['effective_at_civil_time']}
     return {'format': 'c386226-independent-original-audit-v1', 'case_id': case_id,
             'source_kind': 'original_native_capture', 'source_manifest_sha256': sha(manifest_path),
@@ -219,6 +231,11 @@ def audit_comparisons(reports):
         'effective_hours_condition': ('regulations_effective', None),
         'passenger_exception_activity': ('passenger_action', 'passenger_events'),
         'passenger_exception_interference': ('freight_arrival', 'freight_events'),
+        'engineering_sweep_material_delay': ('activity_delay_s', 'halt_to_material_event_s'),
+        'engineering_sweep_marked_boundary': ('zone_boundary_offset_m', 'marked_zone_signed_distance_m'),
+        'engineering_sweep_effective_hours': ('civil_clock_offset_min', 'civil_boundary_offset_min'),
+        'engineering_sweep_passenger_dwell': ('passenger_dwell_s', 'observed_passenger_dwell_s'),
+        'engineering_sweep_freight_headway': ('freight_entry_headway_s', 'observed_freight_entry_headway_s'),
     }
     out = []
     for comparison in plan['comparisons']:
@@ -243,7 +260,7 @@ def audit_comparisons(reports):
         anchor = reports[cid_list[0]]['comparison_record']
         for cid in cid_list[1:]:
             current = reports[cid]['comparison_record']
-            if difference == 'regulations_effective':
+            if difference in ('regulations_effective', 'civil_clock_offset_min'):
                 for key in ('road_source_sha256', 'regulations_source_sha256',
                             'effective_hours_source_sha256', 'zone_source_sha256',
                             'camera_plan_sha256', 'vehicle_blueprint', 'passenger_blueprint',
@@ -255,6 +272,26 @@ def audit_comparisons(reports):
                 need(anchor.get('civil_time_iso') != current.get('civil_time_iso') and
                      anchor.get('clock_source_sha256') and current.get('clock_source_sha256'),
                      'sourced civil effective-hours difference absent')
+                if difference == 'civil_clock_offset_min':
+                    need(anchor.get('effective_boundary_source_sha256') and
+                         anchor['effective_boundary_source_sha256'] == current.get('effective_boundary_source_sha256'),
+                         'fixed effective boundary source changed')
+            elif difference in ('zone_boundary_offset_m', 'passenger_dwell_s',
+                                'freight_entry_headway_s'):
+                for key in ('road_source_sha256', 'zone_source_sha256', 'regulations_source_sha256',
+                            'effective_hours_source_sha256', 'camera_plan_sha256',
+                            'vehicle_blueprint', 'passenger_blueprint', 'freight_vehicle_blueprint',
+                            'materials_inventory_source_sha256', 'freight_entry_source_sha256',
+                            'traffic_and_official_directions_source_sha256', 'clock_source_sha256',
+                            'civil_time_iso', 'conduct', 'material_action', 'activity_delay_s',
+                            'passenger_action', 'freight_arrival', 'regulations_effective'):
+                    need(anchor.get(key) is not None and anchor[key] == current.get(key),
+                         'fixed sweep comparison condition changed: ' + key)
+                source_key = {'zone_boundary_offset_m': 'marked_boundary_anchor_source_sha256',
+                              'passenger_dwell_s': 'passenger_dwell_controller_source_sha256',
+                              'freight_entry_headway_s': 'freight_headway_controller_source_sha256'}[difference]
+                need(anchor.get(source_key) and anchor[source_key] == current.get(source_key),
+                     'fixed sweep controller source changed: ' + source_key)
             else:
                 audit_original_pair(anchor, current, difference)
         out.append({'comparison_id': comparison['comparison_id'],

@@ -169,3 +169,7 @@ The package was already `ready` on resume. The current pinned CPU environment pa
 
 - `cpu-resume-tests.log`: `dd29d86a7d3240ae8ef22d64b5d9f6597f541347a60b59643fd13fb7a7923a29` (exit 0)
 - `cpu-resume-strict.log`: `a2526b6019bb87e08841e8dfb866ea05771487afc12adafd4780d35c19ffd9ca` (exit 0)
+
+## 2026-11-27 independent full-law branch review
+
+The exact source and frozen cell were reviewed against the selected plan (`full-branch-review.json`). The two selected cases isolate signal activation before stripe crossing. The separately authored nine-variant paired traffic sweep measures original oncoming/following body gaps and speed response for both cases; its CPU positive passed and a missing exact pair was rejected. These diagnostics leave legal safety and impediment judgments open. The general no-left-zone traversal and the adjoining-highway destination branch have no distinct controlled case comparison in this package. C6755 (adjacent-lanes travel with pavement striping) and C5210 (adjacent-lanes left turn with pavement striping) are unallocated candidate cells for further source-backed bindings, not claims of compatible realized roads. Subsections 3/4 and actual zone/destination source review remain unresolved. Existing 34 tests and the exact scoped strict delivery gate pass; the package retains ready status for its already selected signal branch and no new comparison or queue row is claimed.

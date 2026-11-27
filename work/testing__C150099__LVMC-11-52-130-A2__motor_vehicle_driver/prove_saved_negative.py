@@ -11,9 +11,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 CASE = ROOT.name + '__public_park_attended'
-SOURCE = REPO / '.runtime-work/c150099-saved-negative-source-v6'
-FIXTURE = REPO / '.runtime-work/c150099-saved-negative-fixture-v6'
-OUTPUT = REPO / '.runtime-work/c150099-saved-negative-output-v6'
+SOURCE = REPO / '.runtime-work/c150099-saved-negative-source-v7'
+FIXTURE = REPO / '.runtime-work/c150099-saved-negative-fixture-v7'
+OUTPUT = REPO / '.runtime-work/c150099-saved-negative-output-v7'
 
 
 def run(*args) -> None:

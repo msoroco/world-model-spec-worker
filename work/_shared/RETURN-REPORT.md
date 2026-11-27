@@ -1,5 +1,10 @@
 # Return report
 
+## 2026-11-27 16:26 UTC — Orientation, clearance and accepted-source comparisons published
+
+- C150041/LVMC-11-52-040-A, C102642/NRS-484B-153-2 and C144550/NRS-484B-223-1b passed owner and lead exact scoped strict delivery-ready checks after targeted CPU proofs. C150041 added six controlled orientation comparisons; C102642 added one three-point door-clearance comparison and rebound all 16 primary/fallback construction proofs after its plan hash changed; C144550 added three comparisons for accepted-source cases while keeping absent accepted original media unclaimed. The lead validated their proposals against exact plans and published ten comparison rows plus catalog commands, with no new cases. Shared queue: 240 assignments, 1,691 cases, 1,209 comparisons, 4,819,147 bytes.
+- C150099 and C386226 owners have added comparison plans covering the last 21 previously unpaired exact cases; their complete proof chains and scoped strict gates are still in progress. The current draft matrix and review retain an incomplete status until those gates and lead queue integration finish. C158190 and C178244 remain truthful partials. No Git command was run.
+
 ## 2026-11-27 16:17 UTC — Seven comparison gaps closed; matrix draft refreshed
 
 - C126120, C142510, C149470 and C228989 each passed their owner's exact scoped strict gate and the lead's independent repeat. Their source-bound positive and negative comparison audits cover three roadway-opening cases, two electric rider cases, two bus interior sweep cases and three occupied-stay cases. The lead validated and published ten new comparison rows and catalog commands, with zero new case jobs. The shared queue is now 240 assignments, 1,691 cases, 1,199 comparisons, 4,812,470 bytes; C125751, C229439 and C153046 additions from the earlier entry remain included.
