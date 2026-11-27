@@ -24,6 +24,11 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def attempt_path(name):
+    retry = SCRATCH / ("compat-" + name + "-v10")
+    return retry if (retry / "compatibility.json").is_file() else SCRATCH / ("compat-" + name + "-v9")
+
+
 def run(command):
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1",
                SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH / "output-root"),
@@ -36,7 +41,7 @@ def run(command):
 
 def one(case):
     name, case_id = case.suffix, AID + "__" + case.suffix
-    attempt = SCRATCH / ("compat-" + name + "-v9")
+    attempt = attempt_path(name)
     selection = attempt / "candidate-selection.json"
     if selection.exists():
         selection.unlink()

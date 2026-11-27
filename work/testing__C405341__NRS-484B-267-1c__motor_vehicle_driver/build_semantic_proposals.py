@@ -18,13 +18,14 @@ TEMPLATE = LAW + "@" + ACTOR
 TEXT = 'Upon the immediate approach of an authorized emergency vehicle or an official vehicle of a regulatory agency, making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of every other vehicle shall, except when otherwise directed by a law enforcement officer: Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed.'
 JUDGMENTS = (
     ("immediate approach", "Observe original relative routes, positions and motion without a numeric legal cutoff.", "relative_approach"),
-    ("Yield the right-of-way", "Observe original subject speed, brake and passage order, retaining legal judgment for original review.", "stop_and_passage_order"),
+    ("Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed", "Observe full cessation, unchanged original subject position, and body-clear passage without a numeric legal cutoff.", "stop_and_passage_order"),
 )
 PARAMS = (
     ("unit_class", "world_setup", "authorized emergency or regulatory official", "class"),
     ("light_request", "world_setup", "qualified active, qualified inactive or unqualified active", "class"),
     ("immediate_requested", "controller", "false or true", "boolean"),
     ("stop_requested", "controller", "false or true", "boolean"),
+    ("early_departure_requested", "controller", "false or true", "boolean"),
     ("officer_direction_requested", "world_setup", "false or true", "boolean"),
     ("approach_direction", "world_setup", "opposing or same_direction", "class"),
 )
@@ -39,7 +40,7 @@ def write(name, value):
 
 
 def assignments(case):
-    values = (case.unit_class, case.light_request, case.immediate, case.stopping,
+    values = (case.unit_class, case.light_request, case.immediate, case.stopping, case.early_departure,
               case.officer_direction, case.direction)
     return {name: {"kind": kind, "value": value, "unit": unit}
             for (name, kind, _, unit), value in zip(PARAMS, values)}
@@ -105,12 +106,12 @@ def build():
             "recording_description": description()})
     cases_ref = write("cases.json", {"cell_id": "C405341", "actor": ACTOR,
         "status": "draft", "sweep_specs": [{
-            "sweep_id": "right_of_way_review", "target_law_id": LAW,
+            "sweep_id": "stop_through_passage_review", "target_law_id": LAW,
             "judgment_refs": judgments, "status": "incomplete", "mode": "joint",
             "axes": [], "landmarks": [],
-            "rationale": "Approach and stopping alternatives are prepared; right-of-way judgment requires source review.",
+            "rationale": "Approach, complete cessation and maintained position through passage are measured; legal judgment requires source review.",
             "missing_inputs": ["original approach and driver-view camera histories",
-                               "independent legal judgment of stopping"],
+                               "independent legal judgment of stopping and passage"],
             "variable_assignments": assignments(CASES[0]),
             "recording_description": description()}],
         "sweeps_expanded": True, "cases": cases})

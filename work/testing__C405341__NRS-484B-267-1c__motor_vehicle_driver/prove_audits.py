@@ -23,6 +23,12 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def attempt_path(name):
+    base = ROOT / ".runtime-work/c405341-1c"
+    retry = base / ("compat-" + name + "-v10")
+    return retry if (retry / "compatibility.json").is_file() else base / ("compat-" + name + "-v9")
+
+
 def write(path, value):
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
@@ -44,7 +50,7 @@ def main():
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         name = case_id.removeprefix(AID + "__")
-        attempt = ROOT / ".runtime-work/c405341-1c" / ("compat-" + name + "-v9")
+        attempt = attempt_path(name)
         output = SCRATCH / (name + "-delivery.json")
         if output.exists():
             output.unlink()
@@ -92,8 +98,7 @@ def main():
                    "--plan", str(PLAN)]
         for case_id in comparison["case_ids"]:
             suffix = case_id.removeprefix(AID + "__")
-            command += ["--attempt", str(ROOT / ".runtime-work/c405341-1c" /
-                                         ("compat-" + suffix + "-v9"))]
+            command += ["--attempt", str(attempt_path(suffix))]
         output = SCRATCH / (name + "-comparison.json")
         if output.exists():
             output.unlink()
@@ -113,10 +118,8 @@ def main():
     # Prove the independent comparison rejects missing original evidence and
     # a changed condition that was declared fixed, using only scratch copies.
     first_spec = plan["comparisons"][0]
-    base = ROOT / ".runtime-work/c405341-1c" / (
-        "compat-" + first_spec["case_ids"][0].removeprefix(AID + "__") + "-v9")
-    contrasting = ROOT / ".runtime-work/c405341-1c" / (
-        "compat-" + first_spec["case_ids"][1].removeprefix(AID + "__") + "-v9")
+    base = attempt_path(first_spec["case_ids"][0].removeprefix(AID + "__"))
+    contrasting = attempt_path(first_spec["case_ids"][1].removeprefix(AID + "__"))
     small = SCRATCH / "comparison-negative-source"
     small.mkdir(exist_ok=True)
     for name in ("config.json", "diagnostic-source-note.json", "emergency-site.json",

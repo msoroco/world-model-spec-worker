@@ -1,0 +1,83 @@
+{
+  "template_id": "NRS-484B-267-2f@motor_vehicle_driver",
+  "law_id": "NRS-484B-267-2f",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If the authorized emergency vehicle or official vehicle of a regulatory agency: (1) Approaches the driver’s vehicle, proceed as required pursuant to subsection 1 [NRS-484B-267-1a, NRS-484B-267-1b, NRS-484B-267-1c]; or (2) Stops, proceed as required pursuant to NRS 484B.607 [NRS-484B-607-1a, NRS-484B-607-1b, NRS-484B-607-1c, NRS-484B-607-1d]. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.",
+  "structure": {
+    "law_id": "NRS-484B-267-2f",
+    "activation": {
+      "condition": "Ego approaches authorized emergency or regulatory official vehicle moving or visibly preparing to move, using qualifying flashing lights; unit approaches ego for the selected referral.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Proceed as required pursuant to subsection 1; unavailable 1a and 1b duties are not inferred.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "except when otherwise directed by a law enforcement officer",
+        "description": "Source-bound law-enforcement direction can alter the driver's response."
+      }
+    ],
+    "timing": {
+      "description": "Observe both approach relationships, movement or visible preparation, and response over the original 45 seconds.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "Approaches the driver’s vehicle",
+        "note": "Observe original relative routes, positions and unit motion without a numeric legal cutoff."
+      },
+      {
+        "phrase": "preparing to move",
+        "note": "Observe visible hand signals or original unit movement before approach."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "unit_class",
+      "kind": "world_setup",
+      "range_or_domain": "authorized emergency or regulatory official",
+      "unit": "class"
+    },
+    {
+      "name": "light_request",
+      "kind": "world_setup",
+      "range_or_domain": "qualified active, qualified inactive or unqualified active",
+      "unit": "class"
+    },
+    {
+      "name": "immediate_requested",
+      "kind": "controller",
+      "range_or_domain": "false or true",
+      "unit": "boolean"
+    },
+    {
+      "name": "yield_requested",
+      "kind": "controller",
+      "range_or_domain": "false or true",
+      "unit": "boolean"
+    },
+    {
+      "name": "officer_direction_requested",
+      "kind": "world_setup",
+      "range_or_domain": "false or true",
+      "unit": "boolean"
+    },
+    {
+      "name": "approach_direction",
+      "kind": "world_setup",
+      "range_or_domain": "opposing or same_direction",
+      "unit": "class"
+    },
+    {
+      "name": "unit_state",
+      "kind": "world_setup",
+      "range_or_domain": "moving, preparing or stopped",
+      "unit": "class"
+    }
+  ]
+}

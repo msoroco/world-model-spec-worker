@@ -107,6 +107,9 @@ def original_site(packet_path: str | Path, case: Case) -> dict:
          and all(inside(p, road) for p in route)
          and hypot(route[-1][0] - route[0][0], route[-1][1] - route[0][1]) >= 5,
          "reviewed original roadway route missing")
+    if case.movement == "turn_away":
+        need(len(route) >= 3 and abs(route[-1][1] - route[0][1]) >= 1.5,
+             "reviewed obeying route must turn away before signed boundary")
     device = site.get("device")
     need(isinstance(device, dict) and device.get("kind") == case.device_kind
          and device.get("source_verified") is True and device.get("blueprint_id")

@@ -52,16 +52,18 @@ def main():
                       "exceptions": [],
                       "timing": {"description": "Join sign presence, covered riding and original roadway positions during governed travel.",
                                  "numeric_conditions": []},
-                      "judgment_calls_needed": [{"phrase": "impede or interfere with the flow of pedestrian or vehicular traffic", "note": "Director's determination remains an original administrative source fact; no worker numeric threshold or legal verdict."}]},
+                      "judgment_calls_needed": []},
         "parameter_refs": [{"name": n, "kind": k, "range_or_domain": d}
                            for n, k, d in PARAMETERS]})
     put(folder / "bindings.json", {
         "cell_id": "C412927", "actor": ACTOR, "status": "draft",
-        "established_contexts": ["paved road", "travel", "access restriction sign"],
-        "law_refs": [],
-        "context_refs": [{"template_id": LAW + "@" + ACTOR,
-                          "binding_kind": "requires_context",
-                          "missing_guards": ["City jurisdiction", "Director order", "both consultations", "Director determination", "in-place governed sign"]}],
+        "established_contexts": [
+            "paved road and travel in the frozen cell",
+            "City roadway, Director order, City Traffic Engineer and LVMPD consultations,",
+            "Director determination, sign posting and governed extent must be joined from the original source packet before physical execution"],
+        "law_refs": [{"template_id": LAW + "@" + ACTOR,
+                      "binding_kind": "direct"}],
+        "context_refs": [],
         "fixed_parameters": [],
         "variable_parameters": [{"name": n, "kind": k, "range_or_domain": d,
                                  "used_by_laws": [LAW]} for n, k, d in PARAMETERS]})

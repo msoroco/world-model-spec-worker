@@ -93,6 +93,9 @@ def build():
             "front_visible_red_lamp_source": "synthetic-front-view-lamp",
             "front_visible_red_lamp_qualified": case.light_request != "unqualified_active",
             "siren_equipment_source": "synthetic-siren-installation",
+            "ego_body_extent_source": "synthetic-ego-blueprint-bounding-box",
+            "unit_body_extent_source": "synthetic-unit-blueprint-bounding-box",
+            "ego_half_length_m": 2.2, "unit_half_length_m": 2.5,
             "officer_direction_source": "synthetic-officer-context"})
         camera_rows = [dict(frame_index=i, native_frame=100 + i, time_s=i / 20,
                             camera_frames={view: 100 + i for view in VIEWS})

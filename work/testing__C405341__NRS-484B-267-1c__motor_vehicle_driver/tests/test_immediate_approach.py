@@ -39,8 +39,8 @@ class Adapter:
 
 
 class ConstructionTest(unittest.TestCase):
-    def test_eight_variants_execute_real_controller_calls(self):
-        self.assertEqual(len(CASES), 8)
+    def test_nine_variants_execute_real_controller_calls(self):
+        self.assertEqual(len(CASES), 9)
         for case in CASES:
             with self.subTest(case=case.suffix):
                 adapter = Adapter()
@@ -52,6 +52,11 @@ class ConstructionTest(unittest.TestCase):
                 self.assertIn("configure_unit_movement", names)
                 self.assertIn("configure_ego_response", names)
                 self.assertEqual("configure_officer_direction" in names, case.officer_direction)
+                control = next(args[1] for name, args in adapter.calls
+                               if name == "configure_ego_response")
+                self.assertEqual(control["stop_requested"], case.stopping)
+                self.assertEqual(control["hold_until_unit_passes"],
+                                 case.stopping and not case.early_departure)
 
     def test_legal_predicates_rejected_before_spawn(self):
         road, actors, authority = sources(CASES[0])

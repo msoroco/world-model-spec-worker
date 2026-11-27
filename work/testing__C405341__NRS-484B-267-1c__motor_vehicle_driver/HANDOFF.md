@@ -1,22 +1,13 @@
-# testing__C405341__NRS-484B-267-1c__motor_vehicle_driver
+# C405341 NRS 484B.267(1)(c) handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU preparation in progress. No physical or legal acceptance is claimed.
 
-Exact law: NRS 484B.267(1)(c) — Upon the immediate approach of an authorized emergency vehicle or an official vehicle of a regulatory agency, making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of every other vehicle shall, except when otherwise directed by a law enforcement officer: Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed.
-Assigned branch(es): Immediate approach on a paved road..
-Cell: C405341 (paved_road, travel, emergency_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The frozen evidence inventory has zero accepted recordings. The exact paved-road witness requires an authorized emergency or regulatory official vehicle, qualifying flashing lights, immediate approach, an ordinary other-vehicle driver, complete cessation, an unchanged stopping position until the unit passes, and source evidence for any contrary officer direction. The judgment-range inventory has no matching 1c range. No distance or timing cutoff was invented for “immediate approach” or “passed.”
 
-## Next CPU actions
+The nine selected case IDs are the assignment ID followed by `__immediate_approach_stop_remain`, `__immediate_approach_no_stop`, `__early_departure`, `__no_immediate_approach`, `__lights_inactive`, `__lights_unqualified`, `__officer_directs_otherwise`, `__regulatory_official_stop`, and `__same_direction_approach_stop`. Eight comparisons hold the paved-road source, 20 Hz four-camera clock, and undeclared context fixed. `author_plan.py` records each exact difference.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-1c__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`emergency_construction.py` and `runner.py` require reviewed Native map, actor, authority, qualifying light, siren, route and camera sources before capture. They request a full stop and held position; the early-departure contrast requests release before passage. `analysis.py` and the independent audits join 900 original Native, trace, and four-view frame identities, require source-bound body extents, measure the first full stop and body-clear unit passage, and reject missing source. Immediate approach and legal compliance remain unresolved for original review.
 
-## Proven checks and dependency boundary
+Completed CPU work: all nine primary and nine alternate-route fallback offline checks passed; nine physical/lifecycle protocol proofs passed; construction tests passed. The first compatibility wave encountered missing semantic case files before the proposals were generated. The proposals are now present, and compatibility is still running; failed attempts remain under `.runtime-work/c405341-1c/`. No package readiness is claimed from this partial checkpoint.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Next: finish compatibility and fresh retries, then saved-only positive/negative processing, independent delivery and eight comparison audits, queue proposal, hygiene, and `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-1c__motor_vehicle_driver --complete --require-delivery-ready`. All scratch and temporary files belong under `.runtime-work/c405341-1c/`.

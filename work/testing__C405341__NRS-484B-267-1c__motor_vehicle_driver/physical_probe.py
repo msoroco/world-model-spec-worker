@@ -1,4 +1,4 @@
-"""Synthetic motion outcome and Native ownership closure for each 1a case."""
+"""Synthetic stop-through-passage outcome and Native ownership closure."""
 
 import argparse
 import hashlib
@@ -85,6 +85,14 @@ def probe(case_id, kind, output):
         displacement = rows[-1]["ego_xy"][0] - rows[0]["ego_xy"][0]
         if abs(displacement) <= 0:
             raise ValueError("ego motion diagnostic absent")
+        if cases[case_id].stopping:
+            stopped = [row for row in rows if row["ego_speed_mps"] <= 0.05]
+            if not stopped:
+                raise ValueError("complete-stop diagnostic absent")
+            if not cases[case_id].early_departure and not any(
+                    row["time_s"] >= 32 and row["ego_speed_mps"] <= 0.05
+                    for row in stopped):
+                raise ValueError("held-position-through-passage diagnostic absent")
         status = "met"
     elif kind == "incomplete_motion":
         displacement = rows[-1]["ego_xy"][0] - rows[0]["ego_xy"][0]

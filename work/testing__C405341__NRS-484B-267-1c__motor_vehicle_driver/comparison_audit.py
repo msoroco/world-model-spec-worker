@@ -49,6 +49,7 @@ def audit(attempts, comparison_id, plan):
                "lights_unqualified": {"light_request", "front_visible_red_lamp_qualified",
                                       "front_visible_red_lamp_source", "qualifying_lights_source"},
                "immediate_approach_no_stop": {"stop_response_request"},
+               "early_departure": {"early_departure_request"},
                "officer_directs_otherwise": {"stop_response_request", "officer_direction_source"},
                "no_immediate_approach": {"immediate_approach_request", "route_source"},
                "same_direction_approach_stop": {"approach_direction", "route_source"}}.get(suffix, set())
@@ -63,12 +64,18 @@ def audit(attempts, comparison_id, plan):
     if suffix not in {"no_immediate_approach", "same_direction_approach_stop"} and any(
             x["emergency_xy"] != y["emergency_xy"] for x, y in zip(fa, fb)):
         raise ValueError("unit trajectory changed outside declared comparison")
-    if suffix not in {"immediate_approach_no_stop", "officer_directs_otherwise"} and any(
+    if suffix not in {"immediate_approach_no_stop", "early_departure", "officer_directs_otherwise"} and any(
             x["ego_xy"] != y["ego_xy"] or x["ego_brake"] != y["ego_brake"]
             for x, y in zip(fa, fb)):
         raise ValueError("subject trajectory or response changed outside declared comparison")
     if suffix == "immediate_approach_no_stop":
-        valid = a["first_brake_original_frame"] is not None and b["first_brake_original_frame"] is None
+        valid = a["first_stop_original_frame"] is not None and b["first_stop_original_frame"] is None
+    elif suffix == "early_departure":
+        valid = (a["held_same_position_until_passage"] is True and
+                 b["first_departure_original_frame"] is not None and
+                 b["first_full_passage_original_frame"] is not None and
+                 b["first_departure_original_frame"] < b["first_full_passage_original_frame"] and
+                 b["held_same_position_until_passage"] is False)
     elif suffix == "no_immediate_approach":
         valid = b["minimum_early_center_distance_m"] > a["minimum_early_center_distance_m"]
     elif suffix == "lights_inactive":
@@ -80,8 +87,8 @@ def audit(attempts, comparison_id, plan):
     elif suffix == "officer_directs_otherwise":
         valid = not any(r["officer_direction"] for r in fa) and \
             any(r["officer_direction"] for r in fb) and \
-            a["first_brake_original_frame"] is not None and \
-            b["first_brake_original_frame"] is None
+            a["first_stop_original_frame"] is not None and \
+            b["first_stop_original_frame"] is None
     elif suffix == "regulatory_official_stop":
         valid = first[1]["target_vehicle_class"] == "authorized_emergency" and \
             second[1]["target_vehicle_class"] == "regulatory_official"

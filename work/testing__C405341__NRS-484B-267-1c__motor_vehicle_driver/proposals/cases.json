@@ -1,0 +1,2082 @@
+{
+  "cell_id": "C405341",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "stop_through_passage_review",
+      "target_law_id": "NRS-484B-267-1c",
+      "judgment_refs": [
+        {
+          "phrase": "immediate approach",
+          "note": "Observe original relative routes, positions and motion without a numeric legal cutoff."
+        },
+        {
+          "phrase": "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed",
+          "note": "Observe full cessation, unchanged original subject position, and body-clear passage without a numeric legal cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "joint",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "Approach, complete cessation and maintained position through passage are measured; legal judgment requires source review.",
+      "missing_inputs": [
+        "original approach and driver-view camera histories",
+        "independent legal judgment of stopping and passage"
+      ],
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared emergency approach context without a legal finding.",
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__immediate_approach_stop_remain",
+      "target_law_id": "NRS-484B-267-1c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact approach, light use, stopping, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_approach_stop_and_passage",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "stop_requested",
+        "early_departure_requested",
+        "officer_direction_requested",
+        "approach_direction"
+      ],
+      "probe": {
+        "primary_variable": "stop_requested",
+        "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
+        "target_value_or_branch": "immediate_approach_stop_remain"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__immediate_approach_no_stop",
+      "target_law_id": "NRS-484B-267-1c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact approach, light use, stopping, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_approach_stop_and_passage",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "stop_requested",
+        "early_departure_requested",
+        "officer_direction_requested",
+        "approach_direction"
+      ],
+      "probe": {
+        "primary_variable": "stop_requested",
+        "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
+        "target_value_or_branch": "immediate_approach_no_stop"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__early_departure",
+      "target_law_id": "NRS-484B-267-1c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact approach, light use, stopping, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_approach_stop_and_passage",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "stop_requested",
+        "early_departure_requested",
+        "officer_direction_requested",
+        "approach_direction"
+      ],
+      "probe": {
+        "primary_variable": "stop_requested",
+        "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
+        "target_value_or_branch": "early_departure"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__no_immediate_approach",
+      "target_law_id": "NRS-484B-267-1c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact approach, light use, stopping, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_approach_stop_and_passage",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "stop_requested",
+        "early_departure_requested",
+        "officer_direction_requested",
+        "approach_direction"
+      ],
+      "probe": {
+        "primary_variable": "stop_requested",
+        "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
+        "target_value_or_branch": "no_immediate_approach"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__lights_inactive",
+      "target_law_id": "NRS-484B-267-1c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact approach, light use, stopping, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_approach_stop_and_passage",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "stop_requested",
+        "early_departure_requested",
+        "officer_direction_requested",
+        "approach_direction"
+      ],
+      "probe": {
+        "primary_variable": "stop_requested",
+        "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
+        "target_value_or_branch": "lights_inactive"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_inactive",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__lights_unqualified",
+      "target_law_id": "NRS-484B-267-1c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact approach, light use, stopping, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_approach_stop_and_passage",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "stop_requested",
+        "early_departure_requested",
+        "officer_direction_requested",
+        "approach_direction"
+      ],
+      "probe": {
+        "primary_variable": "stop_requested",
+        "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
+        "target_value_or_branch": "lights_unqualified"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "unqualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__officer_directs_otherwise",
+      "target_law_id": "NRS-484B-267-1c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact approach, light use, stopping, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_approach_stop_and_passage",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "stop_requested",
+        "early_departure_requested",
+        "officer_direction_requested",
+        "approach_direction"
+      ],
+      "probe": {
+        "primary_variable": "stop_requested",
+        "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
+        "target_value_or_branch": "officer_directs_otherwise"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__regulatory_official_stop",
+      "target_law_id": "NRS-484B-267-1c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact approach, light use, stopping, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_approach_stop_and_passage",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "stop_requested",
+        "early_departure_requested",
+        "officer_direction_requested",
+        "approach_direction"
+      ],
+      "probe": {
+        "primary_variable": "stop_requested",
+        "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
+        "target_value_or_branch": "regulatory_official_stop"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "regulatory_official",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "opposing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1c__motor_vehicle_driver__same_direction_approach_stop",
+      "target_law_id": "NRS-484B-267-1c",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact approach, light use, stopping, officer direction or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_approach_stop_and_passage",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "stop_requested",
+        "early_departure_requested",
+        "officer_direction_requested",
+        "approach_direction"
+      ],
+      "probe": {
+        "primary_variable": "stop_requested",
+        "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
+        "target_value_or_branch": "same_direction_approach_stop"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "stop_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "early_departure_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "immediate approach",
+        "Stop and remain in such position until the authorized emergency vehicle or official vehicle has passed"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "front_visible_red_lamp",
+            "unit": "source",
+            "method": "reviewed front-visible red lamp installation and original pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "siren_equipment",
+            "unit": "source",
+            "method": "reviewed required siren equipment",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "stop_and_passage_order",
+            "unit": "original frames",
+            "method": "source-bound crossing and brake chronology",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and stopping judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Immediate approach and stopping are judgment phrases with no invented numeric threshold.",
+          "Equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach and stopping require original pixels and independent review."
+        ]
+      }
+    }
+  ]
+}

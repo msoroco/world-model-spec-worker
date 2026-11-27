@@ -31,9 +31,15 @@ def run_one(case, candidate=None):
     if (output / 'compatibility.json').is_file():
         result = json.loads((output / 'compatibility.json').read_text())
         if result.get('case_id') == case_id and result.get('passed') is True:
-            return name, output, 0
+            return label, output, 0
     if output.exists():
-        raise ValueError('retain failed compatibility attempt; choose a new output: ' + name)
+        output = SCRATCH / ('compat-' + label + '-v10')
+        if (output / 'compatibility.json').is_file():
+            result = json.loads((output / 'compatibility.json').read_text())
+            if result.get('case_id') == case_id and result.get('passed') is True:
+                return label, output, 0
+        if output.exists():
+            raise ValueError('retain failed compatibility attempt; choose a new output: ' + name)
     command = [sys.executable, str(ROOT / 'runtime.py'), 'compatibility',
         '--manifest', str(HERE / 'execution-manifest.json'), '--case', case_id,
         '--output', str(output), '--library', str(ROOT / 'runtime/library'),

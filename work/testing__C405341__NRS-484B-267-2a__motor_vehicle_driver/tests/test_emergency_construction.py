@@ -1,0 +1,120 @@
+"""Source-gated Native operations and geometry tests without CARLA."""
+
+import sys
+import unittest
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from emergency_construction import CASES, execute, plan
+
+
+def sources(case):
+    road = {"source_kind": "native_map_readback", "road_type": "paved_road",
+            "ego_route_connected": True, "unit_route_connected": True,
+            "unit_route_intersects_ego_view": True,
+            "ego_route_id": "road-1", "unit_route_id": "road-2"}
+    road["speed_context"] = {"source_kind": "reviewed_native_conditions", **{
+        key: {"source_ref": "native-" + key, "observed_value": "reviewed"}
+        for key in ("traffic", "surface", "highway_width", "weather", "other_highway_conditions")}}
+    if case.cue == "occluded_movement":
+        road["occluder"] = {"source_kind": "native_geometry_readback", "blocks_driver_view": True,
+                            "spares_ego_route": True, "x_m": 8.0, "y_m": 2.0,
+                            "length_m": 5.0, "width_m": 2.0, "height_m": 2.4}
+    actors = {"source_kind": "native_blueprint_readback", "unit_class": case.unit_class,
+              "ego_blueprint_id": "vehicle.ego", "unit_blueprint_id": "vehicle.unit",
+              "driver_hand_signal_capability": True}
+    authority = {"class": case.unit_class, "authorization_source": "sealed-authority",
+                 "light_rule_source": "DEF-NRS-484A-480-3", "equipment_source": "sealed-equipment",
+                 "qualifying_flashing_equipment_verified": case.light_request != "unqualified_active",
+                 "lights_can_flash": True, "officer_direction_source": "sealed-officer"}
+    return road, actors, authority
+
+
+class Adapter:
+    def __init__(self):
+        self.calls = []
+
+    def __getattr__(self, name):
+        def call(*arguments):
+            self.calls.append((name, arguments))
+            return name + "-object"
+        return call
+
+
+class ConstructionTests(unittest.TestCase):
+    def test_all_eleven_execute_exact_operations(self):
+        self.assertEqual(len(CASES), 11)
+        for case in CASES:
+            with self.subTest(case=case.suffix):
+                road, actors, authority = sources(case)
+                adapter = Adapter()
+                result = execute(adapter, case, road, actors, authority)
+                names = [name for name, _ in adapter.calls]
+                self.assertEqual(result["capture_frames"], 900)
+                self.assertEqual(names.count("spawn_vehicle"), 2)
+                self.assertEqual(names.count("configure_route"), 2)
+                self.assertIn("configure_unit_movement", names)
+                self.assertIn("configure_flashing_lights", names)
+                self.assertEqual("spawn_occluder" in names, case.cue == "occluded_movement")
+                self.assertEqual("configure_driver_hand_signal" in names,
+                                 case.cue == "visible_hand_signal")
+                self.assertEqual("configure_officer_direction" in names, case.officer_direction)
+
+    def test_different_movement_requests(self):
+        specifications = [plan(case, *sources(case)) for case in CASES]
+        self.assertFalse(specifications[1]["movement"]["enabled"])
+        self.assertTrue(specifications[2]["movement"]["enabled"])
+        self.assertEqual(specifications[4]["movement"]["start_s"], 0.0)
+        self.assertFalse(specifications[3]["movement"]["enabled"])
+        self.assertFalse(specifications[5]["lights"]["active"])
+        self.assertFalse(specifications[6]["lights"]["qualifying"])
+        self.assertFalse(specifications[8]["ego_control"]["approaching"])
+        self.assertEqual(specifications[9]["unit"]["vehicle_class"], "regulatory_official")
+        self.assertGreater(specifications[0]["ego_control"]["response_brake_fraction"], 0)
+        self.assertEqual(specifications[10]["ego_control"]["response_brake_fraction"], 0)
+
+    def test_missing_qualification_rejected_before_actor_calls(self):
+        case = CASES[0]
+        road, actors, authority = sources(case)
+        authority["qualifying_flashing_equipment_verified"] = False
+        adapter = Adapter()
+        with self.assertRaisesRegex(ValueError, "qualifying equipment"):
+            execute(adapter, case, road, actors, authority)
+        self.assertEqual(adapter.calls, [])
+
+    def test_missing_reasonable_speed_context_rejected_before_actor_calls(self):
+        case = CASES[0]
+        road, actors, authority = sources(case)
+        del road["speed_context"]["weather"]
+        adapter = Adapter()
+        with self.assertRaisesRegex(ValueError, "reasonable-speed condition missing: weather"):
+            execute(adapter, case, road, actors, authority)
+        self.assertEqual(adapter.calls, [])
+
+    def test_occlusion_requires_real_geometry(self):
+        case = CASES[2]
+        road, actors, authority = sources(case)
+        road["occluder"]["height_m"] = 0.2
+        with self.assertRaisesRegex(ValueError, "occluder cannot block"):
+            plan(case, road, actors, authority)
+
+    def test_fallback_requires_distinct_connected_reviewed_route(self):
+        case = CASES[0]
+        road, actors, authority = sources(case)
+        adapter = Adapter()
+        engineering = {"alternate_unit_route": True, "movement_start_s": 16.5}
+        with self.assertRaisesRegex(ValueError, "alternate unit route"):
+            execute(adapter, case, road, actors, authority, engineering)
+        self.assertEqual(adapter.calls, [])
+        road["alternate_unit_route_id"] = "road-3-reviewed"
+        road["alternate_unit_route_connected"] = True
+        execute(adapter, case, road, actors, authority, engineering)
+        routes = [args[1] for name, args in adapter.calls if name == "configure_route"]
+        self.assertEqual(routes, ["road-1", "road-3-reviewed"])
+        movement = next(args[1] for name, args in adapter.calls
+                        if name == "configure_unit_movement")
+        self.assertEqual(movement["start_s"], 16.5)
+
+
+if __name__ == "__main__":
+    unittest.main()

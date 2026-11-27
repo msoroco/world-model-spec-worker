@@ -42,7 +42,10 @@ def source_site(case):
             "synthetic_diagnostic_fixture", "diagnostic_fixture": True,
             "case_id": AID + "__" + case.suffix, "municipality": "Las Vegas",
             "map_name": "synthetic-map", "map_opendrive_sha256": "0" * 64,
-            "roadway_polygon_xy": road, "ego_route_xy": [[start, 4], [end, 4]],
+            "roadway_polygon_xy": road,
+            "ego_route_xy": ([[start, 4], [end, 4], [end, 6]]
+                             if case.movement == "turn_away" else
+                             [[start, 4], [end, 4]]),
             "longitudinal_station_m": {"route_start": start, "route_end": end},
             "device": {"kind": case.device_kind, "source_verified": True,
                        "blueprint_id": "vehicle.synthetic_" + case.device_kind,
