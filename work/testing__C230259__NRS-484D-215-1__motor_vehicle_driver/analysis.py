@@ -161,7 +161,7 @@ def main():
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2) + "\n")
     from beam_publication import publish
-    from scenario_pipeline.worker_exchange.native_output import physical_result, write_result
+    from worker_exchange.native_output import physical_result, write_result
     result = publish(Path(args.attempt), expected_frames=receipt.get("frame_count", 900),
                      diagnostic=diagnostic)
     write_result(Path(args.attempt), physical_result(Path(args.attempt), result))

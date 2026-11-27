@@ -10,7 +10,7 @@ import json
 import os
 from pathlib import Path
 
-from night_parking_construction import plan_case, validate_site
+from night_parking_construction import _inside, plan_case, validate_site
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator"
@@ -42,6 +42,15 @@ def reviewed_plan(value):
     root = Path(root).resolve()
     packet_path = root / (value["selected_case_id"].rsplit("__", 1)[-1] + ".json")
     packet = validate_site(packet_path, root)
+    if value["case"]["design"]["purpose"] == "loading":
+        native, geometry = packet["native_actors"], packet["geometry"]
+        if (not native.get("cargo_blueprint") or
+                not packet.get("source_review", {}).get("loading_transfer") or
+                not all(isinstance(geometry.get(key), list) and len(geometry[key]) == 2
+                        for key in ("cargo_initial_xy_m", "cargo_final_xy_m"))
+                or not all(_inside(geometry[key], geometry["street_polygon_xy_m"])
+                           for key in ("cargo_initial_xy_m", "cargo_final_xy_m"))):
+            raise ValueError("source-reviewed visible cargo transfer construction required")
     return packet_path, packet, plan_case(value["case"], packet)
 
 

@@ -16,7 +16,7 @@ def sha(path):
 
 
 def main():
-    root = REPO / ".runtime-work" / "c229435-offline" / "batch-v4"
+    root = REPO / ".runtime-work" / "c229435-offline" / "batch-v5"
     root.mkdir(parents=True, exist_ok=True)
     manifest_path = ROOT / "execution-manifest.json"
     manifest = json.loads(manifest_path.read_text())
@@ -42,7 +42,7 @@ def main():
             "exit_code": 0, "construction_sha256": entry["construction_sha256"],
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + ASSIGNMENT
                        + "/execution-manifest.json --case " + entry["case_id"]
-                       + " --output .runtime-work/c229435-offline/batch-v4/" + suffix
+                       + " --output .runtime-work/c229435-offline/batch-v5/" + suffix
                        + " --python $PWD/.venv-cpu/bin/python",
             "log": proof.name, "log_sha256": sha(proof),
         }

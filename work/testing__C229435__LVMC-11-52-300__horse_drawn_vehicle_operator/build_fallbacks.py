@@ -29,7 +29,7 @@ def main():
             "id": "fallback1", "construction": "cases/" + suffix + "/fallback1-construction.json",
             "construction_sha256": sha(path),
             "trigger": {"source": "native-run-status.json",
-                        "metric": "camera_queue_overflow_count",
+                        "metric": "errors[*] containing camera queue overflow",
                         "failure_condition": "more than zero queued original camera frames dropped"},
             "changed_knobs": ["Raise bounded per-view original RGB queue capacity from 4 to 16 frames; retain 20 Hz and four exact camera sizes"],
         }]

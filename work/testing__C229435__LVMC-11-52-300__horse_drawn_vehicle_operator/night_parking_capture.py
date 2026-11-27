@@ -38,7 +38,7 @@ def _state(actor, *, parked=None, on_street=None):
 
 def capture_ticks(world, subject, other, pipeline, cameras, frame_map, output,
                   *, frame_count, civil_start_utc, subject_on_street, subject_parked,
-                  diagnostic=False):
+                  before_tick=None, diagnostic=False):
     """Retain every world tick, original body and exact video frame identity.
 
     `subject_on_street` must inspect the current world body against the reviewed
@@ -53,12 +53,13 @@ def capture_ticks(world, subject, other, pipeline, cameras, frame_map, output,
         raise ValueError("full nighttime duration construction is incomplete")
     if civil_start_utc.tzinfo is None:
         raise ValueError("reviewed civil UTC start required")
-    first_time = None
     prior_frame = None
     previous_sim_time = None
-    with (output / "night-parking-trace.jsonl").open("x", buffering=1) as details, \
-         (output / "trace.jsonl").open("x", buffering=1) as generic:
+    # PipelineCapture owns the generic trace. Do not open or rewrite it here.
+    with (output / "night-parking-trace.jsonl").open("x", buffering=1) as details:
         for index in range(frame_count):
+            if before_tick is not None:
+                before_tick(index)
             native_frame = world.tick()
             snap = world.get_snapshot()
             if type(native_frame) is not int or snap.frame != native_frame or (prior_frame is not None and native_frame != prior_frame + 1):
@@ -66,8 +67,6 @@ def capture_ticks(world, subject, other, pipeline, cameras, frame_map, output,
             native_time = float(snap.timestamp.elapsed_seconds)
             if not math.isfinite(native_time) or (previous_sim_time is not None and not math.isclose(native_time - previous_sim_time, .05, abs_tol=.001)):
                 raise ValueError("Native world did not advance at 20 Hz")
-            if first_time is None:
-                first_time = native_time
             previous_sim_time = native_time
             prior_frame = native_frame
             subject_state = _state(subject, parked=subject_parked(index, subject),
@@ -77,12 +76,7 @@ def capture_ticks(world, subject, other, pipeline, cameras, frame_map, output,
             detail = {"frame": native_frame, "utc_time": civil_time.isoformat(),
                       "subject": subject_state, "other_vehicle": other_state}
             details.write(json.dumps(detail, allow_nan=False) + "\n")
-            position = subject.get_transform().location
-            generic.write(json.dumps({"frame": native_frame, "time_s": native_time - first_time,
-                                      "position": {"x": float(position.x), "y": float(position.y), "z": float(position.z)},
-                                      "heading_deg": float(subject.get_transform().rotation.yaw),
-                                      "speed_mps": subject_state["speed_m_s"]}, allow_nan=False) + "\n")
-            frame_map.append(native_frame, native_time - first_time)
+            frame_map.append(native_frame, native_time)
             pipeline.capture(native_frame, native_time)
             cameras.append(native_frame)
     return {"frames": frame_count, "first_native_frame": prior_frame - frame_count + 1,

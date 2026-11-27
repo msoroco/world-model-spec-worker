@@ -1,0 +1,140 @@
+{
+  "template_id": "NRS-484B-363-2@heavy_vehicle_driver",
+  "law_id": "NRS-484B-363-2",
+  "actor": "heavy_vehicle_driver",
+  "quote": "A person shall not drive a motor vehicle at a speed in excess of 25 miles per hour in an area designated as a school crossing zone except: (a) On a day on which school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
+  "structure": {
+    "law_id": "NRS-484B-363-2",
+    "activation": {
+      "condition": "A person drives a motor vehicle inside an area designated as a school crossing zone.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Drive at a measured speed in excess of 25 miles per hour while the rule applies.",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": ">",
+          "value": 25,
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "trigger": "On a day on which school is not in session",
+        "effect": "source-reviewed exception context",
+        "replacement_obligation": "none claimed",
+        "source_clause": "On a day on which school is not in session"
+      },
+      {
+        "trigger": "During the period from a half hour after school is no longer in operation to a half hour before school is next in operation",
+        "effect": "source-reviewed exception context",
+        "replacement_obligation": "none claimed",
+        "source_clause": "During the period from a half hour after school is no longer in operation to a half hour before school is next in operation"
+      },
+      {
+        "trigger": "If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect",
+        "effect": "source-reviewed exception context",
+        "replacement_obligation": "none claimed",
+        "source_clause": "If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect"
+      },
+      {
+        "trigger": "If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect",
+        "effect": "source-reviewed exception context",
+        "replacement_obligation": "none claimed",
+        "source_clause": "If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect"
+      }
+    ],
+    "timing": {
+      "description": "Session day, half-hour operation window, class hours, beacon and sign periods are independently sourced.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "school is not in session",
+        "note": "Independent school calendar and local date must be reviewed."
+      },
+      {
+        "phrase": "school is no longer in operation",
+        "note": "Original operation endpoint and local clock must be reviewed."
+      },
+      {
+        "phrase": "school is next in operation",
+        "note": "Next operation endpoint and local clock must be reviewed."
+      },
+      {
+        "phrase": "operational speed limit beacon",
+        "note": "Sign and two or more alternating yellow lamps require device survey."
+      },
+      {
+        "phrase": "pupils of the school are in class",
+        "note": "Class period requires independent timetable."
+      },
+      {
+        "phrase": "yellow lights of the speed limit beacon are not flashing",
+        "note": "Saved lamp states and original sign linkage require review."
+      },
+      {
+        "phrase": "sign designating the school zone indicates that the speed limit is not in effect",
+        "note": "Original sign text and period require review."
+      },
+      {
+        "phrase": "two or more yellow lights that flash alternately",
+        "note": "Original device must show at least two alternately lit yellow lamps."
+      },
+      {
+        "phrase": "area designated as a school crossing zone",
+        "note": "Reviewed designation, crosswalk, nonadjacent school property and designated pupil walking route required."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "session_request",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed case intervention"
+    },
+    {
+      "name": "time_request",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed case intervention"
+    },
+    {
+      "name": "beacon_or_sign_request",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed case intervention"
+    },
+    {
+      "name": "speed_target_mph",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed case intervention"
+    },
+    {
+      "name": "zone_request",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed case intervention"
+    },
+    {
+      "name": "children_request",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed case intervention"
+    },
+    {
+      "name": "vehicle_request",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed case intervention"
+    },
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "nonnegative speed observed in mph"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "nonnegative speed setpoint in m/s"
+    }
+  ]
+}

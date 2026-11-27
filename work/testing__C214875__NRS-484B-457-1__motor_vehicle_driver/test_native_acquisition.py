@@ -123,6 +123,32 @@ class NativeAcquisitionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "diagnostic fixture cannot attest"):
             audit(target, self.case, require_native_attestation=True)
 
+    def test_text_camera_ledger_is_diagnostic_only_and_source_bound(self):
+        import zipfile
+        target = self.root / "ledger-attempt"
+        capture(FakeOperator(self.map_bytes), self.site, self.case, target, diagnostic=True)
+        original = target / "original-attempt"
+        inventory_path = original / "inventory.json"
+        inventory = json.loads(inventory_path.read_text())
+        ledger_hashes = {}
+        for name in CAMERAS:
+            archive = original / (name + ".zip")
+            with zipfile.ZipFile(archive) as zipped:
+                ledger = [{"frame": index, "native_frame": 100 + index,
+                           "png_sha256": hashlib.sha256(zipped.read(entry)).hexdigest()}
+                          for index, entry in enumerate(zipped.namelist())]
+            path = original / (name + ".frames.json")
+            path.write_text(json.dumps(ledger) + "\n")
+            ledger_hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+            archive.unlink()
+        inventory.pop("camera_sha256")
+        inventory["diagnostic_camera_ledgers_sha256"] = ledger_hashes
+        inventory_path.write_text(json.dumps(inventory) + "\n")
+        self.assertEqual(audit(target, self.case)["frame_count"], 9)
+        (original / "approach.frames.json").write_text("[]\n")
+        with self.assertRaisesRegex(ValueError, "ledger source hash differs"):
+            audit(target, self.case)
+
     def test_audit_rejects_stale_original_motion(self):
         target = self.root / "attempt"
         capture(FakeOperator(self.map_bytes), self.site, self.case, target, diagnostic=True)

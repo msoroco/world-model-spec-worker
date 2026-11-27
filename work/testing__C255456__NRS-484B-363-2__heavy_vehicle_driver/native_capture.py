@@ -110,8 +110,11 @@ def capture(world, adapter, site, case_id, output, site_sha256):
             context.get("vehicle_blueprint") ==
                 (site["heavy_blueprint"] if case["vehicle_request"] == "heavy_motor_vehicle" else site.get("car_blueprint")) and
             context.get("zone_polygon_xy_m") == site["zone_polygon_xy_m"] and
-            context.get("route_xy_m") == site["route_xy_m"],
-            "original heavy vehicle identity, zone or route context readback differs")
+            context.get("route_xy_m") == site["route_xy_m"] and
+            context.get("crosswalk_polygon_xy_m") == site["crosswalk_polygon_xy_m"] and
+            context.get("pupil_route_xy_m") == site["pupil_route_xy_m"] and
+            context.get("street_nonadjacent_to_school_property") is True,
+            "original heavy vehicle, crossing-zone or pupil-route context readback differs")
     require(context.get("school_in_session_today") is site["school_in_session_today"] and
             context.get("operational_beacon_designation") is site["operational_beacon_designation"],
             "original calendar/beacon designation readback differs")

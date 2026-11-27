@@ -17,8 +17,10 @@ FILES = (
     "tests/test_analysis.py",
 )
 CHANNELS = (
-    "heavy_body_speed_and_crossing_zone_membership", "children_positions", "school_calendar_and_clock",
-    "beacon_lamps_and_sign", "original_four_camera_pixels",
+    "heavy_body_speed_and_crossing_zone_membership",
+    "crosswalk_zone_geometry_and_pupil_route", "children_positions",
+    "school_calendar_and_clock", "beacon_lamps_and_exact_sign_instruction",
+    "original_four_camera_pixels",
 )
 
 

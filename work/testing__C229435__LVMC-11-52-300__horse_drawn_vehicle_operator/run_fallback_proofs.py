@@ -24,7 +24,7 @@ def main():
     for entry in manifest["cases"]:
         suffix = entry["case_id"].rsplit("__", 1)[-1]
         fallback = entry["candidates"][0]
-        offline_path = TEMP / ("offline-" + suffix + "-v1")
+        offline_path = TEMP / ("offline-" + suffix + "-v2")
         if not offline_path.exists():
             command = [str(REPO / ".venv-cpu/bin/python"), str(REPO / "runtime.py"),
                        "offline", "--manifest", str(manifest_path), "--case", entry["case_id"],
@@ -39,9 +39,9 @@ def main():
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + ASSIGNMENT
                        + "/execution-manifest.json --case " + entry["case_id"]
                        + " --candidate fallback1 --output .runtime-work/c229435-fallback/offline-"
-                       + suffix + "-v1 --python $PWD/.venv-cpu/bin/python",
+                       + suffix + "-v2 --python $PWD/.venv-cpu/bin/python",
             "log": log.name, "log_sha256": sha(log)}
-        compat_path = TEMP / ("compat-" + suffix + "-v1")
+        compat_path = TEMP / ("compat-" + suffix + "-v2")
         if not compat_path.exists():
             command = [str(REPO / ".venv-cpu/bin/python"), str(REPO / "runtime.py"),
                        "compatibility", "--manifest", str(manifest_path), "--case", entry["case_id"],

@@ -282,6 +282,9 @@ class SceneTest(unittest.TestCase):
                           "vehicle_blueprint": current_site["heavy_blueprint"],
                           "zone_polygon_xy_m": current_site["zone_polygon_xy_m"],
                           "route_xy_m": current_site["route_xy_m"],
+                          "crosswalk_polygon_xy_m": current_site["crosswalk_polygon_xy_m"],
+                          "pupil_route_xy_m": current_site["pupil_route_xy_m"],
+                          "street_nonadjacent_to_school_property": True,
                           "school_in_session_today": current_site["school_in_session_today"],
                           "operational_beacon_designation": current_site["operational_beacon_designation"]}
                 for name in SOURCES:

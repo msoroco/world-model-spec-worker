@@ -128,6 +128,17 @@ def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) ->
         fov = spec.get("fov_deg")
         if type(fov) not in (int, float) or not 1 <= fov <= 120:
             raise ValueError("reviewed camera field of view required: " + view)
+    alternate = site.get("alternate_cameras")
+    if alternate is not None:
+        if not isinstance(alternate, dict) or set(alternate) != set(VIEWS):
+            raise ValueError("four reviewed alternate camera poses required")
+        for view, spec in alternate.items():
+            if spec.get("blueprint_id") != "sensor.camera.rgb":
+                raise ValueError("alternate camera blueprint differs: " + view)
+            _point(spec.get("transform_m"), "alternate " + view)
+            fov = spec.get("fov_deg")
+            if type(fov) not in (int, float) or not 1 <= fov <= 120:
+                raise ValueError("reviewed alternate camera field of view required: " + view)
     if not diagnostic and (len(site.get("camera_calibration_sha256", "")) != 64 or
                            len(site.get("projection_review_sha256", "")) != 64):
         raise ValueError("source-reviewed camera calibration and projection required")

@@ -57,22 +57,39 @@ def audit(attempt, case_id, *, require_native_attestation=False):
                 (frame.get("native_frame") != mapping["frames"][index - 1]["native_frame"] + 1 or
                  abs(frame.get("native_time_s") - mapping["frames"][index - 1]["native_time_s"] - .05) > .001)):
             raise ValueError("original right-curb frame map gap")
-    cameras = inventory.get("camera_sha256")
-    if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
-        raise ValueError("four original camera hashes missing")
-    for name in CAMERAS:
-        archive_path = root / (name + ".zip")
-        if archive_path.is_symlink() or not archive_path.is_file() or \
-                hashlib.sha256(archive_path.read_bytes()).hexdigest() != cameras[name]:
-            raise ValueError("original camera source hash differs: " + name)
-        with zipfile.ZipFile(archive_path) as archive:
-            entries = archive.namelist()
-            if len(entries) != count or len(set(entries)) != count:
-                raise ValueError("original camera frames incomplete: " + name)
-            for index, entry in enumerate(entries):
-                native_frame = mapping["frames"][index]["native_frame"]
-                if entry != f"{index:04d}-{native_frame}.png" or not archive.read(entry).startswith(b"\x89PNG\r\n\x1a\n"):
-                    raise ValueError("original camera frame invalid: " + name)
+    diagnostic_ledgers = inventory.get("diagnostic_camera_ledgers_sha256")
+    if diagnostic and diagnostic_ledgers is not None:
+        if not isinstance(diagnostic_ledgers, dict) or set(diagnostic_ledgers) != set(CAMERAS):
+            raise ValueError("four diagnostic camera ledgers missing")
+        for name in CAMERAS:
+            path = root / (name + ".frames.json")
+            if path.is_symlink() or not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != diagnostic_ledgers[name]:
+                raise ValueError("diagnostic camera ledger source hash differs: " + name)
+            rows = _read(path)
+            if not isinstance(rows, list) or len(rows) != count:
+                raise ValueError("diagnostic camera ledger incomplete: " + name)
+            for index, row in enumerate(rows):
+                if (row.get("frame") != index or
+                        row.get("native_frame") != mapping["frames"][index]["native_frame"] or
+                        not isinstance(row.get("png_sha256"), str) or len(row["png_sha256"]) != 64):
+                    raise ValueError("diagnostic camera ledger frame differs: " + name)
+    else:
+        cameras = inventory.get("camera_sha256")
+        if not isinstance(cameras, dict) or set(cameras) != set(CAMERAS):
+            raise ValueError("four original camera hashes missing")
+        for name in CAMERAS:
+            archive_path = root / (name + ".zip")
+            if archive_path.is_symlink() or not archive_path.is_file() or \
+                    hashlib.sha256(archive_path.read_bytes()).hexdigest() != cameras[name]:
+                raise ValueError("original camera source hash differs: " + name)
+            with zipfile.ZipFile(archive_path) as archive:
+                entries = archive.namelist()
+                if len(entries) != count or len(set(entries)) != count:
+                    raise ValueError("original camera frames incomplete: " + name)
+                for index, entry in enumerate(entries):
+                    native_frame = mapping["frames"][index]["native_frame"]
+                    if entry != f"{index:04d}-{native_frame}.png" or not archive.read(entry).startswith(b"\x89PNG\r\n\x1a\n"):
+                        raise ValueError("original camera frame invalid: " + name)
     measurement = measure_original(attempt, case_id, diagnostic=diagnostic)
     if measurement != _read(root / "measurement.json"):
         raise ValueError("saved right-curb measurement differs")

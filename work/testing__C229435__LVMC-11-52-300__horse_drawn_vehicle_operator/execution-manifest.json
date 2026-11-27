@@ -7,7 +7,7 @@
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s",
       "kind": "delivery",
       "construction": "cases/night_29m59s/construction.json",
-      "construction_sha256": "ed0858b716e067d44dc83455a20068b1e39fa512c0fcbb6eae682300a60fcc46",
+      "construction_sha256": "9bdf2c677e20dd802b62b67034bf1ddb7007881e9351ac41d1645dc8d1f37851",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -16,10 +16,10 @@
         {
           "id": "fallback1",
           "construction": "cases/night_29m59s/fallback1-construction.json",
-          "construction_sha256": "a056970b79402a9e315c0f98ca757cdee58ece658b98ce05e6032e105d621a29",
+          "construction_sha256": "cb2ef7218cb15338bd3a2f9a2ab3799cfd68cc15932b4f62841618494e079ca5",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -27,14 +27,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "a056970b79402a9e315c0f98ca757cdee58ece658b98ce05e6032e105d621a29",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-night_29m59s-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "cb2ef7218cb15338bd3a2f9a2ab3799cfd68cc15932b4f62841618494e079ca5",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-night_29m59s-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-night_29m59s.log",
-            "log_sha256": "ae94b86c90e9d92d7415a6dd9f2980cbe598964c079f90f28f5c936c85443afc"
+            "log_sha256": "a1346438aba7b586f6956bbcbe325460a0f20ee4baa054e5bd7f8070d81522fd"
           },
           "compatibility": {
             "receipt": "compat-fallback1-night_29m59s-receipt.json",
-            "sha256": "41b78be19f9542264b3b7fd0a22b1cc7d4b82e81527d87587829045acd61fc48",
+            "sha256": "603aa3c24b825646416e04e363d48119c01f52220ead6f8de00374d82f513ec9",
             "log": "compat-fallback1-night_29m59s-analysis.log",
             "negative_log": "compat-fallback1-night_29m59s-negative.log"
           }
@@ -52,23 +52,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-night_29m59s-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "ed0858b716e067d44dc83455a20068b1e39fa512c0fcbb6eae682300a60fcc46",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s --output .runtime-work/c229435-offline/batch-v4/night_29m59s --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "9bdf2c677e20dd802b62b67034bf1ddb7007881e9351ac41d1645dc8d1f37851",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s --output .runtime-work/c229435-offline/batch-v5/night_29m59s --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-night_29m59s.log",
-        "log_sha256": "a1346438aba7b586f6956bbcbe325460a0f20ee4baa054e5bd7f8070d81522fd"
+        "log_sha256": "93e44fd82122130be2bc426b8316d60cd9af3b5b1e304847137adfdb70b21cfc"
       },
       "compatibility": {
         "receipt": "compat-night_29m59s-receipt.json",
-        "sha256": "a8fdf24c3bd5e96b4d2bedc78e26329b37ed3aa9def95dc9e0f66d3607958928",
+        "sha256": "c4344bf295b580305c273ffbfaf47755810aab0f6f14db25e2a0995094e1d08e",
         "log": "compat-night_29m59s-analysis.log",
         "negative_log": "compat-night_29m59s-negative.log"
+      },
+      "negative": {
+        "log": "compat-night_29m59s-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s",
+        "test_exit_code": 0,
+        "test_log": "saved-night_29m59s.log",
+        "test_log_sha256": "ab1daffb6ba9ce98a8b529f04ee363b5d524adebbbb31329078f15a1fb6e612d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s --saved-root .runtime-work/c229435-saved/night_29m59s-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-night_29m59s-positive.log",
+        "test_log_sha256": "9938868e265f8b70d07c8874f6b0ae7d1c347681a9aed679e9d00f0569ee9c19",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_29m59s --saved-root .runtime-work/c229435-saved/night_29m59s-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-night_29m59s-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-night_29m59s-proof.json",
+        "sha256": "623580e18230f817b5e4272f87dfa5932b004a3ebcec525bbef003ca5b527406"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s",
       "kind": "delivery",
       "construction": "cases/night_30m00s/construction.json",
-      "construction_sha256": "231140ae786efd4f30f6abf7ae423806f0a840c6be94e7c98d055846a7799212",
+      "construction_sha256": "a08b06d9dbfc8947047e0361b62bf4094b1270ac3240920230b62c635f0322a6",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -77,10 +149,10 @@
         {
           "id": "fallback1",
           "construction": "cases/night_30m00s/fallback1-construction.json",
-          "construction_sha256": "e744350b2681204c7abf709af908f98feb347e23baef24635ee9cc81207e8be7",
+          "construction_sha256": "b846c6d68525e73a58c8e8edc140b2bc6cb321a315043a56787bff4de3ee54e3",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -88,14 +160,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "e744350b2681204c7abf709af908f98feb347e23baef24635ee9cc81207e8be7",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-night_30m00s-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "b846c6d68525e73a58c8e8edc140b2bc6cb321a315043a56787bff4de3ee54e3",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-night_30m00s-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-night_30m00s.log",
             "log_sha256": "75e2968dc58924225b8ea3111fb29eae43dabf7905858c7f99292106191d4d68"
           },
           "compatibility": {
             "receipt": "compat-fallback1-night_30m00s-receipt.json",
-            "sha256": "1f07eb0ae2057658afac9ae5e3381e1e673bd6d69ffe79fdf33e94a418df8c94",
+            "sha256": "71ff4474222eaf78ca74ae7d93c4dbffa0b7dcfc5409f0716d545712d88c8b58",
             "log": "compat-fallback1-night_30m00s-analysis.log",
             "negative_log": "compat-fallback1-night_30m00s-negative.log"
           }
@@ -113,23 +185,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-night_30m00s-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "231140ae786efd4f30f6abf7ae423806f0a840c6be94e7c98d055846a7799212",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s --output .runtime-work/c229435-offline/batch-v4/night_30m00s --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "a08b06d9dbfc8947047e0361b62bf4094b1270ac3240920230b62c635f0322a6",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s --output .runtime-work/c229435-offline/batch-v5/night_30m00s --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-night_30m00s.log",
         "log_sha256": "1d21aa8820834fc2e97dbfc4d10a9d6e92ae0c49b09ba8223153ef232fd68e29"
       },
       "compatibility": {
         "receipt": "compat-night_30m00s-receipt.json",
-        "sha256": "02375529f976cf581483db897fab0276e48aa9e5afdf7f85f7e00672d15c2ca9",
+        "sha256": "06ef92b6cf06f095c30be9fd280aacc5b74dded8ede04bdd344864a0e580ff67",
         "log": "compat-night_30m00s-analysis.log",
         "negative_log": "compat-night_30m00s-negative.log"
+      },
+      "negative": {
+        "log": "compat-night_30m00s-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s",
+        "test_exit_code": 0,
+        "test_log": "saved-night_30m00s.log",
+        "test_log_sha256": "d03f96e957fe914fd658872862b6b7b21c23467f697666f71af3ea8768f042a6"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s --saved-root .runtime-work/c229435-saved/night_30m00s-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-night_30m00s-positive.log",
+        "test_log_sha256": "c385d2fd9e87288f3bff4d016d83f52fa6c49b31daefda8e1bccb00e86e6a659",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m00s --saved-root .runtime-work/c229435-saved/night_30m00s-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-night_30m00s-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-night_30m00s-proof.json",
+        "sha256": "aafd9dac512cc15fc4300d554fd1cf3fc1d9f363a8a88eeae430a0cfc09e49eb"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s",
       "kind": "delivery",
       "construction": "cases/night_30m01s/construction.json",
-      "construction_sha256": "e135694beb8c2a215fdf7c4e8254ce2763a75e0c7c32a995dd4452d408d8f0df",
+      "construction_sha256": "c23ceece013d4a69723f869d8b16855adfc0e07fca88b09591d96069c86a075d",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -138,10 +282,10 @@
         {
           "id": "fallback1",
           "construction": "cases/night_30m01s/fallback1-construction.json",
-          "construction_sha256": "ba522f062042d5dac6320e5132afd66a42c2bd487f963fd6c8c6692855d1c0e6",
+          "construction_sha256": "8b02aba904cca2e34290e0feb6783bccb82c072cf9604a1f9f2b8a1e03ddeab1",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -149,14 +293,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "ba522f062042d5dac6320e5132afd66a42c2bd487f963fd6c8c6692855d1c0e6",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-night_30m01s-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "8b02aba904cca2e34290e0feb6783bccb82c072cf9604a1f9f2b8a1e03ddeab1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-night_30m01s-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-night_30m01s.log",
-            "log_sha256": "b80ea9258e06e7824ad63b40c17cf8b1700c599a6656280d69274b20e9ca8e33"
+            "log_sha256": "3fc65e7236a9d1375757ebc4816f32406b62e3eebfc25c210a6dff0f83a15dd4"
           },
           "compatibility": {
             "receipt": "compat-fallback1-night_30m01s-receipt.json",
-            "sha256": "968f8307754f18fe09324af1632da3ddaaaef8dacae3587bdeaaaa1d83e28c40",
+            "sha256": "b5c69bec85c703838f47cc8416b7dc9d51f8ebe7c59706d3d1efc13cb772a97a",
             "log": "compat-fallback1-night_30m01s-analysis.log",
             "negative_log": "compat-fallback1-night_30m01s-negative.log"
           }
@@ -174,23 +318,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-night_30m01s-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "e135694beb8c2a215fdf7c4e8254ce2763a75e0c7c32a995dd4452d408d8f0df",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s --output .runtime-work/c229435-offline/batch-v4/night_30m01s --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "c23ceece013d4a69723f869d8b16855adfc0e07fca88b09591d96069c86a075d",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s --output .runtime-work/c229435-offline/batch-v5/night_30m01s --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-night_30m01s.log",
         "log_sha256": "3fc65e7236a9d1375757ebc4816f32406b62e3eebfc25c210a6dff0f83a15dd4"
       },
       "compatibility": {
         "receipt": "compat-night_30m01s-receipt.json",
-        "sha256": "e85bf020752a2bff657592ff28f6753f56fb3de9e268daed192a2112d16dcce7",
+        "sha256": "b469c1d2aac81d87dd6b69eefb615128baef345b1a2961d3591c6e58c146cfd4",
         "log": "compat-night_30m01s-analysis.log",
         "negative_log": "compat-night_30m01s-negative.log"
+      },
+      "negative": {
+        "log": "compat-night_30m01s-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s",
+        "test_exit_code": 0,
+        "test_log": "saved-night_30m01s.log",
+        "test_log_sha256": "95a965c8cec6b7edeca41c18753190efc651d0c1e6fc06c04f21fcff0fc6217e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s --saved-root .runtime-work/c229435-saved/night_30m01s-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-night_30m01s-positive.log",
+        "test_log_sha256": "eab12a7f913df77475572381279df6537c1bec45560ede0011091f68e4f6cc25",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__night_30m01s --saved-root .runtime-work/c229435-saved/night_30m01s-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-night_30m01s-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-night_30m01s-proof.json",
+        "sha256": "be2a2c1fdccd788d02c774d2ec92779e94af533f3dcfbee1d2430ca80dd7a4e9"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s",
       "kind": "delivery",
       "construction": "cases/outside_window_30m01s/construction.json",
-      "construction_sha256": "392060642ee62864877d790ff8194ede022f29bcdfda46075a2916eff71f62cc",
+      "construction_sha256": "c4fe25ac43428a797b0cc59b9b891c4672ef07d7ce021891fc72a757413a727a",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -199,10 +415,10 @@
         {
           "id": "fallback1",
           "construction": "cases/outside_window_30m01s/fallback1-construction.json",
-          "construction_sha256": "4b6c5fcd6956a7ac74a4c3a6cbe6f686f76503163bf89969f518e7f1047b5100",
+          "construction_sha256": "a81e589bdee13bb90987206d272e0a2817a8266465b35441769ac4e0f40ed491",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -210,14 +426,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "4b6c5fcd6956a7ac74a4c3a6cbe6f686f76503163bf89969f518e7f1047b5100",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-outside_window_30m01s-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "a81e589bdee13bb90987206d272e0a2817a8266465b35441769ac4e0f40ed491",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-outside_window_30m01s-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-outside_window_30m01s.log",
-            "log_sha256": "c9371859be5f80fac55566eef84b31025cc89b7b72eef19c6c30a2b855b9e0d9"
+            "log_sha256": "275e521f7585d3fc45431e9ca7a4c0dceb3512ca2a00122a4a07df36366b123b"
           },
           "compatibility": {
             "receipt": "compat-fallback1-outside_window_30m01s-receipt.json",
-            "sha256": "9eff23e4ebbd124b6ad72cfc719d8bcc4b35a5875b6b47f78316c713efc4ea77",
+            "sha256": "930d0cb061a06d29d2d50baf5619316963367bda49572699845791efff786de9",
             "log": "compat-fallback1-outside_window_30m01s-analysis.log",
             "negative_log": "compat-fallback1-outside_window_30m01s-negative.log"
           }
@@ -235,23 +451,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-outside_window_30m01s-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "392060642ee62864877d790ff8194ede022f29bcdfda46075a2916eff71f62cc",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s --output .runtime-work/c229435-offline/batch-v4/outside_window_30m01s --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "c4fe25ac43428a797b0cc59b9b891c4672ef07d7ce021891fc72a757413a727a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s --output .runtime-work/c229435-offline/batch-v5/outside_window_30m01s --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-outside_window_30m01s.log",
-        "log_sha256": "275e521f7585d3fc45431e9ca7a4c0dceb3512ca2a00122a4a07df36366b123b"
+        "log_sha256": "6353588d712a2b591ca37eaab067fc0e74efa4afa912eb8ee73279f71e9db5d9"
       },
       "compatibility": {
         "receipt": "compat-outside_window_30m01s-receipt.json",
-        "sha256": "d0f067644f102852206aa42cb2e3ac78a856d87249217ccb008c510767563ae2",
+        "sha256": "7b0e376d5898968a82e88e6187dfa6c229eaa54f909230fc6afd08fc4d87e009",
         "log": "compat-outside_window_30m01s-analysis.log",
         "negative_log": "compat-outside_window_30m01s-negative.log"
+      },
+      "negative": {
+        "log": "compat-outside_window_30m01s-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s",
+        "test_exit_code": 0,
+        "test_log": "saved-outside_window_30m01s.log",
+        "test_log_sha256": "5ab0b34c36bcc5faad14841d74a74a36434c2d61bb60d760e107c864ac063e68"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s --saved-root .runtime-work/c229435-saved/outside_window_30m01s-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-outside_window_30m01s-positive.log",
+        "test_log_sha256": "6296752222177a2f232334ec6e29d458c9c26fb7615f79cce95094ee9e0b1f68",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__outside_window_30m01s --saved-root .runtime-work/c229435-saved/outside_window_30m01s-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-outside_window_30m01s-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-outside_window_30m01s-proof.json",
+        "sha256": "75653a40f5fb63a2d4dc1ef836b5f32c0b3391e83a80cc79fa057ac50f6026d7"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s",
       "kind": "delivery",
       "construction": "cases/motor_vehicle_30m01s/construction.json",
-      "construction_sha256": "f145bda0c062f0ed78f03782e079ba56d44725e3f04f7f9e17234787a5822d5d",
+      "construction_sha256": "318eb6146b7ae3d34c54afbc4848f24674fcaf5379330a921f19ec8af7b07bdc",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -260,10 +548,10 @@
         {
           "id": "fallback1",
           "construction": "cases/motor_vehicle_30m01s/fallback1-construction.json",
-          "construction_sha256": "c0ffae06060c20e43ed8c3cf72f654085d38d956738828f019a7a33244cae3e6",
+          "construction_sha256": "68fd9b51f876b2a73dbc6e2328b086beeeed25d91909c8078c057324ed93b8f6",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -271,14 +559,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "c0ffae06060c20e43ed8c3cf72f654085d38d956738828f019a7a33244cae3e6",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-motor_vehicle_30m01s-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "68fd9b51f876b2a73dbc6e2328b086beeeed25d91909c8078c057324ed93b8f6",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-motor_vehicle_30m01s-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-motor_vehicle_30m01s.log",
-            "log_sha256": "9517c14e2d87de9627c05494896c15f80b7e8b1118c5fd3f28854bb894c44c41"
+            "log_sha256": "f9696e43201a939d3c28aec8b3b8106bf2c9c77adaa39aa8a00edeb1aaddcd8a"
           },
           "compatibility": {
             "receipt": "compat-fallback1-motor_vehicle_30m01s-receipt.json",
-            "sha256": "32388b78b9b2445e9db8da0b73ec8b437de29491374b2de326b859fd65be3e2e",
+            "sha256": "2eb59af930896d627b482d0a741f7766addc088d9c40560d05a9de8a380735e8",
             "log": "compat-fallback1-motor_vehicle_30m01s-analysis.log",
             "negative_log": "compat-fallback1-motor_vehicle_30m01s-negative.log"
           }
@@ -296,23 +584,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-motor_vehicle_30m01s-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "f145bda0c062f0ed78f03782e079ba56d44725e3f04f7f9e17234787a5822d5d",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s --output .runtime-work/c229435-offline/batch-v4/motor_vehicle_30m01s --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "318eb6146b7ae3d34c54afbc4848f24674fcaf5379330a921f19ec8af7b07bdc",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s --output .runtime-work/c229435-offline/batch-v5/motor_vehicle_30m01s --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-motor_vehicle_30m01s.log",
-        "log_sha256": "f9b3bf7502db7357def03f9bd6520d3bef9ff735c81a27eceda0ef3f60551025"
+        "log_sha256": "eb7cdc3974d729eb2285ca3feca9805834265792f1394509fc40f894b228023c"
       },
       "compatibility": {
         "receipt": "compat-motor_vehicle_30m01s-receipt.json",
-        "sha256": "f0775ecb049fb075c9273075c2989e48d104fa0f9fd6eea584c70fe8bc0b9c68",
+        "sha256": "5054c8b135d1626ad033cd2139161448b4962b0dc8764b7f8e5e6681f2ca2538",
         "log": "compat-motor_vehicle_30m01s-analysis.log",
         "negative_log": "compat-motor_vehicle_30m01s-negative.log"
+      },
+      "negative": {
+        "log": "compat-motor_vehicle_30m01s-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s",
+        "test_exit_code": 0,
+        "test_log": "saved-motor_vehicle_30m01s.log",
+        "test_log_sha256": "f791e1af40434523e0bb114f921faaa47efb6af0ebf18d6c6b0129c75d75f2f0"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s --saved-root .runtime-work/c229435-saved/motor_vehicle_30m01s-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-motor_vehicle_30m01s-positive.log",
+        "test_log_sha256": "e1dce04eb5515396e56334ad3a43735727589a19076f6d0ad59e02bc2b4fa7d2",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__motor_vehicle_30m01s --saved-root .runtime-work/c229435-saved/motor_vehicle_30m01s-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-motor_vehicle_30m01s-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-motor_vehicle_30m01s-proof.json",
+        "sha256": "3b8cd783b9a9c23535e897d2b78ba73a9a3a39cec7a8e4782efc919c6896aded"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s",
       "kind": "delivery",
       "construction": "cases/loading_30m01s/construction.json",
-      "construction_sha256": "cab4ca2f6b873516f8d9e3e2f7944f25b8cd758a5bafc354f1c66e31fe01b241",
+      "construction_sha256": "975d4062ccf539fdb4b4005c6383e07df9b996d8c33e36f6943174a342da0fa9",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -321,10 +681,10 @@
         {
           "id": "fallback1",
           "construction": "cases/loading_30m01s/fallback1-construction.json",
-          "construction_sha256": "36f994155f635515eb3ee98991d47865e971cfdfb511a104016ee02509f68f1f",
+          "construction_sha256": "e8953b9fbfc4ff342fb8e5852a4dc441716f01129e68b18ba729036e7271ffcd",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -332,14 +692,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "36f994155f635515eb3ee98991d47865e971cfdfb511a104016ee02509f68f1f",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-loading_30m01s-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "e8953b9fbfc4ff342fb8e5852a4dc441716f01129e68b18ba729036e7271ffcd",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s --candidate fallback1 --output .runtime-work/c229435-fallback/offline-loading_30m01s-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-loading_30m01s.log",
-            "log_sha256": "d17810ddd72b2f817b586a55856d6bbbb6b38abdcbbc249cf19821382091fa92"
+            "log_sha256": "c1a14ddabe7e8cc432bdd5e1e3f4179236b16e7252b107879268e5f76b25370c"
           },
           "compatibility": {
             "receipt": "compat-fallback1-loading_30m01s-receipt.json",
-            "sha256": "ccfda409db38f3b7172d56cc418340023c902d0473b38353c3e783eaad364d2c",
+            "sha256": "29f79df3ce5dc2c8fa5f7a565561d22e81d3772715db49343fb5329c5fb2cee7",
             "log": "compat-fallback1-loading_30m01s-analysis.log",
             "negative_log": "compat-fallback1-loading_30m01s-negative.log"
           }
@@ -357,23 +717,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-loading_30m01s-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "cab4ca2f6b873516f8d9e3e2f7944f25b8cd758a5bafc354f1c66e31fe01b241",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s --output .runtime-work/c229435-offline/batch-v4/loading_30m01s --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "975d4062ccf539fdb4b4005c6383e07df9b996d8c33e36f6943174a342da0fa9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s --output .runtime-work/c229435-offline/batch-v5/loading_30m01s --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-loading_30m01s.log",
-        "log_sha256": "d17810ddd72b2f817b586a55856d6bbbb6b38abdcbbc249cf19821382091fa92"
+        "log_sha256": "846b44c72e450efeeb6fb77cc6869e7244d5eb4db78bcb2bc204022950349ee9"
       },
       "compatibility": {
         "receipt": "compat-loading_30m01s-receipt.json",
-        "sha256": "b784e49ba592a5349b5b0d03e3c9fd3f6310ec024f368f28ae03b4763f340acb",
+        "sha256": "59ecdad560fcba761ae4bf46904d605790ef5781196059a72bd84d5aefc39049",
         "log": "compat-loading_30m01s-analysis.log",
         "negative_log": "compat-loading_30m01s-negative.log"
+      },
+      "negative": {
+        "log": "compat-loading_30m01s-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s",
+        "test_exit_code": 0,
+        "test_log": "saved-loading_30m01s.log",
+        "test_log_sha256": "79892c403c43de1345c0bbff91eb63c2b415809d0598240de07866befcc7ee50"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s --saved-root .runtime-work/c229435-saved/loading_30m01s-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-loading_30m01s-positive.log",
+        "test_log_sha256": "25bdd06ab947d0032f72012e4b69a604f9f734e742374c99d8a8b5afb190582b",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__loading_30m01s --saved-root .runtime-work/c229435-saved/loading_30m01s-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-loading_30m01s-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-loading_30m01s-proof.json",
+        "sha256": "28dd5f4ac7c092e34c27a41ecd7bf8bcd08227eab75e8a9626d2f4888d423c24"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m",
       "kind": "delivery",
       "construction": "cases/boundary_01m/construction.json",
-      "construction_sha256": "ae13de73d04b0494f265b11afa91518c226b3acaa54887e9f6500d41875c29ec",
+      "construction_sha256": "fa3e1ac85e51b6d51ab0a146f594cf5231b74c821b6eb21dc7579c3835416bee",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -382,10 +814,10 @@
         {
           "id": "fallback1",
           "construction": "cases/boundary_01m/fallback1-construction.json",
-          "construction_sha256": "9590b55e326f05a697c5bf5a0ed0378006466e18be5abb2b54edb12b4a5d459c",
+          "construction_sha256": "42502724ae8f5284f2019315fab41c07b2ba96eb113122043c66915b82ad5832",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -393,14 +825,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "9590b55e326f05a697c5bf5a0ed0378006466e18be5abb2b54edb12b4a5d459c",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_01m-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "42502724ae8f5284f2019315fab41c07b2ba96eb113122043c66915b82ad5832",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_01m-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-boundary_01m.log",
             "log_sha256": "bb6297c27355d37047687b48015c3e7bf3de8b11bcee0366e641be84e8f9e7e5"
           },
           "compatibility": {
             "receipt": "compat-fallback1-boundary_01m-receipt.json",
-            "sha256": "642cfe6a582106c5f5a4b1c349056decd33f85b3d9983ab5d36f7b841a662e92",
+            "sha256": "3cc76dcf04af41b7f2289f74918a559fa589efc176cb0e997e36e9135dc2fc60",
             "log": "compat-fallback1-boundary_01m-analysis.log",
             "negative_log": "compat-fallback1-boundary_01m-negative.log"
           }
@@ -418,23 +850,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-boundary_01m-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "ae13de73d04b0494f265b11afa91518c226b3acaa54887e9f6500d41875c29ec",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m --output .runtime-work/c229435-offline/batch-v4/boundary_01m --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "fa3e1ac85e51b6d51ab0a146f594cf5231b74c821b6eb21dc7579c3835416bee",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m --output .runtime-work/c229435-offline/batch-v5/boundary_01m --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-boundary_01m.log",
-        "log_sha256": "6c4f0c75e9ec3e81246dce00dc296f1583b678da6105da651a45844d484370d5"
+        "log_sha256": "a67ad1186531895f3ec1d22e7e4a40638e62a8e85802802aa233c9d9ab98251b"
       },
       "compatibility": {
         "receipt": "compat-boundary_01m-receipt.json",
-        "sha256": "65e83160b47a0b6ce574b9c279aba2519a4796046e76a86f5454387c95bb994d",
+        "sha256": "41e179e0158fcadf7d6855c5887242c8029e1fe0f9c12cb1455859fbf3dd2801",
         "log": "compat-boundary_01m-analysis.log",
         "negative_log": "compat-boundary_01m-negative.log"
+      },
+      "negative": {
+        "log": "compat-boundary_01m-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m",
+        "test_exit_code": 0,
+        "test_log": "saved-boundary_01m.log",
+        "test_log_sha256": "eaa5cc1d31e1163f05f0782fe2a9aac30848cff0e7ef8c450c5d81b0e2604945"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m --saved-root .runtime-work/c229435-saved/boundary_01m-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-boundary_01m-positive.log",
+        "test_log_sha256": "814577310ef2e8f2245f8c03f9c5557d5c0f923ca740c3ede339ffad5c609179",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01m --saved-root .runtime-work/c229435-saved/boundary_01m-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-boundary_01m-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-boundary_01m-proof.json",
+        "sha256": "cdb3b3b23057e6e972b96557ce5b90dcfea0754baa49334105f16b4a54c66388"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at",
       "kind": "delivery",
       "construction": "cases/boundary_01_at/construction.json",
-      "construction_sha256": "dc53ead38ac12b0eb15139b28a12546f5314ec4648c629a7e2d6c12d39fe83e2",
+      "construction_sha256": "ac13f7a3332868b9d42c74719eaed7a8b01dcc27e14fb9230dec2fa3f5d94a18",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -443,10 +947,10 @@
         {
           "id": "fallback1",
           "construction": "cases/boundary_01_at/fallback1-construction.json",
-          "construction_sha256": "b036cca5cb72a8dd9aaaea51790f7449d04d9a3fd31b3faf6e78dbcd0c322081",
+          "construction_sha256": "08883663c89387b8f01bc12b2e42b3f2babc80cf8bf7f3aed788858f84a36f74",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -454,14 +958,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "b036cca5cb72a8dd9aaaea51790f7449d04d9a3fd31b3faf6e78dbcd0c322081",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_01_at-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "08883663c89387b8f01bc12b2e42b3f2babc80cf8bf7f3aed788858f84a36f74",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_01_at-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-boundary_01_at.log",
-            "log_sha256": "e578cca844444d5bb7340d75aa4d6ef5e2ba96d4009437520c590a9b72f1c211"
+            "log_sha256": "f2ccc49544aba99c4bf8d8772647411b429be28b8d4f92f3f1e21b477a2512d7"
           },
           "compatibility": {
             "receipt": "compat-fallback1-boundary_01_at-receipt.json",
-            "sha256": "256a5d97eb65d4d167026f97734a62938a9ff1a7ab01aa50e389d2d94b9aacd1",
+            "sha256": "8d9e08b9457009f5218ac25bf452d2e2cf880e65e5c969363d1db5e4bf135f0f",
             "log": "compat-fallback1-boundary_01_at-analysis.log",
             "negative_log": "compat-fallback1-boundary_01_at-negative.log"
           }
@@ -479,23 +983,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-boundary_01_at-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "dc53ead38ac12b0eb15139b28a12546f5314ec4648c629a7e2d6c12d39fe83e2",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at --output .runtime-work/c229435-offline/batch-v4/boundary_01_at --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "ac13f7a3332868b9d42c74719eaed7a8b01dcc27e14fb9230dec2fa3f5d94a18",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at --output .runtime-work/c229435-offline/batch-v5/boundary_01_at --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-boundary_01_at.log",
         "log_sha256": "26cdbe8f28fc6fadefed03dbdb9114e501f4743299d900fc3ebba446d164e878"
       },
       "compatibility": {
         "receipt": "compat-boundary_01_at-receipt.json",
-        "sha256": "713ed4dfad4a230be6ad0d349df424072ede7c74fd4999dfd741325a4136c994",
+        "sha256": "6ef749d810d29fc83b60e9f37ef7b5d55794a4deb7090456a6b42003d4e78635",
         "log": "compat-boundary_01_at-analysis.log",
         "negative_log": "compat-boundary_01_at-negative.log"
+      },
+      "negative": {
+        "log": "compat-boundary_01_at-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at",
+        "test_exit_code": 0,
+        "test_log": "saved-boundary_01_at.log",
+        "test_log_sha256": "2cc893c06d8be98a1b565a6606b79b6290e5852a6b413a1be6bafd78c8e2143f"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at --saved-root .runtime-work/c229435-saved/boundary_01_at-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-boundary_01_at-positive.log",
+        "test_log_sha256": "4182e664f696dd4ea37790799d4c3181e29f4c1d572fe09370b8546ffdb1e254",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_at --saved-root .runtime-work/c229435-saved/boundary_01_at-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-boundary_01_at-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-boundary_01_at-proof.json",
+        "sha256": "bd709d583fdbf0e0701fe293573435ac1f145bcf966213b12935ad4a0a2c8fd4"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after",
       "kind": "delivery",
       "construction": "cases/boundary_01_after/construction.json",
-      "construction_sha256": "12b787a24aba5964398dd62cbba19b4c30111702b5013ffbac976f73c7030049",
+      "construction_sha256": "89707b31e269f58aa6d0d12278bafb7fe8bd94cf9237179b3ed657d92650f9d7",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -504,10 +1080,10 @@
         {
           "id": "fallback1",
           "construction": "cases/boundary_01_after/fallback1-construction.json",
-          "construction_sha256": "d1a4bd69e28ce632a259d0d7defe3df4d61a6875e1691345ea34fb0b6897f4c1",
+          "construction_sha256": "568ad74f07ae3a6b54dc96e139a84da4bb88d2b57d406fb38a970c1bb95f0e17",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -515,14 +1091,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "d1a4bd69e28ce632a259d0d7defe3df4d61a6875e1691345ea34fb0b6897f4c1",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_01_after-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "568ad74f07ae3a6b54dc96e139a84da4bb88d2b57d406fb38a970c1bb95f0e17",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_01_after-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-boundary_01_after.log",
-            "log_sha256": "06093652239301f13da15f2270ca11e41408f6d8e17f066fa24c1377ebf8fcb9"
+            "log_sha256": "0f4147fe34979befa209b36c07cd0b517bf44e26c02c101a46ec3199b76ec824"
           },
           "compatibility": {
             "receipt": "compat-fallback1-boundary_01_after-receipt.json",
-            "sha256": "1bebaf06fb91224a086b725daf1dff4f5d9a3f5f7f1eeac4eace9c226e67bb18",
+            "sha256": "e093920fcd48e44573a5d6abdbcb2e3c649603cb7e0ca3c6243bffcd96680f1d",
             "log": "compat-fallback1-boundary_01_after-analysis.log",
             "negative_log": "compat-fallback1-boundary_01_after-negative.log"
           }
@@ -540,23 +1116,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-boundary_01_after-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "12b787a24aba5964398dd62cbba19b4c30111702b5013ffbac976f73c7030049",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after --output .runtime-work/c229435-offline/batch-v4/boundary_01_after --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "89707b31e269f58aa6d0d12278bafb7fe8bd94cf9237179b3ed657d92650f9d7",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after --output .runtime-work/c229435-offline/batch-v5/boundary_01_after --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-boundary_01_after.log",
-        "log_sha256": "06093652239301f13da15f2270ca11e41408f6d8e17f066fa24c1377ebf8fcb9"
+        "log_sha256": "1372b0fbb74d996f9cda786a72280587b9b5c2fa154926e481349028428f220d"
       },
       "compatibility": {
         "receipt": "compat-boundary_01_after-receipt.json",
-        "sha256": "4d71537e54e5b6f81c5b931489f62138aa4d33463ce11a31cd2e93b66b40dbff",
+        "sha256": "1ab5436611dc11bbda34cabefad5af9fd1aa322fa79780ca0d25e2b48fb31661",
         "log": "compat-boundary_01_after-analysis.log",
         "negative_log": "compat-boundary_01_after-negative.log"
+      },
+      "negative": {
+        "log": "compat-boundary_01_after-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after",
+        "test_exit_code": 0,
+        "test_log": "saved-boundary_01_after.log",
+        "test_log_sha256": "9638340989f297f4b9e86665534989c22c1544380bb8a6096d07c2e609b4ac5b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after --saved-root .runtime-work/c229435-saved/boundary_01_after-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-boundary_01_after-positive.log",
+        "test_log_sha256": "ddccec30deaca35328274ee6fb28c82cecdd68a36b173c87311f14dabcd4fd28",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_01_after --saved-root .runtime-work/c229435-saved/boundary_01_after-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-boundary_01_after-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-boundary_01_after-proof.json",
+        "sha256": "bf062262d22d7ea7c9c97e537da271b9e2f7c9f690301f433c63330be7640fcb"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before",
       "kind": "delivery",
       "construction": "cases/boundary_06_before/construction.json",
-      "construction_sha256": "37a12c81bea7d263215dd5e390e9c9efae779ae12a593fd0a66fea9b3ffd47bb",
+      "construction_sha256": "02e0f136c7ec0733d74e65917e8ea94a6be9bf7bb6de79a620e5c138cd104a8a",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -565,10 +1213,10 @@
         {
           "id": "fallback1",
           "construction": "cases/boundary_06_before/fallback1-construction.json",
-          "construction_sha256": "7090700b5ecc35f2c760ac50bc8c869a29ffb0bddf71faad03a8889a7dfb7841",
+          "construction_sha256": "9cc1c66e92dd2f5424b84fd9acfcd709d4b8ffbc6204bcdca949fd686a9cbaaf",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -576,14 +1224,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "7090700b5ecc35f2c760ac50bc8c869a29ffb0bddf71faad03a8889a7dfb7841",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_06_before-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "9cc1c66e92dd2f5424b84fd9acfcd709d4b8ffbc6204bcdca949fd686a9cbaaf",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_06_before-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-boundary_06_before.log",
-            "log_sha256": "84d3d1cb1e237a2dd84e0426e65ba121918101f77d18c81971b476c119429068"
+            "log_sha256": "deeb59623b4dab0384e97826dc1c1051e9dd2f6d5b01d826dcf4f7fe463d93ce"
           },
           "compatibility": {
             "receipt": "compat-fallback1-boundary_06_before-receipt.json",
-            "sha256": "bb9310e64621b714caf42847085fae182c3300eb595ddd4ed61767596a5260de",
+            "sha256": "4c33456eded3c8c0927bfa86ce1b4728bfcee332d435e977c8026cf41f9dd6e7",
             "log": "compat-fallback1-boundary_06_before-analysis.log",
             "negative_log": "compat-fallback1-boundary_06_before-negative.log"
           }
@@ -601,23 +1249,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-boundary_06_before-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "37a12c81bea7d263215dd5e390e9c9efae779ae12a593fd0a66fea9b3ffd47bb",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before --output .runtime-work/c229435-offline/batch-v4/boundary_06_before --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "02e0f136c7ec0733d74e65917e8ea94a6be9bf7bb6de79a620e5c138cd104a8a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before --output .runtime-work/c229435-offline/batch-v5/boundary_06_before --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-boundary_06_before.log",
-        "log_sha256": "c24c8dc2467b5d2e542432e0f39971437f8869e918754597e8839594017f0901"
+        "log_sha256": "85a9315a06f4d56a96d741c53a7128c10a90fee7ca0f02600bc4f30c765ad21f"
       },
       "compatibility": {
         "receipt": "compat-boundary_06_before-receipt.json",
-        "sha256": "d9eb493650712ed8ff290a240627e1f168995d72b457014370d2b8d6e7af0c8b",
+        "sha256": "f3e88579e2fd41760d0749867933d62866ed82424b2f296450f9f69c0197c857",
         "log": "compat-boundary_06_before-analysis.log",
         "negative_log": "compat-boundary_06_before-negative.log"
+      },
+      "negative": {
+        "log": "compat-boundary_06_before-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before",
+        "test_exit_code": 0,
+        "test_log": "saved-boundary_06_before.log",
+        "test_log_sha256": "e603bb634d8e11376f5d0a1b79085522dc0be157634d41fcbee27d33c1f183c5"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before --saved-root .runtime-work/c229435-saved/boundary_06_before-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-boundary_06_before-positive.log",
+        "test_log_sha256": "17e7c8322fedd060f822dc2f346ddb636a2bfe15c1d6ff88901bbf86041d9a1b",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_before --saved-root .runtime-work/c229435-saved/boundary_06_before-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-boundary_06_before-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-boundary_06_before-proof.json",
+        "sha256": "aafa6c6239bb73f92121acda8d97a6caf30a5ec3d5697efa07718ae2b9386c92"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at",
       "kind": "delivery",
       "construction": "cases/boundary_06_at/construction.json",
-      "construction_sha256": "ceab8d6eb40f6a3be76becfcf9fe30b689893a3b5db5732cb8595c1c5b10a440",
+      "construction_sha256": "348ef8653341f5a44fd3917b9f77500ee602d1ba5d04bf5d73e5154e6caa6e5d",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -626,10 +1346,10 @@
         {
           "id": "fallback1",
           "construction": "cases/boundary_06_at/fallback1-construction.json",
-          "construction_sha256": "5a79e2059785159d24df2365c8d75ff00d97e6f1225f3f73f931c9b5eb41343e",
+          "construction_sha256": "db8a92bca1a4c54294f7e40f8f00f90bd6ea3f81627941874b95f1bbd9b24e65",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -637,14 +1357,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "5a79e2059785159d24df2365c8d75ff00d97e6f1225f3f73f931c9b5eb41343e",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_06_at-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "db8a92bca1a4c54294f7e40f8f00f90bd6ea3f81627941874b95f1bbd9b24e65",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_06_at-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-boundary_06_at.log",
-            "log_sha256": "16813524111905af7af220be64176c541dd94ac3a2b32c920817511b8a0b2513"
+            "log_sha256": "0f3e6baf91790aaf5321c123810e375212aca406744e98506f922fda753c4cbb"
           },
           "compatibility": {
             "receipt": "compat-fallback1-boundary_06_at-receipt.json",
-            "sha256": "692337467101bb2fc0447219bea578db2aee1bd30433e86d61ccdda887ff7ac3",
+            "sha256": "506b1f6495f5fd53aa5b90a23e1c99e6e8cfde45dcda7cfbb3a596f7c459ab29",
             "log": "compat-fallback1-boundary_06_at-analysis.log",
             "negative_log": "compat-fallback1-boundary_06_at-negative.log"
           }
@@ -662,23 +1382,95 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-boundary_06_at-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "ceab8d6eb40f6a3be76becfcf9fe30b689893a3b5db5732cb8595c1c5b10a440",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at --output .runtime-work/c229435-offline/batch-v4/boundary_06_at --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "348ef8653341f5a44fd3917b9f77500ee602d1ba5d04bf5d73e5154e6caa6e5d",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at --output .runtime-work/c229435-offline/batch-v5/boundary_06_at --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-boundary_06_at.log",
-        "log_sha256": "0f3e6baf91790aaf5321c123810e375212aca406744e98506f922fda753c4cbb"
+        "log_sha256": "6331e695be3365bf468ea2316de573884e3819dbd8e3614a2ed147369e3e95ff"
       },
       "compatibility": {
         "receipt": "compat-boundary_06_at-receipt.json",
-        "sha256": "ff4e2e92d1303858e3e5d72675a7882e287ed4a3582343b6d1f93f55a3c6cba1",
+        "sha256": "77167576ffddd0bc7930edf6337fd71ee202942e664db3bb7915be3d83e94a3e",
         "log": "compat-boundary_06_at-analysis.log",
         "negative_log": "compat-boundary_06_at-negative.log"
+      },
+      "negative": {
+        "log": "compat-boundary_06_at-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at",
+        "test_exit_code": 0,
+        "test_log": "saved-boundary_06_at.log",
+        "test_log_sha256": "15ef772489b36f65e260847c8fbfcdb5429bc7d6e2bf16ba35fa45e35b57584f"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at --saved-root .runtime-work/c229435-saved/boundary_06_at-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-boundary_06_at-positive.log",
+        "test_log_sha256": "61e172cf6045229950c9fe17dea3f131ab8768f9ef109c8ef42f561ca45b29a3",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06_at --saved-root .runtime-work/c229435-saved/boundary_06_at-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-boundary_06_at-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-boundary_06_at-proof.json",
+        "sha256": "fa09695952970879041e612fe117ac9b252efbb022e54509b308ff47bb7da269"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     },
     {
       "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m",
       "kind": "delivery",
       "construction": "cases/boundary_06m/construction.json",
-      "construction_sha256": "cba78c684e536aba99cc05c667c1747af4e8322345203d10e539e118ad634928",
+      "construction_sha256": "500d76295683167cee15d9d460ef68e178ef05cb5cce19d1265644561144f632",
       "candidate_risk": {
         "status": "physical",
         "reason": "Thirty-minute 20 Hz four-view capture risks dropped original frames or incomplete media closure."
@@ -687,10 +1479,10 @@
         {
           "id": "fallback1",
           "construction": "cases/boundary_06m/fallback1-construction.json",
-          "construction_sha256": "f9eb8eebe0389e7ba1e9d48724b9d75f89d258ba38a5d7d3275a9c46734e31a7",
+          "construction_sha256": "1b027297ae3eede658d43fcb86acb680df3c75f4c2c62a775447b16f0522097f",
           "trigger": {
             "source": "native-run-status.json",
-            "metric": "camera_queue_overflow_count",
+            "metric": "errors[*] containing camera queue overflow",
             "failure_condition": "more than zero queued original camera frames dropped"
           },
           "changed_knobs": [
@@ -698,14 +1490,14 @@
           ],
           "offline": {
             "exit_code": 0,
-            "construction_sha256": "f9eb8eebe0389e7ba1e9d48724b9d75f89d258ba38a5d7d3275a9c46734e31a7",
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_06m-v1 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "1b027297ae3eede658d43fcb86acb680df3c75f4c2c62a775447b16f0522097f",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m --candidate fallback1 --output .runtime-work/c229435-fallback/offline-boundary_06m-v2 --python $PWD/.venv-cpu/bin/python",
             "log": "proof-offline-fallback1-boundary_06m.log",
-            "log_sha256": "d4662554f4b622c5b8e00f500fa27067990a875ac4b11f41608f828edf393264"
+            "log_sha256": "590e97720bc8978d3bd41424d39a59b9d98e98872f27430ea49206065d3e4c9c"
           },
           "compatibility": {
             "receipt": "compat-fallback1-boundary_06m-receipt.json",
-            "sha256": "a05e192afad5335d276cd11f5d2221e44db4e60e1894f60e5b77479e3127a571",
+            "sha256": "59753b4fe63f9eda626e62c8fb02f8b08cec2e2588c2f5b543fefbbac98873d1",
             "log": "compat-fallback1-boundary_06m-analysis.log",
             "negative_log": "compat-fallback1-boundary_06m-negative.log"
           }
@@ -723,16 +1515,88 @@
       "fixture_recipe": "work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/diagnostic-boundary_06m-recipe.json",
       "offline": {
         "exit_code": 0,
-        "construction_sha256": "cba78c684e536aba99cc05c667c1747af4e8322345203d10e539e118ad634928",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m --output .runtime-work/c229435-offline/batch-v4/boundary_06m --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "500d76295683167cee15d9d460ef68e178ef05cb5cce19d1265644561144f632",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m --output .runtime-work/c229435-offline/batch-v5/boundary_06m --python $PWD/.venv-cpu/bin/python",
         "log": "proof-offline-boundary_06m.log",
-        "log_sha256": "98ff3521af8a63e366c7b3b033345f63c939c53ec4afbfbcfedffaecf7a47654"
+        "log_sha256": "5001863390a3050b14c2f733750b1ff34f533ebc246c9e4d572d3119af43fee6"
       },
       "compatibility": {
         "receipt": "compat-boundary_06m-receipt.json",
-        "sha256": "183c47d12563fb44a2c1dd6f52c4a491d478eec0d4a94bf8710a1ce0ad8fda48",
+        "sha256": "ff7c9977f0fefeaec5b86471b3b4ee696cf3c19f067d39361c72e13de526adf8",
         "log": "compat-boundary_06m-analysis.log",
         "negative_log": "compat-boundary_06m-negative.log"
+      },
+      "negative": {
+        "log": "compat-boundary_06m-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/execution-manifest.json --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR --owner-release-receipt $OWNER_RELEASE",
+        "feedback_command": "cat $OUTPUT/feedback.json # testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m",
+        "test_exit_code": 0,
+        "test_log": "saved-boundary_06m.log",
+        "test_log_sha256": "3e806de4c68c63bd54de9ef202121b0dfba5c04e75a926a199a84307ae3dca25"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "288a2c188f40ada187f4b27e6e6113685012aeca2f0dc8a750281cce81fffbf1",
+        "command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m --saved-root .runtime-work/c229435-saved/boundary_06m-v3 --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-boundary_06m-positive.log",
+        "test_log_sha256": "54ae7249dbf49b32cd813a3b97821e7ab6bc13332213514d1af97918256e0de0",
+        "negative_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python work/testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator/delivery_probe.py --case testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator__boundary_06m --saved-root .runtime-work/c229435-saved/boundary_06m-v3 --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: classification.json",
+        "negative_log": "delivery-boundary_06m-missing_source.log",
+        "negative_log_sha256": "2738a7832658ec33b619195fbe44354d00f2059cbfd62c7913aae689f4dfeff3"
+      },
+      "physical_preparation": {
+        "receipt": "physical-boundary_06m-proof.json",
+        "sha256": "75e90a49646b39daccc1f97a57578833a1dc2d4af54afefcaea3b4947b8daf75"
+      },
+      "acquisition": {
+        "original_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "civil_time": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "vehicle_classification": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "parking_activity": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "street_jurisdiction": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        },
+        "other_vehicle_body_state": {
+          "entrypoint": "night_parking_native.py",
+          "method": "run_native with capture_ticks, source sealing, then analysis.finalize",
+          "evidence": "original 20 Hz Native body/civil event source plus saved-only channel"
+        }
       }
     }
   ]

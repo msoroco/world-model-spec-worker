@@ -80,12 +80,12 @@ def publish(attempt: Path, *, expected_frames: int = 900,
              "body_gap_m": row["oncoming_body_gap_m"],
              "eye_gap_m": row["oncoming_eye_gap_m"]}
             for row in analyze_motion_rows(root, receipt, expected_frames, config["case_plan"])],
-                 times, "m"),
+                 times, "structured record"),
     ]
     context_path = root / "reviewed_highway_time_lamp_and_contour.json"
     if context_path.exists():
         raise ValueError("selected reviewed site context already exists")
-    context_path.write_text(json.dumps({"reviewed_site": json.loads(
+    context_path.write_text(json.dumps({"reviewed_highway_time_lamp_and_contour": json.loads(
         _source(root, "site-packet.json").read_text())}, sort_keys=True) + "\n")
     evidence.append({"name": "reviewed_highway_time_lamp_and_contour",
                      "unit": "structured record", "reference": context_path.name,

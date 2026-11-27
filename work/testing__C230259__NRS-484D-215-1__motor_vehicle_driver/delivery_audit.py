@@ -140,7 +140,8 @@ def main():
     result = audit(Path(args.attempt), args.case,
                    diagnostic=args.diagnostic_fixture,
                    negative_remove=args.negative_remove_source,
-                   expected_frames=9 if args.diagnostic_fixture else 900)
+                   expected_frames=(json.loads((Path(args.attempt) / "native-source-receipt.json").read_text())["frame_count"]
+                                    if args.diagnostic_fixture else 900))
     output = Path(args.output)
     if output.exists():
         raise ValueError("independent audit output already exists")

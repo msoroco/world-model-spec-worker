@@ -100,12 +100,20 @@ def _sensor(carla, world, library, ego, spec, view):
     return sensor
 
 
-def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int = 900) -> dict:
+def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int = 900,
+            camera_pose_selection: str = "primary") -> dict:
     """Capture a fresh attempt; call only through runtime.py capture on a GPU host."""
-    from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.world_restore import snapshot, restore
+    from pipeline_capture import PipelineCapture
     import carla
 
     site = validate_site(packet_path, case, diagnostic=False)
+    if camera_pose_selection == "primary":
+        camera_specs = site["cameras"]
+    elif camera_pose_selection == "alternate" and site.get("alternate_cameras"):
+        camera_specs = site["alternate_cameras"]
+    else:
+        raise ValueError("source-reviewed selected camera pose set missing")
     if ticks != 900:
         raise ValueError("selected delivery requires 900 original frames")
     output = Path(output)
@@ -121,6 +129,7 @@ def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int =
     saved = snapshot(client)
     owned = []
     recorder = None
+    pipeline = None
     completed = False
     try:
         settings = copy.copy(world.get_settings())
@@ -156,12 +165,13 @@ def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int =
         actors["ego"].set_light_state(requested)
         cameras = {}
         for view in VIEWS:
-            camera = _sensor(carla, world, library, actors["ego"], site["cameras"][view], view)
+            camera = _sensor(carla, world, library, actors["ego"], camera_specs[view], view)
             owned.append(camera)
             cameras[view] = camera
         recorder = CameraRecorder(cameras, output)
         recorder.start()
-        states, maps, video_rows, roi_rows, trace_rows = [], [], [], [], []
+        pipeline = PipelineCapture(client, actors["ego"], output, case["case_id"])
+        states, maps, video_rows, roi_rows = [], [], [], []
         eye_offsets = site.get("driver_eye_offsets_m")
         if not isinstance(eye_offsets, dict) or set(eye_offsets) != {"ego", "oncoming"}:
             raise ValueError("source-reviewed driver-eye offsets required")
@@ -177,6 +187,7 @@ def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int =
             snapshot_row = world.get_snapshot()
             if type(frame) is not int or snapshot_row.frame != frame:
                 raise ValueError("Native world snapshot/frame mismatch")
+            pipeline.capture(frame, snapshot_row.timestamp.elapsed_seconds)
             source_frames = recorder(frame)
             if any(source_frames[view] != frame for view in VIEWS):
                 raise ValueError("original four-camera frame join differs")
@@ -203,14 +214,14 @@ def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int =
                 matrix = cameras[view].get_transform().get_inverse_matrix()
                 width, height = PROFILE_DIMENSIONS[view]
                 regions[role] = bbox([[v.x, v.y, v.z] for v in vertices], matrix,
-                                     width, height, site["cameras"][view]["fov_deg"])
+                                     width, height, camera_specs[view]["fov_deg"])
             if case["branch"] == "oncoming":
                 view = "driver_reference"
                 matrix = cameras[view].get_transform().get_inverse_matrix()
                 width, height = PROFILE_DIMENSIONS[view]
                 regions["oncoming_eye"] = bbox(eye_cube(actor_rows["oncoming"]["driver_eye_m"]),
                                                 matrix, width, height,
-                                                site["cameras"][view]["fov_deg"])
+                                                camera_specs[view]["fov_deg"])
             roi_rows.append({"frame": frame, "source_kind": "reviewed_original_projection",
                              "diagnostic_fixture": False,
                              "calibration_source_sha256": site["camera_calibration_sha256"],
@@ -218,12 +229,6 @@ def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int =
                              "regions": regions})
             states.append({"frame": frame, "time_s": snapshot_row.timestamp.elapsed_seconds,
                            "actors": actor_rows})
-            ego_transform = actors["ego"].get_transform()
-            trace_rows.append({"frame": frame, "time_s": snapshot_row.timestamp.elapsed_seconds,
-                               "position_m": actor_rows["ego"]["center_m"],
-                               "heading_deg": float(ego_transform.rotation.yaw),
-                               "speed_mps": actor_rows["ego"]["speed_mps"],
-                               "brake": float(actors["ego"].get_control().brake)})
             maps.append({"frame": frame, **{view + "_source_frame": source_frames[view]
                                               for view in VIEWS}})
             video_rows.append({"video_frame": index, "carla_frame": frame,
@@ -232,9 +237,12 @@ def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int =
         recorder = None
         output.mkdir(parents=True, exist_ok=True)
         (output / "site-packet.json").write_bytes(Path(packet_path).read_bytes())
+        (output / "acquisition-provenance.json").write_text(json.dumps({
+            "provenance_kind": "native", "diagnostic_fixture": False,
+            "source": "PipelineCapture original live run"}, sort_keys=True) + "\n")
         for name, rows in (("actor-state.jsonl", states), ("camera-frame-map.jsonl", maps),
                            ("video_frames.jsonl", video_rows), ("roi-frames.jsonl", roi_rows),
-                           ("trace.jsonl", trace_rows)):
+                           ):
             (output / name).write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows))
         movies = encode_original_videos(output, video_rows)
         hashes = {name: hashlib.sha256((output / name).read_bytes()).hexdigest()
@@ -253,9 +261,13 @@ def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int =
         return receipt
     finally:
         try:
-            if recorder is not None:
-                recorder.close()
-            for actor in reversed(owned):
-                actor.destroy()
+            try:
+                if pipeline is not None:
+                    pipeline.close(confirmed=completed)
+            finally:
+                if recorder is not None:
+                    recorder.close()
+                for actor in reversed(owned):
+                    actor.destroy()
         finally:
             restore(client, saved)

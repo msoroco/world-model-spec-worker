@@ -37,7 +37,7 @@ class SiteTests(unittest.TestCase):
                 "source_review": {key: "reviewed" for key in (
                     "carriage_transport_capable", "carriage_motive_power", "vehicle_exclusions",
                     "responsible_person", "street_public_access", "municipal_jurisdiction")},
-                "native_actors": {"carriage_blueprint": "custom-carriage", "other_vehicle_blueprint": "car", "responsible_person_blueprint": "walker"},
+                "native_actors": {"carriage_blueprint": "custom-carriage", "other_vehicle_blueprint": "car", "responsible_person_blueprint": "walker", "carriage_actor_kind": "vehicle", "carriage_physical_customization_source": sources["vehicle_build"]["sha256"]},
                 "civil_date": "2026-11-27",
                 "classification": {"transport_capable": True, "self_propelled": False, "vehicle_exclusions_checked": True},
             }

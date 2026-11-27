@@ -102,7 +102,7 @@ def analyze(attempt, output):
                 item.get("time_s") != frame.get("time_s")
                 for item, frame in zip(trace, mapping))):
         raise ValueError("Core trace and original heavy-vehicle frame join differs")
-    selected = {f"school_bus_requirement_{index}": {
+    selected = {f"school_heavy_requirement_{index}": {
         "method": "analyze", "value": dict(measurements, requirement=entry["requirement"]),
         "sources": hashes}
         for index, entry in enumerate(plan["requirement_dispositions"])

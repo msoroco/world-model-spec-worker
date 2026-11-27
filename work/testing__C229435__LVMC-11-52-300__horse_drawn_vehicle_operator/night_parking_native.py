@@ -161,6 +161,11 @@ def run_native(config, packet_path, packet, plan, output, host, port):
             raise ValueError("reviewed responsible person placement required")
         person = _spawn(world, carla, native["responsible_person_blueprint"], person_xy, 0)
         actors.append(person)
+        cargo = None
+        if config["case"]["design"]["purpose"] == "loading":
+            cargo = _spawn(world, carla, native["cargo_blueprint"],
+                           geo["cargo_initial_xy_m"], 0)
+            actors.append(cargo)
         classification = packet.get("classification", {})
         if (not all(type(classification.get(key)) is bool for key in
                     ("transport_capable", "self_propelled", "vehicle_exclusions_checked"))
@@ -184,6 +189,22 @@ def run_native(config, packet_path, packet, plan, output, host, port):
         start = utc_start(packet["civil_date"], plan["civil_start_local_request"]) - dt.timedelta(seconds=2)
         street = geo["street_polygon_xy_m"]
         first, last = plan["parked_first_index"], plan["parked_last_index"]
+        def before_tick(index):
+            if cargo is None:
+                return
+            # A reviewed visible cargo prop and responsible person move through
+            # a five-second transfer around the middle of the parked interval.
+            midpoint = (first + last) // 2
+            fraction = min(1.0, max(0.0, (index - midpoint + 50) / 100))
+            start_xy, end_xy = geo["cargo_initial_xy_m"], geo["cargo_final_xy_m"]
+            cargo_pose = cargo.get_transform()
+            cargo_pose.location.x = start_xy[0] + fraction * (end_xy[0] - start_xy[0])
+            cargo_pose.location.y = start_xy[1] + fraction * (end_xy[1] - start_xy[1])
+            cargo.set_transform(cargo_pose)
+            person_pose = person.get_transform()
+            person_pose.location.x = person_xy[0] + fraction * (end_xy[0] - person_xy[0])
+            person_pose.location.y = person_xy[1] + fraction * (end_xy[1] - person_xy[1])
+            person.set_transform(person_pose)
         phase = "capturing"
         receipt = capture_ticks(world, subject, other, pipeline, camera, frame_map, output,
                                 frame_count=plan["original_frame_count"], civil_start_utc=start,
@@ -192,13 +213,15 @@ def run_native(config, packet_path, packet, plan, output, host, port):
                                     for vertex in actor.bounding_box.get_world_vertices(actor.get_transform())),
                                 subject_parked=lambda index, actor: first <= index <= last and
                                     math.sqrt(sum(getattr(actor.get_velocity(), axis) ** 2
-                                                  for axis in ("x", "y", "z"))) <= .15)
+                                                  for axis in ("x", "y", "z"))) <= .15,
+                                before_tick=before_tick)
         phase = "closing"
         pipeline.close(); pipeline = None
         frame_map.close(); frame_map = None
         camera.close(); camera = None
         activity = {"responsible_person_source": packet["sources"]["person_activity"]["sha256"],
-                    "activity_source": "original responsible person and carriage acquisition",
+                    "activity_source": "original responsible person, carriage and cargo acquisition" if cargo else
+                                       "original responsible person and carriage acquisition",
                     "episode_start_event_source": "original selected 20 Hz schedule and body state",
                     "episode_end_event_source": "original selected 20 Hz schedule and body state",
                     "start_frame": receipt["first_native_frame"] + first,

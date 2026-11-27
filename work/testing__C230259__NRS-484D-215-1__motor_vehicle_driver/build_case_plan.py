@@ -65,11 +65,10 @@ def build() -> dict:
     current["comparisons"] = [{"comparison_id": name, "case_ids": [by_suffix[a], by_suffix[b]], "fixed_conditions": fixed, "deliberate_differences": diffs} for name, a, b, diffs in pairs]
     current["evidence_review"] = {"reviewer": "CPU worker", "method": "Reviewed frozen evidence.json and exact law text. The inventory has no accepted recordings or source media; no physical equivalence can be established.", "facts": [], "gaps": [{"id": gap, "requirement": "Qualifying motion/time, illumination of persons and vehicles ahead, measured oncoming 500-foot condition, actual eye glare, and lowermost distribution require original evidence.", "source": source(INPUT / "assignment.json"), "why_existing_insufficient": "Frozen evidence inventory contains zero accepted recordings and no original Native or pixel source."}]}
     current["observations"] = [
-        {"name": "qualifying_location_and_time", "source": "original source-reviewed highway polygon, road/shoulder footprints, calendar clock, sunset/sunrise or 1,000-foot visibility/device packet", "mandatory": True},
-        {"name": "actor_motion_and_separation", "source": "20 Hz original ego, oncoming and target body/eye positions with frame joins", "mandatory": True},
-        {"name": "beam_command_and_readback", "source": "20 Hz original ego light-state command/readback plus mounted lamp pose", "mandatory": True},
-        {"name": "beam_and_glare_pixels", "source": "four original camera PNG streams, exposure/calibration and reviewed eye-target ROI", "mandatory": True},
-        {"name": "road_contour_and_load", "source": "source-reviewed road elevation profile, vehicle load and lamp orientation", "mandatory": True},
+        {"name": "original_actor_state", "source": "20 Hz original road/shoulder body footprints, motion, driver eyes and lamp command/readback joined with reviewed qualifying time and contour context", "mandatory": True},
+        {"name": "original_four_view_frame_map", "source": "all original four-camera frame identities joined to actor state and reviewed camera calibration", "mandatory": True},
+        {"name": "original_beam_pixels", "source": "original camera PNG pixels and frame-specific reviewed person, vehicle and eye ROIs", "mandatory": True},
+        {"name": "original_oncoming_distance", "source": "20 Hz measured body and eye separation through the 500-foot approach", "mandatory": True},
     ]
     names = [x["case_id"] for x in cases]
     current["requirement_dispositions"] = [

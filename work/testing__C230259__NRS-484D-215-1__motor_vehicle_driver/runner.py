@@ -33,6 +33,8 @@ def check() -> dict:
     if not isinstance(cameras, list) or [x.get("name") for x in cameras] != [
             "overview", "approach", "reference_corner", "driver_reference"]:
         raise ValueError("four selected original cameras required")
+    if config.get("camera_pose_selection", "primary") not in ("primary", "alternate"):
+        raise ValueError("selected reviewed camera pose strategy differs")
     return config
 
 
@@ -52,13 +54,14 @@ def main():
         raise ValueError("BEAM_ROAD_SITE_PACKET and original output directory required")
     from beam_native import capture
     from beam_publication import publish
-    from scenario_pipeline.worker_exchange.native_output import physical_result, seal_capture, write_result
+    from worker_exchange.native_output import physical_result, seal_capture, write_result
     import carla
 
     client = carla.Client(args.host, args.port)
     client.set_timeout(30.0)
     output = Path(args.output_dir)
-    capture(client, Path(packet_path), output, config["case_plan"])
+    capture(client, Path(packet_path), output, config["case_plan"],
+            camera_pose_selection=config.get("camera_pose_selection", "primary"))
     result = publish(output)
     write_result(output, physical_result(output, result))
     seal_capture(output, frames=900,

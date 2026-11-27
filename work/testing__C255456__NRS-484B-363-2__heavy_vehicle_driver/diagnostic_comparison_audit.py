@@ -39,7 +39,7 @@ def audit(comparison_id, left, right):
                 "clock": "time_request", "lamps": "beacon_or_sign_request",
                 "sign": "beacon_or_sign_request", "lamp_count": "beacon_or_sign_request",
                 "alternation": "beacon_or_sign_request", "zone": "zone_request",
-                "children": "children_request", "vehicle": "vehicle_request"}[field]
+                "children": "children_request"}[field]
     if changed != [expected]:
         raise ValueError("undeclared diagnostic intervention: " + repr(changed))
     if (len(ar) != len(br) or
@@ -64,11 +64,14 @@ def audit(comparison_id, left, right):
     elif field == "zone" and [x["inside_designated_zone"] for x in ar] == [
             x["inside_designated_zone"] for x in br]:
         raise ValueError("diagnostic zone contrast absent")
+    elif field == "children" and [x["children_actor_ids"] for x in ar] == [
+            x["children_actor_ids"] for x in br]:
+        raise ValueError("diagnostic child-presence contrast absent")
     return {"comparison_id": comparison_id, "case_ids": pair["case_ids"],
             "left_context_sha256": sha(aroot / "context.json"),
             "right_context_sha256": sha(broot / "context.json"),
             "requested_difference_checked": changed, "diagnostic_observed_channel_checked":
-            field not in ("children", "vehicle"), "fixed_camera_protocol_checked": True,
+            True, "fixed_camera_protocol_checked": True,
             "original_physical_difference_unverified": True,
             "legal_judgment": "unresolved"}
 

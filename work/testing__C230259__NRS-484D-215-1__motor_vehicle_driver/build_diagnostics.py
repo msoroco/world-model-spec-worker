@@ -62,8 +62,11 @@ def build(case, base, movies):
     bits = {"high": 4, "low": 2, "off": 0}[case["requested_beam"]]
     for index, state in enumerate(states):
         frame, time = index, index / 20
+        ego_x = .1 * index
         center = gap_ft * .3048 + 4 - .1 * index
         state["frame"], state["time_s"] = frame, time
+        state["actors"]["ego"]["center_m"] = [ego_x, 0, 0]
+        state["actors"]["ego"]["driver_eye_m"] = [ego_x, 0, 1.4]
         state["actors"]["ego"]["lamp_command_bits"] = bits
         state["actors"]["ego"]["lamp_state_bits"] = bits
         state["actors"]["oncoming"]["center_m"] = [center, 0, 0]
@@ -73,7 +76,11 @@ def build(case, base, movies):
         rois[index]["diagnostic_fixture"] = True
         if case["branch"] == "general":
             rois[index]["regions"].pop("oncoming_eye", None)
-        trace[index] = {"frame": frame, "time_s": time, "position_m": [0, 0, 0], "speed_mps": 2}
+        trace[index] = {"frame": frame, "time_s": time, "position_m": [ego_x, 0, 0],
+                        "position": {"x": ego_x, "y": 0, "z": 0},
+                        "heading_deg": 0, "speed_mps": 2,
+                        "speed_mph": 2 / .44704, "velocity_mps": [2, 0, 0],
+                        "control": {}}
         video_frames[index] = {"video_frame": index, "carla_frame": frame,
                                "native_frame": frame, "time_s": time}
     files.update({"actor-state.jsonl": rows(states), "camera-frame-map.jsonl": rows(maps),
@@ -106,21 +113,37 @@ def build(case, base, movies):
                           "trace.jsonl": sha_bytes(files["trace.jsonl"].encode())}
     files["capture/manifest.json"] = canonical(capture)
     files["capture/native/frames.jsonl"] = base["files"]["capture/native/frames.jsonl"]
-    files["capture/recorder_info.txt"] = "Synthetic diagnostic CARLA frame scaffold; no physical claim.\n"
+    files["capture/recorder_info.txt"] = "Create 1: vehicle.tesla.model3 (road beam diagnostic) at (0.0, 0.0, 0)\n"
     observations = []
     evidence = []
     graphs = []
     for index, state in enumerate(states):
+        participants = []
+        for role, actor in state["actors"].items():
+            cx, cy, cz = actor["center_m"]
+            length, width, height = ((.3, .3, 1.8) if role == "person" else (2, 1, 2))
+            vertices = [[cx + sx * length, cy + sy * width, cz + z * height]
+                        for sx, sy, z in ((-1, -1, 0), (-1, -1, 1), (1, -1, 0), (1, -1, 1),
+                                          (1, 1, 0), (1, 1, 1), (-1, 1, 0), (-1, 1, 1))]
+            speed = 2 if role in ("ego", "oncoming") else 0
+            participants.append({"actor_id": actor["id"], "role": role,
+                                 "blueprint": "walker.pedestrian.0001" if role == "person" else "vehicle.tesla.model3",
+                                 "body_vertices_m": vertices,
+                                 "heading_deg": 180 if role == "oncoming" else 0,
+                                 "position_m": actor["center_m"],
+                                 "velocity_mps": [-2, 0, 0] if role == "oncoming" else [speed, 0, 0],
+                                 "speed_mps": speed})
         obs = {"frame": index, "time_s": index / 20,
                "map_context": {"declared_public_way_road_ids": []},
-               "participants": [{"id": actor["id"], "role": role,
-                                 "center_m": actor["center_m"]}
-                                for role, actor in state["actors"].items()]}
+               "participants": participants}
         observations.append(obs)
         ego = state["actors"]["ego"]
         evidence.append({"actor_id": ego["id"], "ego": {
-            "body_vertices_m": [[-2, -1, 0], [-2, -1, 2], [2, -1, 0], [2, -1, 2],
-                                [2, 1, 0], [2, 1, 2], [-2, 1, 0], [-2, 1, 2]],
+            "body_vertices_m": [[ego["center_m"][0] + x, y, z]
+                                for x, y, z in ((-2, -1, 0), (-2, -1, 2),
+                                                (2, -1, 0), (2, -1, 2),
+                                                (2, 1, 0), (2, 1, 2),
+                                                (-2, 1, 0), (-2, 1, 2))],
             "heading_deg": 0, "position_m": ego["center_m"], "speed_mps": ego["speed_mps"],
             "speed_provenance": "synthetic_native_sample"},
             "original_frame": index, "original_observations": obs,

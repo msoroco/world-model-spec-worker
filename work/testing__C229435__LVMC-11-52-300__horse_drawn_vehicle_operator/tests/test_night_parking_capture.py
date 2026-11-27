@@ -62,14 +62,19 @@ class CaptureTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=Path.cwd() / ".runtime-work") as tmp:
             root = Path(tmp)
             pipeline, cameras, mapping = Sink(), Sink(), Sink()
+            before = []
             receipt = MODULE.capture_ticks(World(), Actor(2), Actor(8), pipeline, cameras, mapping,
                                            root, frame_count=3, civil_start_utc=start,
                                            subject_on_street=lambda actor: True,
-                                           subject_parked=lambda index, actor: True, diagnostic=True)
+                                           subject_parked=lambda index, actor: True,
+                                           before_tick=lambda index: before.append(index), diagnostic=True)
             self.assertEqual(receipt["frames"], 3)
             self.assertEqual(len(pipeline.rows), 3)
             self.assertEqual(len(cameras.rows), 3)
             self.assertEqual(len(mapping.rows), 3)
+            self.assertEqual(before, [0, 1, 2])
+            self.assertEqual(mapping.rows[0], (100, 5.0))
+            self.assertFalse((root / "trace.jsonl").exists())
             details = [json.loads(line) for line in (root / "night-parking-trace.jsonl").read_text().splitlines()]
             self.assertEqual(details[0]["frame"], 100)
             self.assertEqual(details[-1]["frame"], 102)

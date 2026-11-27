@@ -90,8 +90,9 @@ def validate_site(packet_path, source_root):
     for label in ("carriage_blueprint", "other_vehicle_blueprint", "responsible_person_blueprint"):
         if not native.get(label):
             raise ValueError("missing Native actor blueprint: " + label)
-    if native["carriage_blueprint"] == native["other_vehicle_blueprint"] and not native.get("carriage_physical_customization_source"):
-        raise ValueError("carriage needs physical differentiation and provenance")
+    if (native.get("carriage_actor_kind") != "vehicle" or
+            native.get("carriage_physical_customization_source") != sources["vehicle_build"]["sha256"]):
+        raise ValueError("carriage needs a CARLA vehicle actor with source-bound physical customization")
     try:
         dt.date.fromisoformat(packet["civil_date"])
     except (KeyError, TypeError, ValueError) as error:

@@ -116,7 +116,8 @@ def main():
     args = parser.parse_args()
     result = audit(Path(args.first_attempt), Path(args.second_attempt), args.comparison,
                    diagnostic=args.diagnostic_fixture,
-                   expected_frames=9 if args.diagnostic_fixture else 900)
+                   expected_frames=(json.loads((Path(args.first_attempt) / "native-source-receipt.json").read_text())["frame_count"]
+                                    if args.diagnostic_fixture else 900))
     output = Path(args.output)
     if output.exists():
         raise ValueError("comparison audit output already exists")

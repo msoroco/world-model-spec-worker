@@ -24,7 +24,7 @@ def main():
     manifest = json.loads(path.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].rsplit("__", 1)[-1]
-        attempt = RUNTIME_WORK / ("compat-" + suffix + "-v5")
+        attempt = RUNTIME_WORK / ("compat-" + suffix + "-v6")
         if not attempt.exists():
             command = [str(REPO / ".venv-cpu/bin/python"), str(REPO / "runtime.py"),
                        "compatibility", "--manifest", str(path), "--case", entry["case_id"],
@@ -48,6 +48,7 @@ def main():
                                   "sha256": sha(targets["compatibility.json"]),
                                   "log": targets["compatibility-analysis.log"].name,
                                   "negative_log": targets["negative-analysis.log"].name}
+        entry["negative"] = {"log": targets["negative-analysis.log"].name}
         print("compatibility pass", suffix, flush=True)
     path.write_text(json.dumps(manifest, indent=2) + "\n")
 

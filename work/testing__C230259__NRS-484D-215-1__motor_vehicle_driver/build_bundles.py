@@ -41,7 +41,7 @@ def _recording_description():
                             "NRS 484D.210(2) lowermost specification requires independent source review."]}
 
 
-def _config(case, description):
+def _config(case, description, *, camera_pose_selection="primary"):
     cameras = []
     for name, width, height, fov in (("overview", 1920, 1080, 70),
                                      ("approach", 1280, 720, 45),
@@ -61,6 +61,7 @@ def _config(case, description):
             "rate_hz": 20, "frame_count": 900, "duration_s": 45,
             "camera_dimensions": {x["name"]: [x["width"], x["height"]] for x in cameras},
             "cameras": cameras, "required_atoms": [], "source_packets": [],
+            "camera_pose_selection": camera_pose_selection,
             "source_requirements": ["reviewed Native highway/time and map sources",
                                     "original moving actor/eye geometry",
                                     "frame-specific reviewed person/vehicle/eye pixel ROIs"],
@@ -105,6 +106,11 @@ def main():
         folder.mkdir(parents=True, exist_ok=True)
         (folder / "config.json").write_text(_dump(config))
         (folder / "construction.json").write_text(_dump(construction))
+        fallback_config = _config(case, description, camera_pose_selection="alternate")
+        fallback_construction = _construction(case, fallback_config, description)
+        fallback_construction["mechanisms"].append(
+            "alternate source-reviewed four-camera pose set selected after primary ROI visibility failure")
+        (folder / "construction-fallback1.json").write_text(_dump(fallback_construction))
 
 
 if __name__ == "__main__":
