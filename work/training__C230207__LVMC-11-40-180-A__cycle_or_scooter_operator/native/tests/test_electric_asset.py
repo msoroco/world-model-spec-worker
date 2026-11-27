@@ -15,6 +15,15 @@ SPEC.loader.exec_module(electric_asset)
 class Blueprint:
     def __init__(self, blueprint_id):
         self.id = blueprint_id
+        self.role_name = None
+
+    def has_attribute(self, name):
+        return name == 'role_name'
+
+    def set_attribute(self, name, value):
+        if not self.has_attribute(name):
+            raise ValueError(name)
+        self.role_name = value
 
 
 class Library:
@@ -48,6 +57,7 @@ class World:
         return self.library
 
     def spawn_actor(self, blueprint, transform):
+        self.spawned_blueprint = blueprint
         self.spawned = Actor(self.actor_id)
         return self.spawned
 
@@ -77,10 +87,19 @@ class ElectricAssetTests(unittest.TestCase):
     def test_exact_reviewed_asset_binds_without_claiming_pixels(self):
         world = World(self.review['blueprint_id'])
         actor, bound = electric_asset.spawn_asset(
-            world, 'electric_bicycle', self.review, self.root, object())
+            world, 'electric_bicycle', self.review, self.root, object(),
+            role_name='c230207_reviewed_electric_subject')
         self.assertEqual(actor.id, 42)
         self.assertTrue(bound['classification_review_bound'])
         self.assertFalse(bound['original_class_pixels_verified'])
+        self.assertEqual(world.spawned_blueprint.role_name,
+                         'c230207_reviewed_electric_subject')
+
+    def test_role_name_must_be_assignment_bound(self):
+        with self.assertRaisesRegex(ValueError, 'role attribute'):
+            electric_asset.spawn_asset(World(self.review['blueprint_id']),
+                                       'electric_bicycle', self.review, self.root,
+                                       object(), role_name='unrelated_actor')
 
     def test_ordinary_bicycle_and_changed_class_fail(self):
         wrong = dict(self.review, blueprint_id='vehicle.bh.crossbike')

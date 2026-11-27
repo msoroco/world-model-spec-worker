@@ -7,6 +7,7 @@ rider pixels still need independent review after a Native recording.
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 
@@ -15,6 +16,11 @@ ORDINARY_BICYCLES = frozenset({
     'vehicle.bh.crossbike', 'vehicle.diamondback.century',
     'vehicle.gazelle.omafiets',
 })
+
+
+def review_digest(review: dict) -> str:
+    return hashlib.sha256(json.dumps(review, sort_keys=True, separators=(',', ':'))
+                          .encode('utf-8')).hexdigest()
 
 
 def bind_asset(library, machine_class: str, review: dict, source_root: Path) -> dict:
@@ -54,17 +60,23 @@ def bind_asset(library, machine_class: str, review: dict, source_root: Path) -> 
     if len(matches) != 1:
         raise ValueError('Exact reviewed electric blueprint unavailable in Native library')
     return {'machine_class': machine_class, 'blueprint_id': blueprint_id,
-            'review_source_sha256': bound, 'classification_review_bound': True,
+            'review_source_sha256': bound, 'review_sha256': review_digest(review),
+            'classification_review_bound': True,
             'original_class_pixels_verified': False,
             'original_rider_posture_verified': False,
             'legal_verdict_claimed': False}
 
 
-def spawn_asset(world, machine_class: str, review: dict, source_root: Path, transform):
+def spawn_asset(world, machine_class: str, review: dict, source_root: Path, transform,
+                role_name: str | None = None):
     bound = bind_asset(world.get_blueprint_library(), machine_class, review, source_root)
     blueprint = world.get_blueprint_library().find(bound['blueprint_id'])
     if blueprint.id != bound['blueprint_id']:
         raise ValueError('Live blueprint identity changed')
+    if role_name is not None:
+        if not role_name.startswith('c230207_') or not blueprint.has_attribute('role_name'):
+            raise ValueError('Electric Native role attribute unavailable')
+        blueprint.set_attribute('role_name', role_name)
     actor = world.spawn_actor(blueprint, transform)
     if actor is None or actor.type_id != bound['blueprint_id']:
         if actor is not None:

@@ -1,0 +1,87 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C136495__NRS-484B-270-1__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C136495__NRS-484B-270-1__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "construction": "constructions/probe_a-primary.json",
+      "construction_sha256": "2551d99e1080c531df39098be1d69f48d2133bed5691850144e927d58172f5ea",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "On the authored narrow road the two original actor controllers may miss the lateral path or lose camera coverage; fallback shortens lookahead without changing target cases or routes"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/probe_a-fallback1.json",
+          "construction_sha256": "bc984fed5375f130ecd2d6a3579103ac1ca41269a9f8e66d8b0854474d785928",
+          "trigger": {
+            "source": "original Native controller route-error history",
+            "metric": "maximum contiguous route error > 0.75 m for five frames",
+            "failure_condition": "primary attempt fails original pose/route audit"
+          },
+          "changed_knobs": [
+            "lookahead_base_m: 4.0 m to 2.5 m for both actors"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C136495__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-1__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c136495-temp/offline-probe_a-fallback1-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "proofs/offline-probe_a-fallback1.log",
+            "log_sha256": "220c70a61b1f65585858ae76ec3bd7ba086347b5d40c65da11d161e9dc421e39",
+            "construction_sha256": "bc984fed5375f130ecd2d6a3579103ac1ca41269a9f8e66d8b0854474d785928"
+          }
+        }
+      ],
+      "status": "cpu_draft",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C136495__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-1__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c136495-temp/offline-a-primary-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "proofs/offline-probe_a-primary.log",
+        "log_sha256": "3fdf0a29abcaa36522ccb7a47778103f226618e1cad812b0ccf8c6587c743ef5",
+        "construction_sha256": "2551d99e1080c531df39098be1d69f48d2133bed5691850144e927d58172f5ea"
+      }
+    },
+    {
+      "case_id": "training__C136495__NRS-484B-270-1__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "construction": "constructions/probe_b-primary.json",
+      "construction_sha256": "61fb5fdba8401934bedf66d186d2c7382a680313519380f3297838b4a4b9647b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "On the authored narrow road the two original actor controllers may miss the lateral path or lose camera coverage; fallback shortens lookahead without changing target cases or routes"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/probe_b-fallback1.json",
+          "construction_sha256": "deb949053b77e03f3411493b51ffe5a5654f7dcf589e6b417b0d7bc19a4d3186",
+          "trigger": {
+            "source": "original Native controller route-error history",
+            "metric": "maximum contiguous route error > 0.75 m for five frames",
+            "failure_condition": "primary attempt fails original pose/route audit"
+          },
+          "changed_knobs": [
+            "lookahead_base_m: 4.0 m to 2.5 m for both actors"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C136495__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-1__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c136495-temp/offline-probe_b-fallback1-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "log": "proofs/offline-probe_b-fallback1.log",
+            "log_sha256": "0b5889cc80779ad3e520435e9cdc4d012c14eec947e6b2440906822c7de5ec68",
+            "construction_sha256": "deb949053b77e03f3411493b51ffe5a5654f7dcf589e6b417b0d7bc19a4d3186"
+          }
+        }
+      ],
+      "status": "cpu_draft",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C136495__NRS-484B-270-1__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-1__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c136495-temp/offline-probe_b-primary-v2 --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "log": "proofs/offline-probe_b-primary.log",
+        "log_sha256": "d5d32bfc83efa9f7c0ff355291952342bd6407702d845279a4cf0d2811359d48",
+        "construction_sha256": "61fb5fdba8401934bedf66d186d2c7382a680313519380f3297838b4a4b9647b"
+      }
+    }
+  ]
+}

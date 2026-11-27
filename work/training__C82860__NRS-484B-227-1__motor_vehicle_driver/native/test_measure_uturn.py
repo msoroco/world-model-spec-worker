@@ -21,7 +21,10 @@ def fixture(folder, case):
                "median_bounds_m": q["median_bounds_m"],
                "opening_bounds_m": q["opening_bounds_m"],
                "barrier_bounds_m": q["barrier_bounds_m"],
-               "authored_road_ids": q["road_ids"]}
+               "authored_road_ids": q["road_ids"],
+               "native_roadways": [{"road_id": road_id, "lane_id": -1,
+                                    "heading_deg": heading}
+                                   for road_id, heading in zip(q["road_ids"], (0, 180))]}
     (folder / "divided-road-context.json").write_text(json.dumps(context) + "\n")
     source = folder / "authority-source.json"
     source.write_text('{"public_authority_establishment":"unassessed"}\n')

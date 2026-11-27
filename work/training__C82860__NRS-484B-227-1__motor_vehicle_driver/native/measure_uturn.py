@@ -11,7 +11,11 @@ import json
 import sys
 
 sys.dont_write_bytecode = True
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "analysis"))
+here = Path(__file__).resolve()
+analysis = here.parent / "analysis"
+if not analysis.is_dir():
+    analysis = here.parents[1] / "analysis"
+sys.path.insert(0, str(analysis))
 from divided_road import measure
 
 CAMERAS = ("overview", "approach", "median_reference", "driver_reference")

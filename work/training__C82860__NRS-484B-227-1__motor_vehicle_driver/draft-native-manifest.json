@@ -1,0 +1,129 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver",
+  "status": "draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "physical_acceptance_claimed": false,
+  "cases": [
+    {
+      "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening",
+      "kind": "delivery",
+      "construction": "native/bundles/authorized_opening/construction.json",
+      "construction_sha256": "13bd256c6fe3476574124c74232190e81e361b60792ca76b520642eb50f1fea3",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_crossing_location",
+            "unit": "structured",
+            "method": "saved body polygon against original median and roadway readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "An authored median gap does not prove public authority.",
+          "Original motion and four-camera pixels require source review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original median-road actor spawn may intersect authored road surface"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/authorized_opening/fallback1.json",
+          "construction_sha256": "ef9fd696119f9f520183abd260cd5a7255c81138c55d8a0edeff3ba7f11db0ad",
+          "trigger": {
+            "source": "Native try_spawn_actor",
+            "metric": "actor spawn result",
+            "failure_condition": "spawn returns None"
+          },
+          "changed_knobs": [
+            "spawn height from 1.5m to 1.8m"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing",
+      "kind": "delivery",
+      "construction": "native/bundles/barrier_crossing/construction.json",
+      "construction_sha256": "eb3d47f666f770b71c032c8af3b79d42451fdf644f926d2680319f94db69c2ea",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_crossing_location",
+            "unit": "structured",
+            "method": "saved body polygon against original median and roadway readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "An authored median gap does not prove public authority.",
+          "Original motion and four-camera pixels require source review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original median-road actor spawn may intersect authored road surface"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/barrier_crossing/fallback1.json",
+          "construction_sha256": "b71c833b74189b5212a956b93e8bcaef6d7bda53320cd0db32ed5798650f751b",
+          "trigger": {
+            "source": "Native try_spawn_actor",
+            "metric": "actor spawn result",
+            "failure_condition": "spawn returns None"
+          },
+          "changed_knobs": [
+            "spawn height from 1.5m to 1.8m"
+          ]
+        }
+      ]
+    }
+  ]
+}

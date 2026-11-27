@@ -24,7 +24,13 @@
       "kind": "planned_only",
       "target_type": "compliant_attempt",
       "physical_target": "travel without interfering with lawful rider",
-      "comparison_variable": "rider_interference_and_intent"
+      "comparison_variable": "rider_interference_and_intent",
+      "physical_risk_assessment": {
+        "risk": "Bicycle blueprint may not instantiate a visible human rider or may fail to track the narrow-lane route; actual body clearance/camera legibility is unknown",
+        "failure_trigger": "Native rider missing, wrong classification, lane departure, or one of four original camera streams lacks a required body at the interaction",
+        "fallback_status": "not_constructed_or_tested",
+        "physical_success_claimed": false
+      }
     },
     {
       "case_id": "training__C136495__NRS-484B-270-1__motor_vehicle_driver__probe_b",
@@ -32,7 +38,13 @@
       "kind": "planned_only",
       "target_type": "violating_attempt",
       "physical_target": "interfere with lawful rider; intent requires separate evidence",
-      "comparison_variable": "rider_interference_and_intent"
+      "comparison_variable": "rider_interference_and_intent",
+      "physical_risk_assessment": {
+        "risk": "Bicycle blueprint may not instantiate a visible human rider or may fail to track the narrow-lane route; actual body clearance/camera legibility is unknown",
+        "failure_trigger": "Native rider missing, wrong classification, lane departure, or one of four original camera streams lacks a required body at the interaction",
+        "fallback_status": "not_constructed_or_tested",
+        "physical_success_claimed": false
+      }
     }
   ],
   "comparisons": [
@@ -121,5 +133,190 @@
     "rel.surface_gap",
     "drv.hard_deceleration",
     "kin.yaw_rate"
-  ]
+  ],
+  "cpu_construction_checkpoint": {
+    "selected": false,
+    "conditions": {
+      "probe_a": "clear",
+      "probe_b": "intrusion"
+    },
+    "four_camera_duration_plan": {
+      "duration_s": 30,
+      "rate_hz": 20,
+      "camera_names": [
+        "overview",
+        "approach",
+        "rider_detail",
+        "driver_reference"
+      ]
+    },
+    "source_files": {
+      "runner.py": "cd3083787710a42060cceda8490e2fc9ad528d65586c4eb5a38a737605e9d4a7",
+      "native/geometry.py": "f818e27679f8f00ec21cebe77a7bc288c7a298fa989ab311f750ddd1230eee70",
+      "native/controller.py": "bcab6d9b0751038deefb61d6e1175ba1cf8b304c39c15d0844a671b7f632508a",
+      "native/scene.py": "a287a2f447a0a5dd1b74fd21c0148b06c7f982e6738c48c61820d45a4cb52964",
+      "native/runner.py": "83201491b86d9a4f3a5092190624d09e0fd8a19c4cb9c16af59ac4304fb52a40",
+      "native/finalize_rider.py": "c3b90a9e970ef2dc55a1ffab6e7db996c05a62d815a2a33ea6d4356096039e57",
+      "native/audit_comparison.py": "699e6fa6a6b720dc380875bfff86d384f5f61c227a62d42179d4c2ff5530a0ad"
+    },
+    "fixed_conditions": [
+      "authored 180 m narrow road",
+      "same driver and bicycle blueprints",
+      "same rider route and initial pose",
+      "same capture duration and cameras"
+    ],
+    "deliberate_difference": "ego requested path has a 0.48 m lateral intrusion between road stations 70 and 120 m",
+    "rider_response": "recorded only; no scripted rider braking or yaw",
+    "rider_lawful_status": "unresolved",
+    "driver_intent": "unresolved",
+    "causal_interference": "unresolved",
+    "remaining_cpu_work": [
+      "runtime public compatibility receipts for primary/fallback1",
+      "original source classification and lawful-riding review plan",
+      "canonical semantic stage proposals",
+      "independent delivery audit and canonical comparison receipts",
+      "strict scoped gate"
+    ],
+    "fallback1": {
+      "physical_risk": "Observed-pose bicycle or ego controller may not track the narrow-lane lateral ramp; route error above 0.75 m for five contiguous frames triggers local retry",
+      "changed_knobs": [
+        "controller lookahead_base_m: 4.0 to 2.5 for both actors and linked cases"
+      ],
+      "same_case_and_route": true,
+      "offline_public_proof_status": "offline_passed_for_both_exact_cases; public_compatibility_pending"
+    },
+    "independent_comparison_audit": {
+      "script": "native/audit_comparison.py",
+      "sha256": "699e6fa6a6b720dc380875bfff86d384f5f61c227a62d42179d4c2ff5530a0ad",
+      "cpu_tested": true,
+      "canonical_delivery_audit_pending": true
+    },
+    "offline_proofs": {
+      "proofs/offline-probe_a-primary.log": "3fdf0a29abcaa36522ccb7a47778103f226618e1cad812b0ccf8c6587c743ef5",
+      "proofs/offline-probe_a-fallback1.log": "220c70a61b1f65585858ae76ec3bd7ba086347b5d40c65da11d161e9dc421e39",
+      "proofs/offline-probe_b-primary.log": "d5d32bfc83efa9f7c0ff355291952342bd6407702d845279a4cf0d2811359d48",
+      "proofs/offline-probe_b-fallback1.log": "0b5889cc80779ad3e520435e9cdc4d012c14eec947e6b2440906822c7de5ec68"
+    }
+  },
+  "source_observation_mapping": {
+    "ru.bicycle": {
+      "evidence": "Original bicycle blueprint/type identity plus rider image and Native actor body; classification requires local review",
+      "channels": [
+        "ru.bicycle"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C136495__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+          "sha256": "14dd88e243431202ca547eef1f1f0cf1698cea04dfa0f82f6fef88a93d840ca5"
+        }
+      ]
+    },
+    "ru.electric_bicycle": {
+      "evidence": "Statutory alternative retained for source review; current selected rider is human-powered bicycle, so no electric-bicycle claim",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/training__C136495__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+          "sha256": "14dd88e243431202ca547eef1f1f0cf1698cea04dfa0f82f6fef88a93d840ca5"
+        }
+      ]
+    },
+    "ru.electric_scooter": {
+      "evidence": "Statutory alternative retained for source review; current selected rider is human-powered bicycle, so no scooter claim",
+      "channels": [],
+      "source_refs": [
+        {
+          "path": "inputs/training__C136495__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+          "sha256": "14dd88e243431202ca547eef1f1f0cf1698cea04dfa0f82f6fef88a93d840ca5"
+        }
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Original 20 Hz ego and rider world velocities in actor-frames.jsonl",
+      "channels": [
+        "kin.velocity"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C136495__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+          "sha256": "14dd88e243431202ca547eef1f1f0cf1698cea04dfa0f82f6fef88a93d840ca5"
+        }
+      ]
+    },
+    "drv.time_to_conflict": {
+      "evidence": "Derived approach station and relative speed diagnostic from original poses, never a legal threshold",
+      "channels": [
+        "drv.time_to_conflict"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C136495__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+          "sha256": "14dd88e243431202ca547eef1f1f0cf1698cea04dfa0f82f6fef88a93d840ca5"
+        }
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Original actor centre trajectories plus read-back Native body widths, joined by frame",
+      "channels": [
+        "rel.surface_gap"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C136495__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+          "sha256": "14dd88e243431202ca547eef1f1f0cf1698cea04dfa0f82f6fef88a93d840ca5"
+        }
+      ]
+    },
+    "drv.hard_deceleration": {
+      "evidence": "Observed rider speed differences at 20 Hz; no scripted rider braking",
+      "channels": [
+        "drv.hard_deceleration"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C136495__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+          "sha256": "14dd88e243431202ca547eef1f1f0cf1698cea04dfa0f82f6fef88a93d840ca5"
+        }
+      ]
+    },
+    "kin.yaw_rate": {
+      "evidence": "Observed rider yaw differences at 20 Hz; no scripted evasive steering",
+      "channels": [
+        "kin.yaw_rate"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C136495__NRS-484B-270-1__motor_vehicle_driver/assignment.json",
+          "sha256": "14dd88e243431202ca547eef1f1f0cf1698cea04dfa0f82f6fef88a93d840ca5"
+        }
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "both original actor bodies and narrow-road lane",
+        "interval": "startup through final observation",
+        "view": "overview"
+      },
+      {
+        "subject": "ego approach and rider route",
+        "interval": "before, during and after overtake",
+        "view": "approach"
+      },
+      {
+        "subject": "bicycle rider, body separation and movement",
+        "interval": "before, during and after overtake",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver forward sight line",
+        "interval": "startup through final observation",
+        "view": "driver_reference"
+      }
+    ]
+  }
 }
