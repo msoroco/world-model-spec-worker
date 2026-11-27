@@ -144,6 +144,63 @@
       },
       "negative": {
         "log": "selected-fixtures/braking_capacity_available/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ego_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original ego pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "emergency_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original emergency actor pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "Native emergency light-state readback, joined to independent original pixels",
+          "evidence": "observed-actors.jsonl and four synchronized original cameras"
+        },
+        "visible_indication": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original motion or hand-signal review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "officer_direction": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original officer-direction review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "braking_response": {
+          "entrypoint": "runner.py",
+          "method": "Original ego brake control readback joined to approach geometry",
+          "evidence": "observed-actors.jsonl and video_frames.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__braking_capacity_available",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc62fbac7d87b47f092eb8e1a90b5c9419541d12d54b20ed2901cab1d51dfbe3",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__braking_capacity_available --self-test positive",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__braking_capacity_available --self-test negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original physical travel completion unverified",
+        "test_log": "delivery-audit/braking_capacity_available-positive.log",
+        "test_log_sha256": "3859fe33d79fafcd79574337c58accc2541567c43737a6db349dff27be7b9ce6",
+        "negative_log": "delivery-audit/braking_capacity_available-negative.log",
+        "negative_log_sha256": "e2dfe6d6c1240caa70e17459652f68d08e643b9421f6cdb8dec82d54edad6efe"
       }
     },
     {
@@ -285,6 +342,63 @@
       },
       "negative": {
         "log": "selected-fixtures/not_available/primary-negative-analysis.log"
+      },
+      "acquisition": {
+        "ego_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original ego pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "emergency_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original emergency actor pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "Native emergency light-state readback, joined to independent original pixels",
+          "evidence": "observed-actors.jsonl and four synchronized original cameras"
+        },
+        "visible_indication": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original motion or hand-signal review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "officer_direction": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original officer-direction review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "braking_response": {
+          "entrypoint": "runner.py",
+          "method": "Original ego brake control readback joined to approach geometry",
+          "evidence": "observed-actors.jsonl and video_frames.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__not_available",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc62fbac7d87b47f092eb8e1a90b5c9419541d12d54b20ed2901cab1d51dfbe3",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__not_available --self-test positive",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__not_available --self-test negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original physical travel completion unverified",
+        "test_log": "delivery-audit/not_available-positive.log",
+        "test_log_sha256": "c21dc82b89a365a330b6fcb2e37f384b6abe61496c504af5e61b4894254aba5a",
+        "negative_log": "delivery-audit/not_available-negative.log",
+        "negative_log_sha256": "e2dfe6d6c1240caa70e17459652f68d08e643b9421f6cdb8dec82d54edad6efe"
       }
     },
     {
@@ -425,6 +539,63 @@
       },
       "negative": {
         "log": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/public-missing-source.log"
+      },
+      "acquisition": {
+        "ego_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original ego pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "emergency_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original emergency actor pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "Native emergency light-state readback, joined to independent original pixels",
+          "evidence": "observed-actors.jsonl and four synchronized original cameras"
+        },
+        "visible_indication": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original motion or hand-signal review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "officer_direction": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original officer-direction review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "braking_response": {
+          "entrypoint": "runner.py",
+          "method": "Original ego brake control readback joined to approach geometry",
+          "evidence": "observed-actors.jsonl and video_frames.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__braking_capacity_available",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc62fbac7d87b47f092eb8e1a90b5c9419541d12d54b20ed2901cab1d51dfbe3",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__braking_capacity_available --self-test positive",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__braking_capacity_available --self-test negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original physical travel completion unverified",
+        "test_log": "delivery-audit/visible_driver_hand_signal-braking_capacity_available-positive.log",
+        "test_log_sha256": "c6a96abe0a1dccf77745b01c5c316713d8edeb4aacb4c2efdef81b8df153967b",
+        "negative_log": "delivery-audit/visible_driver_hand_signal-braking_capacity_available-negative.log",
+        "negative_log_sha256": "e2dfe6d6c1240caa70e17459652f68d08e643b9421f6cdb8dec82d54edad6efe"
       }
     },
     {
@@ -565,6 +736,63 @@
       },
       "negative": {
         "log": "branch-fixtures/visible_driver_hand_signal__not_available/public-missing-source.log"
+      },
+      "acquisition": {
+        "ego_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original ego pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "emergency_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original emergency actor pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "Native emergency light-state readback, joined to independent original pixels",
+          "evidence": "observed-actors.jsonl and four synchronized original cameras"
+        },
+        "visible_indication": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original motion or hand-signal review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "officer_direction": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original officer-direction review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "braking_response": {
+          "entrypoint": "runner.py",
+          "method": "Original ego brake control readback joined to approach geometry",
+          "evidence": "observed-actors.jsonl and video_frames.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__not_available",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc62fbac7d87b47f092eb8e1a90b5c9419541d12d54b20ed2901cab1d51dfbe3",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__not_available --self-test positive",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__not_available --self-test negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original physical travel completion unverified",
+        "test_log": "delivery-audit/visible_driver_hand_signal-not_available-positive.log",
+        "test_log_sha256": "5bbef541ca39f989348bc48cb2099e18c7e6d1e8a2f021a118ef7f241964e150",
+        "negative_log": "delivery-audit/visible_driver_hand_signal-not_available-negative.log",
+        "negative_log_sha256": "e2dfe6d6c1240caa70e17459652f68d08e643b9421f6cdb8dec82d54edad6efe"
       }
     },
     {
@@ -705,6 +933,63 @@
       },
       "negative": {
         "log": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/public-missing-source.log"
+      },
+      "acquisition": {
+        "ego_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original ego pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "emergency_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original emergency actor pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "Native emergency light-state readback, joined to independent original pixels",
+          "evidence": "observed-actors.jsonl and four synchronized original cameras"
+        },
+        "visible_indication": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original motion or hand-signal review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "officer_direction": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original officer-direction review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "braking_response": {
+          "entrypoint": "runner.py",
+          "method": "Original ego brake control readback joined to approach geometry",
+          "evidence": "observed-actors.jsonl and video_frames.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc62fbac7d87b47f092eb8e1a90b5c9419541d12d54b20ed2901cab1d51dfbe3",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available --self-test positive",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available --self-test negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original physical travel completion unverified",
+        "test_log": "delivery-audit/officer_directed_otherwise-braking_capacity_available-positive.log",
+        "test_log_sha256": "26fd19afeb4f8453d58acade0300bc81b4f360d0cbba8274fabb97a3cbf14d8d",
+        "negative_log": "delivery-audit/officer_directed_otherwise-braking_capacity_available-negative.log",
+        "negative_log_sha256": "e2dfe6d6c1240caa70e17459652f68d08e643b9421f6cdb8dec82d54edad6efe"
       }
     },
     {
@@ -845,6 +1130,63 @@
       },
       "negative": {
         "log": "branch-fixtures/officer_directed_otherwise__not_available/public-missing-source.log"
+      },
+      "acquisition": {
+        "ego_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original ego pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "emergency_motion": {
+          "entrypoint": "runner.py",
+          "method": "Original emergency actor pose, body and speed readback each Native frame",
+          "evidence": "observed-actors.jsonl"
+        },
+        "flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "Native emergency light-state readback, joined to independent original pixels",
+          "evidence": "observed-actors.jsonl and four synchronized original cameras"
+        },
+        "visible_indication": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original motion or hand-signal review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "officer_direction": {
+          "entrypoint": "from_original.py",
+          "method": "Frame-bound original officer-direction review",
+          "evidence": "emergency_review.json and original cameras"
+        },
+        "braking_response": {
+          "entrypoint": "runner.py",
+          "method": "Original ego brake control readback joined to approach geometry",
+          "evidence": "observed-actors.jsonl and video_frames.jsonl"
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__not_available",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc62fbac7d87b47f092eb8e1a90b5c9419541d12d54b20ed2901cab1d51dfbe3",
+        "command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__not_available --self-test positive",
+        "negative_command": ".venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__not_available --self-test negative",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original physical travel completion unverified",
+        "test_log": "delivery-audit/officer_directed_otherwise-not_available-positive.log",
+        "test_log_sha256": "f27a1b5ddd173f1cb8551b44bcca821903dd8136a1bc9f6e93901e65c0e8baba",
+        "negative_log": "delivery-audit/officer_directed_otherwise-not_available-negative.log",
+        "negative_log_sha256": "e2dfe6d6c1240caa70e17459652f68d08e643b9421f6cdb8dec82d54edad6efe"
       }
     }
   ]

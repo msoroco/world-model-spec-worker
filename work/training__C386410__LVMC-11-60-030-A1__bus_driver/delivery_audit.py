@@ -68,9 +68,8 @@ def audit(case, attempt, saved, output):
             'Saved-only original processing incomplete')
     result = read(Path(processing['result']).resolve())
     require(result.get('case_id') == case and result.get('provenance_kind') == 'native' and
-            result.get('diagnostic_fixture') is not True and
-            result.get('maneuver_completed') is True,
-            'Saved original bus physical completion unverified')
+            result.get('diagnostic_fixture') is not True,
+            'Saved original result provenance unverified')
     measured = measure_saved(attempt)
     require(measured['stationary_frames'] > 0 and measured['zone_occupied_frames'] > 0,
             'Original stationary bus event or zone occupancy absent')
@@ -98,6 +97,10 @@ def audit(case, attempt, saved, output):
     os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(output.parent)
     sys.path.insert(0, str(repo / 'runtime' / 'scenario_pipeline'))
     from worker_exchange.media import audit as decode
+    from worker_exchange.native_output import assess_physical
+    physical = assess_physical(attempt, config)
+    require(physical['setup_confirmed'] and physical['maneuver_completed'],
+            'Original Native bus physical completion unverified')
     decode_dir = output.parent / (case + '-source-decode')
     decode_dir.mkdir(parents=True, exist_ok=True)
     receipts = {name: decode(attempt / (name + '.mkv'), 600,
@@ -111,8 +114,8 @@ def audit(case, attempt, saved, output):
                'source_result_sha256': processing['result_sha256'],
                'video': 'overview.mkv', 'video_sha256': sha(attempt / 'overview.mkv'),
                'trace': str(core), 'trace_sha256': sha(core),
-               'source_decode_receipt_path': str(decode_dir / 'front.json'),
-               'source_decode_receipt_sha256': sha(decode_dir / 'front.json'),
+               'source_decode_receipt_path': str(decode_dir / 'overview.json'),
+               'source_decode_receipt_sha256': sha(decode_dir / 'overview.json'),
                'source_decode_auditor_sha256': receipts['overview']['auditor_sha256'],
                'auditor_path': str(Path(__file__).resolve()), 'auditor_sha256': sha(__file__),
                'source_measurement': measured, 'legal_verdict_claimed': False}

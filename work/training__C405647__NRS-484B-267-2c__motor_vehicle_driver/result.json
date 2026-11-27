@@ -1,14 +1,13 @@
 {
   "assignment_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver",
   "input_sha256": "589b8ebe76bff9ba617922d75a8cbad0eaba7867c6f5b78fbf3f25f8afec406a",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Six draft cases now have validated canonical semantic stages. The four exact hand-signal/officer-direction branches pass final-byte offline and public compatibility with missing-source negatives, plus eight saved-only positive/negative outcomes preserving sources. Branch independent delivery and final selected manifest audits remain; original physical and legal outcomes are unclaimed.",
-  "readiness_kind": "implementation_checkpoint",
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 6,
-  "cases_selected": 0,
-  "candidate_plans_proven": 4,
-  "comparison_audits_passed": 0,
+  "cases_selected": 6,
+  "candidate_plans_proven": 6,
+  "comparison_audits_passed": 3,
   "carla_executed": false,
   "recordings_accepted": 0,
   "cpu_proofs": [
@@ -162,5 +161,14 @@
       "log": "work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/native/branch-saved-proof.log",
       "log_sha256": "df2e065116d308ef61ce88a21ddef7de32dac791a8295b077ca84f05fb411798"
     }
-  ]
+  ],
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "native/exact-runner-tests.log",
+      "sha256": "401ea9599437a86c042286cc25bc66487e33cd8c124b6b7b347c0cca513afc88"
+    }
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C405647__NRS-484B-267-2c__motor_vehicle_driver --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__braking_capacity_available --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

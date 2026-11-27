@@ -1,14 +1,41 @@
 {
-  "cell_id": "C386410",
   "actor": "bus_driver",
+  "cell_id": "C386410",
   "status": "draft",
-  "sweep_specs": [],
   "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "bus-original-place-and-event-review",
+      "target_law_id": "LVMC-11-60-030-A1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "other than a tour bus",
+          "note": "Original vehicle class or permit record must identify tour buses."
+        },
+        {
+          "phrase": "stand or park such vehicle upon any street",
+          "note": "Original movement, duration, driver and occupancy evidence must distinguish standing or parking from a transient stop."
+        },
+        {
+          "phrase": "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]",
+          "note": "Administrative designation for assigned route origin or destination is not supplied."
+        }
+      ],
+      "rationale": "Eight exact requested branch constructions selected; original physical and administrative authority review open.",
+      "missing_inputs": [
+        "Original Native pixels and stationary event review",
+        "Original designation authority under Section 11.60.010",
+        "Original vehicle class and route assignment records"
+      ]
+    }
+  ],
   "cases": [
     {
-      "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__designated_terminus",
-      "target_law_id": "LVMC-11-60-030-A1",
-      "target_type": "attempt",
+      "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected shared context for canonical stage validation.",
       "recording_description": {
         "channels": [
           {
@@ -105,22 +132,143 @@
         ]
       },
       "variable_assignments": {
-        "bus_standing_location": {
+        "requested_bus_branch": {
           "kind": "world_setup",
-          "value": "designated_terminus",
-          "unit": "category"
+          "value": "baseline"
         }
       },
       "unresolved_judgment_calls": [
-        "official designation",
-        "standing or parking legal characterization"
+        "other than a tour bus",
+        "stand or park such vehicle upon any street",
+        "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]"
+      ]
+    },
+    {
+      "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__designated_terminus",
+      "target_law_id": "LVMC-11-60-030-A1",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact statutory place, event or vehicle-class contrast; original source and authority review pending.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.bus",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original frame-joined bus history, zone readback and source-bound context",
+            "time_window": "600 original frames",
+            "reference_frame": "one-way road 1 parking lane -2",
+            "uncertainty": "official designation, vehicle/operator status, actual pixels and 50 ms sampling require review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original frame-joined bus history, zone readback and source-bound context",
+            "time_window": "600 original frames",
+            "reference_frame": "one-way road 1 parking lane -2",
+            "uncertainty": "official designation, vehicle/operator status, actual pixels and 50 ms sampling require review"
+          },
+          {
+            "name": "st.transit_stop",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original frame-joined bus history, zone readback and source-bound context",
+            "time_window": "600 original frames",
+            "reference_frame": "one-way road 1 parking lane -2",
+            "uncertainty": "official designation, vehicle/operator status, actual pixels and 50 ms sampling require review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original frame-joined bus history, zone readback and source-bound context",
+            "time_window": "600 original frames",
+            "reference_frame": "one-way road 1 parking lane -2",
+            "uncertainty": "official designation, vehicle/operator status, actual pixels and 50 ms sampling require review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original frame-joined bus history, zone readback and source-bound context",
+            "time_window": "600 original frames",
+            "reference_frame": "one-way road 1 parking lane -2",
+            "uncertainty": "official designation, vehicle/operator status, actual pixels and 50 ms sampling require review"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original frame-joined bus history, zone readback and source-bound context",
+            "time_window": "600 original frames",
+            "reference_frame": "one-way road 1 parking lane -2",
+            "uncertainty": "official designation, vehicle/operator status, actual pixels and 50 ms sampling require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original frame-joined bus history, zone readback and source-bound context",
+            "time_window": "600 original frames",
+            "reference_frame": "one-way road 1 parking lane -2",
+            "uncertainty": "official designation, vehicle/operator status, actual pixels and 50 ms sampling require review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original frame-joined bus history, zone readback and source-bound context",
+            "time_window": "600 original frames",
+            "reference_frame": "one-way road 1 parking lane -2",
+            "uncertainty": "official designation, vehicle/operator status, actual pixels and 50 ms sampling require review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original frame-joined bus history, zone readback and source-bound context",
+            "time_window": "600 original frames",
+            "reference_frame": "one-way road 1 parking lane -2",
+            "uncertainty": "official designation, vehicle/operator status, actual pixels and 50 ms sampling require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "route_designation_source",
+            "unit": "structured",
+            "method": "Original referenced bytes with later independent administrative review"
+          }
+        ],
+        "limitations": [
+          "Map marker does not prove official designation or legal standing."
+        ]
+      },
+      "variable_assignments": {
+        "requested_bus_branch": {
+          "kind": "world_setup",
+          "value": "designated_terminus"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "other than a tour bus",
+        "stand or park such vehicle upon any street",
+        "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]"
       ],
-      "rationale": "Exact source-joined bus standing location comparison."
+      "paired_probe_id": "bus-branch-comparison",
+      "deliberate_differences": [
+        "requested_bus_branch"
+      ],
+      "probe": {
+        "primary_variable": "requested_bus_branch",
+        "comparison_or_standard": "source-bound reference case",
+        "target_value_or_branch": "designated_terminus"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__undesignated_street",
       "target_law_id": "LVMC-11-60-030-A1",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact statutory place, event or vehicle-class contrast; original source and authority review pending.",
       "recording_description": {
         "channels": [
           {
@@ -217,22 +365,31 @@
         ]
       },
       "variable_assignments": {
-        "bus_standing_location": {
+        "requested_bus_branch": {
           "kind": "world_setup",
-          "value": "undesignated_street",
-          "unit": "category"
+          "value": "undesignated_street"
         }
       },
       "unresolved_judgment_calls": [
-        "official designation",
-        "standing or parking legal characterization"
+        "other than a tour bus",
+        "stand or park such vehicle upon any street",
+        "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]"
       ],
-      "rationale": "Exact source-joined bus standing location comparison."
+      "paired_probe_id": "bus-branch-comparison",
+      "deliberate_differences": [
+        "requested_bus_branch"
+      ],
+      "probe": {
+        "primary_variable": "requested_bus_branch",
+        "comparison_or_standard": "source-bound reference case",
+        "target_value_or_branch": "undesignated_street"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stop",
       "target_law_id": "LVMC-11-60-030-A1",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact statutory place, event or vehicle-class contrast; original source and authority review pending.",
       "recording_description": {
         "channels": [
           {
@@ -329,22 +486,31 @@
         ]
       },
       "variable_assignments": {
-        "bus_standing_location": {
+        "requested_bus_branch": {
           "kind": "world_setup",
-          "value": "bus_stop",
-          "unit": "category"
+          "value": "bus_stop"
         }
       },
       "unresolved_judgment_calls": [
-        "official designation",
-        "standing or parking legal characterization"
+        "other than a tour bus",
+        "stand or park such vehicle upon any street",
+        "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]"
       ],
-      "rationale": "Exact source-joined bus standing location comparison."
+      "paired_probe_id": "bus-branch-comparison",
+      "deliberate_differences": [
+        "requested_bus_branch"
+      ],
+      "probe": {
+        "primary_variable": "requested_bus_branch",
+        "comparison_or_standard": "source-bound reference case",
+        "target_value_or_branch": "bus_stop"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stand",
       "target_law_id": "LVMC-11-60-030-A1",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact statutory place, event or vehicle-class contrast; original source and authority review pending.",
       "recording_description": {
         "channels": [
           {
@@ -441,22 +607,31 @@
         ]
       },
       "variable_assignments": {
-        "bus_standing_location": {
+        "requested_bus_branch": {
           "kind": "world_setup",
-          "value": "bus_stand",
-          "unit": "category"
+          "value": "bus_stand"
         }
       },
       "unresolved_judgment_calls": [
-        "official designation",
-        "standing or parking legal characterization"
+        "other than a tour bus",
+        "stand or park such vehicle upon any street",
+        "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]"
       ],
-      "rationale": "Exact source-joined bus standing location comparison."
+      "paired_probe_id": "bus-branch-comparison",
+      "deliberate_differences": [
+        "requested_bus_branch"
+      ],
+      "probe": {
+        "primary_variable": "requested_bus_branch",
+        "comparison_or_standard": "source-bound reference case",
+        "target_value_or_branch": "bus_stand"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__route_origin",
       "target_law_id": "LVMC-11-60-030-A1",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact statutory place, event or vehicle-class contrast; original source and authority review pending.",
       "recording_description": {
         "channels": [
           {
@@ -553,22 +728,31 @@
         ]
       },
       "variable_assignments": {
-        "bus_standing_location": {
+        "requested_bus_branch": {
           "kind": "world_setup",
-          "value": "route_origin",
-          "unit": "category"
+          "value": "route_origin"
         }
       },
       "unresolved_judgment_calls": [
-        "official designation",
-        "standing or parking legal characterization"
+        "other than a tour bus",
+        "stand or park such vehicle upon any street",
+        "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]"
       ],
-      "rationale": "Exact source-joined bus standing location comparison."
+      "paired_probe_id": "bus-branch-comparison",
+      "deliberate_differences": [
+        "requested_bus_branch"
+      ],
+      "probe": {
+        "primary_variable": "requested_bus_branch",
+        "comparison_or_standard": "source-bound reference case",
+        "target_value_or_branch": "route_origin"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__transient_stop",
       "target_law_id": "LVMC-11-60-030-A1",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact statutory place, event or vehicle-class contrast; original source and authority review pending.",
       "recording_description": {
         "channels": [
           {
@@ -665,22 +849,31 @@
         ]
       },
       "variable_assignments": {
-        "bus_standing_location": {
+        "requested_bus_branch": {
           "kind": "world_setup",
-          "value": "transient_stop",
-          "unit": "category"
+          "value": "transient_stop"
         }
       },
       "unresolved_judgment_calls": [
-        "official designation",
-        "standing or parking legal characterization"
+        "other than a tour bus",
+        "stand or park such vehicle upon any street",
+        "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]"
       ],
-      "rationale": "Exact source-joined bus standing location comparison."
+      "paired_probe_id": "bus-branch-comparison",
+      "deliberate_differences": [
+        "requested_bus_branch"
+      ],
+      "probe": {
+        "primary_variable": "requested_bus_branch",
+        "comparison_or_standard": "source-bound reference case",
+        "target_value_or_branch": "transient_stop"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__parking_other_street",
       "target_law_id": "LVMC-11-60-030-A1",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact statutory place, event or vehicle-class contrast; original source and authority review pending.",
       "recording_description": {
         "channels": [
           {
@@ -777,22 +970,31 @@
         ]
       },
       "variable_assignments": {
-        "bus_standing_location": {
+        "requested_bus_branch": {
           "kind": "world_setup",
-          "value": "parking_other_street",
-          "unit": "category"
+          "value": "parking_other_street"
         }
       },
       "unresolved_judgment_calls": [
-        "official designation",
-        "standing or parking legal characterization"
+        "other than a tour bus",
+        "stand or park such vehicle upon any street",
+        "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]"
       ],
-      "rationale": "Exact source-joined bus standing location comparison."
+      "paired_probe_id": "bus-branch-comparison",
+      "deliberate_differences": [
+        "requested_bus_branch"
+      ],
+      "probe": {
+        "primary_variable": "requested_bus_branch",
+        "comparison_or_standard": "source-bound reference case",
+        "target_value_or_branch": "parking_other_street"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__tour_bus_other_street",
       "target_law_id": "LVMC-11-60-030-A1",
-      "target_type": "attempt",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact statutory place, event or vehicle-class contrast; original source and authority review pending.",
       "recording_description": {
         "channels": [
           {
@@ -889,17 +1091,25 @@
         ]
       },
       "variable_assignments": {
-        "bus_standing_location": {
+        "requested_bus_branch": {
           "kind": "world_setup",
-          "value": "tour_bus_other_street",
-          "unit": "category"
+          "value": "tour_bus_other_street"
         }
       },
       "unresolved_judgment_calls": [
-        "official designation",
-        "standing or parking legal characterization"
+        "other than a tour bus",
+        "stand or park such vehicle upon any street",
+        "which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010]"
       ],
-      "rationale": "Exact source-joined bus standing location comparison."
+      "paired_probe_id": "bus-branch-comparison",
+      "deliberate_differences": [
+        "requested_bus_branch"
+      ],
+      "probe": {
+        "primary_variable": "requested_bus_branch",
+        "comparison_or_standard": "source-bound reference case",
+        "target_value_or_branch": "tour_bus_other_street"
+      }
     }
   ]
 }

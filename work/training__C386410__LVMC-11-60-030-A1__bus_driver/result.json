@@ -1,28 +1,40 @@
 {
   "assignment_id": "training__C386410__LVMC-11-60-030-A1__bus_driver",
   "input_sha256": "2b08248c52fb70b463ed823df08981c4d6040b6d9f431b0fb53e43dec0290e45",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Two exact primary constructions pass offline, full positive/missing-source compatibility, saved-only processing and synthetic physical/lifecycle proofs on the current pinned runtime. Eight variants are planned, but six lack executable bundles, and candidate, semantic and independent original-only audit proof chains remain unfinished CPU work. No physical or legal outcome is claimed.",
-  "readiness_kind": "implementation_checkpoint",
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 8,
-  "cases_selected": 2,
-  "candidate_plans_proven": 2,
-  "comparison_audits_passed": 0,
+  "cases_selected": 8,
+  "candidate_plans_proven": 16,
+  "comparison_audits_passed": 7,
   "carla_executed": false,
   "recordings_accepted": 0,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python work/training__C386410__LVMC-11-60-030-A1__bus_driver/analysis/test_saved_source.py",
+      "command": ".venv-cpu/bin/python -B work/training__C386410__LVMC-11-60-030-A1__bus_driver/analysis/test_saved_source.py",
       "exit_code": 0,
       "log": "analysis/saved-source-cpu.log",
       "sha256": "428099b1924c0a124d35db2228b8e7d117afe9c8d1706de44ff3087c29d5264f"
     },
     {
-      "command": ".venv-cpu/bin/python work/training__C386410__LVMC-11-60-030-A1__bus_driver/analysis/test_comparison.py",
+      "command": ".venv-cpu/bin/python -B work/training__C386410__LVMC-11-60-030-A1__bus_driver/analysis/test_comparison.py",
       "exit_code": 0,
       "log": "analysis/comparison-cpu.log",
       "sha256": "6087ccc076aa1d385a6586fab523f5f7f22be09bf6d9b0ef9735a4fdd62a5cb9"
+    },
+    {
+      "command": "PYTHONPATH=work/training__C386410__LVMC-11-60-030-A1__bus_driver .venv-cpu/bin/python -B work/training__C386410__LVMC-11-60-030-A1__bus_driver/tests/test_native.py",
+      "exit_code": 0,
+      "log": "analysis/native-cpu.log",
+      "sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C386410__LVMC-11-60-030-A1__bus_driver/prove_comparisons.py",
+      "exit_code": 0,
+      "log": "analysis/seven-comparisons-cpu.log",
+      "sha256": "0ec93a2d5dbdb71196dcbea39e5c2db519b8e0820df1e56a34bacd4bfb6e74da"
     }
-  ]
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C386410__LVMC-11-60-030-A1__bus_driver --case training__C386410__LVMC-11-60-030-A1__bus_driver__designated_terminus --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

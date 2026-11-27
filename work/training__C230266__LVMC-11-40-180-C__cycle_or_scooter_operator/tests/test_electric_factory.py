@@ -53,6 +53,10 @@ class ConditionalFactoryChecks(unittest.TestCase):
             inventory.write_text(json.dumps({'assets': assets[:1]}))
             with self.assertRaisesRegex(ValueError, 'Both source-bound'):
                 build(inventory)
+            inventory.write_text(json.dumps({'assets': [assets[0],
+                {**assets[1], 'blueprint_id': assets[0]['blueprint_id']}]}))
+            with self.assertRaisesRegex(ValueError, 'One Native blueprint'):
+                build(inventory)
 
 
 if __name__ == '__main__':

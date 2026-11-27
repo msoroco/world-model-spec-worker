@@ -10,7 +10,8 @@ import sys
 
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent / 'analysis'))
-from bus_standing import measure_saved
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from variant_bus_standing import measure_saved
 
 FIXED = ('vehicle_class', 'route_id', 'street_id', 'controller_policy',
          'weather_policy', 'capture_profile')
@@ -20,6 +21,11 @@ ZONE_PAIRS = {
     'location_bus_stand': ('bus_stand', 'other_street'),
     'location_origin': ('route_origin', 'other_street'),
 }
+EVENT_PAIRS = {
+    'standing_event': ('standing', 'transient_stop'),
+    'parking_event': ('parking_other_street', 'transient_stop'),
+}
+CLASS_PAIRS = {'tour_bus_exclusion': ('route_bus_non_tour', 'tour_bus')}
 
 
 def digest(path):
@@ -27,27 +33,38 @@ def digest(path):
 
 
 def audit(left, right, comparison_id, *, source_kind='original_native'):
-    if comparison_id not in ZONE_PAIRS:
+    if comparison_id not in ZONE_PAIRS and comparison_id not in EVENT_PAIRS and comparison_id not in CLASS_PAIRS:
         raise ValueError('unknown exact bus comparison')
     left, right = Path(left), Path(right)
     measured = [measure_saved(root, source_kind=source_kind) for root in (left, right)]
     contexts = [json.loads((root / 'bus-context.json').read_text()) for root in (left, right)]
-    for key in FIXED:
+    fixed = tuple(key for key in FIXED if not (comparison_id in CLASS_PAIRS and key == 'vehicle_class'))
+    for key in fixed:
         if not contexts[0].get(key) or contexts[0].get(key) != contexts[1].get(key):
             raise ValueError('fixed comparison condition differs: ' + key)
     actual = tuple(context['zone']['kind'] for context in contexts)
-    if actual != ZONE_PAIRS[comparison_id]:
-        raise ValueError('declared location difference absent or reversed')
-    if contexts[0]['zone']['id'] == contexts[1]['zone']['id']:
-        raise ValueError('distinct zone identities required')
+    if comparison_id in ZONE_PAIRS:
+        if actual != ZONE_PAIRS[comparison_id]:
+            raise ValueError('declared location difference absent or reversed')
+        if contexts[0]['zone']['id'] == contexts[1]['zone']['id']:
+            raise ValueError('distinct zone identities required')
+        difference = 'zone.kind'
+    elif comparison_id in EVENT_PAIRS:
+        if actual != ('other_street', 'other_street') or tuple(c.get('behavior_variant', 'standing') for c in contexts) != EVENT_PAIRS[comparison_id]:
+            raise ValueError('declared stationary-event difference absent or reversed')
+        difference = 'behavior_variant'
+    else:
+        if actual != ('other_street', 'other_street') or tuple(c.get('vehicle_class') for c in contexts) != CLASS_PAIRS[comparison_id]:
+            raise ValueError('declared vehicle-class difference absent or reversed')
+        difference = 'vehicle_class'
     for root, result in zip((left, right), measured):
-        if result['stationary_frames'] <= 0 or result['zone_occupied_frames'] <= 0:
+        if result['zone_occupied_frames'] <= 0 or (comparison_id not in EVENT_PAIRS and result['stationary_frames'] <= 0):
             raise ValueError('observed stationary event or zone occupancy absent')
         if result['source_kind'] != source_kind:
             raise ValueError('source provenance differs')
     return {'format': 'bus-standing-comparison-audit-v1',
             'comparison_id': comparison_id, 'passed': True,
-            'fixed_conditions': list(FIXED), 'deliberate_difference': 'zone.kind',
+            'fixed_conditions': list(fixed), 'deliberate_difference': difference,
             'observed_zone_kinds': list(actual),
             'measurements': measured,
             'context_sha256': [digest(root / 'bus-context.json') for root in (left, right)],

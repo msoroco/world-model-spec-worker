@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'native'))
 from exit_candidate import CAMERAS, FRAMES, measure, target
 from exit_geometry import check as geometry_check
 from exit_finalize import AUTHORITY, observation
+from exit_comparison import compare_facts
 from exit_runner import check as runner_check, control as exit_control
 
 
@@ -42,6 +43,29 @@ def make_sources(mode):
 
 
 class ExitCandidate(unittest.TestCase):
+    def test_unselected_exit_comparison_checks_fixed_sources_and_contrast(self):
+        indicated = measure(*make_sources('indicated_exit'))
+        outside = measure(*make_sources('outside_exit'))
+        fixed = ('road.xodr', *AUTHORITY)
+        for facts in (indicated, outside):
+            facts['source_sha256'] = {name: hashlib.sha256(name.encode()).hexdigest()
+                                      for name in fixed}
+            facts['access_review_status'] = 'synthetic_diagnostic'
+            facts['device_review_status'] = 'synthetic_diagnostic'
+        comparison = compare_facts(indicated, outside)
+        self.assertFalse(comparison['selected_for_delivery'])
+        self.assertEqual(comparison['fixed_source_paths'], list(fixed))
+        altered = json.loads(json.dumps(outside))
+        altered['source_sha256']['device-content.txt'] = '0' * 64
+        with self.assertRaisesRegex(ValueError, 'fixed source differs'):
+            compare_facts(indicated, altered)
+        with self.assertRaisesRegex(ValueError, 'lacks indicated/outside contrast'):
+            compare_facts(outside, indicated)
+        altered = json.loads(json.dumps(outside))
+        altered['source_kind'] = 'original_native'
+        with self.assertRaisesRegex(ValueError, 'mixes original and diagnostic'):
+            compare_facts(indicated, altered)
+
     def test_unselected_native_runner_plan_and_controller(self):
         cameras = [{'name': name, 'width': 1920 if name == 'overview' else 1280,
                     'height': 1080 if name == 'overview' else 720}

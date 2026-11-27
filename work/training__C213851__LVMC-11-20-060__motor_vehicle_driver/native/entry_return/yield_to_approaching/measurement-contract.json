@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__yield_to_approaching",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "roadway_entry_observation",
+      "method": "measure_roadway_return",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-rows.jsonl",
+        "captured-source-hashes.json",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "capture/native/frames.jsonl",
+        "original-entry-site-review.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "roadway-entry-yield",
+      "source": "inputs/coverage/candidate-cells.json",
+      "output_key": "site_scope_context",
+      "method": "source_verified_entry_site",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "original-site-review.json",
+        "original-entry-site-review.json",
+        "site-review.json",
+        "road.xodr",
+        "site-sources/district.json",
+        "site-sources/driveway.json",
+        "site-sources/sidewalk.json",
+        "site-sources/pedestrian.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "original-entry-site-review.json"
+    ],
+    "error_contains": "Missing required source: original-entry-site-review.json"
+  }
+}

@@ -366,86 +366,98 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "ru.bus",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "Source-bound original bus and stationary-place review"
     },
     {
-      "name": "bus_standing_location",
-      "unit": "category",
+      "name": "st.curb_zone",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Record standing/parking interval, assigned route and official terminus designation."
+      "purpose": "Source-bound original bus and stationary-place review"
+    },
+    {
+      "name": "drv.standing_or_parked",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Source-bound original bus and stationary-place review"
+    },
+    {
+      "name": "rel.occupies",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "Source-bound original bus and stationary-place review"
     }
   ],
   "source_observation_mapping": {
     "ru.bus": {
-      "evidence": "Proposed capture only: the bus judged. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed original Native capture channel ru.bus with source-hashed route, class, stationary interval and place context. Official designation and legal status remain for independent review.",
       "channels": [
-        "bus_standing_location"
+        "ru.bus"
       ],
       "source_refs": [
         "inputs/training__C386410__LVMC-11-60-030-A1__bus_driver/assignment.json"
       ]
     },
     "ru.tour_bus_or_limousine": {
-      "evidence": "Proposed capture only: the class the rule excludes. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed original Native capture channel ru.bus with source-hashed route, class, stationary interval and place context. Official designation and legal status remain for independent review.",
       "channels": [
-        "bus_standing_location"
+        "ru.bus"
       ],
       "source_refs": [
         "inputs/training__C386410__LVMC-11-60-030-A1__bus_driver/assignment.json"
       ]
     },
     "st.curb_zone": {
-      "evidence": "Proposed capture only: kind bus_stop — the designated stop or stand. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed original Native capture channel st.curb_zone with source-hashed route, class, stationary interval and place context. Official designation and legal status remain for independent review.",
       "channels": [
-        "bus_standing_location"
+        "st.curb_zone"
       ],
       "source_refs": [
         "inputs/training__C386410__LVMC-11-60-030-A1__bus_driver/assignment.json"
       ]
     },
     "st.transit_stop": {
-      "evidence": "Proposed capture only: the stop's physical furniture. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed original Native capture channel st.transit_stop with source-hashed route, class, stationary interval and place context. Official designation and legal status remain for independent review.",
       "channels": [
-        "bus_standing_location"
+        "st.transit_stop"
       ],
       "source_refs": [
         "inputs/training__C386410__LVMC-11-60-030-A1__bus_driver/assignment.json"
       ]
     },
     "dev.regulatory_sign": {
-      "evidence": "Proposed capture only: the sign designating it. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed original Native capture channel dev.regulatory_sign with source-hashed route, class, stationary interval and place context. Official designation and legal status remain for independent review.",
       "channels": [
-        "bus_standing_location"
+        "dev.regulatory_sign"
       ],
       "source_refs": [
         "inputs/training__C386410__LVMC-11-60-030-A1__bus_driver/assignment.json"
       ]
     },
     "drv.standing_or_parked": {
-      "evidence": "Proposed capture only: the bus standing or parked. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed original Native capture channel drv.standing_or_parked with source-hashed route, class, stationary interval and place context. Official designation and legal status remain for independent review.",
       "channels": [
-        "bus_standing_location"
+        "drv.standing_or_parked"
       ],
       "source_refs": [
         "inputs/training__C386410__LVMC-11-60-030-A1__bus_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: where it stands. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed original Native capture channel rel.occupies with source-hashed route, class, stationary interval and place context. Official designation and legal status remain for independent review.",
       "channels": [
-        "bus_standing_location"
+        "rel.occupies"
       ],
       "source_refs": [
         "inputs/training__C386410__LVMC-11-60-030-A1__bus_driver/assignment.json"
       ]
     },
     "st.roadway": {
-      "evidence": "Proposed capture only: the street. No Native channel or Core atom proof yet.",
+      "evidence": "Proposed original Native capture channel st.roadway with source-hashed route, class, stationary interval and place context. Official designation and legal status remain for independent review.",
       "channels": [
-        "bus_standing_location"
+        "st.roadway"
       ],
       "source_refs": [
         "inputs/training__C386410__LVMC-11-60-030-A1__bus_driver/assignment.json"
@@ -483,5 +495,32 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "bus body, curb zone, sign and stationary interval",
+        "interval": "full 30 second run"
+      },
+      {
+        "view": "approach",
+        "subject": "bus body, curb zone, sign and stationary interval",
+        "interval": "full 30 second run"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "bus body, curb zone, sign and stationary interval",
+        "interval": "full 30 second run"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "bus body, curb zone, sign and stationary interval",
+        "interval": "full 30 second run"
+      }
+    ]
+  }
 }

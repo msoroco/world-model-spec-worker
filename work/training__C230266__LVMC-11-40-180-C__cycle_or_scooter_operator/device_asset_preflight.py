@@ -62,6 +62,9 @@ def audit(inventory=None):
     classes = [validate_supplied_asset(entry) for entry in supplied]
     if len(classes) != len(set(classes)):
         raise ValueError('Ambiguous duplicate electric device class')
+    blueprints = [entry['blueprint_id'] for entry in supplied]
+    if len(blueprints) != len(set(blueprints)):
+        raise ValueError('One Native blueprint cannot establish both electric device classes')
     return {'format': 'c230266-electric-device-asset-preflight-v1',
             'runtime_taxonomy_sha256': sha(TAXONOMY),
             'pinned_bicycle_blueprints': sorted(name for name, kind in known.items()
