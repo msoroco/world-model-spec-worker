@@ -73,7 +73,8 @@ def main() -> None:
         case_id = entry["case_id"]
         short = case_id.split("__")[-1]
         folder = HERE / "cases" / short
-        source = REPO / ".runtime-work" / ("pedestrian-compat-" + short + "-final1")
+        tag = os.environ.get("PEDESTRIAN_PROOF_TAG", "current3")
+        source = REPO / ".runtime-work" / ("pedestrian-compat-" + short + "-primary-" + tag)
         fixtures = []
         for kind in ("complete_motion", "incomplete_motion", "missing_evidence"):
             value = assess(source, case_id, kind)

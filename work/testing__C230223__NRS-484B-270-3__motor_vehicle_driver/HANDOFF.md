@@ -1,6 +1,6 @@
 # testing__C230223__NRS-484B-270-3__motor_vehicle_driver
 
-Status: **partial** (source_gated_cpu_preparation). This is CPU preparation; no physical or legal acceptance is claimed.
+Status: **ready** (delivery_prepared). This is CPU preparation; no physical or legal acceptance is claimed.
 
 ## Frozen scope and coverage
 
@@ -70,4 +70,4 @@ Each physical-preparation.json binds complete-motion, incomplete-motion and miss
 gpu-queue-proposal.json supplies one canonical prepare/execute/accept, operator-supplied saved attempt owner-release, saved processing and original-source audit command per exact case, plus all 12 original comparison audit commands. The lead integrates these rows into the shared queue.
 Assignment gate: `.venv-cpu/bin/python worker_check.py --assignment testing__C230223__NRS-484B-270-3__motor_vehicle_driver --complete --require-delivery-ready`.
 
-Current CPU gap: Exact 22-case source-bound compatibility, physical, delivery, saved-only lifecycle and 12-comparison receipts are in progress; selected manifest bindings and strict assignment gate remain CPU work.
+CPU gate passed. First local delivery command is in result.json; the operator supplies CARLA Python, host, port and canonical job identifiers.

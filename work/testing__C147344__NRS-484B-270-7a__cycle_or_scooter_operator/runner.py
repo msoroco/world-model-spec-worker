@@ -44,6 +44,7 @@ def load_scene(packet_path, source_root, case):
     sources = packet.get('sources')
     require(isinstance(sources, dict) and set(sources) == set(SOURCE_FIELDS),
             'reviewed source inventory incomplete')
+    resolved = {}
     for field in SOURCE_FIELDS:
         reference = sources[field]
         name = reference.get('path') if isinstance(reference, dict) else None
@@ -58,6 +59,22 @@ def load_scene(packet_path, source_root, case):
         require(digest == reference.get('sha256') ==
                 scene.get(field + '_source_sha256'),
                 'original source hash changed: ' + field)
+        resolved[field] = target
+    expected_contents = {
+        'electric_bicycle_classification': scene.get('electric_bicycle'),
+        'motor_vehicle_classification': scene.get('motor_vehicle'),
+        'route_geometry': {'routes': scene.get('routes'),
+                           'lane_assignments': scene.get('lane_assignments')},
+        'operator_control': {'bicycle_path': scene.get('bicycle_path'),
+                             'motor_response': scene.get('motor_response')},
+        'authored_plan': (
+            {key: value for key, value in scene['intention_declaration'].items()
+             if key != 'source_sha256'}
+            if scene.get('intention_declaration') is not None else None)}
+    for field, expected in expected_contents.items():
+        actual = json.loads(resolved[field].read_text())
+        require(actual == expected,
+                'reviewed original source content differs: ' + field)
     validate_scene(scene, case)
     return scene, hashlib.sha256(raw).hexdigest()
 
@@ -105,6 +122,41 @@ def capture(adapter, scene, case, config, output, packet_sha256):
             adapter.destroy(actor)
 
 
+def seal_original_sources(output, scene, packet_sha256):
+    """Bind every original source, leaving capture files unchanged."""
+    output = Path(output).resolve()
+    context_path = output / 'scene-context.json'
+    require(not context_path.exists(), 'retain previous scene context')
+    context = dict(scene, reviewed_scene_packet_sha256=packet_sha256)
+    context['electric_bicycle_classification'] = scene['electric_bicycle']
+    context['distinct_motor_vehicle_identity'] = (
+        scene['motor_vehicle']['vehicle_id'])
+    context['authored_plan_interval'] = (
+        scene['intention_declaration'] or {'status': 'undeclared'})
+    context_path.write_text(json.dumps(context, indent=2, sort_keys=True) + '\n')
+    names = ('config.json', 'scene-context.json',
+             'interaction-readback.jsonl', 'trace.jsonl',
+             'video_frames.jsonl') + tuple(name + '.mkv' for name in VIEWS)
+    files = {}
+    for name in names:
+        target = output / name
+        require(target.is_file() and not target.is_symlink(),
+                'original capture source missing: ' + name)
+        files[name] = {'sha256': hashlib.sha256(target.read_bytes()).hexdigest()}
+    manifest = output / 'original-sources.json'
+    require(not manifest.exists(), 'retain previous original manifest')
+    manifest.write_text(json.dumps({
+        'source_kind': 'original_native_capture',
+        'accepted_original_source': True,
+        'case_id': json.loads((output / 'config.json').read_text())[
+            'selected_case_id'],
+        'reviewed_scene_packet_sha256': packet_sha256,
+        'frame_count': 600,
+        'camera_frame_counts': {name: 600 for name in VIEWS},
+        'files': files}, indent=2, sort_keys=True) + '\n')
+    return hashlib.sha256(manifest.read_bytes()).hexdigest()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--check', action='store_true')
@@ -142,6 +194,8 @@ def main():
     finally:
         restored = restore(adapter.client, saved_world)
     require(restored is not None, 'Native world restoration unverified')
+    result['original_sources_sha256'] = seal_original_sources(
+        args.output_dir, scene, packet_sha256)
     (args.output_dir / 'capture-runner-result.json').write_text(
         json.dumps(result, indent=2, sort_keys=True) + '\n')
     seal_capture(args.output_dir, frames=600,
