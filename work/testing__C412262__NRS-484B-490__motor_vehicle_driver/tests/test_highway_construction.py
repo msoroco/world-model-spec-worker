@@ -153,6 +153,9 @@ class HighwayTests(unittest.TestCase):
                         "source_kind": "original_native_capture",
                         "context_sha256": sha(context_path), "trace_sha256": sha(trace), "frame_count": 9})
         self.assertFalse(observe(CASE, context_path, trace, receipt)["samples"][0]["body_on_highway"])
+        (reviewed / "reviewed-site.json").unlink()
+        with self.assertRaisesRegex(ValueError, "reviewed highway source packet missing"):
+            observe(CASE, context_path, trace, receipt)
 
 
 if __name__ == "__main__":

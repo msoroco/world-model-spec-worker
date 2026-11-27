@@ -89,7 +89,8 @@ def analyze(attempt):
         "device_qualification": lambda row: site["device"],
         "riding_conduct": lambda row: site["operator_conduct"],
         "surface_occupancy": lambda row: {"point": row["position_xy"],
-                                           "selected_sidewalk": row.get("on_selected_sidewalk")},
+                                           "selected_sidewalk": row.get("on_selected_sidewalk"),
+                                           "body_polygon_xy": row["body_polygon_xy"]},
         "municipal_jurisdiction": lambda row: {"municipality": site["municipality"], "source_sha256": site["municipal_boundary_source_sha256"]},
         "original_frame_join": lambda row: {"frame": row["original_frame"],
                                              "time_s": row["time_s"]},
@@ -120,7 +121,10 @@ def analyze(attempt):
                                  "requested": cfg["case"], "measured": measured,
                                  "method": "original source-bound geometry" if original else
                                            "synthetic diagnostic geometry",
-                                 "tolerance": 0, "matched": True,
+                                 "tolerance": 0,
+                                 "matched": (measured["sidewalk_body_overlap_frames"] > 0
+                                             if case.surface == "sidewalk" else
+                                             measured["road_body_overlap_frames"] > 0),
                                  "physical_cause_confirmed": False,
                                  "cause_evidence": source_hashes}],
               "setup_confirmed": False, "behavior_attempted": False,

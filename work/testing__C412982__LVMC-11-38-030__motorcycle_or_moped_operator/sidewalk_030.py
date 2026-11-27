@@ -35,7 +35,7 @@ CASES = (
     Case("motor_scooter_riding_sidewalk", "motor_scooter", "riding", "sidewalk", "north", "Las Vegas"),
     Case("motorcycle_riding_road", "motorcycle", "riding", "road", "north", "Las Vegas"),
     Case("motorcycle_walking_sidewalk", "motorcycle", "walking", "sidewalk", "north", "Las Vegas"),
-    Case("motorcycle_riding_outside_city", "motorcycle", "riding", "sidewalk", "north", "outside_city"),
+    Case("motorcycle_riding_outside_city", "motorcycle", "riding", "sidewalk", "north", "North Las Vegas"),
 )
 BY_SUFFIX = {case.suffix: case for case in CASES}
 
@@ -68,6 +68,35 @@ def inside(point_xy, boundary):
         signs.append((end[0] - start[0]) * (point_xy[1] - start[1]) -
                      (end[1] - start[1]) * (point_xy[0] - start[0]))
     return all(x >= -1e-8 for x in signs) or all(x <= 1e-8 for x in signs)
+
+
+def overlaps(first, second):
+    """Convex polygon intersection, including crossed edges and containment."""
+    first, second = polygon(first), polygon(second)
+    if any(inside(p, second) for p in first) or any(inside(p, first) for p in second):
+        return True
+
+    def cross(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+    def on_segment(a, b, p):
+        return (min(a[0], b[0]) - 1e-8 <= p[0] <= max(a[0], b[0]) + 1e-8 and
+                min(a[1], b[1]) - 1e-8 <= p[1] <= max(a[1], b[1]) + 1e-8)
+
+    for i, a in enumerate(first):
+        b = first[(i + 1) % len(first)]
+        for j, c in enumerate(second):
+            d = second[(j + 1) % len(second)]
+            ab_c, ab_d = cross(a, b, c), cross(a, b, d)
+            cd_a, cd_b = cross(c, d, a), cross(c, d, b)
+            if ab_c * ab_d < 0 and cd_a * cd_b < 0:
+                return True
+            if ((abs(ab_c) <= 1e-8 and on_segment(a, b, c)) or
+                    (abs(ab_d) <= 1e-8 and on_segment(a, b, d)) or
+                    (abs(cd_a) <= 1e-8 and on_segment(c, d, a)) or
+                    (abs(cd_b) <= 1e-8 and on_segment(c, d, b))):
+                return True
+    return False
 
 
 def original_site(packet_path, case):
@@ -140,6 +169,11 @@ def measure_original(rows, site, case):
     need(rows and all(type(row.get("original_frame")) is int and
                       type(row.get("time_s")) in (int, float) and
                       point(row.get("position_xy")) and
+                      isinstance(row.get("body_polygon_xy"), list) and
+                      len(row["body_polygon_xy"]) >= 3 and
+                      row.get("mounted_riding_source") is (case.conduct == "riding") and
+                      row.get("municipality_source_sha256") == site["municipal_boundary_source_sha256"] and
+                      row.get("operator_source_sha256") == site["operator_conduct_source_sha256"] and
                       row.get("device_id") == site["device"]["device_id"] and
                       row.get("operator_id") == site["operator_conduct"]["operator_id"] and
                       row.get("device_source_sha256") == site["device_specification_source_sha256"]
@@ -154,6 +188,8 @@ def measure_original(rows, site, case):
             "frame_count": len(rows),
             "sidewalk_center_frames": sum(inside(row["position_xy"], sidewalk) for row in rows),
             "road_center_frames": sum(inside(row["position_xy"], site["road_polygon_xy"]) for row in rows),
+            "sidewalk_body_overlap_frames": sum(overlaps(row["body_polygon_xy"], sidewalk) for row in rows),
+            "road_body_overlap_frames": sum(overlaps(row["body_polygon_xy"], site["road_polygon_xy"]) for row in rows),
             "device_kind": site["device"]["kind"],
             "conduct_from_source": site["operator_conduct"]["kind"],
             "municipality_from_source": site["municipality"],

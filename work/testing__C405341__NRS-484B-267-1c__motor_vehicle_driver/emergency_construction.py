@@ -1,0 +1,103 @@
+"""Reviewed Native construction for immediate emergency approach and stopping."""
+from dataclasses import dataclass
+from math import isfinite
+
+
+@dataclass(frozen=True)
+class Case:
+    suffix: str
+    unit_class: str = "authorized_emergency"
+    light_request: str = "qualified_active"
+    immediate: bool = True
+    stopping: bool = True
+    early_departure: bool = False
+    officer_direction: bool = False
+    direction: str = "opposing"
+
+CASES = (
+    Case("immediate_approach_stop_remain"),
+    Case("immediate_approach_no_stop", stopping=False),
+    Case("early_departure", early_departure=True),
+    Case("no_immediate_approach", immediate=False),
+    Case("lights_inactive", light_request="qualified_inactive"),
+    Case("lights_unqualified", light_request="unqualified_active"),
+    Case("officer_directs_otherwise", stopping=False, officer_direction=True),
+    Case("regulatory_official_stop", unit_class="regulatory_official"),
+    Case("same_direction_approach_stop", direction="same_direction"),
+)
+
+
+def require(value, message):
+    if not value:
+        raise ValueError(message)
+
+
+def plan(case, map_source, actor_source, authority):
+    require(case in CASES, "unselected exact case")
+    require(map_source.get("source_kind") == "native_map_readback", "Native map readback required")
+    require(map_source.get("road_type") == "paved_road", "paved road required")
+    require(map_source.get("ego_route_connected") is True, "connected ego route required")
+    require(map_source.get("unit_route_connected") is True, "connected unit route required")
+    require(map_source.get("unit_route_approaches_ego") is case.immediate, "immediate approach source mismatch")
+    require(map_source.get("unit_route_direction") == case.direction, "approach direction mismatch")
+    for key in ("ego_route_id", "unit_route_id", "conflict_location_source"):
+        require(isinstance(map_source.get(key), str) and map_source[key], key + " missing")
+    require(actor_source.get("source_kind") == "native_blueprint_readback", "Native blueprint readback required")
+    for key in ("ego_blueprint_id", "unit_blueprint_id"):
+        require(isinstance(actor_source.get(key), str) and actor_source[key], key + " missing")
+    require(actor_source.get("ego_vehicle_class") == "ordinary_motor_vehicle",
+            "every-other-vehicle subject class unverified")
+    require(actor_source.get("ego_driver_control_source"),
+            "subject driver control source missing")
+    require(actor_source.get("unit_class") == case.unit_class, "unit class mismatch")
+    require(authority.get("class") == case.unit_class, "authority class mismatch")
+    for key in ("authorization_source", "light_rule_source", "equipment_source",
+                "siren_equipment_source", "front_red_lamp_source"):
+        require(isinstance(authority.get(key), str) and authority[key], key + " missing")
+    require(authority.get("siren_equipment_verified") is True, "required siren equipment unverified")
+    if case.light_request != "unqualified_active":
+        require(authority.get("front_visible_red_lamp_verified") is True,
+                "front-visible flashing red lamp unverified")
+    require(authority.get("qualifying_flashing_equipment_verified") is (case.light_request != "unqualified_active"), "flashing equipment qualification mismatch")
+    if case.light_request != "qualified_inactive":
+        require(authority.get("lights_can_flash") is True, "flashing capability missing")
+    if case.officer_direction:
+        require(authority.get("officer_direction_source"), "officer direction source required")
+    return {
+        "case": case.suffix,
+        "ego": {"identity": "ego", "blueprint_id": actor_source["ego_blueprint_id"], "route": "travel"},
+        "unit": {"identity": "unit", "blueprint_id": actor_source["unit_blueprint_id"], "vehicle_class": case.unit_class, "route": case.direction},
+        "movement": {"enabled": True, "start_s": 0.0, "end_s": 36.0, "target_mps": 7.0 if case.immediate else 2.0},
+        "ego_control": {"approach_mps": 7.5, "stop_requested": case.stopping,
+                        "response_brake_start_s": 19.0, "response_brake_fraction": 1.0 if case.stopping else 0.0,
+                        "hold_until_unit_passes": case.stopping and not case.early_departure,
+                        "early_departure_requested": case.early_departure},
+        "lights": {"qualifying": case.light_request != "unqualified_active", "active": case.light_request != "qualified_inactive", "flash_from_s": 0.0, "flash_to_s": 45.0, "equipment_source": authority["equipment_source"], "rule_source": authority["light_rule_source"]},
+        "officer_direction": {"enabled": case.officer_direction, "source": authority.get("officer_direction_source")},
+        "capture": {"fps": 20, "frames": 900, "cameras": 4},
+        "source": {"map": map_source, "blueprints": actor_source, "authority": authority},
+    }
+
+
+def execute(adapter, case, map_source, actor_source, authority, engineering=None):
+    specification = plan(case, map_source, actor_source, authority)
+    engineering = engineering or {}
+    route_id = map_source["unit_route_id"]
+    if engineering.get("alternate_unit_route"):
+        route_id = map_source.get("alternate_unit_route_id")
+        require(map_source.get("alternate_unit_route_connected") is True and isinstance(route_id, str) and route_id, "reviewed connected alternate unit route required")
+        require(map_source.get("alternate_unit_route_direction") == case.direction, "alternate direction changed")
+        require(map_source.get("alternate_unit_route_approaches_ego") is case.immediate, "alternate immediacy changed")
+    start = engineering.get("response_start_s", specification["ego_control"]["response_brake_start_s"])
+    require(type(start) in (int, float) and isfinite(start) and 0 <= start < 36, "response outside capture")
+    specification["ego_control"]["response_brake_start_s"] = start
+    ego = adapter.spawn_vehicle(specification["ego"])
+    unit = adapter.spawn_vehicle(specification["unit"])
+    adapter.configure_route(ego, map_source["ego_route_id"])
+    adapter.configure_route(unit, route_id)
+    adapter.configure_flashing_lights(unit, specification["lights"])
+    adapter.configure_unit_movement(unit, specification["movement"])
+    if case.officer_direction:
+        adapter.configure_officer_direction(specification["officer_direction"])
+    adapter.configure_ego_response(ego, specification["ego_control"])
+    return {"ego": ego, "unit": unit, "occluder": None, "capture_frames": specification["capture"]["frames"]}

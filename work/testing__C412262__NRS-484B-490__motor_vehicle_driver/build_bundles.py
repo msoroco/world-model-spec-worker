@@ -12,7 +12,7 @@ SHARED_FILES = ("runner.py", "native_capture.py", "native_output_bridge.py",
                 "highway_scene_construction.py", "highway_observations.py",
                 "saved_finalizer.py", "comparison_audit.py", "delivery_audit.py",
                 "analysis.py", "case-plan.json", "tests/test_highway_construction.py",
-                "tests/test_comparison_audit.py")
+                "tests/test_comparison_audit.py", "tests/test_native_capture.py")
 
 
 def write(path: Path, value: dict):

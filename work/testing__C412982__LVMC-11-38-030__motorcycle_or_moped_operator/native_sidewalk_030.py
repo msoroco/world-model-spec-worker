@@ -21,6 +21,25 @@ def write(path, value):
                           encoding="utf-8")
 
 
+def body_hull(actor):
+    vertices = actor.bounding_box.get_world_vertices(actor.get_transform())
+    points = sorted(set((v.x, v.y) for v in vertices))
+
+    def cross(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+
+    lower, upper = [], []
+    for point in points:
+        while len(lower) > 1 and cross(lower[-2], lower[-1], point) <= 0:
+            lower.pop()
+        lower.append(point)
+    for point in reversed(points):
+        while len(upper) > 1 and cross(upper[-2], upper[-1], point) <= 0:
+            upper.pop()
+        upper.append(point)
+    return [list(point) for point in lower[:-1] + upper[:-1]]
+
+
 class Adapter:
     def __init__(self, world, carla, site):
         self.world, self.carla, self.site = world, carla, site
@@ -154,6 +173,7 @@ def run_native(cfg, case, site, site_path, output, host, port):
                 p = device.get_location()
                 row = {"original_frame": frame, "time_s": time_s,
                        "position_xy": [p.x, p.y],
+                       "body_polygon_xy": body_hull(device),
                        "device_actor_id": device.id,
                        "device_id": site["device"]["device_id"],
                        "operator_id": site["operator_conduct"]["operator_id"],
