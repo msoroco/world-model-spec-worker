@@ -1,0 +1,51 @@
+{
+  "case_id": "testing__C143766__NRS-484B-283-1d4__pedestrian__walk_entry_safety_zone_after",
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: original-crossing-observations.json",
+    "remove": [
+      "original-crossing-observations.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "original-crossing-observations.json",
+        "original-crossing-receipt.json"
+      ],
+      "kind": "measured",
+      "method": "measure_entry_phase",
+      "output_key": "entry_phase",
+      "requirement": "steady indication prohibits a new pedestrian crossing entry",
+      "source": "NRS 484B.283(1)(d)(4)",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "original-crossing-observations.json",
+        "original-crossing-receipt.json"
+      ],
+      "kind": "measured",
+      "method": "measure_continuation",
+      "output_key": "continuation_timing",
+      "requirement": "pedestrian who entered lawfully under subparagraph (1) or (2) may continue crossing during steady indication",
+      "source": "NRS 484B.283(1)(d)(4); conditional NRS 484B.283(1)(d)(1), (2)",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "original-crossing-observations.json",
+        "original-crossing-receipt.json"
+      ],
+      "kind": "measured",
+      "method": "measure_countdown_context",
+      "output_key": "countdown_context",
+      "requirement": "continue to curb, sidewalk, safety zone if provided, or other place of safety as soon as possible; introductory exceptions remain open",
+      "source": "NRS 484B.283(1)(d)(4); NRS 484B.287, .290, .350",
+      "value_type": "object"
+    }
+  ]
+}

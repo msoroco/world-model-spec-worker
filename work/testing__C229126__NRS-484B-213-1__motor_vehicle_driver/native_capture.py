@@ -140,7 +140,8 @@ def capture(client, packet, case_id, source_root, output, *, carla_module=None,
                                            direction=packet["actors"][role]["direction"])
                                 for role in packet["actors"]}
                 ray = _ray(scene, scene.actors["ego"], axis)
-                record = {"original_frame": index, "carla_frame": world_frame,
+                record = {"original_frame": index, "frame": world_frame,
+                          "carla_frame": world_frame,
                           "time_s": timestamp, "actors": participants,
                           "left_side_rays": [ray], "commands": step["commands"]}
                 history.write(json.dumps(record, sort_keys=True) + "\n")
@@ -163,6 +164,12 @@ def capture(client, packet, case_id, source_root, output, *, carla_module=None,
             if code != 0:
                 raise ValueError("original camera encoder failed: " + stderr.decode(errors="replace")[-500:])
         encoders.clear()
+    except BaseException as exc:
+        _write(output / "native-run-status.json", {"case_id": case_id,
+                "errors": [type(exc).__name__ + ": " + str(exc)],
+                "frames_captured": original_count,
+                "physical_acceptance_claimed": False})
+        raise
     finally:
         try:
             if graph is not None:

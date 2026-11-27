@@ -123,9 +123,122 @@
   ],
   "cases": [
     {
+      "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__baseline",
+      "rationale": "Shared cycle-facility observation definition; no separate recording.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_polygon",
+            "unit": "Native world XY",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized Native body/control readback",
+            "time_window": "full 45-second episode",
+            "reference_frame": "original Native world",
+            "uncertainty": "physical source review pending"
+          },
+          {
+            "name": "participant_body_polygon",
+            "unit": "Native world XY",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized Native body/control readback",
+            "time_window": "full 45-second episode",
+            "reference_frame": "original Native world",
+            "uncertainty": "physical source review pending"
+          },
+          {
+            "name": "ego_lane_occupancy",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized Native body/control readback",
+            "time_window": "full 45-second episode",
+            "reference_frame": "original Native world",
+            "uncertainty": "physical source review pending"
+          },
+          {
+            "name": "participant_lane_occupancy",
+            "unit": "boolean",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized Native body/control readback",
+            "time_window": "full 45-second episode",
+            "reference_frame": "original Native world",
+            "uncertainty": "physical source review pending"
+          },
+          {
+            "name": "ego_control",
+            "unit": "CARLA control",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized Native body/control readback",
+            "time_window": "full 45-second episode",
+            "reference_frame": "original Native world",
+            "uncertainty": "physical source review pending"
+          },
+          {
+            "name": "participant_control",
+            "unit": "CARLA control",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized Native body/control readback",
+            "time_window": "full 45-second episode",
+            "reference_frame": "original Native world",
+            "uncertainty": "physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "site_designation",
+            "unit": "reviewed source packet",
+            "method": "SHA-256 bound original source review"
+          },
+          {
+            "name": "participant_identity",
+            "unit": "reviewed source packet",
+            "method": "SHA-256 bound original source review"
+          },
+          {
+            "name": "exception_context",
+            "unit": "reviewed source packet",
+            "method": "SHA-256 bound original source review"
+          },
+          {
+            "name": "pedestrian_qualification",
+            "unit": "reviewed source packet",
+            "method": "SHA-256 bound original source review"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixture establishes software shape only.",
+          "Actual participant behavior, camera pixels and legal judgment require independent original review."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "participant_kind": {
+          "kind": "world_setup",
+          "value": "bicycle",
+          "note": "Actual class and rider identity require source and Native readback"
+        },
+        "ego_precedence": {
+          "kind": "controller",
+          "value": "yield",
+          "note": "Requested only; original frame order determines observed precedence"
+        },
+        "lane_action": {
+          "kind": "controller",
+          "value": "outside",
+          "note": "Requested only; original body/control histories determine observed action"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "none",
+          "note": "Separate original context source required"
+        }
+      }
+    },
+    {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__bicycle_yield",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "compliant_attempt",
       "rationale": "rider proceeds before ego",
       "variable_assignments": {
         "participant_kind": {
@@ -235,12 +348,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "bicycle_yield"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__bicycle_go_first",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "violating_attempt",
       "rationale": "ego proceeds before rider",
       "variable_assignments": {
         "participant_kind": {
@@ -350,12 +475,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "bicycle_go_first"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__electric_bicycle_yield",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "electric bicycle proceeds before ego",
       "variable_assignments": {
         "participant_kind": {
@@ -465,12 +602,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "electric_bicycle_yield"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__electric_scooter_yield",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "electric scooter proceeds before ego",
       "variable_assignments": {
         "participant_kind": {
@@ -580,12 +729,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "electric_scooter_yield"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__pedestrian_qualified_yield",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "qualified pedestrian proceeds before ego",
       "variable_assignments": {
         "participant_kind": {
@@ -695,12 +856,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "pedestrian_qualified_yield"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__pedestrian_qualified_go_first",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego proceeds before qualified pedestrian",
       "variable_assignments": {
         "participant_kind": {
@@ -810,12 +983,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "pedestrian_qualified_go_first"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__pedestrian_unqualified_yield",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "pedestrian lane-access condition absent",
       "variable_assignments": {
         "participant_kind": {
@@ -925,12 +1110,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "pedestrian_unqualified_yield"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__lane_no_entry",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego remains outside cycle lane",
       "variable_assignments": {
         "participant_kind": {
@@ -1040,12 +1237,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "lane_no_entry"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__lane_enter",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego enters designated lane",
       "variable_assignments": {
         "participant_kind": {
@@ -1155,12 +1364,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "lane_enter"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__lane_stop",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego stops within designated lane",
       "variable_assignments": {
         "participant_kind": {
@@ -1270,12 +1491,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "lane_stop"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__lane_stand",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego stands within designated lane",
       "variable_assignments": {
         "participant_kind": {
@@ -1385,12 +1618,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "lane_stand"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__lane_park",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego parks within designated lane",
       "variable_assignments": {
         "participant_kind": {
@@ -1500,12 +1745,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "lane_park"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__lane_drive",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego drives within designated lane",
       "variable_assignments": {
         "participant_kind": {
@@ -1615,12 +1872,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "lane_drive"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__alley_enter",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego enters alley across designated lane",
       "variable_assignments": {
         "participant_kind": {
@@ -1730,12 +1999,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "alley_enter"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__alley_exit",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego exits alley across designated lane",
       "variable_assignments": {
         "participant_kind": {
@@ -1845,12 +2126,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "alley_exit"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__driveway_enter",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego enters driveway across designated lane",
       "variable_assignments": {
         "participant_kind": {
@@ -1960,12 +2253,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "driveway_enter"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__driveway_exit",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego exits driveway across designated lane",
       "variable_assignments": {
         "participant_kind": {
@@ -2075,12 +2380,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "driveway_exit"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__disabled_vehicle",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "disabled vehicle operating or parked in lane",
       "variable_assignments": {
         "participant_kind": {
@@ -2190,12 +2507,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "disabled_vehicle"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__avoid_conflict",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "ego enters lane to avoid other traffic conflict",
       "variable_assignments": {
         "participant_kind": {
@@ -2305,12 +2634,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "avoid_conflict"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__official_duties",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "source-reviewed official duties",
       "variable_assignments": {
         "participant_kind": {
@@ -2420,12 +2761,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "official_duties"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__police_direction",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "source-reviewed police direction",
       "variable_assignments": {
         "participant_kind": {
@@ -2535,12 +2888,24 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "police_direction"
       }
     },
     {
       "case_id": "testing__C230223__NRS-484B-270-3__motor_vehicle_driver__emergency",
       "target_law_id": "NRS-484B-270-3",
-      "target_type": "selected",
+      "target_type": "boundary_probe",
       "rationale": "source-reviewed emergency",
       "variable_assignments": {
         "participant_kind": {
@@ -2650,6 +3015,18 @@
           "Synthetic fixture establishes software shape only.",
           "Actual participant behavior, camera pixels and legal judgment require independent original review."
         ]
+      },
+      "paired_probe_id": "cycle_lane_2703_finite_comparison",
+      "deliberate_differences": [
+        "participant_kind",
+        "lane_action",
+        "ego_precedence",
+        "exception_context"
+      ],
+      "probe": {
+        "primary_variable": "ego_precedence",
+        "comparison_or_standard": "source-reviewed 900-frame body occupancy and conflict precedence",
+        "target_value_or_branch": "emergency"
       }
     }
   ]

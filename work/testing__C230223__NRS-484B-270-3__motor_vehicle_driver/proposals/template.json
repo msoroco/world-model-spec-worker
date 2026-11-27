@@ -1,0 +1,83 @@
+{
+  "template_id": "NRS-484B-270-3@motor_vehicle_driver",
+  "law_id": "NRS-484B-270-3",
+  "actor": "motor_vehicle_driver",
+  "quote": "The driver of a motor vehicle shall yield the right-of-way to any person riding a bicycle, an electric bicycle or an electric scooter or a pedestrian as provided in subsection 6 of NRS 484B.297 [NRS-484B-297-6] on the pathway or lane. The driver of a motor vehicle shall not enter, stop, stand, park or drive within a pathway or lane provided for bicycles, electric bicycles or electric scooters except: (a) When entering or exiting an alley or driveway; (b) When operating or parking a disabled vehicle; (c) To avoid conflict with other traffic; (d) In the performance of official duties; (e) In compliance with the directions of a police officer; or (f) In an emergency.",
+  "structure": {
+    "law_id": "NRS-484B-270-3",
+    "activation": {
+      "condition": "Motor vehicle approaches a designated bicycle, electric bicycle or electric scooter pathway or lane used by a named road user, or enters its physical extent.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Yield the right-of-way to the enumerated pathway or lane user and avoid entering, stopping, standing, parking or driving within the designated facility unless a listed circumstance applies.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "When entering or exiting an alley or driveway",
+        "effect": "The designated-facility entry restriction has a listed circumstance; yield remains separately observed.",
+        "replacement_obligation": null,
+        "source_clause": "(a) When entering or exiting an alley or driveway"
+      },
+      {
+        "trigger": "When operating or parking a disabled vehicle",
+        "effect": "The designated-facility entry restriction has a listed circumstance, requiring source review of disability.",
+        "replacement_obligation": null,
+        "source_clause": "(b) When operating or parking a disabled vehicle"
+      },
+      {
+        "trigger": "To avoid conflict with other traffic",
+        "effect": "The designated-facility entry restriction has a listed circumstance, requiring source review of the conflict.",
+        "replacement_obligation": null,
+        "source_clause": "(c) To avoid conflict with other traffic"
+      },
+      {
+        "trigger": "In the performance of official duties",
+        "effect": "The designated-facility entry restriction has a listed circumstance, requiring source review of duties.",
+        "replacement_obligation": null,
+        "source_clause": "(d) In the performance of official duties"
+      },
+      {
+        "trigger": "In compliance with the directions of a police officer",
+        "effect": "The designated-facility entry restriction has a listed circumstance, requiring source review of the direction.",
+        "replacement_obligation": null,
+        "source_clause": "(e) In compliance with the directions of a police officer"
+      },
+      {
+        "trigger": "In an emergency",
+        "effect": "The designated-facility entry restriction has a listed circumstance, requiring source review of emergency.",
+        "replacement_obligation": null,
+        "source_clause": "(f) In an emergency"
+      }
+    ],
+    "timing": {
+      "description": "During approach, precedence at the shared conflict region and full motor-vehicle body occupation of the designated facility.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "site_geometry",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed designated facility and conflict polygon"
+    },
+    {
+      "name": "participant_class",
+      "kind": "world_setup",
+      "range_or_domain": "bicycle, electric bicycle, electric scooter or NRS 484B.297(6) qualified pedestrian"
+    },
+    {
+      "name": "exception_context",
+      "kind": "world_setup",
+      "range_or_domain": "none or one exact statutory circumstance with independent source"
+    },
+    {
+      "name": "route_and_control",
+      "kind": "controller",
+      "range_or_domain": "controlled body overlap and user precedence without legal timing cutoff"
+    }
+  ]
+}
