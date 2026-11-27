@@ -21,7 +21,7 @@ def geometry():
         "public_highway_source", "city_block_source", "rear_access_source",
         "abutting_property_source", "through_connection_source", "jurisdiction_source",
         "ordinance_source", "survey_source")}
-    value.update(case_id=CASE, alley_kind="other_alley", cul_de_sac=False,
+    value.update(case_id=CASE, alley_kind="other_alley", public_highway_status=True, cul_de_sac=False,
                  start_connected=True, end_connected=True, ordinance_status="unresolved",
                  cross_sections=[{"station_m": s, "left_xy_m": [s, 0],
                                   "right_xy_m": [s, 5], "source": SOURCE} for s in (0, 10)])
@@ -29,7 +29,7 @@ def geometry():
 
 
 def history(width=1.0):
-    return [{"frame": i, "source": SOURCE,
+    return [{"frame": i, "time_s": i * 0.05, "source": SOURCE,
              "phase": "parked_hold" if i in (1, 2) else "approach",
              "ego_body_polygon_m": body(0, width),
              "other_body_polygons_m": []} for i in range(4)]

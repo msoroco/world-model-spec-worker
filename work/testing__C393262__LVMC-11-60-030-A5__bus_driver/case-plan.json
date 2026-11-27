@@ -1,6 +1,40 @@
 {
   "actor": "bus_driver",
   "assignment_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45 s capture",
+        "subject": "complete bus body, designated stop, residential street and signs",
+        "view": "overview"
+      },
+      {
+        "interval": "full 45 s capture",
+        "subject": "bus arrival, stopped interval and departure",
+        "view": "approach"
+      },
+      {
+        "interval": "full 45 s capture",
+        "subject": "bus-stop boundary and official designation evidence",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full 45 s capture",
+        "subject": "bus activity and door side for independent standing/parking review",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability",
+    "rate_hz": 20,
+    "views": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ]
+  },
   "cases": [
     {
       "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below",
@@ -188,34 +222,43 @@
   "observations": [
     {
       "channels": [
-        "site_review.json",
-        "native_frames.json"
+        "native.json",
+        "activity.json",
+        "identity.json"
       ],
-      "name": "covered_non_tour_bus_and_operator",
-      "source": "reviewed bus/operator classification packet and Native actor identity"
+      "mandatory": true,
+      "name": "bus_stopped_interval",
+      "source": "900 Native frames, covered non-tour bus/operator identity and independently reviewed uninterrupted start/end activity"
     },
     {
       "channels": [
-        "site_review.json",
-        "designation_review.json"
+        "site.json",
+        "designation.json"
       ],
-      "name": "designated_stop_and_duration",
-      "source": "City Traffic Engineer designation and governing conditions with independent source hashes"
+      "mandatory": true,
+      "name": "applicable_designated_duration",
+      "source": "actual City Traffic Engineer stop-specific designation, applicable duration and governing conditions"
     },
     {
       "channels": [
-        "native_frames.json",
-        "activity_review.json"
+        "native.json",
+        "site.json"
       ],
-      "name": "complete_standing_or_parking_interval_s",
-      "source": "Native frame timestamps, body footprint and independently reviewed activity transition ledger"
+      "mandatory": true,
+      "name": "body_inside_stop",
+      "source": "Native bus body footprint joined to reviewed designated bus-stop boundary for entire interval"
     },
     {
       "channels": [
-        "analysis-report.json"
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "video_frames.jsonl"
       ],
-      "name": "duration_relative_to_designation",
-      "source": "measured full interval and cited actual designated duration"
+      "mandatory": true,
+      "name": "four_camera_frame_identity",
+      "source": "four synchronized 20 Hz original RGB streams and frame/time map"
     }
   ],
   "planning_status": "selected_source_gated_duration_cases",

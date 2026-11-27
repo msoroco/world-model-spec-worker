@@ -102,7 +102,7 @@ def _require_source(value, label):
 def measure(case_id, geometry, history, *, expected_frames=900):
     if not case_id.startswith(ASSIGNMENT + "__") or geometry.get("case_id") != case_id:
         raise ValueError("wrong exact alley-width identity")
-    if geometry.get("alley_kind") != "other_alley":
+    if geometry.get("alley_kind") != "other_alley" or geometry.get("public_highway_status") is not True:
         raise ValueError("any other alley source classification missing")
     for key in ("public_highway_source", "city_block_source", "rear_access_source",
                 "abutting_property_source", "through_connection_source", "jurisdiction_source",
@@ -129,6 +129,11 @@ def measure(case_id, geometry, history, *, expected_frames=900):
         raise ValueError("original 20 Hz frame history incomplete")
     if [r.get("frame") for r in history] != list(range(history[0].get("frame", -1), history[0].get("frame", -1) + expected_frames)):
         raise ValueError("original frame sequence has a gap")
+    for previous, current in zip(history, history[1:]):
+        if (type(current.get("time_s")) not in (int, float) or
+                type(previous.get("time_s")) not in (int, float) or
+                abs(current["time_s"] - previous["time_s"] - 0.05) > 0.001):
+            raise ValueError("original 20 Hz width history cadence differs")
     held = []
     for row in history:
         _require_source(row.get("source"), "original frame")
@@ -136,6 +141,8 @@ def measure(case_id, geometry, history, *, expected_frames=900):
             continue
         ego = _polygon(row.get("ego_body_polygon_m"), "ego body")
         others = [_polygon(body, "other body") for body in row.get("other_body_polygons_m", [])]
+        if case_id.rsplit("__", 1)[-1].startswith("other_vehicle") and not others:
+            raise ValueError("controlled other vehicle original body missing")
         widths = [continuous_free_width_m(section["left_xy_m"], section["right_xy_m"],
                                           [ego, *others]) * FEET_PER_M for section in sections]
         held.append({"frame": row["frame"], "minimum_continuous_width_ft": round(min(widths), 6),

@@ -2,6 +2,10 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 11:44 UTC: first railway case passes pinned compatibility
+
+- Root `testing__C410753__LVMC-11-16-030__motor_vehicle_driver` remains **partial**. The exact `obscured_14mph` selected case passed pinned `runtime.py compatibility`: actual saved analysis, original-source immutability, four-camera decode/composition, Core conversion, Lean decoder, rendered output decode, selected measurement checks and missing-source rejection. Its receipt and analysis/negative logs are bound under the assignment folder. Six remaining exact cases are running in a bounded two-process compatibility wave. The original Native vector source and full graph observation packet are retained; the camera map is a separate hash-bound fixture source, leaving seven fixture specs under 2 MiB. The scoped partial `--complete` gate passes. Saved-only, independent delivery/comparison and exact strict work remain.
+
 ## 2026-11-27 11:35 UTC: C375342 angle-parking duration published
 
 - `testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver` passed the owner's exact strict gate and the lead's independent exact strict gate. Its queue proposal published **5 cases, 2 comparisons, 42 syntax-checked commands**. Shared queue is now **218 ready assignments, 1,505 cases, 1,052 comparisons**, 4,035,720 bytes, SHA256 `c5269b451f41570668844f2a7ab738dfcc680af9ad2418210528218fd3aba6de`. The freed owner now owns `testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator`. No Git command was run.

@@ -82,7 +82,7 @@ def load_site(path, case_id):
     if len(records['map'].get('opendrive_sha256',''))!=64 or not site.get('map_id'):
         raise ValueError('original map source required')
     device=records['device']
-    if device.get('covered_class')!=CASE_SPEC[label][0] or not device.get('classification_basis') or not device.get('physical_identity'):
+    if device.get('covered_class')!=CASE_SPEC[label][0] or not device.get('classification_basis') or not device.get('physical_identity') or type(device.get('body_width_m')) not in (int,float) or not .2<=device['body_width_m']<=2:
         raise ValueError('original covered-device classification required')
     person=records['person']
     if not person.get('responsible_person_identity') or person.get('parking_act_observed') is not True:

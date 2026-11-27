@@ -1,0 +1,989 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C135705__NRS-484B-477-1b__motor_vehicle_driver__baseline",
+      "deliberate_differences": [
+        "available_width_ft",
+        "other_vehicle_condition",
+        "ordinance_status",
+        "alley_classification",
+        "parking_activity"
+      ],
+      "paired_probe_id": "baseline",
+      "probe": {
+        "comparison_or_standard": "original surveyed alley width",
+        "primary_variable": "available_width_ft",
+        "target_value_or_branch": 10.0
+      },
+      "rationale": "Shared qualified alley and motor vehicle reference; baseline is not dispatched.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-hashed survey, public-highway, city block, rear access, abutting property and through-connection review",
+            "name": "qualifying_other_alley",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-hashed ordinance/jurisdiction packet; unresolved without local review",
+            "name": "local_ordinance_applicability",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original 20 Hz ego and other-vehicle body vertices and vehicle identities",
+            "name": "original_vehicle_footprints",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-surveyed left/right alley boundaries at all occupied longitudinal stations",
+            "name": "alley_cross_sections",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "recomputed free intervals from original cross-sections and all original body polygons",
+            "name": "available_continuous_width_ft",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "ft"
+          },
+          {
+            "method": "original 20 Hz speed, control, pose and hold/depart history",
+            "name": "parking_activity",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original other-vehicle passages, constraints and independent physical review",
+            "name": "free_vehicular_movement",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original frame-to-four-camera timestamp and pixel joins",
+            "name": "four_view_frame_join",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site, ordinance and actual Native readback",
+            "name": "reviewed_alley_width_packet",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A constructed width target is not observed free vehicular movement.",
+          "Local ordinance and qualifying other-alley status require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-477-1b",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "any other alley",
+        "free movement of vehicular traffic",
+        "Unless otherwise provided by ordinance"
+      ],
+      "variable_assignments": {
+        "alley_classification": {
+          "kind": "world_setup",
+          "value": "source-qualified other alley"
+        },
+        "available_width_ft": {
+          "kind": "controller",
+          "value": 10.0
+        },
+        "ordinance_status": {
+          "kind": "world_setup",
+          "value": "reviewed unresolved"
+        },
+        "other_vehicle_condition": {
+          "kind": "world_setup",
+          "value": "far"
+        },
+        "parking_activity": {
+          "kind": "controller",
+          "value": "park and hold"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-477-1b__motor_vehicle_driver__width_9_9ft",
+      "deliberate_differences": [
+        "available_width_ft"
+      ],
+      "epsilon_used": {
+        "rationale": "One-tenth-foot diagnostic spacing around the statutory boundary; original surveyed measurement uncertainty retained.",
+        "unit": "ft",
+        "value": 0.1
+      },
+      "paired_probe_id": "statutory_10ft_boundary",
+      "probe": {
+        "comparison_or_standard": "original continuous free-width and physical traffic evidence",
+        "operator": "<",
+        "primary_variable": "available_width_ft",
+        "target_value_or_branch": 9.9,
+        "test_value": 9.9,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "ft"
+      },
+      "rationale": "surveyed placement targets 9.9 ft available continuous alley width",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-hashed survey, public-highway, city block, rear access, abutting property and through-connection review",
+            "name": "qualifying_other_alley",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-hashed ordinance/jurisdiction packet; unresolved without local review",
+            "name": "local_ordinance_applicability",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original 20 Hz ego and other-vehicle body vertices and vehicle identities",
+            "name": "original_vehicle_footprints",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-surveyed left/right alley boundaries at all occupied longitudinal stations",
+            "name": "alley_cross_sections",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "recomputed free intervals from original cross-sections and all original body polygons",
+            "name": "available_continuous_width_ft",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "ft"
+          },
+          {
+            "method": "original 20 Hz speed, control, pose and hold/depart history",
+            "name": "parking_activity",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original other-vehicle passages, constraints and independent physical review",
+            "name": "free_vehicular_movement",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original frame-to-four-camera timestamp and pixel joins",
+            "name": "four_view_frame_join",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site, ordinance and actual Native readback",
+            "name": "reviewed_alley_width_packet",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A constructed width target is not observed free vehicular movement.",
+          "Local ordinance and qualifying other-alley status require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-477-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "any other alley",
+        "free movement of vehicular traffic",
+        "Unless otherwise provided by ordinance"
+      ],
+      "variable_assignments": {
+        "alley_classification": {
+          "kind": "world_setup",
+          "value": "source-qualified other alley"
+        },
+        "available_width_ft": {
+          "kind": "controller",
+          "value": 9.9
+        },
+        "ordinance_status": {
+          "kind": "world_setup",
+          "value": "reviewed unresolved"
+        },
+        "other_vehicle_condition": {
+          "kind": "world_setup",
+          "value": "far"
+        },
+        "parking_activity": {
+          "kind": "controller",
+          "value": "park and hold"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-477-1b__motor_vehicle_driver__width_10_0ft",
+      "deliberate_differences": [
+        "available_width_ft"
+      ],
+      "epsilon_used": {
+        "rationale": "One-tenth-foot diagnostic spacing around the statutory boundary; original surveyed measurement uncertainty retained.",
+        "unit": "ft",
+        "value": 0.1
+      },
+      "paired_probe_id": "statutory_10ft_boundary",
+      "probe": {
+        "comparison_or_standard": "original continuous free-width and physical traffic evidence",
+        "operator": "<",
+        "primary_variable": "available_width_ft",
+        "target_value_or_branch": 10.0,
+        "test_value": 10.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "ft"
+      },
+      "rationale": "surveyed placement targets exactly 10.0 ft available continuous alley width",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-hashed survey, public-highway, city block, rear access, abutting property and through-connection review",
+            "name": "qualifying_other_alley",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-hashed ordinance/jurisdiction packet; unresolved without local review",
+            "name": "local_ordinance_applicability",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original 20 Hz ego and other-vehicle body vertices and vehicle identities",
+            "name": "original_vehicle_footprints",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-surveyed left/right alley boundaries at all occupied longitudinal stations",
+            "name": "alley_cross_sections",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "recomputed free intervals from original cross-sections and all original body polygons",
+            "name": "available_continuous_width_ft",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "ft"
+          },
+          {
+            "method": "original 20 Hz speed, control, pose and hold/depart history",
+            "name": "parking_activity",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original other-vehicle passages, constraints and independent physical review",
+            "name": "free_vehicular_movement",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original frame-to-four-camera timestamp and pixel joins",
+            "name": "four_view_frame_join",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site, ordinance and actual Native readback",
+            "name": "reviewed_alley_width_packet",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A constructed width target is not observed free vehicular movement.",
+          "Local ordinance and qualifying other-alley status require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-477-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "any other alley",
+        "free movement of vehicular traffic",
+        "Unless otherwise provided by ordinance"
+      ],
+      "variable_assignments": {
+        "alley_classification": {
+          "kind": "world_setup",
+          "value": "source-qualified other alley"
+        },
+        "available_width_ft": {
+          "kind": "controller",
+          "value": 10.0
+        },
+        "ordinance_status": {
+          "kind": "world_setup",
+          "value": "reviewed unresolved"
+        },
+        "other_vehicle_condition": {
+          "kind": "world_setup",
+          "value": "far"
+        },
+        "parking_activity": {
+          "kind": "controller",
+          "value": "park and hold"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-477-1b__motor_vehicle_driver__width_10_1ft",
+      "deliberate_differences": [
+        "available_width_ft"
+      ],
+      "epsilon_used": {
+        "rationale": "One-tenth-foot diagnostic spacing around the statutory boundary; original surveyed measurement uncertainty retained.",
+        "unit": "ft",
+        "value": 0.1
+      },
+      "paired_probe_id": "statutory_10ft_boundary",
+      "probe": {
+        "comparison_or_standard": "original continuous free-width and physical traffic evidence",
+        "operator": "<",
+        "primary_variable": "available_width_ft",
+        "target_value_or_branch": 10.1,
+        "test_value": 10.1,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "ft"
+      },
+      "rationale": "surveyed placement targets 10.1 ft available continuous alley width",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-hashed survey, public-highway, city block, rear access, abutting property and through-connection review",
+            "name": "qualifying_other_alley",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-hashed ordinance/jurisdiction packet; unresolved without local review",
+            "name": "local_ordinance_applicability",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original 20 Hz ego and other-vehicle body vertices and vehicle identities",
+            "name": "original_vehicle_footprints",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-surveyed left/right alley boundaries at all occupied longitudinal stations",
+            "name": "alley_cross_sections",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "recomputed free intervals from original cross-sections and all original body polygons",
+            "name": "available_continuous_width_ft",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "ft"
+          },
+          {
+            "method": "original 20 Hz speed, control, pose and hold/depart history",
+            "name": "parking_activity",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original other-vehicle passages, constraints and independent physical review",
+            "name": "free_vehicular_movement",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original frame-to-four-camera timestamp and pixel joins",
+            "name": "four_view_frame_join",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site, ordinance and actual Native readback",
+            "name": "reviewed_alley_width_packet",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A constructed width target is not observed free vehicular movement.",
+          "Local ordinance and qualifying other-alley status require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-477-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "any other alley",
+        "free movement of vehicular traffic",
+        "Unless otherwise provided by ordinance"
+      ],
+      "variable_assignments": {
+        "alley_classification": {
+          "kind": "world_setup",
+          "value": "source-qualified other alley"
+        },
+        "available_width_ft": {
+          "kind": "controller",
+          "value": 10.1
+        },
+        "ordinance_status": {
+          "kind": "world_setup",
+          "value": "reviewed unresolved"
+        },
+        "other_vehicle_condition": {
+          "kind": "world_setup",
+          "value": "far"
+        },
+        "parking_activity": {
+          "kind": "controller",
+          "value": "park and hold"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-477-1b__motor_vehicle_driver__other_vehicle_close",
+      "deliberate_differences": [
+        "other_vehicle_condition"
+      ],
+      "paired_probe_id": "other_vehicle",
+      "probe": {
+        "comparison_or_standard": "original continuous free-width and physical traffic evidence",
+        "primary_variable": "other_vehicle_condition",
+        "target_value_or_branch": "close"
+      },
+      "rationale": "another vehicle constrains the same alley cross-section during parked hold",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-hashed survey, public-highway, city block, rear access, abutting property and through-connection review",
+            "name": "qualifying_other_alley",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-hashed ordinance/jurisdiction packet; unresolved without local review",
+            "name": "local_ordinance_applicability",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original 20 Hz ego and other-vehicle body vertices and vehicle identities",
+            "name": "original_vehicle_footprints",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-surveyed left/right alley boundaries at all occupied longitudinal stations",
+            "name": "alley_cross_sections",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "recomputed free intervals from original cross-sections and all original body polygons",
+            "name": "available_continuous_width_ft",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "ft"
+          },
+          {
+            "method": "original 20 Hz speed, control, pose and hold/depart history",
+            "name": "parking_activity",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original other-vehicle passages, constraints and independent physical review",
+            "name": "free_vehicular_movement",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original frame-to-four-camera timestamp and pixel joins",
+            "name": "four_view_frame_join",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site, ordinance and actual Native readback",
+            "name": "reviewed_alley_width_packet",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A constructed width target is not observed free vehicular movement.",
+          "Local ordinance and qualifying other-alley status require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-477-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "any other alley",
+        "free movement of vehicular traffic",
+        "Unless otherwise provided by ordinance"
+      ],
+      "variable_assignments": {
+        "alley_classification": {
+          "kind": "world_setup",
+          "value": "source-qualified other alley"
+        },
+        "available_width_ft": {
+          "kind": "controller",
+          "value": 10.0
+        },
+        "ordinance_status": {
+          "kind": "world_setup",
+          "value": "reviewed unresolved"
+        },
+        "other_vehicle_condition": {
+          "kind": "world_setup",
+          "value": "close"
+        },
+        "parking_activity": {
+          "kind": "controller",
+          "value": "park and hold"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-477-1b__motor_vehicle_driver__other_vehicle_far",
+      "deliberate_differences": [
+        "other_vehicle_condition"
+      ],
+      "paired_probe_id": "other_vehicle",
+      "probe": {
+        "comparison_or_standard": "original continuous free-width and physical traffic evidence",
+        "primary_variable": "other_vehicle_condition",
+        "target_value_or_branch": "far"
+      },
+      "rationale": "other vehicle is outside the parked cross-section during parked hold",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-hashed survey, public-highway, city block, rear access, abutting property and through-connection review",
+            "name": "qualifying_other_alley",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-hashed ordinance/jurisdiction packet; unresolved without local review",
+            "name": "local_ordinance_applicability",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original 20 Hz ego and other-vehicle body vertices and vehicle identities",
+            "name": "original_vehicle_footprints",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-surveyed left/right alley boundaries at all occupied longitudinal stations",
+            "name": "alley_cross_sections",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "recomputed free intervals from original cross-sections and all original body polygons",
+            "name": "available_continuous_width_ft",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "ft"
+          },
+          {
+            "method": "original 20 Hz speed, control, pose and hold/depart history",
+            "name": "parking_activity",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original other-vehicle passages, constraints and independent physical review",
+            "name": "free_vehicular_movement",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original frame-to-four-camera timestamp and pixel joins",
+            "name": "four_view_frame_join",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site, ordinance and actual Native readback",
+            "name": "reviewed_alley_width_packet",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A constructed width target is not observed free vehicular movement.",
+          "Local ordinance and qualifying other-alley status require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-477-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "any other alley",
+        "free movement of vehicular traffic",
+        "Unless otherwise provided by ordinance"
+      ],
+      "variable_assignments": {
+        "alley_classification": {
+          "kind": "world_setup",
+          "value": "source-qualified other alley"
+        },
+        "available_width_ft": {
+          "kind": "controller",
+          "value": 10.0
+        },
+        "ordinance_status": {
+          "kind": "world_setup",
+          "value": "reviewed unresolved"
+        },
+        "other_vehicle_condition": {
+          "kind": "world_setup",
+          "value": "far"
+        },
+        "parking_activity": {
+          "kind": "controller",
+          "value": "park and hold"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C135705__NRS-484B-477-1b__motor_vehicle_driver__ordinance_otherwise",
+      "deliberate_differences": [
+        "ordinance_status"
+      ],
+      "paired_probe_id": "ordinance_exception",
+      "probe": {
+        "comparison_or_standard": "original continuous free-width and physical traffic evidence",
+        "primary_variable": "ordinance_status",
+        "target_value_or_branch": "source-reviewed otherwise provides"
+      },
+      "rationale": "reviewed local ordinance otherwise provides for the same measured 9.9 ft parked configuration",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-hashed survey, public-highway, city block, rear access, abutting property and through-connection review",
+            "name": "qualifying_other_alley",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-hashed ordinance/jurisdiction packet; unresolved without local review",
+            "name": "local_ordinance_applicability",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original 20 Hz ego and other-vehicle body vertices and vehicle identities",
+            "name": "original_vehicle_footprints",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "source-surveyed left/right alley boundaries at all occupied longitudinal stations",
+            "name": "alley_cross_sections",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "recomputed free intervals from original cross-sections and all original body polygons",
+            "name": "available_continuous_width_ft",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "ft"
+          },
+          {
+            "method": "original 20 Hz speed, control, pose and hold/depart history",
+            "name": "parking_activity",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original other-vehicle passages, constraints and independent physical review",
+            "name": "free_vehicular_movement",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          },
+          {
+            "method": "original frame-to-four-camera timestamp and pixel joins",
+            "name": "four_view_frame_join",
+            "reference_frame": "surveyed alley cross sections and original Native frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original Native frames",
+            "uncertainty": "free movement, ordinance and legal interpretation pending",
+            "unit": "structured original source"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site, ordinance and actual Native readback",
+            "name": "reviewed_alley_width_packet",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "A constructed width target is not observed free vehicular movement.",
+          "Local ordinance and qualifying other-alley status require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-477-1b",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [
+        "any other alley",
+        "free movement of vehicular traffic",
+        "Unless otherwise provided by ordinance"
+      ],
+      "variable_assignments": {
+        "alley_classification": {
+          "kind": "world_setup",
+          "value": "source-qualified other alley"
+        },
+        "available_width_ft": {
+          "kind": "controller",
+          "value": 9.9
+        },
+        "ordinance_status": {
+          "kind": "world_setup",
+          "value": "source-reviewed otherwise provides"
+        },
+        "other_vehicle_condition": {
+          "kind": "world_setup",
+          "value": "far"
+        },
+        "parking_activity": {
+          "kind": "controller",
+          "value": "park and hold"
+        }
+      }
+    }
+  ],
+  "cell_id": "C135705",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Public highway, city block, rear access, abutting property and through-connected non-cul-de-sac status require source review.",
+          "phrase": "any other alley"
+        }
+      ],
+      "missing_inputs": [
+        "Original source review for this phrase and a physical sweep range."
+      ],
+      "rationale": "No exact-law accepted judgment range or original physical outcome is supplied.",
+      "status": "incomplete",
+      "sweep_id": "legal_phrase_1",
+      "target_law_id": "NRS-484B-477-1b"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Continuous clear width is measured from original bodies, but realized free vehicular movement requires physical traffic review.",
+          "phrase": "free movement of vehicular traffic"
+        }
+      ],
+      "missing_inputs": [
+        "Original source review for this phrase and a physical sweep range."
+      ],
+      "rationale": "No exact-law accepted judgment range or original physical outcome is supplied.",
+      "status": "incomplete",
+      "sweep_id": "legal_phrase_2",
+      "target_law_id": "NRS-484B-477-1b"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Local jurisdiction, ordinance text, effective period and applicability require independent source review.",
+          "phrase": "Unless otherwise provided by ordinance"
+        }
+      ],
+      "missing_inputs": [
+        "Original source review for this phrase and a physical sweep range."
+      ],
+      "rationale": "No exact-law accepted judgment range or original physical outcome is supplied.",
+      "status": "incomplete",
+      "sweep_id": "legal_phrase_3",
+      "target_law_id": "NRS-484B-477-1b"
+    }
+  ],
+  "sweeps_expanded": true
+}

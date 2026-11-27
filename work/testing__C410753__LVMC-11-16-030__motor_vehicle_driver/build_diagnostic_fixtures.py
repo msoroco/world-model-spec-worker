@@ -93,6 +93,7 @@ def build_one(case):
                         "sources": {name: {"sha256": "0" * 64} for name in CAMERAS}})
     frame_ref = add("native-rail-frames.json", frames)
     camera_ref = add("native-rail-camera-map.json", cameras)
+    camera_map_source = files.pop("native-rail-camera-map.json")
     files["video_frames.jsonl"] = "".join(encoded({
         "video_frame": frame["original_frame"],
         "carla_frame": frame["original_frame"],
@@ -129,12 +130,16 @@ def build_one(case):
                              "simulation_time": time_s})
         graphs.append({"path": "capture/native/" + relative_graph,
                        "attributes": {"frame": index, "time_s": time_s,
-                                      "observed_evidence": {"frame": index,
-                                                            "time_s": time_s}},
+                                      "observed_evidence": observed},
                        "nodes": [], "edges": []})
     folder = HERE / "diagnostic-fixtures" / key
     folder.mkdir(parents=True, exist_ok=True)
     sources = []
+    camera_map_path = folder / "source-native-rail-camera-map.json"
+    camera_map_path.write_text(camera_map_source)
+    sources.append({"path": "native-rail-camera-map.json",
+                    "source": str(camera_map_path.relative_to(REPO)),
+                    "sha256": sha(camera_map_source)})
     for name, value in {
         "road.xodr": road,
         "capture/evidence.jsonl": "".join(encoded(row) for row in evidence),

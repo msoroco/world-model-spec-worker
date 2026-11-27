@@ -1,0 +1,76 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-477-1b",
+  "parameter_refs": [
+    {
+      "kind": "controller",
+      "name": "available_width_ft",
+      "range_or_domain": "9.9, 10.0 or 10.1 ft engineering target around statutory 10 ft"
+    },
+    {
+      "kind": "world_setup",
+      "name": "other_vehicle_condition",
+      "range_or_domain": "close or far original vehicle position"
+    },
+    {
+      "kind": "world_setup",
+      "name": "ordinance_status",
+      "range_or_domain": "none found, otherwise provides or unresolved reviewed source"
+    },
+    {
+      "kind": "world_setup",
+      "name": "alley_classification",
+      "range_or_domain": "source-qualified other alley"
+    },
+    {
+      "kind": "controller",
+      "name": "parking_activity",
+      "range_or_domain": "approach, park, hold and depart"
+    }
+  ],
+  "quote": "Unless otherwise provided by ordinance of the local authority having jurisdiction, a person shall not: Stop, stand or park a vehicle in any other alley in such a manner, or under such conditions as to leave available less than 10 feet of the width of the alley for the free movement of vehicular traffic.",
+  "structure": {
+    "activation": {
+      "condition": "A responsible person stops, stands or parks a motor vehicle in a source-qualified other alley.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "description": "Local authority ordinance otherwise provides, if source-proven and applicable.",
+        "source_clause": "Unless otherwise provided by ordinance of the local authority having jurisdiction"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Public highway, city block, rear access, abutting property and through-connected non-cul-de-sac status require source review.",
+        "phrase": "any other alley"
+      },
+      {
+        "note": "Continuous clear width is measured from original bodies, but realized free vehicular movement requires physical traffic review.",
+        "phrase": "free movement of vehicular traffic"
+      },
+      {
+        "note": "Local jurisdiction, ordinance text, effective period and applicability require independent source review.",
+        "phrase": "Unless otherwise provided by ordinance"
+      }
+    ],
+    "law_id": "NRS-484B-477-1b",
+    "obligation": {
+      "description": "Do not leave less than 10 feet of the alley width available for free movement of vehicular traffic.",
+      "numeric_conditions": [
+        {
+          "operator": "<",
+          "unit": "ft",
+          "value": 10,
+          "variable": "available_width_ft"
+        }
+      ],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Measure original occupied cross-sections throughout the actual parked hold.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-477-1b@motor_vehicle_driver"
+}

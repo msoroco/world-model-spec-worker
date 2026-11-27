@@ -1,0 +1,27 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Exact parking placement alternatives and least-pedestrian-obstruction context for covered devices",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "source_gated_parking_and_pedestrian_context",
+      "method": "measure",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "parking-events.jsonl",
+        "pedestrian-tracks.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "reviewed-site/site.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "parking-events.jsonl"
+    ],
+    "error_contains": "Missing required source: parking-events.jsonl"
+  }
+}

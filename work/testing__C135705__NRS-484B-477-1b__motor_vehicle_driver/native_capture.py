@@ -120,7 +120,7 @@ def capture(operator, case_id, output, after_tick=None):
         sources = {"frame_map": {"frames":frames},
                    "alley_geometry": geometry,
                    "width_history": {"case_id":case_id, "source_kind":"original_native", "samples":width_history}}
-        inventory = {"case_id":case_id, "source_kind":"original_native", "sources":{},
+        inventory = {"case_id":case_id, "source_kind":"original_native", "frame_count":FRAMES, "sources":{},
                      "diagnostic_fixture":not bool(getattr(operator,"native_attested",False)),
                      "map_sha256":geometry["map_sha256"], "media":{}}
         for name, value in sources.items():

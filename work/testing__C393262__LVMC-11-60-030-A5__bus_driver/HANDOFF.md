@@ -1,6 +1,6 @@
 # C393262 residential bus-stop duration
 
-Status: CPU delivery preparation pending exact scoped strict check. The frozen cell is a residential bus stop with a bus driver. The exact LVMC-11-60-030(A)(5) branch covers a non-tour bus operator standing or parking at a bus stop longer than the applicable location-specific duration designated under Section 11.60.010. There is no accepted original recording, actual designation, or applicable judgment range in the frozen inputs. The origin/destination alternative needs another compatible cell; this package does not relabel the bus-stop cell.
+Status: ready. The exact scoped strict delivery gate passed on 2026-11-27; see `strict-assignment.log`. The frozen cell is a residential bus stop with a bus driver. The exact LVMC-11-60-030(A)(5) branch covers a non-tour bus operator standing or parking at a bus stop longer than the applicable location-specific duration designated under Section 11.60.010. There is no accepted original recording, actual designation, or applicable judgment range in the frozen inputs. The origin/destination alternative needs another compatible cell; this package does not relabel the bus-stop cell.
 
 ## Selected cases and evidence
 
@@ -12,4 +12,4 @@ Six exact cases exercise `park` and `stand` at `D-2 s`, `D`, and `D+2 s`, with t
 
 All six exact constructions have passing offline checks, positive and missing-source compatibility receipts through the supplied Native validator, Core converter, Lean decoder and video renderer, plus saved-only processing receipts that preserve originals. Three synthetic physical outcomes and the ordered lifecycle are tested for each case. Six positive and negative independent delivery audit wiring checks pass. `comparison-audit.json` binds source-hashed diagnostic reports and verifies park/stand 13/15/17 sweeps at the same synthetic D=15 s; no original physical or legal result is claimed. The five semantic proposal stages validate. `queue-proposal.json` contains six exact ordered cases and three comparison audit commands for lead integration.
 
-Run `.venv-cpu/bin/python worker_check.py --assignment testing__C393262__LVMC-11-60-030-A5__bus_driver --complete --require-delivery-ready` after sealing `result.json` ready. The parent integrates the shared queue. No frozen inputs, runtime, batch, shared work, or Git files were edited by this owner.
+The exact scoped command `.venv-cpu/bin/python worker_check.py --assignment testing__C393262__LVMC-11-60-030-A5__bus_driver --complete --require-delivery-ready` passed with `static_checks_passed: true`. The parent integrates the shared queue. No frozen inputs, runtime, batch, shared work, or Git files were edited by this owner.
