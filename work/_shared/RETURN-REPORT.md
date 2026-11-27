@@ -1,5 +1,10 @@
 # Return report
 
+## 2026-11-27 15:36 UTC — C183357 saved-only proofs complete
+
+- `testing__C183357__NRS-484B-267-1b__motor_vehicle_driver` now has 19 of 19 saved-only positive and missing-original negative proof pairs, in addition to the 19 primary and fallback offline and compatibility checks and the delivery/comparison CPU audits reported below. Its owner has bound the post-capture receipts and is running the exact scoped strict gate. Queue integration awaits that gate and independent lead verification.
+- Runtime source verification, CPU preflight and update notices passed this turn. The frozen branch/cell conflicts in C158190 and C178244 remain unresolved; neither is represented as CPU-ready.
+
 ## 2026-11-27 15:19 UTC — C183357 proof chain in progress
 
 - `testing__C183357__NRS-484B-267-1b__motor_vehicle_driver` remains partial while its owner finishes the exact CPU chain. Nineteen selected and 19 alternate-route constructions passed offline proof; all 19 selected cases passed pinned compatibility. Nineteen physical/lifecycle fixtures, 19 independent delivery audits and 18 controlled comparison audits passed, including negative source and changed-context rejection checks. Fallback compatibility and saved-only processing are still running. The lead reviewed the signed-shoulder traverse comparison: its yield response is deterministically derived from the declared position variant, not an unbound site change. No readiness is claimed before the strict scoped gate.
