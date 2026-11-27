@@ -98,7 +98,9 @@ def execute(config, output, host, port):
     from hand_signal_pose import apply_hand_signal, spawn_source_driver_proxy
 
     output = Path(output)
-    require(not output.exists(), "Original output already exists")
+    require(output.is_dir() and not (output / "emergency-native.jsonl").exists() and
+            not (output / "video_frames.jsonl").exists(),
+            "Original output already exists or was not materialized")
     client = carla.Client(host, port)
     client.set_timeout(120)
     saved = snapshot(client)
@@ -149,7 +151,6 @@ def execute(config, output, host, port):
             require(signal_actor is not None, "Officer direction actor spawn failed")
             actors.append(signal_actor)
             apply_hand_signal(carla, signal_actor)
-        output.mkdir(parents=True)
         positions = _camera_positions()
         for item in config["cameras"]:
             name = item["name"]
@@ -205,6 +206,9 @@ def execute(config, output, host, port):
                     "ego": _record(ego, mapping, carla),
                     "emergency": _record(emergency, mapping, carla),
                     "traffic": _record(traffic, mapping, carla) if traffic else None,
+                    "weather_precipitation": world.get_weather().precipitation,
+                    "weather_wetness": world.get_weather().wetness,
+                    "road_obstruction_observed": False,
                     "emergency_light_state": int(emergency.get_light_state()),
                     "source_driver_hand_signal_requested": suffix == "04",
                     "officer_hand_direction_requested": suffix == "05",

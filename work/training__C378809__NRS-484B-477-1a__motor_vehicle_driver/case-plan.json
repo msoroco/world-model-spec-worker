@@ -40,58 +40,77 @@
     {
       "case_id": "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_01",
       "target_law_id": "NRS-484B-477-1a",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
+      "kind": "delivery",
+      "target_type": "selected_cpu_construction",
       "physical_target": "stop only for expeditious goods loading",
       "comparison_variable": "expeditious goods loading exception",
-      "selection_status": "not_selected",
+      "selection_status": "selected_cpu_proofs_pending",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "current_runtime_offline_passed_saved_and_public_pending",
+      "construction_path": "native-selected/probe_01/construction.json"
     },
     {
       "case_id": "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_02",
       "target_law_id": "NRS-484B-477-1a",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
+      "kind": "delivery",
+      "target_type": "selected_cpu_construction",
       "physical_target": "park in same alley without loading",
       "comparison_variable": "expeditious goods loading exception",
-      "selection_status": "not_selected",
+      "selection_status": "selected_cpu_proofs_pending",
       "expected_label": null,
-      "construction_status": "unselected_native_feasibility_draft_offline_passed",
-      "construction_path": "native/construction.json",
+      "construction_status": "current_runtime_offline_passed_saved_and_public_pending",
+      "construction_path": "native-selected/probe_02/construction.json",
       "offline_log": "pinned-offline.log"
     },
     {
       "case_id": "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_03",
       "target_law_id": "NRS-484B-477-1a",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
+      "kind": "delivery",
+      "target_type": "selected_cpu_construction",
       "physical_target": "remain stopped beyond expeditious loading",
       "comparison_variable": "expeditious goods loading exception",
-      "selection_status": "not_selected",
+      "selection_status": "selected_cpu_proofs_pending",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "current_runtime_offline_passed_saved_and_public_pending",
+      "construction_path": "native-selected/probe_03/construction.json"
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__planned_comparison",
+      "comparison_id": "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__goods_motion_contrast",
       "case_ids": [
         "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_01",
-        "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_02",
-        "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_03"
+        "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_02"
       ],
       "deliberate_differences": [
-        "expeditious goods loading exception"
+        "requested goods prop motion"
       ],
       "fixed_conditions": [
         "frozen cell and actor",
-        "physical route topology",
-        "participant identities",
-        "camera policy",
-        "recording rate and duration",
-        "nonvariable context"
-      ]
+        "surveyed alley, business district, ordinance source and parking endpoint",
+        "vehicle identity class",
+        "camera profile",
+        "20 Hz 600-frame duration"
+      ],
+      "status": "selected_cpu_construction_offline_passed_saved_original_review_pending"
+    },
+    {
+      "comparison_id": "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__post_goods_idle_contrast",
+      "case_ids": [
+        "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_01",
+        "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_03"
+      ],
+      "deliberate_differences": [
+        "requested idle interval after goods prop motion"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "surveyed alley, business district, ordinance source and parking endpoint",
+        "vehicle identity class",
+        "camera profile",
+        "20 Hz 600-frame duration"
+      ],
+      "status": "selected_cpu_construction_offline_passed_saved_original_review_pending"
     }
   ],
   "mandatory_observation_targets": [
@@ -148,10 +167,9 @@
     "Local ordinance exception and expeditious character require external authority or declared context; visual loading alone is insufficient."
   ],
   "runtime_gaps": [
-    "Probe_02 has an unselected Native parking construction passing pinned offline; original alley/district geometry and actual loading activity remain unverified.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No accepted recording membership is listed for this assignment; new exact source proof is required."
+    "Current-runtime offline proves selected bundle import and software tests only; no CARLA execution or accepted recording.",
+    "Original alley/business-district site survey and local ordinance authority source remain unprovided.",
+    "Original full-interval goods activity review, current-runtime public positive/negative compatibility, saved-only processing, semantic proposals and independent audits remain pending."
   ],
   "observations": [
     {
@@ -193,6 +211,16 @@
       "name": "rel.occupies",
       "mandatory": true,
       "reason": "the resting position in the alley"
+    },
+    {
+      "name": "kin.position",
+      "mandatory": true,
+      "reason": "original vehicle trajectory and body source"
+    },
+    {
+      "name": "kin.speed",
+      "mandatory": true,
+      "reason": "original vehicle velocity and sensor rest tolerance"
     }
   ],
   "sources": [
@@ -207,12 +235,10 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Probe_02 has an unselected Native parking construction passing pinned offline; original alley/district geometry and actual loading activity remain unverified.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No accepted recording membership is listed for this assignment; new exact source proof is required.",
-    "Local ordinance exception and expeditious character require external authority or declared context; visual loading alone is insufficient.",
-    "No CARLA execution or accepted recording is claimed."
+    "Current-runtime offline proves selected bundle import and software tests only; no CARLA execution or accepted recording.",
+    "Original alley/business-district site survey and local ordinance authority source remain unprovided.",
+    "Original full-interval goods activity review, current-runtime public positive/negative compatibility, saved-only processing, semantic proposals and independent audits remain pending.",
+    "Expeditiousness has no invented numeric cutoff."
   ],
   "requirement_dispositions": [
     {
@@ -225,7 +251,108 @@
         "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_02",
         "training__C378809__NRS-484B-477-1a__motor_vehicle_driver__probe_03"
       ],
-      "evidence_or_gap": "Unselected probe_02 Native draft passes pinned offline and synthetic alley dwell/goods source diagnostics pass. Original business district/alley/ordinance sources, observed goods activity, selected-case saved/compatibility proofs and physical realization remain unverified."
+      "evidence_or_gap": "Three exact source-gated Native bundles now selected as CPU constructions and current-runtime offline pass. Original alley/district/ordinance and goods review, public compatibility, saved-only, semantic, physical and independent audits remain pending; no legal outcome asserted."
     }
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "alley boundaries, vehicle and goods",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "alley entry and surveyed park approach",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "goods origin/destination and premises entrance",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "vehicle body and driver reference",
+        "interval": "all 600 frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "st.alley": {
+      "evidence": "surveyed alley boundary, public use and original map; alley-native.jsonl",
+      "channels": [
+        "st.alley"
+      ],
+      "source_refs": [
+        "inputs/training__C378809__NRS-484B-477-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "vehicle body position and velocity in alley-native.jsonl",
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "source_refs": [
+        "inputs/training__C378809__NRS-484B-477-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.time": {
+      "evidence": "video_frames.jsonl joined to alley-native.jsonl at 20 Hz",
+      "channels": [
+        "kin.time"
+      ],
+      "source_refs": [
+        "inputs/training__C378809__NRS-484B-477-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.extent": {
+      "evidence": "independent full-interval goods-review.json plus four videos",
+      "channels": [
+        "kin.extent"
+      ],
+      "source_refs": [
+        "inputs/training__C378809__NRS-484B-477-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "sig.door_open": {
+      "evidence": "original four videos and independent goods-review.json; door opening alone is insufficient",
+      "channels": [
+        "sig.door_open"
+      ],
+      "source_refs": [
+        "inputs/training__C378809__NRS-484B-477-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.commercial_motor_vehicle": {
+      "evidence": "vehicle identity context only; commercial class is not statutory element",
+      "channels": [
+        "ru.commercial_motor_vehicle"
+      ],
+      "source_refs": [
+        "inputs/training__C378809__NRS-484B-477-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.driveway_or_alley_entrance": {
+      "evidence": "site-survey.json entrance and original approach video",
+      "channels": [
+        "st.driveway_or_alley_entrance"
+      ],
+      "source_refs": [
+        "inputs/training__C378809__NRS-484B-477-1a__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "site-survey.json boundary joined to original vehicle body trace",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "inputs/training__C378809__NRS-484B-477-1a__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  }
 }

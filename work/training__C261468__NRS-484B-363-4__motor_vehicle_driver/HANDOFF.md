@@ -1,6 +1,6 @@
 # C261468 NRS 484B.363(4) handoff
 
-Status: partial pending the exact scoped strict gate. The selected construction and CPU diagnostics are ready for that check; original operator capture and source review remain future delivery gates. No original physical completion, accepted recording, or legal verdict is claimed.
+Status: ready for original operator delivery after the exact scoped strict CPU gate passed with exit 0. Original operator capture and source review remain future delivery gates. No original physical completion, accepted recording, or legal verdict is claimed.
 
 ## Exact source and cases
 
@@ -14,4 +14,4 @@ All 13 selected cases passed current-runtime `runtime.py offline` and public `ru
 
 ## Next action
 
-Run `SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c261468-check TMPDIR=.runtime-work/c261468 .venv-cpu/bin/python -B worker_check.py --assignment training__C261468__NRS-484B-363-4__motor_vehicle_driver --complete --require-delivery-ready` on final package bytes. Keep `result.json` partial if it fails; repair the exact CPU gap. After a pass, the lead independently rechecks and integrates shared branch coverage and the GPU queue. The original survey path for each case is `.runtime-work/original-surveys/<assignment-id>/<case-id>/context-survey.json`; capture and execution both bind `SCENARIO_CONTEXT_SURVEY` to that path. Original source capture/review, physical and legal acceptance remain pending.
+The exact scoped strict command is `SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c261468-check TMPDIR=.runtime-work/c261468 .venv-cpu/bin/python -B worker_check.py --assignment training__C261468__NRS-484B-363-4__motor_vehicle_driver --complete --require-delivery-ready`; it passed exit 0 on 2026-11-26. The lead independently rechecks and integrates shared branch coverage and the GPU queue. The original survey path for each case is `.runtime-work/original-surveys/<assignment-id>/<case-id>/context-survey.json`; capture and execution both bind `SCENARIO_CONTEXT_SURVEY` to that path. Original source capture/review, physical and legal acceptance remain pending.

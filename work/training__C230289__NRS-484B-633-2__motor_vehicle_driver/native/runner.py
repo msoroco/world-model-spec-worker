@@ -1,4 +1,4 @@
-"""Unselected surveyed-bridge Native feasibility draft for C230289.
+"""Source-gated selected surveyed-bridge Native construction for C230289.
 
 Administrative declaration and sign status must come from an original survey.
 Requested controller speed and observed Native velocity are distinct.
@@ -12,8 +12,8 @@ import queue
 import sys
 
 ROOT = Path(__file__).resolve().parent
-CASE = "training__C230289__NRS-484B-633-2__motor_vehicle_driver__probe_01"
-VIEWS = ("overview", "driver_front", "structure_side", "rear")
+ASSIGNMENT = "training__C230289__NRS-484B-633-2__motor_vehicle_driver"
+VIEWS = ("overview", "approach", "reference", "driver")
 
 
 def require(ok, message):
@@ -22,29 +22,29 @@ def require(ok, message):
 
 
 def check(config):
-    require(config["case_id"] == CASE and config["law_id"] == "NRS-484B-633-2"
+    require(config["case_id"] in {ASSIGNMENT + "__probe_01", ASSIGNMENT + "__probe_02"} and config["law_id"] == "NRS-484B-633-2"
             and config["cell_id"] == "C230289" and config["actor"] == "motor_vehicle_driver",
             "exact assignment changed")
     require(config["frozen_cell"] == {"layout": "road", "maneuver": "travel",
                                       "control": "speed_limit_sign"}, "frozen cell changed")
-    require(config["status"] == "unselected_native_feasibility_draft"
+    require(config["status"] == "selected_cpu_prepared"
             and config["physical_completion"] is False and config["legal_verdict"] is None,
             "unproved outcome claimed")
     require(config["rate_hz"] == 20 and config["duration_s"] == 30 and config["frames"] == 600,
             "30-second capture missing")
-    require(config["requested_offset_below_declared_maximum_mph"] == 10,
+    require(config["requested_offset_from_declared_maximum_mph"] == (-10 if config["case_id"].endswith("probe_01") else 10),
             "speed request changed")
     require(tuple(c["name"] for c in config["cameras"]) == VIEWS
             and all(c["fps"] == 20 and c["width"] >= 1280 and c["height"] >= 720
                     for c in config["cameras"]), "four-camera source plan incomplete")
-    return {"case_id": CASE, "frame_count": 600, "views": list(VIEWS),
-            "carla_contacted": False, "selected": False, "measured_speed_mph": None}
+    return {"case_id": config["case_id"], "frame_count": 600, "views": list(VIEWS),
+            "carla_contacted": False, "selected": True, "measured_speed_mph": None}
 
 
 def read_survey(path):
     survey = json.loads(Path(path).read_text())
-    require(survey.get("source_kind") == "original_native_bridge_survey",
-            "original bridge survey required")
+    require(survey.get("assignment_id") == ASSIGNMENT and survey.get("source_kind") == "original_native_bridge_survey",
+            "original assignment bridge survey required")
     require(survey.get("map_name") and survey.get("highway_source_id")
             and survey.get("structure_source_id") and survey.get("chapter_408_source_id")
             and survey.get("structure_type") in {"bridge", "other_elevated_structure"},
@@ -57,39 +57,59 @@ def read_survey(path):
                                          "otherwise_permissible_speed_source_id")),
             "administrative declaration provenance missing")
     maximum = admin.get("safe_maximum_mph")
-    require(isinstance(maximum, (int, float)) and math.isfinite(maximum) and maximum > 10,
-            "declared maximum invalid for requested controller")
+    ordinary = admin.get("otherwise_permissible_speed_mph")
+    require(isinstance(maximum, (int, float)) and math.isfinite(maximum) and maximum > 10
+            and isinstance(ordinary, (int, float)) and math.isfinite(ordinary)
+            and ordinary > maximum,
+            "declared structural maximum must be below sourced otherwise permissible speed")
     signs = survey.get("signs", [])
     require(len(signs) == 2 and {s.get("end") for s in signs} == {"first", "second"}
             and all(s.get("source_id") and s.get("visible_instruction_source_id")
                     and s.get("department_authorization_source_id") and s.get("maintained_source_id")
                     and s.get("instruction_kind") == "structure_maximum"
                     and s.get("maximum_mph") == maximum and s.get("distance_before_end_ft") == 100
-                    and s.get("governed_approach_source_id") for s in signs),
+                    and s.get("governed_approach_source_id") and len(s.get("position_xyz_m", [])) == 3
+                    and len(s.get("structure_end_xyz_m", [])) == 3 for s in signs),
             "two authorized 100-foot structural signs missing")
+    require(all(abs(math.dist(s["position_xyz_m"], s["structure_end_xyz_m"]) * 3.280839895 - 100) <= 2 for s in signs),
+            "structural sign coordinates do not support 100-foot distance")
     require(len(survey.get("spawn_xyz_yaw_deg", [])) == 4
             and len(survey.get("bridge_exit_xyz_m", [])) == 3
             and survey.get("vehicle_blueprint"), "surveyed Native route missing")
+    polygon = survey.get("structure_polygon_xy_m", [])
+    require(len(polygon) >= 3 and all(len(v) == 2 and all(isinstance(c, (int, float)) and math.isfinite(c) for c in v) for v in polygon),
+            "surveyed structure footprint missing")
     return survey
+
+
+def inside_polygon(x, y, vertices):
+    inside = False
+    j = len(vertices) - 1
+    for i, (xi, yi) in enumerate(vertices):
+        xj, yj = vertices[j]
+        if ((yi > y) != (yj > y)) and x < (xj - xi) * (y - yi) / (yj - yi) + xi:
+            inside = not inside
+        j = i
+    return inside
 
 
 def execute(config, output_dir, survey_path, host, port):
     check(config)
-    require(survey_path, "original bridge survey required")
+    require(survey_path, "original assignment bridge survey required")
     survey = read_survey(survey_path)
     require(".runtime-work" in os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT", ""),
             "set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work")
     repo = ROOT.parents[2]
-    sys.path.insert(0, str(repo / "runtime" / "pipeline" / "scenario_pipeline"))
-    sys.path.insert(1, str(repo / "runtime" / "pipeline" / "python"))
+    sys.path.insert(0, str(repo / "runtime" / "scenario_pipeline"))
+    sys.path.insert(1, str(repo / "runtime" / "python"))
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import restore, snapshot
 
     output = Path(output_dir)
-    require(not output.exists(), "output directory already exists")
-    output.mkdir(parents=True)
+    require(output.is_dir(), "materialized output directory required")
+    (output / "original_bridge_survey.json").write_bytes(Path(survey_path).read_bytes())
     client = carla.Client(host, port)
     client.set_timeout(15)
     world = client.get_world()
@@ -123,10 +143,10 @@ def execute(config, output_dir, survey_path, host, port):
             sensors.append(sensor)
             (output / camera["name"]).mkdir()
             sensor.listen(lambda image, name=camera["name"]: images.put((name, image)))
-        with PipelineCapture(client, vehicle, output, CASE, required_observations=config["required_atoms"]) as capture, \
+        with PipelineCapture(client, vehicle, output, config["case_id"], required_observations=config["required_atoms"]) as capture, \
                 FrameMap(output / "video_frames.jsonl") as frame_map, \
                 (output / "bridge-native.jsonl").open("x", buffering=1) as trace:
-            target_speed_mps = (survey["administrative_declaration"]["safe_maximum_mph"] - 10) / 2.2369362920544
+            target_speed_mps = (survey["administrative_declaration"]["safe_maximum_mph"] + config["requested_offset_from_declared_maximum_mph"]) / 2.2369362920544
             for frame in range(600):
                 pose, velocity = vehicle.get_transform(), vehicle.get_velocity()
                 speed = math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2)
@@ -156,8 +176,9 @@ def execute(config, output_dir, survey_path, host, port):
                                                            observed_pose.location.z],
                                         "velocity_xyz_mps": [observed_velocity.x, observed_velocity.y,
                                                              observed_velocity.z],
-                                        "requested_speed_mph": survey["administrative_declaration"]["safe_maximum_mph"] - 10,
-                                        "on_structure_verified": False}) + "\n")
+                                        "requested_speed_mph": survey["administrative_declaration"]["safe_maximum_mph"] + config["requested_offset_from_declared_maximum_mph"],
+                                        "on_structure_verified": inside_polygon(observed_pose.location.x, observed_pose.location.y, survey["structure_polygon_xy_m"]),
+                                        "structure_occupancy_source": survey["structure_source_id"]}) + "\n")
     finally:
         for sensor in sensors:
             sensor.stop()
