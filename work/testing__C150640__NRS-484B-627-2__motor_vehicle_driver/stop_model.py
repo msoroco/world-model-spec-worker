@@ -75,6 +75,18 @@ def reviewed_scene(packet: Path, case_id: str) -> dict:
         raise ValueError("one-way direction not reviewed")
     if not value.get("roadway_polygon") or not value.get("shoulder_polygon"):
         raise ValueError("roadway and shoulder boundaries missing")
+    for key in ("ego_spawn_xy", "follower_spawn_xy", "ego_stop_xy", "follower_pass_route"):
+        if not value.get(key):
+            raise ValueError("reviewed original geometry missing: " + key)
+    if not isinstance(value.get("passing_space_m"), (int, float)):
+        raise ValueError("reviewed original passing space missing")
+    suffix = case_id.removeprefix(ASSIGNMENT + "__")
+    if suffix not in BY_NAME:
+        raise ValueError("unknown exact stop case")
+    if BY_NAME[suffix].stop_reason == "safety_conflict" and not value.get("conflict_actor_id"):
+        raise ValueError("reviewed original safety conflict actor missing")
+    if BY_NAME[suffix].stop_reason == "official_direction" and not value.get("official_direction_actor_id"):
+        raise ValueError("reviewed original direction actor missing")
     return value
 
 
@@ -113,9 +125,9 @@ def longitudinal_gap(ego_xy, follower_xy, route_heading_rad, ego_length_m, follo
 
 
 def controller_target(case: Case, frame: int, ego_speed: float, follower_speed: float,
-                      body_gap_m: float) -> dict:
+                      body_gap_m: float, stop_trigger_frame: int = 200) -> dict:
     """Return separate ego/follower actuation requests; no teleportation."""
-    if frame < 200:
+    if frame < stop_trigger_frame:
         ego = {"throttle": 0.36 if ego_speed < 8 else 0.0, "brake": 0.0}
     elif case.complete_stop_requested:
         ego = {"throttle": 0.0, "brake": 0.85}

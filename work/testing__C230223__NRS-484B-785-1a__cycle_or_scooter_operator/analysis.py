@@ -117,8 +117,9 @@ def analyze(attempt):
             path.write_text(content)
         evidence.append({'name':name,'unit':channel['unit'],'reference':path.name})
     context=folder/'channel-reviewed_scooter_site.json'
-    content=json.dumps({'site_sha256':history['reviewed_site_sha256'],
-                        'source_hashes':{role:scene[role+'_source_sha256'] for role in SOURCE_ROLES}},sort_keys=True)+'\n'
+    content=json.dumps({'reviewed_scooter_site':{
+        'site_sha256':history['reviewed_site_sha256'],
+        'source_hashes':{role:scene[role+'_source_sha256'] for role in SOURCE_ROLES}}},sort_keys=True)+'\n'
     if context.exists():
         need(context.read_text()==content,'reviewed scooter site context differs')
     else:

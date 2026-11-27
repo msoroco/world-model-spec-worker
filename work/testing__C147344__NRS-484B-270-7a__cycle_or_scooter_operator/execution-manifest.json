@@ -1,0 +1,338 @@
+{
+  "assignment_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator",
+  "law_id": "NRS-484B-270-7a",
+  "cell_id": "C147344",
+  "cases": [
+    {
+      "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking",
+      "construction": "cases/planned_merge_braking/construction.json",
+      "construction_sha256": "78fc23db37891b9314a74879e374b9d7c5e2bceae3d1007d2dd9b8ab178f3892",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original source-approved bicycle spawn or lane transition may be obstructed at the primary start waypoint."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/planned_merge_braking/construction.json",
+          "construction_sha256": "69cdae2e5a9508e11bcb9e2a0550b2bd7ccb777df30b7e0625640d302a7639a7",
+          "trigger": {
+            "source": "original Native spawn and 600-frame bicycle route readback",
+            "metric": "bicycle spawn and requested lane transition",
+            "failure_condition": "primary spawn blocked or requested bicycle lane transition absent"
+          },
+          "changed_knobs": [
+            "source-approved second bicycle route waypoint for spawn and remaining route; no new waypoint or scenario identity"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostics/planned_merge_braking-recipe.json",
+      "measurement_contract": "diagnostics/planned_merge_braking-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "motor_vehicle_speed": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "motor_brake": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "bicycle_lane": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "body_gap": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "video_frames.jsonl"
+        }
+      },
+      "kind": "delivery",
+      "source_gate": "Original reviewed Class 1 electric bicycle, distinct motor vehicle, road and route sources; no synthetic capture is accepted.",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "cases/planned_merge_braking/negative-analysis.log"
+      },
+      "compatibility": {
+        "receipt": "cases/planned_merge_braking/compatibility.json",
+        "sha256": "a444d6e0edf5a7040b0ba41a50f19f858984d70ac60e695c62acb47bac229f4a",
+        "log": "cases/planned_merge_braking/analysis.log",
+        "negative_log": "cases/planned_merge_braking/negative-analysis.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "78fc23db37891b9314a74879e374b9d7c5e2bceae3d1007d2dd9b8ab178f3892",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostic-execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking --output .runtime-work/c147344-owner/offline-planned_merge_braking-v7",
+        "log": "proof-offline-planned_merge_braking.log",
+        "log_sha256": "5e8b0161a8cf1e0266386313b1cbacba06684eb0bb2a22ca9de9e7469b3921fb"
+      },
+      "physical_preparation": {},
+      "post_capture": {},
+      "delivery_acceptance": {}
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking",
+      "construction": "cases/planned_merge_no_braking/construction.json",
+      "construction_sha256": "e15933bb9c2120d5768ca70a6ce874fa5cb3fa00591b8dd5d77a96d40237b3f1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original source-approved bicycle spawn or lane transition may be obstructed at the primary start waypoint."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/planned_merge_no_braking/construction.json",
+          "construction_sha256": "7cc0a794311e1e1eea2f87b842631b132110d4a689290341fc12426c21328aaa",
+          "trigger": {
+            "source": "original Native spawn and 600-frame bicycle route readback",
+            "metric": "bicycle spawn and requested lane transition",
+            "failure_condition": "primary spawn blocked or requested bicycle lane transition absent"
+          },
+          "changed_knobs": [
+            "source-approved second bicycle route waypoint for spawn and remaining route; no new waypoint or scenario identity"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostics/planned_merge_no_braking-recipe.json",
+      "measurement_contract": "diagnostics/planned_merge_no_braking-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "motor_vehicle_speed": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "motor_brake": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "bicycle_lane": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "body_gap": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "video_frames.jsonl"
+        }
+      },
+      "kind": "delivery",
+      "source_gate": "Original reviewed Class 1 electric bicycle, distinct motor vehicle, road and route sources; no synthetic capture is accepted.",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "cases/planned_merge_no_braking/negative-analysis.log"
+      },
+      "compatibility": {
+        "receipt": "cases/planned_merge_no_braking/compatibility.json",
+        "sha256": "e07d9d05979faa01ef399144ce9b77c71a1936e6079f24839d0f271b2d94d434",
+        "log": "cases/planned_merge_no_braking/analysis.log",
+        "negative_log": "cases/planned_merge_no_braking/negative-analysis.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "e15933bb9c2120d5768ca70a6ce874fa5cb3fa00591b8dd5d77a96d40237b3f1",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostic-execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking --output .runtime-work/c147344-owner/offline-planned_merge_no_braking-v7",
+        "log": "proof-offline-planned_merge_no_braking.log",
+        "log_sha256": "de1172e76fd0d47aed63d3d4e0d69d605f29f6151eacb7a8c8dcf322580bfb5b"
+      },
+      "physical_preparation": {},
+      "post_capture": {},
+      "delivery_acceptance": {}
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking",
+      "construction": "cases/ordinary_merge_braking/construction.json",
+      "construction_sha256": "0ab3cf05a0b8b76bf06bfd784d4ee115da2ca0a671771119098fd916b84f4255",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original source-approved bicycle spawn or lane transition may be obstructed at the primary start waypoint."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/ordinary_merge_braking/construction.json",
+          "construction_sha256": "e780b5ffb9c7691fb8fe79f581d6717ca403696c6a460b6066158ce5608eae85",
+          "trigger": {
+            "source": "original Native spawn and 600-frame bicycle route readback",
+            "metric": "bicycle spawn and requested lane transition",
+            "failure_condition": "primary spawn blocked or requested bicycle lane transition absent"
+          },
+          "changed_knobs": [
+            "source-approved second bicycle route waypoint for spawn and remaining route; no new waypoint or scenario identity"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostics/ordinary_merge_braking-recipe.json",
+      "measurement_contract": "diagnostics/ordinary_merge_braking-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "motor_vehicle_speed": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "motor_brake": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "bicycle_lane": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "body_gap": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "video_frames.jsonl"
+        }
+      },
+      "kind": "delivery",
+      "source_gate": "Original reviewed Class 1 electric bicycle, distinct motor vehicle, road and route sources; no synthetic capture is accepted.",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "cases/ordinary_merge_braking/negative-analysis.log"
+      },
+      "compatibility": {
+        "receipt": "cases/ordinary_merge_braking/compatibility.json",
+        "sha256": "e09e14aed359ba1071424045035e30756af71a76f0e418b1969f93de8123f2a2",
+        "log": "cases/ordinary_merge_braking/analysis.log",
+        "negative_log": "cases/ordinary_merge_braking/negative-analysis.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "0ab3cf05a0b8b76bf06bfd784d4ee115da2ca0a671771119098fd916b84f4255",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostic-execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking --output .runtime-work/c147344-owner/offline-ordinary_merge_braking-v7",
+        "log": "proof-offline-ordinary_merge_braking.log",
+        "log_sha256": "dbd2339eed723f07bcd057a7fc59e618f2395b274aea2ef98ca47866e0f73efc"
+      },
+      "physical_preparation": {},
+      "post_capture": {},
+      "delivery_acceptance": {}
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking",
+      "construction": "cases/hold_lane_braking/construction.json",
+      "construction_sha256": "9cc5825535930c7203b245264ae49a30c28d36d2c89d43cea256678864630e53",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original source-approved bicycle spawn or lane transition may be obstructed at the primary start waypoint."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallbacks/hold_lane_braking/construction.json",
+          "construction_sha256": "1b1b495e393926b30579d7ea63380c218180f020f930e09b49f7150808007977",
+          "trigger": {
+            "source": "original Native spawn and 600-frame bicycle route readback",
+            "metric": "bicycle spawn and requested lane transition",
+            "failure_condition": "primary spawn blocked or requested bicycle lane transition absent"
+          },
+          "changed_knobs": [
+            "source-approved second bicycle route waypoint for spawn and remaining route; no new waypoint or scenario identity"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostics/hold_lane_braking-recipe.json",
+      "measurement_contract": "diagnostics/hold_lane_braking-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "motor_vehicle_speed": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "motor_brake": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "bicycle_lane": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "body_gap": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "interaction-rows.json"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "source-shaped 600-frame diagnostic join; original Native readback required locally",
+          "evidence": "video_frames.jsonl"
+        }
+      },
+      "kind": "delivery",
+      "source_gate": "Original reviewed Class 1 electric bicycle, distinct motor vehicle, road and route sources; no synthetic capture is accepted.",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "cases/hold_lane_braking/negative-analysis.log"
+      },
+      "compatibility": {
+        "receipt": "cases/hold_lane_braking/compatibility.json",
+        "sha256": "d722528f6762b4451e591e4b12c8f99e3704ed621ceb903f8e3c96df8451725e",
+        "log": "cases/hold_lane_braking/analysis.log",
+        "negative_log": "cases/hold_lane_braking/negative-analysis.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "9cc5825535930c7203b245264ae49a30c28d36d2c89d43cea256678864630e53",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostic-execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking --output .runtime-work/c147344-owner/offline-hold_lane_braking-v7",
+        "log": "proof-offline-hold_lane_braking.log",
+        "log_sha256": "7a8b17312fbf15a30ce01766d51d962c787a9d91c71cff50f8194a7904e214f3"
+      },
+      "physical_preparation": {},
+      "post_capture": {},
+      "delivery_acceptance": {}
+    }
+  ],
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "format": "worker-execution-manifest",
+  "status": "draft_cpu_prepared"
+}

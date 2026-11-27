@@ -1,0 +1,70 @@
+{
+  "template_id": "NRS-484B-785-1a@cycle_or_scooter_operator",
+  "law_id": "NRS-484B-785-1a",
+  "actor": "cycle_or_scooter_operator",
+  "status": "draft",
+  "quote": "Except as otherwise provided in an ordinance enacted pursuant to NRS 484A.469 [DEF-LVMC-11-40-185-A], an electric scooter may be operated: On a roadway, bicycle lane, path or route at a speed of not more than 15 miles per hour.",
+  "structure": {
+    "law_id": "NRS-484B-785-1a",
+    "activation": {
+      "condition": "Source-qualified electric scooter operated on a roadway, bicycle lane, path or route, subject to applicable ordinance.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Observe actual operating speed not more than 15 mph where this state permission applies.",
+      "type": "must",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": "<=",
+          "value": 15,
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except as otherwise provided in an ordinance enacted pursuant to NRS 484A.469 [DEF-LVMC-11-40-185-A]",
+        "description": "Applicable ordinance text and its effect require official source review.",
+        "numeric_conditions": []
+      }
+    ],
+    "timing": {
+      "description": "Retain every actual original operating speed and body occupancy sample; do not infer speed from target.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "original measured mph over the full 900-frame capture",
+      "unit": "mph"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "requested physical speed target; not observed speed",
+      "unit": "m/s"
+    },
+    {
+      "name": "ordinance_context",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed enacted ordinance or reviewed absence",
+      "unit": "source record"
+    },
+    {
+      "name": "scooter_qualification",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed electric scooter definition characteristics",
+      "unit": "source record"
+    },
+    {
+      "name": "bicycle_lane_occupancy",
+      "kind": "world_setup",
+      "range_or_domain": "original scooter body in or outside designated bicycle lane",
+      "unit": "source record"
+    }
+  ]
+}

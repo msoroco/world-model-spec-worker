@@ -2,8 +2,133 @@
   "cell_id": "C147344",
   "actor": "cycle_or_scooter_operator",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "c147344-intent",
+      "target_law_id": "NRS-484B-270-7a",
+      "judgment_refs": [
+        {
+          "phrase": "Intentionally interfere with the movement of a motor vehicle",
+          "note": "Authored purpose and original motor movement are separate evidence; physical braking or lane occupancy cannot establish intent or a legal conclusion."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Qualitative intent cannot be reduced to the physical effect axes. The four controlled categorical cases retain source-bound intent and physical motion separately without legal labels.",
+      "missing_inputs": [
+        "No source-supported scalar control variable can vary intended interference while holding the categorical authored purpose and motor response fixed; original mental-state evidence requires independent review."
+      ]
+    }
+  ],
   "cases": [
+    {
+      "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__shared_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared source-qualified Class 1 electric bicycle and distinct motor vehicle context; no statutory inference.",
+      "variable_assignments": {
+        "bicycle_path_request": {
+          "kind": "controller",
+          "value": "hold",
+          "unit": "category"
+        },
+        "motor_response_request": {
+          "kind": "controller",
+          "value": "brake",
+          "unit": "category"
+        },
+        "motor_vehicle_brake": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "fraction"
+        },
+        "motor_vehicle_movement": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m/s"
+        },
+        "cycle_kind": {
+          "kind": "world_setup",
+          "value": "electric bicycle Class 1",
+          "unit": "category"
+        },
+        "authored_intention_target": {
+          "kind": "world_setup",
+          "value": "unknown",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "motor_vehicle_speed",
+            "unit": "m/s",
+            "sampling_rate_hz": 20,
+            "method": "original synchronized Native actor and controller readback",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "physical and legal review remain open"
+          },
+          {
+            "name": "motor_brake",
+            "unit": "fraction",
+            "sampling_rate_hz": 20,
+            "method": "original synchronized Native actor and controller readback",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "physical and legal review remain open"
+          },
+          {
+            "name": "bicycle_lane",
+            "unit": "lane ID",
+            "sampling_rate_hz": 20,
+            "method": "original synchronized Native actor and controller readback",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "physical and legal review remain open"
+          },
+          {
+            "name": "body_gap",
+            "unit": "m",
+            "sampling_rate_hz": 20,
+            "method": "original synchronized Native actor and controller readback",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "physical and legal review remain open"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "frame ID",
+            "sampling_rate_hz": 20,
+            "method": "original synchronized Native actor and controller readback",
+            "time_window": "all 600 original frames",
+            "reference_frame": "original Native frame/time",
+            "uncertainty": "physical and legal review remain open"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "electric_bicycle_classification",
+            "unit": "source fact",
+            "method": "reviewed original classification source"
+          },
+          {
+            "name": "distinct_motor_vehicle_identity",
+            "unit": "source fact",
+            "method": "reviewed original vehicle classification source"
+          },
+          {
+            "name": "authored_plan_interval",
+            "unit": "original frame",
+            "method": "reviewed pre-run declaration source"
+          }
+        ],
+        "limitations": [
+          "No physical motion infers subjective intent or a legal result."
+        ]
+      }
+    },
     {
       "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking",
       "target_law_id": "NRS-484B-270-7a",
@@ -30,6 +155,16 @@
           "kind": "subject_behavior",
           "value": null,
           "unit": "m/s"
+        },
+        "cycle_kind": {
+          "kind": "world_setup",
+          "value": "electric bicycle Class 1",
+          "unit": "category"
+        },
+        "authored_intention_target": {
+          "kind": "world_setup",
+          "value": "motor vehicle movement",
+          "unit": "category"
         }
       },
       "unresolved_judgment_calls": [
@@ -103,6 +238,17 @@
         "limitations": [
           "No physical motion infers subjective intent or a legal result."
         ]
+      },
+      "paired_probe_id": "c147344-controlled-four-case-group",
+      "deliberate_differences": [
+        "bicycle_path_request",
+        "motor_response_request",
+        "authored_intention_target"
+      ],
+      "probe": {
+        "primary_variable": "bicycle_path_request",
+        "comparison_or_standard": "three controlled request and authored-plan contrasts; original effects measured separately",
+        "target_value_or_branch": "merge"
       }
     },
     {
@@ -131,6 +277,16 @@
           "kind": "subject_behavior",
           "value": null,
           "unit": "m/s"
+        },
+        "cycle_kind": {
+          "kind": "world_setup",
+          "value": "electric bicycle Class 1",
+          "unit": "category"
+        },
+        "authored_intention_target": {
+          "kind": "world_setup",
+          "value": "motor vehicle movement",
+          "unit": "category"
         }
       },
       "unresolved_judgment_calls": [
@@ -204,6 +360,17 @@
         "limitations": [
           "No physical motion infers subjective intent or a legal result."
         ]
+      },
+      "paired_probe_id": "c147344-controlled-four-case-group",
+      "deliberate_differences": [
+        "bicycle_path_request",
+        "motor_response_request",
+        "authored_intention_target"
+      ],
+      "probe": {
+        "primary_variable": "bicycle_path_request",
+        "comparison_or_standard": "three controlled request and authored-plan contrasts; original effects measured separately",
+        "target_value_or_branch": "merge"
       }
     },
     {
@@ -232,6 +399,16 @@
           "kind": "subject_behavior",
           "value": null,
           "unit": "m/s"
+        },
+        "cycle_kind": {
+          "kind": "world_setup",
+          "value": "electric bicycle Class 1",
+          "unit": "category"
+        },
+        "authored_intention_target": {
+          "kind": "world_setup",
+          "value": "unknown",
+          "unit": "category"
         }
       },
       "unresolved_judgment_calls": [
@@ -305,6 +482,17 @@
         "limitations": [
           "No physical motion infers subjective intent or a legal result."
         ]
+      },
+      "paired_probe_id": "c147344-controlled-four-case-group",
+      "deliberate_differences": [
+        "bicycle_path_request",
+        "motor_response_request",
+        "authored_intention_target"
+      ],
+      "probe": {
+        "primary_variable": "bicycle_path_request",
+        "comparison_or_standard": "three controlled request and authored-plan contrasts; original effects measured separately",
+        "target_value_or_branch": "merge"
       }
     },
     {
@@ -333,6 +521,16 @@
           "kind": "subject_behavior",
           "value": null,
           "unit": "m/s"
+        },
+        "cycle_kind": {
+          "kind": "world_setup",
+          "value": "electric bicycle Class 1",
+          "unit": "category"
+        },
+        "authored_intention_target": {
+          "kind": "world_setup",
+          "value": "unknown",
+          "unit": "category"
         }
       },
       "unresolved_judgment_calls": [
@@ -406,6 +604,17 @@
         "limitations": [
           "No physical motion infers subjective intent or a legal result."
         ]
+      },
+      "paired_probe_id": "c147344-controlled-four-case-group",
+      "deliberate_differences": [
+        "bicycle_path_request",
+        "motor_response_request",
+        "authored_intention_target"
+      ],
+      "probe": {
+        "primary_variable": "bicycle_path_request",
+        "comparison_or_standard": "three controlled request and authored-plan contrasts; original effects measured separately",
+        "target_value_or_branch": "hold"
       }
     }
   ],
