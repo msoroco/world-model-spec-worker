@@ -1,3 +1,13 @@
+# C229398 current handoff (2026-11-27)
+
+Status: partial. Fourteen exact cases cover park, stop, stand and four separately requested exception contexts in seven comparisons. All 28 primary/fallback selected offline checks pass. The exception diagnostic park fixture was corrected to retain a fixed 12.5 m rail gap; condition A was rebuilt to match condition B's approach and park timeline. Public positive/missing-source and saved-only checks are running on final source fixtures. The current manifest and root construction are CPU drafts.
+
+Synthetic sources prove software joins and rejection, not original physical rail identity, actual activity, traffic-conflict necessity, officer/device authority, pixel meaning or legal applicability. Independent Native source and human review are required at delivery.
+
+Current receipt counts are in `result.json`; exact artifacts are under `native/`, `compatibility/`, `saved/`, `physical-proof/` and `comparison-proof/`. Rebind all receipts and run the scoped strict gate on final bytes before setting ready.
+
+## Earlier checkpoints
+
 # training__C229398__NRS-484B-450-1i__motor_vehicle_driver
 
 Status: partial. This is a source-grounded CPU diagnostic checkpoint, not a deployable delivery package.

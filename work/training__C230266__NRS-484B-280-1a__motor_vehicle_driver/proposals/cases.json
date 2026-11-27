@@ -1,9 +1,128 @@
 {
   "cell_id": "C230266",
   "actor": "motor_vehicle_driver",
-  "status": "provisional_public_compatibility_only",
-  "sweep_specs": [],
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "c230266-pedestrian-response",
+      "target_law_id": "NRS-484B-280-1a",
+      "judgment_refs": [
+        {
+          "phrase": "Exercise due care to avoid a collision with a pedestrian.",
+          "note": "Source motion and response are diagnostic; due care remains a legal judgment."
+        }
+      ],
+      "rationale": "Categorical response pair retains legal judgment for original review.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "A numeric physical sweep axis cannot represent this categorical controller comparison without changing the selected case contract."
+      ]
+    }
+  ],
   "cases": [
+    {
+      "case_id": "training__C230266__NRS-484B-280-1a__motor_vehicle_driver__baseline",
+      "target_law_id": "NRS-484B-280-1a",
+      "target_type": "baseline",
+      "rationale": "Shared source context for selected response comparison",
+      "variable_assignments": {
+        "pedestrian_conflict_response": {
+          "kind": "controller",
+          "value": "maintain_request",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, collision event, survey and camera frame join",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "diagnostic value and actual pixels require independent review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, collision event, survey and camera frame join",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "diagnostic value and actual pixels require independent review"
+          },
+          {
+            "name": "rel.contact",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, collision event, survey and camera frame join",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "diagnostic value and actual pixels require independent review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, collision event, survey and camera frame join",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "diagnostic value and actual pixels require independent review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, collision event, survey and camera frame join",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "diagnostic value and actual pixels require independent review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, collision event, survey and camera frame join",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "diagnostic value and actual pixels require independent review"
+          },
+          {
+            "name": "drv.vulnerable_road_user",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, collision event, survey and camera frame join",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "diagnostic value and actual pixels require independent review"
+          },
+          {
+            "name": "native_source_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native pose, collision event, survey and camera frame join",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "diagnostic value and actual pixels require independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "pedestrian_path_survey",
+            "unit": "structured",
+            "method": "copied original road and independent walking path survey"
+          }
+        ],
+        "limitations": [
+          "No diagnostic value defines legal due care",
+          "CPU fixtures cannot establish original motion or physical completion"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Exercise due care to avoid a collision with a pedestrian."
+      ]
+    },
     {
       "case_id": "training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a",
       "target_law_id": "NRS-484B-280-1a",
@@ -228,5 +347,6 @@
         ]
       }
     }
-  ]
+  ],
+  "sweeps_expanded": true
 }

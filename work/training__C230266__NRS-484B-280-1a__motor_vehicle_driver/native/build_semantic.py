@@ -88,6 +88,7 @@ def main():
                              "rationale": "Categorical response pair retains legal judgment for original review.",
                              "status": "incomplete",
                              "missing_inputs": ["A numeric physical sweep axis cannot represent this categorical controller comparison without changing the selected case contract."]}]
+    cases["sweeps_expanded"] = True
     refs = {"relevance_batch": write("relevance_batch", relevance),
             "relevance": write("relevance", relevance),
             "template": write("template", template),

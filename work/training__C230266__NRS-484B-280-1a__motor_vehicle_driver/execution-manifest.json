@@ -1,0 +1,460 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C230266__NRS-484B-280-1a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "cpu_proved_original_native_pending",
+  "cases": [
+    {
+      "case_id": "training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-a-construction.json",
+      "construction_sha256": "24313ea3d080013971e5740fe5e14d6fcffd3156ba855dc1cc010b8d08177d82",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle may fail to progress into the pedestrian encounter at the primary approach throttle; use source-measured displacement trigger."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-a-fallback1-construction.json",
+          "construction_sha256": "65988a59acc6abe1688fda521920f4db31995853eaa22ccfecd23519eb3c46a3",
+          "trigger": {
+            "source": "original pedestrian-due-care-trace.jsonl",
+            "metric": "ego forward displacement over 30 seconds",
+            "failure_condition": "measured displacement below 10 m despite surveyed pedestrian path"
+          },
+          "changed_knobs": [
+            "approach throttle request 0.22 to 0.32"
+          ],
+          "compatibility": {
+            "receipt": "native/selected-a-fallback1-compatibility.json",
+            "log": "native/selected-a-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-a-fallback1-negative-analysis.log",
+            "sha256": "8673f65f769447f6a80fa5d60029064ec675dd79073c1340f88db57e8e2b38e4"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/selected-compat-manifest.json --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a --candidate fallback1 --output .runtime-work/c230266-release2-a-fallback1-offline",
+            "construction_sha256": "65988a59acc6abe1688fda521920f4db31995853eaa22ccfecd23519eb3c46a3",
+            "exit_code": 0,
+            "log": "native/selected-a-fallback1-offline.log",
+            "log_sha256": "9c4b21dbef67b5aebc7b079592beb87e1a0fee0f9e1784e13e06a5e07175aca0"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/native/selected-a-fixture-recipe.json",
+      "compatibility": {
+        "receipt": "native/selected-a-primary-compatibility.json",
+        "log": "native/selected-a-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-a-primary-negative-analysis.log",
+        "sha256": "477ff19c3f6134ba57a8a13319d32b5457ee42392a081f1eebef784877d4cac5"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/selected-compat-manifest.json --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a --candidate primary --output .runtime-work/c230266-release2-a-primary-offline",
+        "construction_sha256": "24313ea3d080013971e5740fe5e14d6fcffd3156ba855dc1cc010b8d08177d82",
+        "exit_code": 0,
+        "log": "native/selected-a-primary-offline.log",
+        "log_sha256": "9c4b21dbef67b5aebc7b079592beb87e1a0fee0f9e1784e13e06a5e07175aca0"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-a/physical-preparation.json",
+        "sha256": "f46981ff324376473ca21fdc74a281ba7fe12b2a9cd48a62d32ad67718a5ec1a"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a",
+        "test_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/selected-proof-manifest.json --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a --attempt .runtime-work/c230266-release2-a-primary-compat --output .runtime-work/c230266-release2-a-positive-saved --library runtime/library --validator .runtime-work/c385967-owner-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "native/selected-a-saved.log",
+        "test_log_sha256": "0bc9fa6571651a77f621aa05f5fd4f6684b098f3195aef4495ec07e1a875e42d",
+        "test_exit_code": 0,
+        "receipt": "native/selected-a-saved-processing.json",
+        "receipt_sha256": "0bc9fa6571651a77f621aa05f5fd4f6684b098f3195aef4495ec07e1a875e42d"
+      },
+      "negative": {
+        "log": "native/selected-a-primary-negative-analysis.log",
+        "log_sha256": "3ca0539a232459fe6e7db7ad52b75724b5317b3c2a008516bbf9bf9494fac6ce"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_due_care_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "82047e37e5a579eed1d0f962e2eb94db25c708352e7968084360973cb7b42a21",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/delivery_audit.py --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a --candidate primary --attempt .runtime-work/c230266-release2-a-primary-compat --processing .runtime-work/c230266-release2-a-positive-saved/v0001/processing.json --diagnostic --output .runtime-work/c230266-delivery-a-positive.json",
+        "test_exit_code": 0,
+        "test_log": "native/selected-a-delivery-positive.log",
+        "test_log_sha256": "0443b468617383b22f6e998386d9d631b517c4a55699a6d51592142882d13788",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/delivery_audit.py --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_a --candidate primary --attempt .runtime-work/c230266-release2-a-primary-compat --processing .runtime-work/c230266-release2-a-positive-saved/v0001/processing.json --diagnostic --output .runtime-work/c230266-delivery-a-negative.json --omit-source contact_events.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: contact_events.jsonl",
+        "negative_log": "native/selected-a-delivery-negative.log",
+        "negative_log_sha256": "61ea5694c3c782bff7487ef3a3c35f38b9088359660f4cbf0bef5c9b38ddc387"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "d0a7d4c7b9fc9a5ac97d5a29a5e91d32a7b946b07518c2bc5447d09fc6fdc9eb",
+        "positive_log": "native/comparison-positive.log",
+        "positive_log_sha256": "e50cc288d697bd820e4970f55ea8e76386a0088fe8e92ce145f314c5fadf0944",
+        "negative_log": "native/comparison-negative.log",
+        "negative_log_sha256": "4c168c3709c96f1370a4a7d821d226ad0c4e66208d07bac1966130c8f81eba17"
+      },
+      "acquisition": {
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "drv.vulnerable_road_user": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "native_source_join": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "rel.contact": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        }
+      }
+    },
+    {
+      "case_id": "training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "native/selected-b-construction.json",
+      "construction_sha256": "1de4c3cc36b7cd77b6668a9df685bd45766eea96d0388d683b4de94058175c52",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original vehicle may fail to progress into the pedestrian encounter at the primary approach throttle; use source-measured displacement trigger."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/selected-b-fallback1-construction.json",
+          "construction_sha256": "cb873a1706960190e4e09af5aa87d10f26b099edb11899a620263dcb1796eba1",
+          "trigger": {
+            "source": "original pedestrian-due-care-trace.jsonl",
+            "metric": "ego forward displacement over 30 seconds",
+            "failure_condition": "measured displacement below 10 m despite surveyed pedestrian path"
+          },
+          "changed_knobs": [
+            "approach throttle request 0.22 to 0.32"
+          ],
+          "compatibility": {
+            "receipt": "native/selected-b-fallback1-compatibility.json",
+            "log": "native/selected-b-fallback1-compatibility-analysis.log",
+            "negative_log": "native/selected-b-fallback1-negative-analysis.log",
+            "sha256": "b614eeecc45c860c6b8e776f5e821690f40e425dd3d34295ec2db920d3227cbf"
+          },
+          "offline": {
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/selected-compat-manifest.json --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b --candidate fallback1 --output .runtime-work/c230266-release2-b-fallback1-offline",
+            "construction_sha256": "cb873a1706960190e4e09af5aa87d10f26b099edb11899a620263dcb1796eba1",
+            "exit_code": 0,
+            "log": "native/selected-b-fallback1-offline.log",
+            "log_sha256": "7bddc76a12b364cd974fcf5468645bd4fb8767a0bdc708b5c6ccfd4b8ed5ab1e"
+          }
+        }
+      ],
+      "measurement_contract": "native/selected-b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "status": "saved_source_diagnostic"
+      },
+      "fixture_recipe": "work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/native/selected-b-fixture-recipe.json",
+      "compatibility": {
+        "receipt": "native/selected-b-primary-compatibility.json",
+        "log": "native/selected-b-primary-compatibility-analysis.log",
+        "negative_log": "native/selected-b-primary-negative-analysis.log",
+        "sha256": "aa6f4e9aef60382c7afffe5416898f7cd752012f00ecdf764bad5967ea7cf40b"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/selected-compat-manifest.json --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b --candidate primary --output .runtime-work/c230266-release2-b-primary-offline",
+        "construction_sha256": "1de4c3cc36b7cd77b6668a9df685bd45766eea96d0388d683b4de94058175c52",
+        "exit_code": 0,
+        "log": "native/selected-b-primary-offline.log",
+        "log_sha256": "7bddc76a12b364cd974fcf5468645bd4fb8767a0bdc708b5c6ccfd4b8ed5ab1e"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-b/physical-preparation.json",
+        "sha256": "14ef4b4b2d3591c830f64853efe9599f21c082b34f0dab19d19741cc52ffbd58"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/execution-manifest.json --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b",
+        "test_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/selected-proof-manifest.json --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b --attempt .runtime-work/c230266-release2-b-primary-compat --output .runtime-work/c230266-release2-b-positive-saved --library runtime/library --validator .runtime-work/c385967-owner-decoder/.lake/build/bin/adapterCheck",
+        "test_log": "native/selected-b-saved.log",
+        "test_log_sha256": "8c96440322b443cbdaac3f6c9c3751d42a097be761c81b987761dc67f89ba77a",
+        "test_exit_code": 0,
+        "receipt": "native/selected-b-saved-processing.json",
+        "receipt_sha256": "8c96440322b443cbdaac3f6c9c3751d42a097be761c81b987761dc67f89ba77a"
+      },
+      "negative": {
+        "log": "native/selected-b-primary-negative-analysis.log",
+        "log_sha256": "88f5cc4d92db8487ea995837cec24731368bea855604bab47be050a230441099"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "independent_due_care_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "82047e37e5a579eed1d0f962e2eb94db25c708352e7968084360973cb7b42a21",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/delivery_audit.py --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b --candidate primary --attempt .runtime-work/c230266-release2-b-primary-compat --processing .runtime-work/c230266-release2-b-positive-saved/v0001/processing.json --diagnostic --output .runtime-work/c230266-delivery-b-positive.json",
+        "test_exit_code": 0,
+        "test_log": "native/selected-b-delivery-positive.log",
+        "test_log_sha256": "dac92a1d4a0579972bb350d71f7e50c44caa02942f3944f2360bc373d5c95ca1",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C230266__NRS-484B-280-1a__motor_vehicle_driver/delivery_audit.py --case training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b --candidate primary --attempt .runtime-work/c230266-release2-b-primary-compat --processing .runtime-work/c230266-release2-b-positive-saved/v0001/processing.json --diagnostic --output .runtime-work/c230266-delivery-b-negative.json --omit-source contact_events.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: contact_events.jsonl",
+        "negative_log": "native/selected-b-delivery-negative.log",
+        "negative_log_sha256": "61ea5694c3c782bff7487ef3a3c35f38b9088359660f4cbf0bef5c9b38ddc387"
+      },
+      "comparison_audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "d0a7d4c7b9fc9a5ac97d5a29a5e91d32a7b946b07518c2bc5447d09fc6fdc9eb",
+        "positive_log": "native/comparison-positive.log",
+        "positive_log_sha256": "e50cc288d697bd820e4970f55ea8e76386a0088fe8e92ce145f314c5fadf0944",
+        "negative_log": "native/comparison-negative.log",
+        "negative_log_sha256": "4c168c3709c96f1370a4a7d821d226ad0c4e66208d07bac1966130c8f81eba17"
+      },
+      "acquisition": {
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "drv.vulnerable_road_user": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "native_source_join": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "rel.contact": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "rel.surface_gap": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame, actor, contact and four-camera recording; saved source-joined finalizer",
+          "evidence": [
+            "pedestrian-due-care-trace.jsonl",
+            "contact_events.jsonl",
+            "road_survey.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "reference_corner.mkv"
+          ]
+        }
+      }
+    }
+  ]
+}

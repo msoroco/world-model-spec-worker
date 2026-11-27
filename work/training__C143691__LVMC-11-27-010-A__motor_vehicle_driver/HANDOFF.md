@@ -1,5 +1,13 @@
 # LVMC-11-27-010-A at C143691
 
+## Current handoff — 2026-11-27 selected B(3) CPU delivery preparation
+
+Exact scoped strict check passed (strict-scoped-mobility.log, exit 0). Eight selected cases cover ordinary trail occupancy, three conjunctive prerequisites, emergency use, right-of-way maintenance and the B(3) mobility-device alternative. Each selected case has pinned-runtime primary/fallback offline, public positive/missing-source negative compatibility, recorded-only saved processing, physical CPU preparation, semantic proposals and independent delivery/comparison source-rejection audit bindings. The B(3) saved receipt preserves 645 synthetic acquisition hashes and 600 timestamp-joined frames. All 15 Native tests pass. Current execution manifest SHA-256: ea4dd638a732eb8b1368d9fe48897c7b4cd03b7d144201d8f718f0d43d658855.
+
+B(3) is a source-conditional request under the frozen motor_vehicle_driver actor and C143691 cell. The selected runner requests a Native vehicle.*wheelchair* or vehicle.*mobility* blueprint and rejects conventional vehicle identities. native/mobility_eligibility.py requires separate hashed original Native device-design, impaired-person-use and operator/actor records for the same subject; the delivery audit also requires independent review of those records and actual pixels. A synthetic label, authored trail context or source-presence flag cannot satisfy the original audit. No compatible Native asset, device design/use/operator record, actual physical clearance or legal outcome is claimed in this checkout. If the local asset inventory lacks an eligible frozen-actor device, the B(3) delivery attempt must report that precise failure instead of substituting a conventional car or treating a pedestrian asset as motor_vehicle_driver.
+
+The earliest GPU delivery command in result.json dispatches __all_present; B(3) can be dispatched by replacing that exact --case value with __mobility_device after the eligible asset review. The historical checkpoint sections below describe earlier partial states and are superseded by this current section.
+
 Actor: `motor_vehicle_driver`. Frozen cell: `nonmotorized_trail` / `travel` / `barrier`.
 
 Exact statutory source: LVMC 11.27.010(A); with 11.27.010(B). The law text is retained in `case-plan.json`; extracted summary status is `recovered_requires_source_review`. Witness branches: Conjunctive trail prerequisites, subject to all Subsection (B) exceptions.
