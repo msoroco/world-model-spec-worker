@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C230266__NRS-484B-280-1a__motor_vehicle_driver__selected_90e3f1aa__condition_b",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.280(1)(a)",
+      "output_key": "driver_source",
+      "method": "measure_driver_source",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "pedestrian-due-care-trace.jsonl",
+        "road_survey.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.280(1)(a)",
+      "output_key": "pedestrian_encounter_gap",
+      "method": "measure_pedestrian_encounter",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "pedestrian-due-care-trace.jsonl",
+        "video_frames.jsonl",
+        "contact_events.jsonl",
+        "road_survey.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "person_afoot_source",
+      "method": "measure_person_afoot",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "road_survey.json",
+        "pedestrian-due-care-trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "contact_events.jsonl"
+    ],
+    "error_contains": "Missing required source: contact_events.jsonl"
+  }
+}

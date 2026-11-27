@@ -46,6 +46,8 @@ def main():
         config["comparison_variable"] = "pedestrian_conflict_response"
         config["comparison_condition"] = condition
         config["recording_description"] = description
+        config["case"] = {"case_id": case_id, "recording_description": description}
+        config["physical_completion"] = {}
         for camera, name in zip(config["cameras"],
                                 ("overview", "approach", "reference_corner", "driver_reference")):
             camera["name"] = name

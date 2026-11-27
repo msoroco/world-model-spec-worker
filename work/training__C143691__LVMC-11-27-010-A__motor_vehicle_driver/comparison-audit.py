@@ -12,6 +12,7 @@ VARIABLES = {
     'posting': 'appropriate_posting',
     'emergency': 'exception_kind',
     'maintenance': 'exception_kind',
+    'mobility_device': 'exception_kind',
 }
 
 
@@ -45,7 +46,7 @@ def main():
             'source_originality': 'diagnostic_only',
             'original_native_outcome_reviewed': False,
         })
-    if len(rows) != 6:
+    if len(rows) != 7:
         raise ValueError('Full law comparison count differs')
     output = HERE / 'comparison-audit-specs.json'
     output.write_text(json.dumps({'format': 'c143691-comparison-audit-v1',

@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C229398__NRS-484B-450-1i__motor_vehicle_driver__traffic_conflict_2",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.450(1)(i)",
+      "output_key": "exception_context",
+      "method": "sealed_exception_request_source_review",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "exception-context.json",
+        "capture-seal.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.450(1)(i)",
+      "output_key": "nearest_rail_gap",
+      "method": "original_native_source_contract",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "original-rail-survey.json",
+        "original-native-rows.jsonl",
+        "video_frames.jsonl",
+        "capture-seal.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "exception-context.json"
+    ],
+    "error_contains": "Missing required source: exception-context.json"
+  }
+}

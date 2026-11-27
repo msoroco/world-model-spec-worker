@@ -35,6 +35,11 @@ def check_result(result, case):
     if {row.get('name') for row in result.get('recording_evidence', [])} != {
             'trail_occupancy', 'trail_source_context'}:
         raise ValueError('Missing original trail recording channels')
+    if case.endswith('__mobility_device'):
+        blueprint = measured['vehicle_blueprint_id']
+        if not isinstance(blueprint, str) or not blueprint.startswith('vehicle.') or not any(
+                token in blueprint for token in ('wheelchair', 'mobility')):
+            raise ValueError('Missing original source: eligible mobility asset identity')
 
 
 def check_review(review, case, paths):
@@ -50,6 +55,11 @@ def check_review(review, case, paths):
                  'barrier_clearance_reviewed'):
         if review.get(name) is not True:
             raise ValueError('Independent original trail review incomplete: ' + name)
+    if case.endswith('__mobility_device'):
+        for name in ('mobility_device_design_reviewed', 'impaired_person_use_reviewed',
+                     'frozen_motor_vehicle_driver_eligibility_reviewed'):
+            if review.get(name) is not True:
+                raise ValueError('Independent B(3) eligibility review incomplete: ' + name)
     frames = review.get('reviewed_frames', [])
     if not frames or any(type(frame) is not int or frame < 0 or frame >= 600
                          for frame in frames):
@@ -79,6 +89,16 @@ def audit(args):
              'inventory': source(attempt, 'trail-inventory.json'),
              'road': source(attempt, 'road.xodr')}
     check_review(json.loads(source(attempt, args.review).read_text()), args.case, paths)
+    mobility_review_sha256 = None
+    if args.case.endswith('__mobility_device'):
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent / 'native'))
+        from mobility_eligibility import audit as audit_mobility
+        mobility_packet = source(attempt, 'mobility-eligibility.json')
+        mobility = audit_mobility(attempt, json.loads(mobility_packet.read_text()))
+        if mobility['original_blueprint_id'] != result['measured_values']['vehicle_blueprint_id']:
+            raise ValueError('Original mobility asset and measured subject differ')
+        mobility_review_sha256 = sha(mobility_packet)
     poses = [json.loads(line) for line in paths['poses'].read_text().splitlines()]
     cameras = [json.loads(line) for line in paths['cameras'].read_text().splitlines()]
     frames = [json.loads(line) for line in paths['video_frames'].read_text().splitlines()]
@@ -106,6 +126,8 @@ def audit(args):
              'source_decode_receipt_sha256': sha(decode),
              'source_decode_auditor_sha256': verified['auditor_sha256'],
              'human_review_sha256': sha(source(attempt, args.review))}
+    if mobility_review_sha256:
+        proof['mobility_eligibility_packet_sha256'] = mobility_review_sha256
     output.write_text(json.dumps(proof, indent=2) + '\n')
     return proof
 
@@ -116,7 +138,8 @@ def selftest(case, negative):
               'maneuver_completed': True, 'physical_acceptance_claimed': False,
               'legal_verdict_claimed': False,
               'measured_values': {'occupancy_frames': 600,
-                                  'vehicle_blueprint_id': 'vehicle.test'},
+                                  'vehicle_blueprint_id': 'vehicle.test.mobility' if
+                                  case.endswith('__mobility_device') else 'vehicle.test'},
               'recording_evidence': [{'name': 'trail_occupancy'},
                                      {'name': 'trail_source_context'}]}
     if negative:
@@ -124,6 +147,16 @@ def selftest(case, negative):
         check_result(sample, case)
         raise AssertionError('Synthetic source accepted')
     check_result(sample, case)
+    if case.endswith('__mobility_device'):
+        conventional = {**sample, 'measured_values': {
+            **sample['measured_values'], 'vehicle_blueprint_id': 'vehicle.tesla.model3'}}
+        try:
+            check_result(conventional, case)
+        except ValueError as error:
+            if 'eligible mobility asset identity' not in str(error):
+                raise
+        else:
+            raise AssertionError('Conventional vehicle relabel accepted')
     for key, value in (('maneuver_completed', False), ('recording_evidence', []),
                        ('measured_values', {})):
         changed = {**sample, key: value}

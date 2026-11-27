@@ -9,7 +9,8 @@ REQUIRED_DELIVERY_CHECKS = ('native_source', 'all_participants', 'time_join',
                             'full_video_decode', 'actual_pixels', 'physical_completion')
 REQUEST_KEY = {'occupancy': None, 'designation': 'official_designation',
                'dedication': 'city_dedication', 'posting': 'appropriate_posting',
-               'emergency': 'exception_kind', 'maintenance': 'exception_kind'}
+               'emergency': 'exception_kind', 'maintenance': 'exception_kind',
+               'mobility_device': 'exception_kind'}
 
 
 def sha(path):
@@ -74,6 +75,15 @@ def original(attempt_path, receipt_path, case_id):
     measured = result.get('measured_values', {})
     if type(measured.get('occupancy_frames')) is not int or not 0 <= measured['occupancy_frames'] <= 600:
         raise ValueError('Original measured trail occupancy absent')
+    if case_id.endswith('__mobility_device'):
+        mobility_path = attempt / 'mobility-eligibility.json'
+        if (not mobility_path.is_file() or
+                receipt.get('mobility_eligibility_packet_sha256') != sha(mobility_path)):
+            raise ValueError('Original B(3) mobility eligibility receipt absent')
+        from mobility_eligibility import audit as audit_mobility
+        mobility = audit_mobility(attempt, read(mobility_path))
+        if mobility['original_blueprint_id'] != measured.get('vehicle_blueprint_id'):
+            raise ValueError('Original B(3) mobility subject differs')
     return {'case_id': case_id, 'request': context['request'],
             'route_case': config['route_case'], 'road_sha256': sha(road_path),
             'camera_plan': config['cameras'], 'occupancy_frames': measured['occupancy_frames'],

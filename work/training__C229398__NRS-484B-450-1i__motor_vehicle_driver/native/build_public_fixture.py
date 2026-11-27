@@ -14,6 +14,7 @@ import tempfile
 from pathlib import Path
 
 from prove_rail_source import CAMERAS, fixture
+from rail_exception_context import BRANCHES
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -31,12 +32,13 @@ def write(path, value):
 
 
 def main(suffix):
-    if suffix not in ('condition_a', 'condition_b', 'stop_1', 'stop_2', 'stand_1', 'stand_2'):
+    exception = next((name for name in BRANCHES if suffix in (name + '_1', name + '_2')), None)
+    if suffix not in ('condition_a', 'condition_b', 'stop_1', 'stop_2', 'stand_1', 'stand_2') and exception is None:
         raise ValueError('Unknown exact diagnostic case')
     case_id = PACKAGE.name + ('__selected_98183a3f__' if suffix.startswith('condition_') else '__') + suffix
     source = PACKAGE / 'selected-source' / suffix
-    target_gap = 12.5 if suffix.endswith(('a', '_1')) else 16.5
-    behavior = 'park' if suffix.startswith('condition_') else ('stop_depart' if suffix.startswith('stop_') else 'stand_depart')
+    target_gap = 12.5 if exception or suffix.endswith(('a', '_1')) else 16.5
+    behavior = 'park' if exception or suffix.startswith('condition_') else ('stop_depart' if suffix.startswith('stop_') else 'stand_depart')
     if source.exists():
         raise ValueError('Retain prior diagnostic source; remove only after deliberate review')
     SCRATCH.mkdir(exist_ok=True)
@@ -109,6 +111,13 @@ def main(suffix):
               'required_observations': ['kin.extent', 'kin.velocity'],
               'sources': {'trace.jsonl': sha(stage / 'trace.jsonl'),
                           'road.xodr': sha(stage / 'road.xodr')}})
+        if exception:
+            write(stage / 'exception-context.json', {
+                'case_id': case_id, 'source_kind': 'synthetic_cpu',
+                'branch': exception, 'activity_request': 'park',
+                'requested_context_present': suffix.endswith('_2'),
+                'sources': {}, 'legal_applicability_claimed': False,
+                'original_authority_reviewed': False})
         videos = [{'path': name + '.mkv', 'frames': 600,
                    'width': 1920 if name == 'overview' else 1280,
                    'height': 1080 if name == 'overview' else 720,
@@ -130,6 +139,8 @@ def main(suffix):
                'sha256': {name: sha(stage / name) for name in seal_names}})
         closure = seal_names + ['original-source-seal.json', 'trace.jsonl',
                                 'capture/manifest.json']
+        if exception:
+            closure.append('exception-context.json')
         write(stage / 'capture-seal.json', {'format': 'worker-sealed-capture',
               'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
               'frames': 600, 'restoration': {'restored': True},

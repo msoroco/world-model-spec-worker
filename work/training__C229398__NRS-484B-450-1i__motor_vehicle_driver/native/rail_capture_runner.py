@@ -10,11 +10,13 @@ import hashlib
 import json
 import math
 import queue
+import shutil
 import subprocess
 from pathlib import Path
 
 from rail_native_geometry import rail_from_actor, choose_curb_waypoint
 from rail_source_contract import CAMERAS
+from rail_exception_context import BRANCHES, load_context
 
 AID = 'training__C229398__NRS-484B-450-1i__motor_vehicle_driver'
 RATE = 20
@@ -22,9 +24,11 @@ FRAMES = 600
 TARGETS = {'condition_a': 12.5, 'condition_b': 16.5,
            'stop_1': 12.5, 'stop_2': 16.5,
            'stand_1': 12.5, 'stand_2': 16.5}
+TARGETS.update({name + '_' + str(i): 12.5 for name in BRANCHES for i in (1, 2)})
 BEHAVIORS = {'condition_a': 'park', 'condition_b': 'park',
              'stop_1': 'stop_depart', 'stop_2': 'stop_depart',
              'stand_1': 'stand_depart', 'stand_2': 'stand_depart'}
+BEHAVIORS.update({name + '_' + str(i): 'park' for name in BRANCHES for i in (1, 2)})
 
 
 def sha(path):
@@ -48,6 +52,9 @@ def check(config):
             'Exact rail comparison target changed')
     require(config.get('behavior_variant') == BEHAVIORS[suffix],
             'Exact rail motion variant changed')
+    if suffix in {name + '_' + str(i) for name in BRANCHES for i in (1, 2)}:
+        require(config.get('requested_exception_context') is suffix.endswith('_2'),
+                'Exact exception request changed')
     require([c.get('name') for c in config['cameras']] == list(CAMERAS),
             'Four exact rail cameras required')
     dimensions = [(c.get('width'), c.get('height'), c.get('fps')) for c in config['cameras']]
@@ -94,7 +101,7 @@ def _survey(world):
     return rails
 
 
-def execute(config, output_dir, host, port):
+def execute(config, output_dir, host, port, context=None):
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, seal_capture
@@ -104,6 +111,27 @@ def execute(config, output_dir, host, port):
     output = Path(output_dir).resolve()
     require(output.is_dir() and not (output / 'original-native-rows.jsonl').exists(),
             'Fresh exact rail Native attempt directory required')
+    suffix = config['case_id'].split('__')[-1]
+    if suffix in {name + '_' + str(i) for name in BRANCHES for i in (1, 2)}:
+        require(context is not None, 'Original exception source context required')
+        context = Path(context).resolve()
+        source = load_context(context, config['case_id'])
+        require(source['source_kind'] == 'reviewed_authority_context',
+                'Native exception request requires reviewed authority context')
+        target_context = output / 'exception-context.json'
+        require(not target_context.exists(), 'Fresh exception context destination required')
+        for item in source['sources'].values():
+            relative = Path(item['path'])
+            target = output / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            require(not target.exists(), 'Exception source already exists')
+            shutil.copyfile(context.parent / relative, target)
+            require(sha(target) == item['sha256'], 'Exception source changed during Native staging')
+        shutil.copyfile(context, target_context)
+        require(load_context(target_context, config['case_id']) == source,
+                'Exception context changed during Native staging')
+    else:
+        require(context is None, 'Baseline rail capture cannot assert an exception context')
     client = carla.Client(host, int(port))
     client.set_timeout(180)
     saved = snapshot(client)
@@ -274,10 +302,11 @@ if __name__ == '__main__':
     parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
+    parser.add_argument('--context', type=Path)
     args = parser.parse_args()
     config = json.loads(Path('config.json').read_text())
     if args.check:
         print(json.dumps(check(config)))
     else:
         require(args.output_dir is not None, '--output-dir required for Native rail capture')
-        print(json.dumps(execute(config, args.output_dir, args.host, args.port)))
+        print(json.dumps(execute(config, args.output_dir, args.host, args.port, args.context)))

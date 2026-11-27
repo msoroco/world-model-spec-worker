@@ -83,7 +83,7 @@ def main():
             files.update({"trace.jsonl": text_rows(native_trace),
                           "capture/evidence.jsonl": text_rows(evidence),
                           "capture/native/frames.jsonl": text_rows(native_frames),
-                          "capture/recorder_info.txt": "synthetic CPU diagnostic fixture\n",
+                          "capture/recorder_info.txt": "Create 1: vehicle.tesla.model3\nCreate 2: walker.pedestrian.0001\n",
                           "road.xodr": road})
             files["capture/manifest.json"] = json.dumps({
                 "extraction_confirmed": True, "frames": 600,

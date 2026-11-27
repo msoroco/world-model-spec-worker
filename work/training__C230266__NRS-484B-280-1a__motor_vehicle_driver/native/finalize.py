@@ -155,7 +155,9 @@ def finalize(attempt, output):
               "realized_observables": {}, "physical_checks": {"due_care_diagnostics": measurement},
               "provenance_kind": "synthetic_cpu_fixture" if fixture else "native",
               "accepted": False, "legal_verdict_claimed": False}
-    from worker_exchange.native_output import validate_result, write_result
+    from worker_exchange.native_output import physical_result, validate_result, write_result
+    result = physical_result(attempt, result)
+    result["physical_observations"]["due_care_diagnostics"] = measurement
     validate_result(result)
     report = {"format": "worker-c230266-saved-due-care-analysis-v1",
               "case_id": config["case_id"],

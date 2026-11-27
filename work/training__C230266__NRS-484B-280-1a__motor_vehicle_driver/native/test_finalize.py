@@ -18,7 +18,9 @@ def main():
                                    "native/selected-a-construction.json").read_text())
         config = next(item["content"] for item in construction["files"]
                       if item["path"] == "config.json")
-        (attempt / "config.json").write_text(config)
+        config_data = json.loads(config)
+        config_data["physical_completion"] = {}
+        (attempt / "config.json").write_text(json.dumps(config_data) + "\n")
         source, mapping = fixture(attempt)
         write_rows(attempt / "trace.jsonl", [{"frame": row["native_frame"],
                                               "time_s": row["time_s"],
@@ -49,8 +51,8 @@ def main():
         result = json.loads((attempt / "result.json").read_text())
         assert report["four_camera_frames"] == {name + ".mkv": 600 for name in CAMERAS}
         assert report["measurements"]["pedestrian_encounter_gap"]["value"] >= 0
-        assert result["case_id"] == CASE and result["physical_checks"]["due_care_diagnostics"]["contact_frames"] == 1
-        assert result["provenance_kind"] == "synthetic_cpu_fixture"
+        assert result["case_id"] == CASE and result["physical_observations"]["due_care_diagnostics"]["contact_frames"] == 1
+        assert result["provenance_kind"] == "synthetic_fixture"
         assert not result["accepted"] and not report["legal_verdict_claimed"]
     proof = {"format": "worker-c230266-finalize-proof-v1", "case_id": CASE,
              "positive": {"frames": 600, "four_camera_frames": report["four_camera_frames"],

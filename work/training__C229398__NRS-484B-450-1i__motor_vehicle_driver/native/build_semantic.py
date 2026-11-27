@@ -102,18 +102,23 @@ def build():
         exception = next((name for name in ('traffic_conflict', 'other_law',
                                            'police_direction', 'official_device')
                           if suffix.startswith(name)), None)
+        case_description = description
+        if exception:
+            bundle_path = FOLDER / 'native' / suffix / 'construction.json'
+            if bundle_path.is_file():
+                case_description = json.loads(bundle_path.read_text())['recording_description']
         near = True if exception else suffix.endswith(('a', '_1'))
         values = json.loads(json.dumps(baseline_values))
         values['requested_rail_footprint_gap_m']['value'] = 12.5 if near else 16.5
         values['requested_activity']['value'] = activity
-        values['requested_exception_context']['value'] = ((exception + ('_requested' if suffix.endswith('_1') else '_control'))
+        values['requested_exception_context']['value'] = ((exception + ('_control' if suffix.endswith('_1') else '_requested'))
                                                          if exception else 'none')
         variable = 'requested_exception_context' if exception else 'requested_rail_footprint_gap_m'
         target_type = ('violating_attempt' if near else 'compliant_attempt') if suffix.startswith('condition_') else 'boundary_probe'
         selected.append({'case_id': case_id, 'target_law_id': law_id,
             'target_type': target_type, 'cell_id': cell_id, 'actor': actor,
             'rationale': 'Requested ' + activity + ' and nearest-rail source measurement; original rail identity, pixels and exception applicability require independent review.',
-            'variable_assignments': values, 'recording_description': description,
+            'variable_assignments': values, 'recording_description': case_description,
             'unresolved_judgment_calls': ['original physical rail identity and gap',
                 'actual activity and exception applicability; no legal verdict'],
             'paired_probe_id': (exception or activity) + '_rail_comparison',
