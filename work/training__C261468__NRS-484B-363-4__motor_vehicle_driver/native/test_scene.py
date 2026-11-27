@@ -1,6 +1,7 @@
 """CPU creation/geometry tests for the surveyed school-zone pass pair."""
 
 import copy
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -91,9 +92,15 @@ class World:
 
 def fixture():
     aid = scene.ASSIGNMENT
-    source = {'path': 'reviewed/source.json', 'sha256': 'a' * 64}
+    root = HERE.parents[2] / '.runtime-work' / 'C261468-scene-proof'
+    root.mkdir(parents=True, exist_ok=True)
+    source_path = root / 'reviewed-source.json'
+    source_path.write_text('{"kind":"synthetic-survey-source"}\n')
+    source = {'path': source_path.name,
+              'sha256': hashlib.sha256(source_path.read_bytes()).hexdigest()}
     survey = {
         'assignment_id': aid, 'case_id': aid + '__school_in_session_active',
+        'source_root': str(root),
         'map_name': 'reviewed_map', 'road_id': 8, 'road_axis_xy': [1, 0],
         'zone_station_bounds_m': [0, 100], 'zone_kind': 'school_zone',
         'ego': {'blueprint': 'vehicle.tesla.model3', 'xyz_m': [10, 0, 0.1], 'yaw_deg': 0},
@@ -141,6 +148,9 @@ def main():
     changed['zone_designation_source'] = None
     rejects(changed, 'zone_designation_source')
     changed = copy.deepcopy(source)
+    changed['zone_designation_source']['sha256'] = '0' * 64
+    rejects(changed, 'Reviewed source bytes differ')
+    changed = copy.deepcopy(source)
     changed['beacon']['yellow_lights'][1]['actor_id'] = 31
     rejects(changed, 'must be distinct')
     changed = copy.deepcopy(source)
@@ -167,7 +177,7 @@ def main():
         raise AssertionError('Missing overtaken actor accepted')
     assert world.spawned[0][0].destroyed
     print(json.dumps({'passed': True, 'constructed_vehicles': 2,
-                      'rejected_source_or_geometry_variants': 9,
+                      'rejected_source_or_geometry_variants': 10,
                       'partial_spawn_cleanup_passed': True,
                       'native_executed': False, 'physical_acceptance_claimed': False}))
 

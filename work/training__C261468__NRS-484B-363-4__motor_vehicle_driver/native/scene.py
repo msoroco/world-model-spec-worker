@@ -4,6 +4,7 @@ The survey is a local Native input. A CPU fixture can test its validation and
 spawn calls, but cannot establish original sign authority or physical success.
 """
 
+import hashlib
 import json
 import math
 import re
@@ -24,6 +25,14 @@ def _source(survey, name):
             not isinstance(item.get('sha256'), str) or
             re.fullmatch(r'[0-9a-f]{64}', item['sha256']) is None):
         raise ValueError('Missing reviewed source receipt: ' + name)
+    root = survey.get('source_root')
+    if not isinstance(root, str) or not root:
+        raise ValueError('Survey source root missing')
+    root_path = Path(root).resolve()
+    source_path = (root_path / item['path']).resolve()
+    if (not source_path.is_relative_to(root_path) or not source_path.is_file() or
+            hashlib.sha256(source_path.read_bytes()).hexdigest() != item['sha256']):
+        raise ValueError('Reviewed source bytes differ or are missing: ' + name)
 
 
 def validate_survey(survey):

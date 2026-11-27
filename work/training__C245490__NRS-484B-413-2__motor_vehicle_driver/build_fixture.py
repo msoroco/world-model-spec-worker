@@ -98,7 +98,7 @@ def build(suffix):
             'recording_time_s': t, 'replay_simulation_time_s': t, 'actor_id': 107,
             'ego': {'body_vertices_m': vertices, 'heading_deg': 0,
                 'position_m': [x, y, .75], 'speed_mps': step * 20,
-                'speed_provenance': 'synthetic_diagnostic'},
+                'speed_provenance': 'synthetic_native_sample'},
             'world': {'road_projection': {'lane_id': lane, 'road_id': 1,
                 's_m': x + 100, 'section_id': 0},
                 'weather': {'cloudiness': 80 if plan['weather_requested'] == 'rain' else 0,
@@ -130,7 +130,8 @@ def build(suffix):
         'diagnostic_fixture': True, 'original_native_observed': False})
     put(out / 'capture/manifest.json', {'extraction_confirmed': True,
         'frames': 600, 'synthetic_diagnostic': True,
-        'sources': {'trace.jsonl': sha(out / 'trace.jsonl')}})
+        'sources': {'road.xodr': sha(HERE / 'road.xodr'),
+            'trace.jsonl': sha(out / 'trace.jsonl')}})
     spec = {'files': {'capture/native/frames.jsonl': ''.join(
         json.dumps(row, separators=(',', ':')) + '\n' for row in frames),
         'capture/recorder_info.txt': 'synthetic CPU diagnostic; no CARLA recorder\nCreate 107: vehicle.tesla.model3 (0)\n'},

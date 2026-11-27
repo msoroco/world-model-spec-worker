@@ -2,9 +2,9 @@
   "assignment_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver",
   "input_sha256": "d0e23f8832aaeb8334418d2a46b644f2916f18a02cad4ac412eca86f7bf4401e",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "A 600-frame/20 Hz source-shaped traffic-side door and moving-passing-vehicle analyzer now passes positive and negative CPU tests. Four accepted membership rows are present, but supplied review context contains no source-backed equivalence receipt or measured counterpart. Actual door geometry/person boarding and passing traffic, evidence review, exact selected Native cases and four-camera capture, offline/compatibility and saved-processing proofs, semantic proposals and independent audits remain worker-owned CPU work. No interference or physical conclusion is claimed.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": "Four exact selected Native cases have current CPU preparation proofs. Original physical door/person/traffic observation and legal interference remain for delivery source review.",
+  "readiness_kind": "delivery_prepared",
   "counts": {
     "source_topics": 2,
     "selected_comparison_cases_planned": 2,
@@ -16,11 +16,10 @@
   },
   "tests": [
     {
-      "command": ".venv-cpu/bin/python work/training__C228817__NRS-484B-153-2__motor_vehicle_driver/native/prove_door_interference.py",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/door228817 TMPDIR=.runtime-work/door228817 PYTHONPATH=work/training__C228817__NRS-484B-153-2__motor_vehicle_driver .venv-cpu/bin/python -B -m unittest discover -s work/training__C228817__NRS-484B-153-2__motor_vehicle_driver/tests",
       "exit_code": 0,
-      "log": "work/training__C228817__NRS-484B-153-2__motor_vehicle_driver/native/door-interference-proof.log",
-      "log_sha256": "8f4b737a289914e2ff9863cf9b9f362522c76837c3e386528a7bb820205da68e",
-      "scope": "diagnostic source-shaped 600-frame traffic-side door and passing vehicle only"
+      "log": "native/proofs/root-test.log",
+      "sha256": "e73c3805f810fdcf3d0167ced7085c48306c9482a952ffb710551d230cdb3e51"
     }
   ],
   "native_checkpoint": {
@@ -28,5 +27,12 @@
     "analyzer_sha256": "0fa9cc00da6b2f0f515d9a550b3105ab5f3d0baa0a5c7d2f47db58c32cf1515e",
     "proof": "work/training__C228817__NRS-484B-153-2__motor_vehicle_driver/native/prove_door_interference.py",
     "proof_sha256": "876e5ced7b2c92224256dca06333e93a1f3d4a7578ba4ff7823a7ff721e15dfc"
-  }
+  },
+  "planned_case_count": 4,
+  "candidate_count": 0,
+  "accepted_membership_count": 4,
+  "reuse_count": 0,
+  "unresolved_branch_count": 0,
+  "source_law_review": "Exact frozen NRS 484B.153(2) reviewed: opening, boarding and alighting alternatives; traffic-side exposure and moving traffic causation remain source bound.",
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C228817__NRS-484B-153-2__motor_vehicle_driver --case training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_overlap --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

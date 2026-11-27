@@ -119,8 +119,8 @@ def selftest():
     require('.runtime-work' in scratch.parts, 'Scratch must be under .runtime-work')
     results=[]
     for action,(a,b) in PAIR.items():
-        reference=scratch/('attempt-'+a)
-        contrast=scratch/('attempt-'+b)
+        reference=scratch/('attempt-opening-'+a)
+        contrast=scratch/('attempt-opening-'+b)
         positive=compare(reference,contrast,action)
         results.append(positive)
         with tempfile.TemporaryDirectory(dir=scratch) as temp:

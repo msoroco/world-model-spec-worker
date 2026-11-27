@@ -24,7 +24,7 @@ def write(path, value):
 manifest = json.loads(MANIFEST.read_text())
 for entry in manifest['cases']:
     suffix = entry['case_id'].split('__')[-1]
-    attempt = SCRATCH / ('attempt-' + suffix)
+    attempt = SCRATCH / ('attempt-opening-' + suffix)
     proof_dir = ROOT / 'native/proofs' / suffix / 'physical'
     proof_dir.mkdir(parents=True, exist_ok=True)
     receipts = []

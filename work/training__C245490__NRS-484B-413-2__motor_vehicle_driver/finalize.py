@@ -122,6 +122,22 @@ def finalize(attempt, output):
                     allow_nan=False) + '\n')
         recording_evidence.append({'name': name, 'unit': 'structured',
             'reference': 'channels/' + path.name})
+    context = {
+        'area_class_source': {'request': area['area_class_requested'],
+            'originally_verified': area.get('area_class_originally_verified') is True,
+            'source_sha256': digest(root / 'area-source.json')},
+        'original_video': {'camera_sha256': {name: digest(root / (name + '.mkv'))
+            for name in CAMERAS}, 'frame_count': len(frames),
+            'visible_indicator_pixels_reviewed': False},
+        'lane_source': {'lanes': lanes['lanes'],
+            'source_sha256': digest(root / 'lane-source.json')},
+        'weather_source': {'measurement': weather,
+            'source_sha256': digest(root / 'capture/evidence.jsonl')}}
+    (root / 'source-context.json').write_text(json.dumps(context, indent=2,
+        allow_nan=False) + '\n')
+    for name in context:
+        recording_evidence.append({'name': name, 'unit': 'structured',
+            'reference': 'source-context.json'})
     original_area_verified = area.get('area_class_originally_verified') is True
     result = {'case_id': config['selected_case_id'], 'measured_values': measured,
         'target_checks': [{'target': 'continuous signal before observed lane change',
@@ -150,7 +166,7 @@ def finalize(attempt, output):
         'weather_source': ('measure_weather_source', weather,
             ('capture/evidence.jsonl', 'video_frames.jsonl')),
         'area_context': ('measure_area_context', area_context,
-            ('area-source.json', 'road.xodr', 'video_frames.jsonl')),
+            ('area-source.json', 'lane-source.json', 'video_frames.jsonl')),
         'course_change': ('measure_course_change', course,
             ('body_history.jsonl', 'signal-source.jsonl', 'video_frames.jsonl'))}
     report = {'format': 'worker-signal-selected-measurement',
