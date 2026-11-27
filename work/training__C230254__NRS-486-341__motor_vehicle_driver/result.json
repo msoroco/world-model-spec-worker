@@ -1,15 +1,36 @@
 {
   "assignment_id": "training__C230254__NRS-486-341__motor_vehicle_driver",
   "input_sha256": "4060179101792c503e0bae97fb6da5be6ffe3b6024de1aa704d96e237acc6d4d",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Both exact primary Native construction bundles pass runtime.py offline and the 600-frame saved analyzer positive/missing-original unit path passes. No compatibility/process-saved or source-bound delivery receipts, fallback proofs, semantic proposals or independent delivery audit yet. This remains a partial CPU checkpoint, not physical or legal acceptance.",
-  "readiness_kind": "implementation_checkpoint",
+  "reason": "Two exact cases and their physical fallback plans are source-bound and pass current-runtime CPU offline, compatibility, saved-only, semantic, physical/lifecycle, delivery acceptance, and independent comparison checks. Original Native capture and legal judgment remain pending.",
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 2,
-  "cases_selected": 0,
-  "candidate_plans_proven": 0,
-  "comparison_audits_passed": 0,
+  "cases_selected": 2,
+  "candidate_plans_proven": 2,
+  "comparison_audits_passed": 1,
   "carla_executed": false,
   "recordings_accepted": 0,
-  "measurement_foundation_proof_sha256": "deefe753b4aabf6db49c3cd1230ae0b8bf1f47921d48857c933bb1561fb471ab"
+  "measurement_foundation_proof_sha256": "8000aec1e5c6f708f2b962f34ccbf2ed95d3edf289836417c35f92e05e6f43b5",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s tests -p test*.py",
+      "exit_code": 0,
+      "log": "tests/root-offline.log",
+      "sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad"
+    },
+    {
+      "command": "PYTHONPATH=work/training__C230254__NRS-486-341__motor_vehicle_driver/native TMPDIR=.runtime-work .venv-cpu/bin/python -m unittest -v test_lane_use test_acquire_lane_use test_comparison_audit test_physical_audit test_runner test_finalize",
+      "exit_code": 0,
+      "log": "native/lane-use-unit-proof.log",
+      "sha256": "8000aec1e5c6f708f2b962f34ccbf2ed95d3edf289836417c35f92e05e6f43b5"
+    },
+    {
+      "command": "PYTHONPATH=work/training__C230254__NRS-486-341__motor_vehicle_driver/native TMPDIR=.runtime-work .venv-cpu/bin/python -m unittest -v test_comparison_audit",
+      "exit_code": 0,
+      "log": "native/comparison-proof.log",
+      "sha256": "41a7af4a0f9d416f02aed95df125db85105f845ef0da72f50ea0392c2b1b77f9"
+    }
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230254__NRS-486-341__motor_vehicle_driver --case training__C230254__NRS-486-341__motor_vehicle_driver__full_lane_available --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

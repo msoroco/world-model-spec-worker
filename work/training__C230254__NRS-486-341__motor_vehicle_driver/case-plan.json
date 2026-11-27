@@ -3,7 +3,20 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C230254",
   "law_id": "NRS-486-341",
-  "selected_branch": null,
+  "selected_branch": {
+    "law_id": "NRS-486-341",
+    "cell_id": "C230254",
+    "actor": "motor_vehicle_driver",
+    "requirement": "NRS-486-341",
+    "branch": "Other motor vehicle relative to protected motorcycle",
+    "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+    "source_index": 218,
+    "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
+    "coverage_status": "pending_review",
+    "recording_ids": [],
+    "law_partition": "training",
+    "scenario_partition": "training"
+  },
   "scope_branches": [
     {
       "law_id": "NRS-486-341",
@@ -50,7 +63,7 @@
     {
       "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__full_lane_available",
       "target_law_id": "NRS-486-341",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_cpu_preparation",
       "target_type": "physical_sweep",
       "comparison_variable": "motorcycle_lane_use_deprivation",
       "comparison_unit": "category",
@@ -62,12 +75,12 @@
         "text-0",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": true
     },
     {
       "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego",
       "target_law_id": "NRS-486-341",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_cpu_preparation",
       "target_type": "physical_sweep",
       "comparison_variable": "motorcycle_lane_use_deprivation",
       "comparison_unit": "category",
@@ -79,7 +92,7 @@
         "text-0",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": true
     }
   ],
   "comparisons": [
@@ -90,7 +103,7 @@
         "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego"
       ],
       "deliberate_differences": [
-        "motorcycle_lane_use_deprivation"
+        "subject_lateral_offset_m"
       ],
       "fixed_conditions": [
         "cell geometry",
@@ -102,104 +115,114 @@
         "controller behavior except comparison variable",
         "capture profile"
       ],
-      "status": "planned_unverified",
-      "measurement_method": "Measure lane polygon, both full footprints, lateral clearance and motorcycle control response."
+      "status": "cpu_source_checker_proven_physical_unverified",
+      "measurement_method": "Independent source-bound full-footprint lane occupancy, surface gap, and motion comparison; original Native outcome and legal judgment unverified."
     }
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "lane_use_original_geometry",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "Original frame-joined mapped lane and full participant footprints with measured motion and separation; no legal outcome."
     },
     {
-      "name": "motorcycle_lane_use_deprivation",
-      "unit": "category",
+      "name": "four_camera_video",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Measure lane polygon, both full footprints, lateral clearance and motorcycle control response."
+      "purpose": "Four original synchronized views for independent lane and vehicle source review."
     }
   ],
   "source_observation_mapping": {
     "ru.motorcycle": {
-      "evidence": "Proposed capture only: the machine entitled to the lane. No Native channel or Core atom proof yet.",
-      "channels": [
-        "motorcycle_lane_use_deprivation"
-      ],
+      "evidence": "Protected motorcycle blueprint and original seat/wheel/exclusion source survey require independent classification review.",
+      "channels": [],
       "source_refs": [
-        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+        "lane-use-source.jsonl",
+        "lane-use-context.json",
+        "video_frames.jsonl"
       ]
     },
     "ru.moped": {
-      "evidence": "Proposed capture only: or a moped. No Native channel or Core atom proof yet.",
-      "channels": [
-        "motorcycle_lane_use_deprivation"
-      ],
+      "evidence": "Statutory alternative retained in source; frozen motorcycle cell has no original moped implementation or accepted moped evidence.",
+      "channels": [],
       "source_refs": [
         "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.lane": {
-      "evidence": "Proposed capture only: the traffic lane it occupies. No Native channel or Core atom proof yet.",
+      "evidence": "Original mapped lane and participant full-footprint time series measure this planning term; later independent review remains required.",
       "channels": [
-        "motorcycle_lane_use_deprivation"
+        "lane_use_original_geometry"
       ],
       "source_refs": [
-        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+        "lane-use-source.jsonl",
+        "lane-use-context.json",
+        "video_frames.jsonl"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: both users' occupancy of that lane. No Native channel or Core atom proof yet.",
+      "evidence": "Original mapped lane and participant full-footprint time series measure this planning term; later independent review remains required.",
       "channels": [
-        "motorcycle_lane_use_deprivation"
+        "lane_use_original_geometry"
       ],
       "source_refs": [
-        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+        "lane-use-source.jsonl",
+        "lane-use-context.json",
+        "video_frames.jsonl"
       ]
     },
     "ru.subject": {
-      "evidence": "Proposed capture only: the other motor vehicle judged. No Native channel or Core atom proof yet.",
-      "channels": [
-        "motorcycle_lane_use_deprivation"
-      ],
+      "evidence": "Subject motor-vehicle blueprint and original class source survey require independent classification review.",
+      "channels": [],
       "source_refs": [
-        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+        "lane-use-source.jsonl",
+        "lane-use-context.json",
+        "video_frames.jsonl"
       ]
     },
     "rel.longitudinal_overlap": {
-      "evidence": "Proposed capture only: the subject drawing abreast within the lane. No Native channel or Core atom proof yet.",
+      "evidence": "Original mapped lane and participant full-footprint time series measure this planning term; later independent review remains required.",
       "channels": [
-        "motorcycle_lane_use_deprivation"
+        "lane_use_original_geometry"
       ],
       "source_refs": [
-        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+        "lane-use-source.jsonl",
+        "lane-use-context.json",
+        "video_frames.jsonl"
       ]
     },
     "rel.surface_gap": {
-      "evidence": "Proposed capture only: the lateral clearance left to the machine. No Native channel or Core atom proof yet.",
+      "evidence": "Original mapped lane and participant full-footprint time series measure this planning term; later independent review remains required.",
       "channels": [
-        "motorcycle_lane_use_deprivation"
+        "lane_use_original_geometry"
       ],
       "source_refs": [
-        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+        "lane-use-source.jsonl",
+        "lane-use-context.json",
+        "video_frames.jsonl"
       ]
     },
     "drv.lane_change": {
-      "evidence": "Proposed capture only: the subject's encroachment. No Native channel or Core atom proof yet.",
+      "evidence": "Original mapped lane and participant full-footprint time series measure this planning term; later independent review remains required.",
       "channels": [
-        "motorcycle_lane_use_deprivation"
+        "lane_use_original_geometry"
       ],
       "source_refs": [
-        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+        "lane-use-source.jsonl",
+        "lane-use-context.json",
+        "video_frames.jsonl"
       ]
     },
     "kin.velocity": {
-      "evidence": "Proposed capture only: the machine forced to deviate. No Native channel or Core atom proof yet.",
+      "evidence": "Original mapped lane and participant full-footprint time series measure this planning term; later independent review remains required.",
       "channels": [
-        "motorcycle_lane_use_deprivation"
+        "lane_use_original_geometry"
       ],
       "source_refs": [
-        "inputs/training__C230254__NRS-486-341__motor_vehicle_driver/assignment.json"
+        "lane-use-source.jsonl",
+        "lane-use-context.json",
+        "video_frames.jsonl"
       ]
     }
   },
@@ -290,9 +313,36 @@
     ],
     "offline_manifest_draft": "draft-manifest.json",
     "offline_proof_logs": {
-      "full_lane_available": "native/offline-full.log",
-      "blocked_by_ego": "native/offline-blocked.log"
+      "full_lane_available": "native/full-offline-proof.log",
+      "blocked_by_ego": "native/blocked-offline-proof.log"
     },
     "saved_analyzer_proof_log": "native/finalize-proof.log"
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both vehicles and occupied lane",
+        "interval": "frames 0-599"
+      },
+      {
+        "view": "approach",
+        "subject": "relative approach and full footprints",
+        "interval": "frames 0-599"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "lane markings and motorcycle",
+        "interval": "frames 0-599"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver view proxy and lane occupancy",
+        "interval": "frames 0-599"
+      }
+    ]
   }
 }

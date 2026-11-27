@@ -17,9 +17,11 @@ from scenario_pipeline.worker_exchange.semantic_delivery import validate  # noqa
 
 def main():
     assignment = json.loads((ROOT / "inputs" / HERE.name / "assignment.json").read_text())
-    manifest = json.loads((HERE / "draft-native-manifest.json").read_text())
+    moving = json.loads((HERE / "draft-native-manifest.json").read_text())
+    branches = json.loads((HERE / "branch-native-manifest.json").read_text())
+    manifest = {"cases": moving["cases"] + branches["cases"]}
     result = validate(HERE, assignment, manifest)
-    if result["selected_cases"] != 2 or result["stage_count"] != 12:
+    if result["selected_cases"] != 6 or result["stage_count"] != 12:
         raise ValueError("Selected draft semantic cases or stage chain changed")
     print(json.dumps(result, sort_keys=True))
 

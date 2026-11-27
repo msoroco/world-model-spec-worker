@@ -48,6 +48,13 @@ def already_moving_subject_observed(observed, review):
     return observed['emergency_moving_at_trigger']
 
 
+def officer_exception_context(observed, review):
+    return {'direction_reviewed': observed['officer_direction_present_reviewed'],
+            'direction_source': review['officer_direction_source'],
+            'applies_to_ego': review.get('officer_direction_applies_to_ego') is True,
+            'officer_identity_source': review.get('officer_identity_source')}
+
+
 REQUIREMENT_MEASUREMENTS = (
     ('qualifying_approach_context', qualifying_approach_context,
      ('approach_trace.jsonl', 'emergency_review.json', 'video_frames.jsonl')),
@@ -61,6 +68,8 @@ REQUIREMENT_MEASUREMENTS = (
      ('approach_trace.jsonl', 'emergency_review.json')),
     ('already_moving_subject_observed', already_moving_subject_observed,
      ('approach_trace.jsonl', 'video_frames.jsonl')),
+    ('officer_exception_context', officer_exception_context,
+     ('emergency_review.json', 'approach_trace.jsonl')),
 )
 
 

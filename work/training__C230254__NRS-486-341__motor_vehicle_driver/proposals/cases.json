@@ -3,12 +3,79 @@
   "actor": "motor_vehicle_driver",
   "status": "draft",
   "sweeps_expanded": true,
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "lane_use_physical_coverage",
+      "target_law_id": "NRS-486-341",
+      "judgment_refs": [
+        {
+          "phrase": "full use of the traffic lane it is occupying",
+          "note": "Original lane and vehicle footprints support independent review of full use; no numeric legal cutoff is supplied."
+        },
+        {
+          "phrase": "deprive any such motorcycle or moped of such use",
+          "note": "The manner of driving and deprivation require original motion, video, context, and independent legal judgment."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Selected physical comparison is source-bound, but a complete feasible sampling range and spacing have not been established by original Native motion.",
+      "missing_inputs": [
+        "Original measured feasible range and resolution for lateral lane occupancy across this map and vehicle pair."
+      ]
+    }
+  ],
   "cases": [
+    {
+      "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral comparison definition; no original physical or legal outcome asserted.",
+      "variable_assignments": {
+        "subject_lateral_offset_m": {
+          "kind": "world_setup",
+          "value": 4.2,
+          "unit": "m"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "lane_use_original_geometry",
+            "method": "Original CARLA actor bounding boxes and map waypoint lane polygon at 20 Hz",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "common Native world XY and synchronized source frame",
+            "uncertainty": "local lane strip and unreviewed chapter 486 context do not decide full use"
+          },
+          {
+            "name": "four_camera_video",
+            "method": "four synchronized original RGB cameras",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "Native frame map",
+            "uncertainty": "fixture pixels do not establish physical visibility"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "chapter_486_context",
+            "unit": "structured",
+            "method": "Original survey and cited public maintenance/access and vehicle classification source packet"
+          }
+        ],
+        "limitations": [
+          "Motorcycle classification and chapter 486 highway status require operator original-source review",
+          "Full use and deprivation remain unresolved qualitative standards"
+        ]
+      }
+    },
     {
       "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__full_lane_available",
       "target_law_id": "NRS-486-341",
-      "target_type": "physical_sweep",
+      "target_type": "judgment_sweep",
       "rationale": "Original measured lane-use geometry with qualitative legal standard unresolved",
       "paired_probe_id": "subject_lateral_occupancy_pair",
       "deliberate_differences": [
@@ -27,8 +94,8 @@
         }
       },
       "unresolved_judgment_calls": [
-        "full use of traffic lane",
-        "deprive protected motorcycle of such use"
+        "full use of the traffic lane it is occupying",
+        "deprive any such motorcycle or moped of such use"
       ],
       "recording_description": {
         "channels": [
@@ -67,7 +134,7 @@
     {
       "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego",
       "target_law_id": "NRS-486-341",
-      "target_type": "physical_sweep",
+      "target_type": "judgment_sweep",
       "rationale": "Original measured lane-use geometry with qualitative legal standard unresolved",
       "paired_probe_id": "subject_lateral_occupancy_pair",
       "deliberate_differences": [
@@ -86,8 +153,8 @@
         }
       },
       "unresolved_judgment_calls": [
-        "full use of traffic lane",
-        "deprive protected motorcycle of such use"
+        "full use of the traffic lane it is occupying",
+        "deprive any such motorcycle or moped of such use"
       ],
       "recording_description": {
         "channels": [

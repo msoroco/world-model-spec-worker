@@ -74,6 +74,8 @@ def main():
                         "construction_sha256": row["sha256"],
                         "recording_description": base["cases"][0]["recording_description"],
                         "measurement_procedure": {"entrypoint": "finalize.py"},
+                        "measurement_contract": "branch-measurements/" + row["case_id"].split(HERE.parent.name + "__", 1)[1] + ".json",
+                        "fixture_recipe": "work/" + HERE.parent.name + "/branch-fixtures/" + row["case_id"].split(HERE.parent.name + "__", 1)[1] + "/fixture-recipe.json",
                         "candidate_risk": {"status": "physical",
                             "reason": "Original actor identity and camera visibility need independent review"},
                         "candidates": []})

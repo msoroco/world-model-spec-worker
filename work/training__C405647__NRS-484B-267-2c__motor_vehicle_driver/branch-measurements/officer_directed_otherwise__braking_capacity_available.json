@@ -1,0 +1,65 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "qualifying_approach_context",
+      "method": "qualifying_approach_context",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "approach_trace.jsonl",
+        "emergency_review.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "stop_preparedness_response",
+      "method": "stop_preparedness_response",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "approach_trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "text-3",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "visible_movement_observed",
+      "method": "visible_movement_observed",
+      "value_type": "boolean",
+      "kind": "measured",
+      "inputs": [
+        "approach_trace.jsonl",
+        "emergency_review.json"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "officer-direction-exception",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "officer_exception_context",
+      "method": "officer_exception_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "emergency_review.json",
+        "approach_trace.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "emergency_review.json"
+    ],
+    "error_contains": "Missing required source: emergency_review.json"
+  }
+}
