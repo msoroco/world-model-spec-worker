@@ -17,8 +17,7 @@ DONOR = ROOT / "work/testing__C24751__NRS-484B-310-1__heavy_vehicle_driver/diagn
 DONOR_CASE = DONOR / "_shared"
 DONOR_GENERATOR = DONOR / "crosswalk_stop-generator.json"
 SHARED = HERE / "diagnostics/_shared"
-SOURCE_FILES = ("video_frames.jsonl",
-                "capture/native/frames.jsonl", "capture/evidence.jsonl")
+SOURCE_FILES = ("video_frames.jsonl", "capture/native/frames.jsonl")
 
 
 def sha(path):
@@ -74,6 +73,8 @@ def build():
             "scope": "Software finalizer, Core and decode only; no actual emergency motion evidence."})
         write(folder / "emergency-site.json", {
             "ego_id": "ego", "emergency_id": "unit", "emergency_class": case.unit_class,
+            "subject_vehicle_class": "ordinary_motor_vehicle",
+            "subject_driver_source": "synthetic-driver-control",
             "target_vehicle_class": case.unit_class, "light_request": case.light_request,
             "immediate_approach_request": case.immediate,
             "yield_response_request": case.yielding,
@@ -115,6 +116,30 @@ def build():
         }, separators=(",", ":")) + "\n" for row in history), encoding="utf-8")
         if trace_path.stat().st_size > 2 * 1024 * 1024:
             raise ValueError("case trace exceeds 2 MiB")
+        donor_evidence = [json.loads(line) for line in
+                          (DONOR_CASE / "capture/evidence.jsonl").read_text(encoding="utf-8").splitlines()]
+        if len(donor_evidence) != len(history):
+            raise ValueError("donor synthetic native fixture frame count changed")
+        evidence_path = folder / "capture/evidence.jsonl"
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        evidence_rows = []
+        for old, row in zip(donor_evidence, history):
+            evidence = copy.deepcopy(old)
+            original = evidence["ego"]["position_m"]
+            dx, dy = row["ego_xy"][0] - original[0], row["ego_xy"][1] - original[1]
+            evidence["ego"]["position_m"] = [*row["ego_xy"], 0.0]
+            evidence["ego"]["speed_mps"] = row["ego_speed_mps"]
+            evidence["ego"]["body_vertices_m"] = [
+                [point[0] + dx, point[1] + dy, point[2]]
+                for point in evidence["ego"]["body_vertices_m"]]
+            evidence_rows.append(evidence)
+        evidence_path.write_text("".join(json.dumps(row, separators=(",", ":")) + "\n"
+                                          for row in evidence_rows), encoding="utf-8")
+        if evidence_path.stat().st_size > 2 * 1024 * 1024:
+            raise ValueError("case evidence exceeds 2 MiB")
+        capture_manifest["sources"]["trace.jsonl"] = sha(trace_path)
+        generator["files"]["capture/manifest.json"] = json.dumps(capture_manifest, indent=2) + "\n"
+        write(generator_path, generator, compact=True)
         write(HERE / "diagnostics" / (name + "-measurement-contract.json"), {
             "format": "worker-measurement-contract", "case_id": case_id,
             "requirements": [{"disposition_index": 0,
@@ -130,6 +155,7 @@ def build():
             source = SHARED / relative
             sources.append({"path": relative, "source": str(source.relative_to(ROOT)), "sha256": sha(source)})
         for relative in ("diagnostic-source-note.json", "emergency-site.json", "trace.jsonl",
+                         "capture/evidence.jsonl",
                          "camera-frame-map.jsonl", "original-emergency-movement-history.jsonl"):
             source = folder / relative
             sources.append({"path": relative, "source": str(source.relative_to(ROOT)), "sha256": sha(source)})

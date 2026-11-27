@@ -43,6 +43,10 @@ def plan(case, map_source, actor_source, authority):
     require(actor_source.get("source_kind") == "native_blueprint_readback", "Native blueprint readback required")
     for key in ("ego_blueprint_id", "unit_blueprint_id"):
         require(isinstance(actor_source.get(key), str) and actor_source[key], key + " missing")
+    require(actor_source.get("ego_vehicle_class") == "ordinary_motor_vehicle",
+            "every-other-vehicle subject class unverified")
+    require(actor_source.get("ego_driver_control_source"),
+            "subject driver control source missing")
     require(actor_source.get("unit_class") == case.unit_class, "unit class mismatch")
     require(authority.get("class") == case.unit_class, "authority class mismatch")
     for key in ("authorization_source", "light_rule_source", "equipment_source",

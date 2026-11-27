@@ -98,8 +98,14 @@ def build():
                   "selected_case_id": cid, "candidate_id": "primary",
                   "rate_hz": 20, "duration_s": 45, "required_atoms": [],
                   "source_packets": [],
+                  "requested_speed_mps": 1.2 if case.conduct == "walking" else 3.0,
+                  "physical_completion": {"criterion": "travel_progress",
+                                          "minimum_progress_m": 40.0,
+                                          "completion_goal_method": "At least 40 m original body-center travel on a 50 m authored route; engineering progress milestone, not a legal threshold."},
                   "supported_case_ids": [AID + "__" + x.suffix for x in CASES],
-                  "cameras": [{"name": n, "width": w, "height": h}
+                  "cameras": [{"name": n, "width": w, "height": h,
+                               "fov_deg": 90,
+                               "pose_strategy": "reviewed original Fremont sidewalk, signs and device"}
                               for n, w, h in CAMERAS],
                   "case": {**plan["cases"][index],
                            "recording_description": description()}}

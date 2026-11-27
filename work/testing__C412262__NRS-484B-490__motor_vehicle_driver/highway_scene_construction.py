@@ -13,7 +13,7 @@ ASSIGNMENT = "testing__C412262__NRS-484B-490__motor_vehicle_driver"
 SOURCE_FIELDS = ("map_sha256", "dedication_sha256", "boundary_sha256", "public_access_sha256",
                  "width_survey_sha256", "device_erection_sha256", "device_authority_sha256",
                  "device_content_sha256", "device_conformity_sha256", "device_extent_sha256",
-                 "activity_source_sha256")
+                 "person_identity_sha256", "vehicle_identity_sha256", "activity_source_sha256")
 
 
 def load_case(case_id: str) -> dict:
@@ -77,6 +77,7 @@ def validate_site(path: str | Path, case_id: str) -> dict:
             if not isinstance(device.get(key), str) or not device[key]:
                 raise ValueError("reviewed device field required: " + key)
     site["_source_sha256"] = hashlib.sha256(raw).hexdigest()
+    site["_source_path"] = str(source_path)
     return site
 
 

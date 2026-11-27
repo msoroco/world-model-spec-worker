@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import sys
 import tempfile
 import unittest
@@ -122,9 +123,15 @@ class HighwayTests(unittest.TestCase):
         self.assertTrue(inside((5, 0), [[0, -4], [20, -4], [20, 4], [0, 4]]))
         self.assertFalse(inside((5, 5), [[0, -4], [20, -4], [20, 4], [0, 4]]))
         context = json.loads(self.site.read_text())
+        reviewed = self.root / "reviewed-source"
+        reviewed.mkdir()
+        shutil.copyfile(self.site, reviewed / "reviewed-site.json")
+        for record in context["source_records"].values():
+            shutil.copyfile(self.root / record["path"], reviewed / record["path"])
         context.update({"case_id": CASE, "highway_width_request": "narrow",
                         "device_request": "erected_applicable", "activity_request": "park",
-                        "parking_location_request": "on_highway"})
+                        "parking_location_request": "on_highway",
+                        "site_sha256": sha(reviewed / "reviewed-site.json")})
         context_path = self.root / "context.json"
         write(context_path, context)
         trace = self.root / "trace.jsonl"
@@ -132,7 +139,9 @@ class HighwayTests(unittest.TestCase):
                  [[5, -1], [7, -1], [7, 1], [5, 1]], "speed_mps": 0.0} for i in range(9)]
         trace.write_text("".join(json.dumps(r) + "\n" for r in rows))
         receipt = self.root / "receipt.json"
-        write(receipt, {"context_sha256": sha(context_path), "trace_sha256": sha(trace), "frame_count": 9})
+        write(receipt, {"assignment_id": ASSIGNMENT, "case_id": CASE,
+                        "source_kind": "original_native_capture",
+                        "context_sha256": sha(context_path), "trace_sha256": sha(trace), "frame_count": 9})
         report = observe(CASE, context_path, trace, receipt)
         self.assertTrue(all(sample["body_on_highway"] for sample in report["samples"]))
         self.assertEqual(report["narrow_highway_judgment"], "unresolved")
@@ -140,7 +149,9 @@ class HighwayTests(unittest.TestCase):
         trace.write_text("".join(json.dumps(r) + "\n" for r in rows))
         with self.assertRaisesRegex(ValueError, "seal mismatch"):
             observe(CASE, context_path, trace, receipt)
-        write(receipt, {"context_sha256": sha(context_path), "trace_sha256": sha(trace), "frame_count": 9})
+        write(receipt, {"assignment_id": ASSIGNMENT, "case_id": CASE,
+                        "source_kind": "original_native_capture",
+                        "context_sha256": sha(context_path), "trace_sha256": sha(trace), "frame_count": 9})
         self.assertFalse(observe(CASE, context_path, trace, receipt)["samples"][0]["body_on_highway"])
 
 

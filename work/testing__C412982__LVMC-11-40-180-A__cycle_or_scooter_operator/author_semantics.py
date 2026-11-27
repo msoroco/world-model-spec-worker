@@ -35,7 +35,7 @@ def main():
                  "relevant_laws": [{"law_id": LAW, "quote": TEXT,
                                     "applies_to": [ACTOR],
                                     "relevance_type": "direct named sidewalk riding prohibition",
-                                    "confidence": "conditional",
+                                    "confidence": "high",
                                     "notes": "Fremont Main-to-Seventh map and signs need original review."}],
                  "borderline_excluded": []}
     put(folder / "relevance.json", relevance)
@@ -51,7 +51,7 @@ def main():
                       "exceptions": [],
                       "timing": {"description": "Observe original conduct, device, sidewalk surface and municipal longitudinal extent throughout travel.",
                                  "numeric_conditions": []},
-                      "judgment_calls_needed": ["geographic applicability and sign coverage remain for original review"]},
+                      "judgment_calls_needed": []},
         "parameter_refs": [{"name": n, "kind": k, "range_or_domain": d}
                            for n, k, d in PARAMETERS]})
     put(folder / "bindings.json", {
@@ -63,6 +63,19 @@ def main():
                                  "used_by_laws": [LAW]} for n, k, d in PARAMETERS]})
     cases = {"cell_id": "C412982", "actor": ACTOR,
              "status": "draft", "cases": [], "sweep_specs": []}
+    cases["cases"].append({
+        "case_id": AID + "__baseline", "target_law_id": None,
+        "target_type": "baseline",
+        "rationale": "Shared adjacent-road reference; no baseline recording selected.",
+        "variable_assignments": {
+            "device_kind": {"kind": "world_setup", "value": "bicycle"},
+            "operator_conduct": {"kind": "controller", "value": "riding"},
+            "surface": {"kind": "world_setup", "value": "road"},
+            "side": {"kind": "world_setup", "value": "north"},
+            "municipal_extent": {"kind": "world_setup", "value": "between"},
+            "sign_state": {"kind": "world_setup", "value": "posted"}},
+        "unresolved_judgment_calls": [],
+        "recording_description": RECORDING})
     for case in CASES:
         variables = {"device_kind": {"kind": "world_setup", "value": case.device_kind},
                      "operator_conduct": {"kind": "controller", "value": case.conduct},

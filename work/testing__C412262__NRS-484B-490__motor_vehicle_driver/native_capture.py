@@ -7,6 +7,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import shutil
 import subprocess
 
 from highway_scene_construction import ASSIGNMENT, SOURCE_FIELDS, load_case
@@ -48,6 +49,9 @@ def validate_frame(row, index, native_frame, origin_time):
             "original frame cadence mismatch")
     for key in ("vehicle_center_xy_m", "vehicle_body_polygon_xy_m", "vehicle_speed_mps"):
         require(key in row, "original vehicle motion field missing: " + key)
+    require(type(row["vehicle_speed_mps"]) in (int, float) and
+            math.isfinite(row["vehicle_speed_mps"]) and row["vehicle_speed_mps"] >= 0,
+            "original subject speed readback invalid")
     for key in ("actor_id", "vehicle_blueprint", "position_m", "heading_xy",
                 "body_vertices_m"):
         require(key in row, "original Native actor readback missing: " + key)
@@ -85,6 +89,19 @@ def capture(world, adapter, site, case_id: str, output: Path, site_sha256: str) 
     output = Path(output)
     require(not output.exists() or not any(output.iterdir()), "original attempt output already populated")
     output.mkdir(parents=True, exist_ok=True)
+    reviewed = output / "reviewed-source"
+    reviewed.mkdir()
+    source_path = Path(site["_source_path"])
+    shutil.copy2(source_path, reviewed / "reviewed-site.json")
+    require(sha(reviewed / "reviewed-site.json") == site_sha256,
+            "reviewed original highway site changed during capture")
+    for record in site["source_records"].values():
+        relative = Path(record["path"])
+        target = reviewed / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source_path.parent / relative, target)
+        require(sha(target) == record["sha256"],
+                "reviewed original highway source changed during capture: " + record["path"])
     context = adapter.read_original_context(site, case)
     require(isinstance(context, dict), "original highway context readback missing")
     for key in CONTEXT_SOURCES:

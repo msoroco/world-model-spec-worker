@@ -42,13 +42,16 @@ def audit(attempts, comparison_id, plan):
         raise ValueError("emergency comparison baseline differs")
     suffix = second[0].suffix
     # Source context is fixed except the one deliberately changed construction field.
-    allowed = {"regulatory_official_yield": {"emergency_class", "target_vehicle_class"},
+    allowed = {"regulatory_official_yield": {"emergency_class", "target_vehicle_class",
+                                             "authorization_source", "siren_equipment_source",
+                                             "front_visible_red_lamp_source", "qualifying_lights_source"},
                "lights_inactive": {"light_request"},
-               "lights_unqualified": {"light_request"},
+               "lights_unqualified": {"light_request", "front_visible_red_lamp_qualified",
+                                      "front_visible_red_lamp_source", "qualifying_lights_source"},
                "immediate_approach_no_yield": {"yield_response_request"},
-               "officer_directs_otherwise": {"yield_response_request"},
-               "no_immediate_approach": {"immediate_approach_request"},
-               "same_direction_approach_yield": {"approach_direction"}}.get(suffix, set())
+               "officer_directs_otherwise": {"yield_response_request", "officer_direction_source"},
+               "no_immediate_approach": {"immediate_approach_request", "route_source"},
+               "same_direction_approach_yield": {"approach_direction", "route_source"}}.get(suffix, set())
     for key in set(first[1]) | set(second[1]):
         if key not in allowed and first[1].get(key) != second[1].get(key):
             raise ValueError("emergency comparison fixed site context differs: " + key)

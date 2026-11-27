@@ -101,6 +101,8 @@ def measure_case(case, site, frames):
         raise ValueError("complete emergency motion history required")
     if site.get("target_vehicle_class") != case.unit_class:
         raise ValueError("target vehicle source differs from exact case")
+    if site.get("subject_vehicle_class") != "ordinary_motor_vehicle" or not site.get("subject_driver_source"):
+        raise ValueError("every-other-vehicle driver source missing")
     if site.get("light_request") != case.light_request:
         raise ValueError("flashing equipment/use source differs from exact case")
     for key in ("authorization_source", "qualifying_lights_source", "light_rule_source",
@@ -165,6 +167,8 @@ def analyze(root):
         "front_visible_red_lamp": lambda row: site["front_visible_red_lamp_source"],
         "siren_equipment": lambda row: site["siren_equipment_source"],
         "target_authorization": lambda row: site["target_vehicle_class"],
+        "subject_driver": lambda row: {"class": site["subject_vehicle_class"],
+                                         "driver_source": site["subject_driver_source"]},
         "driver_view_movement_cue": lambda row: row["movement_visible"],
         "relative_approach": lambda row: {"ego_xy": row["ego_xy"], "unit_xy": row["emergency_xy"]},
         "right_of_way_order": lambda row: {"ego_brake": row["ego_brake"], "ego_speed_mps": row["ego_speed_mps"]},

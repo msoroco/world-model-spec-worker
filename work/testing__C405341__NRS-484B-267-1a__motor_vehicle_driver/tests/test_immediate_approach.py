@@ -15,7 +15,9 @@ def sources(case):
             "ego_route_id": "ego-reviewed", "unit_route_id": "unit-reviewed",
             "conflict_location_source": "reviewed-map-pose"}
     actors = {"source_kind": "native_blueprint_readback", "unit_class": case.unit_class,
-              "ego_blueprint_id": "vehicle.ego", "unit_blueprint_id": "vehicle.unit"}
+              "ego_blueprint_id": "vehicle.ego", "unit_blueprint_id": "vehicle.unit",
+              "ego_vehicle_class": "ordinary_motor_vehicle",
+              "ego_driver_control_source": "reviewed-driver-control"}
     authority = {"class": case.unit_class, "authorization_source": "reviewed-authorization",
                  "light_rule_source": "DEF-NRS-484A-480-3", "equipment_source": "reviewed-light",
                  "siren_equipment_source": "reviewed-siren", "siren_equipment_verified": True,

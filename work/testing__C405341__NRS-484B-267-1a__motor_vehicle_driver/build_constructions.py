@@ -28,6 +28,7 @@ def description():
         ("front_visible_red_lamp", "source", "reviewed front-visible red lamp installation and original pixels"),
         ("siren_equipment", "source", "reviewed required siren equipment"),
         ("target_authorization", "source", "reviewed authorized emergency or regulatory official status"),
+        ("subject_driver", "source", "reviewed ordinary other-vehicle class and actual driver control"),
         ("relative_approach", "metres and m/s", "original ego/unit positions and route direction"),
         ("right_of_way_order", "original frames", "source-bound crossing and brake chronology"),
         ("ego_approach", "metres and m/s", "original ego/unit positions and speed"),

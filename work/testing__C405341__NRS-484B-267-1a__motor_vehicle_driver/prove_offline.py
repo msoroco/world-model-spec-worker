@@ -45,7 +45,7 @@ def proof():
                 "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."}
                 for channel in ("sealed_native_original_frames", "unit_motion",
                                 "qualifying_flashing_lights", "front_visible_red_lamp",
-                                "siren_equipment", "target_authorization",
+                                "siren_equipment", "target_authorization", "subject_driver",
                                 "relative_approach", "right_of_way_order",
                                 "ego_approach", "ego_response", "officer_direction", "video_four_views")},
             "candidate_risk": {"status": "physical", "reason":

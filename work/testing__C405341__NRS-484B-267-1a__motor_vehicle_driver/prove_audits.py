@@ -44,7 +44,7 @@ def main():
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         name = case_id.removeprefix(AID + "__")
-        attempt = ROOT / ".runtime-work/c405341-1a" / ("compat-" + name + "-v6")
+        attempt = ROOT / ".runtime-work/c405341-1a" / ("compat-" + name + "-v9")
         output = SCRATCH / (name + "-delivery.json")
         if output.exists():
             output.unlink()
@@ -93,7 +93,7 @@ def main():
         for case_id in comparison["case_ids"]:
             suffix = case_id.removeprefix(AID + "__")
             command += ["--attempt", str(ROOT / ".runtime-work/c405341-1a" /
-                                         ("compat-" + suffix + "-v6"))]
+                                         ("compat-" + suffix + "-v9"))]
         output = SCRATCH / (name + "-comparison.json")
         if output.exists():
             output.unlink()
@@ -110,9 +110,44 @@ def main():
                       "result_sha256": sha(output), "diagnostic_fixture": True,
                       "physical_acceptance_claimed": False}})
         print("independent comparison", name, "passed", flush=True)
+    # Prove the independent comparison rejects missing original evidence and
+    # a changed condition that was declared fixed, using only scratch copies.
+    first_spec = plan["comparisons"][0]
+    base = ROOT / ".runtime-work/c405341-1a" / (
+        "compat-" + first_spec["case_ids"][0].removeprefix(AID + "__") + "-v9")
+    contrasting = ROOT / ".runtime-work/c405341-1a" / (
+        "compat-" + first_spec["case_ids"][1].removeprefix(AID + "__") + "-v9")
+    small = SCRATCH / "comparison-negative-source"
+    small.mkdir(exist_ok=True)
+    for name in ("config.json", "diagnostic-source-note.json", "emergency-site.json",
+                 "camera-frame-map.jsonl", "video_frames.jsonl", "trace.jsonl",
+                 "original-emergency-movement-history.jsonl"):
+        shutil.copyfile(contrasting / name, small / name)
+    negative_protocol = []
+    for kind, expected in (("missing", "Missing required source: original-emergency-movement-history.jsonl"),
+                           ("fixed", "emergency comparison fixed site context differs")):
+        target = small / "original-emergency-movement-history.jsonl"
+        if kind == "missing":
+            target.unlink()
+        else:
+            shutil.copyfile(contrasting / target.name, target)
+            site = json.loads((small / "emergency-site.json").read_text())
+            site["route_source"] = "deliberately-different-fixed-context"
+            write(small / "emergency-site.json", site)
+        command = [sys.executable, str(HERE / "comparison_audit.py"),
+                   "--comparison-id", AID + "__" + first_spec["comparison_id"],
+                   "--plan", str(PLAN), "--attempt", str(base),
+                   "--attempt", str(small), "--output", str(SCRATCH / ("rejected-" + kind + ".json"))]
+        done = run(command)
+        proof_log = log("cpu-comparison-negative-" + kind + ".log", done)
+        if done.returncode == 0 or expected not in proof_log.read_text():
+            raise RuntimeError("comparison negative protocol failed: " + kind)
+        negative_protocol.append({"kind": kind, "command": " ".join(command),
+                                  "exit_code": done.returncode, "expected_error": expected,
+                                  "log": proof_log.name, "log_sha256": sha(proof_log)})
     write(HERE / "comparison-audits.json", {
         "format": "worker-comparison-audits", "assignment_id": AID,
-        "comparisons": receipts})
+        "comparisons": receipts, "negative_protocol": negative_protocol})
 
 
 if __name__ == "__main__":

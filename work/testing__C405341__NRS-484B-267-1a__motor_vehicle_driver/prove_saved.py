@@ -36,7 +36,7 @@ def run(command):
 
 def one(case):
     name, case_id = case.suffix, AID + "__" + case.suffix
-    attempt = SCRATCH / ("compat-" + name + "-v6")
+    attempt = SCRATCH / ("compat-" + name + "-v9")
     selection = attempt / "candidate-selection.json"
     if selection.exists():
         selection.unlink()
