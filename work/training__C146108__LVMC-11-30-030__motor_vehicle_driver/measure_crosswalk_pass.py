@@ -4,8 +4,8 @@ import math
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "crosswalk_side", "lead_rear"}
-HASHES = ("native_map", "crosswalk_marking", "lane_directions", "ego_body", "lead_body",
+CAMERAS = {"overview", "driver_reference", "reference_corner", "approach"}
+HASHES = ("native_map", "crosswalk_reference", "lane_directions", "ego_body", "lead_body",
           "ego_motion", "lead_motion", "pedestrian_body_motion", "camera_manifest")
 
 
@@ -22,8 +22,11 @@ def measure(context, rows):
         value = context.get(name + "_sha256")
         if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
             raise ValueError("Missing source hash: " + name)
-    if context.get("marked_crosswalk") is not True or context.get("same_direction_rear_approach") is not True:
-        raise ValueError("Marked crosswalk or rear approach unsourced")
+    kind = context.get("crosswalk_kind")
+    if kind not in ("marked", "unmarked_intersection") or context.get("same_direction_rear_approach") is not True:
+        raise ValueError("Crosswalk kind or rear approach unsourced")
+    if kind == "unmarked_intersection" and context.get("intersection_crossing_sourced") is not True:
+        raise ValueError("Unmarked intersection crossing unsourced")
     if context.get("lead_stopped_for_pedestrian_sourced") is not True:
         raise ValueError("Purpose of lead stop unsourced")
     crosswalk_near = number(context.get("crosswalk_near_x_m"), "crosswalk near edge")
@@ -72,6 +75,7 @@ def measure(context, rows):
     if not initial_behind or not pedestrian_crossing_frames:
         raise ValueError("Rear approach or pedestrian crossing missing")
     return {"format": "worker-source-crosswalk-pass-measurement", "frame_count": FRAMES,
+            "crosswalk_kind": kind,
             "rate_hz": RATE_HZ, "pedestrian_crossing_frame_count": len(pedestrian_crossing_frames),
             "adjacent_longitudinal_overlap_frames": adjacent_overlap_frames,
             "passed_lead_during_pedestrian_crossing_frames": passed_frames,

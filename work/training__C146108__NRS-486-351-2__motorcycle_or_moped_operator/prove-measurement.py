@@ -23,7 +23,7 @@ def rectangle(x, y, half_length, half_width):
 
 def make(attempt):
     attempt.mkdir()
-    cameras = ('overview', 'approach', 'passing_side', 'clear_ahead')
+    cameras = ('overview', 'approach', 'reference_corner', 'driver_reference')
     with (attempt / 'participant-poses.jsonl').open('w') as poses, (attempt / 'video_frames.jsonl').open('w') as frames:
         for index in range(600):
             time = index / 20
@@ -43,12 +43,12 @@ def make(attempt):
 
 
 def main():
-    manifest = json.loads((HERE / 'draft-same-lane-manifest.json').read_text())
-    item = manifest['cases'][0]
+    manifest = json.loads((HERE / 'draft-two-case-manifest.json').read_text())
+    item = manifest['cases'][1]
     construction = HERE / item['construction']
     if sha(construction) != item['construction_sha256']:
         raise ValueError('Construction hash mismatch')
-    bundled = ROOT / '.runtime-work/c146108-moto/offline-04/measure_pass.py'
+    bundled = ROOT / '.runtime-work/c146108-moto/offline-pass-v2/measure_pass.py'
     expected = next(file['content'] for file in json.loads(construction.read_text())['files']
                     if file['path'] == 'measure_pass.py')
     if bundled.read_text() != expected:

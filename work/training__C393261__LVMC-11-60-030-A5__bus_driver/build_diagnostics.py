@@ -88,7 +88,7 @@ def main():
                                          for x in (-12, 0, 10, 20)]},
                    'covered_non_tour_bus_claim': 'vehicle.mitsubishi.fusorosa',
                    'operator_id': 'synthetic-diagnostic-controller',
-                   'designation_authority_source': None,
+                   'designation_authority_source': {'status': 'unverified', 'source': None},
                    'designated_period_s': None, 'designation_verified': False,
                    'actual_loading_activity_verified': False,
                    'physical_sign_pixels_verified': False}

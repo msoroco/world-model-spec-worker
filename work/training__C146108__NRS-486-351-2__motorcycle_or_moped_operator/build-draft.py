@@ -16,7 +16,7 @@ def build():
     batch = json.loads((ROOT / 'batch.json').read_text())
     cameras = [{'name': name, 'width': width, 'height': height} for name, width, height in
                [('overview', 1920, 1080), ('approach', 1280, 720),
-                ('passing_side', 1280, 720), ('clear_ahead', 1280, 720)]]
+                ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]]
     description = {'channels': [
         {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
          'method': 'original Native actor transform and full body corners',
@@ -41,7 +41,8 @@ def build():
               'recording_description': description,
               'status': 'selected_cpu_draft_not_delivery_prepared'}
     files = [{'path': name, 'content': (HERE / 'native' / name).read_text()} for name in
-             ('runner.py', 'geometry.py', 'measure_pass.py', 'tests/test_native.py')]
+             ('runner.py', 'geometry.py', 'measure_pass.py', 'measure_follow.py',
+              'law_review.py', 'tests/test_native.py')]
     files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
     proposal = {'case_id': CASE, 'law_id': 'NRS-486-351-2', 'cell_id': 'C146108',
                 'actor': 'motorcycle_or_moped_operator', 'entrypoint': 'runner.py',

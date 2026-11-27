@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C146108",
   "law_id": "LVMC-11-30-030",
-  "selected_branch": null,
+  "selected_branch": "Marked and unmarked-intersection crossings, each with hold/pass contrast",
   "scope_branches": [
     {
       "law_id": "LVMC-11-30-030",
@@ -29,174 +29,311 @@
       "requirement": "text-0",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "statutory_text: Whenever any vehicle is stopped at a marked crosswalk or at any unmarked crosswalk at an intersection to permit a pedestrian to cross the roadway, the driver of any other vehicle approaching from the rear shall not overtake and pass such stopped vehicle. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "evidence_or_gap": "Four same-cell cases and 600-frame source-shaped diagnostic with eight negatives authored. Selected Native and current-runtime proofs pending; original stop purpose and crossing remain source-gated.",
       "case_ids": [
         "training__C146108__LVMC-11-30-030__motor_vehicle_driver__false",
-        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__true"
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__true",
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_false",
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_true"
       ]
     },
     {
       "requirement": "reviewed-scope-0",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "reviewed_scope: Marked crosswalk, including a midblock crossing | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "evidence_or_gap": "Four same-cell cases and 600-frame source-shaped diagnostic with eight negatives authored. Selected Native and current-runtime proofs pending; original stop purpose and crossing remain source-gated.",
       "case_ids": [
         "training__C146108__LVMC-11-30-030__motor_vehicle_driver__false",
-        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__true"
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__true",
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_false",
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_true"
       ]
+    },
+    {
+      "requirement": "LVMC-11-30-030",
+      "source": "LVMC 11.30.030",
+      "branch": "Unmarked crosswalk at an intersection",
+      "status": "selected_required",
+      "case_ids": [
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_false",
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_true"
+      ],
+      "evidence_or_gap": "Original intersection geometry and unmarked crossing require source review; an authored junction marker is not physical proof."
     }
   ],
   "cases": [
     {
       "case_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__false",
       "target_law_id": "LVMC-11-30-030",
-      "planning_status": "unverified_definition",
-      "target_type": "attempt",
+      "planning_status": "source_gated_selected_cpu_construction_pending",
+      "target_type": "selected_cpu_construction",
       "comparison_variable": "pass_stopped_vehicle_at_crosswalk",
       "comparison_unit": "bool",
       "requested_setting": false,
       "recorded_value": null,
-      "case_description": "leading vehicle stopped to let pedestrian cross marked crosswalk; ego approaches from rear on same one-way road",
+      "case_description": "marked crosswalk; stopped lead for pedestrian; rear ego hold request",
       "fixed_context": "Keep cell C146108, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. leading vehicle stopped to let pedestrian cross marked crosswalk; ego approaches from rear on same one-way road",
       "source_topic_ids": [
         "text-0",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": true,
+      "kind": "delivery",
+      "crosswalk_kind_requested": "marked",
+      "construction_path": "selected/false/construction.json"
     },
     {
       "case_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__true",
       "target_law_id": "LVMC-11-30-030",
-      "planning_status": "unverified_definition",
-      "target_type": "attempt",
+      "planning_status": "source_gated_selected_cpu_construction_pending",
+      "target_type": "selected_cpu_construction",
       "comparison_variable": "pass_stopped_vehicle_at_crosswalk",
       "comparison_unit": "bool",
       "requested_setting": true,
       "recorded_value": null,
-      "case_description": "leading vehicle stopped to let pedestrian cross marked crosswalk; ego approaches from rear on same one-way road",
+      "case_description": "marked crosswalk; stopped lead for pedestrian; rear ego pass request",
       "fixed_context": "Keep cell C146108, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. leading vehicle stopped to let pedestrian cross marked crosswalk; ego approaches from rear on same one-way road",
       "source_topic_ids": [
         "text-0",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": true,
+      "kind": "delivery",
+      "crosswalk_kind_requested": "marked",
+      "construction_path": "selected/true/construction.json"
+    },
+    {
+      "case_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_false",
+      "target_law_id": "LVMC-11-30-030",
+      "planning_status": "source_gated_selected_cpu_construction_pending",
+      "target_type": "selected_cpu_construction",
+      "comparison_variable": "pass_stopped_vehicle_at_crosswalk",
+      "comparison_unit": "bool",
+      "requested_setting": false,
+      "recorded_value": null,
+      "case_description": "unmarked intersection crosswalk; stopped lead for pedestrian; rear ego hold request",
+      "fixed_context": "Keep cell C146108, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. leading vehicle stopped to let pedestrian cross marked crosswalk; ego approaches from rear on same one-way road",
+      "source_topic_ids": [
+        "text-0",
+        "reviewed-scope-0"
+      ],
+      "selected": true,
+      "kind": "delivery",
+      "crosswalk_kind_requested": "unmarked_intersection",
+      "construction_path": "selected/unmarked_false/construction.json"
+    },
+    {
+      "case_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_true",
+      "target_law_id": "LVMC-11-30-030",
+      "planning_status": "source_gated_selected_cpu_construction_pending",
+      "target_type": "selected_cpu_construction",
+      "comparison_variable": "pass_stopped_vehicle_at_crosswalk",
+      "comparison_unit": "bool",
+      "requested_setting": true,
+      "recorded_value": null,
+      "case_description": "unmarked intersection crosswalk; stopped lead for pedestrian; rear ego pass request",
+      "fixed_context": "Keep cell C146108, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. leading vehicle stopped to let pedestrian cross marked crosswalk; ego approaches from rear on same one-way road",
+      "source_topic_ids": [
+        "text-0",
+        "reviewed-scope-0"
+      ],
+      "selected": true,
+      "kind": "delivery",
+      "crosswalk_kind_requested": "unmarked_intersection",
+      "construction_path": "selected/unmarked_true/construction.json"
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__comparison",
+      "comparison_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__marked_pass_contrast",
       "case_ids": [
         "training__C146108__LVMC-11-30-030__motor_vehicle_driver__false",
         "training__C146108__LVMC-11-30-030__motor_vehicle_driver__true"
       ],
       "deliberate_differences": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "ego pass policy"
       ],
       "fixed_conditions": [
-        "cell geometry",
-        "actor",
-        "applicable legal context",
-        "participants except comparison target",
-        "traffic controls",
-        "weather except explicitly separate weather branch",
-        "controller behavior except comparison variable",
-        "capture profile"
+        "frozen cell, actor, crosswalk kind, stopped lead, pedestrian, weather and cameras"
       ],
-      "status": "planned_unverified",
-      "measurement_method": "Measure crosswalk markings, pedestrian crossing, leading vehicle halt, ego overtaking trajectory."
+      "status": "selected_cpu_construction_pending"
+    },
+    {
+      "comparison_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_intersection_pass_contrast",
+      "case_ids": [
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_false",
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_true"
+      ],
+      "deliberate_differences": [
+        "ego pass policy"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, crosswalk kind, stopped lead, pedestrian, weather and cameras"
+      ],
+      "status": "selected_cpu_construction_pending"
+    },
+    {
+      "comparison_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__false_crosswalk_kind_contrast",
+      "case_ids": [
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__false",
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_false"
+      ],
+      "deliberate_differences": [
+        "marked versus unmarked intersection crossing"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, ego policy, stopped lead, pedestrian, weather and cameras"
+      ],
+      "status": "selected_cpu_construction_pending"
+    },
+    {
+      "comparison_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__true_crosswalk_kind_contrast",
+      "case_ids": [
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__true",
+        "training__C146108__LVMC-11-30-030__motor_vehicle_driver__unmarked_true"
+      ],
+      "deliberate_differences": [
+        "marked versus unmarked intersection crossing"
+      ],
+      "fixed_conditions": [
+        "frozen cell, actor, ego policy, stopped lead, pedestrian, weather and cameras"
+      ],
+      "status": "selected_cpu_construction_pending"
     }
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "drv.stopped",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "the vehicle stopped at the crosswalk"
     },
     {
-      "name": "pass_stopped_vehicle_at_crosswalk",
-      "unit": "bool",
+      "name": "st.crosswalk",
+      "unit": "structured",
       "mandatory": true,
-      "purpose": "Measure crosswalk markings, pedestrian crossing, leading vehicle halt, ego overtaking trajectory."
+      "purpose": "the marked or unmarked crosswalk at an intersection"
+    },
+    {
+      "name": "ru.pedestrian",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "the pedestrian being permitted to cross"
+    },
+    {
+      "name": "rel.occupies",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "the pedestrian in the crossing, and the stopped vehicle's position"
+    },
+    {
+      "name": "drv.overtaking",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "the prohibited pass"
+    },
+    {
+      "name": "rel.ahead_behind_in_lane",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "the subject approaching from the rear"
+    },
+    {
+      "name": "drv.approaching",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "the same"
+    },
+    {
+      "name": "rel.longitudinal_overlap",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "the abreast phase of the pass"
+    },
+    {
+      "name": "kin.velocity",
+      "unit": "structured",
+      "mandatory": true,
+      "purpose": "the stopped vehicle at rest, the subject moving"
     }
   ],
   "source_observation_mapping": {
     "drv.stopped": {
-      "evidence": "Proposed capture only: the vehicle stopped at the crosswalk. No Native channel or Core atom proof yet.",
+      "evidence": "Planned original Native body, crossing and four-view source channel; original activity/stop purpose and selected CPU proof pending.",
       "channels": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "drv.stopped"
       ],
       "source_refs": [
         "inputs/training__C146108__LVMC-11-30-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.crosswalk": {
-      "evidence": "Proposed capture only: the marked or unmarked crosswalk at an intersection. No Native channel or Core atom proof yet.",
+      "evidence": "Planned original Native body, crossing and four-view source channel; original activity/stop purpose and selected CPU proof pending.",
       "channels": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "st.crosswalk"
       ],
       "source_refs": [
         "inputs/training__C146108__LVMC-11-30-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "ru.pedestrian": {
-      "evidence": "Proposed capture only: the pedestrian being permitted to cross. No Native channel or Core atom proof yet.",
+      "evidence": "Planned original Native body, crossing and four-view source channel; original activity/stop purpose and selected CPU proof pending.",
       "channels": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "ru.pedestrian"
       ],
       "source_refs": [
         "inputs/training__C146108__LVMC-11-30-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: the pedestrian in the crossing, and the stopped vehicle's position. No Native channel or Core atom proof yet.",
+      "evidence": "Planned original Native body, crossing and four-view source channel; original activity/stop purpose and selected CPU proof pending.",
       "channels": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "rel.occupies"
       ],
       "source_refs": [
         "inputs/training__C146108__LVMC-11-30-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.overtaking": {
-      "evidence": "Proposed capture only: the prohibited pass. No Native channel or Core atom proof yet.",
+      "evidence": "Planned original Native body, crossing and four-view source channel; original activity/stop purpose and selected CPU proof pending.",
       "channels": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "drv.overtaking"
       ],
       "source_refs": [
         "inputs/training__C146108__LVMC-11-30-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.ahead_behind_in_lane": {
-      "evidence": "Proposed capture only: the subject approaching from the rear. No Native channel or Core atom proof yet.",
+      "evidence": "Planned original Native body, crossing and four-view source channel; original activity/stop purpose and selected CPU proof pending.",
       "channels": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "rel.ahead_behind_in_lane"
       ],
       "source_refs": [
         "inputs/training__C146108__LVMC-11-30-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.approaching": {
-      "evidence": "Proposed capture only: the same. No Native channel or Core atom proof yet.",
+      "evidence": "Planned original Native body, crossing and four-view source channel; original activity/stop purpose and selected CPU proof pending.",
       "channels": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "drv.approaching"
       ],
       "source_refs": [
         "inputs/training__C146108__LVMC-11-30-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.longitudinal_overlap": {
-      "evidence": "Proposed capture only: the abreast phase of the pass. No Native channel or Core atom proof yet.",
+      "evidence": "Planned original Native body, crossing and four-view source channel; original activity/stop purpose and selected CPU proof pending.",
       "channels": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "rel.longitudinal_overlap"
       ],
       "source_refs": [
         "inputs/training__C146108__LVMC-11-30-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.velocity": {
-      "evidence": "Proposed capture only: the stopped vehicle at rest, the subject moving. No Native channel or Core atom proof yet.",
+      "evidence": "Planned original Native body, crossing and four-view source channel; original activity/stop purpose and selected CPU proof pending.",
       "channels": [
-        "pass_stopped_vehicle_at_crosswalk"
+        "kin.velocity"
       ],
       "source_refs": [
         "inputs/training__C146108__LVMC-11-30-030__motor_vehicle_driver/assignment.json"
@@ -226,11 +363,8 @@
     }
   ],
   "runtime_uncertainties": [
-    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
-    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
-    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
-    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
-    "Unmarked intersection crosswalk is alternative context needing separate construction."
+    "Exact Native intersection and crossing construction, lead stop purpose, pedestrian crossing, pass and camera visibility remain to be proved.",
+    "Original physical and legal outcome unverified."
   ],
   "selection_targets": [
     "full-train"
@@ -246,9 +380,9 @@
     "rate_hz": 20,
     "cameras": [
       "overview",
-      "ego_front",
-      "crosswalk_side",
-      "lead_rear"
+      "approach",
+      "reference_corner",
+      "driver_reference"
     ],
     "observed_native": false,
     "selected_delivery": false
@@ -258,5 +392,32 @@
     "lead_stopped_for_pedestrian": "lead body/motion and source-backed stop purpose required",
     "pedestrian_crossing": "pedestrian body/motion across marked crossing",
     "rear_approach_and_pass": "same-direction lane topology, initial rear ordering, adjacent body overlap and ego ahead while pedestrian crosses"
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "road, crossing, lead and pedestrian",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "rear ego approach and lead relation",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "crossing geometry and pedestrian occupancy",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego motion and pass relation",
+        "interval": "all 600 frames"
+      }
+    ]
   }
 }

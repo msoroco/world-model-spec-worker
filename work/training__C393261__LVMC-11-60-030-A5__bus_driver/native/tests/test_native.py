@@ -2,9 +2,11 @@ import json
 import hashlib
 import tempfile
 import unittest
+from unittest.mock import patch
+from io import StringIO
 from pathlib import Path
 from geometry import check as geometry_check, open_drive
-from runner import check as runner_check, survey
+from runner import check as runner_check, survey, materialized_case, main as runner_main
 from measure import measure
 
 class FakeCarla:
@@ -35,6 +37,20 @@ class FakeWorld:
         return self.mapping
 
 class NativeDraft(unittest.TestCase):
+    def test_exact_runtime_capture_invocation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            case = 'training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02'
+            (root / 'config.json').write_text(json.dumps({'case_id': case, 'selected_case_id': case, 'case': {'case_id': case}}))
+            (root / 'candidate-selection.json').write_text(json.dumps({'case_id': case, 'candidate_id': 'primary'}))
+            self.assertEqual(materialized_case(root), case)
+            with patch('runner.execute', return_value={'captured': True}) as execute, patch('sys.stdout', new_callable=StringIO) as out:
+                runner_main(['--output-dir', str(root), '--host', '127.0.0.1', '--port', '2000'])
+            execute.assert_called_once_with(case, str(root), '127.0.0.1', 2000)
+            self.assertEqual(json.loads(out.getvalue()), {'captured': True})
+            (root / 'candidate-selection.json').write_text(json.dumps({'case_id': case + 'wrong', 'candidate_id': 'primary'}))
+            with self.assertRaisesRegex(ValueError, 'exact case identity'):
+                materialized_case(root)
     def test_geometry_and_survey(self):
         self.assertFalse(geometry_check()['sign_declares_duration'])
         self.assertEqual(len(survey(FakeWorld(), FakeCarla)['parking_lane_samples']), 4)

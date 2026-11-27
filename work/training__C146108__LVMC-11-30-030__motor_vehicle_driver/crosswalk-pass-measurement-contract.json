@@ -1,14 +1,38 @@
 {
   "format": "worker-diagnostic-measurement-contract",
   "law_source": "LVMC 11.30.030",
-  "scope": "C146108 marked crosswalk, lead stopped for crossing pedestrian, ego approaching from rear",
+  "scope": "C146108 marked crosswalk or unmarked crossing at an intersection, lead stopped for crossing pedestrian, ego approaching from rear",
   "rate_hz": 20,
   "duration_s": 30,
   "frames": 600,
-  "source_cameras": ["overview", "ego_front", "crosswalk_side", "lead_rear"],
-  "required_source_hashes": ["native_map", "crosswalk_marking", "lane_directions", "ego_body", "lead_body", "ego_motion", "lead_motion", "pedestrian_body_motion", "camera_manifest"],
-  "measurements": ["rear approach", "lead halt", "pedestrian crossing", "adjacent longitudinal overlap", "ego ahead of lead while pedestrian crosses"],
+  "source_cameras": [
+    "overview",
+    "driver_reference",
+    "reference_corner",
+    "approach"
+  ],
+  "required_source_hashes": [
+    "native_map",
+    "crosswalk_reference",
+    "lane_directions",
+    "ego_body",
+    "lead_body",
+    "ego_motion",
+    "lead_motion",
+    "pedestrian_body_motion",
+    "camera_manifest"
+  ],
+  "measurements": [
+    "rear approach",
+    "lead halt",
+    "pedestrian crossing",
+    "adjacent longitudinal overlap",
+    "ego ahead of lead while pedestrian crosses"
+  ],
   "legal_compliance": "unassessed",
-  "unselected_alternative": "unmarked crosswalk at an intersection",
-  "limitations": "Source-shaped synthetic diagnostic only; stop purpose and actual pedestrian crossing require original evidence. No exact runtime offline/compatibility or saved-processing proof."
+  "limitations": "Source-shaped synthetic diagnostic only; unmarked intersection geometry, stop purpose and actual pedestrian crossing require original evidence. No exact runtime offline/compatibility or saved-processing proof yet.",
+  "crosswalk_alternatives": [
+    "marked",
+    "unmarked_intersection"
+  ]
 }

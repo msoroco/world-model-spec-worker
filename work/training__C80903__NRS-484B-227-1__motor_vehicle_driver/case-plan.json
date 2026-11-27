@@ -1,157 +1,196 @@
 {
-  "assignment_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver",
-  "law_id": "NRS-484B-227-1",
-  "cell_id": "C80903",
   "actor": "motor_vehicle_driver",
-  "frozen_cell": {
-    "layout": "divided_road",
-    "maneuver": "left_turn",
-    "control": "median_barrier"
+  "assignment_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver",
+  "blockers": [],
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 30 s",
+        "subject": "both divided roadways, median and crossing",
+        "view": "overview"
+      },
+      {
+        "interval": "full 30 s",
+        "subject": "approach direction and initial roadway occupancy",
+        "view": "approach"
+      },
+      {
+        "interval": "full 30 s",
+        "subject": "full vehicle footprint against opening, divider and crossover station",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full 30 s",
+        "subject": "driver-relative turn path and road context",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
   },
-  "selection_targets": [
-    "demo-train",
-    "full-train"
-  ],
-  "source_law": {
-    "source": "NRS 484B.227(1)",
-    "text": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority.",
-    "sha256": "a889ac764558ff36659cf2fae05abc3cb32db30302b6b84a37851ec361bf526b"
-  },
-  "summary_status": "recovered_requires_source_review",
-  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
-  "witness_branches": [
-    "Attempted left turn over, within and across a traversable dividing section adjoining the retained median barrier."
-  ],
-  "requirement_dispositions": [
-    {
-      "requirement": "NRS-484B-227-1",
-      "source": "NRS 484B.227(1)",
-      "branch": "Attempted left turn over, within and across a traversable dividing section adjoining the retained median barrier.",
-      "status": "selected_required",
-      "case_ids": [
-        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__probe_1",
-        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__probe_2"
-      ],
-      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-    },
-    {
-      "requirement": "NRS-484B-227-1",
-      "source": "NRS 484B.227(1)",
-      "branch": "right-hand-roadway duty",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
-    },
-    {
-      "requirement": "NRS-484B-227-1",
-      "source": "NRS 484B.227(1)",
-      "branch": "established crossover or intersection",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
-    },
-    {
-      "requirement": "NRS-484B-227-1",
-      "source": "NRS 484B.227(1)",
-      "branch": "semicircular/U-turn alternatives",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
-    }
-  ],
-  "neutral_baseline": {
-    "kind": "unselected_baseline",
-    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording."
-  },
+  "candidate_plans": [],
   "cases": [
     {
-      "case_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__probe_1",
-      "target_law_id": "NRS-484B-227-1",
-      "kind": "planned_only",
-      "target_type": "below",
-      "physical_target": "left turn through physically established median opening",
-      "comparison_variable": "median_crossing_location",
-      "source_branch": "Attempted left turn over, within and across a traversable dividing section adjoining the retained median barrier.",
+      "case_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__opening_left",
+      "construction": "native/construction.json",
+      "crossing_mode": "physical_opening",
+      "initial_roadway": "right_hand",
+      "kind": "delivery",
+      "physical_target": "source-surveyed divided-roadway left_turn at physical_opening; original physical outcome unverified",
+      "requested_crossing_station_m": 5.0,
       "requested_not_measured": true,
       "selection_targets": [
         "demo-train",
         "full-train"
-      ]
+      ],
+      "source_branch": null,
+      "target_law_id": "NRS-484B-227-1",
+      "turn_mode": "left_turn"
     },
     {
-      "case_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__probe_2",
-      "target_law_id": "NRS-484B-227-1",
-      "kind": "planned_only",
-      "target_type": "controlled_attempt",
-      "physical_target": "left turn across continuous dividing section beside opening",
-      "comparison_variable": "median_crossing_location",
-      "source_branch": "Attempted left turn over, within and across a traversable dividing section adjoining the retained median barrier.",
+      "case_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__section_left",
+      "construction": "native/cases/section_left/construction.json",
+      "crossing_mode": "continuous_section",
+      "initial_roadway": "right_hand",
+      "kind": "delivery",
+      "physical_target": "source-surveyed divided-roadway left_turn at continuous_section; original physical outcome unverified",
+      "requested_crossing_station_m": 18.0,
       "requested_not_measured": true,
       "selection_targets": [
         "demo-train",
         "full-train"
-      ]
+      ],
+      "source_branch": null,
+      "target_law_id": "NRS-484B-227-1",
+      "turn_mode": "left_turn"
+    },
+    {
+      "case_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__crossover_established",
+      "construction": "native/cases/crossover_established/construction.json",
+      "crossing_mode": "authority_crossover",
+      "initial_roadway": "right_hand",
+      "kind": "delivery",
+      "physical_target": "source-surveyed divided-roadway left_turn at authority_crossover; original physical outcome unverified",
+      "requested_crossing_station_m": 18.0,
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": null,
+      "target_law_id": "NRS-484B-227-1",
+      "turn_mode": "left_turn"
+    },
+    {
+      "case_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__crossover_unestablished",
+      "construction": "native/cases/crossover_unestablished/construction.json",
+      "crossing_mode": "continuous_section",
+      "initial_roadway": "right_hand",
+      "kind": "delivery",
+      "physical_target": "source-surveyed divided-roadway left_turn at continuous_section; original physical outcome unverified",
+      "requested_crossing_station_m": 18.0,
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": null,
+      "target_law_id": "NRS-484B-227-1",
+      "turn_mode": "left_turn"
+    },
+    {
+      "case_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__roadway_right",
+      "construction": "native/cases/roadway_right/construction.json",
+      "crossing_mode": "physical_opening",
+      "initial_roadway": "right_hand",
+      "kind": "delivery",
+      "physical_target": "source-surveyed divided-roadway left_turn at physical_opening; original physical outcome unverified",
+      "requested_crossing_station_m": 5.0,
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": null,
+      "target_law_id": "NRS-484B-227-1",
+      "turn_mode": "left_turn"
+    },
+    {
+      "case_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__roadway_opposite",
+      "construction": "native/cases/roadway_opposite/construction.json",
+      "crossing_mode": "physical_opening",
+      "initial_roadway": "opposite",
+      "kind": "delivery",
+      "physical_target": "source-surveyed divided-roadway left_turn at physical_opening; original physical outcome unverified",
+      "requested_crossing_station_m": 5.0,
+      "requested_not_measured": true,
+      "selection_targets": [
+        "demo-train",
+        "full-train"
+      ],
+      "source_branch": null,
+      "target_law_id": "NRS-484B-227-1",
+      "turn_mode": "left_turn"
     }
   ],
+  "cell_id": "C80903",
   "comparisons": [
     {
-      "comparison_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__comparison",
       "case_ids": [
-        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__probe_1",
-        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__probe_2"
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__opening_left",
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__section_left"
       ],
+      "comparison_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__opening_vs_section",
       "deliberate_differences": [
-        "median_crossing_location"
+        "left-turn median crossing station: physical opening versus adjoining continuous dividing section"
       ],
       "fixed_conditions": [
-        "frozen cell, actor and physical road context",
-        "other participants, controller policy and camera policy except law-relevant target"
+        "same frozen C80903 actor and two-roadway/divider source geometry",
+        "same Native four-view 20 Hz 30-second capture policy",
+        "same vehicle extent and source survey except declared comparison fact"
+      ]
+    },
+    {
+      "case_ids": [
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__crossover_established",
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__crossover_unestablished"
+      ],
+      "comparison_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__crossover_authority",
+      "deliberate_differences": [
+        "original public-authority establishment at the same physical crossover station"
+      ],
+      "fixed_conditions": [
+        "same frozen C80903 actor and two-roadway/divider source geometry",
+        "same Native four-view 20 Hz 30-second capture policy",
+        "same vehicle extent and source survey except declared comparison fact"
+      ]
+    },
+    {
+      "case_ids": [
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__roadway_right",
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__roadway_opposite"
+      ],
+      "comparison_id": "training__C80903__NRS-484B-227-1__motor_vehicle_driver__roadway_duty",
+      "deliberate_differences": [
+        "original roadway-direction occupancy during approach before same left turn"
+      ],
+      "fixed_conditions": [
+        "same frozen C80903 actor and two-roadway/divider source geometry",
+        "same Native four-view 20 Hz 30-second capture policy",
+        "same vehicle extent and source survey except declared comparison fact"
       ]
     }
   ],
-  "mandatory_observation_terms": [
-    {
-      "term": "st.median_or_divider",
-      "purpose": "the dividing space, barrier or section, with its opening attribute",
-      "status": "source_contract_mapped_not_native_measured"
-    },
-    {
-      "term": "st.roadway",
-      "purpose": "the two separate roadways of the divided highway",
-      "status": "source_contract_mapped_not_native_measured"
-    },
-    {
-      "term": "rel.occupies",
-      "purpose": "which roadway the footprint is on, and any overlap of the dividing space",
-      "status": "source_contract_mapped_not_native_measured"
-    },
-    {
-      "term": "st.lane_direction",
-      "purpose": "the right-hand roadway for the subject's direction",
-      "status": "source_contract_mapped_not_native_measured"
-    },
-    {
-      "term": "drv.turning",
-      "purpose": "a left or semicircular turn",
-      "status": "source_contract_mapped_not_native_measured"
-    },
-    {
-      "term": "drv.u_turn",
-      "purpose": "a U-turn",
-      "status": "source_contract_mapped_not_native_measured"
-    },
-    {
-      "term": "st.intersection",
-      "purpose": "an established crossover or intersection",
-      "status": "source_contract_mapped_not_native_measured"
-    },
-    {
-      "term": "drv.wrong_way",
-      "purpose": "driving on the roadway of the opposite direction",
-      "status": "source_contract_mapped_not_native_measured"
-    }
-  ],
-  "candidate_plans": [],
+  "cpu_construction": {
+    "authored_scene_module": "median_turn_scene.py",
+    "authored_scene_proof": "median-scene-proof.json",
+    "measurement_contract": "median-turn-measurement-contract.json",
+    "measurement_module": "measure_median_turn.py",
+    "measurement_proof": "median-turn-proof.json",
+    "original_native_observed": false,
+    "selected_case_execution_status": "planned_only"
+  },
   "existing_evidence": [
     {
       "recording_id": "4fec4346955edc8cd20ab1524b0b4c41631889fd71b686faebcdbdcb4148b029",
@@ -162,86 +201,255 @@
       "status": "accepted_membership_only_no_equivalence_receipt"
     }
   ],
+  "frozen_cell": {
+    "control": "median_barrier",
+    "layout": "divided_road",
+    "maneuver": "left_turn"
+  },
+  "law_id": "NRS-484B-227-1",
+  "mandatory_observation_terms": [
+    {
+      "purpose": "the dividing space, barrier or section, with its opening attribute",
+      "status": "source_contract_mapped_not_native_measured",
+      "term": "st.median_or_divider"
+    },
+    {
+      "purpose": "the two separate roadways of the divided highway",
+      "status": "source_contract_mapped_not_native_measured",
+      "term": "st.roadway"
+    },
+    {
+      "purpose": "which roadway the footprint is on, and any overlap of the dividing space",
+      "status": "source_contract_mapped_not_native_measured",
+      "term": "rel.occupies"
+    },
+    {
+      "purpose": "the right-hand roadway for the subject's direction",
+      "status": "source_contract_mapped_not_native_measured",
+      "term": "st.lane_direction"
+    },
+    {
+      "purpose": "a left or semicircular turn",
+      "status": "source_contract_mapped_not_native_measured",
+      "term": "drv.turning"
+    },
+    {
+      "purpose": "a U-turn",
+      "status": "source_contract_mapped_not_native_measured",
+      "term": "drv.u_turn"
+    },
+    {
+      "purpose": "an established crossover or intersection",
+      "status": "source_contract_mapped_not_native_measured",
+      "term": "st.intersection"
+    },
+    {
+      "purpose": "driving on the roadway of the opposite direction",
+      "status": "source_contract_mapped_not_native_measured",
+      "term": "drv.wrong_way"
+    }
+  ],
+  "neutral_baseline": {
+    "description": "Frozen cell and actor with target rule inactive or neutral; retained only as a proposal, not a selected recording.",
+    "kind": "unselected_baseline"
+  },
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "st.median_or_divider",
+      "reason": "the dividing space, barrier or section, with its opening attribute"
+    },
+    {
+      "mandatory": true,
+      "name": "st.roadway",
+      "reason": "the two separate roadways of the divided highway"
+    },
+    {
+      "mandatory": true,
+      "name": "rel.occupies",
+      "reason": "which roadway the footprint is on, and any overlap of the dividing space"
+    },
+    {
+      "mandatory": true,
+      "name": "st.lane_direction",
+      "reason": "the right-hand roadway for the subject's direction"
+    },
+    {
+      "mandatory": true,
+      "name": "drv.turning",
+      "reason": "a left or semicircular turn"
+    },
+    {
+      "mandatory": true,
+      "name": "drv.u_turn",
+      "reason": "a U-turn"
+    },
+    {
+      "mandatory": true,
+      "name": "st.intersection",
+      "reason": "an established crossover or intersection"
+    },
+    {
+      "mandatory": true,
+      "name": "drv.wrong_way",
+      "reason": "driving on the roadway of the opposite direction"
+    }
+  ],
+  "requirement_dispositions": [
+    {
+      "branch": "opening left-turn exception",
+      "case_ids": [
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__opening_left",
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__section_left"
+      ],
+      "evidence_or_gap": "Exact source-gated Native construction and independent physical/source review pending; no accepted recording has demonstrated equivalence",
+      "requirement": "NRS-484B-227-1",
+      "source": "NRS 484B.227(1)",
+      "status": "selected_required"
+    },
+    {
+      "branch": "public-authority crossover or intersection",
+      "case_ids": [
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__crossover_established",
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__crossover_unestablished"
+      ],
+      "evidence_or_gap": "Exact source-gated Native construction and independent physical/source review pending; no accepted recording has demonstrated equivalence",
+      "requirement": "NRS-484B-227-1",
+      "source": "NRS 484B.227(1)",
+      "status": "selected_required"
+    },
+    {
+      "branch": "continuous right-hand-roadway duty",
+      "case_ids": [
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__roadway_right",
+        "training__C80903__NRS-484B-227-1__motor_vehicle_driver__roadway_opposite"
+      ],
+      "evidence_or_gap": "Exact source-gated Native construction and independent physical/source review pending; no accepted recording has demonstrated equivalence",
+      "requirement": "NRS-484B-227-1",
+      "source": "NRS 484B.227(1)",
+      "status": "selected_required"
+    },
+    {
+      "branch": "semicircular turn",
+      "case_ids": [],
+      "evidence_or_gap": "Frozen C80903 maneuver is left_turn; this distinct turn mode is not a selected C80903 construction. C82860 is an allocated u_turn cell; no equivalent semicircular allocation or original source proof is established here.",
+      "requirement": "NRS-484B-227-1",
+      "source": "NRS 484B.227(1)",
+      "status": "alternative_pending"
+    },
+    {
+      "branch": "U-turn",
+      "case_ids": [],
+      "evidence_or_gap": "Frozen C80903 maneuver is left_turn; this distinct turn mode is not a selected C80903 construction. C82860 is an allocated u_turn cell; no equivalent semicircular allocation or original source proof is established here.",
+      "requirement": "NRS-484B-227-1",
+      "source": "NRS 484B.227(1)",
+      "status": "alternative_pending"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Original physical opening and public-authority establishment are distinct source facts",
+    "Native turn trajectory and barrier collision require GPU physical verification",
+    "Four-camera decisive pixels require local review",
+    "Accepted membership IDs provide no source-hashed equivalent recording"
+  ],
+  "selected_branch": null,
+  "selection_targets": [
+    "demo-train",
+    "full-train"
+  ],
+  "source_law": {
+    "sha256": "a889ac764558ff36659cf2fae05abc3cb32db30302b6b84a37851ec361bf526b",
+    "source": "NRS 484B.227(1)",
+    "text": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority."
+  },
+  "source_observation_mapping": {
+    "drv.turning": {
+      "channels": [
+        "drv.turning"
+      ],
+      "evidence": "sampled heading and turn-path state",
+      "source_refs": [
+        "inputs/training__C80903__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.u_turn": {
+      "channels": [
+        "drv.u_turn"
+      ],
+      "evidence": "sampled heading reversal and turn-path state",
+      "source_refs": [
+        "inputs/training__C80903__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.wrong_way": {
+      "channels": [
+        "drv.wrong_way"
+      ],
+      "evidence": "per-frame occupancy on roadway opposed to sourced direction",
+      "source_refs": [
+        "inputs/training__C80903__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "channels": [
+        "rel.occupies"
+      ],
+      "evidence": "sampled full vehicle footprint and roadway/median overlap",
+      "source_refs": [
+        "inputs/training__C80903__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.intersection": {
+      "channels": [
+        "st.intersection"
+      ],
+      "evidence": "original physical crossover/intersection survey and separate authority document; unknown until sourced",
+      "source_refs": [
+        "inputs/training__C80903__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_direction": {
+      "channels": [
+        "st.lane_direction"
+      ],
+      "evidence": "original roadway direction survey joined to ego heading",
+      "source_refs": [
+        "inputs/training__C80903__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.median_or_divider": {
+      "channels": [
+        "st.median_or_divider"
+      ],
+      "evidence": "original surveyed median bounds, barrier and physical opening readback",
+      "source_refs": [
+        "inputs/training__C80903__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.roadway": {
+      "channels": [
+        "st.roadway"
+      ],
+      "evidence": "original surveyed two directional roadways",
+      "source_refs": [
+        "inputs/training__C80903__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
   "sources": [
     {
       "path": "inputs/training__C80903__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
       "sha256": "518162277e74f562e7bb81109e161fe14b55bff9048b320111d04be86eb5aa1c"
     }
   ],
+  "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
+  "summary_status": "recovered_requires_source_review",
   "unverified_physical_assumptions": [
     "Native map can realize the fixed cell and legal mechanism",
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction"
   ],
-  "blockers": [
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ],
-  "selected_branch": null,
-  "observations": [
-    {
-      "name": "st.median_or_divider",
-      "mandatory": true,
-      "reason": "the dividing space, barrier or section, with its opening attribute"
-    },
-    {
-      "name": "st.roadway",
-      "mandatory": true,
-      "reason": "the two separate roadways of the divided highway"
-    },
-    {
-      "name": "rel.occupies",
-      "mandatory": true,
-      "reason": "which roadway the footprint is on, and any overlap of the dividing space"
-    },
-    {
-      "name": "st.lane_direction",
-      "mandatory": true,
-      "reason": "the right-hand roadway for the subject's direction"
-    },
-    {
-      "name": "drv.turning",
-      "mandatory": true,
-      "reason": "a left or semicircular turn"
-    },
-    {
-      "name": "drv.u_turn",
-      "mandatory": true,
-      "reason": "a U-turn"
-    },
-    {
-      "name": "st.intersection",
-      "mandatory": true,
-      "reason": "an established crossover or intersection"
-    },
-    {
-      "name": "drv.wrong_way",
-      "mandatory": true,
-      "reason": "driving on the roadway of the opposite direction"
-    }
-  ],
-  "runtime_uncertainties": [
-    "Native map can realize the fixed cell and legal mechanism",
-    "Actor blueprint and route can realize each requested target",
-    "Cameras can inspect the decisive physical distinction",
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ],
-  "source_observation_mapping": {
-    "st.median_or_divider": "source-hashed median bounds, barrier segments and public-authority opening",
-    "st.roadway": "source-hashed two directional roadways",
-    "rel.occupies": "ego extent overlap with median per Native frame",
-    "st.lane_direction": "source-hashed roadway directions for right-hand travel",
-    "drv.turning": "observed left-turn state coincident with median overlap",
-    "drv.u_turn": "observed U-turn state per frame; separately audited alternative",
-    "st.intersection": "source-hashed public-authority opening/crossover geometry",
-    "drv.wrong_way": "observed roadway-direction occupancy per frame"
-  },
-  "cpu_construction": {
-    "measurement_module": "measure_median_turn.py",
-    "measurement_proof": "median-turn-proof.json",
-    "authored_scene_module": "median_turn_scene.py",
-    "authored_scene_proof": "median-scene-proof.json",
-    "measurement_contract": "median-turn-measurement-contract.json",
-    "original_native_observed": false,
-    "selected_case_execution_status": "planned_only"
-  }
+  "witness_branches": [
+    "Attempted left turn over, within and across a traversable dividing section adjoining the retained median barrier."
+  ]
 }

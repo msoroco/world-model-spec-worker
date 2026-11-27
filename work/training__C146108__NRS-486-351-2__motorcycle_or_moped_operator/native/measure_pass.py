@@ -8,7 +8,7 @@ from pathlib import Path
 FRAMES = 600
 RATE_HZ = 20
 LANE_Y = (-6.0, 0.0)
-CAMERAS = ('overview', 'approach', 'passing_side', 'clear_ahead')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):
@@ -87,7 +87,7 @@ def measure(attempt):
             'minimum_lateral_surface_gap_during_overlap_m': min_lateral_gap,
             'source_sha256': {name: sha(path) for name, path in paths.items()},
             'camera_video_sha256': {name: sha(attempt / (name + '.mkv')) for name in CAMERAS},
-            'subsection_3_exception_status': 'unresolved_source_text',
+            'subsection_3_exception_status': 'inapplicable_to_motorcycle_and_car_pair',
             'driver_consent_status': 'unobserved', 'legal_verdict_claimed': False,
             'physical_acceptance_claimed': False}
 

@@ -1,18 +1,28 @@
 """Proposed original Native motorcycle same-lane pass capture; CPU --check never imports CARLA."""
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
 import queue
 import subprocess
+import sys
 
 from geometry import check as geometry_check, open_drive
 
 FRAMES = 600
 CAMERAS = (('overview', 1920, 1080, -10, -19, 22),
            ('approach', 1280, 720, -42, -11, 5),
-           ('passing_side', 1280, 720, -5, -11, 5),
-           ('clear_ahead', 1280, 720, 35, -11, 5))
+           ('reference_corner', 1280, 720, -5, -11, 5),
+           ('driver_reference', 1280, 720, 35, -11, 5))
+
+
+def sha_file(path):
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def check():
@@ -41,10 +51,23 @@ def actor_row(actor):
 
 
 def execute(output, host, port):
+    repo = next((path for path in Path(__file__).resolve().parents if
+                 (path / 'batch.json').is_file()), None)
+    if repo is None:
+        raise RuntimeError('Worker runtime root unavailable')
+    sys.path.insert(0, str(repo / 'runtime/scenario_pipeline'))
+    sys.path.insert(1, str(repo / 'runtime/python'))
     import carla
+    from pipeline_capture import PipelineCapture
+    from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
     check()
     output = Path(output).resolve()
+    config = json.loads((Path(__file__).resolve().parent / 'config.json').read_text())
+    case_id = config['selected_case_id']
+    if case_id not in config['supported_case_ids']:
+        raise ValueError('Materialized selected case differs from supported case')
+    following = case_id.endswith('__controlled_1')
     if output.exists():
         raise ValueError('Use a fresh original Native attempt directory')
     output.mkdir(parents=True)
@@ -105,11 +128,13 @@ def execute(output, host, port):
                 '-i', '-', '-frames:v', str(FRAMES), '-c:v', 'ffv1', '-level', '1', str(video)],
                 stdin=subprocess.PIPE, stderr=subprocess.PIPE)
             encoders[name] = process
-        frame_map = output / 'video_frames.jsonl'
         poses = output / 'participant-poses.jsonl'
-        with frame_map.open('x') as map_stream, poses.open('x') as pose_stream:
+        with PipelineCapture(client, motorcycle, output, case_id,
+                             required_observations=[]) as capture, \
+                FrameMap(output / 'video_frames.jsonl') as frame_map, \
+                poses.open('x') as pose_stream:
             for index in range(FRAMES):
-                motorcycle.set_target_velocity(carla.Vector3D(x=5, y=0, z=0))
+                motorcycle.set_target_velocity(carla.Vector3D(x=3 if following else 5, y=0, z=0))
                 motor.set_target_velocity(carla.Vector3D(x=3, y=0, z=0))
                 native_frame = world.tick()
                 original_motorcycle = actor_row(motorcycle)
@@ -122,7 +147,9 @@ def execute(output, host, port):
                     'rider_speed_mps': original_motorcycle['speed_mps'],
                     'motor_speed_mps': original_motor['speed_mps'],
                     'rider_actor_id': original_motorcycle['actor_id'],
-                    'motor_actor_id': original_motor['actor_id']}) + '\n')
+                    'motor_actor_id': original_motor['actor_id'],
+                    'rider_blueprint_id': original_motorcycle['blueprint_id'],
+                    'motor_blueprint_id': original_motor['blueprint_id']}) + '\n')
                 mapped = {'video_frame': index, 'native_frame': native_frame, 'time_s': index / 20,
                           'camera_native_frames': {}}
                 for name, _, _, _, _, _ in CAMERAS:
@@ -133,7 +160,11 @@ def execute(output, host, port):
                         raise RuntimeError('Original camera frame join differs')
                     encoders[name].stdin.write(received.raw_data)
                     mapped['camera_native_frames'][name] = received.frame
-                map_stream.write(json.dumps(mapped) + '\n')
+                frame_map.append(native_frame, index / 20,
+                                 camera_native_frames=mapped['camera_native_frames'])
+                capture.capture(native_frame, index / 20,
+                                extra={'video_frame': index,
+                                       'other_actor_id': motor.id})
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
@@ -144,10 +175,23 @@ def execute(output, host, port):
         motor_extent = motor.bounding_box.extent
         (output / 'pass-context.json').write_text(json.dumps({
             'rider_class': 'motorcycle', 'passed_class': 'motor_vehicle',
+            'observed_action': 'source_review_pending',
+            'classification_source': {'path': 'participant-poses.jsonl',
+                                      'sha256': sha_file(poses)},
             'rider_dimensions_m': [2 * rider_extent.x, 2 * rider_extent.y],
             'motor_dimensions_m': [2 * motor_extent.x, 2 * motor_extent.y],
             'motor_occupant_count': None, 'occupant_count_source': 'not needed for the passing prohibition',
             'native_classification_review_pending': True, 'driver_consent_review_pending': True, 'subsection_3_text_review_pending': True}) + '\n')
+        source_names = ('road.xodr', 'pass-context.json', 'participant-poses.jsonl',
+                        'video_frames.jsonl', 'trace.jsonl', 'capture/manifest.json',
+                        *(name + '.mkv' for name in camera_queues))
+        (output / 'pass-review.json').write_text(json.dumps({
+            'assignment_id': case_id.rsplit('__', 1)[0], 'case_id': case_id,
+            'review_kind': 'original_native_source',
+            'source_sha256': {name: sha_file(output / name) for name in source_names},
+            'physical_acceptance_claimed': False,
+            'driver_consent_verified': False,
+        }, indent=2) + '\n')
         return {'frames': FRAMES, 'camera_names': list(camera_queues),
                 'physical_acceptance_claimed': False}
     finally:
@@ -173,8 +217,6 @@ if __name__ == '__main__':
     parser.add_argument('--host')
     parser.add_argument('--port', type=int)
     args = parser.parse_args()
-    if args.check == args.execute:
-        raise SystemExit('Choose exactly one of --check or --execute')
     if args.check:
         print(json.dumps(check()))
     else:

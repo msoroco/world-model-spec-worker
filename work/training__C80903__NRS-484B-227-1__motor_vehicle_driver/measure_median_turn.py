@@ -4,7 +4,7 @@ import math
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "median_side", "crossover_side"}
+CAMERAS = {"overview", "approach", "reference", "driver"}
 
 
 def finite(value, name):
@@ -107,6 +107,6 @@ def measure(context, rows):
             "observed_semicircular_turn": bool(semicircular_turn_frames),
             "observed_u_turn": bool(u_turn_frames),
             "legal_compliance": "unassessed",
-            "limitations": ["A centre station inside an opening does not prove the full vehicle footprint cleared the barrier.",
-                            "Public-authority establishment and median geometry require original source and independent review.",
-                            "The right-hand roadway duty, crossover and U-turn alternatives need separate audit."]}
+            "limitations": ["Sourced footprint extent and position do not establish physical traversability or video visibility.",
+                            "A physical opening and a public-authority crossover are separate statutory permissions.",
+                            "Original road geometry, source authority, continuous roadway duty and turn classification need independent review."]}

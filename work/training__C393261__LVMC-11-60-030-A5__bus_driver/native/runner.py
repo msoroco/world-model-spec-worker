@@ -34,6 +34,17 @@ def check():
         raise ValueError('dwell comparison changed')
     return {'passed': True, 'frames': FRAMES, 'rate_hz': RATE, 'cameras': [c[0] for c in CAMERAS], 'geometry': geo, 'native_imported': False, 'physical_acceptance_claimed': False}
 
+def materialized_case(output_dir):
+    output = Path(output_dir).resolve()
+    config = json.loads((output / 'config.json').read_text())
+    selection = json.loads((output / 'candidate-selection.json').read_text())
+    case_id = config.get('selected_case_id')
+    if (case_id != config.get('case_id') or case_id != config.get('case', {}).get('case_id')
+            or case_id != selection.get('case_id') or selection.get('candidate_id') != 'primary'
+            or case_id.rsplit('__', 1)[-1] not in DWELL_TARGET_S):
+        raise ValueError('materialized exact case identity differs')
+    return case_id
+
 def survey(world, carla):
     mapping = world.get_map()
     root = ET.fromstring(mapping.to_opendrive())
@@ -70,8 +81,8 @@ def execute(case_id, output_dir, host, port):
     if suffix not in DWELL_TARGET_S:
         raise ValueError('unknown exact case')
     output = Path(output_dir).resolve()
-    if output.exists():
-        raise ValueError('choose a fresh original Native attempt directory')
+    if not output.is_dir() or materialized_case(output) != case_id:
+        raise ValueError('Native capture requires the exact materialized attempt')
     client = carla.Client(host, port)
     client.set_timeout(180)
     saved = snapshot(client)
@@ -99,7 +110,8 @@ def execute(case_id, output_dir, host, port):
                    'endpoint_id': 'native_road_1_parking_-2_terminus',
                    'native_survey': seen, 'covered_non_tour_bus_claim': 'vehicle.mitsubishi.fusorosa',
                    'operator_id': 'authored-bus-controller',
-                   'designation_authority_source': None, 'designated_period_s': None,
+                   'designation_authority_source': {'status': 'unverified', 'source': None},
+                   'designated_period_s': None,
                    'designation_verified': False, 'actual_loading_activity_verified': False,
                    'physical_sign_pixels_verified': False}
         (output / 'terminus-context.json').write_text(json.dumps(context, indent=2) + '\n')
@@ -200,17 +212,21 @@ def execute(case_id, output_dir, host, port):
         if changed:
             restore(client, saved)
 
-if __name__ == '__main__':
+def main(argv=None):
     p = argparse.ArgumentParser()
     p.add_argument('--check', action='store_true')
-    p.add_argument('--execute', action='store_true')
-    p.add_argument('--case-id')
     p.add_argument('--output-dir')
     p.add_argument('--host', default='127.0.0.1')
     p.add_argument('--port', type=int, default=2000)
-    a = p.parse_args()
-    if a.check == a.execute:
-        raise SystemExit('choose --check or --execute')
-    if a.execute and (not a.case_id or not a.output_dir):
-        raise SystemExit('--case-id and --output-dir required')
-    print(json.dumps(check() if a.check else execute(a.case_id, a.output_dir, a.host, a.port)))
+    a = p.parse_args(argv)
+    if a.check:
+        if a.output_dir:
+            raise SystemExit('--check cannot capture')
+        print(json.dumps(check()))
+    else:
+        if not a.output_dir:
+            raise SystemExit('--output-dir required')
+        print(json.dumps(execute(materialized_case(a.output_dir), a.output_dir, a.host, a.port)))
+
+if __name__ == '__main__':
+    main()

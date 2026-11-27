@@ -27,7 +27,7 @@ def main():
                SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH), TMPDIR=str(SCRATCH))
     for index, entry in enumerate(manifest['cases'], 1):
         suffix = f'probe_0{index}'
-        attempt = SCRATCH / f'fixture-0{index}'
+        attempt = SCRATCH / f'fixture-v2-0{index}'
         construction = json.loads((ROOT / entry['construction']).read_text())
         config_text = next(file['content'] for file in construction['files']
                            if file['path'] == 'config.json')

@@ -19,7 +19,7 @@ def main():
     saved.mkdir(exist_ok=True)
     for entry in manifest['cases']:
         slug = entry['case_id'].rsplit('__', 1)[-1]
-        version = REPO / '.runtime-work' / ('c386328-saved-' + slug.replace('_', '') + '-v1') / 'v0001'
+        version = REPO / '.runtime-work' / ('c386328-saved-' + slug.replace('_', '') + '-v2') / 'v0001'
         receipt = json.loads((version / 'processing.json').read_text())
         if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True or
                 receipt.get('originals_preserved') is not True or
