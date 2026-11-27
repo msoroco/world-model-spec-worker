@@ -19,7 +19,16 @@ PAIRS = {
                                     "driver_check_observed_before_departure"),
     "check-prerequisite-control": ("both_observed", "check_missing",
                                    "driver_check_observed_before_departure",
-                                   "signal_precedes_center_departure")}
+                                   "signal_precedes_center_departure"),
+    "accepted-source-1-signal-control": ("accepted_source_1", "signal_missing",
+                                         "signal_precedes_center_departure",
+                                         "driver_check_observed_before_departure"),
+    "accepted-source-2-check-control": ("accepted_source_2", "check_missing",
+                                        "driver_check_observed_before_departure",
+                                        "signal_precedes_center_departure"),
+    "accepted-source-3-signal-control": ("accepted_source_3", "signal_missing",
+                                         "signal_precedes_center_departure",
+                                         "driver_check_observed_before_departure")}
 FIXED = ("reviewed_site_sha256", "source_lane_id", "destination_lane_id",
          "ego_blueprint", "target_vehicle_blueprint", "target_traffic_plan_sha256",
          "camera_plan_sha256", "capture_duration_s", "capture_rate_hz")

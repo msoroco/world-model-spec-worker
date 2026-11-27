@@ -37,6 +37,10 @@ def prove() -> None:
     env = dict(os.environ, TMPDIR=str(REPO / ".runtime-work"), PYTHONDONTWRITEBYTECODE="1")
     for comparison in plan["comparisons"]:
         ident = comparison["comparison_id"]
+        if ident == "engineering_door_clearance_sweep":
+            # The three-point sweep has its own original-only source auditor.
+            # It consumes sealed Native traces plus source-bound door packets.
+            continue
         sources = []
         for case_id in comparison["case_ids"]:
             kind = case_id.rsplit("__", 1)[1]

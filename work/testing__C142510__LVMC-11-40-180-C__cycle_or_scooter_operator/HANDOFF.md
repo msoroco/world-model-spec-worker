@@ -1,3 +1,9 @@
+# Current handoff, 2026-11-27 rider-class comparisons
+
+The current result is `ready` / `delivery_prepared`; the exact scoped strict gate passed after the rider-class additions. The six selected cases and their original capture contracts are unchanged. The law names bicycle, electric bicycle, and electric scooter separately; the electric bicycle and scooter cases are now paired with the bicycle before-signal/yield reference. The two new comparisons isolate `rider_kind` while requiring the same reviewed connected sidewalk map and route, 900-frame capture, original pre-pass signal, and original brake response. `delivery_audit.py` rejects changed fixed context, unsealed or mismatched measurements, changed signal timing, and changed response. The focused suite has 27 passing tests in `cpu-matrix-rider-kind-tests.log`; the exact scoped strict result is in `cpu-matrix-rider-kind-strict.log`. The local queue addition is `queue-comparison-proposal.json` with two comparison rows and command catalog entries, adding no case jobs. Original physical/human review remains in `remaining_gpu_checks`; no legal or physical conclusion is claimed.
+
+The older notes below record earlier partial checkpoints and do not override the current `result.json` or exact strict gate.
+
 ## 2026-11-25 sparse source-gated judgment sampling
 
 Assignment status is recorded in `result.json`; release requires the exact scoped strict gate to exit 0. The canonical judgment sweep specs retain `status: incomplete` because original physical and independent human review has not occurred. `sweeps_expanded: true` records that the canonical expansion pass ran; because the two judgment specs are incomplete, it created no judgment-sweep cases. The six selected cases are ordinary controlled cases.

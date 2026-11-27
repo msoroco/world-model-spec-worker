@@ -1,4 +1,4 @@
-"""Run three exact diagnostic source pairs through the independent audit."""
+"""Run exact diagnostic source pairs through the independent audit."""
 from __future__ import annotations
 
 import hashlib

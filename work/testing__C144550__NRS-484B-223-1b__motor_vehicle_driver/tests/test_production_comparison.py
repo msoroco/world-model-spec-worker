@@ -1,6 +1,7 @@
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -73,6 +74,40 @@ class ProductionComparisonTest(unittest.TestCase):
         self.assertTrue(result["production_original_attempts_audited"])
         self.assertEqual(delivery.call_count, 2)
         self.assertTrue(all(call.kwargs.get("owner_receipt") for call in delivery.call_args_list))
+
+    @patch.object(comparison_audit, "audit_delivery")
+    @patch.object(comparison_audit, "build_report")
+    def test_accepted_source_original_attempt_pairs(self, recompute, delivery):
+        delivery.return_value = {"format": "worker-delivery-audit", "passed": True}
+        recompute.side_effect = self.recomputed
+        for n, contrast in ((1, "signal_missing"), (2, "check_missing"),
+                            (3, "signal_missing")):
+            variant = f"accepted_source_{n}"
+            folder = self.root / variant
+            shutil.copytree(self.attempts["both_observed"], folder)
+            report_path = folder / "analysis-report.json"
+            report = json.loads(report_path.read_text())
+            report["case_id"] = ASSIGNMENT + "__" + variant
+            report_path.write_text(json.dumps(report))
+            self.attempts[variant] = folder
+            self.receipts[variant] = self.root / (variant + "-owner.json")
+            if contrast == "check_missing":
+                other = self.root / contrast
+                shutil.copytree(self.attempts["both_observed"], other)
+                report_path = other / "analysis-report.json"
+                report = json.loads(report_path.read_text())
+                report["case_id"] = ASSIGNMENT + "__" + contrast
+                report["measurements"]["driver_check_observed_before_departure"] = False
+                report_path.write_text(json.dumps(report))
+                self.attempts[contrast] = other
+                self.receipts[contrast] = self.root / (contrast + "-owner.json")
+            cid = f"accepted-source-{n}-" + (
+                "signal-control" if contrast == "signal_missing" else "check-control")
+            result = comparison_audit.audit_original_attempts(
+                cid, {variant: self.attempts[variant], contrast: self.attempts[contrast]},
+                {variant: self.receipts[variant], contrast: self.receipts[contrast]})
+            self.assertTrue(result["production_original_attempts_audited"])
+            self.assertEqual(result["case_ids"][0], ASSIGNMENT + "__" + variant)
 
     @patch.object(comparison_audit, "audit_delivery")
     @patch.object(comparison_audit, "build_report")

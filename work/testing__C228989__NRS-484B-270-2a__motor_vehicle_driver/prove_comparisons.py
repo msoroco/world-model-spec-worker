@@ -13,7 +13,7 @@ from package_spec import AID
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SCRIPT = HERE / "comparison_audit.py"
-SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov26" / "comparison-diagnostic-v2"
+SCRATCH = ROOT / ".runtime-work" / "c228989-owner-nov27" / "comparison-diagnostic-v3"
 
 
 def sha(path):
@@ -27,9 +27,9 @@ def write(path, value):
 def run():
     SCRATCH.mkdir(parents=True, exist_ok=True)
     plan = json.loads((HERE / "case-plan.json").read_text())
-    need = plan["assignment_id"] == AID and len(plan["comparisons"]) == 8
+    need = plan["assignment_id"] == AID and len(plan["comparisons"]) == 11
     if not need:
-        raise ValueError("eight exact comparison plans required")
+        raise ValueError("eleven exact comparison plans required")
     map_sha = hashlib.sha256(b"reviewed map protocol fixture").hexdigest()
     reports = []
     for comparison in plan["comparisons"]:
@@ -39,12 +39,15 @@ def run():
             raise ValueError("retain prior comparison diagnostic fixture")
         root.mkdir()
         records = {}
+        cases = {case["case_id"]: case for case in plan["cases"]}
         for case_id in comparison["case_ids"]:
             records[case_id] = {"case_id": case_id, "frame_count": 900,
                                 "full_decode": True, "actual_pixels": True,
                                 "physical_status": "met", "legal_verdict": None,
                                 "receipt_sha256": hashlib.sha256(case_id.encode()).hexdigest(),
                                 "native_map_sha256": map_sha,
+                                "initial_left_lane_occupied_actor_ids":
+                                (["original_traffic_actor"] if cases[case_id]["left_lane_traffic_requested"] == "occupied" else []),
                                 "measurements": {key: {"source": "synthetic CPU protocol"}
                                                  for key in ("activation", "due_care_sources",
                                                              "lane_topology", "lane_movement")}}

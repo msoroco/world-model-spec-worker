@@ -1,5 +1,17 @@
 # Return report
 
+## 2026-11-27 16:17 UTC — Seven comparison gaps closed; matrix draft refreshed
+
+- C126120, C142510, C149470 and C228989 each passed their owner's exact scoped strict gate and the lead's independent repeat. Their source-bound positive and negative comparison audits cover three roadway-opening cases, two electric rider cases, two bus interior sweep cases and three occupied-stay cases. The lead validated and published ten new comparison rows and catalog commands, with zero new case jobs. The shared queue is now 240 assignments, 1,691 cases, 1,199 comparisons, 4,812,470 bytes; C125751, C229439 and C153046 additions from the earlier entry remain included.
+- The draft full-law matrix was rebuilt from current plans: 221 source laws, 242 assignments, 1,235 branch rows and 29 pending entries. Twenty-seven exact cases are still unpaired: six C150041 orientation sweeps, six C150099 local-designation cases and fifteen C386226 lane-use sweeps. The other two pending entries are truthful partial assignments C158190 and C178244. C102642 and C144550 comparison plans have changed while their owners continue CPU proofs, so their shared queue rows are still pending integration. The independent statutory and fallback-candidate review remains incomplete; no batch-ready claim is made.
+- Owners now work on C102642, C144550 and C150041. No Git command was run.
+
+## 2026-11-27 16:05 UTC — Three missing comparison deltas proved and published
+
+- C125751/NRS-484B-250-1, C229439/NRS-484B-450-1o and C153046/NRS-484B-307-8a each passed the owner's exact scoped strict delivery-ready gate and the lead's independent repeat. The first two added one source-bound controlled comparison each; C153046 added two interior sweep comparisons and rebuilt all 14 plan-bound constructions and CPU receipts. Assignment owners kept their returned files below 2 MiB and checked formatting. No new cases or assignment-ready claims were added.
+- The lead validated each comparison against its case plan, syntax-checked the dispatch command, and added the four comparison rows and matching catalog commands to `work/_shared/gpu-queue.json`. The queue now contains 240 assignments, 1,691 cases and 1,189 comparison audits in 4,805,817 bytes. The batch validator still sees other owner comparisons under construction and the absent local integration proof, so this is a scoped publication, not a batch-wide pass.
+- C142510, C149470 and C126120 owners are constructing the next exact-case comparison coverage. The full-law matrix and independent candidate review remain draft; two frozen-input conflicts C158190 and C178244 remain truthful partials. No Git command was run.
+
 ## 2026-11-27 15:54 UTC — Full-law branch matrix construction started
 
 - The current pinned runtime source verification, CPU preflight and update check pass. The batch has 240 ready assignments and two truthful partials (C158190 and C178244). Independent owners repeated each partial's focused CPU proofs and strict gate; their assignment handoffs and result receipts now document the exact frozen selected-branch/fixed-cell mismatch and the absence of original accepted trace/video bytes. Neither result was relabeled.

@@ -206,31 +206,19 @@ def compare(left,right,variable='signal_timing'):
     need(left.get('case_id')!=right.get('case_id') and
          all(x.get('case_id') for x in (left,right)),
          'two distinct exact cases required')
-    for field in ('sidewalk_id','frame_count'):
+    for field in ('sidewalk_id','rider_kind','frame_count'):
         need(left.get(field)==right.get(field),'fixed comparison condition changed: '+field)
-    need(variable in ('signal_timing','rider_response','rider_kind'),'unsupported comparison variable')
-    if variable!='rider_kind':
-        need(left.get('rider_kind')==right.get('rider_kind'),
-             'fixed comparison condition changed: rider_kind')
+    need(variable in ('signal_timing','rider_response'),'unsupported comparison variable')
     if variable=='signal_timing':
         need(left.get('detected_signal_before_pass')!=right.get('detected_signal_before_pass'),
              'declared signal-timing difference not measured')
         need(left.get('brake_frames_before_pass')==right.get('brake_frames_before_pass'),
              'fixed rider response changed')
-    elif variable=='rider_response':
+    else:
         need(left.get('detected_signal_before_pass')==right.get('detected_signal_before_pass'),
              'fixed signal timing changed')
         need(bool(left.get('brake_frames_before_pass'))!=bool(right.get('brake_frames_before_pass')),
              'declared rider-response difference not measured')
-    else:
-        need(left.get('rider_kind')!=right.get('rider_kind') and
-             {left.get('rider_kind'),right.get('rider_kind')} <=
-             {'bicycle','electric_bicycle','electric_scooter'},
-             'declared covered rider-kind difference not measured')
-        need(left.get('detected_signal_before_pass')==right.get('detected_signal_before_pass'),
-             'fixed signal timing changed')
-        need(bool(left.get('brake_frames_before_pass'))==bool(right.get('brake_frames_before_pass')),
-             'fixed rider response changed')
     return {'format':'worker-c142510-comparison-audit-v1',
             'case_ids':[left['case_id'],right['case_id']],
             'declared_difference':variable,

@@ -1,6 +1,6 @@
 # C149470 bus loading preparation handoff
 
-Status: partial. Seven exact cases and five planned comparisons remain source gated. The selected manifest is a diagnostic CPU draft; its source kind is synthetic and it is not an accepted original attempt.
+Current status: ready for CPU delivery preparation. Thirteen exact selected cases and nine controlled comparisons are prepared; original motion, source review, video acceptance and legal judgment remain local work. The dated sections below retain the progression from the earlier partial checkpoint.
 
 ## Current CPU package
 
@@ -47,3 +47,7 @@ Thirteen exact selected cases, thirteen source-gated fallback candidates, and se
 All thirteen selected primary/fallback offline runs, positive/missing-source compatibility proofs, recorded-only saved processing, three-state physical/lifecycle preparation, and positive/negative independent delivery audits passed. Seven original-only comparison wiring checks passed on mock fixtures, rejecting synthetic promotion. Direct execution manifest, semantic, delivery, compatibility and branch validators passed. Thirteen focused tests and the scoped complete static check passed. The selected root and all case/fallback bundles are materialized. The exact strict gate is `.venv-cpu/bin/python worker_check.py --assignment testing__C149470__LVMC-11-60-030-A4__bus_driver --complete --require-delivery-ready`.
 
 The exact scoped delivery-ready gate passed on the 13-case selected package; `cpu-grid-strict-initial.log` records the first exit-0 proof. The returned package remains CPU delivery prepared. Local original-site acquisition, actual CARLA motion/video acceptance, and legal judgment are still required.
+
+## 2026-11-27 interior sweep comparison repair
+
+The batch branch matrix exposed two selected engineering sweep cases that had no comparison: `parallel_source_review-0001` and `traffic_impediment_source_review-0001`. `case-plan.json` now adds `parallel_engineering_below_interior` (the 0 versus 8 degree requested bus-route heading cases) and `traffic_engineering_interior_above` (the 4 versus 3 m requested separate-traffic-route offset cases). These are engineering requests, not statutory cutoffs. The independent `delivery_audit.audit_comparisons` permits exactly the relevant original route source to change for each named sweep comparison, while requiring the fixed original source inventory, unresolved legal status, original source kind and measurement provenance. `prove_grid_comparisons.py` exercised all nine mock-only positive paths and synthetic-source rejection; 13 focused tests passed. `queue-proposal.json` now contains all nine commands. The two small `queue-comparison-proposal-*.json` files each carry one new dispatch row and its original-only command catalog entry for lead integration; existing case rows remain unchanged. The exact scoped strict gate passed, recorded in `cpu-matrix-strict.log`. Actual source acquisition and physical judgment are still pending local execution.

@@ -50,6 +50,26 @@ class SweepComparisonTests(unittest.TestCase):
             with self.assertRaises((KeyError, ValueError)):
                 audit(paths, allow_diagnostic=True)
 
+    def test_passing_speed_drift_and_missing_trace_rejected(self):
+        with tempfile.TemporaryDirectory(dir=ROOT.parents[1] / ".runtime-work") as directory:
+            clone = Path(directory) / "middle"
+            shutil.copytree(self.paths()[1], clone)
+            paths = self.paths()
+            paths[1] = clone
+            trace_path = clone / "native-trace.json"
+            intent_path = clone / "door-source.json"
+            trace = json.loads(trace_path.read_text())
+            trace["frames"][1]["passing_speed_mps"] += 1.0
+            trace_path.write_text(json.dumps(trace) + "\n")
+            intent = json.loads(intent_path.read_text())
+            intent["source_trace_sha256"] = hashlib.sha256(trace_path.read_bytes()).hexdigest()
+            intent_path.write_text(json.dumps(intent) + "\n")
+            with self.assertRaisesRegex(ValueError, "passing speed history changed"):
+                audit(paths, allow_diagnostic=True)
+            trace_path.unlink()
+            with self.assertRaises(FileNotFoundError):
+                audit(paths, allow_diagnostic=True)
+
 
 if __name__ == "__main__":
     unittest.main()

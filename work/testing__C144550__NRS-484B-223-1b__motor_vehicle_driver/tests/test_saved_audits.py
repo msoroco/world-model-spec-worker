@@ -27,6 +27,30 @@ def report(variant, *, signal, check):
 
 
 class SavedAuditsTests(unittest.TestCase):
+    def test_accepted_source_pairs_require_original_measured_difference(self):
+        pairs = (("accepted-source-1-signal-control", "accepted_source_1",
+                  "signal_missing", False, True),
+                 ("accepted-source-2-check-control", "accepted_source_2",
+                  "check_missing", True, False),
+                 ("accepted-source-3-signal-control", "accepted_source_3",
+                  "signal_missing", False, True))
+        for comparison, accepted, contrast, contrast_signal, contrast_check in pairs:
+            with self.subTest(comparison=comparison):
+                first = report(accepted, signal=True, check=True)
+                second = report(contrast, signal=contrast_signal,
+                                check=contrast_check)
+                self.assertTrue(audit(comparison, {accepted: first,
+                                                   contrast: second})["passed"])
+                second["measurements"] = dict(first["measurements"])
+                with self.assertRaisesRegex(ValueError, "difference"):
+                    audit(comparison, {accepted: first, contrast: second})
+                second["measurements"] = {
+                    "signal_precedes_center_departure": contrast_signal,
+                    "driver_check_observed_before_departure": contrast_check}
+                second["fixed_context"]["target_traffic_plan_sha256"] = "changed"
+                with self.assertRaisesRegex(ValueError, "fixed"):
+                    audit(comparison, {accepted: first, contrast: second})
+
     def test_signal_pair_holds_check_and_changes_signal(self):
         result = audit("signal-prerequisite-control", {
             "both_observed": report("both_observed", signal=True, check=True),

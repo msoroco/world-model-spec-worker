@@ -6,7 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from delivery_measure import measure
+from delivery_measure import audit_pair, measure
 
 ROOT = Path(__file__).resolve().parent
 SWEEP = ROOT.name + "__door_interference_physical_range"
@@ -16,13 +16,24 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+COMPARISON_ID = "engineering_door_clearance_sweep"
+
+
 def audit(paths: list[Path], *, allow_diagnostic: bool = False) -> dict:
+    plan = json.loads((ROOT / "case-plan.json").read_text())
+    comparison = [row for row in plan["comparisons"]
+                  if row["comparison_id"] == COMPARISON_ID]
+    if len(comparison) != 1:
+        raise ValueError("exact clearance comparison is absent or duplicated")
     proposal = json.loads((ROOT / "proposals/cases.json").read_text())
     spec = next(item for item in proposal["sweep_specs"] if item["sweep_id"] == SWEEP)
+    if comparison[0]["case_ids"] != spec["selection_order"]:
+        raise ValueError("exact clearance comparison members differ from selected sweep")
     if len(paths) != 3 or spec["status"] != "complete":
         raise ValueError("three selected clearance source attempts are required")
     fixed = None
     rows = []
+    measured_rows = []
     for case_id, requested, path in zip(spec["selection_order"],
                                          [case["sweep_point"]["engineering_clearance_m"]
                                           for cid in spec["selection_order"]
@@ -51,13 +62,19 @@ def audit(paths: list[Path], *, allow_diagnostic: bool = False) -> dict:
                            expected_act="open", expected_side=intent["selected_side"])
         if not measured["act_on_closest_side"]:
             raise ValueError("clearance act is not on passing side")
+        measured_rows.append(measured)
         rows.append({"case_id": case_id, "requested_engineering_m": requested,
                      "original_measured_minimum_m": measured["minimum_body_gap_m"],
                      "original_interaction_frames": measured["body_gap_by_frame_m"],
                      "source_sha256": {"native-trace.json": sha(source),
                                        "door-source.json": sha(intent_path)}})
+    pair_audits = [audit_pair(measured_rows[0], item,
+                              deliberate_difference="body_gap_m")
+                   for item in measured_rows[1:]]
     return {"format": "worker-door-clearance-sweep-audit", "sweep_id": SWEEP,
-            "cases": rows, "fixed_site_and_route_checked": True,
+            "comparison_id": COMPARISON_ID,
+            "cases": rows, "pair_audits": pair_audits,
+            "fixed_site_and_route_checked": True,
             "diagnostic_fixture": allow_diagnostic,
             "physical_acceptance_claimed": False, "legal_interference": None}
 
@@ -66,6 +83,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--attempt", type=Path, action="append", required=True)
     parser.add_argument("--allow-diagnostic", action="store_true")
+    parser.add_argument("--expected-comparison-id", required=True,
+                        choices=(COMPARISON_ID,))
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     result = audit(args.attempt, allow_diagnostic=args.allow_diagnostic)

@@ -113,6 +113,7 @@ def audit_comparisons(reports):
                  report.get('source_kind') == 'original_native_capture' and
                  report.get('legal_status') == 'unresolved' and
                  report.get('physical_acceptance') is False and
+                 report.get('rider_kind') == report.get('measurement', {}).get('rider_kind') and
                  report.get('source_sha256') == report.get('measurement', {}).get('source_sha256'),
                  'comparison includes nonoriginal or wrong-case audit')
         need(left.get('fixed_site') == right.get('fixed_site') and
@@ -121,8 +122,25 @@ def audit_comparisons(reports):
              (comparison['declared_difference'] == 'rider_kind' or
               left.get('rider_kind') == right.get('rider_kind')),
              'fixed original sidewalk or participant source changed')
-        measured = compare(left['measurement'], right['measurement'],
-                           comparison['declared_difference'])
+        if comparison['declared_difference'] == 'rider_kind':
+            first, second = left['measurement'], right['measurement']
+            need(left['rider_kind'] != right['rider_kind'] and
+                 {left['rider_kind'], right['rider_kind']} <=
+                 {'bicycle', 'electric_bicycle', 'electric_scooter'},
+                 'declared covered rider-kind difference not measured')
+            need(first.get('sidewalk_id') == second.get('sidewalk_id') and
+                 first.get('frame_count') == second.get('frame_count') == 900,
+                 'fixed original sidewalk or capture duration changed')
+            need(first.get('detected_signal_before_pass') is True and
+                 second.get('detected_signal_before_pass') is True,
+                 'fixed signal timing changed')
+            need(bool(first.get('brake_frames_before_pass')) and
+                 bool(second.get('brake_frames_before_pass')),
+                 'fixed rider response changed')
+            measured = {'declared_difference': 'rider_kind'}
+        else:
+            measured = compare(left['measurement'], right['measurement'],
+                               comparison['declared_difference'])
         output.append({'comparison_id': comparison['comparison_id'],
                        'case_ids': [left_id, right_id],
                        'measured_difference': measured['declared_difference'],

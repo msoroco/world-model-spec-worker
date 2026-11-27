@@ -1,6 +1,6 @@
 # testing__C228989__NRS-484B-270-2a__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: ready CPU delivery package; current details and exact proof commands appear in the latest section below.
 
 Exact law: NRS 484B.270(2)(a) — When overtaking or passing a bicycle, an electric bicycle or an electric scooter proceeding in the same direction, the driver of a motor vehicle shall exercise due care and: If there is more than one lane for traffic proceeding in the same direction, move the vehicle to the lane to the immediate left, if the lane is available and moving into the lane is reasonably safe.
 Assigned branch(es): Due care; lane-movement branch conditional on constructed lane geometry and circumstances.
@@ -51,3 +51,11 @@ Fourteen source-gated Native cases and eight exact comparisons are built. The se
 All fourteen selected and risk-based fallback constructions passed pinned offline and compatibility CPU proofs. Selected saved-only replays, physical preparation receipts (complete, incomplete and missing-evidence outcomes), and independent positive/negative delivery diagnostics passed for every case. Eight positive/negative controlled comparison diagnostics passed. These diagnostic fixtures make no Native acceptance or legal verdict claim. The current-hash proof chain is bound in execution-manifest.json, and gpu-queue-proposal.json supplies selected, fallback and post-capture commands.
 
 The exact scoped command `.venv-cpu/bin/python worker_check.py --assignment testing__C228989__NRS-484B-270-2a__motor_vehicle_driver --complete --require-delivery-ready` passed after the current package and comparison proof rebuild. Pinned preflight and 24 focused tests passed. The assignment is ready for GPU delivery preparation; the remaining decisions are actual Native capture, independent pixel and physical review, and the human due-care, lane-availability and reasonable-safety judgments.
+
+## 2026-11-27 occupied-lane stay comparison completion
+
+The branch review identified three exact occupied-lane stay cases missing from controlled comparisons. `case-plan.json` now includes `bicycle_stay_occupancy`, `electric_bicycle_stay_occupancy`, and `electric_scooter_stay_occupancy`. Each compares the same control type and ego stay request with an open versus occupied immediate-left lane. The independent `comparison_audit.py` requires source-sealed original attempts, a common map, distinct receipts, complete four-view 900-frame source audits, and first-frame observed left-lane traffic matching each requested context. It reports measurements without deciding due care, availability, reasonable safety, or legal compliance.
+
+`SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c228989-owner-nov27 TMPDIR=$PWD/.runtime-work/c228989-owner-nov27 PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C228989__NRS-484B-270-2a__motor_vehicle_driver/prove_comparisons.py` passed eleven positive and wrong-map negative diagnostics; proof logs and hashes are in `comparison-proposal.json`. The focused 25-test suite passed in `cpu-pass-tests-nov27.log`, including each new occupancy contrast and a corrupted inventory rejection. `proof-comparison-original-only-negative-nov27.log` records that the original-attempt path rejects missing original source receipts. Diagnostic fixtures do not establish physical or original acceptance. `gpu-queue-comparison-proposal.json` adds three comparison audit commands and no case entries for lead integration.
+
+The exact scoped strict gate passed with the current package, tests, and comparison proposal. Original CARLA capture, physical completion and legal judgment remain for local review.

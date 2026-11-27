@@ -19,7 +19,7 @@ def build() -> dict:
     contracts = {entry["case_id"] for entry in acceptance["cases"] if entry.get("delivery_acceptance")}
     pairs = {entry["comparison_id"] for entry in plan["comparisons"]}
     if (len(expected) != 16 or expected != set(entries) or expected != contracts or
-            len(pairs) != 7 or pairs != {entry["comparison_id"] for entry in plan["comparisons"]}):
+            len(pairs) != 13 or pairs != {entry["comparison_id"] for entry in plan["comparisons"]}):
         raise ValueError("exact C150041 queue coverage differs")
     cases = []
     for order, case in enumerate(sorted(expected), 1):
@@ -54,10 +54,14 @@ def build() -> dict:
     comparisons = []
     for entry in plan["comparisons"]:
         pair = entry["comparison_id"]
+        auditor = ('sweep_comparison_audit.py' if pair in {
+            'sweep_0_vs_20', 'sweep_10_vs_30', 'sweep_40_vs_60',
+            'sweep_30_vs_50', 'sweep_70_vs_90', 'sweep_60_vs_80'}
+                   else 'comparison_audit.py')
         comparisons.append({
             "assignment_id": AID, "comparison_id": pair, "case_ids": entry["case_ids"],
             "command": ('PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/' + AID +
-                        '/independent/comparison_audit.py --comparison-id ' + pair +
+                        '/independent/' + auditor + ' --comparison-id ' + pair +
                         ' --baseline-attempt "$BASELINE_ATTEMPT" --changed-attempt "$CHANGED_ATTEMPT"'
                         ' --baseline-delivery "$BASELINE_DELIVERY" --changed-delivery "$CHANGED_DELIVERY"'
                         ' --output "$COMPARISON_AUDIT"')})
@@ -68,4 +72,4 @@ def build() -> dict:
 if __name__ == "__main__":
     packet = build()
     (ROOT / "queue-proposal.json").write_text(json.dumps(packet, indent=2) + "\n")
-    print("sixteen exact cases and seven comparison commands proposed")
+    print("sixteen exact cases and thirteen comparison commands proposed")

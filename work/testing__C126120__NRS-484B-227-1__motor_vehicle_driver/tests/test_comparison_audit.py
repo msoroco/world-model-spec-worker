@@ -1,4 +1,4 @@
-"""The three planned comparisons must differ in original measured motion."""
+"""Planned comparisons must differ in source-bound original observations."""
 import copy
 import hashlib
 import json
@@ -10,6 +10,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 from comparison_audit import audit, PREFIX, PAIRS
+from branch_comparison_audit import audit as audit_branch, PAIRS as BRANCH_PAIRS
 from test_uturn_audit import body, multiple_variant, trace
 
 
@@ -36,7 +37,7 @@ class ComparisonAuditTests(unittest.TestCase):
         return (comparison,*a,*b,*c,*d)
 
     def test_all_exact_comparisons_and_fixed_condition_rejections(self):
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=HERE.parents[1] / ".runtime-work") as directory:
             root=Path(directory)
             closed=copy.deepcopy(trace())
             closed["samples"][2]["body_vertices_xy_m"]=body(1.5,-.5)
@@ -54,6 +55,34 @@ class ComparisonAuditTests(unittest.TestCase):
                     changed_config=save(root,"right-config.json",changed)
                     with self.assertRaisesRegex(ValueError,"fixed comparison config changed"):
                         audit(*(args[:-2]+changed_config))
+
+    def test_facility_and_no_turn_comparisons_reject_changed_fixed_sources(self):
+        with tempfile.TemporaryDirectory(dir=HERE.parents[1] / ".runtime-work") as directory:
+            root=Path(directory)
+            for comparison in ("opening_vs_crossover_facility",
+                               "opening_vs_intersection_facility",
+                               "uturn_vs_right_roadway_continuation"):
+                with self.subTest(comparison=comparison):
+                    left,right=BRANCH_PAIRS[comparison]
+                    a=json.loads((HERE / "cases" / left / "comparison-source.json").read_text())
+                    b=json.loads((HERE / "cases" / right / "comparison-source.json").read_text())
+                    ap,ah=save(root,"left.json",a)
+                    bp,bh=save(root,"right.json",b)
+                    cp,ch=save(root,"left-config.json",config(left))
+                    dp,dh=save(root,"right-config.json",config(right))
+                    args=(comparison,ap,ah,bp,bh,cp,ch,dp,dh)
+                    self.assertEqual(audit_branch(*args)["comparison_id"],comparison)
+                    changed=copy.deepcopy(b)
+                    changed["context"]["source_right_roadway_id"]="changed-source-roadway"
+                    changed_path,changed_hash=save(root,"changed.json",changed)
+                    with self.assertRaisesRegex(ValueError,"fixed"):
+                        audit_branch(comparison,ap,ah,changed_path,changed_hash,cp,ch,dp,dh)
+                    if comparison.startswith("opening_vs_"):
+                        changed=copy.deepcopy(b)
+                        changed["context"]["opening_bounds_xy_m"]=[-3,-3,4,3]
+                        changed_path,changed_hash=save(root,"changed.json",changed)
+                        with self.assertRaisesRegex(ValueError,"fixed facility geometry"):
+                            audit_branch(comparison,ap,ah,changed_path,changed_hash,cp,ch,dp,dh)
 
 
 if __name__ == "__main__":

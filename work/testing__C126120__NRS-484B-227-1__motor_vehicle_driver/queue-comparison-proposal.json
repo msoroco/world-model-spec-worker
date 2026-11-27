@@ -1,0 +1,48 @@
+{
+  "format": "worker-comparison-queue-proposal",
+  "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
+  "comparison_audit_commands": [
+    {
+      "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
+      "comparison_id": "opening_vs_crossover_facility",
+      "case_ids": [
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__crossover_candidate"
+      ],
+      "command": ".venv-cpu/bin/python work/_shared/queue_dispatch.py testing__C126120__NRS-484B-227-1__motor_vehicle_driver::opening_vs_crossover_facility comparison"
+    },
+    {
+      "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
+      "comparison_id": "opening_vs_intersection_facility",
+      "case_ids": [
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__intersection_candidate"
+      ],
+      "command": ".venv-cpu/bin/python work/_shared/queue_dispatch.py testing__C126120__NRS-484B-227-1__motor_vehicle_driver::opening_vs_intersection_facility comparison"
+    },
+    {
+      "assignment_id": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver",
+      "comparison_id": "uturn_vs_right_roadway_continuation",
+      "case_ids": [
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+        "testing__C126120__NRS-484B-227-1__motor_vehicle_driver__right_roadway_no_turn"
+      ],
+      "command": ".venv-cpu/bin/python work/_shared/queue_dispatch.py testing__C126120__NRS-484B-227-1__motor_vehicle_driver::uturn_vs_right_roadway_continuation comparison"
+    }
+  ],
+  "command_catalog_proposals": [
+    {
+      "comparison_key": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver::opening_vs_crossover_facility",
+      "command": "PYTHONPATH=work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python - \"$LEFT_ATTEMPT\" \"$RIGHT_ATTEMPT\" opening_vs_crossover_facility testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single testing__C126120__NRS-484B-227-1__motor_vehicle_driver__crossover_candidate <<'PY'\nimport hashlib\nimport json\nimport sys\nimport tempfile\nfrom pathlib import Path\nfrom delivery_audit import audit as audit_delivery\nfrom branch_comparison_audit import audit as audit_pair\n\nleft, right = (Path(sys.argv[1]), Path(sys.argv[2]))\ncomparison_id, left_id, right_id = sys.argv[3:6]\nfor root, expected in ((left, left_id), (right, right_id)):\n    assert json.loads((root / \"config.json\").read_text())[\"selected_case_id\"] == expected\n    assert audit_delivery(root)[\"delivery_physical_audit_passed\"] is True\nwith tempfile.TemporaryDirectory(dir=\".runtime-work\", prefix=\"c126120-pair-\") as temporary:\n    packet_paths = []\n    for index, root in enumerate((left, right)):\n        packet = {\"context\": json.loads((root / \"median-context.json\").read_text()),\n                  \"samples\": [json.loads(line) for line in (root / \"ego-body-history.jsonl\").read_text().splitlines()],\n                  \"provenance_kind\": \"native\", \"diagnostic_fixture\": False}\n        target = Path(temporary) / f\"source-{index}.json\"\n        target.write_text(json.dumps(packet, sort_keys=True) + \"\\n\")\n        packet_paths.append(target)\n    digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()\n    left_packet, right_packet = packet_paths\n    left_config, right_config = left / \"config.json\", right / \"config.json\"\n    result = audit_pair(comparison_id, left_packet, digest(left_packet),\n                        right_packet, digest(right_packet), left_config,\n                        digest(left_config), right_config, digest(right_config))\n    assert result[\"case_ids\"] == [left_id, right_id]\n    print(json.dumps(result))\nPY"
+    },
+    {
+      "comparison_key": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver::opening_vs_intersection_facility",
+      "command": "PYTHONPATH=work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python - \"$LEFT_ATTEMPT\" \"$RIGHT_ATTEMPT\" opening_vs_intersection_facility testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single testing__C126120__NRS-484B-227-1__motor_vehicle_driver__intersection_candidate <<'PY'\nimport hashlib\nimport json\nimport sys\nimport tempfile\nfrom pathlib import Path\nfrom delivery_audit import audit as audit_delivery\nfrom branch_comparison_audit import audit as audit_pair\n\nleft, right = (Path(sys.argv[1]), Path(sys.argv[2]))\ncomparison_id, left_id, right_id = sys.argv[3:6]\nfor root, expected in ((left, left_id), (right, right_id)):\n    assert json.loads((root / \"config.json\").read_text())[\"selected_case_id\"] == expected\n    assert audit_delivery(root)[\"delivery_physical_audit_passed\"] is True\nwith tempfile.TemporaryDirectory(dir=\".runtime-work\", prefix=\"c126120-pair-\") as temporary:\n    packet_paths = []\n    for index, root in enumerate((left, right)):\n        packet = {\"context\": json.loads((root / \"median-context.json\").read_text()),\n                  \"samples\": [json.loads(line) for line in (root / \"ego-body-history.jsonl\").read_text().splitlines()],\n                  \"provenance_kind\": \"native\", \"diagnostic_fixture\": False}\n        target = Path(temporary) / f\"source-{index}.json\"\n        target.write_text(json.dumps(packet, sort_keys=True) + \"\\n\")\n        packet_paths.append(target)\n    digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()\n    left_packet, right_packet = packet_paths\n    left_config, right_config = left / \"config.json\", right / \"config.json\"\n    result = audit_pair(comparison_id, left_packet, digest(left_packet),\n                        right_packet, digest(right_packet), left_config,\n                        digest(left_config), right_config, digest(right_config))\n    assert result[\"case_ids\"] == [left_id, right_id]\n    print(json.dumps(result))\nPY"
+    },
+    {
+      "comparison_key": "testing__C126120__NRS-484B-227-1__motor_vehicle_driver::uturn_vs_right_roadway_continuation",
+      "command": "PYTHONPATH=work/testing__C126120__NRS-484B-227-1__motor_vehicle_driver PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python - \"$LEFT_ATTEMPT\" \"$RIGHT_ATTEMPT\" uturn_vs_right_roadway_continuation testing__C126120__NRS-484B-227-1__motor_vehicle_driver__opening_single testing__C126120__NRS-484B-227-1__motor_vehicle_driver__right_roadway_no_turn <<'PY'\nimport hashlib\nimport json\nimport sys\nimport tempfile\nfrom pathlib import Path\nfrom delivery_audit import audit as audit_delivery\nfrom branch_comparison_audit import audit as audit_pair\n\nleft, right = (Path(sys.argv[1]), Path(sys.argv[2]))\ncomparison_id, left_id, right_id = sys.argv[3:6]\nfor root, expected in ((left, left_id), (right, right_id)):\n    assert json.loads((root / \"config.json\").read_text())[\"selected_case_id\"] == expected\n    assert audit_delivery(root)[\"delivery_physical_audit_passed\"] is True\nwith tempfile.TemporaryDirectory(dir=\".runtime-work\", prefix=\"c126120-pair-\") as temporary:\n    packet_paths = []\n    for index, root in enumerate((left, right)):\n        packet = {\"context\": json.loads((root / \"median-context.json\").read_text()),\n                  \"samples\": [json.loads(line) for line in (root / \"ego-body-history.jsonl\").read_text().splitlines()],\n                  \"provenance_kind\": \"native\", \"diagnostic_fixture\": False}\n        target = Path(temporary) / f\"source-{index}.json\"\n        target.write_text(json.dumps(packet, sort_keys=True) + \"\\n\")\n        packet_paths.append(target)\n    digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()\n    left_packet, right_packet = packet_paths\n    left_config, right_config = left / \"config.json\", right / \"config.json\"\n    result = audit_pair(comparison_id, left_packet, digest(left_packet),\n                        right_packet, digest(right_packet), left_config,\n                        digest(left_config), right_config, digest(right_config))\n    assert result[\"case_ids\"] == [left_id, right_id]\n    print(json.dumps(result))\nPY"
+    }
+  ],
+  "note": "Add three source-bound comparison audits; seven existing case queue rows and delivery proofs are unchanged."
+}

@@ -24,7 +24,7 @@ class SourceInventoryTests(unittest.TestCase):
     def test_case_plan_keeps_all_six_ids(self):
         plan = json.loads((ROOT / "case-plan.json").read_text())
         self.assertEqual(len(plan["cases"]), 6)
-        self.assertEqual(len(plan["comparisons"]), 2)
+        self.assertEqual(len(plan["comparisons"]), 5)
         self.assertEqual({case["source_disposition"]["status"] for case in plan["cases"]},
                          {"unverified_existing_evidence", "selected_source_gated_construction"})
 

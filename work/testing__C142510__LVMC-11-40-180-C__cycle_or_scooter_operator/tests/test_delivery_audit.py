@@ -55,6 +55,13 @@ class DeliveryAuditTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'fixed signal timing changed'):
             audit_comparisons(reports)
 
+    def test_rider_kind_report_must_match_source_measurement(self):
+        reports = self.reports()
+        key = ASSIGNMENT + '__electric_bicycle_signal_before_yield'
+        reports[key]['rider_kind'] = 'bicycle'
+        with self.assertRaisesRegex(ValueError, 'nonoriginal or wrong-case'):
+            audit_comparisons(reports)
+
     def test_fixed_source_change_rejected(self):
         reports = self.reports()
         key = ASSIGNMENT + '__bicycle_signal_late_yield'

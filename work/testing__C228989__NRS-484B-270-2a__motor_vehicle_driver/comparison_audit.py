@@ -74,6 +74,14 @@ def assess(comparison_id, records, *, diagnostic=False):
              {"activation", "due_care_sources", "lane_topology", "lane_movement"} <= set(values),
              "comparison selected source measurements missing")
         measured[case_id] = values
+        if comparison_id.endswith("_stay_occupancy"):
+            occupants = row.get("initial_left_lane_occupied_actor_ids")
+            need(isinstance(occupants, list) and
+                 all(isinstance(actor, str) and actor for actor in occupants),
+                 "original initial left-lane traffic inventory missing")
+            requested = cases[case_id]["left_lane_traffic_requested"]
+            need((requested == "occupied") == bool(occupants),
+                 "original left-lane traffic does not match controlled occupancy")
     need(len(source_receipts) == len(case_ids), "comparison reused original case receipt")
     need(len(map_hashes) == 1, "comparison source map differs across fixed road context")
     return {"format": "pass-exact-comparison-audit", "comparison_id": comparison_id,
@@ -100,6 +108,10 @@ def from_attempts(comparison_id, manifest_path):
         analysis_path = Path(item.get("analysis_report", attempt / "analysis-report.json"))
         analysis = json.loads(analysis_path.read_text())
         context = json.loads((attempt / "original-context.json").read_text())
+        original_trace = (attempt / "original-trace.jsonl").read_text().splitlines()
+        need(len(original_trace) == source["frame_count"],
+             "original actor trace frame count differs")
+        first = json.loads(original_trace[0])
         need(delivery.get("source_verified") is True and
              delivery.get("capture_receipt_sha256") == source["receipt_sha256"],
              "independent original delivery review missing")
@@ -108,6 +120,7 @@ def from_attempts(comparison_id, manifest_path):
                             "physical_status": physical["physical_checks"]["maneuver"]["status"],
                             "legal_verdict": None, "receipt_sha256": source["receipt_sha256"],
                             "native_map_sha256": context["map_sha256"],
+                            "initial_left_lane_occupied_actor_ids": first.get("left_lane_occupied_actor_ids"),
                             "measurements": analysis["measurements"]}
     return assess(comparison_id, records)
 
