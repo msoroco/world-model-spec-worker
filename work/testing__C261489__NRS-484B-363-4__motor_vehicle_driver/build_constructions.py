@@ -13,8 +13,10 @@ ASSIGNMENT = HERE.name
 RUNTIME = REPO / "runtime" / "SOURCE-MANIFEST.json"
 CODE = (
     "runner.py", "school_timing.py", "school_pass.py", "school_scene_construction.py",
+    "native_capture.py", "native_output_bridge.py", "saved_finalizer.py", "analysis.py",
     "case-plan.json", "tests/test_school_pass.py", "tests/test_school_timing.py",
-    "tests/test_site_sources.py",
+    "tests/test_site_sources.py", "tests/test_native_capture.py",
+    "tests/test_saved_finalizer.py", "tests/test_analysis.py",
 )
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 

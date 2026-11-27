@@ -57,6 +57,9 @@ def validate_site(site: Mapping) -> dict:
         raise ValueError("connected ego route missing")
     if not _point(site.get("other_spawn_xy")) or not _point(site.get("officer_spawn_xy")):
         raise ValueError("other participant or officer spawn missing")
+    if not _number(site.get("officer_lateral_offset_limit_m")) or \
+            site["officer_lateral_offset_limit_m"] < 0:
+        raise ValueError("reviewed officer placement tolerance missing")
     if not _number(site.get("intersection_entry_station_m")) or \
             not _number(site.get("upstream_reference_station_m")) or \
             site["upstream_reference_station_m"] >= site["intersection_entry_station_m"]:
@@ -66,11 +69,14 @@ def validate_site(site: Mapping) -> dict:
     return dict(site)
 
 
-def construct(adapter, site: Mapping, case: Case):
+def construct(adapter, site: Mapping, case: Case, officer_lateral_offset_m: float = 0.0):
     """Create original actors and distinct officer gestures; clean up on failure."""
     if case not in CASES:
         raise ValueError("unknown exact officer case")
     scene = validate_site(site)
+    if not _number(officer_lateral_offset_m) or \
+            not 0 <= officer_lateral_offset_m <= scene["officer_lateral_offset_limit_m"]:
+        raise ValueError("officer offset exceeds source-reviewed placement")
     owned = []
     try:
         ego = adapter.spawn_vehicle(scene["ego_route_xy"][0], "ego")
@@ -81,7 +87,9 @@ def construct(adapter, site: Mapping, case: Case):
         if other is None:
             raise ValueError("other vehicle spawn failed")
         owned.append(other)
-        officer = adapter.spawn_officer(scene["officer_spawn_xy"])
+        officer_position = [scene["officer_spawn_xy"][0],
+                            scene["officer_spawn_xy"][1] + officer_lateral_offset_m]
+        officer = adapter.spawn_officer(officer_position)
         if officer is None:
             raise ValueError("officer spawn failed")
         owned.append(officer)

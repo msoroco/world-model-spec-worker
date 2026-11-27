@@ -1,11 +1,14 @@
 """CPU fixture for original Native acquisition, not a physical recording."""
 import hashlib
 import importlib.util
+import io
+import json
 import os
 from pathlib import Path
 import sys
 import tempfile
 import unittest
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -17,8 +20,11 @@ from audit_original_attempt import audit
 from analysis import measure_business_alley
 from audit_comparisons import PAIRS, compare
 from runner import _verify_site_sources
+from finalize_native import finalize
 
-PNG = b"\x89PNG\r\n\x1a\n" + b"cpu-fixture-only"
+_png_buffer = io.BytesIO()
+Image.new("RGB", (2, 2), (25, 65, 95)).save(_png_buffer, format="PNG")
+PNG = _png_buffer.getvalue()
 MAP = b"cpu-fixture-opendrive"
 
 
@@ -108,6 +114,9 @@ class FakeOperator:
     def cleanup(self):
         self.cleaned = True
 
+    def verify_restoration(self):
+        return {"restored": self.cleaned, "method": "CPU fixture operator state readback"}
+
 
 class AcquisitionTests(unittest.TestCase):
     case_id = ASSIGNMENT + "__passenger_active_stop"
@@ -185,6 +194,37 @@ class AcquisitionTests(unittest.TestCase):
                            ASSIGNMENT + "__passenger_wait_stand", altered)
             with self.assertRaisesRegex(ValueError, "fixed reviewed source differs"):
                 compare("passenger_active_vs_waiting", outputs["passenger_active_stop"], altered)
+
+    def test_saved_native_finalizer_encodes_four_joined_views_and_seals(self):
+        runtime = ROOT.parents[1] / "runtime" / "scenario_pipeline"
+        sys.path.insert(0, str(runtime))
+        with tempfile.TemporaryDirectory(dir=self.scratch) as temp:
+            destination = Path(temp) / "attempt"
+            destination.mkdir()
+            operator = FakeOperator(self.case_id)
+            module.capture(operator, self.case_id, destination / "original-attempt")
+            operator.pipeline_capture = type("Graph", (), {
+                "closed": True, "meta": {"extraction_confirmed": True}})()
+            frames = json.loads((destination / "original-attempt" / "frame-map.json").read_text())["frames"]
+            (destination / "trace.jsonl").write_text("".join(json.dumps({
+                "frame": row["native_frame"], "time_s": row["native_time_s"]}) + "\n"
+                for row in frames))
+            (destination / "config.json").write_text(json.dumps({
+                "cameras": [{"name": name, "width": 2, "height": 2}
+                            for name in sorted(module.CAMERAS)]}) + "\n")
+            (destination / "construction.json").write_text(json.dumps({"case_id": self.case_id}) + "\n")
+            (destination / "runner.py").write_bytes((ROOT / "runner.py").read_bytes())
+            result = finalize(destination, self.case_id, operator)
+            self.assertTrue(result["diagnostic_fixture"])
+            self.assertEqual(len((destination / "video_frames.jsonl").read_text().splitlines()), 900)
+            self.assertTrue((destination / "capture-seal.json").is_file())
+            for name in module.CAMERAS:
+                self.assertTrue((destination / (name + ".mkv")).is_file())
+            rows = (destination / "trace.jsonl").read_text().splitlines()
+            rows[0] = json.dumps({"frame": -1, "time_s": frames[0]["native_time_s"]})
+            (destination / "trace.jsonl").write_text("\n".join(rows) + "\n")
+            with self.assertRaisesRegex(ValueError, "frame join differs"):
+                finalize(destination, self.case_id, operator)
 
 
 if __name__ == "__main__":

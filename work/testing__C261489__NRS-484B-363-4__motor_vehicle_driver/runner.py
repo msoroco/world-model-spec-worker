@@ -82,7 +82,8 @@ def main() -> None:
     try:
         from native_capture import capture
         from native_output_bridge import publish
-        capture(world, adapter, site, selected["case_id"], args.output_dir, site_hash)
+        capture(client, world, adapter, built["owned"][0], site,
+                selected["case_id"], args.output_dir, site_hash)
         publish(args.output_dir, map_bytes=adapter.map_bytes(world), restored=True)
     finally:
         for actor in reversed(built["owned"]):

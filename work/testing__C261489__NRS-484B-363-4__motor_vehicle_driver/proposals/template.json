@@ -1,0 +1,142 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-363-4",
+  "parameter_refs": [
+    {
+      "kind": "controller",
+      "name": "pass_requested",
+      "range_or_domain": "true or false passing-route request"
+    },
+    {
+      "kind": "world_setup",
+      "name": "pass_location",
+      "range_or_domain": "inside or outside surveyed designated zone"
+    },
+    {
+      "kind": "world_setup",
+      "name": "school_session",
+      "range_or_domain": "independent school-calendar true or false"
+    },
+    {
+      "kind": "world_setup",
+      "name": "minutes_after_last_operation_end",
+      "range_or_domain": "source-clock minutes from prior school-operation end"
+    },
+    {
+      "kind": "world_setup",
+      "name": "minutes_before_next_operation_start",
+      "range_or_domain": "source-clock minutes until next school-operation start"
+    },
+    {
+      "kind": "world_setup",
+      "name": "during_pupil_class_hours",
+      "range_or_domain": "independent class schedule true or false"
+    },
+    {
+      "kind": "world_setup",
+      "name": "beacon_operational",
+      "range_or_domain": "original device operational state"
+    },
+    {
+      "kind": "world_setup",
+      "name": "beacon_alternating_flash",
+      "range_or_domain": "original two-lamp alternating indication"
+    },
+    {
+      "kind": "world_setup",
+      "name": "sign_limit_active",
+      "range_or_domain": "source-reviewed sign instruction"
+    }
+  ],
+  "quote": "The driver of a vehicle shall not overtake and pass another vehicle traveling in the same direction in an area designated as a school zone or school crossing zone except: (a) On a day on which the school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.",
+  "structure": {
+    "activation": {
+      "condition": "Driver overtakes and passes another same-direction vehicle inside a designated school zone or school crossing zone.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "effect": "Exception applicability requires original source review",
+        "replacement_obligation": "none claimed",
+        "source_clause": "On a day on which the school is not in session",
+        "trigger": "On a day on which the school is not in session"
+      },
+      {
+        "effect": "Exception applicability requires original source review",
+        "replacement_obligation": "none claimed",
+        "source_clause": "During the period from a half hour after school is no longer in operation to a half hour before school is next in operation",
+        "trigger": "During the period from a half hour after school is no longer in operation to a half hour before school is next in operation"
+      },
+      {
+        "effect": "Exception applicability requires original source review",
+        "replacement_obligation": "none claimed",
+        "source_clause": "If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect",
+        "trigger": "If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect"
+      },
+      {
+        "effect": "Exception applicability requires original source review",
+        "replacement_obligation": "none claimed",
+        "source_clause": "If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect",
+        "trigger": "If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone or school crossing zone indicates that the speed limit is not in effect"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Surveyed designated zone and school property adjacency need original map and sign sources.",
+        "phrase": "area designated as a school zone or school crossing zone"
+      },
+      {
+        "note": "Completion depends on original two-vehicle trajectories and body geometry.",
+        "phrase": "overtake and pass another vehicle traveling in the same direction"
+      },
+      {
+        "note": "Session depends on independent school calendar and civil time.",
+        "phrase": "school is not in session"
+      },
+      {
+        "note": "Operation endpoints and half-hour offsets need source clock and schedule.",
+        "phrase": "school is no longer in operation"
+      },
+      {
+        "note": "Sign, two or more yellow lights, alternating capability, governance and operation need original source/device readback.",
+        "phrase": "operational speed limit beacon"
+      },
+      {
+        "note": "Class hours require an independent pupil schedule joined to original local time.",
+        "phrase": "pupils of the school are in class"
+      },
+      {
+        "note": "Actual alternating indication needs synchronized lamp samples, not a requested setting.",
+        "phrase": "yellow lights of the speed limit beacon are not flashing"
+      },
+      {
+        "note": "Exact sign instruction and nonbeacon governance need original source review.",
+        "phrase": "sign designating the school zone or school crossing zone indicates that the speed limit is not in effect"
+      }
+    ],
+    "law_id": "NRS-484B-363-4",
+    "obligation": {
+      "description": "Driver shall not overtake and pass inside the designated area unless a stated exception applies.",
+      "numeric_conditions": [],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Independent school day, operation and pupil class hours, local time, beacon and sign intervals. Thirty-minute boundaries are measured without resolving legal equality.",
+      "numeric_conditions": [
+        {
+          "operator": ">=",
+          "unit": "min",
+          "value": 30,
+          "variable": "minutes_after_last_operation_end"
+        },
+        {
+          "operator": ">=",
+          "unit": "min",
+          "value": 30,
+          "variable": "minutes_before_next_operation_start"
+        }
+      ]
+    }
+  },
+  "template_id": "NRS-484B-363-4@motor_vehicle_driver"
+}

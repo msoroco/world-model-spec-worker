@@ -31,7 +31,7 @@ def bind():
         case_id = entry['case_id']
         suffix = case_id.split('__')[-1]
         folder = ROOT / 'cases' / suffix
-        compat = SCRATCH / ('compat-' + suffix + '-v3')
+        compat = SCRATCH / ('compat-' + suffix + ('-v4' if suffix == 'outside_tour_bus' else '-v3'))
         proof = json.loads((compat / 'compatibility.json').read_text())
         if proof['construction_sha256'] != entry['construction_sha256'] or not proof['passed']:
             raise ValueError('changed exact compatibility proof: ' + suffix)

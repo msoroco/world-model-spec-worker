@@ -41,6 +41,9 @@ def scene(name="active_beacon_pass"):
     if name == "sign_without_operational_beacon":
         source["timing_packet"].update(zone_designated_by_operational_beacon=False,
                                        beacon_operational=False, sign_limit_active=False)
+        source["timing_packet"]["lamp_state_samples"] = [
+            {"original_frame": i, "yellow_lamps_on": [False, False]} for i in range(4)
+        ]
     if name == "outside_zone":
         source["ego_route_xy"] = [[10, 8], [30, 8], [50, 8], [70, 8]]
     for probe, stamp in {

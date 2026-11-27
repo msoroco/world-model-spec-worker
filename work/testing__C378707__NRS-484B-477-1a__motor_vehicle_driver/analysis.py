@@ -32,7 +32,8 @@ def measure_business_alley(source, case_id):
     """Derive observed activity only from a hash-sealed original Native episode."""
     source = Path(source)
     checked = audit(source, case_id)
-    measured = measure_original_activity(source / "activity.jsonl", source / "activity-seal.json", case_id)
+    measured = measure_original_activity(source / "activity.jsonl", source / "activity-seal.json",
+                                         case_id, diagnostic=checked["frame_count"] == 9)
     return checked, measured
 
 
@@ -52,7 +53,8 @@ def build(attempt):
     activity = _rows(source / "activity.jsonl")
     trace = _rows(attempt / "trace.jsonl")
     video = _rows(attempt / "video_frames.jsonl")
-    if len(trace) != len(video) or len(video) != len(frames) or len(frames) != 900:
+    expected_count = checked["frame_count"]
+    if len(trace) != len(video) or len(video) != len(frames) or len(frames) != expected_count:
         raise ValueError("original business-alley episode incomplete")
     for index, (mapped, frame, state) in enumerate(zip(video, frames, activity)):
         if (mapped.get("video_frame") != index or mapped.get("carla_frame") != frame["native_frame"] or
@@ -114,7 +116,7 @@ def write_result(attempt, built):
     evidence = []
     for channel in construction["recording_description"]["channels"]:
         name = channel["name"]
-        if name not in values or len(values[name]) != 900:
+        if name not in values or len(values[name]) != len(activity):
             raise ValueError("mandatory original business-alley channel absent: " + name)
         destination = channels / (name + ".jsonl")
         destination.write_text("\n".join(json.dumps({"time_s": i / 20, "value": value}, sort_keys=True)
@@ -124,8 +126,12 @@ def write_result(attempt, built):
     if set(names) != set(values):
         raise ValueError("original business-alley channel inventory differs")
     context = channels / "context.json"
-    context.write_text(json.dumps({"site_sha256": sources["original-attempt/site.json"],
-                                   "legal_review": "unreviewed"}, sort_keys=True) + "\n")
+    site = json.loads((attempt / "original-attempt/site.json").read_text())
+    context.write_text(json.dumps({
+        "reviewed_business_alley_packet": {"source_sha256": sources["original-attempt/site.json"],
+                                           "source_kind": site["source_kind"],
+                                           "business_district_reviewed": site.get("business_district_reviewed", False)},
+        "legal_review": "unreviewed"}, sort_keys=True) + "\n")
     for item in construction["recording_description"].get("context_inputs", []):
         evidence.append({"name": item["name"], "unit": item["unit"],
                          "reference": str(context.relative_to(attempt))})
@@ -148,9 +154,10 @@ def write_result(attempt, built):
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": construction["recording_description"],
               "recording_evidence": evidence,
-              "realized_observables": {"original_halt_intervals_s": {
-                  "value": intervals["halt"], "unit": "s", "method": "source-sealed 20 Hz Native activity",
-                  "time_window": "full 45-second original episode", "statistic": "all intervals",
+              "realized_observables": {"sampled_halt_duration_s": {
+                  "value": sum(end - start for start, end in intervals["halt"]),
+                  "unit": "s", "method": "source-sealed 20 Hz activity",
+                  "time_window": "full diagnostic or original episode", "statistic": "sum of halt intervals",
                   "reference": "channels/original_vehicle_halt_history.jsonl", "source_refs": sources}},
               "physical_checks": {"setup": {"status": "unverified", "reason": "business-district source review pending"},
                                   "target": {"status": "unverified", "reason": "observed activity does not prove statutory cause"},

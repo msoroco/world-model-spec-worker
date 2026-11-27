@@ -19,22 +19,25 @@ def _number(value, label):
     _need(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value), 'invalid original '+label)
     return float(value)
 
-def measure_original_activity(history: Path, seal: Path, case_id: str) -> dict:
-    """Read one sealed 900-frame 20 Hz original Native activity history."""
+def measure_original_activity(history: Path, seal: Path, case_id: str, *, diagnostic=False) -> dict:
+    """Read sealed 20 Hz activity; nine-frame diagnostics stay explicitly synthetic."""
     _need(case_id.startswith(CASE_PREFIX), 'wrong exact business-alley case')
     history=Path(history);seal=Path(seal)
     _need(history.is_file() and seal.is_file() and not history.is_symlink() and not seal.is_symlink(), 'missing original activity source')
     inventory=json.loads(seal.read_text())
     raw=history.read_bytes()
-    _need(inventory.get('case_id')==case_id and inventory.get('format')=='original-alley-activity-seal', 'original activity identity mismatch')
+    expected_count=9 if diagnostic else 900
+    expected_format='diagnostic-alley-activity-seal' if diagnostic else 'original-alley-activity-seal'
+    expected_source='synthetic_fixture' if diagnostic else 'original_native'
+    _need(inventory.get('case_id')==case_id and inventory.get('format')==expected_format, 'original activity identity mismatch')
     _need(inventory.get('history_sha256')==hashlib.sha256(raw).hexdigest(), 'original activity hash changed')
-    _need(inventory.get('frame_count')==900 and inventory.get('rate_hz')==20, 'incomplete original activity inventory')
+    _need(inventory.get('frame_count')==expected_count and inventory.get('rate_hz')==20, 'incomplete original activity inventory')
     rows=[json.loads(line) for line in raw.splitlines()]
-    _need(len(rows)==900, 'incomplete original activity history')
+    _need(len(rows)==expected_count, 'incomplete original activity history')
     intervals={key:[] for key in ('halt','passenger_contact','goods_contact','driver_outside','door_open')}
     original_speeds=[];positions=[];business=[];ordinance=[]
     for index,row in enumerate(rows):
-        _need(row.get('source_kind')=='original_native' and row.get('frame')==index and row.get('case_id')==case_id, 'original activity frame identity mismatch')
+        _need(row.get('source_kind')==expected_source and row.get('frame')==index and row.get('case_id')==case_id, 'original activity frame identity mismatch')
         t=_number(row.get('time_s'),'frame time')
         _need(abs(t-index/20)<1e-5, 'original activity time discontinuity')
         speed=_number(row.get('ego_speed_mps'),'vehicle speed')
@@ -57,4 +60,4 @@ def measure_original_activity(history: Path, seal: Path, case_id: str) -> dict:
             if index!=last+1:runs.append([start/20,(last+1)/20]);start=index
             last=index
         runs.append([start/20,(last+1)/20]);return runs
-    return {'format':'original-alley-activity-measurements','case_id':case_id,'history_sha256':hashlib.sha256(raw).hexdigest(),'frame_count':900,'rate_hz':20,'original_speed_min_mps':min(original_speeds),'original_speed_max_mps':max(original_speeds),'original_start_xy_m':positions[0],'original_end_xy_m':positions[-1],'business_alley_frames':sum(business),'ordinance_applicable_frames':sum(ordinance),'intervals_s':{key:spans(indices) for key,indices in intervals.items()},'legal_conclusion':'unreviewed'}
+    return {'format':'diagnostic-alley-activity-measurements' if diagnostic else 'original-alley-activity-measurements','case_id':case_id,'history_sha256':hashlib.sha256(raw).hexdigest(),'frame_count':expected_count,'rate_hz':20,'original_speed_min_mps':min(original_speeds),'original_speed_max_mps':max(original_speeds),'original_start_xy_m':positions[0],'original_end_xy_m':positions[-1],'business_alley_frames':sum(business),'ordinance_applicable_frames':sum(ordinance),'intervals_s':{key:spans(indices) for key,indices in intervals.items()},'legal_conclusion':'unreviewed'}

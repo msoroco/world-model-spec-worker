@@ -72,6 +72,9 @@ class TimingTests(unittest.TestCase):
         sample = packet()
         sample["zone_designated_by_operational_beacon"] = False
         sample["beacon_operational"] = False
+        sample["lamp_state_samples"] = [
+            {"original_frame": i, "yellow_lamps_on": [False, False]} for i in range(4)
+        ]
         self.assertFalse(derive(sample)["zone_designated_by_operational_beacon"])
         bad = copy.deepcopy(sample)
         bad["zone_designated_by_operational_beacon"] = True

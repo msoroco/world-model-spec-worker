@@ -61,7 +61,8 @@ def capture(adapter, config: dict, site_path: Path, output: Path) -> dict:
     owned = ()
     restored = False
     try:
-        scene = construct(adapter, site, case)
+        scene = construct(adapter, site, case,
+                          config.get("control", {}).get("officer_lateral_offset_m", 0.0))
         owned = scene["actors"]
         cameras = adapter.attach_cameras(owned, config["cameras"])
         if set(cameras) != set(VIEWS):
@@ -140,11 +141,15 @@ def capture(adapter, config: dict, site_path: Path, output: Path) -> dict:
     sources.update("original-attempt/" + value["path"]
                    for value in sealed_site["sources"].values())
     sources.update(name + ".mkv" for name in (*VIEWS, "raw"))
+    source_hashes = {name: _sha((output / name).read_bytes()) for name in sorted(sources)}
     _write(output / "capture-seal.json", {
         "format": "c157964-original-native-capture-seal-v1",
         "case_id": case_id, "frame_count": len(rows),
+        "provenance_kind": "native", "diagnostic_fixture": False,
         "events": ["capture_finished", "encoders_closed", "restoration_verified"],
-        "source_sha256": {name: _sha((output / name).read_bytes()) for name in sorted(sources)},
+        "source_sha256": source_hashes, "sources": source_hashes,
+        "native_revision": {"construction_sha256": _sha((output / "construction.json").read_bytes()),
+                            "runner_sha256": _sha((output / "runner.py").read_bytes())},
         "physical_acceptance_claimed": False, "legal_judgment": None})
     return {"case_id": case_id, "frame_count": len(rows),
             "capture_seal_sha256": _sha((output / "capture-seal.json").read_bytes()),

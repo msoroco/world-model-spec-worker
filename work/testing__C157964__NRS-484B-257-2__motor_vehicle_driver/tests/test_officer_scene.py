@@ -14,6 +14,7 @@ def site():
            "officer_controls_traffic": True,
            "ego_route_xy": [[-15, 0], [0, 0], [15, 0]],
            "other_spawn_xy": [0, -15], "officer_spawn_xy": [4, -4],
+           "officer_lateral_offset_limit_m": 1.5,
            "intersection_entry_station_m": 0, "upstream_reference_station_m": -3,
            "other_vehicle_obligated_to_stop_or_yield": False}
     for key in ("jurisdiction", "intersection_geometry", "entrance_controls",
@@ -77,6 +78,13 @@ class OfficerSceneTest(unittest.TestCase):
         self.assertEqual(adapter.calls[-3:], [("destroy", "officer"),
                                               ("destroy", "other"),
                                               ("destroy", "ego")])
+
+    def test_reviewed_fallback_moves_officer_only(self):
+        adapter = Adapter()
+        construct(adapter, site(), CASES[0], officer_lateral_offset_m=1.0)
+        self.assertIn(("spawn_officer", (4, -3.0)), adapter.calls)
+        with self.assertRaisesRegex(ValueError, "exceeds"):
+            construct(Adapter(), site(), CASES[0], officer_lateral_offset_m=2.0)
 
 
 if __name__ == "__main__":

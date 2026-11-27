@@ -69,6 +69,8 @@ def derive(packet: dict) -> dict:
         for left, right in zip(lights, lights[1:])
         for i in range(count) for j in range(count) if i != j
     )
+    if alternating_observed and not packet["beacon_operational"]:
+        raise ValueError("nonoperational beacon cannot have original alternating indication")
     after_end_min = (now - end).total_seconds() / 60
     before_start_min = (start - now).total_seconds() / 60
     # Equality is a measured boundary. Its legal treatment stays unresolved.

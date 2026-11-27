@@ -27,6 +27,10 @@ def audit(path, case_id, *, require_native_attestation=False):
         raise ValueError("wrong exact business-alley case")
     root = Path(path)
     inventory = _json(root / "inventory.json")
+    diagnostic = inventory.get("source_kind") == "synthetic_fixture"
+    if inventory.get("diagnostic_fixture") is True and require_native_attestation:
+        raise ValueError("diagnostic fixture cannot attest physical Native capture")
+    count = 9 if diagnostic else FRAME_COUNT
     expected = inventory.get("source_sha256")
     if not isinstance(expected, dict) or set(expected) != {
             "site.json", "plan.json", "actors.json", "activity-seal.json",
@@ -43,12 +47,12 @@ def audit(path, case_id, *, require_native_attestation=False):
     if (inventory.get("case_id") != case_id or plan.get("case_id") != case_id or
             site.get("case_id") != case_id or frame_map.get("case_id") != case_id):
         raise ValueError("saved original case identity differs")
-    if (inventory.get("source_kind") != "original_native" or
-            inventory.get("frame_count") != FRAME_COUNT or inventory.get("rate_hz") != 20):
+    if (inventory.get("source_kind") != ("synthetic_fixture" if diagnostic else "original_native") or
+            inventory.get("frame_count") != count or inventory.get("rate_hz") != 20):
         raise ValueError("saved original inventory incomplete")
     if require_native_attestation and inventory.get("diagnostic_fixture") is not False:
         raise ValueError("diagnostic fixture cannot attest physical Native capture")
-    if not isinstance(frame_map.get("frames"), list) or len(frame_map["frames"]) != FRAME_COUNT:
+    if not isinstance(frame_map.get("frames"), list) or len(frame_map["frames"]) != count:
         raise ValueError("saved original frame map incomplete")
     for index, row in enumerate(frame_map["frames"]):
         if row.get("frame") != index or abs(row.get("time_s", -1) - index / 20) > 1e-5:
@@ -64,9 +68,11 @@ def audit(path, case_id, *, require_native_attestation=False):
         raise ValueError("saved map source binding differs")
     if hashlib.sha256((root / "road.xodr").read_bytes()).hexdigest() != inventory["map_sha256"]:
         raise ValueError("saved Native map hash differs")
-    if not isinstance(inventory.get("media"), dict) or set(inventory["media"]) != CAMERAS:
+    if diagnostic and inventory.get("media") != {}:
+        raise ValueError("diagnostic camera inventory must be generated separately")
+    if not diagnostic and (not isinstance(inventory.get("media"), dict) or set(inventory["media"]) != CAMERAS):
         raise ValueError("saved original four-camera inventory incomplete")
-    for name in CAMERAS:
+    for name in (() if diagnostic else CAMERAS):
         media = inventory["media"][name]
         filename = name + ".zip"
         if media.get("path") != filename:
@@ -76,7 +82,7 @@ def audit(path, case_id, *, require_native_attestation=False):
             raise ValueError("original camera source hash differs: " + name)
         with zipfile.ZipFile(target) as archive:
             names = archive.namelist()
-            if len(names) != FRAME_COUNT or len(set(names)) != FRAME_COUNT:
+            if len(names) != count or len(set(names)) != count:
                 raise ValueError("original camera frames incomplete: " + name)
             for index, entry in enumerate(names):
                 native_frame = frame_map["frames"][index]["native_frame"]
@@ -85,11 +91,12 @@ def audit(path, case_id, *, require_native_attestation=False):
     activity = root / "activity.jsonl"
     if hashlib.sha256(activity.read_bytes()).hexdigest() != inventory.get("activity_sha256"):
         raise ValueError("saved original activity source hash differs")
-    measured = measure_original_activity(activity, root / "activity-seal.json", case_id)
+    measured = measure_original_activity(activity, root / "activity-seal.json", case_id,
+                                         diagnostic=diagnostic)
     if measured != _json(root / "activity-measurement.json"):
         raise ValueError("saved original activity measurement differs")
     return {"case_id": case_id, "structural_status": "passed",
-            "frame_count": FRAME_COUNT, "camera_count": len(CAMERAS),
+            "frame_count": count, "camera_count": 0 if diagnostic else len(CAMERAS),
             "diagnostic_fixture": inventory["diagnostic_fixture"],
             "physical_completion": False, "legal_conclusion": "unreviewed",
             "activity_sha256": inventory["activity_sha256"]}

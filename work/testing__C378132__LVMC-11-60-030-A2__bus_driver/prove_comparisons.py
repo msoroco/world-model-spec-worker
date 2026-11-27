@@ -14,7 +14,7 @@ def main():
     reports={};hashes={}
     for case in plan['cases']:
         suffix=case['case_id'].split('__')[-1]
-        original=SCRATCH/('compat-'+suffix+'-v3')/'analysis-report.json'
+        original=SCRATCH/('compat-'+suffix+('-v4' if suffix=='outside_tour_bus' else '-v3'))/'analysis-report.json'
         saved=ROOT/'cases'/suffix/'diagnostic-analysis-report.json'
         saved.write_bytes(original.read_bytes())
         compat=json.loads((ROOT/'cases'/suffix/'primary-compatibility.json').read_text())

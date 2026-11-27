@@ -35,6 +35,7 @@ def build():
                             "failure_condition": "primary approach cannot realize the original halt, actor contact or complete views"},
             }],
             "measurement_contract": "measurement-" + variant + ".json",
+            "fixture_recipe": "work/" + ASSIGNMENT + "/diagnostic-" + variant + "-recipe.json",
             "measurement_procedure": {"entrypoint": "analysis.py",
                                       "method": "source-sealed original passenger, goods, driver and vehicle activity"},
             "native_handoff": {"python_env_var": "CARLA_PYTHON", "host_env_var": "CARLA_HOST",

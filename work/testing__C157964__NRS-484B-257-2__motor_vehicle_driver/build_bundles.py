@@ -75,8 +75,9 @@ def main():
                  {"path": "case-plan.json", "content": plan_path.read_text(),
                   "source": f"work/{ROOT.name}/case-plan.json"},
                  {"path": "tests/test_bundle.py", "content": TEST}]
-        for name in ("runner.py", "officer_scene.py", "officer_site_packet.py",
-                     "officer_native_capture.py", "officer_control_measurement.py"):
+        for name in ("runner.py", "analysis.py", "officer_scene.py",
+                     "officer_site_packet.py", "officer_native_capture.py",
+                     "officer_motion.py", "officer_control_measurement.py"):
             files.append({"path": name, "content": (ROOT / name).read_text(),
                           "source": f"work/{ROOT.name}/{name}"})
         construction = {"case_id": case_id, "cell_id": plan["cell_id"],
@@ -84,7 +85,7 @@ def main():
                         "candidate_id": "primary", "entrypoint": "runner.py",
                         "files": files, "recording_description": RECORDING,
                         "measurement_plan": {"case_id": case_id, "original_frames": 900,
-                                             "procedure": "officer_control_measurement.py",
+                                             "procedure": "analysis.py",
                                              "legal_judgment": "unresolved",
                                              "source_packets": ["reviewed_officer_site_packet",
                                                                 "history", "frame_map",
@@ -100,9 +101,29 @@ def main():
         relative = f"cases/{suffix}/construction.json"
         digest = write(ROOT / relative, construction)
         (ROOT / f"cases/{suffix}/config.json").write_text(files[0]["content"])
+        requirements = []
+        for index, disposition in enumerate(plan["requirement_dispositions"]):
+            requirements.append({"disposition_index": index,
+                                 "requirement": disposition["requirement"],
+                                 "source": disposition["source"],
+                                 "kind": "measured", "method": "build",
+                                 "value_type": "object",
+                                 "output_key": ("officer_exception_context" if index == 0 else
+                                                "officer_intersection_motion"),
+                                 "inputs": ["original-attempt/history.json",
+                                            "original-attempt/frame-map.json",
+                                            "original-attempt/site-packet.json",
+                                            "original-attempt/officer-review.json"]})
+        write(ROOT / f"measurement-{suffix}.json", {
+            "format": "worker-measurement-contract", "case_id": case_id,
+            "requirements": requirements,
+            "negative": {"remove": ["original-attempt/officer-review.json"],
+                         "error_contains": "Missing required source: original-attempt/officer-review.json"}})
         rows.append({"case_id": case_id, "kind": "delivery",
                      "construction": relative, "construction_sha256": digest,
                      "diagnostic_only": True,
+                     "measurement_contract": f"measurement-{suffix}.json",
+                     "measurement_procedure": {"entrypoint": "analysis.py"},
                      "native_handoff": {"python_env_var": "CARLA_PYTHON",
                                         "host_env_var": "CARLA_HOST",
                                         "port_env_var": "CARLA_PORT"},

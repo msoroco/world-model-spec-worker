@@ -27,7 +27,7 @@ class CaptureAdapter(Adapter):
     def tick_and_read(self, actors, cameras):
         index = self.index
         self.index += 1
-        views = {name: b"\x89PNG\r\n\x1a\n" + bytes([index]) for name in VIEWS}
+        views = {name: b"\x89PNG\r\n\x1a\n" + bytes([index % 256]) for name in VIEWS}
         if self.missing and index == 1:
             del views[self.missing]
         return {"frame": 100 + index, "time_s": 4 + index / 20,
@@ -62,7 +62,11 @@ class OriginalCaptureTest(unittest.TestCase):
             root = Path(temp)
             packet = test_officer_site_packet.OfficerSitePacketTest().packet(root)
             adapter = CaptureAdapter()
-            out = capture(adapter, self.make_config(), packet, root / "attempt")
+            attempt = root / "attempt"
+            attempt.mkdir()
+            (attempt / "construction.json").write_text("{}")
+            (attempt / "runner.py").write_text("pass\n")
+            out = capture(adapter, self.make_config(), packet, attempt)
             self.assertEqual(out["frame_count"], 3)
             self.assertTrue(adapter.closed)
             self.assertEqual(len(json.loads((root / "attempt/original-attempt/frame-map.json").read_text())), 3)
@@ -74,8 +78,12 @@ class OriginalCaptureTest(unittest.TestCase):
             root = Path(temp)
             packet = test_officer_site_packet.OfficerSitePacketTest().packet(root)
             adapter = CaptureAdapter(missing="approach")
+            attempt = root / "attempt"
+            attempt.mkdir()
+            (attempt / "construction.json").write_text("{}")
+            (attempt / "runner.py").write_text("pass\n")
             with self.assertRaisesRegex(ValueError, "camera join"):
-                capture(adapter, self.make_config(), packet, root / "attempt")
+                capture(adapter, self.make_config(), packet, attempt)
             self.assertTrue(adapter.closed)
             self.assertEqual(adapter.calls[-3:], [("destroy", "officer"),
                                                   ("destroy", "other"),
