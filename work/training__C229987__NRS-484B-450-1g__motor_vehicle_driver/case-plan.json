@@ -29,7 +29,7 @@
       "requirement": "text-0",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "statutory_text: A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "evidence_or_gap": "statutory_text: A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: | Selected Native construction and CPU source diagnostics; physical and original legal context pending.",
       "case_ids": [
         "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
         "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
@@ -40,7 +40,7 @@
       "requirement": "text-1",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "statutory_text: Within 30 feet upon the approach to any official traffic-control signal located at the side of a highway. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "evidence_or_gap": "statutory_text: Within 30 feet upon the approach to any official traffic-control signal located at the side of a highway. | Selected Native construction and CPU source diagnostics; physical and original legal context pending.",
       "case_ids": [
         "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
         "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
@@ -51,7 +51,7 @@
       "requirement": "reviewed-scope-0",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "reviewed_scope: Destination stopping or standing on the signal approach. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
+      "evidence_or_gap": "reviewed_scope: Destination stopping or standing on the signal approach. | Selected Native construction and CPU source diagnostics; physical and original legal context pending.",
       "case_ids": [
         "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
         "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
@@ -63,7 +63,7 @@
     {
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
       "target_law_id": "NRS-484B-450-1g",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_pending_original_source_review",
       "target_type": "boundary_probe",
       "comparison_variable": "stop_distance_on_signal_approach",
       "comparison_unit": "ft",
@@ -76,12 +76,24 @@
         "text-1",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": true,
+      "selection_reason": "Exact requested 25 ft signal-approach stop attempt; actual four-corner distance, official signal/highway status and all exceptions require source review.",
+      "camera_plan": {
+        "duration_seconds": 30,
+        "fps": 20,
+        "frames": 600,
+        "cameras": [
+          "overview",
+          "approach",
+          "reference_corner",
+          "driver_reference"
+        ]
+      }
     },
     {
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
       "target_law_id": "NRS-484B-450-1g",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_pending_original_source_review",
       "target_type": "boundary_probe",
       "comparison_variable": "stop_distance_on_signal_approach",
       "comparison_unit": "ft",
@@ -94,12 +106,24 @@
         "text-1",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": true,
+      "selection_reason": "Exact requested 30 ft signal-approach stop attempt; actual four-corner distance, official signal/highway status and all exceptions require source review.",
+      "camera_plan": {
+        "duration_seconds": 30,
+        "fps": 20,
+        "frames": 600,
+        "cameras": [
+          "overview",
+          "approach",
+          "reference_corner",
+          "driver_reference"
+        ]
+      }
     },
     {
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35",
       "target_law_id": "NRS-484B-450-1g",
-      "planning_status": "unverified_definition",
+      "planning_status": "selected_pending_original_source_review",
       "target_type": "boundary_probe",
       "comparison_variable": "stop_distance_on_signal_approach",
       "comparison_unit": "ft",
@@ -112,7 +136,19 @@
         "text-1",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": true,
+      "selection_reason": "Exact requested 35 ft signal-approach stop attempt; actual four-corner distance, official signal/highway status and all exceptions require source review.",
+      "camera_plan": {
+        "duration_seconds": 30,
+        "fps": 20,
+        "frames": 600,
+        "cameras": [
+          "overview",
+          "approach",
+          "reference_corner",
+          "driver_reference"
+        ]
+      }
     }
   ],
   "comparisons": [
@@ -124,107 +160,144 @@
         "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35"
       ],
       "deliberate_differences": [
-        "stop_distance_on_signal_approach"
+        "requested front-edge distance 25, 30 or 35 ft; actual distance is measured independently"
       ],
       "fixed_conditions": [
-        "cell geometry",
-        "actor",
-        "applicable legal context",
-        "participants except comparison target",
-        "traffic controls",
-        "weather except explicitly separate weather branch",
-        "controller behavior except comparison variable",
-        "capture profile"
+        "authored C229987 road and Native signal specification",
+        "same ego blueprint, approach lane and voluntary stop controller except target front-edge position",
+        "same 600-frame 20 Hz four-camera capture",
+        "original official/highway and exception status reviewed separately in each source"
       ],
-      "status": "planned_unverified",
+      "status": "selected_pending_original_measurement",
       "measurement_method": "Measure vehicle footprint to signal along approach; record stop duration and reason."
     }
   ],
   "observations": [
     {
       "name": "ego_pose",
-      "unit": "m,deg",
+      "unit": "m",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "original four-corner footprint and actor pose"
     },
     {
       "name": "stop_distance_on_signal_approach",
-      "unit": "ft",
+      "unit": "m",
       "mandatory": true,
-      "purpose": "Measure vehicle footprint to signal along approach; record stop duration and reason."
+      "purpose": "front, centre and rear signal-station distances"
+    },
+    {
+      "name": "dev.traffic_signal",
+      "unit": "identifier",
+      "mandatory": true,
+      "purpose": "physical signal actor/governed lane"
+    },
+    {
+      "name": "dev.position",
+      "unit": "m",
+      "mandatory": true,
+      "purpose": "roadside signal position"
+    },
+    {
+      "name": "drv.standing_or_parked",
+      "unit": "proxy",
+      "mandatory": true,
+      "purpose": "low-speed samples, cause separately reviewed"
+    },
+    {
+      "name": "kin.speed",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Native post-tick speed"
     }
   ],
   "source_observation_mapping": {
     "drv.standing_or_parked": {
-      "evidence": "Proposed capture only: stopping, standing or parking. No Native channel or Core atom proof yet.",
+      "evidence": "Native signal_raw.json original frame/actor/footprint source and original context-survey.json review; diagnostic source is synthetic only.",
       "channels": [
-        "stop_distance_on_signal_approach"
+        "drv.standing_or_parked",
+        "kin.speed"
       ],
       "source_refs": [
-        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json"
+        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json",
+        "native/runner.py",
+        "native/finalize.py"
       ]
     },
     "dev.traffic_signal": {
-      "evidence": "Proposed capture only: the official traffic-control signal at the side of the highway. No Native channel or Core atom proof yet.",
+      "evidence": "Native signal_raw.json original frame/actor/footprint source and original context-survey.json review; diagnostic source is synthetic only.",
       "channels": [
-        "stop_distance_on_signal_approach"
+        "dev.traffic_signal"
       ],
       "source_refs": [
-        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json"
+        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json",
+        "native/runner.py",
+        "native/finalize.py"
       ]
     },
     "dev.position": {
-      "evidence": "Proposed capture only: its position, from which the 30 feet are measured. No Native channel or Core atom proof yet.",
+      "evidence": "Native signal_raw.json original frame/actor/footprint source and original context-survey.json review; diagnostic source is synthetic only.",
       "channels": [
-        "stop_distance_on_signal_approach"
+        "dev.position"
       ],
       "source_refs": [
-        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json"
+        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json",
+        "native/runner.py",
+        "native/finalize.py"
       ]
     },
     "rel.centre_distance": {
-      "evidence": "Proposed capture only: the distance from the vehicle to the signal on the approach side. No Native channel or Core atom proof yet.",
+      "evidence": "Native signal_raw.json original frame/actor/footprint source and original context-survey.json review; diagnostic source is synthetic only.",
       "channels": [
-        "stop_distance_on_signal_approach"
+        "rel.centre_distance"
       ],
       "source_refs": [
-        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json"
+        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json",
+        "native/runner.py",
+        "native/finalize.py"
       ]
     },
     "drv.approaching": {
-      "evidence": "Proposed capture only: 'upon the approach to' — the vehicle is on the approaching side. No Native channel or Core atom proof yet.",
+      "evidence": "Native signal_raw.json original frame/actor/footprint source and original context-survey.json review; diagnostic source is synthetic only.",
       "channels": [
-        "stop_distance_on_signal_approach"
+        "drv.approaching"
       ],
       "source_refs": [
-        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json"
+        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json",
+        "native/runner.py",
+        "native/finalize.py"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: the resting position. No Native channel or Core atom proof yet.",
+      "evidence": "Native signal_raw.json original frame/actor/footprint source and original context-survey.json review; diagnostic source is synthetic only.",
       "channels": [
-        "stop_distance_on_signal_approach"
+        "rel.occupies"
       ],
       "source_refs": [
-        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json"
+        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json",
+        "native/runner.py",
+        "native/finalize.py"
       ]
     },
     "drv.forced_halt": {
-      "evidence": "Proposed capture only: the traffic-conflict exception. No Native channel or Core atom proof yet.",
+      "evidence": "Native signal_raw.json original frame/actor/footprint source and original context-survey.json review; diagnostic source is synthetic only.",
       "channels": [
-        "stop_distance_on_signal_approach"
+        "drv.forced_halt"
       ],
       "source_refs": [
-        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json"
+        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json",
+        "native/runner.py",
+        "native/finalize.py"
       ]
     },
     "dev.human_direction": {
-      "evidence": "Proposed capture only: the officer exception. No Native channel or Core atom proof yet.",
+      "evidence": "Native signal_raw.json original frame/actor/footprint source and original context-survey.json review; diagnostic source is synthetic only.",
       "channels": [
-        "stop_distance_on_signal_approach"
+        "dev.human_direction"
       ],
       "source_refs": [
-        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json"
+        "inputs/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/assignment.json",
+        "native/runner.py",
+        "native/finalize.py"
       ]
     }
   },
@@ -259,5 +332,32 @@
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego and roadside signal",
+        "view": "overview",
+        "interval": "all 600 frames"
+      },
+      {
+        "subject": "ego and roadside signal",
+        "view": "approach",
+        "interval": "all 600 frames"
+      },
+      {
+        "subject": "ego and roadside signal",
+        "view": "reference_corner",
+        "interval": "all 600 frames"
+      },
+      {
+        "subject": "ego and roadside signal",
+        "view": "driver_reference",
+        "interval": "all 600 frames"
+      }
+    ]
+  }
 }

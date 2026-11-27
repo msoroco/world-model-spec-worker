@@ -57,10 +57,10 @@ def main():
             {'name': term['term'], 'unit': 'structured',
              'description': 'Original private-way/highway geometry, all actor bodies and frame joined road traffic'}
             for term in ASSIGNMENT['source_observation_terms']],
-            'context_inputs': [{'name': 'native_road_and_lane_survey', 'unit': 'source context',
+            'context_inputs': [{'name': 'private_way_and_highway', 'unit': 'source context',
                                 'description': 'Original private way and highway identity and topology'}],
             'sweep_dimensions': [], 'landmarks': [],
-            'recording_needs': [{'name': 'all_approaching_highway_vehicles', 'unit': 'structured',
+            'recording_needs': [{'name': 'drv.approaching', 'unit': 'structured',
                 'description': 'Every original highway actor body, velocity, entry and conflict sequence plus four-view pixels.'}],
             'limitations': [judgment['note'],
                 'Original Native motion, complete external traffic inventory, pixels and right-of-way judgment require independent review.']}})

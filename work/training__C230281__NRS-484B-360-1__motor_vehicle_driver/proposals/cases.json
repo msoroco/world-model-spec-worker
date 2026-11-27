@@ -6,6 +6,58 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "training__C230281__NRS-484B-360-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral unselected school-bus route context.",
+      "variable_assignments": {
+        "requested_speed_mph": {
+          "kind": "controller",
+          "unit": "mph",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "method": "Original Native post-tick school-bus pose joined to four cameras",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Actor identity and original route require source review"
+          },
+          {
+            "name": "school_bus_speed",
+            "unit": "mph",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "method": "Norm of original Native post-tick three-axis bus velocity",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms sampling; no invented legal tolerance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_bus_driver_and_pupil_trip_review",
+            "unit": "structured",
+            "method": "Independent original bus design, judged-driver join, pupil and trip-purpose review"
+          }
+        ],
+        "limitations": [
+          "Requested speed is not measured speed.",
+          "A bus asset label does not prove statutory school-bus status.",
+          "Pupils aboard alone do not prove to/from-school purpose.",
+          "Synthetic diagnostic review does not establish original facts or a legal verdict."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "A school bus",
+        "when transporting pupils to and from school"
+      ]
+    },
+    {
       "case_id": "training__C230281__NRS-484B-360-1__motor_vehicle_driver__53",
       "target_law_id": "NRS-484B-360-1",
       "target_type": "judgment_sweep",
@@ -22,10 +74,8 @@
         "requested_speed_mph"
       ],
       "unresolved_judgment_calls": [
-        "school-bus design",
-        "judged driver is bus driver",
-        "pupils aboard",
-        "to/from-school trip purpose"
+        "A school bus",
+        "when transporting pupils to and from school"
       ],
       "recording_description": {
         "channels": [
@@ -61,6 +111,11 @@
           "Pupils aboard alone do not prove to/from-school purpose.",
           "Synthetic diagnostic review does not establish original facts or a legal verdict."
         ]
+      },
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "original measured bus velocity against 55 mph statutory text",
+        "target_value_or_branch": 53
       }
     },
     {
@@ -80,10 +135,8 @@
         "requested_speed_mph"
       ],
       "unresolved_judgment_calls": [
-        "school-bus design",
-        "judged driver is bus driver",
-        "pupils aboard",
-        "to/from-school trip purpose"
+        "A school bus",
+        "when transporting pupils to and from school"
       ],
       "recording_description": {
         "channels": [
@@ -119,6 +172,11 @@
           "Pupils aboard alone do not prove to/from-school purpose.",
           "Synthetic diagnostic review does not establish original facts or a legal verdict."
         ]
+      },
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "original measured bus velocity against 55 mph statutory text",
+        "target_value_or_branch": 55
       }
     },
     {
@@ -138,10 +196,8 @@
         "requested_speed_mph"
       ],
       "unresolved_judgment_calls": [
-        "school-bus design",
-        "judged driver is bus driver",
-        "pupils aboard",
-        "to/from-school trip purpose"
+        "A school bus",
+        "when transporting pupils to and from school"
       ],
       "recording_description": {
         "channels": [
@@ -177,9 +233,35 @@
           "Pupils aboard alone do not prove to/from-school purpose.",
           "Synthetic diagnostic review does not establish original facts or a legal verdict."
         ]
+      },
+      "probe": {
+        "primary_variable": "requested_speed_mph",
+        "comparison_or_standard": "original measured bus velocity against 55 mph statutory text",
+        "target_value_or_branch": 57
       }
     }
   ],
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C230281__NRS-484B-360-1__motor_vehicle_driver__trip_source_review",
+      "target_law_id": "NRS-484B-360-1",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "A school bus",
+          "note": "The judged motor-vehicle driver must be source-joined to an independently confirmed school bus."
+        },
+        {
+          "phrase": "when transporting pupils to and from school",
+          "note": "Original pupils aboard and school-trip purpose require independent source review."
+        }
+      ],
+      "rationale": "The 53/55/57 mph triplet is a controlled request contrast; original bus driver, pupil and trip review remain open.",
+      "missing_inputs": [
+        "Original school-bus design and driver join; original pupil camera pixels",
+        "Independent school trip purpose source"
+      ]
+    }
+  ],
   "sweeps_expanded": true
 }

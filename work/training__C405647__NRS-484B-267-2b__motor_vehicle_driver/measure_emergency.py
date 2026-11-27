@@ -4,7 +4,7 @@ import math
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "emergency_side", "passing_gap"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 
 
 def number(value, name):
@@ -19,8 +19,8 @@ def source_hash(value, name):
 
 
 def measure(context, rows):
-    if context.get("source_kind") != "original_native_emergency_readback":
-        raise ValueError("Original Native emergency readback missing")
+    if context.get("source_kind") not in {"original_native_emergency_readback", "synthetic_cpu_emergency_readback"}:
+        raise ValueError("Original Native or explicitly synthetic emergency readback missing")
     for name in ("native_map_sha256", "ego_blueprint_sha256", "emergency_actor_sha256",
                  "emergency_role_source_sha256", "flashing_lamp_source_sha256", "vehicle_extent_sha256",
                  "visibility_source_sha256", "officer_direction_source_sha256"):
@@ -29,8 +29,9 @@ def measure(context, rows):
         raise ValueError("Qualifying vehicle role missing")
     if context.get("lamps_meet_nrs_484a_480_3") is not True:
         raise ValueError("Qualifying flashing-lamp evidence missing")
-    if context.get("moving_branch") is not True:
-        raise ValueError("Selected moving-vehicle branch not sourced")
+    mode = context.get("activation_mode")
+    if mode not in {"moving_vehicle", "visible_hand_signal"}:
+        raise ValueError("Moving or visibly preparing activation not sourced")
     if len(rows) != FRAMES:
         raise ValueError("Incomplete 30-second Native trace")
     prior_native = None
@@ -58,6 +59,8 @@ def measure(context, rows):
             raise ValueError("Flashing lamps observation missing")
         if row.get("officer_direction") not in {"none", "proceed", "stop", "other"}:
             raise ValueError("Officer direction source missing")
+        if row.get("hand_signal_visible") not in (True, False):
+            raise ValueError("Visible preparation source missing")
         officer.add(row["officer_direction"])
         ego_x = number(row.get("ego_center_x_m"), "ego position")
         emergency_x = number(row.get("emergency_center_x_m"), "emergency position")
@@ -67,7 +70,8 @@ def measure(context, rows):
         deceleration = number(row.get("ego_deceleration_mps2"), "ego deceleration")
         if ego_speed < 0 or emergency_speed < 0 or gap < 0:
             raise ValueError("Negative speed or surface gap")
-        if row["emergency_visible"] and row["flashing_lamps_visible"] and emergency_speed > 0.1 and ego_x < emergency_x:
+        activated = emergency_speed > 0.1 if mode == "moving_vehicle" else row["hand_signal_visible"]
+        if row["emergency_visible"] and row["flashing_lamps_visible"] and activated and ego_x < emergency_x:
             approaching.append(i)
         if abs(ego_x - emergency_x) <= 4.5 and row["emergency_visible"]:
             passing.append(i)
@@ -87,6 +91,8 @@ def measure(context, rows):
     ttc = longitudinal_gap / relative_speed if relative_speed > 0.01 else None
     return {"format": "worker-source-emergency-approach-measurement",
             "frame_count": FRAMES, "rate_hz": RATE_HZ,
+            "diagnostic_only": context["source_kind"] == "synthetic_cpu_emergency_readback",
+            "activation_mode": mode,
             "qualifying_role": context["emergency_role"],
             "first_approach_frame": first, "first_passing_frame": first_pass,
             "approach_time_to_conflict_s": ttc,

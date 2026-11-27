@@ -25,7 +25,20 @@
           },
           "changed_knobs": [
             "approach/reference_corner camera x minus 6 m and z plus 3 m"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "8f4bee03974bfbb3e8910449eb1f6ebe5f6a31350c6007579ddc5bc917287a32",
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c177626-entry .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C177626__NRS-484B-260__motor_vehicle_driver/execution-manifest.json --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_a --output .runtime-work/c177626-entry/offline-probe_a-fallback1-v4 --candidate fallback1",
+            "log": "native/proofs/probe_a/fallback1/offline.log",
+            "log_sha256": "5e0dc400fe768e57c2c5974f7f9ced4e8ed139396a486fe13dc3eb039cd4bbdf"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/probe_a/fallback1/compatibility.json",
+            "sha256": "123ebc0819c4f8ad7f5162ccbf8e1dbc1af29f7b6c201420d2f7f9fc5c5c31f0",
+            "log": "native/proofs/probe_a/fallback1/public-analysis.log",
+            "negative_log": "native/proofs/probe_a/fallback1/negative-analysis.log"
+          }
         }
       ],
       "measurement_procedure": {
@@ -228,12 +241,62 @@
           ]
         }
       },
-      "offline": {},
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {}
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "5820c2d6567557ad7ea051d6e6e9f14b7c8c6ffe8bfe86ce52781943f1b8b796",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c177626-entry .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C177626__NRS-484B-260__motor_vehicle_driver/execution-manifest.json --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_a --output .runtime-work/c177626-entry/offline-probe_a-primary-v4",
+        "log": "native/proofs/probe_a/primary/offline.log",
+        "log_sha256": "e477ce0eafddd82b12c2b0edef26da1dbb5917a9f4e38c6de45f5a6164199ac0"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/probe_a/primary/compatibility.json",
+        "sha256": "eb191db2fdd2e9d7358cb7e94ae45c01cc00b6d3a037f1565b8f70dff58a50f4",
+        "log": "native/proofs/probe_a/primary/public-analysis.log",
+        "negative_log": "native/proofs/probe_a/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/proofs/probe_a/primary/negative-analysis.log",
+        "log_sha256": "6a1437cb5e54f624338dae0067b7c77385d87e6cfe9350f7e0f0d3d715e464fa"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C177626__NRS-484B-260__motor_vehicle_driver/execution-manifest.json --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_a/saved.log",
+        "test_log_sha256": "642b5f40861dd4326020a17231192a19448fa1402082888479f988386e712d69",
+        "processing_receipt": "native/proofs/probe_a/processing.json",
+        "processing_receipt_sha256": "3bee0a6afcd5b2bb8e892efd0443a1e6243edab727af240de3c43ce681cff3c2"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_a/physical/proof.json",
+        "sha256": "de66b85ef1ead803d9e8e90557aaa0ec844a79eca61b67d4673e053224de529b"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C177626__NRS-484B-260__motor_vehicle_driver__probe_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5d94de58114b7a1cfc59a954aa614d91c824263e0fbacf790f15448d872a58ea",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C177626__NRS-484B-260__motor_vehicle_driver/delivery_audit.py --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_a --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_a/delivery-positive.log",
+        "test_log_sha256": "df08535153e3030c48b949e9714b640929ac6594964e8228c71421650365d12f",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C177626__NRS-484B-260__motor_vehicle_driver/delivery_audit.py --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_a --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_a/delivery-negative.log",
+        "negative_log_sha256": "a0e326d7cad786c14ec81534b8132934e6148d0683a09a5df80a80e8bad2ea7d"
+      }
     },
     {
       "case_id": "training__C177626__NRS-484B-260__motor_vehicle_driver__probe_b",
@@ -256,7 +319,20 @@
           },
           "changed_knobs": [
             "approach/reference_corner camera x minus 6 m and z plus 3 m"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "69e1a37fc0bf232522e2f1dc26d6476bf64382b2d3ded7712bcf0a1d384ed82f",
+            "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c177626-entry .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C177626__NRS-484B-260__motor_vehicle_driver/execution-manifest.json --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_b --output .runtime-work/c177626-entry/offline-probe_b-fallback1-v4 --candidate fallback1",
+            "log": "native/proofs/probe_b/fallback1/offline.log",
+            "log_sha256": "0ed76c1763705a427490044c3383ebcd6c29c7850015d92859a3d5ad6e1b2751"
+          },
+          "compatibility": {
+            "receipt": "native/proofs/probe_b/fallback1/compatibility.json",
+            "sha256": "92f128190f4238050e965c4cb93a044d6685c3150b2d1833b959f8027e3c73f8",
+            "log": "native/proofs/probe_b/fallback1/public-analysis.log",
+            "negative_log": "native/proofs/probe_b/fallback1/negative-analysis.log"
+          }
         }
       ],
       "measurement_procedure": {
@@ -459,12 +535,62 @@
           ]
         }
       },
-      "offline": {},
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {}
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "fa5f05f2232c54a91f95b824613e6733422da8e01870533a35133afee2fe591e",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c177626-entry .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C177626__NRS-484B-260__motor_vehicle_driver/execution-manifest.json --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_b --output .runtime-work/c177626-entry/offline-probe_b-primary-v4",
+        "log": "native/proofs/probe_b/primary/offline.log",
+        "log_sha256": "564856910af9f3cb0bd46d88c9f8ecd384f60d680cd7c5de65b10131d4dd2f4b"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/probe_b/primary/compatibility.json",
+        "sha256": "c21f4258dcf9907f194c8056c53359ea73cef9ba75fc56c6e9e3851539949f8c",
+        "log": "native/proofs/probe_b/primary/public-analysis.log",
+        "negative_log": "native/proofs/probe_b/primary/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/proofs/probe_b/primary/negative-analysis.log",
+        "log_sha256": "781d7bb02632a822038a3af2ce3ee94009451466cd12af616fd271b442f05431"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C177626__NRS-484B-260__motor_vehicle_driver/execution-manifest.json --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_b/saved.log",
+        "test_log_sha256": "417b8320388bb5090b8457bd9c8d37a7f264f278c7df3bae08e0bd82c8190d2f",
+        "processing_receipt": "native/proofs/probe_b/processing.json",
+        "processing_receipt_sha256": "317bbab732b378281ef234dfeac378adb445c26e7f4c3609b6aacf4d4cf366b8"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_b/physical/proof.json",
+        "sha256": "7005501c3faa9cbbad34d598019760df46e1ab53b5fcbcaeb58295079bf8efc4"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C177626__NRS-484B-260__motor_vehicle_driver__probe_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5d94de58114b7a1cfc59a954aa614d91c824263e0fbacf790f15448d872a58ea",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C177626__NRS-484B-260__motor_vehicle_driver/delivery_audit.py --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_b --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_b/delivery-positive.log",
+        "test_log_sha256": "df08535153e3030c48b949e9714b640929ac6594964e8228c71421650365d12f",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C177626__NRS-484B-260__motor_vehicle_driver/delivery_audit.py --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_b --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_b/delivery-negative.log",
+        "negative_log_sha256": "a0e326d7cad786c14ec81534b8132934e6148d0683a09a5df80a80e8bad2ea7d"
+      }
     }
   ]
 }

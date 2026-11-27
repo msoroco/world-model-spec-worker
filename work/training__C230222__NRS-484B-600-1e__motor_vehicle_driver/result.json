@@ -1,15 +1,54 @@
 {
   "assignment_id": "training__C230222__NRS-484B-600-1e__motor_vehicle_driver",
   "input_sha256": "a53629a4ceb48a34a38878709419ed7be8bf778c7d72e1854fc42c10aa5c29bd",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Saved-source 30 s speed meter and seven CPU diagnostics pass, but accepted recording receipts are absent and original equivalence is unverified. Exact selected construction, four-camera compatibility, saved processing, semantic stages and independent audits remain worker-owned CPU work.",
-  "readiness_kind": "implementation_checkpoint",
+  "reason": "Three exact selected 30-second speed cases plus one fallback pass current-runtime CPU offline, public positive/missing-source negative, recorded-only, semantic, synthetic physical, independent delivery and comparison proofs. Original Native speed, pixels, physical and legal acceptance remain for local delivery.",
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 3,
-  "cases_selected": 0,
-  "candidate_plans_proven": 0,
-  "comparison_audits_passed": 0,
+  "cases_selected": 3,
+  "candidate_plans_proven": 4,
+  "comparison_audits_passed": 1,
   "carla_executed": false,
   "recordings_accepted": 0,
-  "speed_measurement_proof": "native/speed-measurement-proof.json"
+  "speed_measurement_proof": "native/speed-measurement-proof.json",
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230222__NRS-484B-600-1e__motor_vehicle_driver --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": "PYTHONPATH=work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver .venv-cpu/bin/python -B -m unittest discover -s work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/tests -p test_bundle.py -v",
+      "exit_code": 0,
+      "log": "native/root-bundle-tests.log",
+      "sha256": "e4a4958b2883d36271606825e3f6978898b02922b2fd01b6159146dcf2f93a73"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B -m unittest discover -s work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/native -p test_comparison_audit.py -v",
+      "exit_code": 0,
+      "log": "native/comparison-audit-tests.log",
+      "sha256": "a7244322210a4156227d8b971c68b735bad4fcfccca1261f29bba13f99d0d107"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B -m unittest discover -s work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/native -p test_speed_measurement.py -v",
+      "exit_code": 0,
+      "log": "native/speed-measurement-test.log",
+      "sha256": "5e75d64111dff79bb72327f0f829c0624def7e6190df7c6b06e879a731b31383"
+    }
+  ],
+  "cpu_proof_counts": {
+    "selected_primary_offline": 3,
+    "selected_primary_public_positive": 3,
+    "selected_primary_public_missing_source_negative": 3,
+    "selected_primary_saved_only": 3,
+    "selected_primary_delivery_audit_positive": 3,
+    "selected_primary_delivery_audit_missing_source_negative": 3,
+    "selected_primary_physical_fixture": 3,
+    "tested_fallback_offline_public_positive_negative": 1,
+    "independent_comparison_audits": 1
+  },
+  "execution_manifest_sha256": "a2be5ed51a240f1b41690b0019e8e7a58d415551f513687d48f743f07f6a3bd8",
+  "strict_gate": {
+    "command": ".venv-cpu/bin/python -B worker_check.py --assignment training__C230222__NRS-484B-600-1e__motor_vehicle_driver --complete --require-delivery-ready",
+    "exit_code": 0,
+    "output_root": ".runtime-work/c230222/pipeline",
+    "log_sha256": "2ab843e7461495bb2ac743483010770f60260aa998c0c0be3c1979ae063c618c"
+  }
 }

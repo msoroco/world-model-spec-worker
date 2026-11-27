@@ -2,12 +2,44 @@
   "assignment_id": "training__C177626__NRS-484B-260__motor_vehicle_driver",
   "input_sha256": "9492beb63168e85876420a5260d6a9acc9c2b699953422607395f29f2756f152",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "Source-hashed 600-frame two-vehicle highway arrival-order diagnostic and independent audit pass, but exact Native entry construction, all-approaching-vehicle capture, four-camera saved processing, Core/Lean/final decode, and delivery/comparison audits remain worker-owned CPU work. No right-of-way verdict or physical realization is claimed.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 2,
-  "candidate_count": 0,
-  "source_law_review": "Exact law text copied from frozen assignment; summary marked recovered_requires_source_review",
+  "candidate_count": 1,
+  "source_law_review": "Exact NRS 484B.260 requires a private-way driver about to enter or cross a highway to yield to all vehicles approaching on that highway. Both selected cases inventory two highway vehicles and compare entry phase; arrival order and speed response do not themselves settle right-of-way. Original Native motion, pixels and legal acceptance remain unverified.",
   "private_entry_order_proof_sha256": "af5adbee0ea338e7fbe19b7c10963b99d52183d3da1618689b7219d106cda832",
-  "private_entry_independent_audit_sha256": "3a474453552e1d07921f11bd08659c73c282293f1c210ca7bd3107e0f3f2918b"
+  "private_entry_independent_audit_sha256": "3a474453552e1d07921f11bd08659c73c282293f1c210ca7bd3107e0f3f2918b",
+  "accepted_membership_count": 0,
+  "reuse_count": 0,
+  "unresolved_branch_count": 0,
+  "selected_delivery_case_count": 2,
+  "cpu_checkpoint": {
+    "selected_cases": 2,
+    "primary_offline_passed": 2,
+    "fallback_offline_passed": 2,
+    "primary_public_positive_and_missing_source_negative_passed": 2,
+    "fallback_public_positive_and_missing_source_negative_passed": 2,
+    "recorded_only_saved_passed": 2,
+    "physical_lifecycle_cpu_case_count": 2,
+    "semantic_stage_count": 6,
+    "independent_delivery_positive_negative_passed": 2,
+    "independent_comparison_diagnostic_passed": 1,
+    "original_native_executed": false,
+    "diagnostic_only": true
+  },
+  "remaining_gpu_checks": [
+    "Original Native private-way/highway topology, all approaching highway vehicle bodies, trajectories, and four-camera pixels",
+    "Independent physical completion and all-approaching-vehicle right-of-way review on original source",
+    "Canonical accepted delivery and legal judgment after original sources"
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C177626__NRS-484B-260__motor_vehicle_driver --case training__C177626__NRS-484B-260__motor_vehicle_driver__probe_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": "cd work/training__C177626__NRS-484B-260__motor_vehicle_driver && PYTHONPATH=$PWD/native SCENARIO_PIPELINE_OUTPUT_ROOT=../../.runtime-work/c177626-entry ../../.venv-cpu/bin/python -B -m unittest discover -s tests -p test*.py -v",
+      "exit_code": 0,
+      "log": "native/combined-cpu-tests.log",
+      "sha256": "9dc4531cf87c890b2a736f3ffb01c42b28a787ee27c972842d1ada6d67ba6a51"
+    }
+  ]
 }

@@ -30,11 +30,11 @@ def offline_spec(path, construction_hash, command):
 
 
 def compat_spec(directory, proof_dir):
-    for name in ('compatibility.json', 'compatibility-analysis.log', 'negative-analysis.log'):
-        copy(directory / name, proof_dir / name)
+    for source, target in (('compatibility.json', 'compatibility.json'), ('compatibility-analysis.log', 'public-analysis.log'), ('negative-analysis.log', 'negative-analysis.log')):
+        copy(directory / source, proof_dir / target)
     receipt = proof_dir / 'compatibility.json'
     return {'receipt': str(receipt.relative_to(ROOT)), 'sha256': sha(receipt),
-            'log': str((proof_dir / 'compatibility-analysis.log').relative_to(ROOT)),
+            'log': str((proof_dir / 'public-analysis.log').relative_to(ROOT)),
             'negative_log': str((proof_dir / 'negative-analysis.log').relative_to(ROOT))}
 
 

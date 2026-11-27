@@ -1,0 +1,422 @@
+{
+  "assignment_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver",
+  "cases": [
+    {
+      "candidate_risk": {
+        "reason": "Original stopping position and official-signal status require source review; no distinct engineering fallback is yet justified.",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
+      "construction": "native/25-construction.json",
+      "construction_sha256": "0a83b7cc23d959208b8ebe56be63403929347a323ff4d7f6f31be2d971ec4324",
+      "fixture_recipe": "work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/native/diagnostic/25/fixture-recipe.json",
+      "id": "25",
+      "kind": "delivery",
+      "measurement_contract": "native/25-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25 --output .runtime-work/c229987/offline-25",
+        "construction_sha256": "0a83b7cc23d959208b8ebe56be63403929347a323ff4d7f6f31be2d971ec4324",
+        "exit_code": 0,
+        "log": "native/25-offline.log",
+        "log_sha256": "b50ed8c4851469facb8277e329380451ee8cd10b98525fdfe83634709a237028"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Original stopping position and official-signal status require source review; no distinct engineering fallback is yet justified.",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
+      "construction": "native/30-construction.json",
+      "construction_sha256": "636cc1e0965d949d890fcdc54e3636582e74de55a21bbbd04ecebca17f03fa1b",
+      "fixture_recipe": "work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/native/diagnostic/30/fixture-recipe.json",
+      "id": "30",
+      "kind": "delivery",
+      "measurement_contract": "native/30-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30 --output .runtime-work/c229987/offline-30",
+        "construction_sha256": "636cc1e0965d949d890fcdc54e3636582e74de55a21bbbd04ecebca17f03fa1b",
+        "exit_code": 0,
+        "log": "native/30-offline.log",
+        "log_sha256": "2829e68ec205527a1583c2fcaa5b809815f292556c2282275282c3e26125821a"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Original stopping position and official-signal status require source review; no distinct engineering fallback is yet justified.",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35",
+      "construction": "native/35-construction.json",
+      "construction_sha256": "a59b05616d553bc3d439035413ca8e7190d750b001f3e00e9c6e5c12e333fdab",
+      "fixture_recipe": "work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/native/diagnostic/35/fixture-recipe.json",
+      "id": "35",
+      "kind": "delivery",
+      "measurement_contract": "native/35-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35 --output .runtime-work/c229987/offline-35",
+        "construction_sha256": "a59b05616d553bc3d439035413ca8e7190d750b001f3e00e9c6e5c12e333fdab",
+        "exit_code": 0,
+        "log": "native/35-offline.log",
+        "log_sha256": "b8c1a516ea4cb9054d456e61fba25c9fd950a7e2e21d74d84447e5433511f4b9"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "draft"
+}

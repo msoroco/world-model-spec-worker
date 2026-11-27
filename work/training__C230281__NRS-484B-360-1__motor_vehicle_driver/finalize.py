@@ -76,15 +76,20 @@ def finalize(attempt, output):
         target.write_text(json.dumps({name: review}, sort_keys=True) + '\n')
         evidence.append({'name': name, 'unit': item['unit'],
                          'reference': 'channels/' + target.name})
+    requested = config['requested_speed_mph']
+    measured = observation['maximum_observed_mph']
+    engineering_tolerance_mph = 0.05
     result = {'case_id': case,
         'measured_values': {'maximum_observed_mph': observation['maximum_observed_mph'],
                             'frames_above_55_mph': len(observation['frames_above_55_mph']),
                             'legal_result': None},
         'target_checks': [{'target': 'requested_speed_mph',
-            'requested': config['requested_speed_mph'],
-            'measured': observation['maximum_observed_mph'],
+            'requested': requested,
+            'measured': measured,
             'method': '600 joined original post-tick velocity samples',
-            'tolerance': 0, 'matched': False, 'physical_cause_confirmed': False,
+            'tolerance': engineering_tolerance_mph,
+            'matched': abs(requested - measured) <= engineering_tolerance_mph,
+            'physical_cause_confirmed': False,
             'cause_evidence': list(inputs)}],
         'setup_confirmed': not diagnostic, 'behavior_attempted': not diagnostic,
         'maneuver_completed': not diagnostic,

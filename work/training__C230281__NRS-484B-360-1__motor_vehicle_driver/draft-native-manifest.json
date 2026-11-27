@@ -8,12 +8,12 @@
       "case_id": "training__C230281__NRS-484B-360-1__motor_vehicle_driver__53",
       "kind": "delivery",
       "construction": "selected/53/construction.json",
-      "construction_sha256": "24f522c750b66785f2559ba79de5746517cd759957abc7b8ba170b19292b811f",
+      "construction_sha256": "dacee3c77c8de4f74b0b5ed11289e71d492f61dd3f4922e2822f473acb424a68",
       "measurement_contract": "measurement-53.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "fixture_recipe": "work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/diagnostic/53/fixture-recipe.json",
+      "fixture_recipe": "work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/diagnostic-53-primary-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -23,18 +23,95 @@
         "status": "none",
         "reason": "Actual bus asset and route need original review; no measured primary failure defines an honest fallback trigger"
       },
-      "candidates": []
+      "candidates": [],
+      "offline": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c230281-owner TMPDIR=.runtime-work .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/draft-native-manifest.json --case training__C230281__NRS-484B-360-1__motor_vehicle_driver__53 --output .runtime-work/c230281-offline-selected-v3-53",
+        "construction_sha256": "dacee3c77c8de4f74b0b5ed11289e71d492f61dd3f4922e2822f473acb424a68",
+        "exit_code": 0,
+        "log": "native-proof-53.log",
+        "log_sha256": "a825e48093741de5f0e5003f06e60eda1da3cb1450c37dc51d12d996fba13c09"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "method": "Original Native post-tick school-bus pose joined to four cameras",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Actor identity and original route require source review"
+          },
+          {
+            "name": "school_bus_speed",
+            "unit": "mph",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "method": "Norm of original Native post-tick three-axis bus velocity",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms sampling; no invented legal tolerance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_bus_driver_and_pupil_trip_review",
+            "unit": "structured",
+            "method": "Independent original bus design, judged-driver join, pupil and trip-purpose review"
+          }
+        ],
+        "limitations": [
+          "Requested speed is not measured speed.",
+          "A bus asset label does not prove statutory school-bus status.",
+          "Pupils aboard alone do not prove to/from-school purpose.",
+          "Synthetic diagnostic review does not establish original facts or a legal verdict."
+        ]
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-53.json",
+        "sha256": "9f49d2148c09e755425e0c659e77bb73f69896f6c923652c5be7ead1533002e0",
+        "log": "cpu-compat-53-analysis.log"
+      },
+      "negative": {
+        "log": "cpu-compat-53-negative.log"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "finalize.py",
+          "method": "600-frame Native bus velocity/camera join plus independent original bus design, judged-driver, pupils and school-trip review",
+          "evidence": "channels/ego_pose.jsonl"
+        },
+        "school_bus_speed": {
+          "entrypoint": "finalize.py",
+          "method": "600-frame Native bus velocity/camera join plus independent original bus design, judged-driver, pupils and school-trip review",
+          "evidence": "channels/school_bus_speed.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/53/proof.json",
+        "sha256": "f313a8f659e1531b44ac6b5ea74329b587af8887bf50e7568be8e75361b166b2"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/execution-manifest.json --case training__C230281__NRS-484B-360-1__motor_vehicle_driver__53 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json # training__C230281__NRS-484B-360-1__motor_vehicle_driver__53",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/53-analysis.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "processing_receipt": "saved/53-processing.json",
+        "processing_receipt_sha256": "f3fee7c23ccffa40a4ea3bca3295bd45d1ad0a640758af2036f71ee9698dfd3c",
+        "diagnostic_scope": "Synthetic saved-only test; original Native processing pending"
+      }
     },
     {
       "case_id": "training__C230281__NRS-484B-360-1__motor_vehicle_driver__55",
       "kind": "delivery",
       "construction": "selected/55/construction.json",
-      "construction_sha256": "43c64f324d33541734efffeb56f1a9a04474dbace3966d2c40e6cc774d5d4585",
+      "construction_sha256": "707b973166c98dc66ef83c015b95e6885bea8ac0dac5ca494ebc515832e98b04",
       "measurement_contract": "measurement-55.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "fixture_recipe": "work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/diagnostic/55/fixture-recipe.json",
+      "fixture_recipe": "work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/diagnostic-55-primary-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -44,18 +121,95 @@
         "status": "none",
         "reason": "Actual bus asset and route need original review; no measured primary failure defines an honest fallback trigger"
       },
-      "candidates": []
+      "candidates": [],
+      "offline": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c230281-owner TMPDIR=.runtime-work .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/draft-native-manifest.json --case training__C230281__NRS-484B-360-1__motor_vehicle_driver__55 --output .runtime-work/c230281-offline-selected-v3-55",
+        "construction_sha256": "707b973166c98dc66ef83c015b95e6885bea8ac0dac5ca494ebc515832e98b04",
+        "exit_code": 0,
+        "log": "native-proof-55.log",
+        "log_sha256": "9c21eb3a050623cc37b00c43960aceef46cbc301d977d0714999f87e01e6374b"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "method": "Original Native post-tick school-bus pose joined to four cameras",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Actor identity and original route require source review"
+          },
+          {
+            "name": "school_bus_speed",
+            "unit": "mph",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "method": "Norm of original Native post-tick three-axis bus velocity",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms sampling; no invented legal tolerance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_bus_driver_and_pupil_trip_review",
+            "unit": "structured",
+            "method": "Independent original bus design, judged-driver join, pupil and trip-purpose review"
+          }
+        ],
+        "limitations": [
+          "Requested speed is not measured speed.",
+          "A bus asset label does not prove statutory school-bus status.",
+          "Pupils aboard alone do not prove to/from-school purpose.",
+          "Synthetic diagnostic review does not establish original facts or a legal verdict."
+        ]
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-55.json",
+        "sha256": "258a38cd1fd981e76e7cf38d5dbcbbc49e3357baa18ee95c94a68c2b921cab4b",
+        "log": "cpu-compat-55-analysis.log"
+      },
+      "negative": {
+        "log": "cpu-compat-55-negative.log"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "finalize.py",
+          "method": "600-frame Native bus velocity/camera join plus independent original bus design, judged-driver, pupils and school-trip review",
+          "evidence": "channels/ego_pose.jsonl"
+        },
+        "school_bus_speed": {
+          "entrypoint": "finalize.py",
+          "method": "600-frame Native bus velocity/camera join plus independent original bus design, judged-driver, pupils and school-trip review",
+          "evidence": "channels/school_bus_speed.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/55/proof.json",
+        "sha256": "474283f462ffeaf4c520ed2de60cf585aeb8e697b4067b0838bdfedf1a29c140"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/execution-manifest.json --case training__C230281__NRS-484B-360-1__motor_vehicle_driver__55 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json # training__C230281__NRS-484B-360-1__motor_vehicle_driver__55",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/55-analysis.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "processing_receipt": "saved/55-processing.json",
+        "processing_receipt_sha256": "b4b8d0350da54c93213bc049851e2508f719066a87145cb674e841628c810687",
+        "diagnostic_scope": "Synthetic saved-only test; original Native processing pending"
+      }
     },
     {
       "case_id": "training__C230281__NRS-484B-360-1__motor_vehicle_driver__57",
       "kind": "delivery",
       "construction": "selected/57/construction.json",
-      "construction_sha256": "709fc7e1065bfb903c9c3cb4cd48f681663eed2b53a23183487c51ed7bdaf589",
+      "construction_sha256": "de27bbc4b8e73831107b4a189d66ad92ab1915a18e26e4761719fe493968429e",
       "measurement_contract": "measurement-57.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
       },
-      "fixture_recipe": "work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/diagnostic/57/fixture-recipe.json",
+      "fixture_recipe": "work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/diagnostic-57-primary-recipe.json",
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -65,7 +219,84 @@
         "status": "none",
         "reason": "Actual bus asset and route need original review; no measured primary failure defines an honest fallback trigger"
       },
-      "candidates": []
+      "candidates": [],
+      "offline": {
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c230281-owner TMPDIR=.runtime-work .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/draft-native-manifest.json --case training__C230281__NRS-484B-360-1__motor_vehicle_driver__57 --output .runtime-work/c230281-offline-selected-v3-57",
+        "construction_sha256": "de27bbc4b8e73831107b4a189d66ad92ab1915a18e26e4761719fe493968429e",
+        "exit_code": 0,
+        "log": "native-proof-57.log",
+        "log_sha256": "109955ff6b2a47d27b838c02886624b40e8d72b3734a29087a2efaab1685a5ff"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "method": "Original Native post-tick school-bus pose joined to four cameras",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Actor identity and original route require source review"
+          },
+          {
+            "name": "school_bus_speed",
+            "unit": "mph",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "method": "Norm of original Native post-tick three-axis bus velocity",
+            "reference_frame": "original Native frame",
+            "uncertainty": "50 ms sampling; no invented legal tolerance"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "school_bus_driver_and_pupil_trip_review",
+            "unit": "structured",
+            "method": "Independent original bus design, judged-driver join, pupil and trip-purpose review"
+          }
+        ],
+        "limitations": [
+          "Requested speed is not measured speed.",
+          "A bus asset label does not prove statutory school-bus status.",
+          "Pupils aboard alone do not prove to/from-school purpose.",
+          "Synthetic diagnostic review does not establish original facts or a legal verdict."
+        ]
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-57.json",
+        "sha256": "bbc5be7e659695852de37336f0c7657ced22013e56f6334e0e0a2037100bb3b6",
+        "log": "cpu-compat-57-analysis.log"
+      },
+      "negative": {
+        "log": "cpu-compat-57-negative.log"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "finalize.py",
+          "method": "600-frame Native bus velocity/camera join plus independent original bus design, judged-driver, pupils and school-trip review",
+          "evidence": "channels/ego_pose.jsonl"
+        },
+        "school_bus_speed": {
+          "entrypoint": "finalize.py",
+          "method": "600-frame Native bus velocity/camera join plus independent original bus design, judged-driver, pupils and school-trip review",
+          "evidence": "channels/school_bus_speed.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/57/proof.json",
+        "sha256": "5b973b09ba11785b896993c8ad3fa8e94da5f27e2bd47a8a7581215491e03c02"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230281__NRS-484B-360-1__motor_vehicle_driver/execution-manifest.json --case training__C230281__NRS-484B-360-1__motor_vehicle_driver__57 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json # training__C230281__NRS-484B-360-1__motor_vehicle_driver__57",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/57-analysis.log",
+        "test_log_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "processing_receipt": "saved/57-processing.json",
+        "processing_receipt_sha256": "9df50407c2355d349c610e6678183df3d28d49507136d3dd5b855869bf579bf3",
+        "diagnostic_scope": "Synthetic saved-only test; original Native processing pending"
+      }
     }
   ]
 }
