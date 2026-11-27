@@ -2034,3 +2034,27 @@ The C111125/NRS-484B-307-2b owner bound ten exact recorded-only processing and f
 ## 2026-11-27 — C179789 NRS-484B-627-1c strict pass
 
 All ten exact cases now have recorded-only post-capture processing and feedback commands with source-shaped successful saved-processing and missing-validator feedback CPU proofs. The owner and lead independently passed the exact scoped strict gate (lead exit 0, `static_checks_passed: true`). The lead restored ten queue jobs, five comparison commands and five runnable branch rows. Queue reached 240 ready assignments before the next demotion. C412593/NRS-484B-413-2 is assigned next, while C145696 and C202480 finish strict checks. No batch-wide strict pass is claimed.
+
+## 2026-11-27 — C202480 NRS-484B-557 strict pass
+
+C202480 completed nine exact recorded-only post-capture commands and positive, missing-source and missing-validator feedback proofs. Forty focused tests and the owner's exact scoped strict gate passed. The lead's independent exact scoped strict repeat exited 0 (`static_checks_passed: true`), then restored nine ready queue jobs, four comparison commands and four runnable branch rows. The owner scanned 344 returned files with no size, formatting or bytecode issue. C145696's lead repeat is running; C412593, C150153 and C149470 are owned partial repairs. The ready-only queue has 238 assignments at this checkpoint. No batch-wide strict pass is claimed.
+
+## 2026-11-27 — C145696 NRS-486-351-1 strict pass
+
+All eight exact recorded-only saved-processing positives and sixteen missing-source/missing-validator feedback proofs passed with bound exits and hashes. The owner and lead independently passed the exact scoped strict delivery gate (lead exit 0, `static_checks_passed: true`). The lead restored eight ready case jobs, six comparison commands and six runnable branch rows to the shared queue/matrix. Queue now has 239 ready assignments while C412593, C150153 and C149470 remain owned partial repairs. The full batch delivery gate remains pending.
+
+## 2026-11-27 — C412593 NRS-484B-413-2 strict pass
+
+The assignment owner added recorded-only post-capture and feedback commands for all ten exact cases and passed source-shaped CPU positive, missing-source, and missing-validator feedback proofs. The lead independently reran `.venv-cpu/bin/python worker_check.py --assignment testing__C412593__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready`; it passed with `static_checks_passed: true`. The ten case rows and four comparison audit commands were restored to the shared GPU queue, and its four branch rows returned to runnable status. Physical capture and local acceptance remain pending.
+
+## 2026-11-27 — C153046 reopened for exact post-capture proof
+
+The C153046/NRS-484B-307-8a owner set its 14-case result to truthful partial while binding missing recorded-only post-capture and feedback commands. The lead withdrew its 14 cases and nine comparison commands from the ready-only queue, set nine related branch rows pending, and updated the branch-review SHA and missing-assignment marker. C149470 and C150153 also remain owned partial repairs. The refreshed ready-only queue audit passed 22,456 static checks with no errors; see `work/_shared/queue-command-audit.json` for the exact current count. No batch-wide strict pass is claimed.
+
+## 2026-11-27 — C153046 NRS-484B-307-8a strict pass
+
+All 14 exact cases bind recorded-only post-capture and feedback commands. The owner passed 42 source-shaped CPU positive, missing-original-site-packet and missing-validator executions, bound the logs and hashes, and passed its scoped strict gate. The lead independently reran `.venv-cpu/bin/python worker_check.py --assignment testing__C153046__NRS-484B-307-8a__motor_vehicle_driver --complete --require-delivery-ready`; it exited 0 with `static_checks_passed: true`. The lead restored 14 queue jobs, nine comparison commands and nine runnable branch rows. The owner scanned 995 returned files with no size, encoding, whitespace, blank-EOF or conflict-marker issue. C262661/NRS-484B-363-1 is the next owned 15-case command repair; C149470 and C150153 remain active partials. Batch-wide strict delivery is pending.
+
+## 2026-11-27 — C262661 reopened for saved-processing commands
+
+The C262661/NRS-484B-363-1 owner set its 15-case result to truthful partial while adding recorded-only post-capture and feedback commands. The lead withdrew 15 cases and 12 comparison commands from the ready queue, set 12 branch rows pending, and updated the branch-review hash and missing-assignment marker. The refreshed queue audit passed 22,462 static checks with zero errors across 239 ready assignments, 1,663 cases and 1,190 comparisons. C149470 and C150153 are also partial while their source-shaped CPU proof work continues. The batch-wide strict delivery gate remains pending.
