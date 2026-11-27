@@ -37,7 +37,7 @@ def expand() -> None:
     index = json.loads(index_path.read_text())
     index["stages"]["cases"]["sha256"] = _write(proposal_dir / "cases.json", cases)
     _write(index_path, index)
-    print("pinned sweep expander retained the incomplete attention spec and two selected exterior cases")
+    print("pinned sweep expander retained the incomplete attention spec and two source-gated selected cases")
 
 
 if __name__ == "__main__":

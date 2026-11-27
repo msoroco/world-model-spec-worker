@@ -11,6 +11,8 @@ sys.path.insert(0, str(ROOT))
 from attention_sweep_capture import AttentionSweepCapture
 from attention_sweep_plan import draft
 from attention_source_audit import audit
+from owned_runner import _stage_attention_packet
+from reviewed_attention_intake import validate as validate_intake
 
 SCRATCH = Path.cwd() / ".runtime-work" / "c10301-attention-capture-tests"
 SCRATCH.mkdir(parents=True, exist_ok=True)
@@ -154,6 +156,26 @@ class AttentionSweepCaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "intake packet changed"):
             audit(self.root, self.packet, changed, allow_diagnostic=True,
                   expected_frames=4)
+
+    def test_staging_preserves_source_hashes_and_refuses_diagnostic_packet(self):
+        expected_site = json.loads(self.packet.read_text())["sources"]["original_site"]["sha256"]
+        with self.assertRaisesRegex(ValueError, "diagnostic attention packet"):
+            _stage_attention_packet(self.packet, self.root / "attempt", expected_site)
+        document = json.loads(self.packet.read_text())
+        document["diagnostic_fixture"] = False
+        reviewed_shape = self.root / "reviewed-shape-unit-test.json"
+        reviewed_shape.write_text(json.dumps(document) + "\n")
+        attempt = self.root / "attempt"
+        attempt.mkdir()
+        with self.assertRaisesRegex(ValueError, "original site differs"):
+            _stage_attention_packet(reviewed_shape, attempt, "0" * 64)
+        staged = _stage_attention_packet(reviewed_shape, attempt, expected_site)
+        intake = validate_intake(staged)
+        self.assertFalse(intake["diagnostic_fixture"])
+        self.assertEqual(intake["source_sha256"], {
+            key: value["sha256"] for key, value in document["sources"].items()})
+        with self.assertRaisesRegex(ValueError, "already exists"):
+            _stage_attention_packet(reviewed_shape, attempt, expected_site)
 
 
 if __name__ == "__main__":

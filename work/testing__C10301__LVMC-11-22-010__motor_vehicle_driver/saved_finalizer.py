@@ -85,6 +85,7 @@ def analyze(attempt: Path, case_id: str) -> tuple[dict, dict]:
         capture = json.loads((attempt / "capture.json").read_text())
         diagnostic = capture.get("diagnostic_fixture") is True
         measurement = finalize(attempt, case_id, allow_diagnostic=diagnostic)
+        capture["interior_source_audit"] = measurement["interior_source_audit"]
     construction = json.loads((attempt / "construction.json").read_text())
     recording = construction["recording_description"]
     if (attempt / "channels").exists():

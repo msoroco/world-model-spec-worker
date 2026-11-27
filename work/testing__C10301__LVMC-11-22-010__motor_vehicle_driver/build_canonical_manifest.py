@@ -67,7 +67,7 @@ def build() -> None:
                       "offline": {"construction_sha256": digest(construction),
                           "command": ".venv-cpu/bin/python runtime.py offline --manifest work/" + AID +
                               "/execution-manifest.draft.json --case " + case +
-                              " --output .runtime-work/c10301-nov27-offline-" + kind,
+                              " --output .runtime-work/c10301-nov27-offline-v3-" + kind,
                           "exit_code": 0,
                           "log": "cpu-nov27-interior-offline-" + kind + ".log",
                           "log_sha256": digest(HERE / ("cpu-nov27-interior-offline-" + kind + ".log"))},

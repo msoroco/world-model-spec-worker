@@ -122,6 +122,7 @@ def measure(packet: dict, root: Path) -> dict:
     if not activity.get("reviewer_id"):
         raise ValueError("independent activity reviewer required")
     positions = []
+    footprints = []
     speeds = []
     for i, row in enumerate(frames):
         if row.get("frame") != i or finite(row.get("elapsed_s"), "time") != i / 20:
@@ -130,10 +131,21 @@ def measure(packet: dict, root: Path) -> dict:
         if not isinstance(xy, list) or len(xy) != 2:
             raise ValueError("original taxi center missing")
         positions.append((finite(xy[0], "taxi x"), finite(xy[1], "taxi y")))
+        body = row.get("taxi_footprint_xy_m")
+        if not isinstance(body, list) or len(body) != 4:
+            raise ValueError("four original taxi footprint corners required")
+        corners = []
+        for corner in body:
+            if not isinstance(corner, list) or len(corner) != 2:
+                raise ValueError("original taxi footprint corner missing")
+            corners.append((finite(corner[0], "taxi body x"),
+                            finite(corner[1], "taxi body y")))
+        footprints.append(corners)
         speeds.append(finite(row.get("taxi_speed_mps"), "taxi speed"))
     halt_positions = positions[first:last + 1]
+    halt_footprints = footprints[first:last + 1]
     halt_speeds = speeds[first:last + 1]
-    if not all(within(xy, street) for xy in halt_positions):
+    if not all(within(xy, street) for corners in halt_footprints for xy in corners):
         raise ValueError("taxi halt lies outside reviewed street polygon")
     # 0.1 m/s is only an engineering stationarity tolerance, not legal duration.
     if max(halt_speeds) > 0.1:
@@ -155,6 +167,10 @@ def measure(packet: dict, root: Path) -> dict:
         "max_halt_speed_mps": max(halt_speeds),
         "all_halt_centers_inside_designated_stand": all(within(xy, stand) for xy in halt_positions),
         "all_halt_centers_outside_designated_stand": all(not within(xy, stand) for xy in halt_positions),
+        "all_halt_footprints_inside_designated_stand": all(
+            within(xy, stand) for corners in halt_footprints for xy in corners),
+        "all_halt_footprints_outside_designated_stand": all(
+            not within(xy, stand) for corners in halt_footprints for xy in corners),
         "passenger_event_kinds": [event["kind"] for event in events],
         "source_sha256": {name: packet[name]["sha256"] for name in
                           ("reviewed_site", "native_result", "native_frames", "activity_review",

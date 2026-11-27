@@ -75,6 +75,14 @@ def materialize() -> None:
             {"name": row["name"], "unit": row["unit"], "mandatory": True,
              "evidence": row["method"]}
             for row in original["recording_description"]["channels"]]
+    interior = next(row for row in original["recording_description"]["context_inputs"]
+                    if row["name"] == "original_eyes_off_road_duration_s")
+    plan["observations"] = [row for row in plan["observations"]
+                            if row.get("name") != interior["name"]]
+    for selected in plan["cases"]:
+        context = selected["recording_description"]["context_inputs"]
+        if not any(row["name"] == interior["name"] for row in context):
+            context.append(dict(interior))
     plan["camera_plan"] = {
         "profile": "overview1080-capability", "duration_s": 45,
         "composition": "synchronized_four_view_primary",

@@ -28,6 +28,11 @@ def recording_description(source: dict) -> dict:
                        time_window="full original 45-second alley operation",
                        reference_frame="same original Native frame and simulation time",
                        uncertainty="20 Hz sampling; exterior motion does not observe interior attention")
+    if not any(row["name"] == "original_eyes_off_road_duration_s"
+               for row in result["context_inputs"]):
+        result["context_inputs"].append({
+            "name": "original_eyes_off_road_duration_s", "unit": "s",
+            "method": "independently audited original interior control and sensor stream, joined to ego frame"})
     return result
 
 
@@ -51,7 +56,7 @@ def build() -> None:
         {"name": "lateral_controller_profile", "kind": "controller",
          "range_or_domain": "steady alley tracking or preplanned mild variation"},
         {"name": "observed_attention_state", "kind": "subject_behavior",
-         "range_or_domain": "unobserved in exterior Native recording"},
+         "range_or_domain": "original interior gaze duration when reviewed source exists; legal state unresolved"},
     ]
     template = {"template_id": template_id, "law_id": LAW, "actor": ACTOR,
                 "quote": quote,
@@ -67,12 +72,16 @@ def build() -> None:
                    "note": "Exterior motion cannot determine interior attention.",
                    "observable_requirements": {
                        "observables": [{"name": v["name"], "unit": v["unit"],
-                           "description": v["method"]} for v in plan["cases"][0]["recording_description"]["channels"]],
+                           "description": v["method"]} for v in plan["cases"][0]["recording_description"]["channels"]]
+                           + [{"name": "original_eyes_off_road_duration_s", "unit": "s",
+                               "description": "900-frame original interior sensor readback joined to ego frame; requires reviewed sensor and control feasibility packet"}],
                        "context_inputs": [{"name": v["name"], "unit": v["unit"],
                            "description": v["method"]} for v in plan["cases"][0]["recording_description"]["context_inputs"]],
                        "sweep_dimensions": [], "landmarks": [],
                        "recording_needs": [{"name": "kin.position", "unit": "m",
-                           "description": "Exterior trajectory as an observation only."}],
+                           "description": "Exterior trajectory as an observation only."},
+                           {"name": "original_eyes_off_road_duration_s", "unit": "s",
+                            "description": "Original interior control and sensor streams, audited from saved source with legal judgment unresolved."}],
                        "limitations": list(plan["cases"][0]["recording_description"]["limitations"])}}
     bindings = {"cell_id": CELL, "actor": ACTOR, "status": "draft",
                 "established_contexts": ["Assigned alley travel context; source designation and municipal applicability pending review."],
@@ -90,7 +99,7 @@ def build() -> None:
         kind = source["case_id"].rsplit("__", 1)[-1]
         cases.append({"case_id": source["case_id"], "target_law_id": LAW,
                       "target_type": "judgment_sweep",
-                      "rationale": "Exterior lateral-control observation in the same sourced alley; no attention label.",
+                      "rationale": "Source-gated original interior gaze measurement with controlled alley lateral profile; no legal attention label.",
                       "variable_assignments": {
                           "lateral_controller_profile": {"kind": "controller", "value": "steady" if kind == "steady_travel" else "variation"},
                           "observed_attention_state": {"kind": "subject_behavior", "value": None}},
@@ -106,9 +115,9 @@ def build() -> None:
                       "target_law_id": LAW,
                       "judgment_refs": [{"phrase": PHRASE,
                           "note": "Exterior motion cannot determine interior attention."}],
-                      "rationale": "No source-backed numerical interior-attention axis is available; exterior cases only compare requested lateral control.",
+                      "rationale": "Selected cases require a reviewed original interior stream; frozen sources do not justify a multi-level physical attention sweep.",
                       "status": "incomplete",
-                      "missing_inputs": ["No justified interior-attention measurement or numeric judgment range is present in frozen sources; two exterior controller variants are observations only."]}],
+                      "missing_inputs": ["Frozen sources contain no reviewed original interior sensor or control feasibility range; selected cases fail closed until supplied. Legal full-time-attention cutoff remains unresolved."]}],
                   "comparisons": plan["comparisons"],
                   "source_law_text": quote,
                   "source_assignment": "inputs/" + AID + "/assignment.json"}

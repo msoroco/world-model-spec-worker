@@ -30,16 +30,48 @@ def build() -> dict:
         "composition": "synchronized_four_view_primary",
     }
     channels = [
-        {"name": "reviewed_stand_and_street", "source": "original designation, authority, marking, curb and jurisdiction survey"},
-        {"name": "taxicab_and_operator", "source": "original licensing, fee-service and operator review"},
-        {"name": "taxi_body_and_halt", "source": "900 original 20 Hz Native body/velocity/road-lane samples"},
-        {"name": "passenger_exchange", "source": "original door/person/boarding events joined to four camera pixels and independent review"},
-        {"name": "other_regulations", "source": "identified applicable original stop/parking rules and review; no automatic legal verdict"},
+        {"name": "native_frame", "unit": "frame", "sampling_rate_hz": 20,
+         "method": "original CARLA world tick readback", "time_window": "full 900-frame, 45-second capture",
+         "reference_frame": "original CARLA world", "uncertainty": "one retained 20 Hz sample"},
+        {"name": "taxi_center_xy_m", "unit": "m", "sampling_rate_hz": 20,
+         "method": "original taxi transform readback", "time_window": "full 900-frame, 45-second capture",
+         "reference_frame": "reviewed Native map XY", "uncertainty": "Native transform precision"},
+        {"name": "taxi_footprint_xy_m", "unit": "m", "sampling_rate_hz": 20,
+         "method": "original taxi bounding box transformed into reviewed Native map XY",
+         "time_window": "full 900-frame, 45-second capture",
+         "reference_frame": "reviewed Native map XY", "uncertainty": "Native bounding box geometry"},
+        {"name": "taxi_speed_mps", "unit": "m/s", "sampling_rate_hz": 20,
+         "method": "original taxi velocity readback", "time_window": "full 900-frame, 45-second capture",
+         "reference_frame": "original CARLA world", "uncertainty": "0.1 m/s engineering halt tolerance is not a legal cutoff"},
+        {"name": "four_camera_frames", "unit": "native pixels", "sampling_rate_hz": 20,
+         "method": "four synchronized original RGB camera sources and SHA-256 frame ledger",
+         "time_window": "full 900-frame, 45-second capture",
+         "reference_frame": "original CARLA world and frame identity", "uncertainty": "camera visibility requires independent review"},
+        {"name": "passenger_activity_review", "unit": "source record", "sampling_rate_hz": 20,
+         "method": "independent reviewed actor/door/boarding or alighting record bound to original cameras",
+         "time_window": "reviewed halt interval within full capture",
+         "reference_frame": "original Native frame identity", "uncertainty": "activity and expeditiousness require human review"},
+    ]
+    context_inputs = [
+        {"name": name, "unit": "source record", "method": "SHA-bound original independent review"}
+        for name in ("taxi_stand_designation", "business_district_and_street",
+                     "taxi_licence_and_operator", "other_stopping_parking_regulations")
     ]
     plan["camera_plan"] = camera
-    plan["observations"] = [{"name": row["name"], "source": row["source"], "mandatory": True}
+    plan["observations"] = [{"name": row["name"], "source": row["method"], "mandatory": True}
                             for row in channels]
-    plan["source_observation_mapping"] = {}
+    plan["source_observation_mapping"] = {
+        "native_frame": "native_frames.json original world tick",
+        "taxi_center_xy_m": "native_frames.json original taxi transform",
+        "taxi_footprint_xy_m": "native_frames.json original taxi bounding box",
+        "taxi_speed_mps": "native_frames.json original taxi velocity",
+        "four_camera_frames": "native-taxi/<view>/<frame>.png with frame SHA-256 ledger",
+        "passenger_activity_review": "independent original activity_review JSON and camera SHA-256",
+        "taxi_stand_designation": "independent official designation source",
+        "business_district_and_street": "independent site and jurisdiction source",
+        "taxi_licence_and_operator": "independent taxi licence and operator source",
+        "other_stopping_parking_regulations": "independent applicable other-regulations source",
+    }
     plan["cases"] = [
         {
             "case_id": ids[suffix], "kind": "planned_controlled_construction",
@@ -48,9 +80,10 @@ def build() -> dict:
             "location_request": location, "halt_activity_request": activity,
             "passenger_exchange_request": exchange,
             "physical_risk": "Actual stand boundary, curb footprint, taxi halt and passenger exchange need source review and original CARLA realization.",
-            "recording_description": {"duration_s": 45, "rate_hz": 20,
-                "cameras": camera["views"], "channels": channels,
-                "uncertainty": "Engineering request only; expeditiousness and other-regulation compliance remain for independent review."},
+            "recording_description": {"channels": channels, "context_inputs": context_inputs,
+                "limitations": ["Requested activity is not observed legal activity.",
+                                "Expeditiousness and other-regulation compliance remain for independent review.",
+                                "No accepted original taxi recording is supplied in frozen evidence."]},
         }
         for suffix, location, activity, exchange, purpose in CASES
     ]

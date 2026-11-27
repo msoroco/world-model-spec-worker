@@ -46,6 +46,8 @@ class TaxiStandMeasurementTests(unittest.TestCase):
                                    "operator_id": "driver-fixture"})
         self.add("native_frames", [{"frame": i, "elapsed_s": i / 20,
                                     "taxi_center_xy_m": [2.0, 2.0],
+                                    "taxi_footprint_xy_m": [[1.5, 1.5], [2.5, 1.5],
+                                                            [2.5, 2.5], [1.5, 2.5]],
                                     "taxi_speed_mps": 0.0} for i in range(900)])
         self.add("activity_review", {"source_kind": "original_independent_activity_review",
                                      "case_id": self.case_id, "recording_id": "synthetic-fixture",
@@ -74,18 +76,23 @@ class TaxiStandMeasurementTests(unittest.TestCase):
     def test_designated_stand_parking(self):
         value = MODULE.measure(self.packet, self.root)
         self.assertTrue(value["all_halt_centers_inside_designated_stand"])
+        self.assertTrue(value["all_halt_footprints_inside_designated_stand"])
         self.assertIsNone(value["legal_verdict"])
 
     def test_outside_stand_loading_event(self):
         self.packet["case_id"] = MODULE.ASSIGNMENT + "__outside_stand_load"
         self.change("native_result", lambda value: value.update(case_id=self.packet["case_id"]))
-        self.change("native_frames", lambda value: [row.update(taxi_center_xy_m=[8.0, 2.0]) for row in value])
+        self.change("native_frames", lambda value: [row.update(
+            taxi_center_xy_m=[8.0, 2.0],
+            taxi_footprint_xy_m=[[7.5, 1.5], [8.5, 1.5], [8.5, 2.5], [7.5, 2.5]])
+            for row in value])
         self.change("activity_review", lambda value: value.update(
             case_id=self.packet["case_id"], activity="temporary_stop",
             passenger_events=[{"kind": "boarding", "frame": 320,
                                "passenger_actor_id": "passenger-fixture", "observed": True}]))
         value = MODULE.measure(self.packet, self.root)
         self.assertTrue(value["all_halt_centers_outside_designated_stand"])
+        self.assertTrue(value["all_halt_footprints_outside_designated_stand"])
         self.assertEqual(value["passenger_event_kinds"], ["boarding"])
         self.assertEqual(value["expeditiousness"], "requires_independent_review")
 
@@ -112,6 +119,18 @@ class TaxiStandMeasurementTests(unittest.TestCase):
     def test_moving_taxi_in_halt_interval_rejected(self):
         self.change("native_frames", lambda value: value[250].update(taxi_speed_mps=3.0))
         with self.assertRaisesRegex(ValueError, "moving taxi"):
+            MODULE.measure(self.packet, self.root)
+
+    def test_taxi_footprint_crossing_stand_boundary_is_not_inside(self):
+        self.change("native_frames", lambda value: value[300].update(
+            taxi_footprint_xy_m=[[1.5, 1.5], [5.5, 1.5], [5.5, 2.5], [1.5, 2.5]]))
+        value = MODULE.measure(self.packet, self.root)
+        self.assertTrue(value["all_halt_centers_inside_designated_stand"])
+        self.assertFalse(value["all_halt_footprints_inside_designated_stand"])
+
+    def test_missing_taxi_footprint_rejected(self):
+        self.change("native_frames", lambda value: value[300].pop("taxi_footprint_xy_m"))
+        with self.assertRaisesRegex(ValueError, "footprint corners"):
             MODULE.measure(self.packet, self.root)
 
 

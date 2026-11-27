@@ -2,6 +2,21 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 09:45 UTC: C10301 semantic and saved source proofs
+
+- C10301/LVMC-11-22-010 remains **partial** while final receipts and permanent strict run are prepared. Its semantic stage passes with original eyes-off-road duration required as a sourced context input for each selected recording; publication/finalizer carry the audited duration and diagnostic fixtures explicitly say null/unobserved. Both refreshed offline and compatibility proofs pass. The refreshed saved pair passed two 900-frame, 3,600-PNG diagnostic audits plus a missing-operation negative. The owner is binding final receipt hashes, running focused tests and hygiene, then the exact assignment gate.
+- C386226/507-1's owner audited the ready-only tail: explicit empty source-observation mapping, all eight mandatory plan observation channels, 27-case current-runtime manifest, semantic and branch validators, and bound 10-test log now pass directly. Exact strict v3 has started; result remains provisional and will roll back to partial on a nonzero exit.
+
+## 2026-11-27 09:42 UTC: C386226 strict plan repair and taxi runner
+
+- C386226/507-1 remains **partial**. Its second exact strict run passed the heavy all-case receipt validation and root bundle, then identified a missing explicit empty `case-plan.source_observation_mapping` for the frozen assignment's zero source-observation terms. The owner restored partial status, is adding `{}` without an evidence claim, and is checking the remaining ready-only fields before rerunning strict. No selected construction or proof bytes changed; no queue integration is claimed.
+- C378245 taxi remains **partial** after its first source-gated exact runner, 900-frame synchronized capture, original stand/passenger saved measurement, six-case/four-comparison plan, runner --check, 18 synthetic tests and scoped static check. Semantic chain, all selected construction bundles and independent proofs remain CPU work.
+
+## 2026-11-27 09:35 UTC: C10301 interior acquisition and C378245 taxi construction
+
+- C10301/LVMC-11-22-010 remains **partial** while its owner binds original interior attention acquisition to both selected Native runners and saved analysis. A 900-frame diagnostic integration test passes; refreshed offline and pinned compatibility for both selected cases, six synthetic physical outcomes, two lifecycle proofs and direct pinned manifest/receipt checks pass. The semantic draft is being corrected to retain interior attention as an explicit recording need, and full saved-only 900-frame receipts remain to rerun. No original interior observation or legal cutoff is claimed.
+- C378245/LVMC-11-60-040 taxi branch remains **partial**. Its owner has planned six source-gated taxi-stand/loading cases and four contrasts, added source-hashed saved measurement and a CARLA-lazy taxi/passenger/four-camera setup, and passed twelve CPU fixture tests. Canonical selected construction and proofs are underway.
+
 ## 2026-11-27 09:30 UTC: full returned-file hygiene and railway CPU checkpoint
 
 - A non-Git scan of all 75,552 current files under `work/` found zero files above the per-file caps, invalid UTF-8, trailing whitespace, blank EOF or conflict markers. The shared GPU queue remains under its 5 MiB cap. The separate timer owns checkpoints; no Git command was run here.

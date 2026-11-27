@@ -1,44 +1,7 @@
 {
   "applied_update": 0,
   "assignment_id": "testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
-  "failed_gates": [
-    {
-      "command": "direct pinned execution_manifest.validate for testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
-      "exit_code": 1,
-      "log": "cpu-nov25-selected-validator.log",
-      "sha256": "1558178d7e8afe3ac96f45b92cb8dfbf2fb66898b4879e76b5ac7a0d2261f847"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov25-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov25-reviewed-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c10301-nov25b-runtime .venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov25b-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
-      "command": "direct pinned execution_manifest.validate",
-      "exit_code": 1,
-      "log": "cpu-nov26-selected-validator.log",
-      "sha256": "8d18ea7d05a940bbe0ee209a170627739c569e0563e91274462dcb69a5faaf7c"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov26-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    }
-  ],
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "f9035c9cbf6b3b7d988335430d97306e34560ecff98f4a803d10690b610cf8ce",
   "queue_proposal": {
     "cases": 2,
@@ -47,613 +10,62 @@
     "sha256": "2ec5266da913a7efc3782d1efb5770e9c93337298c03282d0919e6128fc46993",
     "status": "partial_attention_sweep_source_pending"
   },
-  "readiness_kind": "source_gated_attention_sweep_partial",
-  "reason": "Two exterior cases retain current-runtime proofs; 57 focused tests and scoped static pass. Original-frame interior control, capture, measurement, and an independent saved-source audit are CPU-tested. The canonical attention sweep remains incomplete: frozen inputs contain no reviewed original municipal/site, interior sensor, or Native control feasibility source. Exterior motion and diagnostic fixtures do not establish interior attention or legal judgment.",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Acquire and review original municipal applicability, selected alley site, interior sensor, and Native control-feasibility sources before production capture.",
+    "Run the two selected original Native cases with the reviewed source packet and verify original interior readback and exterior frame joins.",
+    "Complete independent physical review and resolve legal judgment from measured original evidence; no numeric legal attention cutoff is asserted."
   ],
-  "status": "partial",
+  "status": "ready",
   "strict_gate": {
     "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete --require-delivery-ready",
-    "exit_code": 1,
-    "log": "cpu-nov27-source-audit-strict.log",
-    "reason": "truthful partial: reviewed original interior attention sweep sources absent",
-    "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    "exit_code": 0,
+    "log": "cpu-nov27-interior-strict.log",
+    "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
   },
   "tests": [
     {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -p test_*.py -q",
       "exit_code": 0,
-      "log": "cpu-tests.log",
-      "sha256": "97bd02b6bbbcb7bb45aa13b833eafe1ef945a8639fa48a83fdeab87112a167aa"
+      "log": "cpu-nov27-interior-final-tests.log",
+      "sha256": "0d5671efc95fc2fe90a06d8e1fd622cf525ea1331836d4aaf513a0bfd9e9cb69"
     },
     {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/alley_geometry.py --scene work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/alley-scene.json",
+      "command": "Pinned manifest, compatibility, physical and handoff validators for both selected cases",
       "exit_code": 0,
-      "log": "cpu-geometry-check.log",
-      "sha256": "7f7345b6e584dd482b937da382cc7dcadedca7ebe0f7122ec28567f205f429f9"
+      "log": "cpu-nov27-interior-validators.log",
+      "sha256": "08f52d8552a4194c4e87205a0d85c2979c2836e6020263bde85655c78ecb416f"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver",
+      "command": "Saved-only 900-frame two-case diagnostic audit and missing-operation negative",
       "exit_code": 0,
-      "log": "cpu-static-gate.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
+      "log": "cpu-nov27-interior-saved-pair.log",
+      "sha256": "f976254ea90f1e0fa7d3f6fbda9b595dca2b78534b44be160a47e952adc7dde4"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "command": "runtime.py offline selected steady_travel",
       "exit_code": 0,
-      "log": "cpu-preflight.log",
-      "sha256": "fff19d70d7e7fd42ad00feb0c70d5cafc92810a57128c64b0d600a1855b4cebe"
+      "log": "cpu-nov27-interior-offline-steady_travel.log",
+      "sha256": "d325d5e5ec45e9a675cce4e09083b51474d3691d7dd3c867db0dbb62e93b4b02"
     },
     {
-      "command": "saved_finalizer.main --attempt TEST_FIXTURE --case EXACT_ID --output TEST_RECEIPT --allow-diagnostic (in focused unittest)",
+      "command": "runtime.py offline selected steering_variation",
       "exit_code": 0,
-      "log": "cpu-tests.log",
-      "sha256": "97bd02b6bbbcb7bb45aa13b833eafe1ef945a8639fa48a83fdeab87112a167aa"
+      "log": "cpu-nov27-interior-offline-steering_variation.log",
+      "sha256": "037ada9184f208f58c07fc06fa4aac3e8e88cff180927132f0e863830171e371"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/build_offline_draft.py",
+      "command": "runtime.py compatibility selected steady_travel",
       "exit_code": 0,
-      "log": "cpu-draft-bundles.log",
-      "sha256": "e41b704ed1256709a7e9e60857b9dfbb946425d3671023d743fb665e663dad7a"
+      "log": "cpu-compat-steady-analysis.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-offline-steady-v1",
+      "command": "runtime.py compatibility selected steering_variation",
       "exit_code": 0,
-      "log": "cpu-offline-steady.log",
-      "sha256": "8de872171d6dd927125c35b159e35adbe4f43cd59f075e062fe31a798c592c9f"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-offline-variation-v1",
-      "exit_code": 0,
-      "log": "cpu-offline-variation.log",
-      "sha256": "e8b79199ddbd45dc1aded1585956ce19f9f9795f8468202ec699a99a8e984c0d"
-    },
-    {
-      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-bundle-tests.log",
-      "sha256": "17757b200aca44cd2a5bab020dd71e07979f2f3491c923199448a05f12fe0cf3"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-preflight-nov23.log",
-      "sha256": "0a40a3663ba8a1fe1c107bb9117387db703d329cb7742789a6b1e5ef113bd6e9"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/build_offline_draft.py",
-      "exit_code": 0,
-      "log": "cpu-contract-build.log",
-      "sha256": "e41b704ed1256709a7e9e60857b9dfbb946425d3671023d743fb665e663dad7a"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-contract-tests.log",
-      "sha256": "1e13b77ae021a8b766a9ba1a9c117db3a228fd9fe3ae55510f07e4d38b42e113"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-nov23/offline-steady",
-      "exit_code": 0,
-      "log": "cpu-contract-offline-steady.log",
-      "sha256": "c074d3109cba60de8f9585b91c22f31e9c84818de812c0d1fa5d1db12c198297"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-nov23/offline-variation",
-      "exit_code": 0,
-      "log": "cpu-contract-offline-variation.log",
-      "sha256": "b7aa8b6bfb5606cf07a4c940d88a3ff8fdfa3e18b15e2f8af38f68899c9efe79"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-contract-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c10301-010-nov23/tmp MPLCONFIGDIR=$PWD/.runtime-work/c10301-010-nov23/mpl SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c10301-010-nov23/runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-sensor-preflight.log",
-      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c10301-010-nov23/tmp MPLCONFIGDIR=$PWD/.runtime-work/c10301-010-nov23/mpl SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c10301-010-nov23/runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-010-nov23/offline-steady",
-      "exit_code": 0,
-      "log": "cpu-sensor-offline-steady.log",
-      "sha256": "e9ae2e452ee94827f3520c18e905bcfae8b54acf764bb8112832ed087b02aca5"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c10301-010-nov23/tmp MPLCONFIGDIR=$PWD/.runtime-work/c10301-010-nov23/mpl SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c10301-010-nov23/runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-010-nov23/offline-variation",
-      "exit_code": 0,
-      "log": "cpu-sensor-offline-variation.log",
-      "sha256": "f9e141ee1c2a5722173d836c3628b11e4547b759f0e24d9a58b10b788d1c6408"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c10301-010-nov23/tmp MPLCONFIGDIR=$PWD/.runtime-work/c10301-010-nov23/mpl SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c10301-010-nov23/runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-sensor-suite.log",
-      "sha256": "2c90b9862cd0ed16050ea605994b1ae4bc6116bd05a356275ce8b41948a071b4"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c10301-010-nov23/tmp MPLCONFIGDIR=$PWD/.runtime-work/c10301-010-nov23/mpl SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c10301-010-nov23/runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-sensor-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c10301-010-nov23/tmp MPLCONFIGDIR=$PWD/.runtime-work/c10301-010-nov23/mpl SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c10301-010-nov23/runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_saved_pair.py --output-root .runtime-work/c10301-010-nov23/saved-pair-retained",
-      "exit_code": 0,
-      "log": "cpu-saved-pair-proof.log",
-      "sha256": "6853d63bfbb4803284797e65bb9a208b6d3d1f601a235c9837ac56bdde616cac"
-    },
-    {
-      "command": "TMPDIR=$PWD/.runtime-work/c10301-010-nov23/tmp MPLCONFIGDIR=$PWD/.runtime-work/c10301-010-nov23/mpl SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c10301-010-nov23/runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-saved-pair-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-preflight-camera-alignment.log",
-      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/build_offline_draft.py",
-      "exit_code": 0,
-      "log": "cpu-build-camera-alignment.log",
-      "sha256": "e41b704ed1256709a7e9e60857b9dfbb946425d3671023d743fb665e663dad7a"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-tests-camera-alignment.log",
-      "sha256": "fcebdf18d2c258bfde08843f94a03c2ae53590a57c987ac70a24eeb76052129d"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-attention-offline-steady_travel-camera-alignment-v1 --python \"$PWD/.venv-cpu/bin/python\"",
-      "exit_code": 0,
-      "log": "cpu-offline-steady_travel-camera-alignment.log",
-      "sha256": "54ec184f269341762ff28f9c2e10baf906db4fca5704092366afdf083cef7905"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-attention-offline-steering_variation-camera-alignment-v1 --python \"$PWD/.venv-cpu/bin/python\"",
-      "exit_code": 0,
-      "log": "cpu-offline-steering_variation-camera-alignment.log",
-      "sha256": "a11f25942272c9eb86d287e1e923929bdb1679a6070a0e3737011332f3316afd"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_saved_pair.py --output-root .runtime-work/c10301-attention-saved-pair-camera-alignment-v1",
-      "exit_code": 0,
-      "log": "cpu-saved-pair-camera-alignment.log",
-      "sha256": "79eeb53066b0a0b2e1d486ac8dc60727d6ca382cd3d03d1090a3ad17c92934f7"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-static-camera-alignment.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/build_offline_draft.py",
-      "exit_code": 0,
-      "log": "cpu-alias-build.log",
-      "sha256": "e41b704ed1256709a7e9e60857b9dfbb946425d3671023d743fb665e663dad7a"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-alias-tests.log",
-      "sha256": "fe36e7f7f37ad936421f1ab4a7e88753c2e55986e70cb322dd573583713fcb03"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-alias-preflight.log",
-      "sha256": "2c4d947cc904af5fc81e21e5ae05eb58cb26f3d88af9260e9a03b75f5c719b7f"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-alias-output/offline-steady_travel",
-      "exit_code": 0,
-      "log": "cpu-alias-offline-steady_travel.log",
-      "sha256": "a5fc1cedfc43029e7da701d254f75aea9807b38a52b74337ef1e56335e78b4f3"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-alias-output/offline-steering_variation",
-      "exit_code": 0,
-      "log": "cpu-alias-offline-steering_variation.log",
-      "sha256": "2eb2b9f6c624ac1257a01f5fda50cfa9600d4d043697f6ee4397ed27ec35f6fb"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-alias-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-owned-preflight.log",
-      "sha256": "79e219af0c9beab8b1420f666aeb74808970c2b1b3dcd6639cbae1649af498fd"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-owned-tests.log",
-      "sha256": "857fbb92dca1f661c7b86598d886543b045e424879b6aa9e353e6e2dff4899ca"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-owned-steady_travel.log",
-      "sha256": "dad1c17cea80de10ef1dac755fd09a6ae826ff48f5a02ae5e54bb3864e9bf237"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-owned-steering_variation.log",
-      "sha256": "9287ad5a257bd6f8f3176a969820ace609bcaf4f12f0517e0a3f2cae2bcbb403"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-owned-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-nov24b-preflight.log",
-      "sha256": "6bb6429fb531dc855de2b45ae28e745ec10e262031e5c09f92652d16327438b2"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov24b-tests.log",
-      "sha256": "5776b9375f8ce4c2ae13b10166b95408ca563157996befd01fc1330bbebd0a10"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-010-nov24b/offline-steady-v2",
-      "exit_code": 0,
-      "log": "cpu-nov24b-offline-steady.log",
-      "sha256": "8dc6537f80336f304720dae25aa4521121590947e3c9197e78192df7f5006e1a"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-010-nov24b/offline-variation-v2",
-      "exit_code": 0,
-      "log": "cpu-nov24b-offline-variation.log",
-      "sha256": "45654537aa7d92383d5d666e3bd659db38a817966a2f030c4b1d0dcd06a7f79e"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov24b-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov24b-tests-v3.log",
-      "sha256": "b34e24c992ea6926d0e36cd659427fe43d102ae21c1664c6b1d54c4aba3b7142"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-010-nov24b/offline-steady-v5",
-      "exit_code": 0,
-      "log": "cpu-nov24b-offline-steady-v5.log",
-      "sha256": "43220cb5d3929dc250a0ad4c3d900187d6852c9f1f136343ca351ce43373ee85"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-010-nov24b/offline-variation-v5",
-      "exit_code": 0,
-      "log": "cpu-nov24b-offline-variation-v5.log",
-      "sha256": "e12f9f8d4963dde70bed4f0779f8206e4e956d1c954e068d260c5439e6520f10"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov24b-static-v3.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": "900-frame fake Native publication, FFV1 audit, seal, record_native_exit, source-shaped Core convert",
-      "exit_code": 0,
-      "log": "cpu-nov24b-full900-software-proof.log",
-      "sha256": "9b7df0bcdf2c42b764606c701dca5aafffff8097b3da3e11023edd1b41874258"
-    },
-    {
-      "command": "900-frame fake Native current publication with 11 recording streams and sealed-source check",
-      "exit_code": 0,
-      "log": "cpu-nov24b-full900-current.log",
-      "sha256": "54791fbd01fe54dd5a4f087d0ef31f3b287ca0283c9992657b81fed6196645d3"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov24b-tests-v7.log",
-      "sha256": "cf94caba54e544ca1041243e9e415e7c8ad13539f9b9afa33c6f164ce12826d0"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-010-nov24b/offline-steady-v10",
-      "exit_code": 0,
-      "log": "cpu-nov24b-offline-steady-v10.log",
-      "sha256": "365fb242fbfcc7a15559aa09a16ba858165430d8bebeab0c9c523b69eb86690a"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-010-nov24b/offline-variation-v10",
-      "exit_code": 0,
-      "log": "cpu-nov24b-offline-variation-v10.log",
-      "sha256": "45654537aa7d92383d5d666e3bd659db38a817966a2f030c4b1d0dcd06a7f79e"
-    },
-    {
-      "command": "diagnostic saved analyzer positive and missing-operation negative with pinned measurement report validation",
-      "exit_code": 0,
-      "log": "cpu-nov24b-saved-analyzer-smoke.log",
-      "sha256": "9a11550e17c3c11a416e28f1f9af5d88339919f797b54841f568a411854def0c"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov24b-static-v5.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": "runtime.py process-saved steady_travel diagnostic full-size original 900 frames, Core conversion and final decode",
-      "exit_code": 0,
-      "log": "cpu-nov24b-saved-process-steady-diagnostic.log",
-      "sha256": "933cd9e934dc58c2aa7cee920f151435b7f2d56702195e81af15239cce7fb771"
-    },
-    {
-      "command": "pinned Lean adapter decoder validate_output on saved converted trace, 900 frames",
-      "exit_code": 0,
-      "log": "cpu-nov24b-saved-process-steady-diagnostic.log",
-      "sha256": "933cd9e934dc58c2aa7cee920f151435b7f2d56702195e81af15239cce7fb771"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --attempt .runtime-work/c10301-010-nov24b/full900-variation-attempt --output .runtime-work/c10301-010-nov24b/saved-process-variation --library runtime/library --validator .runtime-work/c10301-010-nov24b/validator-v2/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "cpu-nov24b-variation-pair-proof.log",
-      "sha256": "15d48d4603ed50fbee0c93afc3fff40f7d95e55e7d91123e5a52415246ee6bc6"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov24b-tests-current.log",
-      "sha256": "b24b7a85868039c21e59a3a6aeaaf341cd9b5519e71dedcfa560dabfff6c54a4"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --output .runtime-work/c10301-010-nov24b/offline-steady-v11",
-      "exit_code": 0,
-      "log": "cpu-nov24b-offline-steady-v11.log",
-      "sha256": "26b391344d8a83a61382927f20656caf976078441d3535ade2c51fb907af7286"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.draft.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --output .runtime-work/c10301-010-nov24b/offline-variation-v11",
-      "exit_code": 0,
-      "log": "cpu-nov24b-offline-variation-v11.log",
-      "sha256": "a4e9e7269464e5f741148452d0bbcb6f2373411dcdd9c31d916a49cd539bbc09"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_physical.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --kind complete_motion --scratch .runtime-work/c10301-010-nov24b/physical --result work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/physical-steady_travel-complete_motion.json",
-      "exit_code": 0,
-      "log": "cpu-physical-steady_travel-complete_motion.log",
-      "sha256": "4433bd59426231d4a5be12002eb8a12b95d4bdb8abf3d0719d04c9e8df54e866"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_physical.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --kind incomplete_motion --scratch .runtime-work/c10301-010-nov24b/physical --result work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/physical-steady_travel-incomplete_motion.json",
-      "exit_code": 0,
-      "log": "cpu-physical-steady_travel-incomplete_motion.log",
-      "sha256": "6a9262742bbc6d8dac37f1889d8ffd385ecf11a66d88975581d6bf2e8194fae2"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_physical.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --kind missing_evidence --scratch .runtime-work/c10301-010-nov24b/physical --result work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/physical-steady_travel-missing_evidence.json",
-      "exit_code": 0,
-      "log": "cpu-physical-steady_travel-missing_evidence.log",
-      "sha256": "2b93a1de498322fb011e51d6c2667a7ad1ac791024a3f9d001a857b4628a7a37"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_lifecycle.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --scratch .runtime-work/c10301-010-nov24b/physical",
-      "exit_code": 0,
-      "log": "cpu-lifecycle-steady_travel.log",
-      "sha256": "a7072631fefc8639f2a12dc18fe29b9f65930a031a2146bd2ed13e613d4292d8"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_delivery_audit.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --attempt .runtime-work/c10301-010-nov24b/full900-attempt --mode diagnostic-positive",
-      "exit_code": 0,
-      "log": "cpu-delivery-steady-positive.log",
-      "sha256": "7ff63d0eeaa320ef3b309fa25a978e4200a484f20fc41e10421dbe526fbd8efa"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steady_travel --attempt .runtime-work/c10301-010-nov24b/full900-attempt --output .runtime-work/c10301-010-nov24b/saved-process-hybrid --library runtime/library --validator .runtime-work/c10301-010-nov24b/validator-v2/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "cpu-nov24b-saved-process-steady-current.log",
-      "sha256": "211776456beee3e5949554e6ee50ec0fafcccf77095537af67f22f59280fdb3f"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_physical.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --kind complete_motion --scratch .runtime-work/c10301-010-nov24b/physical --result work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/physical-steering_variation-complete_motion.json",
-      "exit_code": 0,
-      "log": "cpu-physical-steering_variation-complete_motion.log",
-      "sha256": "ff9ec5695ab3c1c6cc632155c7587485a3ddf9c0d25f8ab379153ddfb4e9e71c"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_physical.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --kind incomplete_motion --scratch .runtime-work/c10301-010-nov24b/physical --result work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/physical-steering_variation-incomplete_motion.json",
-      "exit_code": 0,
-      "log": "cpu-physical-steering_variation-incomplete_motion.log",
-      "sha256": "9631b4d89358ce75bb3ceb85749c030c6920d41549efd94006d0f5f830031ba2"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_physical.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --kind missing_evidence --scratch .runtime-work/c10301-010-nov24b/physical --result work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/physical-steering_variation-missing_evidence.json",
-      "exit_code": 0,
-      "log": "cpu-physical-steering_variation-missing_evidence.log",
-      "sha256": "b37308501a118de143188cf44fb2272bbea5f8a108c8b4fb155a128466ea8885"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_lifecycle.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --scratch .runtime-work/c10301-010-nov24b/physical",
-      "exit_code": 0,
-      "log": "cpu-lifecycle-steering_variation.log",
-      "sha256": "5211b23d4893f5939b7ec22813a819fb3a17713d89587f9fc30e8bd8ccc74118"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/prove_delivery_audit.py --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --attempt .runtime-work/c10301-010-nov24b/full900-variation-attempt --mode diagnostic-positive",
-      "exit_code": 0,
-      "log": "cpu-delivery-variation-positive.log",
-      "sha256": "1180361a3b06df056b21eb16402101dca7802911b6714dee920c8489f85c2455"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/execution-manifest.json --case testing__C10301__LVMC-11-22-010__motor_vehicle_driver__steering_variation --attempt .runtime-work/c10301-010-nov24b/full900-variation-attempt --output .runtime-work/c10301-010-nov24b/saved-process-variation --library runtime/library --validator .runtime-work/c10301-010-nov24b/validator-v2/.lake/build/bin/adapterCheck",
-      "exit_code": 0,
-      "log": "cpu-nov24b-saved-process-variation-current.log",
-      "sha256": "51020e264b739f5056912cc1a3a195a6afe3e971a437bd939e0daa4a1f89d652"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov24b-static-current.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": "Pinned physical_preparation.validate, package_compatibility.check_receipts, and delivery_handoff.validate_case on both selected exact cases",
-      "exit_code": 0,
-      "log": "cpu-selected-evidence-validation.log",
-      "sha256": "e487328042dece950b6601004e399af5b17305aa4d3903e2d17ce071d3da4562"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py verify --runtime runtime",
-      "exit_code": 0,
-      "log": "cpu-nov25-verify.log",
-      "sha256": "e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-nov25-preflight.log",
-      "sha256": "8f5cce63d1da74d6a23b07e379a3aaf0b04d3d04587886d8747e723a8efa2e47"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov25-tests.log",
-      "sha256": "47a1dd9c595a424e6f92086f1298dcb387b5c43bb824c6b61baefaf503f8b58d"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov25-reviewed-full-tests.log",
-      "sha256": "cd94695fbcea054bbbf85de0b2e649da2d7f94e394067e445df2a0adb679203e"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov25-reviewed-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov25-production-audit-tests.log",
-      "sha256": "e7754ea85a9d0aa398f0ac24024fd766475b2abfdcd138d10628feb17fa80d8c"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov25-production-audit-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-nov25-production-audit-preflight.log",
-      "sha256": "397416dcde5ab6aee70c7951ea4bc8a1d48f284d8575506d4d112e75c194145d"
-    },
-    {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c10301-nov25b-runtime PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov25b-tests.log",
-      "sha256": "f1cbee482ea90c17296305763dc0b6b25f668a606eb9a6ef5164ee5348f689ce"
-    },
-    {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c10301-nov25b-runtime .venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov25b-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/build_queue_proposal.py",
-      "exit_code": 0,
-      "log": "cpu-nov26-queue.log",
-      "sha256": "3818cd0a59e2898c52fb023fc3411ef7bfd4c4f4026db887529f746d9d878756"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov26-tests.log",
-      "sha256": "c24d2e74fea8dd26dec9d1ac9fea4436d25ed8f0c8024f14d8f45818259e0e08"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py verify --runtime runtime",
-      "exit_code": 0,
-      "log": "cpu-nov26-verify.log",
-      "sha256": "e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-nov26-preflight.log",
-      "sha256": "b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov26-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-interior-tests-nov26.log",
-      "sha256": "f259f6c5528178386ff1999333b249d86944e9101ee79ed459468f4557a2cb4a"
-    },
-    {
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-interior-preflight-nov26.log",
-      "sha256": "96285fab1c3294ea4a472fa5fd86694bb33954dd9659273a6a861555512dbd06"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-interior-static-nov26.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-interior-control-tests-nov26.log",
-      "sha256": "82b4ee704d818eb0e4f3b6d4523e71d813d85df7779a4847b66655e8da9220c6"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov27-interior-tests.log",
-      "sha256": "881d3131849ef628141ae8bc74049f247308c76da98408966c35787e4aa49604"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov27-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
-    },
-    {
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C10301__LVMC-11-22-010__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-nov27-source-audit-tests.log",
-      "sha256": "f735ca3b94bad03176b5dcea41b73092d95a5ea004dadabff5a106443bc18a2c"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C10301__LVMC-11-22-010__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-nov27-source-audit-static.log",
-      "sha256": "495cd04a6bcd24082fba0828bce906e659acf464b1bb7af976255f65e5e3d4bf"
+      "log": "cpu-compat-variation-analysis.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ]
 }

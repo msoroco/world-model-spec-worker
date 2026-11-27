@@ -15,10 +15,13 @@ from attention_sweep_capture import AttentionSweepCapture
 from reviewed_attention_intake import REQUIRED_SOURCES, validate as validate_attention
 
 
-def _stage_attention_packet(packet_path: Path, output_dir: Path) -> Path:
+def _stage_attention_packet(packet_path: Path, output_dir: Path,
+                            site_packet_sha256: str) -> Path:
     """Preserve the reviewed packet and its exact source bytes with the attempt."""
     packet_path = Path(packet_path)
-    validate_attention(packet_path)
+    intake = validate_attention(packet_path)
+    if intake["source_sha256"]["original_site"] != site_packet_sha256:
+        raise ValueError("interior packet original site differs from selected reviewed site")
     packet = json.loads(packet_path.read_bytes())
     stage = output_dir / "interior-sources"
     if stage.exists():
@@ -73,7 +76,8 @@ def capture_reviewed(session, site_path, case_id, output_dir, *, pipeline_factor
         from runtime_publication import publish_original
         publisher = publish_original
     output_dir.mkdir(parents=True, exist_ok=True)
-    staged_attention = _stage_attention_packet(Path(attention_packet_path), output_dir)
+    staged_attention = _stage_attention_packet(
+        Path(attention_packet_path), output_dir, hashlib.sha256(source).hexdigest())
     attention_intake = validate_attention(staged_attention)
     attention_capture = AttentionSweepCapture(
         staged_attention, case_id, attention_intake["axis"]["min"])

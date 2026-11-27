@@ -29,37 +29,89 @@
       "passenger_exchange_request": "none",
       "physical_risk": "Actual stand boundary, curb footprint, taxi halt and passenger exchange need source review and original CARLA realization.",
       "recording_description": {
-        "cameras": [
-          "overview",
-          "approach",
-          "curb_reference",
-          "passenger_side"
-        ],
         "channels": [
           {
-            "name": "reviewed_stand_and_street",
-            "source": "original designation, authority, marking, curb and jurisdiction survey"
+            "method": "original CARLA world tick readback",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
           },
           {
-            "name": "taxicab_and_operator",
-            "source": "original licensing, fee-service and operator review"
+            "method": "original taxi transform readback",
+            "name": "taxi_center_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native transform precision",
+            "unit": "m"
           },
           {
-            "name": "taxi_body_and_halt",
-            "source": "900 original 20 Hz Native body/velocity/road-lane samples"
+            "method": "original taxi bounding box transformed into reviewed Native map XY",
+            "name": "taxi_footprint_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native bounding box geometry",
+            "unit": "m"
           },
           {
-            "name": "passenger_exchange",
-            "source": "original door/person/boarding events joined to four camera pixels and independent review"
+            "method": "original taxi velocity readback",
+            "name": "taxi_speed_mps",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "0.1 m/s engineering halt tolerance is not a legal cutoff",
+            "unit": "m/s"
           },
           {
-            "name": "other_regulations",
-            "source": "identified applicable original stop/parking rules and review; no automatic legal verdict"
+            "method": "four synchronized original RGB camera sources and SHA-256 frame ledger",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "camera visibility requires independent review",
+            "unit": "native pixels"
+          },
+          {
+            "method": "independent reviewed actor/door/boarding or alighting record bound to original cameras",
+            "name": "passenger_activity_review",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "reviewed halt interval within full capture",
+            "uncertainty": "activity and expeditiousness require human review",
+            "unit": "source record"
           }
         ],
-        "duration_s": 45,
-        "rate_hz": 20,
-        "uncertainty": "Engineering request only; expeditiousness and other-regulation compliance remain for independent review."
+        "context_inputs": [
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_stand_designation",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "business_district_and_street",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_licence_and_operator",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "other_stopping_parking_regulations",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested activity is not observed legal activity.",
+          "Expeditiousness and other-regulation compliance remain for independent review.",
+          "No accepted original taxi recording is supplied in frozen evidence."
+        ]
       },
       "target": "designated stand baseline",
       "target_law_id": "LVMC-11-60-040"
@@ -79,37 +131,89 @@
       "passenger_exchange_request": "none",
       "physical_risk": "Actual stand boundary, curb footprint, taxi halt and passenger exchange need source review and original CARLA realization.",
       "recording_description": {
-        "cameras": [
-          "overview",
-          "approach",
-          "curb_reference",
-          "passenger_side"
-        ],
         "channels": [
           {
-            "name": "reviewed_stand_and_street",
-            "source": "original designation, authority, marking, curb and jurisdiction survey"
+            "method": "original CARLA world tick readback",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
           },
           {
-            "name": "taxicab_and_operator",
-            "source": "original licensing, fee-service and operator review"
+            "method": "original taxi transform readback",
+            "name": "taxi_center_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native transform precision",
+            "unit": "m"
           },
           {
-            "name": "taxi_body_and_halt",
-            "source": "900 original 20 Hz Native body/velocity/road-lane samples"
+            "method": "original taxi bounding box transformed into reviewed Native map XY",
+            "name": "taxi_footprint_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native bounding box geometry",
+            "unit": "m"
           },
           {
-            "name": "passenger_exchange",
-            "source": "original door/person/boarding events joined to four camera pixels and independent review"
+            "method": "original taxi velocity readback",
+            "name": "taxi_speed_mps",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "0.1 m/s engineering halt tolerance is not a legal cutoff",
+            "unit": "m/s"
           },
           {
-            "name": "other_regulations",
-            "source": "identified applicable original stop/parking rules and review; no automatic legal verdict"
+            "method": "four synchronized original RGB camera sources and SHA-256 frame ledger",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "camera visibility requires independent review",
+            "unit": "native pixels"
+          },
+          {
+            "method": "independent reviewed actor/door/boarding or alighting record bound to original cameras",
+            "name": "passenger_activity_review",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "reviewed halt interval within full capture",
+            "uncertainty": "activity and expeditiousness require human review",
+            "unit": "source record"
           }
         ],
-        "duration_s": 45,
-        "rate_hz": 20,
-        "uncertainty": "Engineering request only; expeditiousness and other-regulation compliance remain for independent review."
+        "context_inputs": [
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_stand_designation",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "business_district_and_street",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_licence_and_operator",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "other_stopping_parking_regulations",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested activity is not observed legal activity.",
+          "Expeditiousness and other-regulation compliance remain for independent review.",
+          "No accepted original taxi recording is supplied in frozen evidence."
+        ]
       },
       "target": "outside designated stand parking",
       "target_law_id": "LVMC-11-60-040"
@@ -129,37 +233,89 @@
       "passenger_exchange_request": "none",
       "physical_risk": "Actual stand boundary, curb footprint, taxi halt and passenger exchange need source review and original CARLA realization.",
       "recording_description": {
-        "cameras": [
-          "overview",
-          "approach",
-          "curb_reference",
-          "passenger_side"
-        ],
         "channels": [
           {
-            "name": "reviewed_stand_and_street",
-            "source": "original designation, authority, marking, curb and jurisdiction survey"
+            "method": "original CARLA world tick readback",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
           },
           {
-            "name": "taxicab_and_operator",
-            "source": "original licensing, fee-service and operator review"
+            "method": "original taxi transform readback",
+            "name": "taxi_center_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native transform precision",
+            "unit": "m"
           },
           {
-            "name": "taxi_body_and_halt",
-            "source": "900 original 20 Hz Native body/velocity/road-lane samples"
+            "method": "original taxi bounding box transformed into reviewed Native map XY",
+            "name": "taxi_footprint_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native bounding box geometry",
+            "unit": "m"
           },
           {
-            "name": "passenger_exchange",
-            "source": "original door/person/boarding events joined to four camera pixels and independent review"
+            "method": "original taxi velocity readback",
+            "name": "taxi_speed_mps",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "0.1 m/s engineering halt tolerance is not a legal cutoff",
+            "unit": "m/s"
           },
           {
-            "name": "other_regulations",
-            "source": "identified applicable original stop/parking rules and review; no automatic legal verdict"
+            "method": "four synchronized original RGB camera sources and SHA-256 frame ledger",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "camera visibility requires independent review",
+            "unit": "native pixels"
+          },
+          {
+            "method": "independent reviewed actor/door/boarding or alighting record bound to original cameras",
+            "name": "passenger_activity_review",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "reviewed halt interval within full capture",
+            "uncertainty": "activity and expeditiousness require human review",
+            "unit": "source record"
           }
         ],
-        "duration_s": 45,
-        "rate_hz": 20,
-        "uncertainty": "Engineering request only; expeditiousness and other-regulation compliance remain for independent review."
+        "context_inputs": [
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_stand_designation",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "business_district_and_street",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_licence_and_operator",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "other_stopping_parking_regulations",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested activity is not observed legal activity.",
+          "Expeditiousness and other-regulation compliance remain for independent review.",
+          "No accepted original taxi recording is supplied in frozen evidence."
+        ]
       },
       "target": "outside designated stand standing",
       "target_law_id": "LVMC-11-60-040"
@@ -179,37 +335,89 @@
       "passenger_exchange_request": "loading",
       "physical_risk": "Actual stand boundary, curb footprint, taxi halt and passenger exchange need source review and original CARLA realization.",
       "recording_description": {
-        "cameras": [
-          "overview",
-          "approach",
-          "curb_reference",
-          "passenger_side"
-        ],
         "channels": [
           {
-            "name": "reviewed_stand_and_street",
-            "source": "original designation, authority, marking, curb and jurisdiction survey"
+            "method": "original CARLA world tick readback",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
           },
           {
-            "name": "taxicab_and_operator",
-            "source": "original licensing, fee-service and operator review"
+            "method": "original taxi transform readback",
+            "name": "taxi_center_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native transform precision",
+            "unit": "m"
           },
           {
-            "name": "taxi_body_and_halt",
-            "source": "900 original 20 Hz Native body/velocity/road-lane samples"
+            "method": "original taxi bounding box transformed into reviewed Native map XY",
+            "name": "taxi_footprint_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native bounding box geometry",
+            "unit": "m"
           },
           {
-            "name": "passenger_exchange",
-            "source": "original door/person/boarding events joined to four camera pixels and independent review"
+            "method": "original taxi velocity readback",
+            "name": "taxi_speed_mps",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "0.1 m/s engineering halt tolerance is not a legal cutoff",
+            "unit": "m/s"
           },
           {
-            "name": "other_regulations",
-            "source": "identified applicable original stop/parking rules and review; no automatic legal verdict"
+            "method": "four synchronized original RGB camera sources and SHA-256 frame ledger",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "camera visibility requires independent review",
+            "unit": "native pixels"
+          },
+          {
+            "method": "independent reviewed actor/door/boarding or alighting record bound to original cameras",
+            "name": "passenger_activity_review",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "reviewed halt interval within full capture",
+            "uncertainty": "activity and expeditiousness require human review",
+            "unit": "source record"
           }
         ],
-        "duration_s": 45,
-        "rate_hz": 20,
-        "uncertainty": "Engineering request only; expeditiousness and other-regulation compliance remain for independent review."
+        "context_inputs": [
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_stand_designation",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "business_district_and_street",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_licence_and_operator",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "other_stopping_parking_regulations",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested activity is not observed legal activity.",
+          "Expeditiousness and other-regulation compliance remain for independent review.",
+          "No accepted original taxi recording is supplied in frozen evidence."
+        ]
       },
       "target": "actual expeditious passenger loading",
       "target_law_id": "LVMC-11-60-040"
@@ -229,37 +437,89 @@
       "passenger_exchange_request": "unloading",
       "physical_risk": "Actual stand boundary, curb footprint, taxi halt and passenger exchange need source review and original CARLA realization.",
       "recording_description": {
-        "cameras": [
-          "overview",
-          "approach",
-          "curb_reference",
-          "passenger_side"
-        ],
         "channels": [
           {
-            "name": "reviewed_stand_and_street",
-            "source": "original designation, authority, marking, curb and jurisdiction survey"
+            "method": "original CARLA world tick readback",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
           },
           {
-            "name": "taxicab_and_operator",
-            "source": "original licensing, fee-service and operator review"
+            "method": "original taxi transform readback",
+            "name": "taxi_center_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native transform precision",
+            "unit": "m"
           },
           {
-            "name": "taxi_body_and_halt",
-            "source": "900 original 20 Hz Native body/velocity/road-lane samples"
+            "method": "original taxi bounding box transformed into reviewed Native map XY",
+            "name": "taxi_footprint_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native bounding box geometry",
+            "unit": "m"
           },
           {
-            "name": "passenger_exchange",
-            "source": "original door/person/boarding events joined to four camera pixels and independent review"
+            "method": "original taxi velocity readback",
+            "name": "taxi_speed_mps",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "0.1 m/s engineering halt tolerance is not a legal cutoff",
+            "unit": "m/s"
           },
           {
-            "name": "other_regulations",
-            "source": "identified applicable original stop/parking rules and review; no automatic legal verdict"
+            "method": "four synchronized original RGB camera sources and SHA-256 frame ledger",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "camera visibility requires independent review",
+            "unit": "native pixels"
+          },
+          {
+            "method": "independent reviewed actor/door/boarding or alighting record bound to original cameras",
+            "name": "passenger_activity_review",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "reviewed halt interval within full capture",
+            "uncertainty": "activity and expeditiousness require human review",
+            "unit": "source record"
           }
         ],
-        "duration_s": 45,
-        "rate_hz": 20,
-        "uncertainty": "Engineering request only; expeditiousness and other-regulation compliance remain for independent review."
+        "context_inputs": [
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_stand_designation",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "business_district_and_street",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_licence_and_operator",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "other_stopping_parking_regulations",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested activity is not observed legal activity.",
+          "Expeditiousness and other-regulation compliance remain for independent review.",
+          "No accepted original taxi recording is supplied in frozen evidence."
+        ]
       },
       "target": "actual expeditious passenger unloading",
       "target_law_id": "LVMC-11-60-040"
@@ -279,37 +539,89 @@
       "passenger_exchange_request": "none",
       "physical_risk": "Actual stand boundary, curb footprint, taxi halt and passenger exchange need source review and original CARLA realization.",
       "recording_description": {
-        "cameras": [
-          "overview",
-          "approach",
-          "curb_reference",
-          "passenger_side"
-        ],
         "channels": [
           {
-            "name": "reviewed_stand_and_street",
-            "source": "original designation, authority, marking, curb and jurisdiction survey"
+            "method": "original CARLA world tick readback",
+            "name": "native_frame",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "one retained 20 Hz sample",
+            "unit": "frame"
           },
           {
-            "name": "taxicab_and_operator",
-            "source": "original licensing, fee-service and operator review"
+            "method": "original taxi transform readback",
+            "name": "taxi_center_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native transform precision",
+            "unit": "m"
           },
           {
-            "name": "taxi_body_and_halt",
-            "source": "900 original 20 Hz Native body/velocity/road-lane samples"
+            "method": "original taxi bounding box transformed into reviewed Native map XY",
+            "name": "taxi_footprint_xy_m",
+            "reference_frame": "reviewed Native map XY",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "Native bounding box geometry",
+            "unit": "m"
           },
           {
-            "name": "passenger_exchange",
-            "source": "original door/person/boarding events joined to four camera pixels and independent review"
+            "method": "original taxi velocity readback",
+            "name": "taxi_speed_mps",
+            "reference_frame": "original CARLA world",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "0.1 m/s engineering halt tolerance is not a legal cutoff",
+            "unit": "m/s"
           },
           {
-            "name": "other_regulations",
-            "source": "identified applicable original stop/parking rules and review; no automatic legal verdict"
+            "method": "four synchronized original RGB camera sources and SHA-256 frame ledger",
+            "name": "four_camera_frames",
+            "reference_frame": "original CARLA world and frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "full 900-frame, 45-second capture",
+            "uncertainty": "camera visibility requires independent review",
+            "unit": "native pixels"
+          },
+          {
+            "method": "independent reviewed actor/door/boarding or alighting record bound to original cameras",
+            "name": "passenger_activity_review",
+            "reference_frame": "original Native frame identity",
+            "sampling_rate_hz": 20,
+            "time_window": "reviewed halt interval within full capture",
+            "uncertainty": "activity and expeditiousness require human review",
+            "unit": "source record"
           }
         ],
-        "duration_s": 45,
-        "rate_hz": 20,
-        "uncertainty": "Engineering request only; expeditiousness and other-regulation compliance remain for independent review."
+        "context_inputs": [
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_stand_designation",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "business_district_and_street",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "taxi_licence_and_operator",
+            "unit": "source record"
+          },
+          {
+            "method": "SHA-bound original independent review",
+            "name": "other_stopping_parking_regulations",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested activity is not observed legal activity.",
+          "Expeditiousness and other-regulation compliance remain for independent review.",
+          "No accepted original taxi recording is supplied in frozen evidence."
+        ]
       },
       "target": "temporary stop without passenger exchange",
       "target_law_id": "LVMC-11-60-040"
@@ -407,28 +719,33 @@
   "observations": [
     {
       "mandatory": true,
-      "name": "reviewed_stand_and_street",
-      "source": "original designation, authority, marking, curb and jurisdiction survey"
+      "name": "native_frame",
+      "source": "original CARLA world tick readback"
     },
     {
       "mandatory": true,
-      "name": "taxicab_and_operator",
-      "source": "original licensing, fee-service and operator review"
+      "name": "taxi_center_xy_m",
+      "source": "original taxi transform readback"
     },
     {
       "mandatory": true,
-      "name": "taxi_body_and_halt",
-      "source": "900 original 20 Hz Native body/velocity/road-lane samples"
+      "name": "taxi_footprint_xy_m",
+      "source": "original taxi bounding box transformed into reviewed Native map XY"
     },
     {
       "mandatory": true,
-      "name": "passenger_exchange",
-      "source": "original door/person/boarding events joined to four camera pixels and independent review"
+      "name": "taxi_speed_mps",
+      "source": "original taxi velocity readback"
     },
     {
       "mandatory": true,
-      "name": "other_regulations",
-      "source": "identified applicable original stop/parking rules and review; no automatic legal verdict"
+      "name": "four_camera_frames",
+      "source": "four synchronized original RGB camera sources and SHA-256 frame ledger"
+    },
+    {
+      "mandatory": true,
+      "name": "passenger_activity_review",
+      "source": "independent reviewed actor/door/boarding or alighting record bound to original cameras"
     }
   ],
   "planning_status": "selected_source_gated_cpu_construction_in_progress",
@@ -493,7 +810,18 @@
       "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ],
-  "source_observation_mapping": {},
+  "source_observation_mapping": {
+    "business_district_and_street": "independent site and jurisdiction source",
+    "four_camera_frames": "native-taxi/<view>/<frame>.png with frame SHA-256 ledger",
+    "native_frame": "native_frames.json original world tick",
+    "other_stopping_parking_regulations": "independent applicable other-regulations source",
+    "passenger_activity_review": "independent original activity_review JSON and camera SHA-256",
+    "taxi_center_xy_m": "native_frames.json original taxi transform",
+    "taxi_footprint_xy_m": "native_frames.json original taxi bounding box",
+    "taxi_licence_and_operator": "independent taxi licence and operator source",
+    "taxi_speed_mps": "native_frames.json original taxi velocity",
+    "taxi_stand_designation": "independent official designation source"
+  },
   "sources": [
     {
       "path": "inputs/testing__C378245__LVMC-11-60-040__taxi_driver/assignment.json",

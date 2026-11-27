@@ -1,7 +1,7 @@
-"""Build a provisional exact-case queue for the two sourced exterior cases.
+"""Build a source-gated exact-case queue for the two selected alley cases.
 
-The full attention sweep can add cases only after original interior sources are
-reviewed. This proposal is not the shared dispatch queue.
+Original production capture requires reviewed site and interior sources. This
+proposal is not the shared dispatch queue.
 """
 from __future__ import annotations
 
@@ -61,7 +61,7 @@ def build() -> dict:
     result = {
         "format": "worker-ordered-gpu-queue-proposal",
         "assignment_id": ASSIGNMENT,
-        "status": "partial_attention_sweep_source_pending",
+        "status": "source_gated_delivery_prepared",
         "source": "execution-manifest.json",
         "cases": rows,
         "comparison_audit_commands": [{

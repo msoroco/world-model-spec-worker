@@ -9,6 +9,8 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import queue
+import copy
 from pathlib import Path
 
 from taxi_stand_measurement import VIEWS, finite, polygon, within
@@ -154,3 +156,68 @@ class NativeTaxiOperator:
         self.taxi = self.passenger = None
         if errors:
             raise ValueError("Native taxi ownership cleanup failed") from errors[0]
+
+    def capture(self, output: Path, *, frames: int = 900) -> dict:
+        """Save all four Native camera streams and taxi kinematics by world tick.
+
+        This records construction behavior only. It does not assert a passenger
+        boarded, that a halt was expeditious, or that parking rules were met.
+        """
+        if self.taxi is None or set(self.cameras) != set(VIEWS):
+            raise ValueError("taxi and four cameras must be constructed")
+        if frames != 900:
+            raise ValueError("exact 45-second 20-Hz capture required")
+        output = Path(output)
+        if output.exists():
+            raise ValueError("retain prior Native taxi attempt")
+        output.mkdir(parents=True)
+        previous_settings = copy.deepcopy(self.world.get_settings())
+        capture_settings = copy.deepcopy(previous_settings)
+        capture_settings.synchronous_mode = True
+        capture_settings.fixed_delta_seconds = 0.05
+        self.world.apply_settings(capture_settings)
+        inboxes = {name: queue.Queue() for name in VIEWS}
+        ledger = []
+        try:
+            for name, sensor in self.cameras.items():
+                sensor.listen(lambda image, target=inboxes[name]: target.put(image))
+            for index in range(frames):
+                native_frame = self.world.tick()
+                frame_images = {}
+                for name in VIEWS:
+                    image = inboxes[name].get(timeout=30)
+                    if image.frame != native_frame:
+                        raise ValueError("Native taxi camera/world frame mismatch")
+                    target = output / name
+                    target.mkdir(exist_ok=True)
+                    image_path = target / (f"{index:04d}.png")
+                    image.save_to_disk(str(image_path))
+                    frame_images[name] = {"path": str(image_path.relative_to(output)),
+                                          "sha256": hashlib.sha256(image_path.read_bytes()).hexdigest(),
+                                          "native_frame": native_frame}
+                transform = self.taxi.get_transform()
+                location = transform.location
+                velocity = self.taxi.get_velocity()
+                box = self.taxi.bounding_box
+                corners = []
+                for dx, dy in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+                    local = self.carla.Location(x=dx * box.extent.x, y=dy * box.extent.y,
+                                                z=0)
+                    vertex = transform.transform(box.location + local)
+                    corners.append([finite(vertex.x, "body x"), finite(vertex.y, "body y")])
+                ledger.append({"frame": index, "native_frame": native_frame,
+                               "elapsed_s": index / 20,
+                               "taxi_center_xy_m": [finite(location.x, "taxi x"),
+                                                    finite(location.y, "taxi y")],
+                               "taxi_footprint_xy_m": corners,
+                               "taxi_speed_mps": math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2),
+                               "cameras": frame_images})
+            (output / "native_frames.json").write_text(json.dumps(ledger, indent=2) + "\n")
+            return {"frame_count": frames, "rate_hz": 20, "camera_views": list(VIEWS),
+                    "native_frames_sha256": hashlib.sha256(
+                        (output / "native_frames.json").read_bytes()).hexdigest(),
+                    "physical_observation_verified": False}
+        finally:
+            for sensor in self.cameras.values():
+                sensor.stop()
+            self.world.apply_settings(previous_settings)

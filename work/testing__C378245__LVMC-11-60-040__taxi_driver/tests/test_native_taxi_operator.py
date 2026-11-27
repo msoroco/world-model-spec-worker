@@ -55,6 +55,10 @@ class Actor:
     def __init__(self, identity, blueprint, transform):
         self.id, self.blueprint, self.transform = identity, blueprint, transform
         self.destroyed = False
+        self.callback = None
+        self.bounding_box = type("Box", (), {
+            "extent": type("Extent", (), {"x": 0.4, "y": 0.4})(),
+            "location": Carla.Location(x=0, y=0, z=0)})()
 
     def get_transform(self):
         return self.transform
@@ -65,6 +69,12 @@ class Actor:
     def stop(self):
         pass
 
+    def listen(self, callback):
+        self.callback = callback
+
+    def get_velocity(self):
+        return Carla.Location(x=0, y=0, z=0)
+
 
 class Map:
     def to_opendrive(self):
@@ -74,6 +84,9 @@ class Map:
 class World:
     def __init__(self, fail_on=None):
         self.actors, self.fail_on = [], fail_on
+        self.frame = 0
+        self.settings = type("Settings", (), {"synchronous_mode": False,
+                                              "fixed_delta_seconds": None})()
 
     def get_map(self):
         return Map()
@@ -88,11 +101,28 @@ class World:
         self.actors.append(actor)
         return actor
 
+    def get_settings(self):
+        return self.settings
+
+    def apply_settings(self, settings):
+        self.settings = settings
+
+    def tick(self):
+        self.frame += 1
+        for actor in self.actors:
+            if actor.callback:
+                actor.callback(type("Image", (), {"frame": self.frame,
+                    "save_to_disk": lambda _, path: Path(path).write_bytes(b"fixture image")})())
+        return self.frame
+
 
 class Carla:
     class Location:
         def __init__(self, **kwargs):
             self.__dict__.update(kwargs)
+
+        def __add__(self, other):
+            return Carla.Location(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
 
     class Rotation:
         def __init__(self, **kwargs):
@@ -101,6 +131,9 @@ class Carla:
     class Transform:
         def __init__(self, location, rotation):
             self.location, self.rotation = location, rotation
+
+        def transform(self, offset):
+            return self.location + offset
 
 
 class NativeTaxiTests(unittest.TestCase):
@@ -150,6 +183,22 @@ class NativeTaxiTests(unittest.TestCase):
             operator.setup({"case_id": "fixture__designated_stand_park", "location_request": "in_stand",
                             "halt_activity_request": "park", "passenger_exchange_request": "none"})
         self.assertEqual(world.actors, [])
+
+    def test_capture_four_synchronized_views_and_body_geometry(self):
+        world = World()
+        operator = NativeTaxiOperator(world, Carla, site())
+        operator.setup({"case_id": "fixture__designated_stand_park", "location_request": "in_stand",
+                        "halt_activity_request": "park", "passenger_exchange_request": "none"})
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as name:
+            destination = Path(name) / "capture"
+            receipt = operator.capture(destination)
+            self.assertEqual(receipt["frame_count"], 900)
+            rows = json.loads((destination / "native_frames.json").read_text())
+            self.assertEqual(len(rows), 900)
+            self.assertEqual(len(rows[0]["taxi_footprint_xy_m"]), 4)
+            self.assertEqual(set(rows[-1]["cameras"]), set(operator.cameras))
+            self.assertFalse(world.settings.synchronous_mode)
+        operator.close()
 
 
 if __name__ == "__main__":

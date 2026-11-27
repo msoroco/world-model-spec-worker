@@ -71,6 +71,15 @@ def _recording_evidence(output: Path, recording: dict, sources: dict, original: 
             "access_aisle_source_sha256": original["access_aisle_source_sha256"],
             "parking_designation_source_sha256": original["parking_designation_source_sha256"],
             "native_context_sha256": _hash(output / "context.jsonl")},
+        "original_eyes_off_road_duration_s": {
+            "value": original["interior_source_audit"]["measured_duration_s"]
+                if original.get("interior_source_audit") is not None else None,
+            "source_sha256": original["interior_source_audit"]["sensor_source_sha256"]
+                if original.get("interior_source_audit") is not None else None,
+            "diagnostic_fixture": original.get("diagnostic_fixture") is True,
+            "attention_state": "unresolved" if original.get("interior_source_audit") is not None
+                else "unobserved",
+            "legal_judgment": "unresolved"},
     }
     if {c["name"] for c in recording["context_inputs"]} - set(contexts):
         raise ValueError("Unmapped current-runtime recording context")
@@ -170,6 +179,7 @@ def publish_original(output: Path, case_id: str, *, expected_frames: int = 900,
                  "-c:v", "ffv1", str(video)], check=True)
         audit(video, expected_frames, mapping_sha256=_hash(mapping))
     recording = json.loads((output / "construction.json").read_text())["recording_description"]
+    original["interior_source_audit"] = interior_audit
     recording_evidence = _recording_evidence(output, recording, sources, original)
     result = {
         "case_id": case_id,

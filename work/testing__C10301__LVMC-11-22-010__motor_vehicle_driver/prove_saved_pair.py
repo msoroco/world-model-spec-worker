@@ -61,7 +61,7 @@ def prove(output_root: Path) -> dict:
                               next(case for case in sources if case.endswith("__steering_variation")),
                               "--output", str(negative), "--allow-diagnostic"])
     except ValueError as error:
-        if "missing original source: operation.jsonl" not in str(error):
+        if "original source missing or symlinked: operation.jsonl" not in str(error):
             raise
     else:
         raise ValueError("missing original operation source was accepted")
