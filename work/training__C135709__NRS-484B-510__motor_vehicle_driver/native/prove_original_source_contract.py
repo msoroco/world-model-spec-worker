@@ -9,7 +9,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 
-from original_source_contract import CAMERAS, FRAME_COUNT, FPS, sha, validate
+from original_source_contract import AID, CAMERAS, FRAME_COUNT, FPS, sha, validate
 
 
 def write(path: Path, value) -> None:
@@ -38,20 +38,24 @@ def prove() -> dict:
     scratch.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="c135709-original-", dir=scratch) as temporary:
         attempt = Path(temporary)
+        case_id = AID + "__witness_1"
+        (attempt / "road.xodr").write_text("<OpenDRIVE><road id='1'/></OpenDRIVE>\n", encoding="utf-8")
+        map_sha256 = sha(attempt / "road.xodr")
         for camera in CAMERAS:
             subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i",
                             "color=c=black:s=64x48:r=20", "-frames:v", "600",
                             "-c:v", "ffv1", str(attempt / f"{camera}.mkv")],
                            check=True, capture_output=True)
         capture = {"source_kind": "original_native", "frame_count": FRAME_COUNT,
+                   "case_id": case_id,
                    "fps": FPS, "closed": True, "world_restored": True,
-                   "map_sha256": "a" * 64,
+                   "map_sha256": map_sha256,
                    "video_sources": {name: {"path": f"{name}.mkv",
                                             "sha256": sha(attempt / f"{name}.mkv")}
                                      for name in CAMERAS}}
         write(attempt / "capture-manifest.json", capture)
         write(attempt / "zone-survey.json", {"bounds_m": [0, 0, 10, 4],
-              "map_sha256": "a" * 64, "sign_actor_id": 42,
+              "map_sha256": map_sha256, "sign_id": "510",
               "sign_text_readback": "restricted-purpose placeholder"})
         actors = []
         joins = []
@@ -59,8 +63,8 @@ def prove() -> dict:
             actors.append({"frame": i, "native_frame": 1000 + i,
                            "elapsed_s": i / FPS, "ego_body_m": [3, 1, 7, 3],
                            "ego_speed_mps": 0.0,
-                           "occupant_actor_ids": [7] if i < 100 else [7, 8],
-                           "door_open": 95 <= i <= 105,
+                           "passenger_actor_ids_near_vehicle": [7] if i < 100 else [7, 8],
+                           "door_open_request": 95 <= i <= 105,
                            "other_vehicles": [{"actor_id": 91,
                                "body_m": [8, 1, 12, 3], "speed_mps": 0.0,
                                "requesting_zone_entry": True}] if 200 <= i < 210 else []})
@@ -68,20 +72,28 @@ def prove() -> dict:
                           "cameras": {name: i for name in CAMERAS}})
         rows(attempt / "actor-frames.jsonl", actors)
         rows(attempt / "camera-frames.jsonl", joins)
-        names = ("capture-manifest.json", "zone-survey.json", "actor-frames.jsonl",
+        names = ("capture-manifest.json", "road.xodr", "zone-survey.json", "actor-frames.jsonl",
                  "camera-frames.jsonl") + tuple(f"{name}.mkv" for name in CAMERAS)
         review = attempt / "source-review.json"
-        review_content = {"source_sha256": {name: sha(attempt / name) for name in names},
+        review_content = {"case_id": case_id,
+                          "source_sha256": {name: sha(attempt / name) for name in names},
                           "reviewer": "controlled-fixture", "restricted_purpose": "test-purpose",
                           "sign_authority": "unverified", "sign_pixel_status": "unverified"}
         write(review, review_content)
         positive = validate(attempt, review)
         assert positive["stopped_in_zone_frames"] == FRAME_COUNT
-        assert positive["occupant_identity_change_frames_with_door_open"] == 1
+        assert positive["nearby_passenger_identity_change_frames_with_door_request"] == 1
         assert positive["actual_passenger_loading"] == "unverified"
         assert positive["requested_waiting_or_entering_overlap_frames"] == 10
         assert positive["legal_conclusion"] is None
+        assert positive["case_id"] == case_id
         negatives = {}
+        negatives["wrong_case_review"] = expect_rejection(
+            attempt, review, review,
+            lambda path: write(path, dict(review_content, case_id=AID + "__witness_2")))
+        negatives["stale_map"] = expect_rejection(
+            attempt, review, attempt / "road.xodr",
+            lambda path: path.write_text("<OpenDRIVE><road id='2'/></OpenDRIVE>\n", encoding="utf-8"))
         negatives["stale_review"] = expect_rejection(
             attempt, review, attempt / "zone-survey.json",
             lambda path: path.write_text(path.read_text().replace('restricted-purpose placeholder',
@@ -125,7 +137,7 @@ def prove() -> dict:
         review_content["source_sha256"]["capture-manifest.json"] = sha(attempt / "capture-manifest.json")
         review_content["source_sha256"]["approach.mkv"] = sha(video_path)
         malformed = copy.deepcopy(actors)
-        del malformed[50]["occupant_actor_ids"]
+        del malformed[50]["passenger_actor_ids_near_vehicle"]
         rows(attempt / "actor-frames.jsonl", malformed)
         review_content["source_sha256"]["actor-frames.jsonl"] = sha(attempt / "actor-frames.jsonl")
         write(review, review_content)
@@ -134,11 +146,11 @@ def prove() -> dict:
         except ValueError as exc:
             negatives["missing_original_occupant"] = str(exc)
         else:
-            raise AssertionError("accepted missing original occupant identity")
-        assert len(negatives) == 6
+            raise AssertionError("accepted missing original nearby passenger identity")
+        assert len(negatives) == 8
         return {"format": "restricted-zone-original-source-fixture-proof-v1",
                 "positive": {"stopped_in_zone_frames": positive["stopped_in_zone_frames"],
-                             "occupant_identity_change_frames_with_door_open": positive["occupant_identity_change_frames_with_door_open"],
+                             "nearby_passenger_identity_change_frames_with_door_request": positive["nearby_passenger_identity_change_frames_with_door_request"],
                              "requested_waiting_or_entering_overlap_frames": positive["requested_waiting_or_entering_overlap_frames"]},
                 "negative_rejections": negatives,
                 "fixture_video_bytes": "four 600-frame FFV1 color videos fully decoded; no physical visibility claim",

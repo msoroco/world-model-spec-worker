@@ -64,7 +64,7 @@ TEST = '''import copy\nimport json\nimport unittest\nfrom pathlib import Path\nf
 
 def main():
     files = ['runner.py', 'capture.py', 'cameras.py', 'activity.py', 'roadside_scene.py',
-             'selected_plan.py', 'road-edge-road.xodr', 'source_audit.py']
+             'selected_plan.py', 'road-edge-road.xodr', 'source_audit.py', 'finalize.py']
     cases = []
     for case, setting in CASES.items():
         variants = []
@@ -89,6 +89,8 @@ def main():
             content = [{'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'},
                        {'path': 'tests/test_offline.py', 'content': TEST}]
             content += [{'path': name, 'content': (HERE / name).read_text()} for name in files]
+            content.append({'path': 'parking_measure.py',
+                            'content': (ROOT / 'parking_measure.py').read_text()})
             construction = {'format': 'worker-inline-construction',
                 'case_id': case, 'law_id': 'LVMC-11-52-040-A',
                 'cell_id': 'C229351', 'actor': 'motor_vehicle_driver',

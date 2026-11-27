@@ -6,8 +6,10 @@ The requests encode construction differences, never observed purpose or legality
 from __future__ import annotations
 
 import math
+import hashlib
 
 from parking_controller import ParkingPlan
+from geometry import check as geometry_check, open_drive
 
 AID = "training__C135709__NRS-484B-510__motor_vehicle_driver"
 CAMERAS = {"overview": (1920, 1080), "approach": (1280, 720),
@@ -40,12 +42,17 @@ def build(suffix: str, *, stop_center_x_m: float = 5.0) -> dict:
     motion = ParkingPlan(target_center_x_m=float(stop_center_x_m))
     motion.validate()
     case = CASES[suffix]
+    geometry = geometry_check()
     return {"assignment_id": AID, "case_id": f"{AID}__{suffix}",
             "frozen_cell": {"layout": "narrow_road", "maneuver": "park",
                             "control": "parking_restriction_device"},
             "actor": "motor_vehicle_driver", "frames": 600, "fps": 20,
             "duration_s": 30, "camera_sizes": CAMERAS,
             "zone_x0_m": motion.zone_x0_m, "zone_x1_m": motion.zone_x1_m,
+            "requested_zone_bounds_m": geometry["requested_zone_bounds_m"],
+            "requested_sign_id": geometry["sign_id"],
+            "requested_restricted_purpose": geometry["requested_restricted_purpose"],
+            "requested_open_drive_sha256": hashlib.sha256(open_drive().encode()).hexdigest(),
             "parking_target_center_x_m": motion.target_center_x_m,
             "primary_max_speed_mps": motion.max_speed_mps,
             "passenger_vehicle_required": suffix.startswith("exception_"),
@@ -54,9 +61,12 @@ def build(suffix: str, *, stop_center_x_m: float = 5.0) -> dict:
             "waiting_vehicle_request": case["waiting_vehicle_request"],
             "comparison_variable": case["comparison_variable"],
             "original_source_requirements": [
-                "map and restricted-zone survey", "posted sign pixels and authority review",
-                "full ego body and speed every frame", "original occupant actor identities",
-                "passenger door and body readback", "other vehicle body and entry route",
+                "original OpenDRIVE bytes and restricted-zone survey",
+                "posted sign pixels and authority review",
+                "full ego body and speed every frame",
+                "nearby passenger actor identities and requested door controls",
+                "independent review of actual passenger loading",
+                "other vehicle body and entry route",
                 "four complete synchronized FFV1 camera videos"],
             "physical_risk": ["parking footprint may miss the narrow zone",
                               "a passenger exchange may not be visible or realized",

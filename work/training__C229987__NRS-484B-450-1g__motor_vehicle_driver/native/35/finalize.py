@@ -29,8 +29,7 @@ def finalize(attempt, output):
     config = json.loads((attempt/'config.json').read_text())
     construction = json.loads((attempt/'construction.json').read_text())
     case = config.get('selected_case_id')
-    if case != construction.get('case_id') or case not in {
-            config['assignment_id']+'__'+suffix for suffix in ('25', '30', '35')}:
+    if case != construction.get('case_id') or case not in config.get('supported_case_ids', []):
         raise ValueError('Saved finalizer exact-case identity differs')
     raw = json.loads((attempt/'signal_raw.json').read_text())
     survey = json.loads((attempt/'context-survey.json').read_text())

@@ -33,7 +33,7 @@ def lifecycle(events):
 def fixture(case, kind):
     if kind not in ('complete_motion','incomplete_motion','missing_evidence'):
         raise ValueError('Unknown fixture kind')
-    requested = int(case.rsplit('__',1)[-1])*.3048
+    requested = int(case.rsplit('__',1)[-1].rsplit('_',1)[-1])*.3048
     samples = [{'speed_mps':0.0,
                 'front_edge_to_signal_station_m':requested if kind=='complete_motion' else requested+3}
                for _ in range(600)] if kind!='missing_evidence' else []
@@ -51,6 +51,16 @@ if __name__=='__main__':
     parser.add_argument('--kind',choices=['complete_motion','incomplete_motion','missing_evidence','lifecycle'],required=True)
     parser.add_argument('--output',required=True)
     args=parser.parse_args()
-    result=lifecycle(EVENTS) if args.kind=='lifecycle' else fixture(args.case,args.kind)
+    if args.kind=='lifecycle':
+        try:
+            lifecycle(EVENTS[:-2]+['saved_processing_started','owner_released'])
+        except ValueError as error:
+            if 'precedes Native ownership closure' not in str(error):
+                raise
+        else:
+            raise AssertionError('Premature saved processing accepted')
+        result=lifecycle(EVENTS)
+    else:
+        result=fixture(args.case,args.kind)
     Path(args.output).write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({'case_id':args.case,'kind':args.kind,'passed':True}))

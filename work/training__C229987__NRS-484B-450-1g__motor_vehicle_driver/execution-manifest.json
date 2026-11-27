@@ -2,77 +2,36 @@
   "assignment_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver",
   "cases": [
     {
-      "acquisition": {
-        "dev.human_direction": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "dev.position": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "dev.traffic_signal": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "drv.approaching": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "drv.forced_halt": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "drv.standing_or_parked": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "ego_pose": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "kin.speed": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "rel.centre_distance": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "rel.occupies": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "stop_distance_on_signal_approach": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        }
-      },
       "candidate_risk": {
-        "reason": "Original stopping position and official-signal status require source review; no distinct engineering fallback is yet justified.",
-        "status": "none"
+        "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
+        "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
+          ],
+          "compatibility": {},
+          "construction": "native/25-fallback1-construction.json",
+          "construction_sha256": "e511a8018af8c50ca9d5e80aea02ccaa7973c89b730775d3a8e34044f598b6cd",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25 --candidate fallback1 --output .runtime-work/c229987/offline-v9-25-fallback1",
+            "construction_sha256": "e511a8018af8c50ca9d5e80aea02ccaa7973c89b730775d3a8e34044f598b6cd",
+            "exit_code": 0,
+            "log": "native/25-fallback1-offline.log",
+            "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+          },
+          "trigger": {
+            "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
+            "metric": "observed final front-edge signal approach gap minus requested gap",
+            "source": "original Native signal_raw.json, trace.jsonl and finalizer target_checks"
+          }
+        }
+      ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
-      "compatibility": {
-        "log": "compatibility/25/analysis.log",
-        "negative_log": "compatibility/25/negative.log",
-        "receipt": "compatibility/25/compatibility.json",
-        "sha256": "e60b4bef267045dcd4c66a5a14db995739b4ddf38b0b503c64f8e8c9adb9f3a6"
-      },
       "construction": "native/25-construction.json",
-      "construction_sha256": "2f084ca3add22850fba1452c5134d6aa9d2116eef530c10f088b04eb1869d3b0",
+      "construction_sha256": "42e0ab140e81c1b0be04766136bec09f8631b0af8ca716616088e9b03ed7129c",
       "delivery_acceptance": {
         "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
         "checks": [
@@ -111,19 +70,16 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "compatibility/25/negative.log"
-      },
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25 --output .runtime-work/c229987/offline-v7-25",
-        "construction_sha256": "2f084ca3add22850fba1452c5134d6aa9d2116eef530c10f088b04eb1869d3b0",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25 --candidate primary --output .runtime-work/c229987/offline-v9-25-primary",
+        "construction_sha256": "42e0ab140e81c1b0be04766136bec09f8631b0af8ca716616088e9b03ed7129c",
         "exit_code": 0,
         "log": "native/25-offline.log",
-        "log_sha256": "535c4eb54833df9b3b3cc2726bb2963255b2c27c76991a80b75490171d0fccf7"
+        "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
       },
       "physical_preparation": {
         "receipt": "physical-proof/25/proof.json",
-        "sha256": "22822ca3010bec17253be60f6892dceef3ac10d9d16bf4ccec5c24bab86709f5"
+        "sha256": "fa882c8b83cd144c1cac9571a6b935ae95405d14c38406d3727f7b8f2e51183c"
       },
       "recording_description": {
         "channels": [
@@ -236,77 +192,36 @@
       }
     },
     {
-      "acquisition": {
-        "dev.human_direction": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "dev.position": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "dev.traffic_signal": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "drv.approaching": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "drv.forced_halt": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "drv.standing_or_parked": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "ego_pose": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "kin.speed": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "rel.centre_distance": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "rel.occupies": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "stop_distance_on_signal_approach": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        }
-      },
       "candidate_risk": {
-        "reason": "Original stopping position and official-signal status require source review; no distinct engineering fallback is yet justified.",
-        "status": "none"
+        "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
+        "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
+          ],
+          "compatibility": {},
+          "construction": "native/30-fallback1-construction.json",
+          "construction_sha256": "70c23ed20e1bb5e6b57d9f7e63e93da3469acc31c65353bd989bf732ae1e4264",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30 --candidate fallback1 --output .runtime-work/c229987/offline-v9-30-fallback1",
+            "construction_sha256": "70c23ed20e1bb5e6b57d9f7e63e93da3469acc31c65353bd989bf732ae1e4264",
+            "exit_code": 0,
+            "log": "native/30-fallback1-offline.log",
+            "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+          },
+          "trigger": {
+            "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
+            "metric": "observed final front-edge signal approach gap minus requested gap",
+            "source": "original Native signal_raw.json, trace.jsonl and finalizer target_checks"
+          }
+        }
+      ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
-      "compatibility": {
-        "log": "compatibility/30/analysis.log",
-        "negative_log": "compatibility/30/negative.log",
-        "receipt": "compatibility/30/compatibility.json",
-        "sha256": "f42a9715867a0a3f42b0a24b1dd095c31eed4987907a833cfcdb298c39746f77"
-      },
       "construction": "native/30-construction.json",
-      "construction_sha256": "db43540905bf1057c66c683369311bf179d1bed3b5c7fa0c3a1a55b8287b9aa0",
+      "construction_sha256": "d9baec8d80a6403079b91fd47618415132fa664dbe7a70c97c990257e43725a6",
       "delivery_acceptance": {
         "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
         "checks": [
@@ -345,19 +260,16 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "compatibility/30/negative.log"
-      },
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30 --output .runtime-work/c229987/offline-v7-30",
-        "construction_sha256": "db43540905bf1057c66c683369311bf179d1bed3b5c7fa0c3a1a55b8287b9aa0",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30 --candidate primary --output .runtime-work/c229987/offline-v9-30-primary",
+        "construction_sha256": "d9baec8d80a6403079b91fd47618415132fa664dbe7a70c97c990257e43725a6",
         "exit_code": 0,
         "log": "native/30-offline.log",
-        "log_sha256": "abc8165573c707dc32282f0972b984825942b2162cb2b4c78e04d77a388b4e97"
+        "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
       },
       "physical_preparation": {
         "receipt": "physical-proof/30/proof.json",
-        "sha256": "a2e1ab0650b0fa18c38c66d0072454ef3eb352302227eeceef378ba43df9fa4d"
+        "sha256": "a112ecaf014fcb33732cffb53e97252884dd67eef76b8d3676a16050d426fea6"
       },
       "recording_description": {
         "channels": [
@@ -470,77 +382,36 @@
       }
     },
     {
-      "acquisition": {
-        "dev.human_direction": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "dev.position": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "dev.traffic_signal": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "drv.approaching": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "drv.forced_halt": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "drv.standing_or_parked": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "ego_pose": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "kin.speed": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "rel.centre_distance": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "rel.occupies": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        },
-        "stop_distance_on_signal_approach": {
-          "entrypoint": "runner.py",
-          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
-          "method": "Original same-tick Native signal, vehicle and road readback; source survey retained"
-        }
-      },
       "candidate_risk": {
-        "reason": "Original stopping position and official-signal status require source review; no distinct engineering fallback is yet justified.",
-        "status": "none"
+        "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
+        "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
+          ],
+          "compatibility": {},
+          "construction": "native/35-fallback1-construction.json",
+          "construction_sha256": "3fa198c53e28f3530e1c51bfb32353c16f404f3a158bcc7e168c962f313d81eb",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35 --candidate fallback1 --output .runtime-work/c229987/offline-v9-35-fallback1",
+            "construction_sha256": "3fa198c53e28f3530e1c51bfb32353c16f404f3a158bcc7e168c962f313d81eb",
+            "exit_code": 0,
+            "log": "native/35-fallback1-offline.log",
+            "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+          },
+          "trigger": {
+            "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
+            "metric": "observed final front-edge signal approach gap minus requested gap",
+            "source": "original Native signal_raw.json, trace.jsonl and finalizer target_checks"
+          }
+        }
+      ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35",
-      "compatibility": {
-        "log": "compatibility/35/analysis.log",
-        "negative_log": "compatibility/35/negative.log",
-        "receipt": "compatibility/35/compatibility.json",
-        "sha256": "c22d5e088c14fe0d9a3479694b9126c8c56d4cd79f620d47605dee5fc02186b8"
-      },
       "construction": "native/35-construction.json",
-      "construction_sha256": "1933f36c3451e2491f650f0f09c57b61f626ae5a337d37cabf42ce25fee0a6b7",
+      "construction_sha256": "36760edf36205d96ae71036df7743a5e84677ff254eb1cd70754b5ea74dd9d8f",
       "delivery_acceptance": {
         "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35",
         "checks": [
@@ -579,19 +450,1137 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "compatibility/35/negative.log"
-      },
       "offline": {
-        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35 --output .runtime-work/c229987/offline-v7-35",
-        "construction_sha256": "1933f36c3451e2491f650f0f09c57b61f626ae5a337d37cabf42ce25fee0a6b7",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35 --candidate primary --output .runtime-work/c229987/offline-v9-35-primary",
+        "construction_sha256": "36760edf36205d96ae71036df7743a5e84677ff254eb1cd70754b5ea74dd9d8f",
         "exit_code": 0,
         "log": "native/35-offline.log",
-        "log_sha256": "4fec39edf8eea3260c7cb53c8cd1e0c4de3754fee41df995c1b75cf32174687f"
+        "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
       },
       "physical_preparation": {
         "receipt": "physical-proof/35/proof.json",
-        "sha256": "6bb55ebd252b97df9c9649dea278e0d3e98fdbff0b78da184b76f04d880c4233"
+        "sha256": "3da4bd8a74585bc8c8222bd934558f38d53f675c20f20ac46c851f8ddac7f26c"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
+          ],
+          "compatibility": {},
+          "construction": "native/stand_25-fallback1-construction.json",
+          "construction_sha256": "62ac28ff58dcac00b6b8f2db6e58b30eb9e005013acd8b6478d881a2ef8661b4",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25 --candidate fallback1 --output .runtime-work/c229987/offline-v9-stand_25-fallback1",
+            "construction_sha256": "62ac28ff58dcac00b6b8f2db6e58b30eb9e005013acd8b6478d881a2ef8661b4",
+            "exit_code": 0,
+            "log": "native/stand_25-fallback1-offline.log",
+            "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+          },
+          "trigger": {
+            "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
+            "metric": "observed final front-edge signal approach gap minus requested gap",
+            "source": "original Native signal_raw.json, trace.jsonl and finalizer target_checks"
+          }
+        }
+      ],
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25",
+      "construction": "native/stand_25-construction.json",
+      "construction_sha256": "06941df69fba322e05052048f98b518f831a55cb91ab5fcd1bb13da922573e2f",
+      "delivery_acceptance": {
+        "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25 --self-test",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/stand_25-negative.log",
+        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "scope": "CPU predicates only; original Native capture pending",
+        "script": "delivery_audit.py",
+        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/stand_25-test.log",
+        "test_log_sha256": "149917f2262019b0812642c8e6e7302a1c41e3b392e26c36bc0683359f0c6a16"
+      },
+      "fixture_recipe": "work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/native/diagnostic/stand_25/fixture-recipe.json",
+      "id": "stand_25",
+      "kind": "delivery",
+      "measurement_contract": "native/stand_25-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25 --candidate primary --output .runtime-work/c229987/offline-v9-stand_25-primary",
+        "construction_sha256": "06941df69fba322e05052048f98b518f831a55cb91ab5fcd1bb13da922573e2f",
+        "exit_code": 0,
+        "log": "native/stand_25-offline.log",
+        "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/stand_25/proof.json",
+        "sha256": "1dfa89940c3759216c749456d52fc870345052b1faa1beed4368758dfb2d9f13"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
+          ],
+          "compatibility": {},
+          "construction": "native/park_25-fallback1-construction.json",
+          "construction_sha256": "529d9815abd1606f62942d0971e6bbab7f5bd9686455edcc8de95cf3fed50371",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25 --candidate fallback1 --output .runtime-work/c229987/offline-v9-park_25-fallback1",
+            "construction_sha256": "529d9815abd1606f62942d0971e6bbab7f5bd9686455edcc8de95cf3fed50371",
+            "exit_code": 0,
+            "log": "native/park_25-fallback1-offline.log",
+            "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+          },
+          "trigger": {
+            "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
+            "metric": "observed final front-edge signal approach gap minus requested gap",
+            "source": "original Native signal_raw.json, trace.jsonl and finalizer target_checks"
+          }
+        }
+      ],
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25",
+      "construction": "native/park_25-construction.json",
+      "construction_sha256": "54c6bbc8a67501eb717dbb52128fad60e0c1b7b1a1a3043ea3c0f3e65d09e90f",
+      "delivery_acceptance": {
+        "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25 --self-test",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/park_25-negative.log",
+        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "scope": "CPU predicates only; original Native capture pending",
+        "script": "delivery_audit.py",
+        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/park_25-test.log",
+        "test_log_sha256": "998a96244827745e56728fbde4165dfc6f2116d97835e3e1f12a99c63fdca2bb"
+      },
+      "fixture_recipe": "work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/native/diagnostic/park_25/fixture-recipe.json",
+      "id": "park_25",
+      "kind": "delivery",
+      "measurement_contract": "native/park_25-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25 --candidate primary --output .runtime-work/c229987/offline-v9-park_25-primary",
+        "construction_sha256": "54c6bbc8a67501eb717dbb52128fad60e0c1b7b1a1a3043ea3c0f3e65d09e90f",
+        "exit_code": 0,
+        "log": "native/park_25-offline.log",
+        "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/park_25/proof.json",
+        "sha256": "0436dfd30d3e2998525f2939978d0bc8fd58049bfee902b345997245bed49100"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
+          ],
+          "construction": "native/conflict_25-fallback1-construction.json",
+          "construction_sha256": "174bc9e1ce4f56f8793b40cda7b0701394be8500461320664ab59ff62417c465",
+          "id": "fallback1",
+          "trigger": {
+            "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
+            "metric": "observed final front-edge signal approach gap minus requested gap",
+            "source": "original Native signal_raw.json, trace.jsonl and finalizer target_checks"
+          }
+        }
+      ],
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__conflict_25",
+      "construction": "native/conflict_25-construction.json",
+      "construction_sha256": "1933bad9fc2325a6e129712c1018010866c03a5994e3e1c7114c316a48a0d04d",
+      "delivery_acceptance": {
+        "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__conflict_25",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__conflict_25 --self-test",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__conflict_25 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/conflict_25-negative.log",
+        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "scope": "CPU predicates only; original Native capture pending",
+        "script": "delivery_audit.py",
+        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/conflict_25-test.log",
+        "test_log_sha256": "0301a26a7f19e158c50fef21d38fdaebf5603efa42227f2884f0f54ec498da24"
+      },
+      "fixture_recipe": "work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/native/diagnostic/conflict_25/fixture-recipe.json",
+      "id": "conflict_25",
+      "kind": "delivery",
+      "measurement_contract": "native/conflict_25-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
+          ],
+          "compatibility": {},
+          "construction": "native/law_25-fallback1-construction.json",
+          "construction_sha256": "441c176115250e26cfee5d74c6064cf97579b56de3e83da101a4590bb339961c",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25 --candidate fallback1 --output .runtime-work/c229987/offline-v9-law_25-fallback1",
+            "construction_sha256": "441c176115250e26cfee5d74c6064cf97579b56de3e83da101a4590bb339961c",
+            "exit_code": 0,
+            "log": "native/law_25-fallback1-offline.log",
+            "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+          },
+          "trigger": {
+            "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
+            "metric": "observed final front-edge signal approach gap minus requested gap",
+            "source": "original Native signal_raw.json, trace.jsonl and finalizer target_checks"
+          }
+        }
+      ],
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25",
+      "construction": "native/law_25-construction.json",
+      "construction_sha256": "56ad0e333086df25cd8f4205a3196091748acc76afdb3867f8d9d86f22c3c62d",
+      "delivery_acceptance": {
+        "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25 --self-test",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/law_25-negative.log",
+        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "scope": "CPU predicates only; original Native capture pending",
+        "script": "delivery_audit.py",
+        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/law_25-test.log",
+        "test_log_sha256": "9050cf93575f3c6779e697a5b9a39486211fff5937f00521d6b539aec08bc8dd"
+      },
+      "fixture_recipe": "work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/native/diagnostic/law_25/fixture-recipe.json",
+      "id": "law_25",
+      "kind": "delivery",
+      "measurement_contract": "native/law_25-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25 --candidate primary --output .runtime-work/c229987/offline-v9-law_25-primary",
+        "construction_sha256": "56ad0e333086df25cd8f4205a3196091748acc76afdb3867f8d9d86f22c3c62d",
+        "exit_code": 0,
+        "log": "native/law_25-offline.log",
+        "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/law_25/proof.json",
+        "sha256": "de29ae4317dbbd2f81243cccb26d570373509c9127162bd5e465657017f43f3d"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
+          ],
+          "compatibility": {},
+          "construction": "native/officer_25-fallback1-construction.json",
+          "construction_sha256": "63ed0c200d36ed25f708099196a1f1d28df5bea6e26c9f2f7a7e76341cd14d76",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25 --candidate fallback1 --output .runtime-work/c229987/offline-v9-officer_25-fallback1",
+            "construction_sha256": "63ed0c200d36ed25f708099196a1f1d28df5bea6e26c9f2f7a7e76341cd14d76",
+            "exit_code": 0,
+            "log": "native/officer_25-fallback1-offline.log",
+            "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+          },
+          "trigger": {
+            "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
+            "metric": "observed final front-edge signal approach gap minus requested gap",
+            "source": "original Native signal_raw.json, trace.jsonl and finalizer target_checks"
+          }
+        }
+      ],
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25",
+      "construction": "native/officer_25-construction.json",
+      "construction_sha256": "3d4e41fc7c42141dd3c22d849a5163f74f0e275f237211729e9bb25935db3560",
+      "delivery_acceptance": {
+        "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25 --self-test",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/officer_25-negative.log",
+        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "scope": "CPU predicates only; original Native capture pending",
+        "script": "delivery_audit.py",
+        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/officer_25-test.log",
+        "test_log_sha256": "998ebcbd697d92669e852d40c5351c1e3e8180f6178ecb28424a407bce55f259"
+      },
+      "fixture_recipe": "work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/native/diagnostic/officer_25/fixture-recipe.json",
+      "id": "officer_25",
+      "kind": "delivery",
+      "measurement_contract": "native/officer_25-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25 --candidate primary --output .runtime-work/c229987/offline-v9-officer_25-primary",
+        "construction_sha256": "3d4e41fc7c42141dd3c22d849a5163f74f0e275f237211729e9bb25935db3560",
+        "exit_code": 0,
+        "log": "native/officer_25-offline.log",
+        "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/officer_25/proof.json",
+        "sha256": "54d19bc3a8b77c51f37ce37b216a30d99d0964c40ef25884333c9b691e181335"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      }
+    },
+    {
+      "candidate_risk": {
+        "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
+          ],
+          "compatibility": {},
+          "construction": "native/device_25-fallback1-construction.json",
+          "construction_sha256": "f7aa497a045f38e42b95c373146066c80f811961a4df04f0dae6cac4ee3b00a4",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25 --candidate fallback1 --output .runtime-work/c229987/offline-v9-device_25-fallback1",
+            "construction_sha256": "f7aa497a045f38e42b95c373146066c80f811961a4df04f0dae6cac4ee3b00a4",
+            "exit_code": 0,
+            "log": "native/device_25-fallback1-offline.log",
+            "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+          },
+          "trigger": {
+            "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
+            "metric": "observed final front-edge signal approach gap minus requested gap",
+            "source": "original Native signal_raw.json, trace.jsonl and finalizer target_checks"
+          }
+        }
+      ],
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25",
+      "construction": "native/device_25-construction.json",
+      "construction_sha256": "fcbdc9d4684bde7e368a8a54aebe8013ab1c34720a019451cd618f9a8b2b9cf9",
+      "delivery_acceptance": {
+        "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25 --self-test",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/delivery_audit.py --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25 --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/device_25-negative.log",
+        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "scope": "CPU predicates only; original Native capture pending",
+        "script": "delivery_audit.py",
+        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/device_25-test.log",
+        "test_log_sha256": "b6e037da42e68496d374dd6cb1b7be152a59f02701ec92fba379578db9ef1089"
+      },
+      "fixture_recipe": "work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/native/diagnostic/device_25/fixture-recipe.json",
+      "id": "device_25",
+      "kind": "delivery",
+      "measurement_contract": "native/device_25-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25 --candidate primary --output .runtime-work/c229987/offline-v9-device_25-primary",
+        "construction_sha256": "fcbdc9d4684bde7e368a8a54aebe8013ab1c34720a019451cd618f9a8b2b9cf9",
+        "exit_code": 0,
+        "log": "native/device_25-offline.log",
+        "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/device_25/proof.json",
+        "sha256": "305134248e1eb177206dad79d8c5c42b30c11520431f51b922a4664d021ebf70"
       },
       "recording_description": {
         "channels": [

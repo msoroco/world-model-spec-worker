@@ -44,6 +44,12 @@ def execute(case_id, output_dir, host, port):
     suffix = case_id.rsplit('__', 1)[-1]
     if suffix not in TARGETS_FT or not case_id.startswith('training__C229987__NRS-484B-450-1g__motor_vehicle_driver__'):
         raise ValueError('Unknown exact signal approach case')
+    case_config = json.loads((Path(__file__).parent/'config.json').read_text())
+    if case_config.get('selected_case_id') != case_id:
+        raise ValueError('Selected signal approach case differs')
+    brake_lead_seconds = float(case_config.get('brake_lead_seconds', 1.2))
+    if not 1.0 <= brake_lead_seconds <= 2.0:
+        raise ValueError('Signal approach brake lead outside tested engineering range')
     check()
     output = Path(output_dir).resolve()
     if any((output/name).exists() for name in ('video_frames.jsonl', 'signal_raw.json', 'road.xodr')):
@@ -104,7 +110,7 @@ def execute(case_id, output_dir, host, port):
         owned.append(ego)
         capture = PipelineCapture(client, ego, output, case_id,
                                   visibility=False,
-                                  required_observations=json.loads((Path(__file__).parent/'config.json').read_text()).get('required_atoms', []))
+                                  required_observations=case_config.get('required_atoms', []))
         for name, width, height in CAMERAS:
             camera_bp = library.find('sensor.camera.rgb')
             camera_bp.set_attribute('image_size_x', str(width))
@@ -133,8 +139,8 @@ def execute(case_id, output_dir, host, port):
                 velocity_before = ego.get_velocity().length()
                 # This is a motion attempt. Original footprint and halt reason are reviewed later.
                 ego.apply_control(carla.VehicleControl(
-                    throttle=.25 if remaining > max(2, velocity_before*1.2) else 0,
-                    brake=1.0 if remaining <= max(2, velocity_before*1.2) else 0,
+                    throttle=.25 if remaining > max(2, velocity_before*brake_lead_seconds) else 0,
+                    brake=1.0 if remaining <= max(2, velocity_before*brake_lead_seconds) else 0,
                     hand_brake=remaining <= .7 and velocity_before < .4, steer=0))
                 frame = world.tick()
                 snap = world.get_snapshot()

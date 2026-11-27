@@ -16,6 +16,8 @@ import subprocess
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 FRAME_COUNT = 600
 FPS = 20
+AID = "training__C135709__NRS-484B-510__motor_vehicle_driver"
+SUFFIXES = ("witness_1", "witness_2", "exception_1_1", "exception_1_2")
 
 
 def require(value: bool, message: str) -> None:
@@ -70,22 +72,28 @@ def validate(attempt: Path, review_path: Path) -> dict:
     attempt = attempt.resolve()
     capture = read_json(attempt / "capture-manifest.json")
     require(capture.get("source_kind") == "original_native", "original Native capture required")
+    case_id = capture.get("case_id")
+    require(case_id in {f"{AID}__{suffix}" for suffix in SUFFIXES},
+            "exact original case identity required")
     require(capture.get("frame_count") == FRAME_COUNT and capture.get("fps") == FPS,
             "original duration must be 600 frames at 20 Hz")
     require(capture.get("closed") is True and capture.get("world_restored") is True,
             "capture must close and restore the world")
     zone_path = attempt / "zone-survey.json"
+    map_path = attempt / "road.xodr"
     actor_path = attempt / "actor-frames.jsonl"
     join_path = attempt / "camera-frames.jsonl"
     zone = read_json(zone_path)
+    map_sha256 = sha(map_path)
     zone_box = rectangle(zone.get("bounds_m"), "restricted zone")
-    require(zone.get("map_sha256") == capture.get("map_sha256") and
-            isinstance(zone.get("sign_actor_id"), int), "zone/map/sign source binding absent")
+    require(zone.get("map_sha256") == capture.get("map_sha256") == map_sha256 and
+            zone.get("sign_id") == "510", "zone/map/sign source binding absent")
     require(isinstance(zone.get("sign_text_readback"), str) and zone["sign_text_readback"],
             "sign readback absent")
     video = capture.get("video_sources")
     require(isinstance(video, dict) and set(video) == set(CAMERAS), "four original videos required")
     source_hashes = {"capture-manifest.json": sha(attempt / "capture-manifest.json"),
+                     "road.xodr": map_sha256,
                      "zone-survey.json": sha(zone_path),
                      "actor-frames.jsonl": sha(actor_path),
                      "camera-frames.jsonl": sha(join_path)}
@@ -98,6 +106,7 @@ def validate(attempt: Path, review_path: Path) -> dict:
         source_hashes[item["path"]] = actual
         check_video(attempt / item["path"])
     review = read_json(review_path)
+    require(review.get("case_id") == case_id, "review binds another exact case")
     require(review.get("source_sha256") == source_hashes,
             "independent source review is missing or stale")
     require(review.get("sign_authority") in ("verified", "unverified", "rejected") and
@@ -111,7 +120,7 @@ def validate(attempt: Path, review_path: Path) -> dict:
     stopped = []
     passenger = []
     waiting = []
-    previous_occupants = None
+    previous_nearby_passengers = None
     for i, (row, join) in enumerate(zip(actors, joins)):
         require(row.get("frame") == join.get("frame") == i,
                 f"original frame identity mismatch at {i}")
@@ -123,19 +132,19 @@ def validate(attempt: Path, review_path: Path) -> dict:
         ego_box = rectangle(row.get("ego_body_m"), "ego body")
         require(finite_number(row.get("ego_speed_mps")) and row["ego_speed_mps"] >= 0,
                 f"invalid original ego speed at {i}")
-        require(isinstance(row.get("occupant_actor_ids"), list) and
-                all(isinstance(x, int) for x in row["occupant_actor_ids"]),
-                f"original occupant identities absent at {i}")
-        require(isinstance(row.get("door_open"), bool), f"door readback absent at {i}")
+        require(isinstance(row.get("passenger_actor_ids_near_vehicle"), list) and
+                all(isinstance(x, int) for x in row["passenger_actor_ids_near_vehicle"]),
+                f"original nearby passenger identities absent at {i}")
+        require(isinstance(row.get("door_open_request"), bool), f"door control request absent at {i}")
         others = row.get("other_vehicles")
         require(isinstance(others, list), f"other vehicle source absent at {i}")
         in_zone = overlaps(ego_box, zone_box)
         is_stopped = in_zone and row["ego_speed_mps"] <= 0.05
         stopped.append(is_stopped)
-        current_occupants = tuple(row["occupant_actor_ids"])
-        exchange = previous_occupants is not None and current_occupants != previous_occupants
-        passenger.append(is_stopped and row["door_open"] and exchange)
-        previous_occupants = current_occupants
+        current_nearby_passengers = tuple(row["passenger_actor_ids_near_vehicle"])
+        exchange = previous_nearby_passengers is not None and current_nearby_passengers != previous_nearby_passengers
+        passenger.append(is_stopped and row["door_open_request"] and exchange)
+        previous_nearby_passengers = current_nearby_passengers
         waiting_now = False
         for vehicle in others:
             require(isinstance(vehicle.get("actor_id"), int) and
@@ -148,11 +157,12 @@ def validate(attempt: Path, review_path: Path) -> dict:
         waiting.append(is_stopped and waiting_now)
     return {"format": "restricted-zone-original-source-check-v1",
             "source_kind": "original_native",
+            "case_id": case_id,
             "source_sha256": source_hashes,
             "review_sha256": sha(review_path),
             "frame_count": FRAME_COUNT,
             "stopped_in_zone_frames": sum(stopped),
-            "occupant_identity_change_frames_with_door_open": sum(passenger),
+            "nearby_passenger_identity_change_frames_with_door_request": sum(passenger),
             "requested_waiting_or_entering_overlap_frames": sum(waiting),
             "restricted_purpose_review": review["restricted_purpose"],
             "sign_authority_review": review["sign_authority"],

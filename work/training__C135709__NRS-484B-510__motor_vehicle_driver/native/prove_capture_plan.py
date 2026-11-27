@@ -26,6 +26,11 @@ def prove() -> dict:
                plan["fallback1"]["max_speed_mps"] == 3.0 and
                plan["fallback1"]["same_case_and_observations"]
                for plan in checked["plans"].values())
+    assert len({plan["requested_open_drive_sha256"] for plan in
+                checked["plans"].values()}) == 1
+    assert all(plan["requested_zone_bounds_m"] == [0.0, -4.0, 10.0, -1.0]
+               and plan["requested_sign_id"] == "510" for plan in
+               checked["plans"].values())
     return {"format": "restricted-zone-capture-plan-proof-v1",
             "case_ids": [p["case_id"] for p in checked["plans"].values()],
             "comparison_count": checked["comparison_count"],

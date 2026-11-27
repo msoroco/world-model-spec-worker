@@ -35,6 +35,7 @@ def evaluate(attempt, kind):
     sources = {"emergency-native.jsonl": sha(trace_path),
                "video_frames.jsonl": sha(frame_path)}
     if kind == "missing_evidence":
+        sources.pop("emergency-native.jsonl")
         status, observables = "unverified", {}
     else:
         measurement = measure_saved(attempt, case, diagnostic=True)['measurement']
@@ -47,7 +48,11 @@ def evaluate(attempt, kind):
             expected &= measurement['activation_mode'] == 'visible_hand_signal'
         if suffix == '05':
             expected &= 'proceed' in measurement['officer_direction_states']
-        status = ("met" if expected else "not_met") if kind == "complete_motion" else "not_met"
+        if kind == "incomplete_motion":
+            # An in-memory one-frame counterfactual has no observed approach or pass.
+            observed = trace[:1]
+            expected = expected and len(observed) > 1
+        status = "met" if expected else "not_met"
         observables = {"first_approach_frame": measurement['first_approach_frame'],
                        "first_passing_frame": measurement['first_passing_frame'],
                        "ego_speed_at_first_pass_mps": measurement['ego_speed_at_first_pass_mps'],

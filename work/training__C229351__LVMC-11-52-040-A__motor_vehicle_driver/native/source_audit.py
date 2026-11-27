@@ -45,16 +45,17 @@ def angle(a, b, unsigned=False):
     return math.degrees(math.acos(abs(dot) if unsigned else dot))
 
 
-def extract(case_id, native_path, frames_path, geometry_path, survey_path):
+def extract(case_id, native_path, frames_path, geometry_path, survey_path, allow_fixture=False):
     """Bind pose and geometry to complete matching original frame identities."""
     require(case_id in CASES, 'unknown exact case')
     native_path, frames_path = Path(native_path), Path(frames_path)
     geometry_path, survey_path = Path(geometry_path), Path(survey_path)
     survey = json.loads(survey_path.read_text())
-    planned = request(case_id, survey)
+    planned = request(case_id, survey, allow_fixture=allow_fixture)
     geometry = json.loads(geometry_path.read_text())
-    require(geometry.get('source_kind') == 'original_native_road_geometry',
-            'original Native road geometry required')
+    expected_geometry = 'synthetic_cpu_road_geometry' if allow_fixture else 'original_native_road_geometry'
+    require(geometry.get('source_kind') == expected_geometry,
+            'original Native road geometry required' if not allow_fixture else 'synthetic CPU road geometry required')
     require(geometry.get('survey_sha256') == digest(survey_path),
             'road geometry survey hash mismatch')
     for key, expected in (('roadway_boundary_source_id', planned['fixed_roadway_source']),
@@ -70,8 +71,9 @@ def extract(case_id, native_path, frames_path, geometry_path, survey_path):
     poses = []
     previous_frame, previous_time = -1, -math.inf
     for sample, image in zip(native, frames):
-        require(sample.get('source_kind') == 'original_native' and sample.get('case_id') == case_id,
-                'original Native case identity required')
+        expected_sample = 'synthetic_cpu_fixture' if allow_fixture else 'original_native'
+        require(sample.get('source_kind') == expected_sample and sample.get('case_id') == case_id,
+                'source case identity required')
         frame, time = sample.get('native_frame'), sample.get('time_s')
         require(type(frame) is int and frame > previous_frame and finite_number(time) and
                 time > previous_time, 'Native frame/time order invalid')
@@ -175,10 +177,11 @@ def comparison_audit(extracts, surveys, observed):
             'physical_completion': 'unverified', 'legal_result': None}
 
 
-def road_edge_context(geometry_path):
+def road_edge_context(geometry_path, allow_fixture=False):
     path = Path(geometry_path)
     geometry = json.loads(path.read_text())
-    require(geometry.get('source_kind') == 'original_native_road_geometry' and
+    expected = 'synthetic_cpu_road_geometry' if allow_fixture else 'original_native_road_geometry'
+    require(geometry.get('source_kind') == expected and
             geometry.get('roadway_class') == 'roadway' and geometry.get('road_edge_identified') is True,
             'original roadway edge not established')
     return {'format': 'worker-road-edge-context', 'source_path': str(path),

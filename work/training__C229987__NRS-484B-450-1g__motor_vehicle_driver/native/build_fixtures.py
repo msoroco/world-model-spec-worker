@@ -1,16 +1,17 @@
-"""Create source-shaped 600-frame diagnostic recipes for three requested stops."""
+"""Create source-shaped 600-frame diagnostics for selected branch requests."""
 import hashlib
 import json
 from pathlib import Path
 
 from road import SIGNAL_STATION_M, open_drive
+from case_specs import CASES
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 AID = ROOT.name
 FRAMES = 600
 RATE = 20
-TARGETS = {'25': 25.0, '30': 30.0, '35': 35.0}
+TARGETS = {name: spec['gap_ft'] for name, spec in CASES.items()}
 
 
 def write(path, value):
@@ -32,6 +33,7 @@ def vertices(x, y):
 
 
 def make(suffix, feet):
+    spec = CASES[suffix]
     root = HERE/'diagnostic'/suffix
     sources = root/'sources'
     case = AID+'__'+suffix
@@ -49,7 +51,8 @@ def make(suffix, feet):
                               'overview', 'approach', 'reference_corner', 'driver_reference')}})
         raw_frames.append({'time_s': t, 'speed_mps': 0.0,
                            'vehicle_footprint_xy_m': polygon,
-                           'native_frame': index, 'signal_state': 'Green',
+                           'native_frame': index,
+                           'signal_state': 'Red' if spec['exception'] in ('other_law', 'device_direction') else 'Green',
                            'signal_actor_id': 401, 'ego_actor_id': 10,
                            'road_id': 1, 'lane_id': -1,
                            'requested_front_gap_m': front_gap})
@@ -58,7 +61,7 @@ def make(suffix, feet):
                       'velocity_mps': [0, 0, 0], 'speed_mps': 0,
                       'speed_mph': 0,
                       'heading_deg': 0, 'control': {'throttle': 0, 'brake': 1,
-                                                   'hand_brake': True}})
+                                                   'hand_brake': spec['activity'] in ('stand', 'park')}})
         evidence.append({'actor_id': 10, 'original_frame': index,
                          'replay_frame': index, 'recording_time_s': t,
                          'replay_simulation_time_s': t,
@@ -90,7 +93,9 @@ def make(suffix, feet):
               'highway_status': None, 'official_signal_status': None,
               'signal_governs_selected_lane_native': True,
               'signal_actor_id': 401, 'signal_opendrive_id': '401',
-              'halt_purpose': 'synthetic voluntary stop request',
+              'activity_request': spec['activity'],
+              'exception_request': spec['exception'],
+              'halt_purpose': 'synthetic '+spec['activity']+' request',
               'other_traffic_conflict': None, 'applicable_law_direction': None,
               'officer_direction': None, 'device_direction': None,
               'independent_reviewer': None}
@@ -100,6 +105,9 @@ def make(suffix, feet):
            'signal': {'roadside_position': {'x_m': SIGNAL_STATION_M, 'y_m': -4.2},
                       'actor_id': 401, 'opendrive_id': '401', 'governs_lane': True},
            'geometry_uncertainty_m': .05,
+           'constructed_context': {'activity_request': spec['activity'],
+                                   'exception_request': spec['exception'],
+                                   'actor_ids': [], 'actor_requests': []},
            'context_sources': {key: 'context-survey.json' for key in (
                'highway_status_source', 'official_signal_status_source',
                'roadside_placement_source', 'governed_movement_source',

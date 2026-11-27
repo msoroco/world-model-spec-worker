@@ -1,0 +1,425 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_lawful",
+      "kind": "delivery",
+      "construction": "native/condition_parking_parallel_lawful-primary.json",
+      "construction_sha256": "c6e30df4717f119adf62adf32de6eb0f95e0a28c92f2c2d6a76d1f2c0b8e2a17",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest vehicle motion and camera/body containment require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_parking_parallel_lawful-fallback1.json",
+          "construction_sha256": "5f15f519e836b104b76a2ec07794269f85879b348b54c67c241af125f8d8384d",
+          "trigger": {
+            "source": "original Native body_history.jsonl and video_frames.jsonl",
+            "metric": "600-frame stationary body containment and four-camera visibility",
+            "failure_condition": "Primary does not remain at rest within roadway and cameras for the selected interval"
+          },
+          "changed_knobs": [
+            "controller_mode: service brake plus hand brake instead of service brake"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_lawful --candidate fallback1 --output .runtime-work/c229351-offline-v3-0-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "5f15f519e836b104b76a2ec07794269f85879b348b54c67c241af125f8d8384d",
+            "log": "native/condition-0-fallback1-offline-tests.log",
+            "log_sha256": "eca919cd3ab87e501622a14f404751a2c43caadd4024f36bb60854c9db6ce621"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/selected-0-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c229351-roadway-rest-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/fixture-recipe-0.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "roadway_rest_geometry": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and road_edge_survey.json"
+        },
+        "activity_source_context": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, activity_context.json and body_history.jsonl"
+        },
+        "chapter_exception_context": {
+          "entrypoint": "capture.py",
+          "method": "survey and authority context retained separately",
+          "evidence": "road_edge_survey.json and activity_context.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_lawful --candidate primary --output .runtime-work/c229351-offline-v3-0-primary",
+        "exit_code": 0,
+        "construction_sha256": "c6e30df4717f119adf62adf32de6eb0f95e0a28c92f2c2d6a76d1f2c0b8e2a17",
+        "log": "native/condition-0-primary-offline-tests.log",
+        "log_sha256": "a31810b2b61bcbf16bc8067fb75a9608e864a4c812b391defebb012053d8c5a5"
+      },
+      "compatibility": {
+        "receipt": "compatibility/parking_parallel_lawful-primary-compatibility.json",
+        "log": "compatibility/parking_parallel_lawful-primary-compatibility-analysis.log",
+        "negative_log": "compatibility/parking_parallel_lawful-primary-negative-analysis.log",
+        "sha256": "6444cf003d06aac397c7db46d79bcafed09b0783e6bfb27aa500aa8c05f7fca3"
+      },
+      "negative": {
+        "log": "compatibility/parking_parallel_lawful-primary-negative-analysis.log"
+      }
+    },
+    {
+      "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_angled_traffic_side",
+      "kind": "delivery",
+      "construction": "native/condition_parking_angled_traffic_side-primary.json",
+      "construction_sha256": "49249e06a3e4e70f2fad9929059e9eb126b0b1530133cec6122a52c51a3e607f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest vehicle motion and camera/body containment require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_parking_angled_traffic_side-fallback1.json",
+          "construction_sha256": "31394b5847f33eb691b885ed73713b2665631c2aca99f79f9f62c573c02d4ae6",
+          "trigger": {
+            "source": "original Native body_history.jsonl and video_frames.jsonl",
+            "metric": "600-frame stationary body containment and four-camera visibility",
+            "failure_condition": "Primary does not remain at rest within roadway and cameras for the selected interval"
+          },
+          "changed_knobs": [
+            "controller_mode: service brake plus hand brake instead of service brake"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_angled_traffic_side --candidate fallback1 --output .runtime-work/c229351-offline-v3-1-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "31394b5847f33eb691b885ed73713b2665631c2aca99f79f9f62c573c02d4ae6",
+            "log": "native/condition-1-fallback1-offline-tests.log",
+            "log_sha256": "8f9b7e2b7c6e8de0cca086fac9875e60f716c8b034224740b7d8448d77cd8256"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/selected-1-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c229351-roadway-rest-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/fixture-recipe-1.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "roadway_rest_geometry": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and road_edge_survey.json"
+        },
+        "activity_source_context": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, activity_context.json and body_history.jsonl"
+        },
+        "chapter_exception_context": {
+          "entrypoint": "capture.py",
+          "method": "survey and authority context retained separately",
+          "evidence": "road_edge_survey.json and activity_context.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_angled_traffic_side --candidate primary --output .runtime-work/c229351-offline-v3-1-primary",
+        "exit_code": 0,
+        "construction_sha256": "49249e06a3e4e70f2fad9929059e9eb126b0b1530133cec6122a52c51a3e607f",
+        "log": "native/condition-1-primary-offline-tests.log",
+        "log_sha256": "8f9b7e2b7c6e8de0cca086fac9875e60f716c8b034224740b7d8448d77cd8256"
+      }
+    },
+    {
+      "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_against_traffic",
+      "kind": "delivery",
+      "construction": "native/condition_parking_parallel_against_traffic-primary.json",
+      "construction_sha256": "72899490b79d3a18fb9f74b7ed9be9373bcd040692112073523873787c31b25b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest vehicle motion and camera/body containment require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_parking_parallel_against_traffic-fallback1.json",
+          "construction_sha256": "5fc84a2bf668c328e505248cb2a52045bfee02fedb9a84cd12a8913cc549e413",
+          "trigger": {
+            "source": "original Native body_history.jsonl and video_frames.jsonl",
+            "metric": "600-frame stationary body containment and four-camera visibility",
+            "failure_condition": "Primary does not remain at rest within roadway and cameras for the selected interval"
+          },
+          "changed_knobs": [
+            "controller_mode: service brake plus hand brake instead of service brake"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_against_traffic --candidate fallback1 --output .runtime-work/c229351-offline-v3-2-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "5fc84a2bf668c328e505248cb2a52045bfee02fedb9a84cd12a8913cc549e413",
+            "log": "native/condition-2-fallback1-offline-tests.log",
+            "log_sha256": "3ab675e4ea79c8182bf50c730e2132b1a89ee3ca0b19fb5b545ae0b745419ae1"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/selected-2-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c229351-roadway-rest-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/fixture-recipe-2.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "roadway_rest_geometry": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and road_edge_survey.json"
+        },
+        "activity_source_context": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, activity_context.json and body_history.jsonl"
+        },
+        "chapter_exception_context": {
+          "entrypoint": "capture.py",
+          "method": "survey and authority context retained separately",
+          "evidence": "road_edge_survey.json and activity_context.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_against_traffic --candidate primary --output .runtime-work/c229351-offline-v3-2-primary",
+        "exit_code": 0,
+        "construction_sha256": "72899490b79d3a18fb9f74b7ed9be9373bcd040692112073523873787c31b25b",
+        "log": "native/condition-2-primary-offline-tests.log",
+        "log_sha256": "3ab675e4ea79c8182bf50c730e2132b1a89ee3ca0b19fb5b545ae0b745419ae1"
+      }
+    },
+    {
+      "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_lawful",
+      "kind": "delivery",
+      "construction": "native/condition_standing_parallel_lawful-primary.json",
+      "construction_sha256": "6455d83d0063af5296bb50577a82a8259f7c6ea570f801a7445ca0df73cc2aa8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest vehicle motion and camera/body containment require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_standing_parallel_lawful-fallback1.json",
+          "construction_sha256": "6edef1e122d799f6eb22f4312095c343687e41f9ca823a10c94fb4e81a98e617",
+          "trigger": {
+            "source": "original Native body_history.jsonl and video_frames.jsonl",
+            "metric": "600-frame stationary body containment and four-camera visibility",
+            "failure_condition": "Primary does not remain at rest within roadway and cameras for the selected interval"
+          },
+          "changed_knobs": [
+            "controller_mode: service brake plus hand brake instead of service brake"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_lawful --candidate fallback1 --output .runtime-work/c229351-offline-v3-3-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "6edef1e122d799f6eb22f4312095c343687e41f9ca823a10c94fb4e81a98e617",
+            "log": "native/condition-3-fallback1-offline-tests.log",
+            "log_sha256": "86f68f3fd8178af64d5150a86b2e71b888a0f96d7d87cb45c1f26c4c3802c81e"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/selected-3-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c229351-roadway-rest-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/fixture-recipe-3.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "roadway_rest_geometry": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and road_edge_survey.json"
+        },
+        "activity_source_context": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, activity_context.json and body_history.jsonl"
+        },
+        "chapter_exception_context": {
+          "entrypoint": "capture.py",
+          "method": "survey and authority context retained separately",
+          "evidence": "road_edge_survey.json and activity_context.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_lawful --candidate primary --output .runtime-work/c229351-offline-v3-3-primary",
+        "exit_code": 0,
+        "construction_sha256": "6455d83d0063af5296bb50577a82a8259f7c6ea570f801a7445ca0df73cc2aa8",
+        "log": "native/condition-3-primary-offline-tests.log",
+        "log_sha256": "86f68f3fd8178af64d5150a86b2e71b888a0f96d7d87cb45c1f26c4c3802c81e"
+      }
+    },
+    {
+      "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_angled_traffic_side",
+      "kind": "delivery",
+      "construction": "native/condition_standing_angled_traffic_side-primary.json",
+      "construction_sha256": "383d5a351ef121385dd1437055929e896a023d47e44df2897d01d16cb1ee8b6f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest vehicle motion and camera/body containment require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_standing_angled_traffic_side-fallback1.json",
+          "construction_sha256": "93806fde32173fac646ac04d35c04ab0e2d0822ad0c200412b30a57e4e4f5f7a",
+          "trigger": {
+            "source": "original Native body_history.jsonl and video_frames.jsonl",
+            "metric": "600-frame stationary body containment and four-camera visibility",
+            "failure_condition": "Primary does not remain at rest within roadway and cameras for the selected interval"
+          },
+          "changed_knobs": [
+            "controller_mode: service brake plus hand brake instead of service brake"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_angled_traffic_side --candidate fallback1 --output .runtime-work/c229351-offline-v3-4-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "93806fde32173fac646ac04d35c04ab0e2d0822ad0c200412b30a57e4e4f5f7a",
+            "log": "native/condition-4-fallback1-offline-tests.log",
+            "log_sha256": "6d4b8138303fe3eac243c3d561fdafab70272cfe039b6056a81d6de77ab41e1c"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/selected-4-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c229351-roadway-rest-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/fixture-recipe-4.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "roadway_rest_geometry": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and road_edge_survey.json"
+        },
+        "activity_source_context": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, activity_context.json and body_history.jsonl"
+        },
+        "chapter_exception_context": {
+          "entrypoint": "capture.py",
+          "method": "survey and authority context retained separately",
+          "evidence": "road_edge_survey.json and activity_context.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_angled_traffic_side --candidate primary --output .runtime-work/c229351-offline-v3-4-primary",
+        "exit_code": 0,
+        "construction_sha256": "383d5a351ef121385dd1437055929e896a023d47e44df2897d01d16cb1ee8b6f",
+        "log": "native/condition-4-primary-offline-tests.log",
+        "log_sha256": "6d4b8138303fe3eac243c3d561fdafab70272cfe039b6056a81d6de77ab41e1c"
+      }
+    },
+    {
+      "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_against_traffic",
+      "kind": "delivery",
+      "construction": "native/condition_standing_parallel_against_traffic-primary.json",
+      "construction_sha256": "a6150bc1e4c686b6f5ccf23e681dd618881d1ccb0aa65a5d38df8012beddd30b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original at-rest vehicle motion and camera/body containment require Native review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_standing_parallel_against_traffic-fallback1.json",
+          "construction_sha256": "cbacf49a83edc5fa3b1c901ccc6e205b56c944d77a7fc1f155cfa7e26e7d8903",
+          "trigger": {
+            "source": "original Native body_history.jsonl and video_frames.jsonl",
+            "metric": "600-frame stationary body containment and four-camera visibility",
+            "failure_condition": "Primary does not remain at rest within roadway and cameras for the selected interval"
+          },
+          "changed_knobs": [
+            "controller_mode: service brake plus hand brake instead of service brake"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_against_traffic --candidate fallback1 --output .runtime-work/c229351-offline-v3-5-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "cbacf49a83edc5fa3b1c901ccc6e205b56c944d77a7fc1f155cfa7e26e7d8903",
+            "log": "native/condition-5-fallback1-offline-tests.log",
+            "log_sha256": "6278ec10f4448ef48afca0f1a2d2461c5923254e955ece7813bc14d9f65f44d3"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "native/selected-5-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c229351-roadway-rest-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/fixture-recipe-5.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "roadway_rest_geometry": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, road_geometry.json and road_edge_survey.json"
+        },
+        "activity_source_context": {
+          "entrypoint": "capture.py",
+          "method": "same-tick original Native readback",
+          "evidence": "native_samples.jsonl, activity_context.json and body_history.jsonl"
+        },
+        "chapter_exception_context": {
+          "entrypoint": "capture.py",
+          "method": "survey and authority context retained separately",
+          "evidence": "road_edge_survey.json and activity_context.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/native/draft-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_against_traffic --candidate primary --output .runtime-work/c229351-offline-v3-5-primary",
+        "exit_code": 0,
+        "construction_sha256": "a6150bc1e4c686b6f5ccf23e681dd618881d1ccb0aa65a5d38df8012beddd30b",
+        "log": "native/condition-5-primary-offline-tests.log",
+        "log_sha256": "6278ec10f4448ef48afca0f1a2d2461c5923254e955ece7813bc14d9f65f44d3"
+      }
+    }
+  ]
+}

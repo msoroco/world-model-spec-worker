@@ -1,0 +1,58 @@
+{
+  "template_id": "LVMC-11-52-040-A@motor_vehicle_driver",
+  "law_id": "LVMC-11-52-040-A",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Except as otherwise provided in this Chapter: No person shall stand or park a vehicle in a roadway other than parallel with the edge of the roadway headed in the direction of lawful traffic movement.",
+  "structure": {
+    "law_id": "LVMC-11-52-040-A",
+    "activation": {
+      "condition": "Responsible person stands or parks a vehicle in a roadway; actual activity and roadway must be source established",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Resting vehicle is parallel with the identified roadway edge and headed in lawful traffic direction",
+      "source_clause": "parallel with the edge of the roadway headed in the direction of lawful traffic movement",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except as otherwise provided in this Chapter",
+        "description": "Review applicable Chapter provisions and location-specific controls; no exception inferred from authored angle"
+      }
+    ],
+    "timing": {
+      "description": "Judge during actual standing or parking, not the entry maneuver; no numeric duration or angular cutoff supplied",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_yaw_offset_deg",
+      "kind": "controller",
+      "range_or_domain": "0, 35 or 180 degrees relative to authored lawful flow"
+    },
+    {
+      "name": "requested_activity",
+      "kind": "controller",
+      "range_or_domain": "parking or passenger-associated standing request"
+    },
+    {
+      "name": "observed_edge_angle_deg",
+      "kind": "subject_behavior",
+      "range_or_domain": "saved unsigned original heading versus edge tangent"
+    },
+    {
+      "name": "observed_lawful_heading_deg",
+      "kind": "subject_behavior",
+      "range_or_domain": "saved signed original heading versus lawful flow"
+    },
+    {
+      "name": "roadway_edge",
+      "kind": "world_setup",
+      "range_or_domain": "one-way roadway with identified outside edge"
+    }
+  ]
+}

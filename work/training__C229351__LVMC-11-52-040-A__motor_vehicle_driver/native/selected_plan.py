@@ -29,9 +29,10 @@ def require(ok, message):
         raise ValueError(message)
 
 
-def review_survey(survey):
-    require(survey.get('source_kind') == 'original_native_road_edge_survey',
-            'original road-edge survey required')
+def review_survey(survey, allow_fixture=False):
+    expected = 'synthetic_cpu_road_edge_survey' if allow_fixture else 'original_native_road_edge_survey'
+    require(survey.get('source_kind') == expected,
+            'original road-edge survey required' if not allow_fixture else 'synthetic CPU survey required')
     require(survey.get('fixed_cell') == CELL, 'survey cell mismatch')
     for key in SOURCE_KEYS:
         require(isinstance(survey.get(key), str) and survey[key].strip(),
@@ -59,9 +60,9 @@ def review_survey(survey):
     return survey
 
 
-def request(case_id, survey):
+def request(case_id, survey, allow_fixture=False):
     require(case_id in CASES, 'unknown exact case')
-    review_survey(survey)
+    review_survey(survey, allow_fixture=allow_fixture)
     setting = CASES[case_id]
     return {'case_id': case_id, 'fixed_cell': CELL,
             'source_survey_sha256': survey['reviewed_source_sha256'],

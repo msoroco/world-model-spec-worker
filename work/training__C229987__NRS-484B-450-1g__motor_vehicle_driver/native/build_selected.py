@@ -2,11 +2,12 @@
 import hashlib
 import json
 from pathlib import Path
+from case_specs import CASES
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 AID = ROOT.name
-TARGETS = {'25': 25.0, '30': 30.0, '35': 35.0}
+TARGETS = {name: spec['gap_ft'] for name, spec in CASES.items()}
 
 
 def sha(path):
@@ -33,6 +34,9 @@ def main():
                             'control': 'traffic_light'},
             'required_atoms': [], 'source_packets': [], 'rate_hz': 20,
             'duration_s': 30, 'frames': 600, 'requested_front_gap_ft': feet,
+            'activity_mode': CASES[suffix]['activity'],
+            'exception_request': CASES[suffix]['exception'],
+            'brake_lead_seconds': 1.2,
             'physical_acceptance_claimed': False, 'legal_verdict': None,
             'cameras': [
                 {'name': name, 'width': width, 'height': height,
@@ -88,12 +92,14 @@ class BundleTest(unittest.TestCase):
     def test_missing_case_rejected(self):
         self.assertNotIn('40', runner.TARGETS_FT)
 ''')
+        context_source = HERE/('context.py' if suffix == 'conflict_25' else 'context_baseline.py')
         for name, source in [('runner.py', HERE/'runner.py'), ('road.py', HERE/'road.py'),
+                             ('case_specs.py', HERE/'case_specs.py'), ('context.py', context_source),
                              ('signal_approach.py', ROOT/'analysis/signal_approach.py'),
                              ('finalize.py', HERE/'finalize.py')]:
             (bundle/name).write_text(source.read_text())
         files = [{'path': name, 'content': (bundle/name).read_text()}
-                 for name in ('runner.py', 'road.py', 'signal_approach.py',
+                 for name in ('runner.py', 'road.py', 'case_specs.py', 'context.py', 'signal_approach.py',
                               'finalize.py', 'config.json', 'tests/test_bundle.py')]
         construction = {
             'format': 'worker-construction', 'assignment_id': AID,
