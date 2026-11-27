@@ -231,7 +231,10 @@ if __name__ == "__main__":
     if args.check:
         print(json.dumps(check(), sort_keys=True))
     else:
-        slug = args.case
+        selected = json.loads(Path("config.json").read_text()).get("selected_case_id", "")
+        slug = args.case or selected.rsplit("__", 1)[-1]
+        if selected and selected != case_id(slug):
+            parser.error("config selected case and requested Native case differ")
         if slug not in CASES or not args.output_dir:
-            parser.error("exact --case and --output-dir are required")
+            parser.error("selected case and --output-dir are required")
         print(json.dumps(capture(slug, args.output_dir, args.host, args.port), sort_keys=True))

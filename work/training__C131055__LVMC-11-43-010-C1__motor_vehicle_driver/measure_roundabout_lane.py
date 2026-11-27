@@ -22,7 +22,10 @@ def measure(context, rows):
         value = context.get(name + "_sha256")
         if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
             raise ValueError("Missing source hash: " + name)
-    if context.get("roundabout_topology_verified") is not True or context.get("left_exit_intention_sourced") is not True:
+    turn = context.get("exit_intent")
+    if turn not in {"left_turn", "u_turn"}:
+        raise ValueError("Unknown sourced exit intention")
+    if context.get("roundabout_topology_verified") is not True or context.get("exit_intention_sourced") is not True:
         raise ValueError("Roundabout topology or exit intention unsourced")
     inner = number(context.get("left_lane_center_radius_m"), "left lane radius")
     outer = number(context.get("right_lane_center_radius_m"), "right lane radius")
@@ -67,11 +70,15 @@ def measure(context, rows):
     if phases != sorted(phases, key={"entry": 0, "circulation": 1, "exit": 2}.get):
         raise ValueError("Roundabout phase ordering invalid")
     sweep = ring_angles[-1] - ring_angles[0]
-    if not 4.5 <= sweep <= 4.9 or exit_heading is None or abs(((exit_heading - 180 + 180) % 360) - 180) > 10:
-        raise ValueError("Left-turn exit trajectory not observed")
+    expected_sweep = 2 * math.pi if turn == "u_turn" else 3 * math.pi / 2
+    expected_heading = 270 if turn == "u_turn" else 180
+    if (abs(sweep - expected_sweep) > 0.2 or exit_heading is None or
+            abs(((exit_heading - expected_heading + 180) % 360) - 180) > 10):
+        raise ValueError("Sourced exit trajectory not observed: " + turn)
     if "outside" in ring_lanes:
         raise ValueError("Ego left both inventoried lanes")
     return {"format": "worker-source-roundabout-lane-measurement", "frame_count": FRAMES,
+            "exit_intent": turn,
             "rate_hz": RATE_HZ, "circulation_frame_count": len(ring_lanes),
             "left_lane_frame_count": ring_lanes.count("left"),
             "right_lane_frame_count": ring_lanes.count("right"),
@@ -79,5 +86,5 @@ def measure(context, rows):
             "angular_sweep_rad": sweep, "exit_heading_deg": exit_heading,
             "legal_compliance": "unassessed",
             "limitations": ["Lane labels depend on original roundabout lane topology and body-footprint review.",
-                            "Left-turn exit intention requires independent source; geometry alone cannot prove intent.",
+                            "Exit intention requires independent source; geometry alone cannot prove intent.",
                             "No statutory numerical lane-occupancy threshold is inferred."]}

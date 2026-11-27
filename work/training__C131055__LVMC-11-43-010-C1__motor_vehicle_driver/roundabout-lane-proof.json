@@ -6,6 +6,7 @@
   "scenes": {
     "left_lane": {
       "case": "left_lane",
+      "intent": "left_turn",
       "waypoint_count": 49,
       "camera_count": 4,
       "planned_frames": 600,
@@ -13,6 +14,23 @@
     },
     "right_lane": {
       "case": "right_lane",
+      "intent": "left_turn",
+      "waypoint_count": 49,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "native_topology_verified": false
+    },
+    "u_turn_left_lane": {
+      "case": "u_turn_left_lane",
+      "intent": "u_turn",
+      "waypoint_count": 49,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "native_topology_verified": false
+    },
+    "u_turn_right_lane": {
+      "case": "u_turn_right_lane",
+      "intent": "u_turn",
       "waypoint_count": 49,
       "camera_count": 4,
       "planned_frames": 600,
@@ -23,6 +41,7 @@
     "left_lane": {
       "format": "worker-source-roundabout-lane-measurement",
       "frame_count": 600,
+      "exit_intent": "left_turn",
       "rate_hz": 20,
       "circulation_frame_count": 301,
       "left_lane_frame_count": 301,
@@ -33,13 +52,14 @@
       "legal_compliance": "unassessed",
       "limitations": [
         "Lane labels depend on original roundabout lane topology and body-footprint review.",
-        "Left-turn exit intention requires independent source; geometry alone cannot prove intent.",
+        "Exit intention requires independent source; geometry alone cannot prove intent.",
         "No statutory numerical lane-occupancy threshold is inferred."
       ]
     },
     "right_lane": {
       "format": "worker-source-roundabout-lane-measurement",
       "frame_count": 600,
+      "exit_intent": "left_turn",
       "rate_hz": 20,
       "circulation_frame_count": 301,
       "left_lane_frame_count": 0,
@@ -50,7 +70,43 @@
       "legal_compliance": "unassessed",
       "limitations": [
         "Lane labels depend on original roundabout lane topology and body-footprint review.",
-        "Left-turn exit intention requires independent source; geometry alone cannot prove intent.",
+        "Exit intention requires independent source; geometry alone cannot prove intent.",
+        "No statutory numerical lane-occupancy threshold is inferred."
+      ]
+    },
+    "u_turn_left_lane": {
+      "format": "worker-source-roundabout-lane-measurement",
+      "frame_count": 600,
+      "exit_intent": "u_turn",
+      "rate_hz": 20,
+      "circulation_frame_count": 301,
+      "left_lane_frame_count": 301,
+      "right_lane_frame_count": 0,
+      "lane_change_count": 0,
+      "angular_sweep_rad": 6.283185307179586,
+      "exit_heading_deg": 270.0,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Lane labels depend on original roundabout lane topology and body-footprint review.",
+        "Exit intention requires independent source; geometry alone cannot prove intent.",
+        "No statutory numerical lane-occupancy threshold is inferred."
+      ]
+    },
+    "u_turn_right_lane": {
+      "format": "worker-source-roundabout-lane-measurement",
+      "frame_count": 600,
+      "exit_intent": "u_turn",
+      "rate_hz": 20,
+      "circulation_frame_count": 301,
+      "left_lane_frame_count": 0,
+      "right_lane_frame_count": 301,
+      "lane_change_count": 0,
+      "angular_sweep_rad": 6.283185307179586,
+      "exit_heading_deg": 270.0,
+      "legal_compliance": "unassessed",
+      "limitations": [
+        "Lane labels depend on original roundabout lane topology and body-footprint review.",
+        "Exit intention requires independent source; geometry alone cannot prove intent.",
         "No statutory numerical lane-occupancy threshold is inferred."
       ]
     }
@@ -82,7 +138,11 @@
     },
     {
       "test": "wrong_exit",
-      "rejected": "Left-turn exit trajectory not observed"
+      "rejected": "Sourced exit trajectory not observed: left_turn"
+    },
+    {
+      "test": "u_turn_wrong_exit",
+      "rejected": "Sourced exit trajectory not observed: u_turn"
     }
   ]
 }

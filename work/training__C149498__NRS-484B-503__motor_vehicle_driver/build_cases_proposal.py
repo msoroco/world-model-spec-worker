@@ -30,13 +30,23 @@ def main():
             "variable_assignments": {
                 "actual_passenger_loading": {"kind": "controller", "unit": "category",
                     "value": "requested" if CASES[slug] else "not_requested"},
-                "signed_effective_hours": {"kind": "civil_time", "unit": "category",
+                "signed_effective_hours": {"kind": "world_setup", "unit": "category",
                     "value": "outside" if slug.startswith("outside_hours") else "inside"},
                 "action_and_measured_duration": {"kind": "controller", "unit": "category",
                     "value": cfg["action_request"]}}})
+    baseline = {"case_id": AID + "__baseline", "target_law_id": None,
+        "target_type": "baseline", "rationale": "Unselected neutral passenger curb request definition.",
+        "recording_description": description(),
+        "unresolved_judgment_calls": ["zone regulatory authority", "actual passenger exchange", "expeditiousness"],
+        "variable_assignments": entries[0]["variable_assignments"]}
+    template = json.loads((HERE / "proposals/template.json").read_text())
+    sweep = {"sweep_id": "unresolved_loading_judgments", "target_law_id": "NRS-484B-503",
+        "judgment_refs": template["structure"]["judgment_calls_needed"],
+        "status": "incomplete", "rationale": "Six controlled requests measure curb, civil time, door and passenger sources; no original authority, actual transfer or source-backed legal expeditiousness threshold is established.",
+        "missing_inputs": ["Original regulatory sign authority", "Independent actual passenger transfer review", "Source-backed expeditiousness judgment"]}
     value = {"actor": "motor_vehicle_driver", "cell_id": "C149498",
         "status": "draft", "sweeps_expanded": True,
-        "cases": entries, "sweep_specs": []}
+        "cases": [baseline, *entries], "sweep_specs": [sweep]}
     path = HERE / "proposals/cases.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")

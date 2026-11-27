@@ -296,7 +296,7 @@
     {
       "name": "st.curb_zone",
       "mandatory": true,
-      "source_note": "kind passenger_loading — the marked passenger curb loading zone",
+      "source_note": "kind passenger_loading \u2014 the marked passenger curb loading zone",
       "status": "unmapped_to_native_and_core"
     },
     {
@@ -373,9 +373,7 @@
     "st.curb_zone": {
       "evidence": "Original OpenDRIVE curb object readback and full ego body polygon",
       "channels": [
-        "road.xodr",
-        "loading_zone.json",
-        "ego_body.jsonl"
+        "st.curb_zone"
       ],
       "source_refs": [
         "inputs/training__C149498__NRS-484B-503__motor_vehicle_driver/assignment.json",
@@ -385,8 +383,7 @@
     "dev.regulatory_sign": {
       "evidence": "Original OpenDRIVE sign text and hash readback; authority unverified",
       "channels": [
-        "road.xodr",
-        "loading_zone.json"
+        "dev.regulatory_sign"
       ],
       "source_refs": [
         "inputs/training__C149498__NRS-484B-503__motor_vehicle_driver/assignment.json",
@@ -396,8 +393,7 @@
     "drv.condition_in_effect": {
       "evidence": "Sign hours interpreted against original civil timestamp, no authority verdict",
       "channels": [
-        "loading_zone.json",
-        "loading_motion.jsonl"
+        "drv.condition_in_effect"
       ],
       "source_refs": [
         "inputs/training__C149498__NRS-484B-503__motor_vehicle_driver/assignment.json",
@@ -407,7 +403,7 @@
     "env.civil_time": {
       "evidence": "Timezone-aware civil timestamp sampled on every Native frame",
       "channels": [
-        "loading_motion.jsonl"
+        "env.civil_time"
       ],
       "source_refs": [
         "inputs/training__C149498__NRS-484B-503__motor_vehicle_driver/assignment.json",
@@ -417,8 +413,7 @@
     "drv.standing_or_parked": {
       "evidence": "Original body extents and velocity; controller action is request only",
       "channels": [
-        "ego_body.jsonl",
-        "loading_motion.jsonl"
+        "drv.standing_or_parked"
       ],
       "source_refs": [
         "inputs/training__C149498__NRS-484B-503__motor_vehicle_driver/assignment.json",
@@ -428,8 +423,7 @@
     "sig.door_open": {
       "evidence": "Door command request and four camera images; actual door state requires original video review",
       "channels": [
-        "loading_motion.jsonl",
-        "video_frames.jsonl"
+        "sig.door_open"
       ],
       "source_refs": [
         "inputs/training__C149498__NRS-484B-503__motor_vehicle_driver/assignment.json",
@@ -439,8 +433,7 @@
     "ru.occupant_count": {
       "evidence": "No CARLA occupant sensor; missing original occupant source must remain unknown pending independent visual evidence",
       "channels": [
-        "loading_motion.jsonl",
-        "video_frames.jsonl"
+        "ru.occupant_count"
       ],
       "source_refs": [
         "inputs/training__C149498__NRS-484B-503__motor_vehicle_driver/assignment.json",
@@ -450,8 +443,7 @@
     "ru.pedestrian": {
       "evidence": "Original passenger actor body history and four camera images; crossing requires review",
       "channels": [
-        "passenger_body.jsonl",
-        "video_frames.jsonl"
+        "ru.pedestrian"
       ],
       "source_refs": [
         "inputs/training__C149498__NRS-484B-503__motor_vehicle_driver/assignment.json",
@@ -461,9 +453,7 @@
     "kin.time": {
       "evidence": "Native tick, Core trace and four-camera frame map at 20 Hz",
       "channels": [
-        "loading_motion.jsonl",
-        "trace.jsonl",
-        "video_frames.jsonl"
+        "kin.time"
       ],
       "source_refs": [
         "inputs/training__C149498__NRS-484B-503__motor_vehicle_driver/assignment.json",
@@ -474,5 +464,32 @@
   "legal_analysis_note": "Exact statute retained. Witnesses and recovered summaries are unreviewed where marked. Conditions, alternatives and exceptions in source_topic_inventory require separate physical scoping before delivery selection.",
   "readiness": "source_shaped_construction_pending_selected_proofs",
   "physical_prerequisites": "Use an actual marked passenger curb loading zone with effective civil hours, stationary episode, door/occupant events and expeditious passenger transfer.",
-  "legal_interpretation_limit": "A stopped vehicle alone cannot establish loading; the statutory exception is purpose and duration dependent."
+  "legal_interpretation_limit": "A stopped vehicle alone cannot establish loading; the statutory exception is purpose and duration dependent.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full vehicle, marked passenger curb, sign and passenger",
+        "interval": "all 600 source frames"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle arrival, curb occupancy and departure",
+        "interval": "approach through clearance"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "curb marking, regulatory sign and passenger doorway",
+        "interval": "approach through clearance"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "vehicle door area and passenger source body",
+        "interval": "arrival through departure"
+      }
+    ]
+  }
 }
