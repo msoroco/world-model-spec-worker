@@ -26,6 +26,29 @@ def command(case, frame, observed_center_x_m, observed_speed_mps):
     return {"throttle": 0.25, "brake": 0.0, "steer": 0.0, "phase": "approach"}
 
 
+def command_target(frame, observed_center_x_m, observed_speed_mps,
+                   target_center_x_m, brake_gain=4.0):
+    """Use reviewed rail/body geometry to request a physical target, not a verdict."""
+    if type(frame) is not int or not 0 <= frame < FRAMES:
+        raise ValueError("Incomplete Native frame identity")
+    values = (observed_center_x_m, observed_speed_mps, target_center_x_m, brake_gain)
+    if any(isinstance(x, bool) or not isinstance(x, (int, float)) or not math.isfinite(x)
+           for x in values) or observed_speed_mps < 0 or brake_gain <= 0:
+        raise ValueError("Missing reviewed target or observed Native body state")
+    remaining = target_center_x_m - observed_center_x_m
+    if remaining < -1.0:
+        raise ValueError("Vehicle overshot reviewed rail target")
+    brake_distance = observed_speed_mps ** 2 / brake_gain + 1.0
+    if remaining <= 0.5:
+        return {"throttle": 0.0, "brake": 1.0, "steer": 0.0,
+                "phase": "hold", "target_center_x_m": target_center_x_m}
+    if remaining <= brake_distance:
+        return {"throttle": 0.0, "brake": 0.6, "steer": 0.0,
+                "phase": "brake", "target_center_x_m": target_center_x_m}
+    return {"throttle": 0.25, "brake": 0.0, "steer": 0.0,
+            "phase": "approach", "target_center_x_m": target_center_x_m}
+
+
 def validate_observed(case, rows):
     if case not in TARGET_CENTER_X_M or len(rows) != FRAMES:
         raise ValueError("Unknown case or incomplete 30-second trace")

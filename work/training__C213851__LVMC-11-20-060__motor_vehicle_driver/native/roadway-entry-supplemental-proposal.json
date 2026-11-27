@@ -1,0 +1,59 @@
+{
+  "format": "worker-supplemental-branch-allocation-proposal",
+  "status": "rejected_by_current_runtime_actor_membership_gate",
+  "original_assignment_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver",
+  "original_assignment_sha256": "2b9200201094a9f5a8f2ae4d76da323625de280d175654b3f8e68d47c71a9b7a",
+  "original_cell_incompatibility": "Frozen C213851 is exit_road; its exact selected pair leaves the roadway for a driveway and never enters it, so it cannot observe the separate upon-entering-roadway vehicle-yield duty.",
+  "proposed_assignment_id": "training__C195651__LVMC-11-20-060__motor_vehicle_driver",
+  "proposed_cell": {
+    "cell_id": "C195651",
+    "layout": "private_way",
+    "maneuver": "enter_road",
+    "control": "other_vehicle",
+    "candidate_ego_parties": [],
+    "allocated_sets": []
+  },
+  "actor_eligibility_review": "The pinned branch_coverage.assignments gate requires actor membership in candidate_ego_parties. C195651 has an empty list, so a new supplemental binding fails Ineligible supplemental binding under the current frozen runtime/catalog. Do not allocate without a permitted source update.",
+  "proposed_branch": {
+    "law_id": "LVMC-11-20-060",
+    "branch_id": "roadway_entry_yield_after_private_driveway",
+    "source": "inputs/training__C213851__LVMC-11-20-060__motor_vehicle_driver/assignment.json.law.text",
+    "exact_clause": "upon entering the roadway shall yield the right-of-way to all vehicles approaching on said roadway",
+    "case_suffixes": [
+      "yield_to_approaching_vehicle",
+      "enter_without_yield"
+    ],
+    "comparison_id": "roadway_entry_yield_policy",
+    "fixed_conditions": [
+      "private-way to roadway connection",
+      "business or residence district context",
+      "driver and approaching-vehicle identities",
+      "approaching-vehicle path and timing",
+      "sidewalk geometry and pedestrian context",
+      "camera and duration profile"
+    ],
+    "deliberate_differences": [
+      "requested roadway-entry yield controller policy"
+    ],
+    "source_observation_terms": [
+      "st.driveway_or_alley_entrance",
+      "st.sidewalk",
+      "drv.stopped",
+      "ru.pedestrian",
+      "drv.yields_to",
+      "st.roadway",
+      "drv.approaching",
+      "drv.time_to_conflict"
+    ]
+  },
+  "proof_plan": [
+    "Build source-closed Native private-way to roadway runner with approaching vehicle and four synchronized cameras; keep legal district and private-way authority for original review.",
+    "Author two exact inline constructions, canonical semantic proposals and measurement contracts with observed roadway boundary crossing, approaching-vehicle geometry/timing and yielding trajectory; no numeric legal threshold.",
+    "Pass pinned offline primary/fallback checks where physical risk justifies a fallback, public positive/missing-original-source negatives and recorded-only saved processing for both cases.",
+    "Pass physical complete/incomplete/missing diagnostics, independent delivery positive/missing-source negative and controlled comparison isolation/tamper negatives.",
+    "Bind execution manifest and pass exact scoped --complete --require-delivery-ready gate before ready status."
+  ],
+  "original_native_observed": false,
+  "legal_verdict_claimed": false,
+  "lead_action": "Do not create this supplemental assignment under the current pinned gate."
+}

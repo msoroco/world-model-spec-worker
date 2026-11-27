@@ -25,6 +25,7 @@ def main():
     eligible = [cell for cell in entrant if actor in cell.get("candidate_ego_parties", [])]
     assert assignment["cell"]["maneuver"] == "exit_road"
     assert entrant and not eligible
+    assert all(not cell.get("candidate_ego_parties") for cell in cells)
     report = {
         "format": "worker-roadway-entry-scope-gap",
         "assignment_id": AID,
@@ -44,12 +45,15 @@ def main():
             }
             for cell in entrant
         ],
-        "actor_eligible_roadway_entry_count": len(eligible),
-        "result": "No authorized actor-eligible roadway-entry catalog cell; the frozen exit_road cell cannot establish the separate upon-entering-roadway duty.",
-        "required_resolution": "Supply a reviewed motor_vehicle_driver roadway-entry cell allocation or a source-backed same-cell construction that preserves the fixed exit_road witness without relabeling it.",
+        "affirmatively_listed_actor_eligible_roadway_entry_count": len(eligible),
+        "catalog_actor_lists_all_empty": True,
+        "unused_private_way_entry_candidate": "C195651",
+        "current_runtime_supplemental_binding_eligible": False,
+        "result": "The frozen exit_road case does not establish the separate roadway-entry duty. The catalog lists three enter_road cells but gives no affirmative actor eligibility for any of its 1243 rows. The pinned branch_coverage.assignments gate explicitly requires actor membership, so a current-runtime supplemental binding would fail as ineligible, regardless of whether an empty list semantically represents conflict or omitted metadata.",
+        "required_resolution": "A permitted frozen catalog/runtime refresh that affirms motor_vehicle_driver eligibility for an enter_road cell, or a separately source-bound same-cell exit-then-return construction preserving the fixed exit_road witness. Current two-case construction is insufficient.",
     }
     REPORT.write_text(json.dumps(report, indent=2) + "\n")
-    print(json.dumps({"catalog_count": len(cells), "entry_count": len(entrant), "eligible_count": len(eligible), "receipt_sha256": sha(REPORT)}))
+    print(json.dumps({"catalog_count": len(cells), "entry_count": len(entrant), "affirmatively_listed_eligible_count": len(eligible), "receipt_sha256": sha(REPORT)}))
 
 
 if __name__ == "__main__":
