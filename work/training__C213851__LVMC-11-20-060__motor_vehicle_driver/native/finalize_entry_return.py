@@ -70,6 +70,17 @@ def finalize(attempt, output):
                 elif name == 'pedestrian_trace':
                     value = {'position_m': row['pedestrian_world_xy_m'],
                              'actor_id': row['pedestrian_actor_id']}
+                elif name == 'pedestrian_vehicle_trace':
+                    value = {'ego_position_m': row['vehicle_world_xy_m'],
+                             'ego_speed_mps': row['vehicle_speed_mps'],
+                             'pedestrian_position_m': row['pedestrian_world_xy_m'],
+                             'pedestrian_actor_id': row['pedestrian_actor_id']}
+                elif name == 'roadway_vehicle_trace':
+                    value = {'ego_position_m': row['vehicle_world_xy_m'],
+                             'ego_speed_mps': row['vehicle_speed_mps'],
+                             'approaching_position_m': row['approaching_world_xy_m'],
+                             'approaching_speed_mps': row['approaching_speed_mps'],
+                             'approaching_actor_id': row['approaching_actor_id']}
                 else:
                     raise ValueError('Unknown roadway-entry channel: ' + name)
                 stream.write(json.dumps({'time_s': row['time_s'],
@@ -81,6 +92,8 @@ def finalize(attempt, output):
         if name == 'roadway_entry_geometry':
             source = 'original-entry-site-review.json'
         elif name == 'sidewalk_geometry':
+            source = 'site-review.json'
+        elif name == 'pedestrian_sidewalk_route':
             source = 'site-review.json'
         else:
             raise ValueError('Unknown roadway-entry context: ' + name)
