@@ -1,22 +1,20 @@
-# testing__C24811__NRS-484B-250-4__motor_vehicle_driver
+# C24811 NRS 484B.250(4) CPU delivery handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+The exact C24811 cell is `blind_intersection` / `travel` / `traffic_light`. The selected branch is post-stop interactions under complete signal inoperability. The six selected cases and five comparisons in `case-plan.json` cover the stop-reference hierarchy (marked line, near-side crosswalk if no line, nearest-view point if neither), a vehicle with a prior completed stop, a vehicle within the intersection, no priority vehicle, and yielding versus entering before clearance. The statute supplies no numeric cautiousness cutoff.
 
-Exact law: NRS 484B.250(4) — When a vehicle enters an intersection controlled by a traffic-control signal which is installed and has its vehicular signals uncovered, but is inoperative at the time the vehicle enters the intersection, the driver of the vehicle shall proceed as if a stop sign had been erected at each entrance to the intersection and shall stop at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After making such a stop, the driver shall proceed cautiously, yielding to vehicles which have previously completed a stop or are within the intersection.
-Assigned branch(es): Blind-intersection post-stop interactions under complete signal inoperability..
-Cell: C24811 (blind_intersection, travel, traffic_light); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Source and construction boundary
 
-## Next CPU actions
+`native_signal.py` requires a source-hashed reviewed original site packet showing the frozen traffic-light control, installed and uncovered governing vehicular heads, complete inoperability at actual entry, all entrance/head identity, a blind sightline with reviewed physical occluder, source-surveyed stop references, connected ego/other routes, and through-highway context. The runner requires a hashed Native operator module and does not import CARLA in CPU checks. Capture retains 900 synchronized 20 Hz frames and four original camera views. Physical and legal outcomes remain unresolved. Frozen accepted evidence inventory has no recordings; every selected case addresses that gap.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C24811__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+## CPU proofs
 
-## Proven checks and dependency boundary
+- Twelve current primary/fallback offline constructions and twelve positive/negative compatibility checks passed.
+- Six recorded-only synthetic saved processing positives and six missing-source feedback negatives passed.
+- Six physical/lifecycle diagnostic fixture sets passed; original capture and owner release are not claimed.
+- Six selected delivery positive/missing-source negative audits and five controlled comparison audits passed on synthetic fixtures.
+- Thirteen focused unit tests passed, including wrong frozen control, changed source bytes, partial signal operation, missing stop/occluder, frame join, hierarchy and interaction tests.
+- `queue-proposal.json` lists six exact original-only delivery commands and five comparison audit commands for lead integration after the scoped strict gate.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+## Resume and local delivery
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Run `.venv-cpu/bin/python worker_check.py --assignment testing__C24811__NRS-484B-250-4__motor_vehicle_driver --complete --require-delivery-ready`. Local dispatch must supply reviewed original signal site/operator packets and then independently inspect original motion, stop position, inoperability at entry, camera visibility, video decode, physical clearance, and comparison isolation. Do not treat CPU fixtures or requested policies as legal acceptance.

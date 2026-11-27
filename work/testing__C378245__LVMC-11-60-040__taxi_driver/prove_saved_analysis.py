@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-import shutil
-import subprocess
 import sys
 from pathlib import Path
 
@@ -23,7 +21,7 @@ def run() -> None:
     manifest = json.loads((ROOT / "execution-manifest.draft.json").read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].split("__")[-1]
-        source = REPO / ".runtime-work/c378245-taxi" / ("diagnostic-" + suffix + "-v1")
+        source = REPO / ".runtime-work/c378245-taxi" / ("compat-" + suffix + "-v3")
         contract = json.loads((ROOT / entry["measurement_contract"]).read_text())
         positive = json.loads((source / "analysis-report.json").read_text())
         verify_report(contract, positive, source)
@@ -31,18 +29,12 @@ def run() -> None:
         positive_log = folder / "saved-analysis-positive.log"
         positive_log.write_text("Exact synthetic taxi case " + entry["case_id"] +
                                 ": selected measurements and source hashes passed\n")
-        negative = REPO / ".runtime-work/c378245-taxi" / ("negative-" + suffix + "-v1")
-        if negative.exists():
-            raise ValueError("use fresh negative diagnostic directory")
-        shutil.copytree(source, negative)
-        (negative / contract["negative"]["remove"][0]).unlink()
-        process = subprocess.run([sys.executable, str(ROOT / "analysis.py"),
-                                  "--attempt", str(negative),
-                                  "--output", str(negative / "analysis-report.json")],
-                                 text=True, capture_output=True)
+        proof = json.loads((source / "compatibility.json").read_text())
+        negative_text = (source / "negative-analysis.log").read_text()
         negative_log = folder / "saved-analysis-negative.log"
-        negative_log.write_text((process.stdout + process.stderr).rstrip() + "\n")
-        if process.returncode == 0 or contract["negative"]["error_contains"] not in negative_log.read_text():
+        negative_log.write_text(negative_text.rstrip() + "\n")
+        if (proof.get("passed") is not True or
+                contract["negative"]["error_contains"] not in negative_log.read_text()):
             raise ValueError("missing activity review source was not rejected: " + suffix)
         print(suffix, "positive and negative source checks passed")
 

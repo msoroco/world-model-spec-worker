@@ -37,7 +37,7 @@ class SpeedSweepExtensionTests(unittest.TestCase):
                        "non_through_highway": True, "ego_stop_sign_present": True,
                        "other_obligated_to_stop_or_yield": False,
                        "officer_controls": False, "signal_controls": False,
-                       "entrances": [{"id": "west", "control": "yield", "reviewed_source": "fixture"},
+                       "entrances": [{"id": "west", "control": "stop", "reviewed_source": "fixture"},
                                      {"id": "north", "control": "none", "reviewed_source": "fixture"}],
                        "ego_entrance_id": "west", "other_entrance_id": "north",
                        "stop_reference_station_m": 0, "intersection_entry_station_m": 4,

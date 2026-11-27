@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / 'execution-manifest.json'
-SCRATCH = REPO / '.runtime-work/c158190-nov27-compat-v3'
+SCRATCH = REPO / '.runtime-work/c158190-nov27-compat-v4'
 DECODER = REPO / '.runtime-work/c150099-decoder-v2/.lake/build/bin/adapterCheck'
 
 

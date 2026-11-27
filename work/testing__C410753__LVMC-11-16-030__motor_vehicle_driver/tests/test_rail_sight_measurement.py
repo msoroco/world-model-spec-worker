@@ -255,6 +255,17 @@ class RailSightTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "receipt missing"):
             verify_saved(self.root, self.packet, HERE.name + "__obscured_14mph")
 
+    def test_selected_analysis_rejects_missing_original_frame_source(self):
+        from analysis import analyze
+        case_id = HERE.name + "__obscured_14mph"
+        packet = _write_source(self.root, "reviewed-rail-packet.json", self.packet)
+        (self.root / "native-rail-receipt.json").write_text(json.dumps({
+            "case_id": case_id, "packet": packet}) + "\n")
+        contract = HERE / "cases" / "obscured_14mph" / "measurement-contract.json"
+        with self.assertRaisesRegex(ValueError,
+                                    "Missing required source: native-rail-frames.json"):
+            analyze(self.root, contract, case_id)
+
     def test_saved_measurement_recomputes_full_original_900_frame_attempt(self):
         from PIL import Image
         templates = {}
@@ -319,6 +330,13 @@ class RailSightTests(unittest.TestCase):
         self.assertTrue(saved["source_complete"])
         self.assertEqual(saved["original_frame_count"], 900)
         self.assertEqual(saved["observation"], measurement)
+        from analysis import analyze
+        contract = HERE / "cases" / "obscured_14mph" / "measurement-contract.json"
+        report = analyze(self.root, contract, case_id)
+        self.assertEqual(report["measurements"]["traversal_speed_and_sight"]["value"]
+                         ["speed_boundary_relation_observed"], "below")
+        self.assertFalse(report["physical_completion_confirmed"])
+        self.assertIsNone(report["legal_conclusion"])
         self.packet["road_sha256"] = "0" * 64
         with self.assertRaisesRegex(ValueError, "packet differs"):
             verify_saved(self.root, self.packet, case_id)

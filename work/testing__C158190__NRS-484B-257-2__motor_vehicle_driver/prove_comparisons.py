@@ -27,7 +27,7 @@ def main() -> None:
             continue
         ident = pair['comparison_id']
         paths = [REPO / '.runtime-work' / ('c158190-saved-proof-' +
-                 case.removeprefix(ROOT.name + '__') + '-v12') / 'v0001/analysis'
+                 case.removeprefix(ROOT.name + '__') + '-v13') / 'v0001/analysis'
                  for case in pair['case_ids']]
         command = [str(REPO / '.venv-cpu/bin/python'), str(SCRIPT), '--comparison', ident,
                    '--left', str(paths[0]), '--right', str(paths[1])]

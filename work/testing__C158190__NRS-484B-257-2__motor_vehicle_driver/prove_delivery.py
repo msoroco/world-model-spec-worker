@@ -32,7 +32,7 @@ def main() -> None:
     for entry in manifest['cases']:
         case = entry['case_id']
         suffix = case.removeprefix(ROOT.name + '__')
-        attempt = REPO / '.runtime-work' / ('c158190-saved-proof-' + suffix + '-v12') / 'v0001/analysis'
+        attempt = REPO / '.runtime-work' / ('c158190-saved-proof-' + suffix + '-v13') / 'v0001/analysis'
         base = [str(REPO / '.venv-cpu/bin/python'), str(AUDIT), '--attempt', str(attempt),
                 '--case', case]
         positive = ROOT / ('cpu-selected-delivery-' + suffix + '.log')

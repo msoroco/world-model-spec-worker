@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SCRATCH = REPO / '.runtime-work/c158190-nov27-physical-v2'
+SCRATCH = REPO / '.runtime-work/c158190-nov27-physical-v3'
 
 
 def sha(path):
@@ -35,8 +35,8 @@ def main():
     manifest = json.loads(manifest_path.read_text())
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1',
                PYTHONPATH=str(REPO / 'runtime') + ':' + str(REPO / 'runtime/scenario_pipeline'),
-               SCENARIO_PIPELINE_OUTPUT_ROOT=str(REPO / '.runtime-work/c158190-nov27-physical-v2/output'),
-               TMPDIR=str(REPO / '.runtime-work/c158190-nov27-physical-v2/tmp'))
+               SCENARIO_PIPELINE_OUTPUT_ROOT=str(REPO / '.runtime-work/c158190-nov27-physical-v3/output'),
+               TMPDIR=str(REPO / '.runtime-work/c158190-nov27-physical-v3/tmp'))
     SCRATCH.mkdir(parents=True, exist_ok=True)
     for entry in manifest['cases']:
         case = entry['case_id']

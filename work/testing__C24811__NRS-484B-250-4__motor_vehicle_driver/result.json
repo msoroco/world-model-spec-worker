@@ -1,12 +1,28 @@
 {
-  "assignment_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver",
-  "input_sha256": "d0afc649d28555d1535da13f39962bde8c74ade07655bbb87668f0e0acdaaa86",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
   "applied_update": 0,
-  "tests": [],
+  "assignment_id": "testing__C24811__NRS-484B-250-4__motor_vehicle_driver",
+  "first_gpu_delivery_command": "SCENARIO_SIGNAL_SITE_PACKET=\"$SIGNAL_SITE_PACKET\" SCENARIO_SIGNAL_SITE_SHA256=\"$SIGNAL_SITE_SHA256\" SCENARIO_SIGNAL_OPERATOR_MODULE=\"$SIGNAL_OPERATOR_MODULE\" SCENARIO_SIGNAL_OPERATOR_SHA256=\"$SIGNAL_OPERATOR_SHA256\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C24811__NRS-484B-250-4__motor_vehicle_driver --case testing__C24811__NRS-484B-250-4__motor_vehicle_driver__line_prior_stop_yield --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+  "input_sha256": "d0afc649d28555d1535da13f39962bde8c74ade07655bbb87668f0e0acdaaa86",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Review original source-hashed traffic-light site and operator packets, actual installed/uncovered/inoperative signal at entry, blind occluder and stop-reference hierarchy",
+    "Review original motion and four-view video for complete stop, post-stop cautiousness and priority vehicles in all six cases",
+    "Review physical clearance, original-source delivery audits, and five controlled comparison results without inventing numeric legal thresholds"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "status": "ready",
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=\"$PWD/.runtime-work/c24811-owner/tmp\" SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-owner/output\" PYTHONPATH=\"$PWD/work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver\" .venv-cpu/bin/python -m unittest discover -s work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/tests -p test_*.py -v",
+      "exit_code": 0,
+      "log": "cpu-tests-bundle.log",
+      "sha256": "9abb9d728f970f8c9ef2bc38053b299855158b18a7878b9e5322c2d10790c7c0"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 TMPDIR=\"$PWD/.runtime-work/c24811-owner/tmp\" SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c24811-owner/output\" PYTHONPATH=\"$PWD/work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver\" .venv-cpu/bin/python -m unittest work/testing__C24811__NRS-484B-250-4__motor_vehicle_driver/test_native_signal.py -v",
+      "exit_code": 0,
+      "log": "cpu-tests-native.log",
+      "sha256": "d7072f82b905129e8c4bfa2b4584b5ee27c73a2b56875bf431b3c45e8ccf54a3"
+    }
+  ]
 }

@@ -70,7 +70,7 @@ def build() -> dict:
     plan["camera_plan"] = camera
     plan["observations"] = [{"name": row["name"], "source": row["method"], "mandatory": True}
                             for row in channels]
-    plan["source_observation_mapping"] = {
+    plan["acquisition_source_mapping"] = {
         "native_frame": {"evidence": "Native tick ledger", "channels": ["native_frame"], "source_refs": ["native_frames.json"]},
         "taxi_center_xy_m": {"evidence": "taxi transform", "channels": ["taxi_center_xy_m"], "source_refs": ["native_frames.json"]},
         "taxi_footprint_xy_m": {"evidence": "taxi body corners", "channels": ["taxi_footprint_xy_m"], "source_refs": ["native_frames.json"]},
@@ -82,6 +82,9 @@ def build() -> dict:
         "taxi_licence_and_operator": {"evidence": "source-hashed taxi licence", "channels": [], "source_refs": ["taxi_licence.json"]},
         "other_stopping_parking_regulations": {"evidence": "source-hashed applicable rules", "channels": [], "source_refs": ["other_regulations.json"]},
     }
+    # The frozen assignment exports no source_observation_terms. Preserve the
+    # useful acquisition inventory above while matching that exact term set.
+    plan["source_observation_mapping"] = {}
     plan["cases"] = [
         {
             "case_id": ids[suffix], "kind": "planned_controlled_construction",

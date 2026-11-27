@@ -14,6 +14,7 @@ sys.path.insert(0, str(HERE))
 
 from rail_media_finalize import encode_camera, finalize
 from rail_native_capture import CAMERAS
+from rail_postprocess import _owner_released
 
 
 class RailMediaTests(unittest.TestCase):
@@ -48,6 +49,24 @@ class RailMediaTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "media profile differs"):
             encode_camera(self.root, "overview", 100, 3, (128, 72), output)
         self.assertFalse(output.exists())
+
+    def test_saved_postprocessing_requires_matching_owner_release(self):
+        construction = self.root / "construction.json"
+        native_exit = self.root / "native-exit.json"
+        construction.write_text('{"case_id":"rail"}\n')
+        native_exit.write_text('{"event":"native_exit"}\n')
+        release = self.root / "owner-release.json"
+        release.write_text(json.dumps({
+            "event": "owner_released", "operator_attested": True,
+            "native_construction_sha256": hashlib.sha256(
+                construction.read_bytes()).hexdigest(),
+            "native_exit_sha256": hashlib.sha256(
+                native_exit.read_bytes()).hexdigest()}) + "\n")
+        self.assertEqual(_owner_released(self.root, release),
+                         hashlib.sha256(release.read_bytes()).hexdigest())
+        native_exit.write_text('{"event":"different_exit"}\n')
+        with self.assertRaisesRegex(ValueError, "release differs"):
+            _owner_released(self.root, release)
 
     def test_full_900_frame_source_map_finalizes_original_media(self):
         raw = (self.folder / "00000100.png").read_bytes()

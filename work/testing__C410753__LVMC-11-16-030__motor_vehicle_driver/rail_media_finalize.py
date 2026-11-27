@@ -68,6 +68,9 @@ def encode_camera(root, camera, first_frame, frame_count, dimensions, output):
 def finalize(root, packet, case_id):
     """Require the sealed original receipt and encode all four exact 900-frame views."""
     root = Path(root).resolve()
+    media_receipt = root / "rail-media-receipt.json"
+    if media_receipt.exists() or media_receipt.is_symlink():
+        raise ValueError("original rail media receipt already exists")
     receipt_path = root / "native-rail-receipt.json"
     if not receipt_path.is_file() or receipt_path.is_symlink():
         raise ValueError("original rail receipt missing")
@@ -104,8 +107,8 @@ def finalize(root, packet, case_id):
               hashlib.sha256(receipt_path.read_bytes()).hexdigest(),
               "original_frame_count": 900, "media": media,
               "physical_completion_confirmed": False, "legal_conclusion": None}
-    (root / "rail-media-receipt.json").write_text(json.dumps(result, indent=2,
-                                                          sort_keys=True) + "\n")
+    with media_receipt.open("x") as stream:
+        stream.write(json.dumps(result, indent=2, sort_keys=True) + "\n")
     return result
 
 

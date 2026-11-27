@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SCRATCH = REPO / '.runtime-work/c158190-nov27-offline-v3'
+SCRATCH = REPO / '.runtime-work/c158190-nov27-offline-v4'
 
 
 def sha(path: Path) -> str:
@@ -26,7 +26,7 @@ def main():
     for entry in manifest['cases']:
         suffix = entry['case_id'].removeprefix(ROOT.name + '__')
         for candidate in ('primary', 'fallback1'):
-            output = SCRATCH / ('offline-' + suffix + '-' + candidate + '-v12')
+            output = SCRATCH / ('offline-' + suffix + '-' + candidate + '-v13')
             command = [str(REPO / '.venv-cpu/bin/python'), str(REPO / 'runtime.py'),
                        'offline', '--manifest', str(manifest_path), '--case',
                        entry['case_id'], '--output', str(output), '--python',
