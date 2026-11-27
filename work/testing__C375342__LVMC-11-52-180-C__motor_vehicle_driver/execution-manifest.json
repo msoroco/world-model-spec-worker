@@ -1,0 +1,422 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m",
+      "construction": "construction.json",
+      "construction_sha256": "4f0aa9266810fa6bccff21f3d8dabbf19393c27309a582da28b12b277368ef93",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "2a7b7dfbf3554aca2683028c7a29c2cef2e502ea230e40a7a9c903c52c2dcfbb",
+          "trigger": {
+            "source": "original parking-history.jsonl and reference_corner.mkv",
+            "metric": "entry/return duration, outside-space placement or lost frame continuity",
+            "failure_condition": "actual parked interval or return misses requested boundary neighborhood or reviewed space"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.70 to 0.85",
+            "engineering_approach_lead_s: 15 to 20"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m --candidate fallback1 --output .runtime-work/c375342-owner/offline-continuous_29m-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "2a7b7dfbf3554aca2683028c7a29c2cef2e502ea230e40a7a9c903c52c2dcfbb",
+            "log": "cpu-offline-continuous_29m-fallback1.log",
+            "log_sha256": "c5091839128d05c3af44e79c48d28f36cfc35e72c5e7c8ae4b0404ca73ca16a8"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/diagnostic-continuous_29m-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_parking_intervals": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_parking_intervals.jsonl",
+          "method": "original frame-derived same-vehicle parked intervals, departures and returns"
+        },
+        "alley_and_angle_designation": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/alley_and_angle_designation.jsonl",
+          "method": "reviewed original alley, Engineer determination, extent and marking prop"
+        },
+        "otherwise_lawful_parking": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/otherwise_lawful_parking.jsonl",
+          "method": "reviewed other applicable parking-rule packet"
+        },
+        "rolling_hour_maximum_seconds": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/rolling_hour_maximum_seconds.jsonl",
+          "method": "exact source-bound sliding-window interval overlap"
+        },
+        "history_completeness": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/history_completeness.jsonl",
+          "method": "original 3600-second frame and prior vehicle history"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_identity.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m --candidate primary --output .runtime-work/c375342-owner/offline-continuous_29m-primary",
+        "exit_code": 0,
+        "construction_sha256": "4f0aa9266810fa6bccff21f3d8dabbf19393c27309a582da28b12b277368ef93",
+        "log": "cpu-offline-continuous_29m-primary.log",
+        "log_sha256": "80e4424a9b99194a792ae9bded92ca343fd07417c876119cd869d829b4e27489"
+      }
+    },
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m",
+      "construction": "cases/continuous_30m/construction.json",
+      "construction_sha256": "f77c650a4c18527c9ae3e744c389f4ae9ee23d12b21764a94d01801c6231b89f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/continuous_30m/fallback1-construction.json",
+          "construction_sha256": "6460919e169a305a314e78193f27dc08ab7aae4c9621f181221e7d9dfaba9ec6",
+          "trigger": {
+            "source": "original parking-history.jsonl and reference_corner.mkv",
+            "metric": "entry/return duration, outside-space placement or lost frame continuity",
+            "failure_condition": "actual parked interval or return misses requested boundary neighborhood or reviewed space"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.70 to 0.85",
+            "engineering_approach_lead_s: 15 to 20"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m --candidate fallback1 --output .runtime-work/c375342-owner/offline-continuous_30m-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "6460919e169a305a314e78193f27dc08ab7aae4c9621f181221e7d9dfaba9ec6",
+            "log": "cpu-offline-continuous_30m-fallback1.log",
+            "log_sha256": "6e94216307f650a57e98923a25f2d30d6fe7ad82062bed76108384b2bf23cd26"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/diagnostic-continuous_30m-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_parking_intervals": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_parking_intervals.jsonl",
+          "method": "original frame-derived same-vehicle parked intervals, departures and returns"
+        },
+        "alley_and_angle_designation": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/alley_and_angle_designation.jsonl",
+          "method": "reviewed original alley, Engineer determination, extent and marking prop"
+        },
+        "otherwise_lawful_parking": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/otherwise_lawful_parking.jsonl",
+          "method": "reviewed other applicable parking-rule packet"
+        },
+        "rolling_hour_maximum_seconds": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/rolling_hour_maximum_seconds.jsonl",
+          "method": "exact source-bound sliding-window interval overlap"
+        },
+        "history_completeness": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/history_completeness.jsonl",
+          "method": "original 3600-second frame and prior vehicle history"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_identity.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m --candidate primary --output .runtime-work/c375342-owner/offline-continuous_30m-primary",
+        "exit_code": 0,
+        "construction_sha256": "f77c650a4c18527c9ae3e744c389f4ae9ee23d12b21764a94d01801c6231b89f",
+        "log": "cpu-offline-continuous_30m-primary.log",
+        "log_sha256": "999ef604c83f303963a20aad7b737339729f947dde1b2f42d12f74c0a3eccd7c"
+      }
+    },
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m",
+      "construction": "cases/continuous_31m/construction.json",
+      "construction_sha256": "f7f6f5cb77dfb434ffe6b6ca7c1b7fdd9d215797f1865723d0a6555c4bd25ebc",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/continuous_31m/fallback1-construction.json",
+          "construction_sha256": "3773cb09131f164d3db872515dd670594d8e7f5a0d5de1732c2a9834a8a8e207",
+          "trigger": {
+            "source": "original parking-history.jsonl and reference_corner.mkv",
+            "metric": "entry/return duration, outside-space placement or lost frame continuity",
+            "failure_condition": "actual parked interval or return misses requested boundary neighborhood or reviewed space"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.70 to 0.85",
+            "engineering_approach_lead_s: 15 to 20"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m --candidate fallback1 --output .runtime-work/c375342-owner/offline-continuous_31m-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "3773cb09131f164d3db872515dd670594d8e7f5a0d5de1732c2a9834a8a8e207",
+            "log": "cpu-offline-continuous_31m-fallback1.log",
+            "log_sha256": "291c9a30e0683564c8c5d622f7e43c7d09dc9fc603ff68a09aa06ca19f733457"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/diagnostic-continuous_31m-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_parking_intervals": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_parking_intervals.jsonl",
+          "method": "original frame-derived same-vehicle parked intervals, departures and returns"
+        },
+        "alley_and_angle_designation": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/alley_and_angle_designation.jsonl",
+          "method": "reviewed original alley, Engineer determination, extent and marking prop"
+        },
+        "otherwise_lawful_parking": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/otherwise_lawful_parking.jsonl",
+          "method": "reviewed other applicable parking-rule packet"
+        },
+        "rolling_hour_maximum_seconds": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/rolling_hour_maximum_seconds.jsonl",
+          "method": "exact source-bound sliding-window interval overlap"
+        },
+        "history_completeness": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/history_completeness.jsonl",
+          "method": "original 3600-second frame and prior vehicle history"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_identity.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m --candidate primary --output .runtime-work/c375342-owner/offline-continuous_31m-primary",
+        "exit_code": 0,
+        "construction_sha256": "f7f6f5cb77dfb434ffe6b6ca7c1b7fdd9d215797f1865723d0a6555c4bd25ebc",
+        "log": "cpu-offline-continuous_31m-primary.log",
+        "log_sha256": "c87b22bee23d717863eaa82566a2dba90b601ca1df1209083bfad67dd879b090"
+      }
+    },
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m",
+      "construction": "cases/return_total_30m/construction.json",
+      "construction_sha256": "7767148d29b42948225c3be81a6f205a997542f81c59416dff9eda91c4608dff",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/return_total_30m/fallback1-construction.json",
+          "construction_sha256": "4dfb1b47190a0b280efe263888f16b79f34063a18a47fa7a31f95292065da271",
+          "trigger": {
+            "source": "original parking-history.jsonl and reference_corner.mkv",
+            "metric": "entry/return duration, outside-space placement or lost frame continuity",
+            "failure_condition": "actual parked interval or return misses requested boundary neighborhood or reviewed space"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.70 to 0.85",
+            "engineering_approach_lead_s: 15 to 20"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m --candidate fallback1 --output .runtime-work/c375342-owner/offline-return_total_30m-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "4dfb1b47190a0b280efe263888f16b79f34063a18a47fa7a31f95292065da271",
+            "log": "cpu-offline-return_total_30m-fallback1.log",
+            "log_sha256": "bed254fa9fc0385b90978f9d3f92ca691a2780a31a4e80c62b12096925938051"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/diagnostic-return_total_30m-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_parking_intervals": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_parking_intervals.jsonl",
+          "method": "original frame-derived same-vehicle parked intervals, departures and returns"
+        },
+        "alley_and_angle_designation": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/alley_and_angle_designation.jsonl",
+          "method": "reviewed original alley, Engineer determination, extent and marking prop"
+        },
+        "otherwise_lawful_parking": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/otherwise_lawful_parking.jsonl",
+          "method": "reviewed other applicable parking-rule packet"
+        },
+        "rolling_hour_maximum_seconds": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/rolling_hour_maximum_seconds.jsonl",
+          "method": "exact source-bound sliding-window interval overlap"
+        },
+        "history_completeness": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/history_completeness.jsonl",
+          "method": "original 3600-second frame and prior vehicle history"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_identity.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m --candidate primary --output .runtime-work/c375342-owner/offline-return_total_30m-primary",
+        "exit_code": 0,
+        "construction_sha256": "7767148d29b42948225c3be81a6f205a997542f81c59416dff9eda91c4608dff",
+        "log": "cpu-offline-return_total_30m-primary.log",
+        "log_sha256": "f0045b3110aee54389df9e08766c9cbff8f14ed6cc9e94e46278d5aca0c2344d"
+      }
+    },
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m",
+      "construction": "cases/return_total_31m/construction.json",
+      "construction_sha256": "4e54389bbf46c4c85615b57cc8aebe261ac9f7ffed8adb8390ff7cf4ac815995",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/return_total_31m/fallback1-construction.json",
+          "construction_sha256": "2be2c2d72db940d5eb1c406d32026cf5df95d34b59dc2b842dbb130b87735002",
+          "trigger": {
+            "source": "original parking-history.jsonl and reference_corner.mkv",
+            "metric": "entry/return duration, outside-space placement or lost frame continuity",
+            "failure_condition": "actual parked interval or return misses requested boundary neighborhood or reviewed space"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.70 to 0.85",
+            "engineering_approach_lead_s: 15 to 20"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m --candidate fallback1 --output .runtime-work/c375342-owner/offline-return_total_31m-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "2be2c2d72db940d5eb1c406d32026cf5df95d34b59dc2b842dbb130b87735002",
+            "log": "cpu-offline-return_total_31m-fallback1.log",
+            "log_sha256": "cb4f3330807a34a66b36a5392c3fcad57e98dbcb6365ed38414afc948f2b9c0b"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/diagnostic-return_total_31m-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_parking_intervals": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_parking_intervals.jsonl",
+          "method": "original frame-derived same-vehicle parked intervals, departures and returns"
+        },
+        "alley_and_angle_designation": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/alley_and_angle_designation.jsonl",
+          "method": "reviewed original alley, Engineer determination, extent and marking prop"
+        },
+        "otherwise_lawful_parking": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/otherwise_lawful_parking.jsonl",
+          "method": "reviewed other applicable parking-rule packet"
+        },
+        "rolling_hour_maximum_seconds": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/rolling_hour_maximum_seconds.jsonl",
+          "method": "exact source-bound sliding-window interval overlap"
+        },
+        "history_completeness": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/history_completeness.jsonl",
+          "method": "original 3600-second frame and prior vehicle history"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/camera_frame_identity.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m --candidate primary --output .runtime-work/c375342-owner/offline-return_total_31m-primary",
+        "exit_code": 0,
+        "construction_sha256": "4e54389bbf46c4c85615b57cc8aebe261ac9f7ffed8adb8390ff7cf4ac815995",
+        "log": "cpu-offline-return_total_31m-primary.log",
+        "log_sha256": "14d7acccfbebc0fc2ab67ef4954e0e0e967e8044288d0f742290bf8d99709bd4"
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
+}

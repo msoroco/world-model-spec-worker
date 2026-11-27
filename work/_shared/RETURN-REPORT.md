@@ -2,6 +2,15 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 11:15 UTC: C377875 angle-parking package published
+
+- `testing__C377875__LVMC-11-52-070__motor_vehicle_driver` passed its owner's exact strict assignment gate twice and the lead's independent exact strict gate (`.runtime-work/c377875-lvmc-lead-nov27-strict.log`). The exact queue proposal published **4 cases and 2 comparisons** with 34 syntax-checked commands. Shared queue: **216 ready assignments, 1,493 exact cases, 1,045 comparisons**, 3,982,033 bytes; SHA256 `6b74adf79baeb1cb77ffb755a07c966fc29b4c18829248e09dbf618bf0cb6129`. The freed owner now owns `testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver`, alley angle-parking duration. No Git command was run.
+
+## 2026-11-27 11:10 UTC: C422976 published and railway result projection
+
+- `testing__C422976__LVMC-11-18-020__heavy_vehicle_driver` passed the owner's exact strict assignment gate and the lead's independent exact strict assignment gate (`.runtime-work/c422976-lead-nov27-strict.log`). The queue integration validated its exact proposal and 71 bash-syntax-checked commands, publishing **8 cases and 7 comparisons**. Queue totals are **215 ready assignments, 1,489 exact cases, 1,043 comparisons**, 3,965,669 bytes; SHA256 `351cdb06160913522ef1546867cc9742e1eff3d27b88734a068ebc8a81c5e467`. The freed owner now owns `testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver`, with the distinct opposite-side-space and undercarriage-clearance branches.
+- Root `testing__C410753__LVMC-11-16-030__motor_vehicle_driver` remains **partial**. Its source-verified Native history now has a CPU-tested projection into 900 joined trace/frame rows, original-frame and four-camera channels, and a runtime-shaped `result.json` that leaves physical acceptance false. Seven construction bundles were rebuilt; the scoped partial static check and refreshed primary offline proofs pass. The complete focused suite and manifest proof binding are in progress. Pinned compatibility, saved delivery and independent comparison receipts remain CPU work. No physical or legal outcome is claimed. No Git command was run.
+
 ## 2026-11-27 11:02 UTC: checkpoint hygiene
 
 - Batch inventory is **214 ready, 28 partial, 0 missing** of 242 exact assignments. A non-Git read-only scan checked 77,509 files under `work/` for size limits, UTF-8, trailing whitespace, blank EOF and conflict markers; **zero issues**. A targeted recheck of the 584 files in the shared and newly touched assignment folders also found zero whitespace or conflict issues after report updates. No Git command was run.

@@ -1,22 +1,11 @@
-# testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver
+# C410753 / NRS 484B.560(7)(a) handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. The exact heavy-vehicle railway package is under construction and has no accepted recording or exact-law judgment-range entry. The assigned cell is `paved_road / cross_railway / rail_track`; full-test is the only selection target.
 
-Exact law: NRS 484B.560(7)(a); with 484B.560(8) — It is unlawful for the driver of any vehicle: When crossing at grade any track or tracks of a railroad, to fail to completely cross the track or tracks without stopping due to insufficient: (1) Space for the vehicle on the opposite side of the railroad crossing; or (2) Undercarriage clearance of the vehicle. As used in this section, “completely cross” means to travel across a railroad track or tracks in such a manner that the trailing end of the vehicle is 15 feet or more past the nearest rail of the railroad track or tracks.
-Assigned branch(es): Separate opposite-side-space and undercarriage-clearance constructions..
-Cell: C410753 (paved_road, cross_railway, rail_track); actor: heavy_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The full frozen text prohibits failing to completely cross a railroad grade crossing without stopping because of insufficient opposite-side space or undercarriage clearance. Subsection (8) defines complete crossing by the trailing end being 15 feet or more beyond the nearest rail. The seven selected case IDs in `case-plan.json` separate opposite-side-space halt/clear, undercarriage grounding/pass, and measured trailing-end 14.9/15.0/15.1-foot probes. Five comparisons isolate those branches and the statutory numeric boundary. No engineering speed, gap or contact probe is treated as a legal cutoff or conclusive causal attribution.
 
-## Next CPU actions
+`railway_7a.py` validates an exact source-hashed grade-crossing packet, original rail geometry, actual heavy-vehicle blueprint/dimensions, coupled-unit inventory, road route/profile and approach visibility. It demands distinct downstream-obstruction versus undercarriage-grounding sources and measures original 20 Hz vehicle body vertices against the final travel-direction rail. It retains motion, body gap, contact, brake and traffic-conflict observations while leaving stop causality and legal judgment unresolved for independent review. `tests/test_railway_7a.py` currently exercises all seven source case variants, the 15-foot boundary, coupled-unit requirements and rejection of missing original evidence.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Current CPU checks: `runtime.py verify --runtime runtime` and `runtime.py preflight` passed; `.venv-cpu/bin/python -m unittest discover -s work/testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver/tests -v` passed 8 tests (log `cpu-source-measurement-tests.log`); `.venv-cpu/bin/python worker_check.py --assignment testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver --complete` passed as a partial static checkpoint. These do not constitute delivery readiness.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Remaining CPU work: implement the actual source-gated Native scene/operator/camera capture and saved-only finalizer; materialize exact primary and risk-justified fallback constructions; build source-bound diagnostic fixtures and positive/negative offline, compatibility and saved-only receipts; validate canonical semantic stages; implement physical/lifecycle, independent delivery and comparison audits; seal queue proposal and pass exact strict gate. Source packet must retain actual crossing rails, downstream obstruction geometry/timing or road-profile and contact evidence, heavy/coupled unit body vertices, original frame/control history and four-view frame joins. Actual physical realization and independent legal interpretation remain later checks.

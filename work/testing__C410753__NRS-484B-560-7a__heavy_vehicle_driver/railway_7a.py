@@ -39,12 +39,14 @@ def _vector(value, name):
 
 def load_source(path: str | Path, expected_sha256: str):
     path = Path(path)
-    if not path.is_file() or not path.resolve().is_relative_to(Path.cwd().resolve()):
-        raise ValueError("reviewed source packet path missing or outside repository")
+    if not path.is_file():
+        raise ValueError("reviewed source packet path missing")
     raw = path.read_bytes()
     if hashlib.sha256(raw).hexdigest() != expected_sha256:
         raise ValueError("reviewed source packet hash mismatch")
-    return json.loads(raw)
+    packet = json.loads(raw)
+    packet["_packet_sha256"] = expected_sha256
+    return packet
 
 
 def validate_site(site: dict, case_name: str):
@@ -140,7 +142,7 @@ def measure_frames(site: dict, rows: list[dict]):
         if prior_time is not None and not .049 <= time - prior_time <= .051:
             raise ValueError("original Native cadence is not 20 Hz")
         prior_frame, prior_time = frame, time
-        if row.get("source_site_sha256") != site.get("source_sha256"):
+        if row.get("source_site_sha256") != site.get("_packet_sha256"):
             raise ValueError("original frame is not joined to reviewed site")
         units = row.get("vehicle_units")
         if not isinstance(units, list) or len(units) != 1 + len(site["vehicle"]["coupled_units"]):

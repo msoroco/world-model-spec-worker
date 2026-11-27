@@ -1,0 +1,53 @@
+{
+  "template_id": "LVMC-11-52-180-C@motor_vehicle_driver",
+  "law_id": "LVMC-11-52-180-C",
+  "actor": "motor_vehicle_driver",
+  "quote": "A vehicle otherwise lawfully parked in an alley shall not park for a greater period than thirty minutes within any one-hour period.",
+  "structure": {
+    "law_id": "LVMC-11-52-180-C",
+    "activation": {
+      "condition": "Vehicle is otherwise lawfully parked in an alley.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Do not park for greater than thirty minutes within any one-hour period.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "parked_duration_in_any_hour",
+          "operator": ">",
+          "value": 30,
+          "unit": "minute"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Any rolling one-hour period, including departure and return by the same vehicle.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_parking_intervals_s",
+      "kind": "controller",
+      "range_or_domain": "29, 30, 31-minute continuous or cumulative return schedules; actual intervals measured"
+    },
+    {
+      "name": "municipal_alley_and_angle_designation",
+      "kind": "world_setup",
+      "range_or_domain": "original source-reviewed municipal alley, Engineer designation and marking extent"
+    },
+    {
+      "name": "otherwise_lawful_parking",
+      "kind": "world_setup",
+      "range_or_domain": "original source-reviewed all other applicable parking restrictions"
+    },
+    {
+      "name": "complete_vehicle_history",
+      "kind": "world_setup",
+      "range_or_domain": "original same-vehicle prior history plus 3600 seconds at 20 Hz"
+    }
+  ]
+}

@@ -1,22 +1,13 @@
-# testing__C377875__LVMC-11-52-070__motor_vehicle_driver
+# C377875 LVMC 11.52.070 motor vehicle driver handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: CPU delivery prepared. The exact assignment strict gate passed on 2026-11-27. Original CARLA capture and external legal/source review remain for GPU delivery; no original scene or legal outcome is claimed.
 
-Exact law: LVMC 11.52.070 — The City Traffic Engineer shall determine upon what streets angle parking shall be permitted, and shall provide signage or other markings to indicate where such parking is permitted. Where angle parking is permitted, no person shall stand or park a vehicle unless the front of the vehicle is pointed toward the direction of lawful traffic movement.
-Assigned branch(es): permitted angle-parking orientation.
-Cell: C377875 (business_district, angle_park, angle_parking_designation); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The selected branch is vehicle front orientation while standing or parking in an angle-parking space on a street designated by the City Traffic Engineer and indicated by signs or markings. Four exact cases cover stand/park and forward/opposing orientation. Two controlled comparisons hold the activity and reviewed site facts fixed while changing the requested front orientation. The 0/180-degree yaw values are engineering requests, not a statutory threshold or legal tolerance.
 
-## Next CPU actions
+The Native runner records original vehicle pose and controls at 20 Hz, roadway and marking context, and four synchronized views. The saved-only analyzer binds frame evidence to source hashes and requires the original Engineer determination, permission extent, marking, lawful traffic direction, vehicle front, and stand/park purpose. It reports front-versus-lawful-direction geometry and leaves legal classification unreviewed. Missing or inconsistent original sources fail closed.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C377875__LVMC-11-52-070__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+CPU evidence: eight selected construction offline proofs, eight positive and negative compatibility proofs, four saved-only processing proofs, physical complete/incomplete/missing/lifecycle fixtures for all four cases, four positive and negative delivery audits, and positive and negative source-bound audits for both comparisons. Eight focused unit tests and the scoped static check passed. All proof receipts are bound in `execution-manifest.json`. The first GPU command and ordered case/comparison instructions are in `gpu-queue-proposal.json`.
 
-## Proven checks and dependency boundary
+After actual CARLA capture, review the original City Traffic Engineer authorization and marking extent, lawful lane movement, vehicle front and activity purpose, then run the source audit, saved-only processing, and comparison audits before acceptance. A diagnostic synthetic media fixture was used only to exercise the CPU audit; it is rejected without diagnostic mode. No accepted recordings were available for this exact branch.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Strict command: `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C377875__LVMC-11-52-070__motor_vehicle_driver --complete --require-delivery-ready`.

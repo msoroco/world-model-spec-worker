@@ -13,7 +13,8 @@ MODULES = (
     "rail_exception_construction.py", "rail_exception_reader.py",
     "rail_route_reader.py", "rail_ray_reader.py", "rail_camera_adapter.py",
     "rail_native_capture.py", "rail_sight_measurement.py",
-    "rail_saved_measurement.py", "rail_media_finalize.py", "rail_core_projection.py",
+    "rail_saved_measurement.py", "rail_diagnostic_measurement.py",
+    "rail_media_finalize.py", "rail_core_projection.py",
     "rail_postprocess.py", "analysis.py", "rail_comparison_audit.py",
     "tests/test_offline.py",
 )

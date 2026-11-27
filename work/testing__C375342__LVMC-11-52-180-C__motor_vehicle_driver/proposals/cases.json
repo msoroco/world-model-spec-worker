@@ -1,0 +1,738 @@
+{
+  "cell_id": "C375342",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared source-gated otherwise-lawful designated alley parking context; neutral baseline is not simulated.",
+      "variable_assignments": {
+        "requested_parking_intervals_s": {
+          "kind": "controller",
+          "value": [],
+          "note": "engineering schedule only; actual frame-derived intervals decide measurement"
+        },
+        "municipal_alley_and_angle_designation": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original alley, Engineer designation and marking extent required"
+        },
+        "otherwise_lawful_parking": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "all other applicable restrictions independently reviewed"
+        },
+        "complete_vehicle_history": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "prior same-vehicle history and complete rolling-hour capture required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual alley, Engineer designation, other-lawfulness and complete original history require review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_parking_intervals",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "alley_and_angle_designation",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "otherwise_lawful_parking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "rolling_hour_maximum_seconds",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "history_completeness",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original_alley_designation_and_lawfulness",
+            "unit": "structured record",
+            "method": "Original municipal alley, Engineer determination, marking and other-rule review"
+          },
+          {
+            "name": "rolling_hour_measurement",
+            "unit": "structured record",
+            "method": "Source-hashed same-vehicle intervals in every 3600-second window"
+          }
+        ],
+        "limitations": [
+          "Original lawfulness, physical completion, frame completeness and legal interpretation require independent original-source review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m",
+      "target_law_id": "LVMC-11-52-180-C",
+      "target_type": "boundary_probe",
+      "rationale": "Prospective source-gated exact rolling-hour duration probe, not a legal finding.",
+      "paired_probe_id": "continuous_30_minute_boundary",
+      "deliberate_differences": [
+        "requested_parking_intervals_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_parking_intervals_s",
+        "comparison_or_standard": "strict greater-than 1800 parked seconds in any source-reviewed rolling 3600-second interval",
+        "target_value_or_branch": "below",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "minute",
+        "test_value": 29
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "minute",
+        "rationale": "Engineering target separation for diagnostic boundary probes, not a legal tolerance."
+      },
+      "variable_assignments": {
+        "requested_parking_intervals_s": {
+          "kind": "controller",
+          "value": [
+            [
+              300,
+              2040
+            ]
+          ],
+          "note": "engineering schedule only; actual frame-derived intervals decide measurement"
+        },
+        "municipal_alley_and_angle_designation": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original alley, Engineer designation and marking extent required"
+        },
+        "otherwise_lawful_parking": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "all other applicable restrictions independently reviewed"
+        },
+        "complete_vehicle_history": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "prior same-vehicle history and complete rolling-hour capture required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual municipal alley status, designation, marking, other-lawfulness, parking classification, same-vehicle continuity and source completeness require original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_parking_intervals",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "alley_and_angle_designation",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "otherwise_lawful_parking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "rolling_hour_maximum_seconds",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "history_completeness",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original_alley_designation_and_lawfulness",
+            "unit": "structured record",
+            "method": "Original municipal alley, Engineer determination, marking and other-rule review"
+          },
+          {
+            "name": "rolling_hour_measurement",
+            "unit": "structured record",
+            "method": "Source-hashed same-vehicle intervals in every 3600-second window"
+          }
+        ],
+        "limitations": [
+          "Original lawfulness, physical completion, frame completeness and legal interpretation require independent original-source review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m",
+      "target_law_id": "LVMC-11-52-180-C",
+      "target_type": "boundary_probe",
+      "rationale": "Prospective source-gated exact rolling-hour duration probe, not a legal finding.",
+      "paired_probe_id": "continuous_30_minute_boundary",
+      "deliberate_differences": [
+        "requested_parking_intervals_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_parking_intervals_s",
+        "comparison_or_standard": "strict greater-than 1800 parked seconds in any source-reviewed rolling 3600-second interval",
+        "target_value_or_branch": "at",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "minute",
+        "test_value": 30
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "minute",
+        "rationale": "Engineering target separation for diagnostic boundary probes, not a legal tolerance."
+      },
+      "variable_assignments": {
+        "requested_parking_intervals_s": {
+          "kind": "controller",
+          "value": [
+            [
+              300,
+              2100
+            ]
+          ],
+          "note": "engineering schedule only; actual frame-derived intervals decide measurement"
+        },
+        "municipal_alley_and_angle_designation": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original alley, Engineer designation and marking extent required"
+        },
+        "otherwise_lawful_parking": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "all other applicable restrictions independently reviewed"
+        },
+        "complete_vehicle_history": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "prior same-vehicle history and complete rolling-hour capture required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual municipal alley status, designation, marking, other-lawfulness, parking classification, same-vehicle continuity and source completeness require original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_parking_intervals",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "alley_and_angle_designation",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "otherwise_lawful_parking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "rolling_hour_maximum_seconds",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "history_completeness",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original_alley_designation_and_lawfulness",
+            "unit": "structured record",
+            "method": "Original municipal alley, Engineer determination, marking and other-rule review"
+          },
+          {
+            "name": "rolling_hour_measurement",
+            "unit": "structured record",
+            "method": "Source-hashed same-vehicle intervals in every 3600-second window"
+          }
+        ],
+        "limitations": [
+          "Original lawfulness, physical completion, frame completeness and legal interpretation require independent original-source review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m",
+      "target_law_id": "LVMC-11-52-180-C",
+      "target_type": "boundary_probe",
+      "rationale": "Prospective source-gated exact rolling-hour duration probe, not a legal finding.",
+      "paired_probe_id": "continuous_30_minute_boundary",
+      "deliberate_differences": [
+        "requested_parking_intervals_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_parking_intervals_s",
+        "comparison_or_standard": "strict greater-than 1800 parked seconds in any source-reviewed rolling 3600-second interval",
+        "target_value_or_branch": "above",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "minute",
+        "test_value": 31
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "minute",
+        "rationale": "Engineering target separation for diagnostic boundary probes, not a legal tolerance."
+      },
+      "variable_assignments": {
+        "requested_parking_intervals_s": {
+          "kind": "controller",
+          "value": [
+            [
+              300,
+              2160
+            ]
+          ],
+          "note": "engineering schedule only; actual frame-derived intervals decide measurement"
+        },
+        "municipal_alley_and_angle_designation": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original alley, Engineer designation and marking extent required"
+        },
+        "otherwise_lawful_parking": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "all other applicable restrictions independently reviewed"
+        },
+        "complete_vehicle_history": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "prior same-vehicle history and complete rolling-hour capture required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual municipal alley status, designation, marking, other-lawfulness, parking classification, same-vehicle continuity and source completeness require original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_parking_intervals",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "alley_and_angle_designation",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "otherwise_lawful_parking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "rolling_hour_maximum_seconds",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "history_completeness",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original_alley_designation_and_lawfulness",
+            "unit": "structured record",
+            "method": "Original municipal alley, Engineer determination, marking and other-rule review"
+          },
+          {
+            "name": "rolling_hour_measurement",
+            "unit": "structured record",
+            "method": "Source-hashed same-vehicle intervals in every 3600-second window"
+          }
+        ],
+        "limitations": [
+          "Original lawfulness, physical completion, frame completeness and legal interpretation require independent original-source review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m",
+      "target_law_id": "LVMC-11-52-180-C",
+      "target_type": "compliant_attempt",
+      "rationale": "Prospective source-gated exact rolling-hour duration probe, not a legal finding.",
+      "paired_probe_id": "return_30_minute_boundary",
+      "deliberate_differences": [
+        "requested_parking_intervals_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_parking_intervals_s",
+        "comparison_or_standard": "strict greater-than 1800 parked seconds in any source-reviewed rolling 3600-second interval",
+        "target_value_or_branch": "return_total_30m"
+      },
+      "variable_assignments": {
+        "requested_parking_intervals_s": {
+          "kind": "controller",
+          "value": [
+            [
+              300,
+              1260
+            ],
+            [
+              1860,
+              2700
+            ]
+          ],
+          "note": "engineering schedule only; actual frame-derived intervals decide measurement"
+        },
+        "municipal_alley_and_angle_designation": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original alley, Engineer designation and marking extent required"
+        },
+        "otherwise_lawful_parking": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "all other applicable restrictions independently reviewed"
+        },
+        "complete_vehicle_history": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "prior same-vehicle history and complete rolling-hour capture required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual municipal alley status, designation, marking, other-lawfulness, parking classification, same-vehicle continuity and source completeness require original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_parking_intervals",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "alley_and_angle_designation",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "otherwise_lawful_parking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "rolling_hour_maximum_seconds",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "history_completeness",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original_alley_designation_and_lawfulness",
+            "unit": "structured record",
+            "method": "Original municipal alley, Engineer determination, marking and other-rule review"
+          },
+          {
+            "name": "rolling_hour_measurement",
+            "unit": "structured record",
+            "method": "Source-hashed same-vehicle intervals in every 3600-second window"
+          }
+        ],
+        "limitations": [
+          "Original lawfulness, physical completion, frame completeness and legal interpretation require independent original-source review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m",
+      "target_law_id": "LVMC-11-52-180-C",
+      "target_type": "violating_attempt",
+      "rationale": "Prospective source-gated exact rolling-hour duration probe, not a legal finding.",
+      "paired_probe_id": "return_30_minute_boundary",
+      "deliberate_differences": [
+        "requested_parking_intervals_s"
+      ],
+      "probe": {
+        "primary_variable": "requested_parking_intervals_s",
+        "comparison_or_standard": "strict greater-than 1800 parked seconds in any source-reviewed rolling 3600-second interval",
+        "target_value_or_branch": "return_total_31m"
+      },
+      "variable_assignments": {
+        "requested_parking_intervals_s": {
+          "kind": "controller",
+          "value": [
+            [
+              300,
+              1260
+            ],
+            [
+              1860,
+              2760
+            ]
+          ],
+          "note": "engineering schedule only; actual frame-derived intervals decide measurement"
+        },
+        "municipal_alley_and_angle_designation": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original alley, Engineer designation and marking extent required"
+        },
+        "otherwise_lawful_parking": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "all other applicable restrictions independently reviewed"
+        },
+        "complete_vehicle_history": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "prior same-vehicle history and complete rolling-hour capture required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual municipal alley status, designation, marking, other-lawfulness, parking classification, same-vehicle continuity and source completeness require original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_parking_intervals",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "alley_and_angle_designation",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "otherwise_lawful_parking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "rolling_hour_maximum_seconds",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "history_completeness",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only rolling-hour analysis",
+            "time_window": "full 3600-second original history",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and municipal source review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "original_alley_designation_and_lawfulness",
+            "unit": "structured record",
+            "method": "Original municipal alley, Engineer determination, marking and other-rule review"
+          },
+          {
+            "name": "rolling_hour_measurement",
+            "unit": "structured record",
+            "method": "Source-hashed same-vehicle intervals in every 3600-second window"
+          }
+        ],
+        "limitations": [
+          "Original lawfulness, physical completion, frame completeness and legal interpretation require independent original-source review"
+        ]
+      }
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[1]
 
 
 def sha(path):
@@ -31,9 +32,13 @@ def build():
             "case_id": case_id, "construction": rel,
             "construction_sha256": sha(path),
             "measurement_contract": "cases/" + key + "/measurement-contract.json",
+            "measurement_procedure": {"entrypoint": "analysis.py"},
+            "fixture_recipe": "work/" + HERE.name + "/diagnostic-fixtures/" + key + "/fixture-recipe.json",
             "candidate_risk": case["candidate_risk"],
         })
+    batch = json.loads((REPO / "batch.json").read_text())
     manifest = {"assignment_id": HERE.name, "cases": entries,
+                "runtime_manifest_sha256": batch["runtime"]["source_manifest_sha256"],
                 "status": "partial", "physical_completion_confirmed": False}
     (HERE / "execution-manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n")

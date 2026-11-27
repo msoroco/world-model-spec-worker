@@ -1,12 +1,25 @@
 {
   "assignment_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver",
   "input_sha256": "bd85ffddfeca6f0dcf9f09e970f4a6ae1554a60a5fc6badd3132c5012c30a6ff",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-focused-tests.log",
+      "sha256": "7c7de730694b21c7a2002feb768c6e854530fa2647ff1a0189822944e56bc6d4"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C377875__LVMC-11-52-070__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-scoped-static.log",
+      "sha256": "16907a841b3a99c461873739bcd62395210c0189458a647e430e8e678ad643cb"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "first_gpu_delivery_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c377875-lvmc-gpu\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C377875__LVMC-11-52-070__motor_vehicle_driver --case testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_forward --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

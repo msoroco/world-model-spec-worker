@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 from rail_native_capture import CAMERAS
@@ -44,6 +45,20 @@ def project(attempt, packet, case_id, observation):
             raise ValueError("Missing required source: " + name)
         hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
     trace, mapping, channel_rows = [], [], {item["name"]: [] for item in description["channels"]}
+    positions = [row["position_xy_m"] for row in frames]
+    derived_headings = []
+    last_heading = None
+    for index, position in enumerate(positions):
+        following = next((candidate for candidate in positions[index + 1:]
+                          if candidate != position), None)
+        if following is not None:
+            last_heading = math.degrees(math.atan2(
+                following[1] - position[1], following[0] - position[0]))
+        derived_headings.append(last_heading)
+    if all(value is None for value in derived_headings):
+        raise ValueError("original rail positions cannot establish trace heading")
+    first_known = next(value for value in derived_headings if value is not None)
+    derived_headings = [first_known if value is None else value for value in derived_headings]
     for index, (frame, cameras) in enumerate(zip(frames, camera_map)):
         identity = frame["original_frame"]
         time_s = frame["time_s"]
@@ -53,11 +68,9 @@ def project(attempt, packet, case_id, observation):
         trace.append({"frame": identity, "time_s": time_s,
                       "position": {"x": position[0], "y": position[1], "z": 0.0},
                       "position_m": [position[0], position[1], 0.0],
-                      "heading_deg": 0.0, "speed_mps": frame["speed_mps"],
-                      "speed_mph": frame["speed_mps"] / 0.44704,
-                      "velocity_mps": [0.0, 0.0, 0.0], "road_id": 10,
-                      "control": {"throttle": 0.0, "brake": 0.0,
-                                  "hand_brake": False, "steer": 0.0}})
+                      "heading_deg": derived_headings[index],
+                      "speed_mps": frame["speed_mps"],
+                      "speed_mph": frame["speed_mps"] / 0.44704})
         mapping.append({"video_frame": index, "carla_frame": identity,
                         "native_frame": identity, "time_s": time_s})
         values = {
@@ -100,12 +113,14 @@ def project(attempt, packet, case_id, observation):
                     for item in description["context_inputs"])
     measured = observation.get("traversal_speed_mph_max")
     requested = json.loads((attempt / "config.json").read_text())["case"]["engineering_target_traversal_mph"]
+    diagnostic = receipt.get("capture_kind") == "diagnostic_fixture"
     result = {
         "case_id": case_id, "measured_values": observation,
         "target_checks": [{"target": "railway traversal speed and sight setup",
                            "requested": requested, "measured": measured,
                            "method": "sealed original Native frame and three-ray readbacks",
-                           "tolerance": 0.5, "matched": False,
+                           "tolerance": 0.5,
+                           "matched": abs(measured - requested) <= 0.5,
                            "physical_cause_confirmed": False,
                            "cause_evidence": contexts}],
         "setup_confirmed": False, "behavior_attempted": False,
@@ -115,8 +130,9 @@ def project(attempt, packet, case_id, observation):
         "trace_reference": "trace.jsonl", "video_references": videos,
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": description, "recording_evidence": evidence,
-        "realized_observables": {}, "provenance_kind": "original_native",
-        "diagnostic_fixture": False,
+        "realized_observables": {},
+        "provenance_kind": "synthetic_fixture" if diagnostic else "original_native",
+        "diagnostic_fixture": diagnostic,
     }
     _write_new(attempt / "result.json", json.dumps(result, sort_keys=True, indent=2) + "\n")
     return result

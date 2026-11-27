@@ -53,7 +53,11 @@ def analyze(attempt, contract, case_id):
             source = attempt / name
             if not source.is_file() or source.is_symlink():
                 raise ValueError("Missing required source: " + name)
-    saved = verify_saved(attempt, packet, case_id)
+    if receipt.get("capture_kind") == "diagnostic_fixture":
+        from rail_diagnostic_measurement import verify_diagnostic
+        saved = verify_diagnostic(attempt, receipt, packet, case_id)
+    else:
+        saved = verify_saved(attempt, packet, case_id)
     observation = saved["observation"]
     values = {}
     for row in contract["requirements"]:
@@ -69,6 +73,8 @@ def analyze(attempt, contract, case_id):
     report = {"case_id": case_id, "source_complete": True,
               "measurements": values, "original_frame_count": 900,
               "camera_views": saved["camera_views"],
+              "observation": observation,
+              "diagnostic_fixture": saved.get("diagnostic_fixture", False),
               "physical_completion_confirmed": False,
               "legal_conclusion": None}
     return report
@@ -99,9 +105,9 @@ def main():
         from rail_core_projection import project
         receipt = json.loads((args.attempt / "native-rail-receipt.json").read_text())
         packet = json.loads(_source(args.attempt, receipt["packet"]).read_text())
-        finalize(args.attempt, packet, case_id)
-        project(args.attempt, packet, case_id,
-                json.loads(_source(args.attempt, receipt["frames"]).read_text())
+        if receipt.get("capture_kind") == "original_native":
+            finalize(args.attempt, packet, case_id)
+        project(args.attempt, packet, case_id, report["observation"])
     print(json.dumps({"case_id": case_id, "source_complete": True}))
 
 

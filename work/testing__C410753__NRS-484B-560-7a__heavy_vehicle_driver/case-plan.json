@@ -24,9 +24,227 @@
   "topic_inventory": {
     "exact-text": "It is unlawful for the driver of any vehicle: When crossing at grade any track or tracks of a railroad, to fail to completely cross the track or tracks without stopping due to insufficient: (1) Space for the vehicle on the opposite side of the railroad crossing; or (2) Undercarriage clearance of the vehicle. As used in this section, “completely cross” means to travel across a railroad track or tracks in such a manner that the trailing end of the vehicle is 15 feet or more past the nearest rail of the railroad track or tracks."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__space_halt_before_15ft",
+      "target_law_id": "NRS-484B-560-7a",
+      "target_type": "delivery",
+      "rationale": "Actual downstream obstruction constrains opposite-side space and the heavy vehicle halts before trailing-end completion.",
+      "gap_ids": [
+        "gap-space"
+      ],
+      "source_packet_required": true
+    },
+    {
+      "case_id": "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__space_clear_beyond_15ft",
+      "target_law_id": "NRS-484B-560-7a",
+      "target_type": "delivery",
+      "rationale": "Same crossing and vehicle, with enough source-reviewed downstream space for trailing end to pass the rail by at least 15 feet.",
+      "gap_ids": [
+        "gap-space"
+      ],
+      "source_packet_required": true
+    },
+    {
+      "case_id": "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__clearance_grounded_before_15ft",
+      "target_law_id": "NRS-484B-560-7a",
+      "target_type": "delivery",
+      "rationale": "Actual low undercarriage/ramped crossing contact halts the heavy vehicle before trailing-end completion.",
+      "gap_ids": [
+        "gap-clearance"
+      ],
+      "source_packet_required": true
+    },
+    {
+      "case_id": "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__clearance_pass_beyond_15ft",
+      "target_law_id": "NRS-484B-560-7a",
+      "target_type": "delivery",
+      "rationale": "Same crossing and vehicle with source-reviewed clearance to pass beyond completion.",
+      "gap_ids": [
+        "gap-clearance"
+      ],
+      "source_packet_required": true
+    },
+    {
+      "case_id": "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_14_9ft",
+      "target_law_id": "NRS-484B-560-7a",
+      "target_type": "delivery",
+      "rationale": "Engineering observation just below the statutory trailing-end distance.",
+      "gap_ids": [
+        "gap-completion"
+      ],
+      "source_packet_required": true
+    },
+    {
+      "case_id": "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_15_0ft",
+      "target_law_id": "NRS-484B-560-7a",
+      "target_type": "delivery",
+      "rationale": "Engineering observation at the statutory trailing-end distance.",
+      "gap_ids": [
+        "gap-completion"
+      ],
+      "source_packet_required": true
+    },
+    {
+      "case_id": "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_15_1ft",
+      "target_law_id": "NRS-484B-560-7a",
+      "target_type": "delivery",
+      "rationale": "Engineering observation just above the statutory trailing-end distance.",
+      "gap_ids": [
+        "gap-completion"
+      ],
+      "source_packet_required": true
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "space_halt_vs_clear",
+      "case_ids": [
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__space_halt_before_15ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__space_clear_beyond_15ft"
+      ],
+      "fixed_conditions": [
+        "reviewed grade crossing",
+        "heavy vehicle blueprint and coupled configuration",
+        "rail geometry",
+        "road profile",
+        "camera/duration",
+        "approach speed policy"
+      ],
+      "deliberate_differences": [
+        "actual opposite-side available space and source-observed obstruction timing"
+      ]
+    },
+    {
+      "comparison_id": "clearance_ground_vs_pass",
+      "case_ids": [
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__clearance_grounded_before_15ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__clearance_pass_beyond_15ft"
+      ],
+      "fixed_conditions": [
+        "reviewed grade crossing",
+        "heavy vehicle blueprint and coupled configuration",
+        "rail geometry",
+        "downstream space",
+        "camera/duration",
+        "approach speed policy"
+      ],
+      "deliberate_differences": [
+        "actual undercarriage minimum clearance and grounding contact"
+      ]
+    },
+    {
+      "comparison_id": "cause_space_vs_clearance",
+      "case_ids": [
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__space_halt_before_15ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__clearance_grounded_before_15ft"
+      ],
+      "fixed_conditions": [
+        "grade-crossing identity",
+        "heavy vehicle class",
+        "rail geometry",
+        "crossing direction",
+        "camera/duration",
+        "before-15-foot halt measurement"
+      ],
+      "deliberate_differences": [
+        "source-observed downstream obstruction versus undercarriage grounding cause"
+      ]
+    },
+    {
+      "comparison_id": "completion_below_at",
+      "case_ids": [
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_14_9ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_15_0ft"
+      ],
+      "fixed_conditions": [
+        "grade-crossing identity",
+        "heavy vehicle dimensions",
+        "rail geometry",
+        "downstream space",
+        "undercarriage clearance",
+        "camera/duration"
+      ],
+      "deliberate_differences": [
+        "source-measured trailing-end displacement across 15 feet"
+      ]
+    },
+    {
+      "comparison_id": "completion_at_above",
+      "case_ids": [
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_15_0ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_15_1ft"
+      ],
+      "fixed_conditions": [
+        "grade-crossing identity",
+        "heavy vehicle dimensions",
+        "rail geometry",
+        "downstream space",
+        "undercarriage clearance",
+        "camera/duration"
+      ],
+      "deliberate_differences": [
+        "source-measured trailing-end displacement beyond 15 feet"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "rail_geometry",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "vehicle_body_vertices",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "coupled_unit_geometry",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "source_frame_time",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "trailing_end_distance_ft",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "actual_speed_mps",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "downstream_body_gap_m",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "undercarriage_contact",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "control_history",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "traffic_conflict_history",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    },
+    {
+      "name": "four_view_frame_join",
+      "mandatory": true,
+      "source": "original Native frames and source-reviewed site packet"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver/assignment.json",
@@ -51,17 +269,37 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Actual rail geometry, road profile, opposite-side space, heavy-vehicle/coupled-body geometry and undercarriage contact require reviewed source packet and actual Native readback.",
+    "No selected case has offline, compatibility, saved-only, semantic or independent audit receipt yet; these are remaining CPU tasks.",
+    "Causal attribution and nearest-rail interpretation remain independent source/legal review; engineering probe values are not legal outcomes."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
     "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "gap-space",
+        "requirement": "opposite-side space insufficiency",
+        "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+        "why_existing_insufficient": "No accepted exact-law recording."
+      },
+      {
+        "id": "gap-clearance",
+        "requirement": "undercarriage clearance insufficiency",
+        "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+        "why_existing_insufficient": "No accepted exact-law recording."
+      },
+      {
+        "id": "gap-completion",
+        "requirement": "15-foot trailing-end completion",
+        "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+        "why_existing_insufficient": "No accepted exact-law recording."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "source_gated_construction_in_progress",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -82,5 +320,84 @@
       ],
       "reason": "A heavy vehicle can encounter either specified physical insufficiency at a paved-road grade crossing; vehicle class alone proves neither."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "actual opposite-side space insufficiency",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "status": "selected_required",
+      "evidence_or_gap": "Source-reviewed obstruction geometry and timing plus actual body gap and before-15-foot halt; no accepted recording.",
+      "case_ids": [
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__space_halt_before_15ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__space_clear_beyond_15ft"
+      ],
+      "disposition_index": 0
+    },
+    {
+      "requirement": "actual undercarriage-clearance insufficiency",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "status": "selected_required",
+      "evidence_or_gap": "Source-reviewed profile and actual undercarriage contact/grounding plus before-15-foot halt; no accepted recording.",
+      "case_ids": [
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__clearance_grounded_before_15ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__clearance_pass_beyond_15ft"
+      ],
+      "disposition_index": 1
+    },
+    {
+      "requirement": "completely cross means trailing end at least 15 feet past nearest rail",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "status": "selected_required",
+      "evidence_or_gap": "Actual multi-unit trailing body vertices and rail geometry at 14.9, 15.0 and 15.1 foot probes; nearest-rail meaning retained for source review.",
+      "case_ids": [
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_14_9ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_15_0ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_15_1ft"
+      ],
+      "disposition_index": 2
+    },
+    {
+      "requirement": "crossing at grade without stopping due to specified cause",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "status": "selected_required",
+      "evidence_or_gap": "Original 20 Hz motion, control, downstream obstacle, grounding contact and traffic-conflict history distinguish causal possibilities; no automatic legal attribution.",
+      "case_ids": [
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__space_halt_before_15ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__space_clear_beyond_15ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__clearance_grounded_before_15ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__clearance_pass_beyond_15ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_14_9ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_15_0ft",
+        "testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver__trailing_end_15_1ft"
+      ],
+      "disposition_index": 3
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "rail geometry, heavy/coupled body, downstream obstruction, road profile and ground contact",
+        "interval": "all 900 original 20 Hz frames"
+      },
+      {
+        "view": "approach",
+        "subject": "rail geometry, heavy/coupled body, downstream obstruction, road profile and ground contact",
+        "interval": "all 900 original 20 Hz frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "rail geometry, heavy/coupled body, downstream obstruction, road profile and ground contact",
+        "interval": "all 900 original 20 Hz frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "rail geometry, heavy/coupled body, downstream obstruction, road profile and ground contact",
+        "interval": "all 900 original 20 Hz frames"
+      }
+    ]
+  }
 }

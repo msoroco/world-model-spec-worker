@@ -10,6 +10,7 @@ import hashlib
 import json
 import math
 import queue
+import subprocess
 from pathlib import Path
 
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
@@ -252,13 +253,63 @@ def capture(adapter, site_path: Path, case_id: str, destination: Path) -> dict:
     site=read_site(site_path,expected.read_text().strip())
     relation=case_id.split('__')[-1].split('_')[-1]
     conduct=case_id.split('__')[-1].split('_')[0]
+    destination=Path(destination)
+    if not destination.is_dir() or not (destination/'construction.json').is_file():
+        raise ValueError('Native attempt must be a materialized exact construction')
+    raw=destination/'native-bus-capture'
     operator=NativeBusOperator(adapter.world,adapter.carla,site)
+    prior=copy.deepcopy(adapter.world.get_settings())
     try:
         setup=operator.setup()
-        result=operator.capture(destination,conduct,relation)
+        result=operator.capture(raw,conduct,relation)
         result.update(setup)
         result['case_id']=case_id
         result['reviewed_site_sha256']=sha(site_path)
-        return result
     finally:
         operator.close()
+    restored=adapter.world.get_settings()
+    if (restored.synchronous_mode != prior.synchronous_mode or
+            restored.fixed_delta_seconds != prior.fixed_delta_seconds):
+        raise ValueError('Native world settings restoration readback differs')
+    ledger=json.loads((raw/'native_frames.json').read_text())
+    frames=ledger['frames']
+    if len(frames)!=900:
+        raise ValueError('Native bus capture incomplete')
+    (destination/'native.json').write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n')
+    for view in VIEWS:
+        folder=raw/view
+        for index,row in enumerate(frames):
+            frame=folder/f'{index:04d}.png'
+            reference=row['cameras'][view]
+            if not frame.is_file() or reference['path']!=str(frame.relative_to(raw)) or sha(frame)!=reference['sha256']:
+                raise ValueError('Native camera PNG ledger differs: '+view)
+        target=destination/(view+'.mkv')
+        command=['ffmpeg','-hide_banner','-loglevel','error','-nostdin','-y',
+                 '-framerate','20','-i',str(folder/'%04d.png'),
+                 '-c:v','libx264','-preset','fast','-crf','18','-pix_fmt','yuv420p',str(target)]
+        subprocess.run(command,check=True,capture_output=True,text=True,timeout=900)
+        probe=subprocess.run(['ffprobe','-v','error','-count_frames','-select_streams','v:0',
+                              '-show_entries','stream=width,height,nb_read_frames,r_frame_rate',
+                              '-of','json',str(target)],check=True,capture_output=True,text=True,timeout=120)
+        stream=json.loads(probe.stdout)['streams'][0]
+        if ((stream['width'],stream['height'])!=SIZES[view] or
+                stream['r_frame_rate']!='20/1' or int(stream['nb_read_frames'])!=900):
+            raise ValueError('Native four-camera encode differs: '+view)
+    from analysis import trace_row
+    trace=''.join(json.dumps(trace_row(i,row),sort_keys=True)+'\n' for i,row in enumerate(frames))
+    (destination/'trace.jsonl').write_text(trace)
+    mapping=''.join(json.dumps({'video_frame':i,'carla_frame':row['original_frame'],
+                                'native_frame':row['original_frame'],'time_s':row['time_s']},sort_keys=True)+'\n'
+                    for i,row in enumerate(frames))
+    (destination/'video_frames.jsonl').write_text(mapping)
+    (destination/'acquisition-provenance.json').write_text(json.dumps({
+        'provenance_kind':'native','diagnostic_fixture':False,
+        'reviewed_site_sha256':sha(site_path),'physical_acceptance_claimed':False},indent=2,sort_keys=True)+'\n')
+    from worker_exchange.native_output import seal_capture
+    seal_capture(destination,frames=900,restoration={'restored':True,'method':'Native world settings readback'},
+                 errors=[],encoder_exit_codes={view:0 for view in VIEWS},
+                 context={'reviewed_site_sha256':sha(site_path),'stop_id':site['stop_id']})
+    result['camera_encodes_sha256']={view:sha(destination/(view+'.mkv')) for view in VIEWS}
+    result['capture_seal_sha256']=sha(destination/'capture-seal.json')
+    result['remaining']='Independent activity start/end review and source packet assembly before saved law analysis'
+    return result

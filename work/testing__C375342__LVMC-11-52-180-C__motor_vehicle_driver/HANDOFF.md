@@ -1,22 +1,11 @@
-# testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver
+# C375342 LVMC 11.52.180(C) motor vehicle driver handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. The exact selected branch is an Engineer-designated angle-parking space in a municipal alley. The independent duration rule applies only to a vehicle otherwise lawfully parked in the alley; the designation alone does not establish that fact.
 
-Exact law: LVMC 11.52.180(C) — A vehicle otherwise lawfully parked in an alley shall not park for a greater period than thirty minutes within any one-hour period.
-Assigned branch(es): designated angle parking in alley.
-Cell: C375342 (alley, park, angle_parking_designation); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+`case-plan.json` now selects five exact cases: `continuous_29m`, `continuous_30m`, `continuous_31m`, `return_total_30m`, and `return_total_31m`, all prefixed by the exact assignment ID. Two comparisons test the strict 30-minute boundary for a continuous park and for departure/return within one rolling hour. Requested interval endpoints are controller targets, never original measured outcomes. No accepted recordings exist for this branch, and there is no exact-law judgment range. One-hour means a rolling 3600-second window in the measurement. Movement is not assumed to reset accumulation; otherwise lawful parking, municipal alley status, City Traffic Engineer designation, marking and actual vehicle history require original source review.
 
-## Next CPU actions
+`duration_measurement.py` validates same-vehicle nonoverlapping intervals, computes the maximum overlap with any one-hour window at all mathematically sufficient interval-edge candidates, and requires source hashes, complete original history, reviewed alley/designation/marking/other-lawfulness context and an original frame map. It leaves legal classification unreviewed. `alley_site.py` is a fail-closed original source gate for the exact case, designation extent, marking extent, municipal alley and other-rule review. Eight focused tests pass; scoped `worker_check.py --assignment ... --complete` passes. Logs are `cpu-duration-tests.log` and `cpu-scoped-static.log`.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Next CPU work: implement a Native controller and four-camera acquisition for full continuous and departure/return interval histories, including actual relocations; bind original source packets and frame identities. Add a saved-only finalizer, construction/configuration and justified fallback candidates for each exact case, semantic stages, diagnostic source fixtures, offline and positive/negative compatibility receipts, physical completion fixtures, independent delivery and comparison audits, and exact GPU queue proposal. Then run `.venv-cpu/bin/python worker_check.py --assignment testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver --complete --require-delivery-ready`, fix all failures and freeze only after a pass.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+For every Python proof, use `PYTHONDONTWRITEBYTECODE=1` and `TMPDIR=$PWD/.runtime-work/c375342-owner/tmp`; for any direct runtime import, also export `SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c375342-owner/runtime-output`. Do not write temporary bundles under `work/`.

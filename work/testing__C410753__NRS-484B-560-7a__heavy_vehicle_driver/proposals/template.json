@@ -1,0 +1,67 @@
+{
+  "actor": "heavy_vehicle_driver",
+  "law_id": "NRS-484B-560-7a",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "construction_axis",
+      "range_or_domain": "opposite_space, undercarriage or completion"
+    },
+    {
+      "kind": "controller",
+      "name": "physical_mode",
+      "range_or_domain": "halt, clear, below, at or above"
+    },
+    {
+      "kind": "controller",
+      "name": "target_trailing_end_ft",
+      "range_or_domain": "14.9, 15.0 or 15.1 ft engineering probes"
+    },
+    {
+      "kind": "world_setup",
+      "name": "rail_geometry",
+      "range_or_domain": "source-reviewed at-grade railroad tracks"
+    },
+    {
+      "kind": "world_setup",
+      "name": "vehicle_class",
+      "range_or_domain": "source-reviewed heavy vehicle and coupled configuration"
+    }
+  ],
+  "quote": "It is unlawful for the driver of any vehicle: When crossing at grade any track or tracks of a railroad, to fail to completely cross the track or tracks without stopping due to insufficient: (1) Space for the vehicle on the opposite side of the railroad crossing; or (2) Undercarriage clearance of the vehicle. As used in this section, \u201ccompletely cross\u201d means to travel across a railroad track or tracks in such a manner that the trailing end of the vehicle is 15 feet or more past the nearest rail of the railroad track or tracks.",
+  "structure": {
+    "activation": {
+      "condition": "A driver of a vehicle crosses at grade a railroad track or tracks.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "judgment_calls_needed": [
+      {
+        "note": "Causality requires original obstruction, contact, control and traffic-conflict review; no gap cutoff is invented.",
+        "phrase": "due to insufficient"
+      },
+      {
+        "note": "Actual multi-track rail identity and trailing-end projection are retained; geometric interpretation requires review.",
+        "phrase": "nearest rail"
+      }
+    ],
+    "law_id": "NRS-484B-560-7a",
+    "obligation": {
+      "description": "Do not fail to completely cross the track or tracks without stopping due to insufficient opposite-side space or undercarriage clearance.",
+      "numeric_conditions": [],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Completely cross means the actual trailing end is 15 feet or more past the nearest rail of the track or tracks; observe any intervening stop and its physical cause.",
+      "numeric_conditions": [
+        {
+          "operator": ">=",
+          "unit": "ft",
+          "value": 15,
+          "variable": "target_trailing_end_ft"
+        }
+      ]
+    }
+  },
+  "template_id": "NRS-484B-560-7a@heavy_vehicle_driver"
+}

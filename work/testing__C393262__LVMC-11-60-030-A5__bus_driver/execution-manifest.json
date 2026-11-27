@@ -1,0 +1,560 @@
+{
+  "assignment_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "applicable_designated_duration": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "designation.json, site.json",
+          "method": "actual reviewed City Traffic Engineer stop-specific duration and conditions"
+        },
+        "body_inside_stop": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, site.json",
+          "method": "Native bus footprint against source-reviewed stop polygon each frame"
+        },
+        "bus_stopped_interval": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "activity.json, native.json",
+          "method": "source-hashed independent start/end activity review joined to 900 Native frames"
+        },
+        "four_camera_frame_identity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, four Matroska streams, video_frames.jsonl",
+          "method": "same Native world tick for all four RGB cameras at 20 Hz"
+        }
+      },
+      "candidate_risk": {
+        "reason": "No specific Native failure diagnosed in CPU geometry/interval checks; original stop occupancy and camera coverage require local validation.",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below",
+      "compatibility": {
+        "log": "cases/park_below/primary-compat-analysis.log",
+        "receipt": "cases/park_below/primary-compatibility.json",
+        "sha256": "bbe7fc7e29ff097fbab3cf987336fab9919d5415ee5e70273554012f94d8d090"
+      },
+      "construction": "cases/park_below/construction.json",
+      "construction_sha256": "a523fdd03fe0973d35955499e32b6d81b063e456f8757854252ec9ff14d8a9b9",
+      "delivery_acceptance": {
+        "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below",
+        "negative_command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "actual applicable designated duration missing",
+        "negative_log": "cases/park_below/delivery-negative.log",
+        "negative_log_sha256": "6d3fabf8515287867363fab2eaa4901171234da970ead5990da641ec2311762e",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "cd46fd9c8ccda00611b4ce23933bb898f2b6add46a8ed8bf67290af6cec0fc14",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/park_below/delivery-positive.log",
+        "test_log_sha256": "737beddeab54b4530eaaad7a383efb0ac19bc6b5f332fa5406daf019ac1e2f08"
+      },
+      "fixture_recipe": "work/testing__C393262__LVMC-11-60-030-A5__bus_driver/cases/park_below/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/park_below/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/park_below/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.draft.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below --output .runtime-work/c393262-bus/offline-park_below-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "a523fdd03fe0973d35955499e32b6d81b063e456f8757854252ec9ff14d8a9b9",
+        "exit_code": 0,
+        "log": "cases/park_below/offline.log",
+        "log_sha256": "ccebaefa4bd7e7048db79f66db1386f0ef3ea414cf9d30066889b857294c1372"
+      },
+      "physical_preparation": {
+        "receipt": "cases/park_below/physical-preparation.json",
+        "sha256": "3ac2b0b41d6c6791b58a9a02efdd34054e5b472b67255617e584ef6d64829148"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "applicable_designated_duration": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "designation.json, site.json",
+          "method": "actual reviewed City Traffic Engineer stop-specific duration and conditions"
+        },
+        "body_inside_stop": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, site.json",
+          "method": "Native bus footprint against source-reviewed stop polygon each frame"
+        },
+        "bus_stopped_interval": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "activity.json, native.json",
+          "method": "source-hashed independent start/end activity review joined to 900 Native frames"
+        },
+        "four_camera_frame_identity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, four Matroska streams, video_frames.jsonl",
+          "method": "same Native world tick for all four RGB cameras at 20 Hz"
+        }
+      },
+      "candidate_risk": {
+        "reason": "No specific Native failure diagnosed in CPU geometry/interval checks; original stop occupancy and camera coverage require local validation.",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_at",
+      "compatibility": {
+        "log": "cases/park_at/primary-compat-analysis.log",
+        "receipt": "cases/park_at/primary-compatibility.json",
+        "sha256": "3e083f1489409c5ec1cb55b405415a2aae6f5fc2ccb2378e807d5a03d164253b"
+      },
+      "construction": "cases/park_at/construction.json",
+      "construction_sha256": "485582126342475e556c9e2b1272908afb47d0c4dafa40b2b17692cd59383129",
+      "delivery_acceptance": {
+        "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_at",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__park_at",
+        "negative_command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__park_at --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "actual applicable designated duration missing",
+        "negative_log": "cases/park_at/delivery-negative.log",
+        "negative_log_sha256": "6d3fabf8515287867363fab2eaa4901171234da970ead5990da641ec2311762e",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "cd46fd9c8ccda00611b4ce23933bb898f2b6add46a8ed8bf67290af6cec0fc14",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/park_at/delivery-positive.log",
+        "test_log_sha256": "7cefb14e3414ade1b5dc64eea1163c2f35459a85f0a0bd88f80b04595109bb37"
+      },
+      "fixture_recipe": "work/testing__C393262__LVMC-11-60-030-A5__bus_driver/cases/park_at/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/park_at/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/park_at/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.draft.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_at --output .runtime-work/c393262-bus/offline-park_at-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "485582126342475e556c9e2b1272908afb47d0c4dafa40b2b17692cd59383129",
+        "exit_code": 0,
+        "log": "cases/park_at/offline.log",
+        "log_sha256": "bca478f0a110ed1817df6bfed415ce1318f0a4101393605e7a75cfa30826f553"
+      },
+      "physical_preparation": {
+        "receipt": "cases/park_at/physical-preparation.json",
+        "sha256": "bf4a2acc9c4861ef89aeebdbd4ff579fec0941531ef2d519b238e889416e1c31"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_at --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_at --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "applicable_designated_duration": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "designation.json, site.json",
+          "method": "actual reviewed City Traffic Engineer stop-specific duration and conditions"
+        },
+        "body_inside_stop": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, site.json",
+          "method": "Native bus footprint against source-reviewed stop polygon each frame"
+        },
+        "bus_stopped_interval": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "activity.json, native.json",
+          "method": "source-hashed independent start/end activity review joined to 900 Native frames"
+        },
+        "four_camera_frame_identity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, four Matroska streams, video_frames.jsonl",
+          "method": "same Native world tick for all four RGB cameras at 20 Hz"
+        }
+      },
+      "candidate_risk": {
+        "reason": "No specific Native failure diagnosed in CPU geometry/interval checks; original stop occupancy and camera coverage require local validation.",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_above",
+      "compatibility": {
+        "log": "cases/park_above/primary-compat-analysis.log",
+        "receipt": "cases/park_above/primary-compatibility.json",
+        "sha256": "3fb3888f4751f77916e41f4cdbbdab43af54bbc3fea5c73b4d809e45db0a216d"
+      },
+      "construction": "cases/park_above/construction.json",
+      "construction_sha256": "b68063b2922389a632d20ea570d2d9175adc5144a239f2f2ebc6a63e52e42d7f",
+      "delivery_acceptance": {
+        "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_above",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__park_above",
+        "negative_command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__park_above --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "actual applicable designated duration missing",
+        "negative_log": "cases/park_above/delivery-negative.log",
+        "negative_log_sha256": "6d3fabf8515287867363fab2eaa4901171234da970ead5990da641ec2311762e",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "cd46fd9c8ccda00611b4ce23933bb898f2b6add46a8ed8bf67290af6cec0fc14",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/park_above/delivery-positive.log",
+        "test_log_sha256": "ef60bab5a2b20acff2d8dcd75a6cb60161a82501af5c7976ee537ec590f12425"
+      },
+      "fixture_recipe": "work/testing__C393262__LVMC-11-60-030-A5__bus_driver/cases/park_above/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/park_above/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/park_above/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.draft.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_above --output .runtime-work/c393262-bus/offline-park_above-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "b68063b2922389a632d20ea570d2d9175adc5144a239f2f2ebc6a63e52e42d7f",
+        "exit_code": 0,
+        "log": "cases/park_above/offline.log",
+        "log_sha256": "e2f8011dcee42eea99abdce54139a5ab8144e63a1b2d03c20ca64f5da372baf9"
+      },
+      "physical_preparation": {
+        "receipt": "cases/park_above/physical-preparation.json",
+        "sha256": "e504132193550b8eb0c4b911ad06ae95418763e64d33f8809bd96a77dba34630"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_above --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_above --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "applicable_designated_duration": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "designation.json, site.json",
+          "method": "actual reviewed City Traffic Engineer stop-specific duration and conditions"
+        },
+        "body_inside_stop": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, site.json",
+          "method": "Native bus footprint against source-reviewed stop polygon each frame"
+        },
+        "bus_stopped_interval": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "activity.json, native.json",
+          "method": "source-hashed independent start/end activity review joined to 900 Native frames"
+        },
+        "four_camera_frame_identity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, four Matroska streams, video_frames.jsonl",
+          "method": "same Native world tick for all four RGB cameras at 20 Hz"
+        }
+      },
+      "candidate_risk": {
+        "reason": "No specific Native failure diagnosed in CPU geometry/interval checks; original stop occupancy and camera coverage require local validation.",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_below",
+      "compatibility": {
+        "log": "cases/stand_below/primary-compat-analysis.log",
+        "receipt": "cases/stand_below/primary-compatibility.json",
+        "sha256": "22436ab921815e5604f3d378551fcdb156823eccb4f43e834727888e98985186"
+      },
+      "construction": "cases/stand_below/construction.json",
+      "construction_sha256": "5b07dc0d769649f26506d2976a3d6611a6f04de95d591ea0d7c610a7ab13f2aa",
+      "delivery_acceptance": {
+        "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_below",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_below",
+        "negative_command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_below --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "actual applicable designated duration missing",
+        "negative_log": "cases/stand_below/delivery-negative.log",
+        "negative_log_sha256": "6d3fabf8515287867363fab2eaa4901171234da970ead5990da641ec2311762e",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "cd46fd9c8ccda00611b4ce23933bb898f2b6add46a8ed8bf67290af6cec0fc14",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/stand_below/delivery-positive.log",
+        "test_log_sha256": "8bcb534eb89cca768ad2dd95b7bac582d7cb9fe95ecfde1a1835c70fe7831365"
+      },
+      "fixture_recipe": "work/testing__C393262__LVMC-11-60-030-A5__bus_driver/cases/stand_below/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/stand_below/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/stand_below/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.draft.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_below --output .runtime-work/c393262-bus/offline-stand_below-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "5b07dc0d769649f26506d2976a3d6611a6f04de95d591ea0d7c610a7ab13f2aa",
+        "exit_code": 0,
+        "log": "cases/stand_below/offline.log",
+        "log_sha256": "c97edb06b900f264001169627a9322745b621ad62992bd27f9626460e7e4c5a1"
+      },
+      "physical_preparation": {
+        "receipt": "cases/stand_below/physical-preparation.json",
+        "sha256": "30f8a7aea6bb0bdb6a51931963777cdb0228c2066abaaeb1750c7e70beaad8b2"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_below --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_below --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "applicable_designated_duration": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "designation.json, site.json",
+          "method": "actual reviewed City Traffic Engineer stop-specific duration and conditions"
+        },
+        "body_inside_stop": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, site.json",
+          "method": "Native bus footprint against source-reviewed stop polygon each frame"
+        },
+        "bus_stopped_interval": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "activity.json, native.json",
+          "method": "source-hashed independent start/end activity review joined to 900 Native frames"
+        },
+        "four_camera_frame_identity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, four Matroska streams, video_frames.jsonl",
+          "method": "same Native world tick for all four RGB cameras at 20 Hz"
+        }
+      },
+      "candidate_risk": {
+        "reason": "No specific Native failure diagnosed in CPU geometry/interval checks; original stop occupancy and camera coverage require local validation.",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_at",
+      "compatibility": {
+        "log": "cases/stand_at/primary-compat-analysis.log",
+        "receipt": "cases/stand_at/primary-compatibility.json",
+        "sha256": "0da90b636fdd7838c60e1fe3fa0f7b95cb9cb9f888f3cecaf6a4b5dccda86e6c"
+      },
+      "construction": "cases/stand_at/construction.json",
+      "construction_sha256": "6628bfbec767927b283d6acfe68914bedc623d3c7bc146eb0bf24cfa88edcd3f",
+      "delivery_acceptance": {
+        "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_at",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_at",
+        "negative_command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_at --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "actual applicable designated duration missing",
+        "negative_log": "cases/stand_at/delivery-negative.log",
+        "negative_log_sha256": "6d3fabf8515287867363fab2eaa4901171234da970ead5990da641ec2311762e",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "cd46fd9c8ccda00611b4ce23933bb898f2b6add46a8ed8bf67290af6cec0fc14",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/stand_at/delivery-positive.log",
+        "test_log_sha256": "845e6ae9d478b74ca45918857e8e9ecb7ec8fbeb8170a70f6821cac668588b40"
+      },
+      "fixture_recipe": "work/testing__C393262__LVMC-11-60-030-A5__bus_driver/cases/stand_at/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/stand_at/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/stand_at/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.draft.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_at --output .runtime-work/c393262-bus/offline-stand_at-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "6628bfbec767927b283d6acfe68914bedc623d3c7bc146eb0bf24cfa88edcd3f",
+        "exit_code": 0,
+        "log": "cases/stand_at/offline.log",
+        "log_sha256": "6bad8d5c75a43b39728c8e1c8706523e3513000c87e48851fac5240349f66f2b"
+      },
+      "physical_preparation": {
+        "receipt": "cases/stand_at/physical-preparation.json",
+        "sha256": "08f07add2064d04502071e2357549f581b41e98078f3ee9129cf270caff98c7b"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_at --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_at --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "recorded_only": true
+      }
+    },
+    {
+      "acquisition": {
+        "applicable_designated_duration": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "designation.json, site.json",
+          "method": "actual reviewed City Traffic Engineer stop-specific duration and conditions"
+        },
+        "body_inside_stop": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, site.json",
+          "method": "Native bus footprint against source-reviewed stop polygon each frame"
+        },
+        "bus_stopped_interval": {
+          "entrypoint": "bus_duration.py",
+          "evidence": "activity.json, native.json",
+          "method": "source-hashed independent start/end activity review joined to 900 Native frames"
+        },
+        "four_camera_frame_identity": {
+          "entrypoint": "native_capture.py",
+          "evidence": "native.json, four Matroska streams, video_frames.jsonl",
+          "method": "same Native world tick for all four RGB cameras at 20 Hz"
+        }
+      },
+      "candidate_risk": {
+        "reason": "No specific Native failure diagnosed in CPU geometry/interval checks; original stop occupancy and camera coverage require local validation.",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_above",
+      "compatibility": {
+        "log": "cases/stand_above/primary-compat-analysis.log",
+        "receipt": "cases/stand_above/primary-compatibility.json",
+        "sha256": "c3b7cfd4fe98066e5f3ab5e676d339f76812fdf488fd9a0929a155a6a576fde2"
+      },
+      "construction": "cases/stand_above/construction.json",
+      "construction_sha256": "b6d8d40b6c45219e9581cf4030091e9495bc1a89e8612fb55277bca26312a719",
+      "delivery_acceptance": {
+        "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_above",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_above",
+        "negative_command": "PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/independent/prove_delivery_audit.py testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_above --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "actual applicable designated duration missing",
+        "negative_log": "cases/stand_above/delivery-negative.log",
+        "negative_log_sha256": "6d3fabf8515287867363fab2eaa4901171234da970ead5990da641ec2311762e",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "cd46fd9c8ccda00611b4ce23933bb898f2b6add46a8ed8bf67290af6cec0fc14",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/stand_above/delivery-positive.log",
+        "test_log_sha256": "a71c42b1a7ffeb043d7f3ae966b6540ad5023ccc32af11b44c1c3286b5c0f53a"
+      },
+      "fixture_recipe": "work/testing__C393262__LVMC-11-60-030-A5__bus_driver/cases/stand_above/fixture-recipe.json",
+      "kind": "delivery",
+      "measurement_contract": "cases/stand_above/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/stand_above/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.draft.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_above --output .runtime-work/c393262-bus/offline-stand_above-v3 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "b6d8d40b6c45219e9581cf4030091e9495bc1a89e8612fb55277bca26312a719",
+        "exit_code": 0,
+        "log": "cases/stand_above/offline.log",
+        "log_sha256": "d019bc9760199bcc30728224c133d7e035308f3cb0ebe0542601a3493e9b3858"
+      },
+      "physical_preparation": {
+        "receipt": "cases/stand_above/physical-preparation.json",
+        "sha256": "cef490c125fb044013cbde5213908ffe80465d83744f1048ec56f14a40a23006"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_above --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C393262__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_above --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "recorded_only": true
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "draft_delivery_prepared"
+}
