@@ -32,7 +32,10 @@ def check(config):
     require(tuple(c.get('name') for c in config.get('cameras',[]))==VIEWS and
             all(c.get('fps')==20 and c.get('width',0)>=1280 and c.get('height',0)>=720 for c in config['cameras']),
             'Canonical four-camera Native plan missing')
-    require(config.get('legal_verdict') is None and not config.get('physical_completion'),
+    criterion=config.get('physical_completion')
+    require(config.get('legal_verdict') is None and isinstance(criterion,dict) and
+            criterion.get('criterion')=='turn' and criterion.get('turn_degrees')==90 and
+            criterion.get('turn_sign')==1,
             'Premature physical or legal outcome')
     return {'case_id':config['case_id'],'frames':600,'carla_contacted':False,
             'requested_crossing_station_m':config.get('requested_crossing_station_m'),
@@ -89,8 +92,6 @@ def execute(config,output_dir,context_path,annotation_path,host,port):
     check(config);context,annotations=read_original(context_path,annotation_path)
     require('.runtime-work' in os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT',''),
             'Set SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work')
-    repo=ROOT.parents[2];sys.path.insert(0,str(repo/'runtime/scenario_pipeline'))
-    sys.path.insert(1,str(repo/'runtime/python'))
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap,seal_capture
@@ -118,7 +119,7 @@ def execute(config,output_dir,context_path,annotation_path,host,port):
             cb.set_attribute('fov',str(camera['fov_deg']))
             pose=context['camera_poses'][camera['name']];cx,cy,cz=pose['location_xyz_m'];pitch,cyaw,roll=pose['rotation_pyr_deg']
             sensor=world.spawn_actor(cb,carla.Transform(carla.Location(x=cx,y=cy,z=cz),
-                carla.Rotation(pitch=pitch,yaw=cyaw,roll=roll)),attach_to=vehicle if camera['name']=='driver' else None)
+                carla.Rotation(pitch=pitch,yaw=cyaw,roll=roll)),attach_to=vehicle if camera['name']=='driver_reference' else None)
             actors.append(sensor);sensors.append(sensor)
             encoders[camera['name']]=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y',
                 '-f','rawvideo','-pix_fmt','bgra','-s',f"{camera['width']}x{camera['height']}",
@@ -127,7 +128,8 @@ def execute(config,output_dir,context_path,annotation_path,host,port):
             sensor.listen(lambda image,name=camera['name']:images.put((name,image)))
         with PipelineCapture(client,vehicle,output,config['case_id'],required_observations=config['required_atoms']) as capture,\
                 FrameMap(output/'video_frames.jsonl') as frame_map,\
-                (output/'median-capture.jsonl').open('x',buffering=1) as trace:
+                (output/'median-capture.jsonl').open('x',buffering=1) as trace, \
+                (output/'body_history.jsonl').open('x',buffering=1) as body_history:
             for i in range(600):
                 pose=vehicle.get_transform();velocity=vehicle.get_velocity()
                 speed=math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
@@ -142,17 +144,24 @@ def execute(config,output_dir,context_path,annotation_path,host,port):
                     if image.frame!=frame or name in seen:continue
                     encoders[name].stdin.write(image.raw_data);seen.add(name)
                 capture.capture(frame,i/20,extra={'video_frame':i})
-                frame_map.append(frame,i/20,native_elapsed_s=world.get_snapshot().timestamp.elapsed_seconds)
+                frame_map.append(frame,i/20,camera_native_frames={name:frame for name in VIEWS},
+                                 native_elapsed_s=world.get_snapshot().timestamp.elapsed_seconds)
                 ann=annotations['frames'][i]
                 direction='median' if context['median_y_m'][0]<=pose.location.y<=context['median_y_m'][1] else (
                     'right_hand' if pose.location.y<context['median_y_m'][0] else 'opposite')
                 trace.write(json.dumps({'video_frame':i,'native_frame':frame,'time_s':i/20,
-                    'source_cameras':{name:i for name in VIEWS},'ego_center_x_m':pose.location.x,
+                    'source_cameras':{name:frame for name in VIEWS},'ego_center_x_m':pose.location.x,
                     'ego_center_y_m':pose.location.y,'ego_width_m':vehicle.bounding_box.extent.y*2,
                     'ego_length_m':vehicle.bounding_box.extent.x*2,'observed_yaw_deg':pose.rotation.yaw,
                     'roadway_direction':direction,'left_turn_active':ann['turn_mode']=='left_turn',
                     'semicircular_turn_active':ann['turn_mode']=='semicircular_turn',
                     'u_turn_active':ann['turn_mode']=='u_turn','controller_target_index':control['target_index']})+'\n')
+                bounds=vehicle.bounding_box.extent
+                body_history.write(json.dumps({'frame':frame,'time_s':i/20,
+                    'position_m':[pose.location.x,pose.location.y,pose.location.z],
+                    'body_vertices_m':[[pose.location.x+dx,pose.location.y+dy,pose.location.z]
+                        for dx in (-bounds.x,bounds.x) for dy in (-bounds.y,bounds.y)],
+                    'heading_deg':pose.rotation.yaw})+'\n')
         for name,process in encoders.items():
             process.stdin.close();error=process.stderr.read();codes[name]=process.wait(timeout=180)
             require(codes[name]==0 and (output/(name+'.mkv')).is_file(),

@@ -188,6 +188,14 @@ def capture(slug, output, host="127.0.0.1", port=2000):
         raise
 
 
+def selected_slug(config, supplied=None):
+    selected = config.get("selected_case_id", "")
+    slug = supplied or selected.rsplit("__", 1)[-1]
+    if slug not in CASES or selected != case_id(slug):
+        raise ValueError("Materialized config case differs")
+    return slug
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
@@ -199,10 +207,11 @@ if __name__ == "__main__":
     if args.check:
         print(json.dumps(check(), sort_keys=True))
     else:
-        selected = json.loads(Path("config.json").read_text()).get("selected_case_id", "")
-        slug = args.case or selected.rsplit("__", 1)[-1]
-        if selected and selected != case_id(slug):
-            parser.error("Config case differs")
-        if slug not in CASES or not args.output_dir:
+        config = json.loads(Path("config.json").read_text())
+        try:
+            slug = selected_slug(config, args.case)
+        except ValueError as error:
+            parser.error(str(error))
+        if not args.output_dir:
             parser.error("Selected case and output directory required")
         print(json.dumps(capture(slug, args.output_dir, args.host, args.port), sort_keys=True))

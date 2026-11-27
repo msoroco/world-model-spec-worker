@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SCRATCH = REPO / '.runtime-work/c393261-proof'
+SCRATCH = REPO / '.runtime-work/c393261-repair2'
 MANIFEST = ROOT / 'execution-manifest.json'
 
 
@@ -26,8 +26,8 @@ def main():
     for i, case in enumerate(manifest['cases'], 1):
         suffix = f'probe_0{i}'
         proof = ROOT / 'native/proofs' / suffix
-        compat = SCRATCH / f'compat-v5-0{i}'
-        offline = SCRATCH / f'offline-v3-0{i}'
+        compat = SCRATCH / f'compat-0{i}'
+        offline = SCRATCH / f'offline-0{i}'
         for source, target in (
             (compat / 'compatibility.json', proof / 'compatibility.json'),
             (compat / 'compatibility-analysis.log', proof / 'positive-analysis.log'),
@@ -47,13 +47,13 @@ def main():
         offlog = proof / 'offline.log'
         case['offline'] = {
             'exit_code': 0, 'construction_sha256': case['construction_sha256'],
-            'command': f'SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c393261-proof '
+            'command': f'SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c393261-repair2 '
                        f'.venv-cpu/bin/python -B runtime.py offline --manifest '
                        f'work/{ROOT.name}/execution-manifest.json --case {case["case_id"]} '
-                       f'--output .runtime-work/c393261-proof/offline-v3-0{i}',
+                       f'--output .runtime-work/c393261-repair2/offline-0{i}',
             'log': str(offlog.relative_to(ROOT)), 'log_sha256': digest(offlog),
         }
-        saved = SCRATCH / f'saved-v3-0{i}/v0001'
+        saved = SCRATCH / f'saved-0{i}/v0001'
         processing = proof / 'processing.json'
         saved_log = proof / 'saved.log'
         copy_clean(saved / 'processing.json', processing)

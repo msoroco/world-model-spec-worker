@@ -25,12 +25,14 @@ def trace(station=5.0):
         elif i <= 240:
             x, y = station, -5 + 10 * (i - 160) / 80
         else:
-            x, y = station + 45 * (i - 240) / 359, 5.0
+            x, y = station, 5.0 + 20 * (i - 240) / 359
         road = "right_hand" if y < -2 else "opposite" if y > 2 else "median"
         rows.append({"video_frame": i, "native_frame": 200000 + i, "time_s": i / 20,
-                     "source_cameras": {name: i for name in CAMERAS},
+                     "source_cameras": {name: 200000+i for name in CAMERAS},
                      "ego_center_x_m": x, "ego_center_y_m": y, "ego_width_m": 2.0,
-                     "ego_length_m": 4.0, "left_turn_active": 150 <= i <= 260,
+                     "ego_length_m": 4.0, "observed_yaw_deg": 0.0 if i <= 150 else
+                     90.0 if i >= 170 else (i-150)*4.5,
+                     "left_turn_active": 150 <= i <= 260,
                      "semicircular_turn_active": False, "u_turn_active": False,
                      "roadway_direction": road})
     return rows
@@ -87,7 +89,7 @@ if __name__ == "__main__":
     negative.append(reject("invalid_authority_disposition", source, trace(), "public-authority disposition"))
     negative.append(reject("short_capture", context(), trace()[:-1], "Incomplete"))
     rows = trace()
-    rows[300]["source_cameras"].pop("reference")
+    rows[300]["source_cameras"].pop("reference_corner")
     negative.append(reject("missing_camera", context(), rows, "Four source camera"))
     rows = trace()
     rows[300]["native_frame"] = rows[299]["native_frame"]

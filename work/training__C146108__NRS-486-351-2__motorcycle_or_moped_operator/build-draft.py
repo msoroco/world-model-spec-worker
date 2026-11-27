@@ -14,15 +14,21 @@ def sha(path):
 
 def build():
     batch = json.loads((ROOT / 'batch.json').read_text())
-    cameras = [{'name': name, 'width': width, 'height': height} for name, width, height in
+    cameras = [{'name': name, 'width': width, 'height': height,
+                'pose_strategy': 'static surveyed one-way same-lane pass view',
+                'fov_deg': 85} for name, width, height in
                [('overview', 1920, 1080), ('approach', 1280, 720),
                 ('reference_corner', 1280, 720), ('driver_reference', 1280, 720)]]
+    channels = ('ru.motorcycle', 'ru.moped', 'st.lane', 'rel.occupies',
+                'rel.longitudinal_overlap', 'drv.overtaking', 'rel.bearing',
+                'ru.motor_vehicle', 'rel.surface_gap', 'kin.position',
+                'kin.heading', 'kin.speed')
     description = {'channels': [
         {'name': name, 'unit': 'structured', 'sampling_rate_hz': 20,
          'method': 'original Native actor transform and full body corners',
          'time_window': 'all 600 frames across 30 seconds',
          'reference_frame': 'one-way OpenDRIVE road and Native frame',
-         'uncertainty': '50 ms sampling'} for name in ('motorcycle_pose', 'other_vehicle_pose')],
+         'uncertainty': '50 ms sampling'} for name in channels],
         'context_inputs': [{'name': 'motorcycle_class', 'unit': 'category',
                             'method': 'original blueprint ID plus independent Chapter 486 review'},
                            {'name': 'subsection_3_exception', 'unit': 'source text',
@@ -34,23 +40,25 @@ def build():
               'case_suffix': 'controlled_2', 'candidate_id': 'primary',
               'cell_id': 'C146108', 'law_id': 'NRS-486-351-2',
               'actor': 'motorcycle_or_moped_operator', 'rider_class': 'motorcycle',
-              'rate_hz': 20, 'duration_s': 30, 'required_atoms':
-              ['ru.motorcycle', 'ru.motor_vehicle', 'kin.position', 'kin.heading',
-               'kin.speed', 'rel.occupies'], 'source_packets': [],
+              'rate_hz': 20, 'duration_s': 30, 'required_atoms': [],
+              'source_packets': [],
               'case': {'case_id': CASE}, 'cameras': cameras,
+              'physical_target': {'behavior': 'complete same-lane behind-to-ahead pass'},
               'recording_description': description,
               'status': 'selected_cpu_draft_not_delivery_prepared'}
     files = [{'path': name, 'content': (HERE / 'native' / name).read_text()} for name in
              ('runner.py', 'geometry.py', 'measure_pass.py', 'measure_follow.py',
-              'law_review.py', 'tests/test_native.py')]
+              'law_review.py', 'finalize.py', 'tests/test_native.py')]
     files.append({'path': 'config.json', 'content': json.dumps(config, indent=2) + '\n'})
     proposal = {'case_id': CASE, 'law_id': 'NRS-486-351-2', 'cell_id': 'C146108',
                 'actor': 'motorcycle_or_moped_operator', 'entrypoint': 'runner.py',
                 'files': files, 'recording_description': description,
-                'measurement_plan': {'entrypoint': 'measure_pass.py',
+                'measurement_plan': {'entrypoint': 'finalize.py',
                     'required_sources': ['participant-poses.jsonl', 'video_frames.jsonl',
-                        'pass-context.json', 'road.xodr',
-                        'overview.mkv', 'approach.mkv', 'passing_side.mkv', 'clear_ahead.mkv'],
+                        'pass-context.json', 'pass-review.json', 'trace.jsonl',
+                        'capture/manifest.json', 'road.xodr',
+                        'overview.mkv', 'approach.mkv', 'reference_corner.mkv',
+                        'driver_reference.mkv'],
                     'status': 'source_bound_cpu_draft'},
                 'static_checks': ['two 6 m one-way through lanes',
                     'motorcycle and car bodies planned in same lane',

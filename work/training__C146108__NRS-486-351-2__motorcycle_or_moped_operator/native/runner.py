@@ -51,6 +51,15 @@ def actor_row(actor):
 
 
 def execute(output, host, port):
+    bundle = Path(__file__).resolve().parent
+    config = json.loads((bundle / 'config.json').read_text())
+    selection = json.loads((bundle / 'candidate-selection.json').read_text())
+    case_id = config['selected_case_id']
+    if (case_id != config['case_id'] or case_id not in config['supported_case_ids']
+            or selection['case_id'] != case_id
+            or selection['candidate_id'] != config['candidate_id']
+            or selection['construction_sha256'] != sha_file(bundle / 'construction.json')):
+        raise ValueError('Materialized selection, construction and config disagree')
     repo = next((path for path in Path(__file__).resolve().parents if
                  (path / 'batch.json').is_file()), None)
     if repo is None:
@@ -63,10 +72,6 @@ def execute(output, host, port):
     from worker_exchange.world_restore import snapshot, restore
     check()
     output = Path(output).resolve()
-    config = json.loads((Path(__file__).resolve().parent / 'config.json').read_text())
-    case_id = config['selected_case_id']
-    if case_id not in config['supported_case_ids']:
-        raise ValueError('Materialized selected case differs from supported case')
     following = case_id.endswith('__controlled_1')
     if output.exists():
         raise ValueError('Use a fresh original Native attempt directory')
@@ -175,6 +180,11 @@ def execute(output, host, port):
         motor_extent = motor.bounding_box.extent
         (output / 'pass-context.json').write_text(json.dumps({
             'rider_class': 'motorcycle', 'passed_class': 'motor_vehicle',
+            'motorcycle_class': {'observed_blueprint_id': motorcycle.type_id,
+                                 'classification_status': 'original_review_pending'},
+            'subsection_3_exception': {'pair_eligible': False,
+                                       'reason': 'Other vehicle is a motor vehicle, not a second motorcycle or moped',
+                                       'driver_consent': 'unverified'},
             'observed_action': 'source_review_pending',
             'classification_source': {'path': 'participant-poses.jsonl',
                                       'sha256': sha_file(poses)},

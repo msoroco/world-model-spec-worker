@@ -86,7 +86,10 @@ def build(slug, plan, assignment, terms):
                                   'value_type': 'object',
                                   'inputs': ['road.xodr', 'crosswalk-review.json',
                                              'purpose-review.json', 'crosswalk_trace.jsonl',
-                                             'video_frames.jsonl']}
+                                             'ego_body.jsonl', 'lead_body.jsonl',
+                                             'pedestrian_body.jsonl', 'video_frames.jsonl',
+                                             'overview.mkv', 'approach.mkv',
+                                             'reference_corner.mkv', 'driver_reference.mkv']}
                                  for i, item in enumerate(plan['requirement_dispositions'])
                                  if cid in item['case_ids']],
                 'legal_compliance': 'unassessed'}
@@ -98,9 +101,7 @@ def build(slug, plan, assignment, terms):
     files += [{'path': 'config.json', 'content': json.dumps(cfg, indent=2, ensure_ascii=False) + '\n'},
               {'path': 'inputs/' + AID + '/assignment.json',
                'source': 'inputs/' + AID + '/assignment.json', 'content': frozen.read_text()},
-              {'path': 'work/' + AID + '/case-plan.json',
-               'source': 'work/' + AID + '/case-plan.json',
-               'content': (HERE / 'case-plan.json').read_text()}]
+]
     construction = {'case_id': cid, 'law_id': 'LVMC-11-30-030', 'cell_id': 'C146108',
                     'actor': 'motor_vehicle_driver', 'entrypoint': 'runner.py',
                     'files': files, 'status': 'selected_cpu_prepared_original_unverified',

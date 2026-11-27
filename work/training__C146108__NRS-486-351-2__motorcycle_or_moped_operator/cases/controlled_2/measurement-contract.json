@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C146108__NRS-486-351-2__motorcycle_or_moped_operator__controlled_2",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "NRS-486-351-2",
+      "source": "NRS 486.351(2); with 486.351(3)",
+      "kind": "measured",
+      "method": "measure_same_lane_episode",
+      "output_key": "same_lane_episode",
+      "value_type": "object",
+      "inputs": [
+        "road.xodr",
+        "pass-context.json",
+        "participant-poses.jsonl",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "capture/manifest.json",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "pass-review.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "NRS-486-351-2",
+      "source": "NRS 486.351(2); with 486.351(3)",
+      "kind": "measured",
+      "method": "measure_statutory_alternatives",
+      "output_key": "statutory_alternatives",
+      "value_type": "object",
+      "inputs": [
+        "pass-context.json",
+        "participant-poses.jsonl",
+        "pass-review.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "pass-context.json"
+    ],
+    "error_contains": "Missing required source: pass-context.json"
+  }
+}

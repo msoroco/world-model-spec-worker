@@ -130,7 +130,7 @@ def finalize(attempt, output):
               "maneuver_completed": False,
               "termination_reason": "Saved original-source reduction; physical review pending",
               "physical_failure_flags": ["Original physical completion unconfirmed"],
-              "trace_reference": "crosswalk_trace.jsonl",
+              "trace_reference": "trace.jsonl",
               "video_references": [name + ".mkv" for name in
                                    ("overview", "approach", "reference_corner", "driver_reference")],
               "video_frame_map_reference": "video_frames.jsonl",

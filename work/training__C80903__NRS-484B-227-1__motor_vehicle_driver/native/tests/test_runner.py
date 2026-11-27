@@ -1,4 +1,7 @@
 import json
+import os
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 from runner import check,controller,read_original
@@ -15,3 +18,12 @@ class NativeContractTest(unittest.TestCase):
         self.assertLessEqual(abs(motion['steer']),1)
         with self.assertRaisesRegex(ValueError,'Original divided-road'):
             read_original(None,None)
+    def test_runtime_capture_launch_shape_source_gate(self):
+        env=os.environ.copy()
+        env.pop('SCENARIO_DIVIDED_CONTEXT',None)
+        env.pop('SCENARIO_TURN_ANNOTATIONS',None)
+        result=subprocess.run([sys.executable,'runner.py','--output-dir','.',
+                               '--host','127.0.0.1','--port','2000'],
+                              env=env,text=True,capture_output=True)
+        self.assertNotEqual(result.returncode,0)
+        self.assertIn('Original divided-road survey and turn annotation required',result.stderr)

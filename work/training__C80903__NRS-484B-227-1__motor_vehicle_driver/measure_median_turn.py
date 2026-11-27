@@ -4,7 +4,7 @@ import math
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "approach", "reference", "driver"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 
 
 def finite(value, name):
@@ -54,12 +54,13 @@ def measure(context, rows):
         if abs(finite(row.get("time_s"), "Native time") - i / RATE_HZ) > 1e-6:
             raise ValueError("Native time join failed")
         cameras = row.get("source_cameras")
-        if not isinstance(cameras, dict) or set(cameras) != CAMERAS or any(cameras[name] != i for name in CAMERAS):
+        if not isinstance(cameras, dict) or set(cameras) != CAMERAS or any(cameras[name] != native for name in CAMERAS):
             raise ValueError("Four source camera frame join failed")
         x = finite(row.get("ego_center_x_m"), "ego x")
         y = finite(row.get("ego_center_y_m"), "ego y")
         width = finite(row.get("ego_width_m"), "ego width")
         length = finite(row.get("ego_length_m"), "ego length")
+        yaw = math.radians(finite(row.get("observed_yaw_deg"), "observed ego yaw"))
         if width <= 0 or length <= 0:
             raise ValueError("Invalid ego extent")
         if row.get("left_turn_active") not in (True, False):
@@ -70,11 +71,13 @@ def measure(context, rows):
             raise ValueError("U-turn state missing")
         if row.get("roadway_direction") not in {"right_hand", "opposite", "median"}:
             raise ValueError("Roadway direction source missing")
-        intersects_median = y + width / 2 >= median_low and y - width / 2 <= median_high
+        half_x = abs(math.cos(yaw))*length/2 + abs(math.sin(yaw))*width/2
+        half_y = abs(math.sin(yaw))*length/2 + abs(math.cos(yaw))*width/2
+        intersects_median = y + half_y >= median_low and y - half_y <= median_high
         if intersects_median:
             median_frames.append(i)
             crossing_x.append(x)
-            crossing_footprints.append((x-length/2, x+length/2))
+            crossing_footprints.append((x-half_x, x+half_x))
         if row["left_turn_active"]:
             left_turn_frames.append(i)
         if row["semicircular_turn_active"]:

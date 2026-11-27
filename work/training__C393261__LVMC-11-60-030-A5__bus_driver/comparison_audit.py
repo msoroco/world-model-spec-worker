@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-SCRATCH = ROOT.parents[1] / '.runtime-work/c393261-proof'
+SCRATCH = ROOT.parents[1] / '.runtime-work/c393261-repair2'
 
 
 def sha(path):
@@ -24,7 +24,7 @@ def audit():
     configs, sources, dwells = [], [], []
     for i, expected in ((1, 8.0), (2, 18.0)):
         attempt = SCRATCH / f'saved-attempt-0{i}'
-        saved = SCRATCH / f'saved-v3-0{i}/v0001'
+        saved = SCRATCH / f'saved-0{i}/v0001'
         config = read(attempt / 'config.json')
         processing = read(saved / 'processing.json')
         report = read(saved / 'analysis/analysis-report.json')

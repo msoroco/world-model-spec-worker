@@ -26,7 +26,7 @@ def main():
     follow_id = prefix + '__controlled_1'
     following = json.loads(json.dumps(passing))
     following['case_id'] = follow_id
-    following['measurement_plan']['entrypoint'] = 'measure_follow.py'
+    following['measurement_plan']['entrypoint'] = 'finalize.py'
     following['mechanisms'] = [
         'motorcycle and car both target 3 m/s with original 30 m body separation',
         'both complete bodies remain within the same one-way traffic lane',
@@ -41,6 +41,7 @@ def main():
             config['supported_case_ids'] = [follow_id]
             config['case_suffix'] = 'controlled_1'
             config['case'] = {'case_id': follow_id}
+            config['physical_target'] = {'behavior': 'same-lane following without overlap'}
             config['status'] = 'selected_cpu_draft_not_delivery_prepared'
             item['content'] = json.dumps(config, indent=2) + '\n'
     target = ROOT / 'draft-same-lane/controlled_1/primary/construction.json'
@@ -48,8 +49,8 @@ def main():
     batch = json.loads((REPO / 'batch.json').read_text())
     entries = []
     for case_id, path, procedure in (
-        (follow_id, target, 'measure_follow.py'),
-        (prefix + '__controlled_2', source, 'measure_pass.py'),
+        (follow_id, target, 'finalize.py'),
+        (prefix + '__controlled_2', source, 'finalize.py'),
     ):
         entries.append({'case_id': case_id, 'kind': 'delivery',
                         'construction': str(path.relative_to(ROOT)),

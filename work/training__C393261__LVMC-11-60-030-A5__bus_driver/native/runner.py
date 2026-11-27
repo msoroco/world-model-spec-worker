@@ -74,6 +74,7 @@ def execute(case_id, output_dir, host, port):
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import seal_capture
     from worker_exchange.world_restore import snapshot, restore
     from measure import measure
     check()
@@ -93,6 +94,7 @@ def execute(case_id, output_dir, host, port):
     queues = {}
     encoders = {}
     changed = False
+    restoration = None
     try:
         world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(vertex_distance=.5, max_road_length=25, wall_height=0, additional_width=0, smooth_junctions=False, enable_mesh_visibility=True, enable_pedestrian_navigation=False))
         changed = True
@@ -196,7 +198,10 @@ def execute(case_id, output_dir, host, port):
         (output / 'terminus-review.json').write_text(json.dumps(review, indent=2) + '\n')
         measured = measure(output / 'terminus-history.jsonl', output / 'terminus-context.json')
         (output / 'terminus-measurement.json').write_text(json.dumps(measured, indent=2) + '\n')
-        return {'frames': FRAMES, 'camera_names': list(queues), 'measurement': measured, 'physical_acceptance_claimed': False}
+        outcome = {'frames': FRAMES, 'camera_names': list(queues), 'measurement': measured, 'physical_acceptance_claimed': False}
+    except BaseException as error:
+        (output / 'native-run-status.json').write_text(json.dumps({'errors': [str(error)], 'physical_acceptance_claimed': False}) + '\n')
+        raise
     finally:
         for process in encoders.values():
             if process.poll() is None:
@@ -210,7 +215,15 @@ def execute(case_id, output_dir, host, port):
             except Exception:
                 pass
         if changed:
-            restore(client, saved)
+            restoration = restore(client, saved)
+    (output / 'acquisition-provenance.json').write_text(json.dumps({
+        'provenance_kind': 'native', 'diagnostic_fixture': False,
+        'physical_acceptance_claimed': False}) + '\n')
+    seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
+                 encoder_exit_codes={name: process.returncode for name, process in encoders.items()},
+                 context={'assignment_id': case_id.rsplit('__', 1)[0],
+                          'case_id': case_id, 'native_terminus_surveyed': True})
+    return outcome
 
 def main(argv=None):
     p = argparse.ArgumentParser()

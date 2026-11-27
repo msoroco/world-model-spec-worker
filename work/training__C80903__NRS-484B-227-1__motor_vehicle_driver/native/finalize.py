@@ -26,7 +26,7 @@ def source_bound_divided_highway_turn(context,rows):
 def run(attempt,output):
     attempt,output=Path(attempt),Path(output)
     required=('original_divided_context.json','original_turn_annotations.json',
-              'median-capture.jsonl','video_frames.jsonl','trace.jsonl','capture/evidence.jsonl')
+              'median-capture.jsonl','body_history.jsonl','video_frames.jsonl','trace.jsonl','capture/evidence.jsonl')
     for name in required:require((attempt/name).is_file(),'Missing required source: '+name)
     require(not output.exists(),'Choose a fresh analysis report')
     config=json.loads((attempt/'config.json').read_text())
@@ -58,12 +58,30 @@ def run(attempt,output):
         require(context.get('source_kind')=='original_native_divided_highway_readback',
                 'Original divided-highway source missing')
     rows=[json.loads(s) for s in (attempt/'median-capture.jsonl').read_text().splitlines() if s]
+    bodies=[json.loads(s) for s in (attempt/'body_history.jsonl').read_text().splitlines() if s]
+    frames=[json.loads(s) for s in (attempt/'video_frames.jsonl').read_text().splitlines() if s]
+    traces=[json.loads(s) for s in (attempt/'trace.jsonl').read_text().splitlines() if s]
+    require(len(rows)==len(bodies)==len(frames)==len(traces)==600,
+            'Original turn, body, video and Native trace frame counts differ')
     require(len(annotation.get('frames',[]))==len(rows) and
             all(x.get('video_frame')==i and x.get('turn_mode') in ('none','left_turn','semicircular_turn','u_turn')
                 for i,x in enumerate(annotation['frames'])),
             'Original frame-matched turn annotation missing')
     for i,row in enumerate(rows):
         mode=annotation['frames'][i]['turn_mode']
+        body,frame,trace=bodies[i],frames[i],traces[i]
+        require(row['native_frame']==body.get('frame')==frame.get('carla_frame')==trace.get('frame') and
+                row['source_cameras']==frame.get('camera_native_frames') and
+                abs(row['time_s']-body.get('time_s',-1))<1e-6 and
+                abs(row['time_s']-frame.get('time_s',-1))<1e-6 and
+                abs(row['time_s']-trace.get('time_s',-1))<1e-6,
+                'Original median, body, video and Native frame join changed')
+        require(abs(body['position_m'][0]-row['ego_center_x_m'])<1e-6 and
+                abs(body['position_m'][1]-row['ego_center_y_m'])<1e-6 and
+                abs(trace['position_m'][0]-row['ego_center_x_m'])<1e-6 and
+                abs(trace['position_m'][1]-row['ego_center_y_m'])<1e-6 and
+                abs(body['heading_deg']-row['observed_yaw_deg'])<1e-6,
+                'Original median/body pose join changed')
         require(row.get('left_turn_active')==(mode=='left_turn') and
                 row.get('semicircular_turn_active')==(mode=='semicircular_turn') and
                 row.get('u_turn_active')==(mode=='u_turn'),
@@ -90,7 +108,9 @@ def run(attempt,output):
     from worker_exchange.native_output import physical_result,write_result
     result={'case_id':config['case_id'],'measured_values':finding,
             'target_checks':[{'target':'source-observed turn and median footprint','requested':config.get('requested_crossing_station_m'),
-                              'observed':finding['median_crossing_center_x_range_m'],'matched':False,
+                              'measured':finding['median_crossing_center_x_range_m'],
+                              'method':'original divided-road survey, per-frame Native footprint and turn-source join',
+                              'tolerance':'source and vehicle-footprint accuracy require original review','matched':False,
                               'physical_cause_confirmed':False,'cause_evidence':list(required)}],
             'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,'accepted':False,
             'termination_reason':'Original source measured; physical, pixel and legal review pending',

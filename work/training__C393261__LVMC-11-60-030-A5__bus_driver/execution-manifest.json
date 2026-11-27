@@ -8,7 +8,7 @@
       "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01",
       "kind": "delivery",
       "construction": "cases/probe_01/construction.json",
-      "construction_sha256": "cc09478f27ece43fd97cbd8962d2dd6bb5d6c8f6a55d92f06ad76e83ec702320",
+      "construction_sha256": "845b93feba6fa55d02bd93c305bccf0c00236fa22a69b1daea94f19447a6ff55",
       "candidate_risk": {
         "status": "none",
         "reason": "No supported engineering fallback before original bus motion; physical review is required"
@@ -97,18 +97,68 @@
           ]
         }
       },
-      "offline": {},
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {}
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "845b93feba6fa55d02bd93c305bccf0c00236fa22a69b1daea94f19447a6ff55",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c393261-repair2 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C393261__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01 --output .runtime-work/c393261-repair2/offline-01",
+        "log": "native/proofs/probe_01/offline.log",
+        "log_sha256": "1c5cf1467f95008972781c55d886942962f955e1f5bac0ab354764e559294605"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/probe_01/compatibility.json",
+        "sha256": "0c6b56b38f4cd5abd9973f9469fcf300c6948efdfbefd3e84b8853121591a70c",
+        "log": "native/proofs/probe_01/positive-analysis.log",
+        "negative_log": "native/proofs/probe_01/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/proofs/probe_01/negative-analysis.log",
+        "log_sha256": "ca5c6c3e96a266963f62810933267d1776e5452731d681b9151a67c85830c1b0"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C393261__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_01/saved.log",
+        "test_log_sha256": "f484ca6d04fe68986a441f31f2970949f96a6fa9367a8c8124a6a80e8fc65d3e",
+        "processing_receipt": "native/proofs/probe_01/processing.json",
+        "processing_receipt_sha256": "f916a0bf63c37bc6366cd392f361a438553de82b98048ce0f18e5a9440ecd961"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_01/physical/proof.json",
+        "sha256": "0d5570a25b5d95e54a70ce6b6b784e6ae3d370c0b78c37d9efd9d93e6107348c"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b4cdeabdad3f6bb8fcfa8e26a9c08a7d1ec8d88d4f0a1ac99e45c8f5ca184f93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C393261__LVMC-11-60-030-A5__bus_driver/delivery_audit.py --case training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_01/delivery/positive.log",
+        "test_log_sha256": "ce41e3922989b153c4e8882bce46f66230f3ec2a86dea0139b56f0a3ea7ff3fb",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C393261__LVMC-11-60-030-A5__bus_driver/delivery_audit.py --case training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_01/delivery/negative.log",
+        "negative_log_sha256": "16b6208ab74b852b76da0a14e528b4bff24ee952d9ec45d4d620ccd7bcb03040"
+      }
     },
     {
       "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02",
       "kind": "delivery",
       "construction": "cases/probe_02/construction.json",
-      "construction_sha256": "9f53ce3ad7f6a9239ae82d68c6b186945bf77cb30a959702605761769c9fff7f",
+      "construction_sha256": "7078539b256f625a8a25b3d90c72b9b67018fccfe598d968e2513dda56ccf730",
       "candidate_risk": {
         "status": "none",
         "reason": "No supported engineering fallback before original bus motion; physical review is required"
@@ -197,12 +247,62 @@
           ]
         }
       },
-      "offline": {},
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {}
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "7078539b256f625a8a25b3d90c72b9b67018fccfe598d968e2513dda56ccf730",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c393261-repair2 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C393261__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02 --output .runtime-work/c393261-repair2/offline-02",
+        "log": "native/proofs/probe_02/offline.log",
+        "log_sha256": "2f63e5621ca8dbe2150021fb58a6a19eaf1d7748226a6fce67423dfa01076707"
+      },
+      "compatibility": {
+        "receipt": "native/proofs/probe_02/compatibility.json",
+        "sha256": "0e5f1781fb59274760c354586eb03f644dd248fb47b9e4085273ebb644ef2ba4",
+        "log": "native/proofs/probe_02/positive-analysis.log",
+        "negative_log": "native/proofs/probe_02/negative-analysis.log"
+      },
+      "negative": {
+        "log": "native/proofs/probe_02/negative-analysis.log",
+        "log_sha256": "0ce3b57fedab2ed9f1737db912ab30817a3c144103bd21a6c68b7bdd8dd4d856"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C393261__LVMC-11-60-030-A5__bus_driver/execution-manifest.json --case training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_02/saved.log",
+        "test_log_sha256": "e5e23d7a86918d8e36128d60fa53ddad3bcf0e13b73504ba2d86d55d9a79684d",
+        "processing_receipt": "native/proofs/probe_02/processing.json",
+        "processing_receipt_sha256": "942f65e55a9cc220006084139a6d8afd81854a048ddc66a4d968260d26c08f32"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_02/physical/proof.json",
+        "sha256": "fe1fa0dac7eaea959a5405dcd2e38b7a17069a30401dc876b1c31bf8a276b4e9"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b4cdeabdad3f6bb8fcfa8e26a9c08a7d1ec8d88d4f0a1ac99e45c8f5ca184f93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C393261__LVMC-11-60-030-A5__bus_driver/delivery_audit.py --case training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_02/delivery/positive.log",
+        "test_log_sha256": "ce41e3922989b153c4e8882bce46f66230f3ec2a86dea0139b56f0a3ea7ff3fb",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C393261__LVMC-11-60-030-A5__bus_driver/delivery_audit.py --case training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_02/delivery/negative.log",
+        "negative_log_sha256": "16b6208ab74b852b76da0a14e528b4bff24ee952d9ec45d4d620ccd7bcb03040"
+      }
     }
   ]
 }

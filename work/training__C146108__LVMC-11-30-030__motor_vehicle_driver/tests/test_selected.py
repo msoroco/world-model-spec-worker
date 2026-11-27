@@ -2,7 +2,7 @@ import unittest
 from crosswalk_pass_scene import CASES, request, validate
 from measure_crosswalk_pass import measure
 from prove_crosswalk_pass import context, trace
-from runner import check
+from runner import check, selected_slug
 
 
 class SelectedCrosswalkTests(unittest.TestCase):
@@ -23,6 +23,13 @@ class SelectedCrosswalkTests(unittest.TestCase):
         source["lead_stopped_for_pedestrian_sourced"] = False
         with self.assertRaisesRegex(ValueError, "Purpose"):
             measure(source, trace("true"))
+
+    def test_runtime_capture_invocation_selects_materialized_case(self):
+        for slug in CASES:
+            config = {"selected_case_id": "training__C146108__LVMC-11-30-030__motor_vehicle_driver__" + slug}
+            self.assertEqual(selected_slug(config), slug)
+            with self.assertRaisesRegex(ValueError, "Materialized config case differs"):
+                selected_slug(config, "true" if slug != "true" else "false")
 
 
 if __name__ == "__main__":

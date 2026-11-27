@@ -3,7 +3,7 @@
 import json
 import xml.etree.ElementTree as ET
 
-CAMERAS = {"overview", "approach", "reference", "driver"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 CASE_PARAMETERS = {
     "opening_left": ("left_turn", 5.0, "right_hand"),
     "section_left": ("left_turn", 18.0, "right_hand"),
@@ -54,8 +54,8 @@ def scene_request(case, *, ego_blueprint="vehicle.tesla.model3"):
             "cameras": [
                 {"name": "overview", "xyz": [8, -18, 25], "yaw": 100, "pitch": -50, "size": [1920, 1080]},
                 {"name": "approach", "xyz": [1, 0, 2], "yaw": 0, "pitch": -8, "size": [1280, 720], "attach_to_ego": True},
-                {"name": "reference", "xyz": [15, -13, 9], "yaw": 90, "pitch": -20, "size": [1280, 720]},
-                {"name": "driver", "xyz": [4, 13, 9], "yaw": 180, "pitch": -20, "size": [1280, 720]}],
+                {"name": "reference_corner", "xyz": [15, -13, 9], "yaw": 90, "pitch": -20, "size": [1280, 720]},
+                {"name": "driver_reference", "xyz": [4, 13, 9], "yaw": 180, "pitch": -20, "size": [1280, 720]}],
             "rate_hz": 20, "duration_s": 30, "planned_frames": 600,
             "physical_success_claimed": False}
 

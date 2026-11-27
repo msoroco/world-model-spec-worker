@@ -8,6 +8,8 @@ from pathlib import Path
 from geometry import check as geometry_check, open_drive
 from runner import check as runner_check, survey, materialized_case, main as runner_main
 from measure import measure
+from worker_exchange.native_output import seal_capture
+from worker_exchange.saved_processing import record_native_exit
 
 class FakeCarla:
     class LaneType:
@@ -37,6 +39,17 @@ class FakeWorld:
         return self.mapping
 
 class NativeDraft(unittest.TestCase):
+    def test_capture_seal_and_native_exit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in ('trace.jsonl', 'video_frames.jsonl', 'runner.py', 'construction.json'):
+                (root / name).write_text('{}\n')
+            (root / 'acquisition-provenance.json').write_text(json.dumps({'provenance_kind': 'native', 'diagnostic_fixture': False}))
+            with self.assertRaisesRegex(ValueError, 'verified restoration'):
+                seal_capture(root, frames=600, restoration={'restored': False}, errors=[], encoder_exit_codes={'overview': 0})
+            seal = seal_capture(root, frames=600, restoration={'restored': True}, errors=[], encoder_exit_codes={'overview': 0})
+            self.assertEqual(seal['events'], ['capture_finished', 'encoders_closed', 'restoration_verified'])
+            self.assertEqual(record_native_exit(root)['event'], 'native_exit')
     def test_exact_runtime_capture_invocation(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
