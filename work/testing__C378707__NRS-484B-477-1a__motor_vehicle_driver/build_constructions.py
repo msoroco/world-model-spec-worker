@@ -12,8 +12,8 @@ CASES = json.loads((ROOT / "proposals/cases.json").read_text())
 RECORDING = {row["case_id"]: row["recording_description"]
              for row in CASES["cases"] if row["target_type"] != "baseline"}
 ASSIGNMENT = PLAN["assignment_id"]
-FILES = ("runner.py", "native_acquisition.py", "alley_construction.py",
-         "alley_activity.py", "audit_original_attempt.py", "audit_comparisons.py",
+FILES = ("runner.py", "native_acquisition.py", "finalize_native.py", "alley_construction.py",
+         "alley_activity.py", "analysis.py", "audit_original_attempt.py", "audit_comparisons.py",
          "case-plan.json", "tests/test_bundle.py", "tests/test_alley_activity.py",
          "tests/test_alley_construction.py", "tests/test_native_acquisition.py")
 

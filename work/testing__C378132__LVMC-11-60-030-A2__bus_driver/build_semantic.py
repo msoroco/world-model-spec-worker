@@ -30,7 +30,9 @@ def build():
     write('relevance-batch.json',relevance)
     parameters=[
       {'name':'official_permitted_location_polygons','kind':'world_setup','range_or_domain':'source-reviewed City-designated stop, stand, passenger zone and assigned-route endpoints','unit':'geometry'},
+      {'name':'target_loading_place','kind':'controller','range_or_domain':'outside or one of five source-reviewed permitted places','unit':'category'},
       {'name':'observed_bus_body_location','kind':'subject_behavior','range_or_domain':'source-bound original bus footprint throughout stopped interval','unit':'geometry'},
+      {'name':'requested_loading_purpose','kind':'controller','range_or_domain':'passenger, baggage or cargo-only construction request','unit':'category'},
       {'name':'loading_purpose','kind':'subject_behavior','range_or_domain':'independently reviewed passenger, baggage or cargo-only purpose','unit':'category'},
       {'name':'stop_reason','kind':'world_setup','range_or_domain':'independently reviewed ordinary or emergency circumstance','unit':'category'},
       {'name':'bus_class','kind':'world_setup','range_or_domain':'independently reviewed regular or excluded tour bus','unit':'category'},
@@ -39,9 +41,11 @@ def build():
       'structure':{'law_id':LAW,
         'activation':{'condition':'Covered operator of a non-tour bus stops on a street for the purpose of loading or unloading passengers or their baggage.','numeric_conditions':[]},
         'obligation':{'description':'Do not make such a loading stop except at a bus stop, bus stand, passenger loading zone or designated assigned-route origin/destination.','type':'must','numeric_conditions':[]},
-        'exceptions':[{'description':'Tour bus excluded from this paragraph.'},{'description':'Case of an emergency.'},{'description':'Officially permitted stop, stand, passenger loading zone or designated assigned-route origin/destination.'}],
+        'exceptions':[{'description':'Tour bus excluded from this paragraph.','source_clause':'other than a tour bus'},
+                      {'description':'Case of an emergency.','source_clause':'except in case of an emergency'},
+                      {'description':'Officially permitted stop, stand, passenger loading zone or designated assigned-route origin/destination.','source_clause':'other than at a bus stop, bus stand, passenger loading zone or the origin or destination point'}],
         'timing':{'description':'Evaluate independently reviewed stop interval, loading purpose and bus footprint, not one frame.','numeric_conditions':[]},
-        'judgment_calls_needed':['bus classification, loading purpose, emergency, designation qualifier scope and location boundaries remain source judgments']},
+        'judgment_calls_needed':[]},
       'parameter_refs':parameters}
     template_ref=write('template.json',template)
     binding={'cell_id':'C378132','actor':ACTOR,'status':'draft',
@@ -52,8 +56,10 @@ def build():
     first=json.loads((ROOT/'cases/outside_passenger/construction.json').read_text())
     def values(case):
         return {'official_permitted_location_polygons':{'kind':'world_setup','value':'source-reviewed five-place polygon inventory','unit':'geometry'},
-                'observed_bus_body_location':{'kind':'subject_behavior','value':case['location_kind'],'unit':'geometry'},
-                'loading_purpose':{'kind':'subject_behavior','value':case['loading_purpose'],'unit':'category'},
+                'target_loading_place':{'kind':'controller','value':case['location_kind'],'unit':'category'},
+                'observed_bus_body_location':{'kind':'subject_behavior','value':None,'unit':'geometry'},
+                'requested_loading_purpose':{'kind':'controller','value':case['loading_purpose'],'unit':'category'},
+                'loading_purpose':{'kind':'subject_behavior','value':None,'unit':'category'},
                 'stop_reason':{'kind':'world_setup','value':case['stop_reason'],'unit':'category'},
                 'bus_class':{'kind':'world_setup','value':case['bus_class'],'unit':'category'}}
     baseline=plan['cases'][0]
@@ -63,14 +69,17 @@ def build():
             'recording_description':first['recording_description']}]
     for case in plan['cases']:
         construction=json.loads((ROOT/'cases'/case['case_id'].split('__')[-1]/'construction.json').read_text())
-        cases.append({'case_id':case['case_id'],'target_law_id':LAW,'target_type':'branch_probe','status':'draft',
+        target_type=('compliant_attempt' if case['case_id'].endswith('__inside_bus_stop') else
+                     'violating_attempt' if case['case_id'].endswith('__outside_passenger') else
+                     'boundary_probe')
+        cases.append({'case_id':case['case_id'],'target_law_id':LAW,'target_type':target_type,'status':'draft',
           'rationale':'Original stopped footprint, purpose, classification and emergency facts must be independently measured; no legal verdict follows from target labels.',
           'paired_probe_id':'loading_location_purpose_exception',
-          'deliberate_differences':['observed_bus_body_location','loading_purpose','stop_reason','bus_class'],
+          'deliberate_differences':['target_loading_place','requested_loading_purpose','stop_reason','bus_class'],
           'variable_assignments':values(case),
           'unresolved_judgment_calls':['original designation, passenger/baggage purpose, tour status, emergency and location review'],
           'recording_description':construction['recording_description'],
-          'probe':{'primary_variable':'observed_bus_body_location','comparison_or_standard':'original reviewed five-place designation and selected exception facts',
+          'probe':{'primary_variable':'target_loading_place','comparison_or_standard':'original reviewed five-place designation and selected exception facts',
                    'target_value_or_branch':case['location_kind'],'threshold_ref':'none: qualitative source boundary',
                    'operator':'source_measured_place','unit':'geometry','test_value':case['location_kind']}})
     cases_ref=write('cases.json',{'cell_id':'C378132','actor':ACTOR,'status':'draft',

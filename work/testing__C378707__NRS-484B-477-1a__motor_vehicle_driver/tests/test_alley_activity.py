@@ -11,7 +11,7 @@ from alley_activity import measure_original_activity,CASE_PREFIX
 class AlleyActivityTests(unittest.TestCase):
     case=CASE_PREFIX+'passenger_active_stop'
     def setUp(self):
-        self.temp=tempfile.TemporaryDirectory(dir='.runtime-work')
+        self.temp=tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root=Path(self.temp.name)
         rows=[]

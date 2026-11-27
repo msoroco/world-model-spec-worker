@@ -1,6 +1,6 @@
 # testing__C378707__NRS-484B-477-1a__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial. Six selected cases, six risk-justified fallbacks, five comparisons, source-bound finalizer and measurement contracts are under CPU proof.
 
 Exact law: NRS 484B.477(1)(a) — Unless otherwise provided by ordinance of the local authority having jurisdiction, a person shall not: Stop, stand or park a vehicle within an alley in a business district except for the expeditious loading or unloading of goods.
 Assigned branch(es): Stopping during passenger loading.
@@ -36,3 +36,7 @@ The capture inventory now binds hashes for the site, plan, actor inventory, acti
 ## 2026-11-27 12:36 UTC: canonical semantic stages
 
 `build_semantic.py` materializes source-grounded relevance batch/cell, an exact-law template with the goods and ordinance exceptions, four independent judgment observable proposals, frozen-cell bindings, six selected canonical cases plus a nondispatched baseline, and incomplete judgment sweeps without invented legal cutoffs. The pinned `batch_pipeline.stages.validate` checks passed every stage in `cpu-semantic-stages.log` with output root exported under `.runtime-work/c378707-semantic`. Exact constructions and compatibility still need to bind the recording description before a ready claim.
+
+## 2026-11-27 12:50 UTC: exact construction and offline proof
+
+Six selected primary bundles and six reverse-approach fallbacks passed actual `runtime.py offline` checks after correcting test scratch paths and the Native graph capture lifecycle. The current 12 proof logs are bound by SHA256 in `execution-manifest.json`; `cpu-exact-offline-summary.log` summarizes each case and candidate. The focused suite passes 16 tests. `analysis.py` now verifies sealed 900-frame original activity, synchronized original frame mapping and all four source videos, then derives passenger/goods/driver/ordinance physical channels while leaving legal judgment and physical acceptance unclaimed. Six exact selected requirement measurement contracts pass the pinned contract validator. Pinned diagnostic compatibility, saved-only, physical and independent delivery proof construction remains worker-owned CPU work. The status remains partial.

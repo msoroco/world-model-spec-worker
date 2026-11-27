@@ -11,7 +11,7 @@ def main():
     entries=[]
     for order,case in enumerate(plan['cases'],1):
         case_id=case['case_id']
-        base=('PYTHONPATH="$PWD/runtime" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange '
+        base=('SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/local-gpu" PYTHONPATH="$PWD/runtime" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange '
               '--root "$LOCAL_ROOT" ')
         common=('--repo "$PWD" --batch full-test-delivery --db "$DB" --assignment '
                 +ASSIGNMENT+' --case '+case_id)
@@ -30,13 +30,13 @@ def main():
     comparisons=[{'assignment_id':ASSIGNMENT,'comparison_id':item['comparison_id'],
                   'case_ids':item['case_ids'],
                   'command':'PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/'+ASSIGNMENT+'/comparison_audit.py --comparison '+item['comparison_id']+' --attempts "$ATTEMPTS_JSON" --output "$OUTPUT"',
-                  'note':'CPU diagnostic only; original comparison requires audited Native pixels, official stop polygon, route termini and independently reviewed conduct.'}
+                  'note':'CPU diagnostic only; original comparison requires audited Native pixels, five official location polygons, route termini and independently reviewed purpose, exception and bus class.'}
                  for item in plan['comparisons']]
     proposal={'format':'worker-ordered-gpu-queue-proposal','assignment_id':ASSIGNMENT,
               'cases':entries,'comparison_audit_commands':comparisons,
-              'note':'Order is four selected inside/outside standing/parking cases; official designation, route alternatives and legal judgment require original source review.'}
+              'note':'Order is ten selected A2 location, purpose and exception cases; official designation, assigned route and legal judgment require original source review.'}
     (ROOT/'queue-proposal.json').write_text(json.dumps(proposal,indent=2,sort_keys=True)+'\n')
-    print('four-case bus stop position queue proposal prepared')
+    print(f"{len(entries)}-case A2 loading-stop queue proposal prepared")
 
 
 if __name__=='__main__':main()

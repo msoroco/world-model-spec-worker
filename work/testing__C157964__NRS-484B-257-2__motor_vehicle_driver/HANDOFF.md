@@ -41,3 +41,19 @@ The current assignment cannot select its requested sign-governed branch under th
 | `cpu-officer-binding-preflight.log` | `82752861db5171e56121a6941a2e95ed39837464f80f2b81fb7dd5e62d01be80` |
 | `cpu-officer-static.log` | `f32022ac9a5a423291baf7ec7bbecc863c367604b228e46f00fc2c9ce22fefd9` |
 | `cpu-officer-strict.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+
+## November 27 officer scene construction and exact comparisons
+
+Selected six source-gated exact cases: `occupied_stop`, `occupied_proceed`, `approaching_near_stop`, `approaching_near_proceed`, `approaching_far_stop`, `approaching_far_proceed`, each prefixed by this assignment ID. Five comparisons isolate officer directive, counterpart station and within/approaching phase; 8 m and 35 m are engineering probes, never legal cutoffs. The officer-control exception is examined with active original governance. The separate C158208 package addresses the sign-governed duty; its CPU readiness is not original C157964 evidence.
+
+`officer_scene.py` validates the frozen one-way to two-way straight route and required source citations, creates ego/other/officer actors, requests exact counterpart phase and officer gesture, and tears down all actors on partial failure. `officer_site_packet.py` hashes map, geometry, all entrances, officer location/visibility, routes and camera sightlines before construction. `cpu-officer-scene-tests-nov27.log` records 15 passing focused tests, including all six construction variants, failed setup cleanup, stale source rejection and wrong-case rejection. `.venv-cpu/bin/python worker_check.py --assignment testing__C157964__NRS-484B-257-2__motor_vehicle_driver --complete` passed.
+
+Next CPU work: make the reviewed packet and scene runnable through exact per-case config/construction/runner; acquire and seal original 900-frame Native actor, officer directive and four-camera sources; add the source-gated saved finalizer and positive/negative diagnostic recipes; bind semantic proposals, physical/delivery/comparison audits, candidate risk decisions, exact manifest and queue proposal; run each offline and compatibility proof and the scoped strict gate. Current `result.json` remains partial.
+
+## November 27 original acquisition and six offline constructions
+
+`officer_native_capture.py` source-seals a reviewed site packet, copies all original map/control references, requests 900 contiguous 20 Hz Native ticks and retains ego, counterpart and officer states, four camera PNG archives, trace/video frame maps, encoded media, source hashes and restoration status. It rejects a missing camera/actor state, time gap or changed reviewed source. `runner.py` accepts the exact materialized config and a reviewed original site/Native adapter via environment or CLI.
+
+`build_bundles.py` generated six exact primary config/construction bundles and a draft `execution-manifest.json`, with each case fixed to officer control and source-gated map/gesture review. `runtime.py offline` passed for all six selected case IDs; logs are `cpu-offline-<case-suffix>.log` and manifest `offline` fields bind the construction hashes. The focused suite passed 17 tests (`cpu-officer-scene-tests-nov27.log`). These are construction and synthetic protocol checks, not physical officer visibility or legal findings.
+
+Remaining CPU work: source-bound saved finalizer, positive/negative diagnostic fixture and compatibility processing for six cases, full selected measurement contracts and semantic stages, independently tested delivery/physical/comparison audits, risk-based fallback decision and any needed candidate proof, post-capture saved automation, then exact scoped strict gate. `result.json` remains partial.

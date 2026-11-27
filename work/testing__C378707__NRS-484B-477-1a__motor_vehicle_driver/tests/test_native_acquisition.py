@@ -14,6 +14,7 @@ module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 from alley_construction import ASSIGNMENT
 from audit_original_attempt import audit
+from analysis import measure_business_alley
 from audit_comparisons import PAIRS, compare
 from runner import _verify_site_sources
 
@@ -136,6 +137,9 @@ class AcquisitionTests(unittest.TestCase):
             self.assertTrue((out / "activity-seal.json").is_file())
             self.assertTrue((out / "reference_corner.zip").is_file())
             self.assertEqual(audit(out, self.case_id)["structural_status"], "passed")
+            checked, measured = measure_business_alley(out, self.case_id)
+            self.assertEqual(checked["activity_sha256"], measured["history_sha256"])
+            self.assertEqual(measured["intervals_s"]["halt"], [[10.0, 28.0]])
             with self.assertRaisesRegex(ValueError, "diagnostic fixture"):
                 audit(out, self.case_id, require_native_attestation=True)
             (out / "approach.zip").write_bytes(b"changed")

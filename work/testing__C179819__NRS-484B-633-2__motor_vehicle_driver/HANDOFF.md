@@ -1,6 +1,6 @@
 # C179819 NRS 484B.633(2) motor vehicle driver
 
-Status: **partial**. Twelve exact cases and five controlled comparisons are selected for the paved elevated highway branch. No accepted original recording exists in the frozen evidence inventory. The 25 mph value in diagnostic fixtures is synthetic and is never treated as a statutory speed. Original Department records, structure stationing, signs, camera pixels and legal interpretation remain source gated.
+Status: **delivery prepared**. Twelve exact cases and five controlled comparisons are selected for the paved elevated highway branch. No accepted original recording exists in the frozen evidence inventory. The 25 mph value in diagnostic fixtures is synthetic and is never treated as a statutory speed. Original Department records, structure stationing, signs, camera pixels and legal interpretation remain source gated.
 
 ## Exact cases and coverage
 
@@ -20,11 +20,11 @@ Every ID has the assignment prefix `testing__C179819__NRS-484B-633-2__motor_vehi
 - 12 of 12 physical diagnostic triplets and ordered lifecycle checks pass. They are explicitly synthetic and make no original physical acceptance claim.
 - 12 of 12 independent delivery protocol positive and negative checks pass. Positive checks join motion, four camera frames and fully decoded videos from synthetic protocol sources. Negative checks reject those same sources as original delivery.
 - Five of five comparison protocols pass their current case seal/isolation tests and reject mutated engineering spacing.
-- Ten focused source, construction and analysis tests pass. `runtime.py preflight` passes on the pinned CPU environment.
+- Eleven focused source, construction and analysis tests pass, including 900 original-frame graph joins and owner teardown. `runtime.py preflight` passes on the pinned CPU environment.
 - Direct `execution_manifest.validate`, `package_compatibility.check_receipts`, `semantic_delivery.validate`, and all 12 `delivery_handoff.validate_case` calls pass against the current package.
 
 The exact proof commands and hashes are in `execution-manifest.json`, `cpu-comparison-proofs.json`, and `result.json`. Temporary diagnostic attempts are under `.runtime-work/c179819/`.
 
-## Remaining worker owned CPU work
+## Local physical review after CPU preparation
 
-The current `runner.py` requires a separately source hashed CARLA operator factory. `native_acquisition.py` captures original motion and videos but does not yet emit the full standard Core capture graph needed by saved processing. Implement and CPU test that Native path, bind any changed implementation into exact constructions, rerun affected proofs, then run `.venv-cpu/bin/python worker_check.py --assignment testing__C179819__NRS-484B-633-2__motor_vehicle_driver --complete --require-delivery-ready`. Keep `result.json` partial until that exact command passes.
+The built-in `bridge_operator.py` requires a reviewed source-hashed CARLA map dossier with both approach routes, sign asset transforms and camera poses. `native_acquisition.py` joins 900 original motion, graph and four-camera frames, closes the standard Core capture before actor teardown, and preserves the acquired actor identity. The strict assignment gate passed with `result.json` marked `delivery_prepared`. Original CARLA site realization, source review, physical crossing quality and legal interpretation remain local checks after CPU preparation.

@@ -55,8 +55,14 @@ def footprint_location(footprint, polygons):
 
 def measure(root, refs, *, expected_frames=900, diagnostic=False):
     packets = {key: read_bound(root, refs[key], kind) for key, kind in KINDS.items()}
-    if any(p.get('source_class') == 'synthetic_diagnostic' for p in packets.values()) and not diagnostic:
-        raise ValueError('synthetic diagnostic source cannot establish original measurement')
+    if diagnostic:
+        if any(packet.get('source_class')!='synthetic_diagnostic' for packet in packets.values()):
+            raise ValueError('diagnostic measurement needs only synthetic source packets')
+    else:
+        for key,packet in packets.items():
+            expected='original_native_capture' if key=='native' else 'original_independent_review'
+            if packet.get('source_class')!=expected:
+                raise ValueError('original source class unverified: '+key)
     site, designation, route = (packets[key] for key in ('site', 'designation', 'route'))
     identity, activity, purpose = (packets[key] for key in ('identity', 'activity', 'purpose'))
     circumstances, native = (packets[key] for key in ('circumstances', 'native'))

@@ -6,7 +6,7 @@ import unittest
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
-from bus_location import inside, footprint_location
+from bus_location import inside, footprint_location, measure
 import runner
 
 
@@ -34,6 +34,16 @@ class BundleTest(unittest.TestCase):
         import native_capture
         with self.assertRaises(ValueError):
             native_capture.requested_hold({},'not-reviewed')
+
+    def test_synthetic_packets_rejected_as_original(self):
+        sample=ROOT/'cases/outside_passenger/diagnostic-refs.json'
+        if not sample.is_file():
+            self.skipTest('source packet fixtures live in the worker package')
+        refs=json.loads(sample.read_text())
+        with self.assertRaisesRegex(ValueError,'original source class unverified'):
+            measure(ROOT,refs,diagnostic=False)
+        measured=measure(ROOT,refs,diagnostic=True)
+        self.assertEqual(measured['location_kind'],'outside')
 
 
 if __name__=='__main__':unittest.main()

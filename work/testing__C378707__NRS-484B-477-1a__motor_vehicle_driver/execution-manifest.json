@@ -1,0 +1,523 @@
+{
+  "assignment_id": "testing__C378707__NRS-484B-477-1a__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original synchronized Native camera frames with source hashes"
+        },
+        "local_ordinance_applicability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/local_ordinance_applicability.jsonl",
+          "method": "source-hashed ordinance text, jurisdiction and date review"
+        },
+        "original_alley_business_district": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_alley_business_district.jsonl",
+          "method": "source-hashed road, frontage and jurisdiction packet with original Native coordinates"
+        },
+        "original_driver_presence": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_driver_presence.jsonl",
+          "method": "original driver body and vehicle occupancy state history"
+        },
+        "original_goods_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_goods_activity.jsonl",
+          "method": "original goods body and loading contact state history"
+        },
+        "original_passenger_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_passenger_activity.jsonl",
+          "method": "original passenger body, door and contact state history"
+        },
+        "original_vehicle_halt_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_vehicle_halt_history.jsonl",
+          "method": "original 20 Hz velocity, brake, position and bounding body history"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original alley geometry, actor contact and vehicle halt timing may differ from the authored target; a source-tested position or timing fallback may be needed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "reverse the surveyed alley approach while retaining the exact loading target and actor schedules"
+          ],
+          "construction": "cases/passenger_active_stop/fallback1/construction.json",
+          "construction_sha256": "4a6376799c4d1f7edadc728d850e951b60d9f321542f33413c86752303666018",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__passenger_active_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-passenger_active_stop-fallback1-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "4a6376799c4d1f7edadc728d850e951b60d9f321542f33413c86752303666018",
+            "exit_code": 0,
+            "log": "cpu-offline-passenger_active_stop-fallback1.log",
+            "log_sha256": "5f11496eb38d62bde394d1bb1cc9cb6c3f24a869e15593687742c53151118028"
+          },
+          "trigger": {
+            "failure_condition": "primary approach cannot realize the original halt, actor contact or complete views",
+            "metric": "vehicle halt, actor contact and complete camera coverage",
+            "source": "original Native body and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__passenger_active_stop",
+      "construction": "cases/passenger_active_stop/construction.json",
+      "construction_sha256": "3029688161bcee74b93f4fbcf5b7d69a9ace413dd108349a5268dc5ff9169d17",
+      "kind": "delivery",
+      "measurement_contract": "measurement-passenger_active_stop.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original passenger, goods, driver and vehicle activity"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__passenger_active_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-passenger_active_stop-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "3029688161bcee74b93f4fbcf5b7d69a9ace413dd108349a5268dc5ff9169d17",
+        "exit_code": 0,
+        "log": "cpu-offline-passenger_active_stop.log",
+        "log_sha256": "db1bf76246832908c50aecc1de39411baf98bb684efb0c2f680bc1b7a1eb6f13"
+      }
+    },
+    {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original synchronized Native camera frames with source hashes"
+        },
+        "local_ordinance_applicability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/local_ordinance_applicability.jsonl",
+          "method": "source-hashed ordinance text, jurisdiction and date review"
+        },
+        "original_alley_business_district": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_alley_business_district.jsonl",
+          "method": "source-hashed road, frontage and jurisdiction packet with original Native coordinates"
+        },
+        "original_driver_presence": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_driver_presence.jsonl",
+          "method": "original driver body and vehicle occupancy state history"
+        },
+        "original_goods_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_goods_activity.jsonl",
+          "method": "original goods body and loading contact state history"
+        },
+        "original_passenger_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_passenger_activity.jsonl",
+          "method": "original passenger body, door and contact state history"
+        },
+        "original_vehicle_halt_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_vehicle_halt_history.jsonl",
+          "method": "original 20 Hz velocity, brake, position and bounding body history"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original alley geometry, actor contact and vehicle halt timing may differ from the authored target; a source-tested position or timing fallback may be needed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "reverse the surveyed alley approach while retaining the exact loading target and actor schedules"
+          ],
+          "construction": "cases/passenger_wait_stand/fallback1/construction.json",
+          "construction_sha256": "240afb8ac969cf7e0e658057f13a42df063cae466491c74d1a9d84f18df66e80",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__passenger_wait_stand --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-passenger_wait_stand-fallback1-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "240afb8ac969cf7e0e658057f13a42df063cae466491c74d1a9d84f18df66e80",
+            "exit_code": 0,
+            "log": "cpu-offline-passenger_wait_stand-fallback1.log",
+            "log_sha256": "2d9e241110fbe0dce59037859b0bf50f445e0c7d40ec59b3f95782fcacbcaca2"
+          },
+          "trigger": {
+            "failure_condition": "primary approach cannot realize the original halt, actor contact or complete views",
+            "metric": "vehicle halt, actor contact and complete camera coverage",
+            "source": "original Native body and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__passenger_wait_stand",
+      "construction": "cases/passenger_wait_stand/construction.json",
+      "construction_sha256": "955d66784dc77c0e1da7c8a28c7156d6f5a5a446db936ad23d36a2009fbc36f2",
+      "kind": "delivery",
+      "measurement_contract": "measurement-passenger_wait_stand.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original passenger, goods, driver and vehicle activity"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__passenger_wait_stand --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-passenger_wait_stand-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "955d66784dc77c0e1da7c8a28c7156d6f5a5a446db936ad23d36a2009fbc36f2",
+        "exit_code": 0,
+        "log": "cpu-offline-passenger_wait_stand.log",
+        "log_sha256": "c4d6096796a42043689bdc48a2af4a133a9c8629103257057354f777e7c7ee02"
+      }
+    },
+    {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original synchronized Native camera frames with source hashes"
+        },
+        "local_ordinance_applicability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/local_ordinance_applicability.jsonl",
+          "method": "source-hashed ordinance text, jurisdiction and date review"
+        },
+        "original_alley_business_district": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_alley_business_district.jsonl",
+          "method": "source-hashed road, frontage and jurisdiction packet with original Native coordinates"
+        },
+        "original_driver_presence": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_driver_presence.jsonl",
+          "method": "original driver body and vehicle occupancy state history"
+        },
+        "original_goods_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_goods_activity.jsonl",
+          "method": "original goods body and loading contact state history"
+        },
+        "original_passenger_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_passenger_activity.jsonl",
+          "method": "original passenger body, door and contact state history"
+        },
+        "original_vehicle_halt_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_vehicle_halt_history.jsonl",
+          "method": "original 20 Hz velocity, brake, position and bounding body history"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original alley geometry, actor contact and vehicle halt timing may differ from the authored target; a source-tested position or timing fallback may be needed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "reverse the surveyed alley approach while retaining the exact loading target and actor schedules"
+          ],
+          "construction": "cases/passenger_driver_exit_park/fallback1/construction.json",
+          "construction_sha256": "f946b67ad015608c2a11df3500aa28b36ea6f73e1160b3a6827463e9f7cdd372",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__passenger_driver_exit_park --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-passenger_driver_exit_park-fallback1-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "f946b67ad015608c2a11df3500aa28b36ea6f73e1160b3a6827463e9f7cdd372",
+            "exit_code": 0,
+            "log": "cpu-offline-passenger_driver_exit_park-fallback1.log",
+            "log_sha256": "591ed5ecfc3c015dc0ecff8e58b8aa97bad9e87b830b90224819d7a395de44ec"
+          },
+          "trigger": {
+            "failure_condition": "primary approach cannot realize the original halt, actor contact or complete views",
+            "metric": "vehicle halt, actor contact and complete camera coverage",
+            "source": "original Native body and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__passenger_driver_exit_park",
+      "construction": "cases/passenger_driver_exit_park/construction.json",
+      "construction_sha256": "6631963307e5fa3b424e223ed44d0154ce35f1dfe5b884cf01d84b68bf006494",
+      "kind": "delivery",
+      "measurement_contract": "measurement-passenger_driver_exit_park.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original passenger, goods, driver and vehicle activity"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__passenger_driver_exit_park --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-passenger_driver_exit_park-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "6631963307e5fa3b424e223ed44d0154ce35f1dfe5b884cf01d84b68bf006494",
+        "exit_code": 0,
+        "log": "cpu-offline-passenger_driver_exit_park.log",
+        "log_sha256": "8ebbfb79acdb06cb26136bb49b191990417c38f20d2bdbbabc400b0f32951dc9"
+      }
+    },
+    {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original synchronized Native camera frames with source hashes"
+        },
+        "local_ordinance_applicability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/local_ordinance_applicability.jsonl",
+          "method": "source-hashed ordinance text, jurisdiction and date review"
+        },
+        "original_alley_business_district": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_alley_business_district.jsonl",
+          "method": "source-hashed road, frontage and jurisdiction packet with original Native coordinates"
+        },
+        "original_driver_presence": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_driver_presence.jsonl",
+          "method": "original driver body and vehicle occupancy state history"
+        },
+        "original_goods_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_goods_activity.jsonl",
+          "method": "original goods body and loading contact state history"
+        },
+        "original_passenger_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_passenger_activity.jsonl",
+          "method": "original passenger body, door and contact state history"
+        },
+        "original_vehicle_halt_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_vehicle_halt_history.jsonl",
+          "method": "original 20 Hz velocity, brake, position and bounding body history"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original alley geometry, actor contact and vehicle halt timing may differ from the authored target; a source-tested position or timing fallback may be needed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "reverse the surveyed alley approach while retaining the exact loading target and actor schedules"
+          ],
+          "construction": "cases/goods_active_load/fallback1/construction.json",
+          "construction_sha256": "81bd7227c9e1d137c615e0371540b67e84047a697accaefee98b3ad7812f3930",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__goods_active_load --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-goods_active_load-fallback1-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "81bd7227c9e1d137c615e0371540b67e84047a697accaefee98b3ad7812f3930",
+            "exit_code": 0,
+            "log": "cpu-offline-goods_active_load-fallback1.log",
+            "log_sha256": "febe33ec3665c88a1a06e439af229ba597253a2d991e57b7335f1ca88ba37969"
+          },
+          "trigger": {
+            "failure_condition": "primary approach cannot realize the original halt, actor contact or complete views",
+            "metric": "vehicle halt, actor contact and complete camera coverage",
+            "source": "original Native body and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__goods_active_load",
+      "construction": "cases/goods_active_load/construction.json",
+      "construction_sha256": "3c2817de57e7fed8df79bbabbb3b9575237ade7e2eb759808bf77045a245730b",
+      "kind": "delivery",
+      "measurement_contract": "measurement-goods_active_load.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original passenger, goods, driver and vehicle activity"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__goods_active_load --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-goods_active_load-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "3c2817de57e7fed8df79bbabbb3b9575237ade7e2eb759808bf77045a245730b",
+        "exit_code": 0,
+        "log": "cpu-offline-goods_active_load.log",
+        "log_sha256": "5915ae14ddf64c37f795592bc95a450b869713574ed09cf67174f9bff0d4e68b"
+      }
+    },
+    {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original synchronized Native camera frames with source hashes"
+        },
+        "local_ordinance_applicability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/local_ordinance_applicability.jsonl",
+          "method": "source-hashed ordinance text, jurisdiction and date review"
+        },
+        "original_alley_business_district": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_alley_business_district.jsonl",
+          "method": "source-hashed road, frontage and jurisdiction packet with original Native coordinates"
+        },
+        "original_driver_presence": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_driver_presence.jsonl",
+          "method": "original driver body and vehicle occupancy state history"
+        },
+        "original_goods_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_goods_activity.jsonl",
+          "method": "original goods body and loading contact state history"
+        },
+        "original_passenger_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_passenger_activity.jsonl",
+          "method": "original passenger body, door and contact state history"
+        },
+        "original_vehicle_halt_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_vehicle_halt_history.jsonl",
+          "method": "original 20 Hz velocity, brake, position and bounding body history"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original alley geometry, actor contact and vehicle halt timing may differ from the authored target; a source-tested position or timing fallback may be needed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "reverse the surveyed alley approach while retaining the exact loading target and actor schedules"
+          ],
+          "construction": "cases/goods_wait_interrupted/fallback1/construction.json",
+          "construction_sha256": "e0ac2f7d8f7c41f135ae5e654f38d8c4621e9b9bc5bfd31d82c984726d4e6d75",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__goods_wait_interrupted --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-goods_wait_interrupted-fallback1-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "e0ac2f7d8f7c41f135ae5e654f38d8c4621e9b9bc5bfd31d82c984726d4e6d75",
+            "exit_code": 0,
+            "log": "cpu-offline-goods_wait_interrupted-fallback1.log",
+            "log_sha256": "644044c70ed991feab1fa415bbbc3bb48883e10dc7e0877066e5494687f97481"
+          },
+          "trigger": {
+            "failure_condition": "primary approach cannot realize the original halt, actor contact or complete views",
+            "metric": "vehicle halt, actor contact and complete camera coverage",
+            "source": "original Native body and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__goods_wait_interrupted",
+      "construction": "cases/goods_wait_interrupted/construction.json",
+      "construction_sha256": "f98b5ecb8c1813a89f627f436348f2f69d96370afeb3d422229d04a6fd1deea6",
+      "kind": "delivery",
+      "measurement_contract": "measurement-goods_wait_interrupted.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original passenger, goods, driver and vehicle activity"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__goods_wait_interrupted --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-goods_wait_interrupted-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "f98b5ecb8c1813a89f627f436348f2f69d96370afeb3d422229d04a6fd1deea6",
+        "exit_code": 0,
+        "log": "cpu-offline-goods_wait_interrupted.log",
+        "log_sha256": "99691dddb18442d47a06d283110fafd696a5efb6dc7cf7f56ff761807af74d49"
+      }
+    },
+    {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original synchronized Native camera frames with source hashes"
+        },
+        "local_ordinance_applicability": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/local_ordinance_applicability.jsonl",
+          "method": "source-hashed ordinance text, jurisdiction and date review"
+        },
+        "original_alley_business_district": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_alley_business_district.jsonl",
+          "method": "source-hashed road, frontage and jurisdiction packet with original Native coordinates"
+        },
+        "original_driver_presence": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_driver_presence.jsonl",
+          "method": "original driver body and vehicle occupancy state history"
+        },
+        "original_goods_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_goods_activity.jsonl",
+          "method": "original goods body and loading contact state history"
+        },
+        "original_passenger_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_passenger_activity.jsonl",
+          "method": "original passenger body, door and contact state history"
+        },
+        "original_vehicle_halt_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/original_vehicle_halt_history.jsonl",
+          "method": "original 20 Hz velocity, brake, position and bounding body history"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original alley geometry, actor contact and vehicle halt timing may differ from the authored target; a source-tested position or timing fallback may be needed.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "reverse the surveyed alley approach while retaining the exact loading target and actor schedules"
+          ],
+          "construction": "cases/ordinance_passenger_authorized/fallback1/construction.json",
+          "construction_sha256": "b2aa9c85ef8e6c5bac798e9fbd6a0bb35a736f911a70fd1465137564d0612f87",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__ordinance_passenger_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-ordinance_passenger_authorized-fallback1-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "b2aa9c85ef8e6c5bac798e9fbd6a0bb35a736f911a70fd1465137564d0612f87",
+            "exit_code": 0,
+            "log": "cpu-offline-ordinance_passenger_authorized-fallback1.log",
+            "log_sha256": "6c5d62cb2643ca594fbbde11c01c99b244b50d6e7554a340d6961c911083dbdb"
+          },
+          "trigger": {
+            "failure_condition": "primary approach cannot realize the original halt, actor contact or complete views",
+            "metric": "vehicle halt, actor contact and complete camera coverage",
+            "source": "original Native body and four-camera history"
+          }
+        }
+      ],
+      "case_id": "testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__ordinance_passenger_authorized",
+      "construction": "cases/ordinance_passenger_authorized/construction.json",
+      "construction_sha256": "1874a597c8759d415f109df0f4b4f053cebe8ac8934f70735b474df1fb0d0eeb",
+      "kind": "delivery",
+      "measurement_contract": "measurement-ordinance_passenger_authorized.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "source-sealed original passenger, goods, driver and vehicle activity"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C378707__NRS-484B-477-1a__motor_vehicle_driver/execution-manifest.json --case testing__C378707__NRS-484B-477-1a__motor_vehicle_driver__ordinance_passenger_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c378707-root/offline-ordinance_passenger_authorized-v5 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "construction_sha256": "1874a597c8759d415f109df0f4b4f053cebe8ac8934f70735b474df1fb0d0eeb",
+        "exit_code": 0,
+        "log": "cpu-offline-ordinance_passenger_authorized.log",
+        "log_sha256": "39326c5c684ba90a6f0c775e99cbd439a333e5c7174b95844890d26f8fd51fc3"
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
+}

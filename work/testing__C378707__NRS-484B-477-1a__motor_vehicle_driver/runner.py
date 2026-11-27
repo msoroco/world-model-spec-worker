@@ -10,6 +10,7 @@ from pathlib import Path
 
 from alley_construction import ASSIGNMENT, VARIANTS
 from native_acquisition import capture
+from finalize_native import finalize
 
 
 def check(root: Path):
@@ -93,17 +94,21 @@ def main():
         raise ValueError("selected approach direction differs from bound construction")
     if case_id != config["selected_case_id"] or not case_id.startswith(ASSIGNMENT + "__") or case_id.removeprefix(ASSIGNMENT + "__") not in VARIANTS:
         raise ValueError("unknown exact business-alley case")
-    if not all((args.host, args.port, args.output_dir, args.site_packet,
-                args.site_sha256, args.operator_module, args.operator_sha256)):
+    site_packet = args.site_packet or (Path(os.environ["SCENARIO_BUSINESS_ALLEY_SITE_PACKET"]) if os.environ.get("SCENARIO_BUSINESS_ALLEY_SITE_PACKET") else None)
+    site_sha = args.site_sha256 or os.environ.get("SCENARIO_BUSINESS_ALLEY_SITE_SHA256")
+    operator_module = args.operator_module or (Path(os.environ["SCENARIO_BUSINESS_ALLEY_OPERATOR_MODULE"]) if os.environ.get("SCENARIO_BUSINESS_ALLEY_OPERATOR_MODULE") else None)
+    operator_sha = args.operator_sha256 or os.environ.get("SCENARIO_BUSINESS_ALLEY_OPERATOR_SHA256")
+    if not all((args.host, args.port, args.output_dir, site_packet,
+                site_sha, operator_module, operator_sha)):
         raise ValueError("Native host, output, reviewed site and operator source required")
     if ".runtime-work" not in args.output_dir.resolve().parts:
         raise ValueError("original output must be under .runtime-work")
     if not os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT"):
         raise ValueError("SCENARIO_PIPELINE_OUTPUT_ROOT must be set under .runtime-work")
-    site = json.loads(_checked_file(args.site_packet, args.site_sha256,
+    site = json.loads(_checked_file(site_packet, site_sha,
                                     "reviewed business-alley site"))
-    _verify_site_sources(site, args.site_packet)
-    module = _operator(args.operator_module, args.operator_sha256)
+    _verify_site_sources(site, site_packet)
+    module = _operator(operator_module, operator_sha)
     import carla
     client = carla.Client(args.host, args.port)
     client.set_timeout(30)
@@ -113,12 +118,23 @@ def main():
     from pipeline_capture import PipelineCapture
     args.output_dir.mkdir(parents=True, exist_ok=True)
     original = args.output_dir / "original-attempt"
-    operator.pipeline_capture = PipelineCapture(client, operator.ego, args.output_dir,
-                                                case_id)
+    def capture_graph(native_frame, native_time):
+        if getattr(operator, "pipeline_capture", None) is None:
+            if getattr(operator, "ego", None) is None:
+                raise ValueError("original ego actor was not spawned")
+            operator.pipeline_capture = PipelineCapture(client, operator.ego,
+                                                        args.output_dir, case_id)
+        operator.pipeline_capture.capture(native_frame, native_time)
     try:
-        return capture(operator, case_id, original,
-                       direction=direction,
-                       after_tick=operator.pipeline_capture.capture)
+        capture(operator, case_id, original, direction=direction,
+                after_tick=capture_graph)
+        return finalize(args.output_dir, case_id, operator)
+    except BaseException as error:
+        (args.output_dir / "native-run-status.json").write_text(json.dumps({
+            "case_id": case_id, "errors": [type(error).__name__ + ": " + str(error)],
+            "capture_complete": False, "physical_acceptance_claimed": False},
+            indent=2, sort_keys=True) + "\n")
+        raise
     finally:
         if not getattr(operator, "capture_cleanup_complete", False):
             operator.cleanup()

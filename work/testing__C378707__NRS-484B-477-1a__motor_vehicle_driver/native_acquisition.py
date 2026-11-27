@@ -124,6 +124,9 @@ def capture(operator, case_id, destination, *, direction=1, after_tick=None):
         for archive in archives.values():
             archive.close()
         try:
+            graph = getattr(operator, "pipeline_capture", None)
+            if graph is not None:
+                graph.close(confirmed=len(frames) == FRAME_COUNT)
             if started:
                 operator.brake()
         finally:

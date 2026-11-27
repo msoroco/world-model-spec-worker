@@ -1,4 +1,4 @@
-"""Run independent original bus duration audit on postprocessing source records."""
+"""Run independent original A2 bus loading-stop audit on postprocessing records."""
 import argparse
 import json
 from pathlib import Path
@@ -27,7 +27,7 @@ def main():
         raise ValueError('retain prior original audit')
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
-    print('original bus duration audit passed: '+args.case)
+    print('original A2 bus loading-stop audit passed: '+args.case)
 
 
 if __name__=='__main__':

@@ -1,11 +1,11 @@
-"""Bind exact CPU proof outputs to source-hashed six-case delivery manifest."""
+"""Bind exact A2 CPU proof outputs to source-hashed delivery manifest."""
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SCRATCH = REPO / '.runtime-work/c386411-bus'
+SCRATCH = REPO / '.runtime-work/c378132-a2'
 
 
 def sha(path):
@@ -31,7 +31,7 @@ def bind():
         case_id = entry['case_id']
         suffix = case_id.split('__')[-1]
         folder = ROOT / 'cases' / suffix
-        compat = SCRATCH / ('compat-' + suffix + ('-v3' if suffix=='stand_inside' else '-v1'))
+        compat = SCRATCH / ('compat-' + suffix + '-v3')
         proof = json.loads((compat / 'compatibility.json').read_text())
         if proof['construction_sha256'] != entry['construction_sha256'] or not proof['passed']:
             raise ValueError('changed exact compatibility proof: ' + suffix)
@@ -49,18 +49,18 @@ def bind():
                                   'sha256': sha(receipt), 'log': str(analysis.relative_to(ROOT))}
         entry['negative'] = {'log': str(negative.relative_to(ROOT))}
         log = folder / 'offline.log'
-        if not log.is_file():
-            raise ValueError('missing fresh offline log')
+        cleaned(SCRATCH / ('offline-' + suffix + '-v3') / 'offline.log', log)
         offline_command = ('PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest '
-            + str(draft.relative_to(REPO)) + ' --case ' + case_id + ' --output .runtime-work/c386411-bus/offline-'
-            + suffix + ('-v3' if suffix=='stand_inside' else '-v1') + ' --python "$PWD/.venv-cpu/bin/python"')
+            + str(draft.relative_to(REPO)) + ' --case ' + case_id + ' --output .runtime-work/c378132-a2/offline-'
+            + suffix + '-v3 --python "$PWD/.venv-cpu/bin/python"')
         entry['offline'] = {'command': offline_command, 'exit_code': 0,
                             'construction_sha256': entry['construction_sha256'],
                             'log': str(log.relative_to(ROOT)), 'log_sha256': sha(log)}
         entry['acquisition'] = {
-            'bus_stopped_interval': {'entrypoint': 'bus_location.py', 'method': 'source-hashed independent start/end activity review joined to 900 Native frames', 'evidence': 'activity.json, native.json'},
-            'designated_stop_and_alternatives': {'entrypoint': 'bus_location.py', 'method': 'actual signed City Traffic Engineer stop and assigned-route alternatives', 'evidence': 'designation.json, site.json'},
-            'body_inside_stop': {'entrypoint': 'native_capture.py', 'method': 'Native bus footprint against source-reviewed stop polygon each frame', 'evidence': 'native.json, site.json'},
+            'original_bus_stop_history': {'entrypoint': 'bus_location.py', 'method': 'source-hashed independent stopped-interval review joined to 900 Native frames', 'evidence': 'activity.json, native.json'},
+            'designated_location_and_route': {'entrypoint': 'bus_location.py', 'method': 'actual City Traffic Engineer five-place designation and assigned route', 'evidence': 'designation.json, site.json, route.json'},
+            'passenger_baggage_purpose': {'entrypoint': 'assemble_reviewed_activity.py', 'method': 'independent passenger, baggage or cargo-only purpose review', 'evidence': 'purpose.json, activity.json'},
+            'exception_and_bus_class': {'entrypoint': 'assemble_reviewed_activity.py', 'method': 'independent tour-bus classification and emergency circumstance review', 'evidence': 'identity.json, circumstances.json'},
             'four_camera_frame_identity': {'entrypoint': 'native_capture.py', 'method': 'same Native world tick for all four RGB cameras at 20 Hz', 'evidence': 'native.json, four Matroska streams, video_frames.jsonl'}}
         acceptance = {
             'case_id': case_id, 'sets': ['full-test'],
@@ -70,7 +70,7 @@ def bind():
             'negative_command': 'PYTHONDWRITEBYTECODE=1 .venv-cpu/bin/python work/' + ROOT.name + '/independent/prove_delivery_audit.py ' + case_id + ' --negative',
             'test_exit_code': 0, 'test_log': str((folder/'delivery-positive.log').relative_to(ROOT)),
             'test_log_sha256': sha(folder/'delivery-positive.log'),
-            'negative_exit_code': 1, 'negative_expected_error': 'other permitted bus locations or signed stop unreviewed',
+            'negative_exit_code': 1, 'negative_expected_error': 'five permitted locations or assigned route unreviewed',
             'negative_log': str((folder/'delivery-negative.log').relative_to(ROOT)),
             'negative_log_sha256': sha(folder/'delivery-negative.log')}
         entry['delivery_acceptance'] = acceptance
@@ -79,7 +79,7 @@ def bind():
                          + ' --attempt "$ATTEMPT" --output "$SAVED_OUTPUT" --library "$LIBRARY" --validator "$VALIDATOR" --owner-release-receipt "$OWNER_RELEASE_RECEIPT"')
         entry['post_capture'] = {'recorded_only': True, 'command': saved_command, 'feedback_command': saved_command}
     write(ROOT/'execution-manifest.json', manifest)
-    print('bound four exact compatibility/offline/physical/delivery proof contracts')
+    print(f"bound {len(manifest['cases'])} exact A2 compatibility/offline/physical/delivery proof contracts")
 
 
 if __name__ == '__main__':

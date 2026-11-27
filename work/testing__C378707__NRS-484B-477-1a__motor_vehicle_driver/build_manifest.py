@@ -20,6 +20,7 @@ def build():
         variant = row["variant"]
         primary = ROOT / "cases" / variant / "construction.json"
         fallback = ROOT / "cases" / variant / "fallback1" / "construction.json"
+        description = json.loads(primary.read_text())["recording_description"]
         entries.append({
             "case_id": row["case_id"], "kind": "delivery",
             "construction": str(primary.relative_to(ROOT)),
@@ -33,8 +34,15 @@ def build():
                             "metric": "vehicle halt, actor contact and complete camera coverage",
                             "failure_condition": "primary approach cannot realize the original halt, actor contact or complete views"},
             }],
-            "measurement_procedure": {"entrypoint": "alley_activity.py",
+            "measurement_contract": "measurement-" + variant + ".json",
+            "measurement_procedure": {"entrypoint": "analysis.py",
                                       "method": "source-sealed original passenger, goods, driver and vehicle activity"},
+            "native_handoff": {"python_env_var": "CARLA_PYTHON", "host_env_var": "CARLA_HOST",
+                               "port_env_var": "CARLA_PORT"},
+            "acquisition": {channel["name"]: {"entrypoint": "analysis.py",
+                                              "method": channel["method"],
+                                              "evidence": "channels/" + channel["name"] + ".jsonl"}
+                            for channel in description["channels"]},
         })
     runtime_source = Path(__file__).resolve().parents[2] / "runtime/SOURCE-MANIFEST.json"
     manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,

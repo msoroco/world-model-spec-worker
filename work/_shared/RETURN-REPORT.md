@@ -2,6 +2,11 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 12:51 UTC: two packages published; business-alley exact offline proofs
+
+- `testing__C386411__LVMC-11-60-030-A1__bus_driver` and `testing__C179819__NRS-484B-633-2__motor_vehicle_driver` each passed the owner's exact scoped strict gate and the lead's independent exact scoped strict gate. Their syntax-checked proposals published **16 cases and 8 comparisons**. The shared queue is **225 ready assignments, 1,554 cases, 1,078 comparisons**, 4,230,554 bytes, SHA256 `23cf62a40615c209fbd04550535f4629a83d5fd719c9a28bb018f8028fb3c68b`. No original physical or legal acceptance is claimed.
+- Root `testing__C378707__NRS-484B-477-1a__motor_vehicle_driver` remains **partial**. Six primary and six risk-justified fallback constructions pass 12/12 actual `runtime.py offline` checks, with logs and construction SHA256 bound in the manifest. Its 16 focused tests and six exact measurement contract validations pass. The saved-original analysis and Native lifecycle were repaired; pinned compatibility, saved-only, physical and independent delivery proofs remain worker-owned CPU work. Owners continue C378132 and C157964, with C261489 newly assigned. C158190 and C178244 retain truthful partial status after source-bound proof work because their frozen selected branches conflict with their fixed cells; no readiness was claimed. No Git command was run.
+
 ## 2026-11-27 12:36 UTC: C378707 canonical semantic stages pass
 
 - Root C378707/NRS-484B-477-1a remains **partial**. Its source-grounded relevance, exact-law template, four judgment observables, frozen-cell binding and six selected canonical cases pass pinned stage validation. The goods exception and local ordinance remain separate, with no invented legal cutoff. The source-sealed Native activity, four-camera capture and five comparison audits passed 15 focused CPU tests; exact offline, compatibility, saved-only, physical and independent delivery proofs remain. No physical or legal acceptance is claimed. No Git command was run.

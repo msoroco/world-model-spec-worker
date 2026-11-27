@@ -1,11 +1,11 @@
-"""Bind saved-only CPU rerun receipts for all six diagnostic bus attempts."""
+"""Bind saved-only CPU rerun receipts for all ten diagnostic A2 bus attempts."""
 import hashlib
 import json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parents[1]
-SCRATCH=REPO/'.runtime-work/c386411-bus'
+SCRATCH=REPO/'.runtime-work/c378132-a2'
 
 
 def sha(path):
@@ -18,14 +18,14 @@ def main():
     for entry in manifest['cases']:
         suffix=entry['case_id'].split('__')[-1]
         folder=ROOT/'cases'/suffix
-        source=SCRATCH/('saved-'+suffix+'-v1')/'v0001'/'processing.json'
+        source=SCRATCH/('saved-'+suffix+'-v2')/'v0001'/'processing.json'
         proof=json.loads(source.read_text())
         if (proof.get('case_id')!=entry['case_id'] or proof.get('recorded_only') is not True
                 or proof.get('originals_preserved') is not True or proof.get('passed') is not True
                 or proof.get('missing_evidence') is not False
                 or proof['analysis_revision']['construction_sha256']!=entry['construction_sha256']):
             raise ValueError('incomplete saved-only source proof: '+suffix)
-        log_source=SCRATCH/('saved-'+suffix+'-v1-cli.log')
+        log_source=SCRATCH/('saved-'+suffix+'-v2-cli.log')
         log=folder/'saved-processing.log'
         log.write_text(log_source.read_text().rstrip()+'\n')
         receipt=folder/'saved-processing-receipt.json'
@@ -43,7 +43,7 @@ def main():
                                       'diagnostic_receipt':str(receipt.relative_to(ROOT)),
                                       'diagnostic_receipt_sha256':sha(receipt)})
     path.write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
-    print('bound four saved-only original-preservation and decode receipts')
+    print(f"bound {len(manifest['cases'])} A2 saved-only original-preservation and decode receipts")
 
 
 if __name__=='__main__':main()
