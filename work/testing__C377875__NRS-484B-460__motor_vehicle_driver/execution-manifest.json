@@ -5,7 +5,7 @@
     {
       "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_indicated",
       "construction": "construction.json",
-      "construction_sha256": "97eca8a9b1adc58e156a43a46e787fdfcb0c2c732ca82f9a605e8a3165bfb56d",
+      "construction_sha256": "8361dd15bdb84a6c3e7c86a32c8e086661116497bc5ad0f713eaa360476da9eb",
       "candidate_risk": {
         "status": "physical",
         "reason": "Approach and braking can overshoot the governed angle-parking space."
@@ -14,7 +14,7 @@
         {
           "id": "fallback1",
           "construction": "fallback1-construction.json",
-          "construction_sha256": "c939090a7b096b64c5cbfabc6826f762196ce6ef72be1628eb53b37e1c081b24",
+          "construction_sha256": "1c4d08f51e28ad009a34ec2e41ce0cd843e8fed82fb54f5c400dc4ef8589ab2c",
           "trigger": {
             "source": "original angle-history.jsonl and reference_corner.mkv",
             "metric": "target-space overshoot or no stationary body-angle interval",
@@ -22,14 +22,120 @@
           },
           "changed_knobs": [
             "engineering_brake_gain: 0.70 to 0.85"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_indicated --candidate fallback1 --output .runtime-work/c377875-owner/offline-stop_indicated-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "1c4d08f51e28ad009a34ec2e41ce0cd843e8fed82fb54f5c400dc4ef8589ab2c",
+            "log": "cpu-offline-stop_indicated-fallback1.log",
+            "log_sha256": "852f982a7c871c147c0465c947650f09e24c0562458a4d238c74ee3264a2c1ef"
+          },
+          "compatibility": {
+            "receipt": "compat-stop_indicated-fallback1.json",
+            "sha256": "85f868b1dd5d3bd792da617ce70e3e8ab4d9efb172c394b135ad7cf98d6def27",
+            "log": "compat-analysis-stop_indicated-fallback1.log",
+            "negative_log": "compat-negative-stop_indicated-fallback1.log"
+          }
         }
-      ]
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__NRS-484B-460__motor_vehicle_driver/diagnostic-stop_indicated-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_indicated --candidate primary --output .runtime-work/c377875-owner/offline-stop_indicated-primary",
+        "exit_code": 0,
+        "construction_sha256": "8361dd15bdb84a6c3e7c86a32c8e086661116497bc5ad0f713eaa360476da9eb",
+        "log": "cpu-offline-stop_indicated-primary.log",
+        "log_sha256": "0bcce1f747a8dc94b21283bccffcc50a7b6f92198df27700aecee62ec5dd6d52"
+      },
+      "compatibility": {
+        "receipt": "compat-stop_indicated-primary.json",
+        "sha256": "0268394bdfdb01f1090a0db7df20e472144297c5f97d3063350c8eba2d87435e",
+        "log": "compat-analysis-stop_indicated-primary.log",
+        "negative_log": "compat-negative-stop_indicated-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-stop_indicated-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_indicated --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-stop_indicated.log",
+        "test_log_sha256": "1d6dcb6c24bdc2be688613d379672e91990f600cda3f1995373fac4e341d4398"
+      },
+      "physical_preparation": {
+        "receipt": "physical-stop_indicated-receipt.json",
+        "sha256": "cbcdfd15013f84273d4cdc2075417d858b2c1e7ea11aab48c26608ee12953301"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_indicated",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-stop_indicated --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_indicated --diagnostic --output .runtime-work/c377875-owner/delivery-stop_indicated-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-stop_indicated --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_indicated --output .runtime-work/c377875-owner/delivery-stop_indicated-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7caa407c20af4d3899fb95b8ed449d126fb0e110b58f22be00494ff3c439e999",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-stop_indicated-positive.log",
+        "test_log_sha256": "edfa81ed159e09fe815068f46f4e8429d94314f304c0ce9162f554d6319787b9",
+        "negative_log": "cpu-delivery-stop_indicated-negative.log",
+        "negative_log_sha256": "3e969512595de259549af78b9ffd5ff7a57248d305fbeaf0886b7b0a34c9a509"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_body_angle_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_body_angle_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "curb_edge_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/curb_edge_geometry.jsonl",
+          "method": "reviewed original roadway curb edge joined to Native map"
+        },
+        "official_device_indication": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/official_device_indication.jsonl",
+          "method": "reviewed original official device content and Native prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original driver purpose, control and halt history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      }
     },
     {
       "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_offset",
       "construction": "cases/stop_offset/construction.json",
-      "construction_sha256": "7e1af93760bba05c0cc96658da29640c6ca0db0424b60e4a6f741b9d67f1372d",
+      "construction_sha256": "6e89c4476f98b5dd3744fce4f90a54f9e7311b5d2125a3c797ede18c28713107",
       "candidate_risk": {
         "status": "physical",
         "reason": "Approach and braking can overshoot the governed angle-parking space."
@@ -38,7 +144,7 @@
         {
           "id": "fallback1",
           "construction": "cases/stop_offset/fallback1-construction.json",
-          "construction_sha256": "3cb67b83aa41677fe143554e123e4b8e78054a09267d084a55ef3522cce6b900",
+          "construction_sha256": "e189dbed6a15cc4e324eb348cafaf8b860686c06539b7b4523f78edfa3bed951",
           "trigger": {
             "source": "original angle-history.jsonl and reference_corner.mkv",
             "metric": "target-space overshoot or no stationary body-angle interval",
@@ -46,14 +152,120 @@
           },
           "changed_knobs": [
             "engineering_brake_gain: 0.70 to 0.85"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_offset --candidate fallback1 --output .runtime-work/c377875-owner/offline-stop_offset-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "e189dbed6a15cc4e324eb348cafaf8b860686c06539b7b4523f78edfa3bed951",
+            "log": "cpu-offline-stop_offset-fallback1.log",
+            "log_sha256": "c7ab72e1c62021878b24c9b2ae5242a4b0b8e4fbfa76277ac36635d59e52eddf"
+          },
+          "compatibility": {
+            "receipt": "compat-stop_offset-fallback1.json",
+            "sha256": "04049d9128f95f6f294e1a2bf863cb3d78484c898c19389869595e87a59560d6",
+            "log": "compat-analysis-stop_offset-fallback1.log",
+            "negative_log": "compat-negative-stop_offset-fallback1.log"
+          }
         }
-      ]
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__NRS-484B-460__motor_vehicle_driver/diagnostic-stop_offset-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_offset --candidate primary --output .runtime-work/c377875-owner/offline-stop_offset-primary",
+        "exit_code": 0,
+        "construction_sha256": "6e89c4476f98b5dd3744fce4f90a54f9e7311b5d2125a3c797ede18c28713107",
+        "log": "cpu-offline-stop_offset-primary.log",
+        "log_sha256": "a10d817f2d1b8e2972071b13c820ec188c0a8ae5f55114d3fddef1a05573df52"
+      },
+      "compatibility": {
+        "receipt": "compat-stop_offset-primary.json",
+        "sha256": "7bd258bee32b9e0d939d4138a96a1372514aa8f6c67aabb752f3b46270e23e71",
+        "log": "compat-analysis-stop_offset-primary.log",
+        "negative_log": "compat-negative-stop_offset-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-stop_offset-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_offset --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-stop_offset.log",
+        "test_log_sha256": "1897e5503bdead0f66dd2df05fdc5cba2c3adba78b6a6082ea44ab01e39c3579"
+      },
+      "physical_preparation": {
+        "receipt": "physical-stop_offset-receipt.json",
+        "sha256": "a0d3cde27dd51c5f340c7b2195e6c6d4915c5a6e2b89c26e187f02cb707f2412"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_offset",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-stop_offset --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_offset --diagnostic --output .runtime-work/c377875-owner/delivery-stop_offset-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-stop_offset --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__stop_offset --output .runtime-work/c377875-owner/delivery-stop_offset-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7caa407c20af4d3899fb95b8ed449d126fb0e110b58f22be00494ff3c439e999",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-stop_offset-positive.log",
+        "test_log_sha256": "682fe1071f3375da4adf29c888fbbccecc2f193e946540917ce79f56eb799896",
+        "negative_log": "cpu-delivery-stop_offset-negative.log",
+        "negative_log_sha256": "3e969512595de259549af78b9ffd5ff7a57248d305fbeaf0886b7b0a34c9a509"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_body_angle_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_body_angle_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "curb_edge_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/curb_edge_geometry.jsonl",
+          "method": "reviewed original roadway curb edge joined to Native map"
+        },
+        "official_device_indication": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/official_device_indication.jsonl",
+          "method": "reviewed original official device content and Native prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original driver purpose, control and halt history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      }
     },
     {
       "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_indicated",
       "construction": "cases/stand_indicated/construction.json",
-      "construction_sha256": "067496d782df623d0f174c5891d1bc11ba6e465a1cbb5555efd5c2ef480c77a5",
+      "construction_sha256": "0af9779ee5f4caa57398d54e18c57788c1b6bfa700d1864f559127bf3fbe144c",
       "candidate_risk": {
         "status": "physical",
         "reason": "Approach and braking can overshoot the governed angle-parking space."
@@ -62,7 +274,7 @@
         {
           "id": "fallback1",
           "construction": "cases/stand_indicated/fallback1-construction.json",
-          "construction_sha256": "29b7cc820d6d251a075003d896063eea8444ea3df2be9eeefe728ea053f85f50",
+          "construction_sha256": "82dadbd0b99182e8f98609fee9718ae888b75e8ebd178ee54be28fed520f2b2a",
           "trigger": {
             "source": "original angle-history.jsonl and reference_corner.mkv",
             "metric": "target-space overshoot or no stationary body-angle interval",
@@ -70,14 +282,120 @@
           },
           "changed_knobs": [
             "engineering_brake_gain: 0.70 to 0.85"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_indicated --candidate fallback1 --output .runtime-work/c377875-owner/offline-stand_indicated-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "82dadbd0b99182e8f98609fee9718ae888b75e8ebd178ee54be28fed520f2b2a",
+            "log": "cpu-offline-stand_indicated-fallback1.log",
+            "log_sha256": "040a394f8f6e47a39436cab7b295250c98a05bfaad9dffe99e566d39458bbdb2"
+          },
+          "compatibility": {
+            "receipt": "compat-stand_indicated-fallback1.json",
+            "sha256": "0cfd0aca4c07f0c0fb139f6da9664a38a08a6ec0c928e3710c606d3b979f7f52",
+            "log": "compat-analysis-stand_indicated-fallback1.log",
+            "negative_log": "compat-negative-stand_indicated-fallback1.log"
+          }
         }
-      ]
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__NRS-484B-460__motor_vehicle_driver/diagnostic-stand_indicated-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_indicated --candidate primary --output .runtime-work/c377875-owner/offline-stand_indicated-primary",
+        "exit_code": 0,
+        "construction_sha256": "0af9779ee5f4caa57398d54e18c57788c1b6bfa700d1864f559127bf3fbe144c",
+        "log": "cpu-offline-stand_indicated-primary.log",
+        "log_sha256": "eeedfeff06e6364ad4f8eaf16dbee0877872f1dc8465c10f8aa3572279fc7ba2"
+      },
+      "compatibility": {
+        "receipt": "compat-stand_indicated-primary.json",
+        "sha256": "ec80bb54e025a6b12aca035d9c4b5b034b1d4b6ac8672e4f891f318cc76b3bc1",
+        "log": "compat-analysis-stand_indicated-primary.log",
+        "negative_log": "compat-negative-stand_indicated-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-stand_indicated-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_indicated --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-stand_indicated.log",
+        "test_log_sha256": "5d8226db1481bf9f3ca55d57567410b43f23ba19f9b8d7cf054dd24d645f9b7c"
+      },
+      "physical_preparation": {
+        "receipt": "physical-stand_indicated-receipt.json",
+        "sha256": "ca2ead3c2eeedbcd40702303e9a0540835e018118f29c8a24569cbf0065b0881"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_indicated",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-stand_indicated --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_indicated --diagnostic --output .runtime-work/c377875-owner/delivery-stand_indicated-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-stand_indicated --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_indicated --output .runtime-work/c377875-owner/delivery-stand_indicated-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7caa407c20af4d3899fb95b8ed449d126fb0e110b58f22be00494ff3c439e999",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-stand_indicated-positive.log",
+        "test_log_sha256": "e7bf4b67f924a4de3f38a89285859fde7a2df1ac03ac41bd5ba90934866310e1",
+        "negative_log": "cpu-delivery-stand_indicated-negative.log",
+        "negative_log_sha256": "3e969512595de259549af78b9ffd5ff7a57248d305fbeaf0886b7b0a34c9a509"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_body_angle_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_body_angle_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "curb_edge_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/curb_edge_geometry.jsonl",
+          "method": "reviewed original roadway curb edge joined to Native map"
+        },
+        "official_device_indication": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/official_device_indication.jsonl",
+          "method": "reviewed original official device content and Native prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original driver purpose, control and halt history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      }
     },
     {
       "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_offset",
       "construction": "cases/stand_offset/construction.json",
-      "construction_sha256": "2c8a734f8988ecafbbc7acbed655b484c4ad199a1c14bc86bcfcfe8cf9474d2a",
+      "construction_sha256": "545f0129f04a01eaf9159a7e70925f00109e101d769f2ab3d2af6d8f85107341",
       "candidate_risk": {
         "status": "physical",
         "reason": "Approach and braking can overshoot the governed angle-parking space."
@@ -86,7 +404,7 @@
         {
           "id": "fallback1",
           "construction": "cases/stand_offset/fallback1-construction.json",
-          "construction_sha256": "5b28370391b313e49e9635c923b453b1fea9cd05de243cd37e8420d58c9cae42",
+          "construction_sha256": "1c166f887e144e94c3b4f77fc2a99ef321271504a798e87ce685ff7bbaa95c7a",
           "trigger": {
             "source": "original angle-history.jsonl and reference_corner.mkv",
             "metric": "target-space overshoot or no stationary body-angle interval",
@@ -94,14 +412,120 @@
           },
           "changed_knobs": [
             "engineering_brake_gain: 0.70 to 0.85"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_offset --candidate fallback1 --output .runtime-work/c377875-owner/offline-stand_offset-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "1c166f887e144e94c3b4f77fc2a99ef321271504a798e87ce685ff7bbaa95c7a",
+            "log": "cpu-offline-stand_offset-fallback1.log",
+            "log_sha256": "ce2887d924b217785ea1cc70d4310fa071e7f05ef125ab194ea83a1c2b7860c6"
+          },
+          "compatibility": {
+            "receipt": "compat-stand_offset-fallback1.json",
+            "sha256": "3441f5a052b2bed72bac37a5d25bdc8c790404746087060c85e7f5d41d320fe4",
+            "log": "compat-analysis-stand_offset-fallback1.log",
+            "negative_log": "compat-negative-stand_offset-fallback1.log"
+          }
         }
-      ]
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__NRS-484B-460__motor_vehicle_driver/diagnostic-stand_offset-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_offset --candidate primary --output .runtime-work/c377875-owner/offline-stand_offset-primary",
+        "exit_code": 0,
+        "construction_sha256": "545f0129f04a01eaf9159a7e70925f00109e101d769f2ab3d2af6d8f85107341",
+        "log": "cpu-offline-stand_offset-primary.log",
+        "log_sha256": "92d15ecb7ec10da7758bf4379a05cdbb3a005d2a6bfdedcdbc06639eac69799b"
+      },
+      "compatibility": {
+        "receipt": "compat-stand_offset-primary.json",
+        "sha256": "601d3af145113e6e7330da7a3a3d104dc95a97a44afbf739d6e845259de14c8b",
+        "log": "compat-analysis-stand_offset-primary.log",
+        "negative_log": "compat-negative-stand_offset-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-stand_offset-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_offset --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-stand_offset.log",
+        "test_log_sha256": "4abd8137a28c015c235e46388d55e9aafb5473868be84f69328a4858937d3427"
+      },
+      "physical_preparation": {
+        "receipt": "physical-stand_offset-receipt.json",
+        "sha256": "d72154706027729bed49196cabe544a3a72d322801ac867af9f0527da813e5aa"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_offset",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-stand_offset --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_offset --diagnostic --output .runtime-work/c377875-owner/delivery-stand_offset-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-stand_offset --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__stand_offset --output .runtime-work/c377875-owner/delivery-stand_offset-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7caa407c20af4d3899fb95b8ed449d126fb0e110b58f22be00494ff3c439e999",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-stand_offset-positive.log",
+        "test_log_sha256": "8ba01496d0ac47d5945b3911e22ec11e1a7682dd4fc11628f8265ba3c37fc350",
+        "negative_log": "cpu-delivery-stand_offset-negative.log",
+        "negative_log_sha256": "3e969512595de259549af78b9ffd5ff7a57248d305fbeaf0886b7b0a34c9a509"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_body_angle_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_body_angle_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "curb_edge_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/curb_edge_geometry.jsonl",
+          "method": "reviewed original roadway curb edge joined to Native map"
+        },
+        "official_device_indication": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/official_device_indication.jsonl",
+          "method": "reviewed original official device content and Native prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original driver purpose, control and halt history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      }
     },
     {
       "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__park_indicated",
       "construction": "cases/park_indicated/construction.json",
-      "construction_sha256": "e5b32629ce8e4c5be3f5161e54188907edaf702b6dbb1196546f99b55f130149",
+      "construction_sha256": "4b99767d45416d80658194d552d9e3cae9ecdaf1aaef5ab371b82490f75ddc80",
       "candidate_risk": {
         "status": "physical",
         "reason": "Approach and braking can overshoot the governed angle-parking space."
@@ -110,7 +534,7 @@
         {
           "id": "fallback1",
           "construction": "cases/park_indicated/fallback1-construction.json",
-          "construction_sha256": "e038e56dc7b9c725e876c278e91f7560dd40c61ad85b4a3f51ad756924beb9b0",
+          "construction_sha256": "ef56e80843915e5a3ff7505be777bbec738a5d3011dfb22b38f1673ef33ab29a",
           "trigger": {
             "source": "original angle-history.jsonl and reference_corner.mkv",
             "metric": "target-space overshoot or no stationary body-angle interval",
@@ -118,14 +542,120 @@
           },
           "changed_knobs": [
             "engineering_brake_gain: 0.70 to 0.85"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__park_indicated --candidate fallback1 --output .runtime-work/c377875-owner/offline-park_indicated-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "ef56e80843915e5a3ff7505be777bbec738a5d3011dfb22b38f1673ef33ab29a",
+            "log": "cpu-offline-park_indicated-fallback1.log",
+            "log_sha256": "4f3926c0854d09ce67bf35fe88eb5bb7e48a5e73aa2b49083c1603391a9b456e"
+          },
+          "compatibility": {
+            "receipt": "compat-park_indicated-fallback1.json",
+            "sha256": "bc20834fe3040fd71640f45c58f063488c8938d0351d3ae2f1b1e7541206482f",
+            "log": "compat-analysis-park_indicated-fallback1.log",
+            "negative_log": "compat-negative-park_indicated-fallback1.log"
+          }
         }
-      ]
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__NRS-484B-460__motor_vehicle_driver/diagnostic-park_indicated-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__park_indicated --candidate primary --output .runtime-work/c377875-owner/offline-park_indicated-primary",
+        "exit_code": 0,
+        "construction_sha256": "4b99767d45416d80658194d552d9e3cae9ecdaf1aaef5ab371b82490f75ddc80",
+        "log": "cpu-offline-park_indicated-primary.log",
+        "log_sha256": "39be6eb8824f8f4bc95803fd7b1ce54e8e648cc82ecb1fd92c001b21e49c93f1"
+      },
+      "compatibility": {
+        "receipt": "compat-park_indicated-primary.json",
+        "sha256": "657dfd1840537f2c76dad622e38eb694a1c26aaa9a0010d2780f5f0fd578cc25",
+        "log": "compat-analysis-park_indicated-primary.log",
+        "negative_log": "compat-negative-park_indicated-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-park_indicated-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__park_indicated --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-park_indicated.log",
+        "test_log_sha256": "163e4ad31e15455f8e3873cc9641ae28d2d20c269afbee455626071ab8aad442"
+      },
+      "physical_preparation": {
+        "receipt": "physical-park_indicated-receipt.json",
+        "sha256": "abbf926467a85d78a4f8de40c6cb1055b4809e9ef3affbeb39ba7a750f092f98"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__park_indicated",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-park_indicated --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__park_indicated --diagnostic --output .runtime-work/c377875-owner/delivery-park_indicated-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-park_indicated --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__park_indicated --output .runtime-work/c377875-owner/delivery-park_indicated-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7caa407c20af4d3899fb95b8ed449d126fb0e110b58f22be00494ff3c439e999",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-park_indicated-positive.log",
+        "test_log_sha256": "d544ee951b5490428ec835437e072ad0e42b8c1c6a07a1e79983c9523c4722da",
+        "negative_log": "cpu-delivery-park_indicated-negative.log",
+        "negative_log_sha256": "3e969512595de259549af78b9ffd5ff7a57248d305fbeaf0886b7b0a34c9a509"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_body_angle_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_body_angle_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "curb_edge_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/curb_edge_geometry.jsonl",
+          "method": "reviewed original roadway curb edge joined to Native map"
+        },
+        "official_device_indication": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/official_device_indication.jsonl",
+          "method": "reviewed original official device content and Native prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original driver purpose, control and halt history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      }
     },
     {
       "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__park_offset",
       "construction": "cases/park_offset/construction.json",
-      "construction_sha256": "65cbaf1e946448c1c53158d8bc9f6add1940a551df680273388200a7a799e9b8",
+      "construction_sha256": "b1ad47f7f7d4d5b48a109a72369b99c2df175e4462c9048de8f6f0c1a0919131",
       "candidate_risk": {
         "status": "physical",
         "reason": "Approach and braking can overshoot the governed angle-parking space."
@@ -134,7 +664,7 @@
         {
           "id": "fallback1",
           "construction": "cases/park_offset/fallback1-construction.json",
-          "construction_sha256": "b6f22e28dc6981de9520c02cbc9da99d2040fd7f547f844fafad72d031a9fef7",
+          "construction_sha256": "5ea12b14d52a00217d99db18f471c8925675236f1f14103363843bcd82774531",
           "trigger": {
             "source": "original angle-history.jsonl and reference_corner.mkv",
             "metric": "target-space overshoot or no stationary body-angle interval",
@@ -142,9 +672,116 @@
           },
           "changed_knobs": [
             "engineering_brake_gain: 0.70 to 0.85"
-          ]
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__park_offset --candidate fallback1 --output .runtime-work/c377875-owner/offline-park_offset-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "5ea12b14d52a00217d99db18f471c8925675236f1f14103363843bcd82774531",
+            "log": "cpu-offline-park_offset-fallback1.log",
+            "log_sha256": "395c79895d2df35468dbff4eabaf092ca254a3dd77de866aa82f28db06634375"
+          },
+          "compatibility": {
+            "receipt": "compat-park_offset-fallback1.json",
+            "sha256": "bb0da14b36d74899dc5d44ad35425e6627256e2153d939b26e58c3d65917a771",
+            "log": "compat-analysis-park_offset-fallback1.log",
+            "negative_log": "compat-negative-park_offset-fallback1.log"
+          }
         }
-      ]
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__NRS-484B-460__motor_vehicle_driver/diagnostic-park_offset-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__park_offset --candidate primary --output .runtime-work/c377875-owner/offline-park_offset-primary",
+        "exit_code": 0,
+        "construction_sha256": "b1ad47f7f7d4d5b48a109a72369b99c2df175e4462c9048de8f6f0c1a0919131",
+        "log": "cpu-offline-park_offset-primary.log",
+        "log_sha256": "67b557c968582f4354e17c4a5a8ae3a06fde4095a883d3174e31719f9bd5dc4b"
+      },
+      "compatibility": {
+        "receipt": "compat-park_offset-primary.json",
+        "sha256": "04a7b72e0c91927fe245b45f11180d3dc0ddab0eab925c7089a6e827e54c104f",
+        "log": "compat-analysis-park_offset-primary.log",
+        "negative_log": "compat-negative-park_offset-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-park_offset-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C377875__NRS-484B-460__motor_vehicle_driver/execution-manifest.json --case testing__C377875__NRS-484B-460__motor_vehicle_driver__park_offset --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-park_offset.log",
+        "test_log_sha256": "f05094d850f5edff77dd8e402293742293d99609b23db65b28acc890b6bac8fc"
+      },
+      "physical_preparation": {
+        "receipt": "physical-park_offset-receipt.json",
+        "sha256": "abc1115ffb82ab2ca169d3b1fe9000071718b8263a9e5603d282c8ed58cd7a59"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C377875__NRS-484B-460__motor_vehicle_driver__park_offset",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-park_offset --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__park_offset --diagnostic --output .runtime-work/c377875-owner/delivery-park_offset-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c377875-owner/audit-park_offset --case-id testing__C377875__NRS-484B-460__motor_vehicle_driver__park_offset --output .runtime-work/c377875-owner/delivery-park_offset-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7caa407c20af4d3899fb95b8ed449d126fb0e110b58f22be00494ff3c439e999",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-park_offset-positive.log",
+        "test_log_sha256": "1ee55730b9c91c05196ef42520e6c3e9f377bee2e40c85eb767804857d48fbd3",
+        "negative_log": "cpu-delivery-park_offset-negative.log",
+        "negative_log_sha256": "3e969512595de259549af78b9ffd5ff7a57248d305fbeaf0886b7b0a34c9a509"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_body_angle_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_body_angle_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "curb_edge_geometry": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/curb_edge_geometry.jsonl",
+          "method": "reviewed original roadway curb edge joined to Native map"
+        },
+        "official_device_indication": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/official_device_indication.jsonl",
+          "method": "reviewed original official device content and Native prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original driver purpose, control and halt history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      }
     }
-  ]
+  ],
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
 }

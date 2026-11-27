@@ -2,6 +2,28 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 10:45 UTC: railway semantic stage validation
+
+- C410753/LVMC-11-16-030 remains **partial**. The exact-law semantic stage chain now includes relevance, template, value-free sight observable, cell binding, seven selected cases with a shared baseline, and a source-hashed index. The runtime semantic validator passed against all seven exact construction bundles (`cpu-rail-semantic-stages.log`, SHA256 `5cbeb7566f77f244f2ebccb2b3fc73126ebe1ca83ed51dc90041c55c374c3ce6`); the scoped `--complete` check passed afterward. The original-source visibility judgment sweep is explicitly incomplete. Exact compatibility and independent delivery/comparison proofs remain worker-owned CPU work; physical and legal outcomes are unclaimed.
+- C422976/LVMC-11-18-020 heavy-vehicle school-crossing owner has an eight-case, seven-comparison plan and source-sealed 900-frame Native acquisition draft with five focused tests passing. It remains partial during semantic and delivery proof construction. No Git command was run.
+
+## 2026-11-27 10:42 UTC: seven railway canonical case proposals
+
+- C410753/LVMC-11-16-030 now has a draft canonical `proposals/cases.json` covering the same seven exact selected IDs and recording descriptions as its case plan and construction bundles. The runtime selected-ID extraction matched all seven. The visibility judgment sweep is explicitly incomplete; the remaining semantic stages, compatibility and independent delivery checks are still worker-owned. Status remains **partial**.
+- A full non-Git scan of 76,951 returned files found zero UTF-8, size, trailing-whitespace, blank-EOF or conflict-marker issues at this checkpoint. No Git command was run.
+
+## 2026-11-27 10:40 UTC: C24811 ready and published; railway bundles built
+
+- C24811/NRS-484B-250-4 blind-intersection package passed its owner exact strict gate twice and the independent lead exact strict gate (`.runtime-work/c24811-lead-nov27-strict.log`). Its sealed proposal was validated and integrated into the shared GPU queue: **6 cases and 5 comparisons**, 53 validated commands. Queue totals are **212 ready assignments, 1,469 cases and 1,029 comparison audits**; SHA256 `67ff79c8c6f89d4c76cc1b0a568b43d0ef6a7925951094892248f2f6449634d5`. The same owner has begun C422976/LVMC-11-18-020 heavy-vehicle preparation.
+- C410753/LVMC-11-16-030 railway remains **partial**. `runner.py` and `build_constructions.py` now materialize seven exact case scenes and source-content-bound portable construction bundles. All seven entrypoint and bundle-content offline checks pass (`cpu-rail-construction-offline.log`, SHA256 `63cb1943a8268c6ef5498c7202bd63bb46ca1d920d724040d9ca22fbccc392e2`), and the scoped `--complete` check passes. Semantic proposals, compatibility and independent selected delivery checks remain worker-owned CPU work.
+- C378245 taxi and C377875 angle parking remain owner-held partials during their proof work. No batch-wide strict gate can pass while partials remain. No Git command was run.
+
+## 2026-11-27 10:37 UTC: railway release gate and current owners
+
+- C410753/LVMC-11-16-030 remains **partial**. Its saved postprocessor now requires an operator-attested release receipt tied to exact Native construction and exit hashes before analysis or FFV1 media. The release positive/negative test and four existing media tests pass (5/5); refreshed `cpu-rail-media-tests.log` SHA256 `5baca35e362aad0470b4a35368c67b0ed76952b56a879c2c0f0c259a93d37ab1` is bound in `result.json`. The exact assignment-scoped `--complete` static check passes. Production postprocess, selected bundles, semantic proposals, compatible processing and independent delivery checks remain CPU work; no physical/legal conclusion is claimed.
+- C378245/LVMC-11-60-040 has six selected taxi cases and four comparisons constructed; its owner is rebuilding source-observation mapping and bound proofs after the first exact strict candidate identified the frozen empty mapping. C24811/NRS-484B-250-4 has six blind-intersection cases and five comparisons; its owner is rebuilding exact bundles and proofs after the same mapping requirement. Both remain partial pending exact strict gates. C377875/NRS-484B-460 remains owned and partial during angle-parking construction and saved-only checks.
+- C158190/NRS-484B-257-2 passed owner and independent lead strict assignment checks. Its exact seven-case, four-comparison proposal was integrated into the shared GPU queue, now 211 ready assignments, 1,463 cases and 1,024 comparisons (SHA256 `d645e548dbd95abbb0973ac2f2d3cc59a81fc116f84ac3a18c551bf3e63ef76d`). No Git command was run.
+
 ## 2026-11-27 10:30 UTC: active partial construction and source-negative proof
 
 - C410753 railway remains **partial**. Its saved-only analysis now has a passing 900-frame, four-camera positive source fixture and a negative probe rejecting a missing original frame source (`cpu-rail-analysis-negative.log`, SHA256 `020cd8f7cb7de7e48bde3001d6c6f90d5b54b80f91e3132f3261803d1fb62e45`). The scoped `--complete` check passed after both proof bindings. Selected bundles, semantic proposals, compatibility and independent delivery audits are still CPU work; actual CARLA sight and motion are unverified.
@@ -36,7 +58,7 @@ Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026
 
 ## 2026-11-27 10:14 UTC: railway focused proof refresh
 
-- C410753 railway remains **partial**. The complete post-change source/measurement suite now passes 23/23 tests in 59.077 s, including a negative test that rejects a relabeled original ego XY position. The cleaned test log SHA256 `7cc2f1b7e338434bcec69185d8758b712cf271faab97a446aa60a62d6c80297b` is bound in `result.json`, and the exact scoped static gate passes. The CPU fixture establishes source binding and saved recomputation only; selected delivery bundles, semantic proposals, compatibility and independent delivery audits remain worker-owned. No Git command was run.
+- C410753 railway remains **partial**. The complete post-change source/measurement suite now passes 23/23 tests in 59.077 s, including a negative test that rejects a relabeled original ego XY position. The cleaned test log SHA256 `21c285b9e44aa736e24a78f42d2030bb70c650edfb088b0b17ada090f072f94e` is bound in `result.json`, and the exact scoped static gate passes. The CPU fixture establishes source binding and saved recomputation only; selected delivery bundles, semantic proposals, compatibility and independent delivery audits remain worker-owned. No Git command was run.
 
 ## 2026-11-27 10:13 UTC: C393410 independently gated and published
 

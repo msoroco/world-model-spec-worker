@@ -15,7 +15,7 @@ from pathlib import Path
 from rail_sight_measurement import measure, read_reviewed_site
 
 CAMERAS = {"overview": (1920, 1080), "approach": (1280, 720),
-           "track_left": (1280, 720), "track_right": (1280, 720)}
+           "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 FRAME_FIELDS = ("original_frame", "time_s", "route_station_m", "speed_mps",
                 "body_on_crossing", "flagman_on_duty", "signal_installed",
                 "signal_clearly_visible", "signal_immediate_train_approach")

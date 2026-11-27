@@ -44,7 +44,7 @@ def prove():
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         name = case_id.removeprefix(HERE.name + "__")
-        attempt = REPO / ".runtime-work/c24811-owner" / ("compat-full5-" + name + "-primary")
+        attempt = REPO / ".runtime-work/c24811-owner" / ("compat-full6-" + name + "-primary")
         output = SCRATCH / (name + "-delivery.json")
         command = [PYTHON, str(HERE / "delivery_audit.py"),
                    "--case-id", case_id, "--attempt", str(attempt),
@@ -86,7 +86,7 @@ def prove():
     for comparison in plan["comparisons"]:
         name = comparison["comparison_id"]
         attempts = [REPO / ".runtime-work/c24811-owner" /
-                    ("compat-full5-" + cid.removeprefix(HERE.name + "__") + "-primary")
+                    ("compat-full6-" + cid.removeprefix(HERE.name + "__") + "-primary")
                     for cid in comparison["case_ids"]]
         output = SCRATCH / (name + "-comparison.json")
         command = [PYTHON, str(HERE / "comparison_audit.py"),

@@ -243,11 +243,11 @@ class RailSightTests(unittest.TestCase):
             row["sources"][name] = {
                 "path": str(source.relative_to(self.root)), "sha256": sha(source)}
         self.assertEqual(set(verify_camera_row(self.root, row, 100)), set(CAMERAS))
-        row["sources"]["track_left"]["path"] = row["sources"]["track_left"]["path"].replace("00000100", "00000101")
+        row["sources"]["reference_corner"]["path"] = row["sources"]["reference_corner"]["path"].replace("00000100", "00000101")
         with self.assertRaisesRegex(ValueError, "frame path differs"):
             verify_camera_row(self.root, row, 100)
-        row["sources"]["track_left"]["path"] = "original-cameras/track_left/00000100.png"
-        row["sources"]["track_left"]["sha256"] = "0" * 64
+        row["sources"]["reference_corner"]["path"] = "original-cameras/reference_corner/00000100.png"
+        row["sources"]["reference_corner"]["sha256"] = "0" * 64
         with self.assertRaisesRegex(ValueError, "source missing or changed"):
             verify_camera_row(self.root, row, 100)
 
@@ -388,7 +388,7 @@ class RailSightTests(unittest.TestCase):
         self.assertEqual(brake_calls, [ego])
         self.assertTrue((self.root / "original-frames/00000100.json").is_file())
         self.assertTrue((self.root / "original-rays/00000102.json").is_file())
-        self.assertTrue((self.root / "original-cameras/track_left/00000107.png").is_file())
+        self.assertTrue((self.root / "original-cameras/reference_corner/00000107.png").is_file())
 
     def test_reviewed_rail_route_measures_body_occupancy(self):
         source = {"source_kind": "rail_crossing_route", "reviewer": "test-reviewer",

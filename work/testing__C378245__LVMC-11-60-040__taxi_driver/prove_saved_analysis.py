@@ -21,7 +21,7 @@ def run() -> None:
     manifest = json.loads((ROOT / "execution-manifest.draft.json").read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].split("__")[-1]
-        source = REPO / ".runtime-work/c378245-taxi" / ("compat-" + suffix + "-v3")
+        source = REPO / ".runtime-work/c378245-taxi" / ("compat-" + suffix + "-v4")
         contract = json.loads((ROOT / entry["measurement_contract"]).read_text())
         positive = json.loads((source / "analysis-report.json").read_text())
         verify_report(contract, positive, source)

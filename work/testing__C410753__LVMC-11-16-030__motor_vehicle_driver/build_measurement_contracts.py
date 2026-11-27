@@ -57,7 +57,7 @@ def build():
             "original_capture": {"fps": 20, "duration_s": 45,
                                  "frame_count": 900,
                                  "camera_views": ["overview", "approach",
-                                                  "track_left", "track_right"]},
+                                                  "reference_corner", "driver_reference"]},
             "engineering_target": {
                 "traversal_mph": case["engineering_target_traversal_mph"],
                 "sight_setup": case["engineering_sight_setup"],

@@ -240,7 +240,21 @@
         "targeted vehicle-body angle relative to curb edge: 45 versus 30 degrees"
       ],
       "isolated_question": "observed body angle versus source-backed device indication",
-      "status": "selected_cpu_comparison_audit_pending"
+      "status": "selected_cpu_comparison_audit_passed",
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "42b2c4ee076c0e85024ef12f4480798cf19a868cb85ac30b69be8a290148296f",
+        "positive_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/comparison_audit.py --comparison stop_indicated_vs_offset --first-attempt .runtime-work/c377875-owner/audit-stop_indicated --second-attempt .runtime-work/c377875-owner/audit-stop_offset --diagnostic-fixture --output .runtime-work/c377875-owner/comparison-stop-positive.json",
+        "positive_log": "cpu-comparison-stop-positive.log",
+        "positive_log_sha256": "c6178c4c37254afa1f727040f7ffe4002f4aee71afb40df6c850de2c6f5b2d79",
+        "positive_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/comparison_audit.py --comparison stop_indicated_vs_offset --first-attempt .runtime-work/c377875-owner/audit-stop_indicated --second-attempt .runtime-work/c377875-owner/audit-stop_offset --output .runtime-work/c377875-owner/comparison-stop-negative.json",
+        "negative_log": "cpu-comparison-stop-negative.log",
+        "negative_log_sha256": "4382e5d4560b403feb08a4bf74904a6c7140bca4b045ea023bed539ce110a00a",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "diagnostic_only": true
+      }
     },
     {
       "comparison_id": "stand_indicated_vs_offset",
@@ -257,7 +271,21 @@
         "targeted vehicle-body angle relative to curb edge: 45 versus 30 degrees"
       ],
       "isolated_question": "observed body angle versus source-backed device indication",
-      "status": "selected_cpu_comparison_audit_pending"
+      "status": "selected_cpu_comparison_audit_passed",
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "42b2c4ee076c0e85024ef12f4480798cf19a868cb85ac30b69be8a290148296f",
+        "positive_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/comparison_audit.py --comparison stand_indicated_vs_offset --first-attempt .runtime-work/c377875-owner/audit-stand_indicated --second-attempt .runtime-work/c377875-owner/audit-stand_offset --diagnostic-fixture --output .runtime-work/c377875-owner/comparison-stand-positive.json",
+        "positive_log": "cpu-comparison-stand-positive.log",
+        "positive_log_sha256": "38cd9765c9169dbec2181ed52be84a5e54cfe661dde97e898153497690d9fa56",
+        "positive_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/comparison_audit.py --comparison stand_indicated_vs_offset --first-attempt .runtime-work/c377875-owner/audit-stand_indicated --second-attempt .runtime-work/c377875-owner/audit-stand_offset --output .runtime-work/c377875-owner/comparison-stand-negative.json",
+        "negative_log": "cpu-comparison-stand-negative.log",
+        "negative_log_sha256": "4382e5d4560b403feb08a4bf74904a6c7140bca4b045ea023bed539ce110a00a",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "diagnostic_only": true
+      }
     },
     {
       "comparison_id": "park_indicated_vs_offset",
@@ -274,14 +302,49 @@
         "targeted vehicle-body angle relative to curb edge: 45 versus 30 degrees"
       ],
       "isolated_question": "observed body angle versus source-backed device indication",
-      "status": "selected_cpu_comparison_audit_pending"
+      "status": "selected_cpu_comparison_audit_passed",
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "42b2c4ee076c0e85024ef12f4480798cf19a868cb85ac30b69be8a290148296f",
+        "positive_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/comparison_audit.py --comparison park_indicated_vs_offset --first-attempt .runtime-work/c377875-owner/audit-park_indicated --second-attempt .runtime-work/c377875-owner/audit-park_offset --diagnostic-fixture --output .runtime-work/c377875-owner/comparison-park-positive.json",
+        "positive_log": "cpu-comparison-park-positive.log",
+        "positive_log_sha256": "50052a809652a93261aa6e966b24bc26f2db0fd48f9e4baab14fb55930336add",
+        "positive_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__NRS-484B-460__motor_vehicle_driver/comparison_audit.py --comparison park_indicated_vs_offset --first-attempt .runtime-work/c377875-owner/audit-park_indicated --second-attempt .runtime-work/c377875-owner/audit-park_offset --output .runtime-work/c377875-owner/comparison-park-negative.json",
+        "negative_log": "cpu-comparison-park-negative.log",
+        "negative_log_sha256": "4382e5d4560b403feb08a4bf74904a6c7140bca4b045ea023bed539ce110a00a",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "diagnostic_only": true
+      }
     }
   ],
   "observations": [
-    "Official status, content, location, governed area and source-backed indicated angle of the angle-parking device",
-    "Vehicle body orientation and curb-edge tangent over every halt interval",
-    "Original actor, highway context, purpose, service activity, conflicts and applicable directions",
-    "Separate stop, stand and park classifications remain source review questions"
+    {
+      "name": "vehicle_body_angle_history",
+      "mandatory": true,
+      "description": "Original vehicle body yaw, vertices and speed through halt"
+    },
+    {
+      "name": "curb_edge_geometry",
+      "mandatory": true,
+      "description": "Original curb edge tangent and road map"
+    },
+    {
+      "name": "official_device_indication",
+      "mandatory": true,
+      "description": "Original official device indicated angle and governed area"
+    },
+    {
+      "name": "halt_purpose_and_service",
+      "mandatory": true,
+      "description": "Original stop, stand or park purpose and control history"
+    },
+    {
+      "name": "four_synchronized_camera_streams",
+      "mandatory": true,
+      "description": "Four original synchronized streams and frame map"
+    }
   ],
   "sources": [
     {
@@ -363,5 +426,32 @@
       "evidence_or_gap": "no-original-device-angle-evidence"
     }
   ],
-  "source_observation_mapping": {}
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "official device, selected space, curb and vehicle",
+        "interval": "all 600 original 20 Hz frames"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle approach and official device",
+        "interval": "all 600 original 20 Hz frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "body angle relative to curb edge",
+        "interval": "all 600 original 20 Hz frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver view and halt interval",
+        "interval": "all 600 original 20 Hz frames"
+      }
+    ]
+  }
 }

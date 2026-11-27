@@ -2,9 +2,76 @@
   "assignment_id": "testing__C378245__LVMC-11-60-040__taxi_driver",
   "cases": [
     {
+      "acquisition": {
+        "four_camera_frames": {
+          "entrypoint": "encode_taxi_views.py",
+          "evidence": "video_frames.jsonl and four .mkv streams",
+          "method": "same-frame RGB PNG ledger joined and encoded to four Matroska streams"
+        },
+        "native_frame": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "synchronous world tick frame ledger"
+        },
+        "passenger_activity_review": {
+          "entrypoint": "taxi_stand_measurement.py",
+          "evidence": "activity_review.json",
+          "method": "independent passenger event source validation and measurement"
+        },
+        "taxi_center_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle transform sampled on each synchronous world tick"
+        },
+        "taxi_footprint_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle bounding box transformed on each synchronous world tick"
+        },
+        "taxi_speed_mps": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle velocity sampled on each synchronous world tick"
+        }
+      },
+      "candidate_risk": {
+        "reason": "The six diagnostic 900-frame topology and compatibility proofs found no specific physical failure; original site placement, view visibility, and passenger motion require Native verification before acceptance.",
+        "status": "none"
+      },
+      "candidates": [],
       "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_park",
+      "compatibility": {
+        "log": "cases/outside_stand_park/primary-compat-analysis.log",
+        "receipt": "cases/outside_stand_park/primary-compatibility.json",
+        "sha256": "3b474c008be3eece9904f67d78912da0ae05e808f8bef82c74f37187d52a354a"
+      },
       "construction": "cases/outside_stand_park/construction.json",
       "construction_sha256": "05de2c096e001c4c2f0c558238bfccf0b2e8f4b495fbda4e5c0137e8b744d7be",
+      "delivery_acceptance": {
+        "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_park",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_park",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_park --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review source changed",
+        "negative_log": "cases/outside_stand_park/delivery-negative.log",
+        "negative_log_sha256": "8436aa110afd6ccdefb1aa6dd62f7bb4bf27d89695341e06e1c6d5f587298487",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "067b56829f7c7f5965f18c2f74da8b3592b9fe214a5582b2c8fff5615be8a6cc",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_park/delivery-positive.log",
+        "test_log_sha256": "ef0a300a7161425063eb633bd0e60d4e3f8534986869419ee330438d5c46d1f3"
+      },
       "fixture_recipe": "work/testing__C378245__LVMC-11-60-040__taxi_driver/cases/outside_stand_park/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/outside_stand_park/measurement-contract.json",
@@ -16,15 +83,103 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cases/outside_stand_park/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.draft.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_park --output .runtime-work/c378245-taxi/offline-outside_stand_park-v7 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "05de2c096e001c4c2f0c558238bfccf0b2e8f4b495fbda4e5c0137e8b744d7be",
+        "exit_code": 0,
+        "log": "cases/outside_stand_park/offline.log",
+        "log_sha256": "89bde58c6c3ce77057a497dbfcac49831e33da5040cf09d9c78eb80848c1d281"
+      },
       "physical_preparation": {
         "receipt": "cases/outside_stand_park/physical-preparation.json",
         "sha256": "c2d8191fede02bf1b8480fff41ee6afec6402b5b82dea3c53e6a145789f365bc"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_park --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "diagnostic_receipt": "cases/outside_stand_park/saved-processing-receipt.json",
+        "diagnostic_receipt_sha256": "a2e6389e6d28d35539f6489513b2fc3cc00fe895574e4aabefb504386332aec7",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_park --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "diagnostic CPU fixture; original capture requires independent review",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_park/saved-processing.log",
+        "test_log_sha256": "448bf9aa60573ac886e454802a07ec1d40769d0a9fcbe7c286ad7c018c1cefc9"
       }
     },
     {
+      "acquisition": {
+        "four_camera_frames": {
+          "entrypoint": "encode_taxi_views.py",
+          "evidence": "video_frames.jsonl and four .mkv streams",
+          "method": "same-frame RGB PNG ledger joined and encoded to four Matroska streams"
+        },
+        "native_frame": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "synchronous world tick frame ledger"
+        },
+        "passenger_activity_review": {
+          "entrypoint": "taxi_stand_measurement.py",
+          "evidence": "activity_review.json",
+          "method": "independent passenger event source validation and measurement"
+        },
+        "taxi_center_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle transform sampled on each synchronous world tick"
+        },
+        "taxi_footprint_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle bounding box transformed on each synchronous world tick"
+        },
+        "taxi_speed_mps": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle velocity sampled on each synchronous world tick"
+        }
+      },
+      "candidate_risk": {
+        "reason": "The six diagnostic 900-frame topology and compatibility proofs found no specific physical failure; original site placement, view visibility, and passenger motion require Native verification before acceptance.",
+        "status": "none"
+      },
+      "candidates": [],
       "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__designated_stand_park",
+      "compatibility": {
+        "log": "cases/designated_stand_park/primary-compat-analysis.log",
+        "receipt": "cases/designated_stand_park/primary-compatibility.json",
+        "sha256": "b06cd2365d876280ea80298847b879c5f8c6a14e3608de1748b92ab200fd568b"
+      },
       "construction": "cases/designated_stand_park/construction.json",
       "construction_sha256": "97804e6e5acd3fe025675ad3cc86de9e8b21bde57a27c2f37defdbe0e60b8bf5",
+      "delivery_acceptance": {
+        "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__designated_stand_park",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__designated_stand_park",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__designated_stand_park --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review source changed",
+        "negative_log": "cases/designated_stand_park/delivery-negative.log",
+        "negative_log_sha256": "8436aa110afd6ccdefb1aa6dd62f7bb4bf27d89695341e06e1c6d5f587298487",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "067b56829f7c7f5965f18c2f74da8b3592b9fe214a5582b2c8fff5615be8a6cc",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/designated_stand_park/delivery-positive.log",
+        "test_log_sha256": "9aec8cafb2b41a01d27de52d9aebfc2d4fcadfa4ae3b3a294fe0a9f0b656fa9c"
+      },
       "fixture_recipe": "work/testing__C378245__LVMC-11-60-040__taxi_driver/cases/designated_stand_park/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/designated_stand_park/measurement-contract.json",
@@ -36,15 +191,103 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cases/designated_stand_park/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.draft.json --case testing__C378245__LVMC-11-60-040__taxi_driver__designated_stand_park --output .runtime-work/c378245-taxi/offline-designated_stand_park-v7 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "97804e6e5acd3fe025675ad3cc86de9e8b21bde57a27c2f37defdbe0e60b8bf5",
+        "exit_code": 0,
+        "log": "cases/designated_stand_park/offline.log",
+        "log_sha256": "73b03feee0d753dd5aec7f59cbe871836a1c83b1a8e8fdeb718f1a21529f543b"
+      },
       "physical_preparation": {
         "receipt": "cases/designated_stand_park/physical-preparation.json",
         "sha256": "b426a6fe4342a38226f7847f93fd1e9de02d473e5afa5982ea2aac64edf2a5e5"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__designated_stand_park --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "diagnostic_receipt": "cases/designated_stand_park/saved-processing-receipt.json",
+        "diagnostic_receipt_sha256": "e3e455e1bc072a0a5c9fadbb60045b62a5632db17e104bdfb8ac759c2a7fddd4",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__designated_stand_park --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "diagnostic CPU fixture; original capture requires independent review",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/designated_stand_park/saved-processing.log",
+        "test_log_sha256": "531042c3d13c896f51e0099f5c187382c34dd276ae13b20059dda59277c8c548"
       }
     },
     {
+      "acquisition": {
+        "four_camera_frames": {
+          "entrypoint": "encode_taxi_views.py",
+          "evidence": "video_frames.jsonl and four .mkv streams",
+          "method": "same-frame RGB PNG ledger joined and encoded to four Matroska streams"
+        },
+        "native_frame": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "synchronous world tick frame ledger"
+        },
+        "passenger_activity_review": {
+          "entrypoint": "taxi_stand_measurement.py",
+          "evidence": "activity_review.json",
+          "method": "independent passenger event source validation and measurement"
+        },
+        "taxi_center_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle transform sampled on each synchronous world tick"
+        },
+        "taxi_footprint_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle bounding box transformed on each synchronous world tick"
+        },
+        "taxi_speed_mps": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle velocity sampled on each synchronous world tick"
+        }
+      },
+      "candidate_risk": {
+        "reason": "The six diagnostic 900-frame topology and compatibility proofs found no specific physical failure; original site placement, view visibility, and passenger motion require Native verification before acceptance.",
+        "status": "none"
+      },
+      "candidates": [],
       "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_stand",
+      "compatibility": {
+        "log": "cases/outside_stand_stand/primary-compat-analysis.log",
+        "receipt": "cases/outside_stand_stand/primary-compatibility.json",
+        "sha256": "bada44c19837df820fbe6729f443d3d24bb8308e2f9bf30b6ea58cfa2ff16c3e"
+      },
       "construction": "cases/outside_stand_stand/construction.json",
       "construction_sha256": "7a281a2ceb54ae29909e01973ee3ebf14ce258a7e7df6ba7d9db2953b371c5ec",
+      "delivery_acceptance": {
+        "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_stand",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_stand",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_stand --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review source changed",
+        "negative_log": "cases/outside_stand_stand/delivery-negative.log",
+        "negative_log_sha256": "8436aa110afd6ccdefb1aa6dd62f7bb4bf27d89695341e06e1c6d5f587298487",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "067b56829f7c7f5965f18c2f74da8b3592b9fe214a5582b2c8fff5615be8a6cc",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_stand/delivery-positive.log",
+        "test_log_sha256": "8d51547bcc2810824508dec2a5b8be5ec2e5c4ad2c1ab15a84fbb787b94d8416"
+      },
       "fixture_recipe": "work/testing__C378245__LVMC-11-60-040__taxi_driver/cases/outside_stand_stand/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/outside_stand_stand/measurement-contract.json",
@@ -56,15 +299,103 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cases/outside_stand_stand/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.draft.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_stand --output .runtime-work/c378245-taxi/offline-outside_stand_stand-v7 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "7a281a2ceb54ae29909e01973ee3ebf14ce258a7e7df6ba7d9db2953b371c5ec",
+        "exit_code": 0,
+        "log": "cases/outside_stand_stand/offline.log",
+        "log_sha256": "ff5d62e5fd0ac2c96e2207374acd57eb24cfdf5ca7b3f9a29fd168bccb4443c6"
+      },
       "physical_preparation": {
         "receipt": "cases/outside_stand_stand/physical-preparation.json",
         "sha256": "4d21b9884e555f8801fa668d0b193d35caa37ff290675014505618eda1651879"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_stand --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "diagnostic_receipt": "cases/outside_stand_stand/saved-processing-receipt.json",
+        "diagnostic_receipt_sha256": "72099b59665105173d4b3d411964efa26950306e0fa4a2dd5a83fd5d9f9de6ab",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_stand --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "diagnostic CPU fixture; original capture requires independent review",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_stand/saved-processing.log",
+        "test_log_sha256": "b751d18cbd07afa3848537f8a984110d636fa81afa28c2681a3ab23de72c090e"
       }
     },
     {
+      "acquisition": {
+        "four_camera_frames": {
+          "entrypoint": "encode_taxi_views.py",
+          "evidence": "video_frames.jsonl and four .mkv streams",
+          "method": "same-frame RGB PNG ledger joined and encoded to four Matroska streams"
+        },
+        "native_frame": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "synchronous world tick frame ledger"
+        },
+        "passenger_activity_review": {
+          "entrypoint": "taxi_stand_measurement.py",
+          "evidence": "activity_review.json",
+          "method": "independent passenger event source validation and measurement"
+        },
+        "taxi_center_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle transform sampled on each synchronous world tick"
+        },
+        "taxi_footprint_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle bounding box transformed on each synchronous world tick"
+        },
+        "taxi_speed_mps": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle velocity sampled on each synchronous world tick"
+        }
+      },
+      "candidate_risk": {
+        "reason": "The six diagnostic 900-frame topology and compatibility proofs found no specific physical failure; original site placement, view visibility, and passenger motion require Native verification before acceptance.",
+        "status": "none"
+      },
+      "candidates": [],
       "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_load",
+      "compatibility": {
+        "log": "cases/outside_stand_load/primary-compat-analysis.log",
+        "receipt": "cases/outside_stand_load/primary-compatibility.json",
+        "sha256": "b2cafda713461bbaf32d57043b91e4fdcf329478168ecaa67f93d48436289a80"
+      },
       "construction": "cases/outside_stand_load/construction.json",
       "construction_sha256": "3ebe877663c284e3e8db5923a91d4cbea0aeb2bf04b1a0402624c54851a8b58a",
+      "delivery_acceptance": {
+        "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_load",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_load",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_load --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review source changed",
+        "negative_log": "cases/outside_stand_load/delivery-negative.log",
+        "negative_log_sha256": "8436aa110afd6ccdefb1aa6dd62f7bb4bf27d89695341e06e1c6d5f587298487",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "067b56829f7c7f5965f18c2f74da8b3592b9fe214a5582b2c8fff5615be8a6cc",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_load/delivery-positive.log",
+        "test_log_sha256": "d8ac9060422158d314cd6b8788c8d6f7ad57f1a753d48bfde9818186d7ab2b43"
+      },
       "fixture_recipe": "work/testing__C378245__LVMC-11-60-040__taxi_driver/cases/outside_stand_load/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/outside_stand_load/measurement-contract.json",
@@ -76,15 +407,103 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cases/outside_stand_load/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.draft.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_load --output .runtime-work/c378245-taxi/offline-outside_stand_load-v7 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "3ebe877663c284e3e8db5923a91d4cbea0aeb2bf04b1a0402624c54851a8b58a",
+        "exit_code": 0,
+        "log": "cases/outside_stand_load/offline.log",
+        "log_sha256": "d523ab73a27a9db695a347ebb2126349b9fb196d902bc91b311aef80e76ccc33"
+      },
       "physical_preparation": {
         "receipt": "cases/outside_stand_load/physical-preparation.json",
         "sha256": "24694ac3bbcca6993ac3234a8be6b62e762936363c0d301e36167322a7f3a889"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_load --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "diagnostic_receipt": "cases/outside_stand_load/saved-processing-receipt.json",
+        "diagnostic_receipt_sha256": "53f04847246abe116779491cd6fc932900c51179d9a76bcd4f75463d85d48061",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_load --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "diagnostic CPU fixture; original capture requires independent review",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_load/saved-processing.log",
+        "test_log_sha256": "55e545752590e0d1d9304c9e8b63d311e236f4fbfb5752246e2c2434b6f3c01d"
       }
     },
     {
+      "acquisition": {
+        "four_camera_frames": {
+          "entrypoint": "encode_taxi_views.py",
+          "evidence": "video_frames.jsonl and four .mkv streams",
+          "method": "same-frame RGB PNG ledger joined and encoded to four Matroska streams"
+        },
+        "native_frame": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "synchronous world tick frame ledger"
+        },
+        "passenger_activity_review": {
+          "entrypoint": "taxi_stand_measurement.py",
+          "evidence": "activity_review.json",
+          "method": "independent passenger event source validation and measurement"
+        },
+        "taxi_center_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle transform sampled on each synchronous world tick"
+        },
+        "taxi_footprint_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle bounding box transformed on each synchronous world tick"
+        },
+        "taxi_speed_mps": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle velocity sampled on each synchronous world tick"
+        }
+      },
+      "candidate_risk": {
+        "reason": "The six diagnostic 900-frame topology and compatibility proofs found no specific physical failure; original site placement, view visibility, and passenger motion require Native verification before acceptance.",
+        "status": "none"
+      },
+      "candidates": [],
       "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_unload",
+      "compatibility": {
+        "log": "cases/outside_stand_unload/primary-compat-analysis.log",
+        "receipt": "cases/outside_stand_unload/primary-compatibility.json",
+        "sha256": "403348f672c73494a844e930ff20bcbd00ce31841c7263c4aa8700e6f1f407c6"
+      },
       "construction": "cases/outside_stand_unload/construction.json",
       "construction_sha256": "344a7b90a8a505611c52e77691b5c4ac58bf066a9ae7d877eadf70feec3b311a",
+      "delivery_acceptance": {
+        "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_unload",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_unload",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_unload --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review source changed",
+        "negative_log": "cases/outside_stand_unload/delivery-negative.log",
+        "negative_log_sha256": "8436aa110afd6ccdefb1aa6dd62f7bb4bf27d89695341e06e1c6d5f587298487",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "067b56829f7c7f5965f18c2f74da8b3592b9fe214a5582b2c8fff5615be8a6cc",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_unload/delivery-positive.log",
+        "test_log_sha256": "3227c710bafe48f41072d7d37ba60ffc040a672c37e224e44953d84976a6054d"
+      },
       "fixture_recipe": "work/testing__C378245__LVMC-11-60-040__taxi_driver/cases/outside_stand_unload/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/outside_stand_unload/measurement-contract.json",
@@ -96,15 +515,103 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cases/outside_stand_unload/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.draft.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_unload --output .runtime-work/c378245-taxi/offline-outside_stand_unload-v7 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "344a7b90a8a505611c52e77691b5c4ac58bf066a9ae7d877eadf70feec3b311a",
+        "exit_code": 0,
+        "log": "cases/outside_stand_unload/offline.log",
+        "log_sha256": "c8e05733632b550159ca0c73361709f6528fb0aa14aef8dbb4d20bf1a5e3d7f3"
+      },
       "physical_preparation": {
         "receipt": "cases/outside_stand_unload/physical-preparation.json",
         "sha256": "e59c64bf86cd9b30920eddd8c89593f8cd27ca832e8bb82aa1b0e0fde8700a60"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_unload --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "diagnostic_receipt": "cases/outside_stand_unload/saved-processing-receipt.json",
+        "diagnostic_receipt_sha256": "894cdb14b59f00b0ec5341b89a2da892a472a781050073ccd0ee686fca8956a7",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_unload --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "diagnostic CPU fixture; original capture requires independent review",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_unload/saved-processing.log",
+        "test_log_sha256": "195669172cf4feb7bfdcab86760b414daac59627a9152824dcbbc54128d34ae7"
       }
     },
     {
+      "acquisition": {
+        "four_camera_frames": {
+          "entrypoint": "encode_taxi_views.py",
+          "evidence": "video_frames.jsonl and four .mkv streams",
+          "method": "same-frame RGB PNG ledger joined and encoded to four Matroska streams"
+        },
+        "native_frame": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "synchronous world tick frame ledger"
+        },
+        "passenger_activity_review": {
+          "entrypoint": "taxi_stand_measurement.py",
+          "evidence": "activity_review.json",
+          "method": "independent passenger event source validation and measurement"
+        },
+        "taxi_center_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle transform sampled on each synchronous world tick"
+        },
+        "taxi_footprint_xy_m": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle bounding box transformed on each synchronous world tick"
+        },
+        "taxi_speed_mps": {
+          "entrypoint": "native_taxi_operator.py",
+          "evidence": "native_frames.json",
+          "method": "vehicle velocity sampled on each synchronous world tick"
+        }
+      },
+      "candidate_risk": {
+        "reason": "The six diagnostic 900-frame topology and compatibility proofs found no specific physical failure; original site placement, view visibility, and passenger motion require Native verification before acceptance.",
+        "status": "none"
+      },
+      "candidates": [],
       "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_idle_stop",
+      "compatibility": {
+        "log": "cases/outside_stand_idle_stop/primary-compat-analysis.log",
+        "receipt": "cases/outside_stand_idle_stop/primary-compatibility.json",
+        "sha256": "028c17b533a21540a473562c5062a45ea95f501d0867009d7a03d6613919699d"
+      },
       "construction": "cases/outside_stand_idle_stop/construction.json",
       "construction_sha256": "30eba2c5fafe369f576035a85e4fa716a71e0a145076b9fb0f3ed44300f276b3",
+      "delivery_acceptance": {
+        "case_id": "testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_idle_stop",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_idle_stop",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C378245__LVMC-11-60-040__taxi_driver/independent/prove_delivery_audit.py testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_idle_stop --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original pixel review source changed",
+        "negative_log": "cases/outside_stand_idle_stop/delivery-negative.log",
+        "negative_log_sha256": "8436aa110afd6ccdefb1aa6dd62f7bb4bf27d89695341e06e1c6d5f587298487",
+        "script": "independent/delivery_audit.py",
+        "script_sha256": "067b56829f7c7f5965f18c2f74da8b3592b9fe214a5582b2c8fff5615be8a6cc",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_idle_stop/delivery-positive.log",
+        "test_log_sha256": "3a51edc8b3c5c2fda2d241ae25c0bc1c4df40d6f561f1e49c2f78bfac3299ff0"
+      },
       "fixture_recipe": "work/testing__C378245__LVMC-11-60-040__taxi_driver/cases/outside_stand_idle_stop/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/outside_stand_idle_stop/measurement-contract.json",
@@ -116,9 +623,30 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "cases/outside_stand_idle_stop/primary-compat-negative.log"
+      },
+      "offline": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.draft.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_idle_stop --output .runtime-work/c378245-taxi/offline-outside_stand_idle_stop-v7 --python \"$PWD/.venv-cpu/bin/python\"",
+        "construction_sha256": "30eba2c5fafe369f576035a85e4fa716a71e0a145076b9fb0f3ed44300f276b3",
+        "exit_code": 0,
+        "log": "cases/outside_stand_idle_stop/offline.log",
+        "log_sha256": "7dd91cff7fd8f8d5f918d1d4dc48bc7c1c48c1e6f7c1cc6a7faed825a7a32743"
+      },
       "physical_preparation": {
         "receipt": "cases/outside_stand_idle_stop/physical-preparation.json",
         "sha256": "53380abd290397701e6e6e6c201c565ba9aa3615fb595223928ab77b7600cff7"
+      },
+      "post_capture": {
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_idle_stop --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "diagnostic_receipt": "cases/outside_stand_idle_stop/saved-processing-receipt.json",
+        "diagnostic_receipt_sha256": "a5e676a2db1e093721d5bdf642419c2bcc937be9e5478fa5c8cb88608e1af39e",
+        "feedback_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C378245__LVMC-11-60-040__taxi_driver/execution-manifest.json --case testing__C378245__LVMC-11-60-040__taxi_driver__outside_stand_idle_stop --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "diagnostic CPU fixture; original capture requires independent review",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/outside_stand_idle_stop/saved-processing.log",
+        "test_log_sha256": "55aaf2135a08d0215cb7c7f749daea06e0484f7d8f25a86d1c13ef9168ae17a5"
       }
     }
   ],

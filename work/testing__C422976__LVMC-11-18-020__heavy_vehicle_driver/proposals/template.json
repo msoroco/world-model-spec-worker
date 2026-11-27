@@ -1,0 +1,89 @@
+{
+  "actor": "heavy_vehicle_driver",
+  "law_id": "LVMC-11-18-020",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "sign_advance_distance_ft",
+      "range_or_domain": "99, 100 or 101 ft physical probes"
+    },
+    {
+      "kind": "world_setup",
+      "name": "sign_displayed",
+      "range_or_domain": "displayed or not displayed"
+    },
+    {
+      "kind": "world_setup",
+      "name": "person_side",
+      "range_or_domain": "approach_side or opposite_side"
+    },
+    {
+      "kind": "controller",
+      "name": "person_attempt_requested",
+      "range_or_domain": "attempt or presence only"
+    },
+    {
+      "kind": "controller",
+      "name": "entry_requested",
+      "range_or_domain": "hold or enter"
+    },
+    {
+      "kind": "world_setup",
+      "name": "crossing_marking",
+      "range_or_domain": "yellow_paint or road_buttons"
+    },
+    {
+      "kind": "world_setup",
+      "name": "sign_placement",
+      "range_or_domain": "curb or pavement"
+    }
+  ],
+  "quote": "The City Traffic Engineer is authorized to mark and maintain with yellow paint or road buttons crosswalks approximately twelve feet in width at intersections in the vicinity of schools where in the opinion of the City Traffic Engineer crossing the roadway by schoolchildren is unsafe. The City Traffic Engineer, if necessary, is further authorized to mark and maintain with a distinguishing color or road buttons upon the pavement or by signs erected along the curb in a conspicuous manner, the words \"School-Xing,\" not less than one hundred feet in advance of each crosswalk established, and it shall be unlawful for the operator of any vehicle to drive into a crosswalk where there is displayed a sign with the words \"School-Xing,\" when there is in the crosswalk upon the side of the roadway on which said vehicle is coming any person attempting to cross the street.",
+  "structure": {
+    "activation": {
+      "condition": "Las Vegas school-vicinity intersection has an established school crossing and an actually displayed School-Xing sign governing the approach.",
+      "numeric_conditions": [
+        {
+          "operator": ">=",
+          "unit": "ft",
+          "value": 100,
+          "variable": "sign_advance_distance_ft"
+        }
+      ]
+    },
+    "exceptions": [],
+    "judgment_calls_needed": [
+      {
+        "note": "Crossing width is a measured physical fact; approximateness is unresolved.",
+        "phrase": "approximately twelve feet"
+      },
+      {
+        "note": "Original municipal opinion is external context, not inferred from vehicle or person motion.",
+        "phrase": "in the opinion of the City Traffic Engineer"
+      },
+      {
+        "note": "Actual words, position and camera evidence are retained without a visibility cutoff.",
+        "phrase": "conspicuous manner"
+      },
+      {
+        "note": "Original person action evidence is retained without deciding legal intent.",
+        "phrase": "attempting to cross"
+      },
+      {
+        "note": "Relative side and approach direction are measured; legal geometric interpretation remains unresolved.",
+        "phrase": "upon the side of the roadway on which said vehicle is coming"
+      }
+    ],
+    "law_id": "LVMC-11-18-020",
+    "obligation": {
+      "description": "Operator of any vehicle does not drive into the crosswalk when a person in it on the approaching side attempts to cross.",
+      "numeric_conditions": [],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Observe sign display, person side/attempt and heavy-vehicle body-front entry on synchronized original frames.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "LVMC-11-18-020@heavy_vehicle_driver"
+}

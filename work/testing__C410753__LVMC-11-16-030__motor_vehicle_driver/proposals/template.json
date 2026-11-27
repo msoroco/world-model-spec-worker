@@ -1,0 +1,69 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "LVMC-11-16-030",
+  "parameter_refs": [
+    {
+      "kind": "subject_behavior",
+      "name": "ego_speed",
+      "range_or_domain": "original crossing traversal speed in mph"
+    },
+    {
+      "kind": "controller",
+      "name": "commanded_traversal_speed",
+      "range_or_domain": "engineering 14, 15 or 16 mph target"
+    },
+    {
+      "kind": "world_setup",
+      "name": "sight_setup",
+      "range_or_domain": "obscured or clear engineering target"
+    },
+    {
+      "kind": "world_setup",
+      "name": "exception_setup",
+      "range_or_domain": "none, on-duty flagman, visible nonwarning or warning signal"
+    }
+  ],
+  "quote": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+  "structure": {
+    "activation": {
+      "condition": "Grade-crossing traversal during the last 100-foot obscured approach with 400-foot railway view in both directions",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "effect": "Section does not apply",
+        "source_clause": "where a human flagman is on duty",
+        "trigger": "Reviewed on-duty human flagman at crossing time"
+      },
+      {
+        "effect": "Section does not apply",
+        "source_clause": "clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car",
+        "trigger": "Reviewed installed visible nonwarning crossing signal at traversal"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "The exact text supplies distances but no numerical occlusion threshold.",
+        "phrase": "clear and unobstructed view"
+      }
+    ],
+    "law_id": "LVMC-11-16-030",
+    "obligation": {
+      "description": "Measure crossing traversal speed against the statutory prima facie 15 mph value only when the sight condition holds.",
+      "numeric_conditions": [
+        {
+          "operator": "<=",
+          "unit": "mph",
+          "value": 15,
+          "variable": "ego_speed"
+        }
+      ],
+      "type": "prima_facie_speed_limit"
+    },
+    "timing": {
+      "description": "Approach sight during last 100 feet, speed while traversing, exception state contemporaneous with traversal.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "LVMC-11-16-030@motor_vehicle_driver"
+}

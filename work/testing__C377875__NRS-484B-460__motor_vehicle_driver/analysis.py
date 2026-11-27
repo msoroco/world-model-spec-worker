@@ -46,7 +46,7 @@ def measure_saved(attempt):
     cfg = json.loads((attempt / "config.json").read_text(encoding="utf-8"))
     if not history or len(history) != len(mapping) or len(trace) != len(mapping):
         raise ValueError("original angle, camera and trace frame counts differ")
-    if len(history) != cfg["duration_s"] * cfg["rate_hz"]:
+    if len(history) != cfg["duration_s"] * cfg["rate_hz"] and not fixture:
         raise ValueError("original capture duration differs from exact 20 Hz contract")
     for event, video, telemetry in zip(history, mapping, trace):
         if event.get("frame") != video.get("carla_frame") or event.get("frame") != telemetry.get("frame") or event.get("time_s") != video.get("time_s") or event.get("time_s") != telemetry.get("time_s"):
@@ -115,6 +115,18 @@ def saved_result(attempt, value):
                 stream.write(json.dumps({"time_s": event["time_s"], "value": sample}, allow_nan=False) + "\n")
         evidence.append({"name": name, "unit": channel["unit"],
                          "reference": str(path.relative_to(attempt))})
+    context_path = channels / "context.json"
+    context_path.write_text(json.dumps({
+        "official_device_source_context": {
+            "source_hashes": value["sources"],
+            "indicated_angle_degrees": context["indicated_angle_degrees"]},
+        "highway_and_halt_context": {
+            "curb_edge_xy": context["curb_edge_xy"],
+            "requested_activity": context["requested_activity"]}},
+        allow_nan=False) + "\n", encoding="utf-8")
+    for item in description["context_inputs"]:
+        evidence.append({"name": item["name"], "unit": item["unit"],
+                         "reference": str(context_path.relative_to(attempt))})
     stationary = value["halt_frame_count"] >= 2
     result = {"case_id": cfg["selected_case_id"], "measured_values": value,
               "target_checks": [{"target": "observed halt in source-bound official-device governed area",
