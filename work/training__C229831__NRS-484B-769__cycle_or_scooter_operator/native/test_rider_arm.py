@@ -26,6 +26,9 @@ class Carla:
 class Bicycle:
     id = 11
     type_id = BLUEPRINT
+    bounding_box = N(get_world_vertices=lambda pose: [
+        N(x=pose.location.x + dx, y=pose.location.y + dy, z=pose.location.z)
+        for dx, dy in ((-.7, -.25), (-.7, .25), (.7, .25), (.7, -.25))])
 
     def get_transform(self):
         return Carla.Transform(Carla.Location(x=10.0, y=-4.0, z=0.0),
@@ -42,6 +45,9 @@ class Rider:
 
     def set_transform(self, pose):
         self.pose = pose
+
+    def get_transform(self):
+        return self.pose
 
     def set_bones(self, control):
         self.request = control.bone_transforms
@@ -80,6 +86,7 @@ class TestRiderArm(unittest.TestCase):
         right = step_rider(Carla, bike, rider, method="right_horizontal", frame=100)
         self.assertEqual(right["requested_bones"], list(BONES["right_horizontal"]))
         self.assertEqual(right["bone_world_xyz_m"]["crl_hand__R"], [10.0, -4.0, 1.4])
+        self.assertEqual(len(right["bicycle_body_vertices_xyz_m"]), 4)
         self.assertTrue(rider.shown)
         self.assertAlmostEqual(right["rider_world_xyz_m"][1], -4.12)
         left = step_rider(Carla, bike, rider, method="left_upward", frame=101)

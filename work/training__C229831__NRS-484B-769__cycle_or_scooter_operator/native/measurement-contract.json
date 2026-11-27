@@ -4,7 +4,8 @@
   "law_source": "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json",
   "cases": [
     "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_a",
-    "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_b"
+    "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_b",
+    "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_c"
   ],
   "expected_raw_sources": {
     "machine_class": "Native actor type or independently documented model classification",
@@ -12,12 +13,29 @@
     "roadway_polygon": "map road polygon, excluding shoulder",
     "right_turn_route": "connected map lane waypoints through intersection boundary",
     "arm_keypoints": "four synchronized calibrated camera views or approved Native articulated-rider pose packet, including shoulder, elbow, wrist",
-    "machine_pose": "saved frame-map-aligned actor pose and heading"
+    "machine_pose": "saved frame-map-aligned actor pose and heading",
+    "rider_arm_readback": "native/rider_arm.py original world-position bone transforms, distinct rider and bicycle IDs, synchronized frame identity",
+    "roadway_and_route_join": "native/source_rows.py sourced roadway polygon and connected right-turn route geometry",
+    "general_right_turn_method": "Nevada Legislature NRS 484B.420 reviewed in native/source-review.json; left arm extends upward beyond left side"
   },
   "frame_rate_hz": 20,
   "minimum_duration_s": 30,
   "measurement_script": "native/measure_hand_signal.py",
-  "outputs": ["right_arm_horizontal_rightward_runs", "roadway_occupied_frames", "right_turn_route_frames"],
-  "legal_conclusions": "unresolved; NRS 484B.420 general method is not in supplied corpus and raw keypoint classifier alone cannot establish statutory meaning",
-  "runtime_limitation": "The pinned traffic-spec adapter explicitly removes sig.hand_signal and cannot derive it from its source packets. A separate saved keypoint acquisition and finalizer are still required."
+  "outputs": [
+    "right_arm_horizontal_rightward_runs",
+    "roadway_occupied_frames",
+    "right_turn_route_frames"
+  ],
+  "legal_conclusions": "unresolved; method pose diagnostics and requested controller are separate from original pixel visibility and statutory judgment",
+  "runtime_limitation": "The pinned adapter does not provide sig.hand_signal; a separate original rider bone readback and saved finalizer are required. Prospective rig has CPU tests only and original Native mounting/pixels are unverified.",
+  "measurement_scripts": [
+    "native/measure_hand_signal.py",
+    "native/measure_general_signal.py"
+  ],
+  "route_and_rig_sources": [
+    "native/road.py",
+    "native/route_control.py",
+    "native/rider_arm.py",
+    "native/source_rows.py"
+  ]
 }

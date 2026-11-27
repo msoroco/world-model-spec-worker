@@ -6,24 +6,48 @@
     "layout": "road",
     "maneuver": "right_turn",
     "control": "intersection_boundary",
-    "required_geometry": ["highway roadway polygon", "connected right-turn entry lane", "intersection boundary", "connected right-turn exit lane"],
+    "required_geometry": [
+      "highway roadway polygon",
+      "connected right-turn entry lane",
+      "intersection boundary",
+      "connected right-turn exit lane"
+    ],
     "spawn_rule": "select a waypoint on the incoming roadway lane with a connected right-turn successor; verify the entire rider footprint stays on roadway before the turn",
-    "route_rule": "advance through the intersection boundary to the connected right-turn exit, retaining 600 frame identities at 20 Hz"
+    "route_rule": "advance through the intersection boundary to the connected right-turn exit, retaining 600 frame identities at 20 Hz",
+    "opendrive_source": "native/road.py open_drive()",
+    "lane_center_path": "native/road.py lane_center_route()",
+    "controller": "native/route_control.py apply(); original bicycle pose readback each 20-Hz frame"
   },
   "actor": {
     "role": "cycle_or_scooter_operator",
     "chosen_machine_for_controlled_comparison": "bicycle",
     "machine_identity_source": "Native type ID plus rider mount evidence",
-    "physical_rider_arm_actuation": "unresolved in pinned runtime; must produce independently observable articulated right shoulder, elbow, and wrist or equivalent calibrated camera keypoints"
+    "physical_rider_arm_actuation": "native/rider_arm.py spawns distinct walker rider; requests right-horizontal or left-upward bone pose or neutral; saves original world-position shoulder/forearm/hand readback. Pixel mounting and visibility remain unverified."
   },
-  "camera_contract": ["front", "front_left", "front_right", "rear"],
+  "camera_contract": [
+    "front",
+    "front_left",
+    "front_right",
+    "rear"
+  ],
   "minimum_duration_s": 30,
   "comparison": {
-    "fixed": ["cell", "machine", "operator", "right-turn path", "20 Hz", "four camera mounts", "roadway polygon", "map", "capture timing"],
+    "fixed": [
+      "cell",
+      "machine",
+      "operator",
+      "right-turn path",
+      "20 Hz",
+      "four camera mounts",
+      "roadway polygon",
+      "map",
+      "capture timing"
+    ],
     "probe_a_requested_arm_pose": "right arm horizontal and to right side during roadway approach to turn",
     "probe_b_requested_arm_pose": "both hands remain on handlebar during same roadway approach",
     "only_deliberate_difference": "requested arm pose",
-    "physical_observation": "unverified; CPU proof exercises only source-shaped keypoint measurement"
+    "physical_observation": "unverified; CPU source join and right-horizontal/left-upward diagnostic tests use synthetic source shapes only",
+    "probe_c_requested_arm_pose": "left arm upward beyond the left side during the same roadway approach"
   },
-  "selection_status": "unselected"
+  "selection_status": "partial_unselected"
 }

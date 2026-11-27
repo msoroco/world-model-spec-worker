@@ -10,7 +10,7 @@ from scene import fixed_context
 
 def audit(clear_dir: str | Path, intrusion_dir: str | Path) -> dict:
     folders = [Path(clear_dir), Path(intrusion_dir)]
-    manifests = [json.loads((folder / "source-manifest.json").read_text())
+    manifests = [json.loads((folder / "rider-binding.json").read_text())
                  for folder in folders]
     for manifest, condition in zip(manifests, ("clear", "intrusion")):
         if manifest.get("condition") != condition:

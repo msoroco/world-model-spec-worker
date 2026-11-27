@@ -12,7 +12,8 @@
       "status": "selected_required",
       "case_ids": [
         "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_a",
-        "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_b"
+        "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_b",
+        "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_c"
       ],
       "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
     }
@@ -33,6 +34,14 @@
       "target_type": "violating_attempt",
       "physical_target": "turn right without hand and arm signal",
       "comparison_variable": "cycle_right_turn_hand_signal"
+    },
+    {
+      "case_id": "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_c",
+      "target_law_id": "NRS-484B-769",
+      "kind": "planned_only",
+      "target_type": "general_method_right_turn_probe",
+      "physical_target": "right turn while left arm extends upward beyond left side",
+      "comparison_variable": "cycle_right_turn_hand_signal"
     }
   ],
   "comparisons": [
@@ -48,13 +57,26 @@
       "fixed_conditions": [
         "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
       ]
+    },
+    {
+      "comparison_id": "training__C229831__NRS-484B-769__cycle_or_scooter_operator__general_vs_exception",
+      "case_ids": [
+        "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_a",
+        "training__C229831__NRS-484B-769__cycle_or_scooter_operator__probe_c"
+      ],
+      "deliberate_differences": [
+        "left arm upward versus right arm horizontal rightward"
+      ],
+      "fixed_conditions": [
+        "frozen cell, bicycle, operator, connected right-turn path, 20 Hz, four cameras, roadway polygon, map, and capture timing"
+      ]
     }
   ],
   "observations": [
     {
       "name": "sig.hand_signal",
       "mandatory": true,
-      "reason": "the arm signal and its meaning \u2208 {left, right, stop_or_slow}"
+      "reason": "the arm signal and its meaning ∈ {left, right, stop_or_slow}"
     },
     {
       "name": "ru.subject",
@@ -97,7 +119,8 @@
   "runtime_uncertainties": [
     "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
     "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions.",
-    "Pinned adapter deletes sig.hand_signal; current 600-frame keypoint proof tests only a separately sourced measurement and does not prove a Native articulated arm actuator or saved processing."
+    "Pinned adapter deletes sig.hand_signal; current 600-frame keypoint proof tests only a separately sourced measurement and does not prove a Native articulated arm actuator or saved processing.",
+    "Reviewed Nevada Legislature NRS 484B.420 method text is recorded in native/source-review.json; left-upward source-shaped diagnostic and rig request are CPU-tested, but no original Native capture or public compatibility proof exists."
   ],
   "statutory_text": "An operator of a bicycle, an electric bicycle or an electric scooter upon a roadway shall give all signals by hand and arm in the manner required by NRS 484B.420 [DEF-NRS-484B-420], except that the operator may give a signal for a right turn by extending his or her right hand and arm horizontally and to the right side of the bicycle, electric bicycle or electric scooter.",
   "activation_conditions_from_unreviewed_summary": [
@@ -119,54 +142,70 @@
   "source_observation_mapping": {
     "sig.hand_signal": {
       "measurement": "right_arm_horizontal_rightward_runs",
-      "acquisition": "raw calibrated shoulder, elbow, wrist keypoints; no pinned Core conversion",
+      "acquisition": "original Native articulated rider arm readback and four-camera pixels; right-horizontal and referenced left-upward diagnostics",
       "source_refs": [
         "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
-      ]
+      ],
+      "evidence": "original Native articulated rider arm readback and four-camera pixels; right-horizontal and referenced left-upward diagnostics",
+      "channels": []
     },
     "ru.subject": {
       "measurement": "operator_id",
       "acquisition": "Native rider mount and identity packet",
       "source_refs": [
         "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
-      ]
+      ],
+      "evidence": "Native rider mount and identity packet",
+      "channels": []
     },
     "ru.bicycle": {
       "measurement": "machine_class",
       "acquisition": "Native machine type ID; only the selected bicycle branch is proposed",
       "source_refs": [
         "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
-      ]
+      ],
+      "evidence": "Native machine type ID; only the selected bicycle branch is proposed",
+      "channels": []
     },
     "ru.electric_bicycle": {
       "measurement": "machine_class",
       "acquisition": "Native machine type ID; alternative class still needs a separate case",
       "source_refs": [
         "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
-      ]
+      ],
+      "evidence": "Native machine type ID; alternative class still needs a separate case",
+      "channels": []
     },
     "ru.electric_scooter": {
       "measurement": "machine_class",
       "acquisition": "Native machine type ID; alternative class still needs a separate case",
       "source_refs": [
         "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
-      ]
+      ],
+      "evidence": "Native machine type ID; alternative class still needs a separate case",
+      "channels": []
     },
     "st.roadway": {
       "measurement": "roadway_occupied_frames",
       "acquisition": "raw footprint and sourced roadway polygon, shoulder excluded",
       "source_refs": [
         "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
-      ]
+      ],
+      "evidence": "raw footprint and sourced roadway polygon, shoulder excluded",
+      "channels": []
     },
     "drv.turning": {
       "measurement": "right_turn_route_frames",
       "acquisition": "connected right-turn map waypoints and saved actor pose",
       "source_refs": [
         "inputs/training__C229831__NRS-484B-769__cycle_or_scooter_operator/assignment.json"
-      ]
+      ],
+      "evidence": "connected right-turn map waypoints and saved actor pose",
+      "channels": []
     }
   },
   "native_measurement_proposal": "native/measurement-contract.json",
-  "native_route_and_arm_proposal": "native/route-and-arm-proposal.json"
+  "native_route_and_arm_proposal": "native/route-and-arm-proposal.json",
+  "native_general_method_proposal": "native/measure_general_signal.py",
+  "native_referenced_law_review": "native/source-review.json"
 }

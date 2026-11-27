@@ -70,6 +70,8 @@ def build(suffix, candidate="primary"):
         ("runner.py", NATIVE / "runner.py"),
         ("finalize.py", NATIVE / "finalize.py"),
         ("measure_uturn.py", NATIVE / "measure_uturn.py"),
+        ("delivery_audit.py", NATIVE / "delivery_audit.py"),
+        ("comparison_audit.py", NATIVE / "comparison_audit.py"),
         ("analysis/divided_road.py", PKG / "analysis/divided_road.py"),
         ("tests/test_bundle.py", NATIVE / "test_bundle.py"),
     ):

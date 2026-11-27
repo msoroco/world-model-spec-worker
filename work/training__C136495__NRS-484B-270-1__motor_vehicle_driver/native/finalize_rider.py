@@ -27,7 +27,7 @@ def _number(value, name: str) -> float:
 
 def finalize(folder: str | Path) -> dict:
     folder = Path(folder)
-    manifest = json.loads((folder / "source-manifest.json").read_text())
+    manifest = json.loads((folder / "rider-binding.json").read_text())
     if manifest.get("format") != "c136495-native-source-manifest-v1":
         raise ValueError("Wrong rider source manifest")
     if manifest.get("condition") not in ("clear", "intrusion"):

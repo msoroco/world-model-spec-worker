@@ -59,6 +59,14 @@ def measure_attempt(attempt):
         raise ValueError("Original median geometry differs from request")
     if context.get("authored_road_ids") != request.get("road_ids"):
         raise ValueError("Original roadway readback differs from request")
+    roadways = context.get("native_roadways", [])
+    if len(roadways) != 2:
+        raise ValueError("Original two-roadway lane readback missing")
+    for roadway, road_id, center in zip(roadways, request["road_ids"], (-6.75, 6.75)):
+        if (roadway.get("road_id") != road_id or roadway.get("lane_id") != -1 or
+                abs(roadway.get("center_y_m", 1e9) - center) > .25 or
+                abs(roadway.get("lane_width_m", 1e9) - 3.5) > .1):
+            raise ValueError("Original roadway lane center or width differs")
     if review.get("format") != "worker-divided-road-authority-source":
         raise ValueError("Authority packet format missing")
     authority = review.get("source", {})
@@ -86,12 +94,16 @@ def measure_attempt(attempt):
                         "camera_frames": {name: index for name in CAMERAS},
                         "ego_footprint": ego.get("body_xy_m"),
                         "ego_heading_deg": ego.get("yaw_deg")})
+    def lane_polygon(roadway):
+        center, half_width = roadway["center_y_m"], roadway["lane_width_m"] / 2
+        return rectangle([-70, center-half_width, 70, center+half_width])
+
     map_context = {
         "layout": "divided_road",
         "median_polygon": rectangle(context["median_bounds_m"]),
         "opening_polygon": rectangle(context["opening_bounds_m"]),
-        "right_roadway_polygon": rectangle([-70, -10, 70, -2]),
-        "opposite_roadway_polygon": rectangle([-70, 2, 70, 10]),
+        "right_roadway_polygon": lane_polygon(roadways[0]),
+        "opposite_roadway_polygon": lane_polygon(roadways[1]),
         "opening_authority_source": authority,
     }
     outcome = measure(samples, map_context, source_kind=("original_native" if context["source_kind"].startswith("original") else "synthetic_native_sample"), camera_names=CAMERAS)

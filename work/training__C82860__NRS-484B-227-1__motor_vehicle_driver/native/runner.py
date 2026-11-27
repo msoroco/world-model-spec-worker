@@ -112,7 +112,9 @@ def execute(output, host, port):
             if waypoint is None or waypoint.lane_type != carla.LaneType.Driving:
                 raise RuntimeError('Native divided roadway missing: '+str(road_id))
             roadways.append({'road_id': road_id, 'lane_id': -1,
-                             'heading_deg': waypoint.transform.rotation.yaw})
+                             'heading_deg': waypoint.transform.rotation.yaw,
+                             'center_y_m': waypoint.transform.location.y,
+                             'lane_width_m': waypoint.lane_width})
         if abs(((roadways[0]['heading_deg']-roadways[1]['heading_deg']+180) % 360)-180) < 150:
             raise RuntimeError('Native roadways are not opposing directions')
         objects = [dict(item.attrib) for item in ET.fromstring(map_source).findall('.//object')

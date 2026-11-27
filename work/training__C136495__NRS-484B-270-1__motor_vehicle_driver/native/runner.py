@@ -88,8 +88,8 @@ def execute(output_dir: Path, case_id: str, condition: str, host: str,
     specification = check(case_id, condition, candidate=candidate)
     output_dir = Path(output_dir).resolve()
     if not output_dir.is_dir() or any((output_dir / name).exists() for name in (
-        "actor-frames.jsonl", "camera-frame-map.jsonl", "frame_map.jsonl",
-        "source-manifest.json", "overview.mkv", "approach.mkv",
+        "actor-frames.jsonl", "camera-frame-map.jsonl", "video_frames.jsonl",
+        "rider-binding.json", "overview.mkv", "approach.mkv",
         "reference_corner.mkv", "driver_reference.mkv",
     )):
         raise ValueError("Use a fresh, operator-owned attempt directory")
@@ -154,7 +154,7 @@ def execute(output_dir: Path, case_id: str, condition: str, host: str,
         camera_path = output_dir / "camera-frame-map.jsonl"
         original_time = world.get_snapshot().timestamp.elapsed_seconds
         with actor_path.open("x") as actor_file, camera_path.open("x") as camera_file, \
-             FrameMap(output_dir / "frame_map.jsonl") as frame_map:
+             FrameMap(output_dir / "video_frames.jsonl") as frame_map:
             for index in range(600):
                 for role in ("ego", "rider"):
                     actor = actors[role]
@@ -170,7 +170,6 @@ def execute(output_dir: Path, case_id: str, condition: str, host: str,
                                 extra={"c136495_rider_original": observed})
                 _write_row(actor_file, {"native_frame": frame, "time_s": time_s,
                                         "actors": observed})
-                frame_map.append(frame, time_s)
                 camera_frames = {}
                 for spec in camera_plan():
                     image = camera_queues[spec["name"]].get(timeout=30)
@@ -179,6 +178,7 @@ def execute(output_dir: Path, case_id: str, condition: str, host: str,
                     encoder = encoders[spec["name"]]
                     encoder.stdin.write(image.raw_data)
                     camera_frames[spec["name"]] = image.frame
+                frame_map.append(frame, time_s, camera_native_frames=camera_frames)
                 _write_row(camera_file, {"native_frame": frame, "time_s": time_s,
                                          "camera_frames": camera_frames})
         capture.close(confirmed=True)
@@ -202,7 +202,7 @@ def execute(output_dir: Path, case_id: str, condition: str, host: str,
         source_names = ("actor-frames.jsonl", "camera-frame-map.jsonl", "classification.json")
         source_sha = {name: _hash_file(output_dir / name)
                       for name in source_names}
-        _write_new(output_dir / "source-manifest.json", {
+        _write_new(output_dir / "rider-binding.json", {
             "format": "c136495-native-source-manifest-v1", "case_id": case_id,
             "condition": condition, "candidate_id": candidate,
             "camera_plan": specification["camera_plan"],

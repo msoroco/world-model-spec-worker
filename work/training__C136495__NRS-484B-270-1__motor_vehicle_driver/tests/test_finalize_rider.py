@@ -44,7 +44,7 @@ def fixture(folder: Path, condition: str) -> None:
         "observed_body_width_m": {"ego": 1.8, "rider": .6},
         "observed_body_length_m": {"ego": 4.3, "rider": 1.8}})
     files = ("actor-frames.jsonl", "camera-frame-map.jsonl", "classification.json")
-    write_json(folder / "source-manifest.json", {
+    write_json(folder / "rider-binding.json", {
         "format": "c136495-native-source-manifest-v1", "condition": condition,
         "candidate_id": "primary",
         "fixed_context": fixed_context(),
@@ -54,7 +54,7 @@ def fixture(folder: Path, condition: str) -> None:
 
 
 def rehash(folder: Path, name: str) -> None:
-    path = folder / "source-manifest.json"
+    path = folder / "rider-binding.json"
     manifest = json.loads(path.read_text())
     manifest["sha256"][name] = sha256(folder / name)
     write_json(path, manifest)
@@ -137,7 +137,7 @@ class SavedSourceTests(unittest.TestCase):
             self.assertEqual(len(passed["case_ids"]), 2)
             with self.assertRaisesRegex(ValueError, "condition or ordering"):
                 audit(self.folder, clear)
-            manifest_path = clear / "source-manifest.json"
+            manifest_path = clear / "rider-binding.json"
             manifest = json.loads(manifest_path.read_text())
             manifest["candidate_id"] = "fallback1"
             write_json(manifest_path, manifest)

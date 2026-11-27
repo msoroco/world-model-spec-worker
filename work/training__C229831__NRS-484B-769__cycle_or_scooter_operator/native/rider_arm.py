@@ -51,27 +51,24 @@ def _bone_request(carla, method):
             for name, (pitch, yaw, roll) in zip(BONES[method], rotations)]
 
 
-def step_rider(carla, bicycle, rider, *, method, frame, mount_height_m=0.85):
-    """Follow bicycle pose, request signal bones, and retain original readback."""
+def request_rider(carla, bicycle, rider, *, method, mount_height_m=0.85):
+    """Submit pose before a Native tick; return only the requested control."""
     _require(bicycle.type_id == BLUEPRINT, "Selected bicycle blueprint required")
     _require(getattr(rider, "id", None) != bicycle.id, "Rider and bicycle IDs must differ")
-    _require(type(frame) is int and frame >= 0, "Native frame required")
     _require(0.5 <= mount_height_m <= 1.3, "Rider mount height outside authored range")
     pose = bicycle.get_transform()
     yaw = radians(pose.rotation.yaw)
-    # The rider's world pose is tied to bicycle center, independent of the arm
-    # pose comparison variable. Pixel review must confirm genuine mounting.
     rider_pose = carla.Transform(carla.Location(
         x=pose.location.x - 0.12 * cos(yaw),
         y=pose.location.y - 0.12 * sin(yaw),
         z=pose.location.z + mount_height_m), carla.Rotation(yaw=pose.rotation.yaw))
     rider.set_transform(rider_pose)
-    request = _bone_request(carla, method)
-    if request:
+    requested = _bone_request(carla, method)
+    if requested:
         _require(callable(getattr(rider, "set_bones", None)) and
                  hasattr(carla, "WalkerBoneControlIn"),
                  "Native articulated rider control unavailable")
-        rider.set_bones(carla.WalkerBoneControlIn(request))
+        rider.set_bones(carla.WalkerBoneControlIn(requested))
         _require(callable(getattr(rider, "show_pose", None)),
                  "Native rider pose blending unavailable")
         rider.show_pose()
@@ -79,6 +76,22 @@ def step_rider(carla, bicycle, rider, *, method, frame, mount_height_m=0.85):
         _require(callable(getattr(rider, "hide_pose", None)),
                  "Native rider neutral pose unavailable")
         rider.hide_pose()
+    return {"requested_method": method,
+            "requested_bones": [name for name, _ in requested]}
+
+
+def sample_rider(bicycle, rider, *, request, frame):
+    """Read original bicycle and articulated bone geometry after a Native tick."""
+    _require(bicycle.type_id == BLUEPRINT, "Selected bicycle blueprint required")
+    _require(getattr(rider, "id", None) != bicycle.id, "Rider and bicycle IDs must differ")
+    _require(type(frame) is int and frame >= 0, "Native frame required")
+    pose = bicycle.get_transform()
+    bounding_box = getattr(bicycle, "bounding_box", None)
+    _require(bounding_box is not None and callable(getattr(bounding_box, "get_world_vertices", None)),
+             "Original bicycle body readback unavailable")
+    vertices = bounding_box.get_world_vertices(pose)
+    _require(len(vertices) >= 4, "Original bicycle body vertices missing")
+    body = [[float(vertex.x), float(vertex.y), float(vertex.z)] for vertex in vertices]
     _require(callable(getattr(rider, "get_bones", None)),
              "Original rider bone readback unavailable")
     raw = rider.get_bones().bone_transforms
@@ -97,13 +110,24 @@ def step_rider(carla, bicycle, rider, *, method, frame, mount_height_m=0.85):
             "Original rider bone world position unavailable")
         readback[name] = [float(world_location.x), float(world_location.y),
                           float(world_location.z)]
+    rider_pose = rider.get_transform()
     return {
         "frame": frame, "rider_actor_id": rider.id,
         "bicycle_actor_id": bicycle.id, "bicycle_blueprint": bicycle.type_id,
-        "requested_method": method, "requested_bones": [name for name, _ in request],
+        "requested_method": request["requested_method"],
+        "requested_bones": request["requested_bones"],
         "readback_bones": sorted(names), "bone_world_xyz_m": readback,
         "bicycle_yaw_deg": pose.rotation.yaw,
+        "bicycle_center_xyz_m": [pose.location.x, pose.location.y, pose.location.z],
+        "bicycle_body_vertices_xyz_m": body,
         "rider_world_xyz_m": [rider_pose.location.x, rider_pose.location.y,
                               rider_pose.location.z],
         "physical_mount_verified": False, "arm_pixels_verified": False,
     }
+
+
+def step_rider(carla, bicycle, rider, *, method, frame, mount_height_m=0.85):
+    """CPU convenience wrapper; live capture separates request and post-tick sample."""
+    request = request_rider(carla, bicycle, rider, method=method,
+                            mount_height_m=mount_height_m)
+    return sample_rider(bicycle, rider, request=request, frame=frame)

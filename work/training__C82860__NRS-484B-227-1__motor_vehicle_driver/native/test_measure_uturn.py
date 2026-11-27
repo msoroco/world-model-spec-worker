@@ -23,8 +23,10 @@ def fixture(folder, case):
                "barrier_bounds_m": q["barrier_bounds_m"],
                "authored_road_ids": q["road_ids"],
                "native_roadways": [{"road_id": road_id, "lane_id": -1,
-                                    "heading_deg": heading}
-                                   for road_id, heading in zip(q["road_ids"], (0, 180))]}
+                                    "heading_deg": heading, "center_y_m": center,
+                                    "lane_width_m": 3.5}
+                                   for road_id, heading, center in zip(
+                                       q["road_ids"], (0, 180), (-6.75, 6.75))]}
     (folder / "divided-road-context.json").write_text(json.dumps(context) + "\n")
     source = folder / "authority-source.json"
     source.write_text('{"public_authority_establishment":"unassessed"}\n')
@@ -85,6 +87,15 @@ class SavedUturnTest(unittest.TestCase):
         lines[100] = json.dumps(bad)
         path.write_text("\n".join(lines) + "\n")
         with self.assertRaisesRegex(ValueError, "camera frames"):
+            measure_attempt(self.folder)
+
+    def test_shifted_original_lane_readback_rejected(self):
+        fixture(self.folder, "authorized_opening")
+        path = self.folder / "divided-road-context.json"
+        context = json.loads(path.read_text())
+        context["native_roadways"][0]["center_y_m"] = -4.75
+        path.write_text(json.dumps(context) + "\n")
+        with self.assertRaisesRegex(ValueError, "lane center or width"):
             measure_attempt(self.folder)
 
 
