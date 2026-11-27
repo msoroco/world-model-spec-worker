@@ -1,4 +1,4 @@
-"""Build exact inline bus-stop position cases with independent source gates."""
+"""Build exact inline A2 loading-stop cases with independent source gates."""
 from pathlib import Path
 import hashlib
 import json
@@ -21,26 +21,28 @@ def build():
             'candidate_id':'primary','rate_hz':20,'duration_s':45,'required_atoms':[],
             'source_packets':[],'supported_case_ids':ids,
             'cameras':[{'name':name,'width':width,'height':height,'fov_deg':75,
-                        'pose_strategy':'reviewed stop, complete bus body, signs and street context'}
+                        'pose_strategy':'reviewed loading place, complete bus body, signs and street context'}
                        for name,width,height in CAMERAS]}
     recording={'channels':[
-        {'name':'bus_stopped_interval','unit':'s','method':'independent source-reviewed activity start/end joined to 900 Native frames','sampling_rate_hz':20,'time_window':'all 900 frames','reference_frame':'original frame/time','uncertainty':'standing/parking conduct review'},
-        {'name':'designated_stop_and_alternatives','unit':'structured source','method':'official stop, signs, public-street and other permitted-location source join','sampling_rate_hz':20,'time_window':'entire stop event','reference_frame':'reviewed designation','uncertainty':'authority and assigned-route review'},
-        {'name':'body_inside_stop','unit':'bool','method':'Native bus-body corners against reviewed stop polygon','sampling_rate_hz':20,'time_window':'all 900 frames','reference_frame':'original frame/time','uncertainty':'body and boundary localization'},
+        {'name':'original_bus_stop_history','unit':'s','method':'independent source-reviewed stop start/end joined to 900 Native frames','sampling_rate_hz':20,'time_window':'all 900 frames','reference_frame':'original frame/time','uncertainty':'stop interval review'},
+        {'name':'designated_location_and_route','unit':'structured source','method':'official five-location designations, polygons, public-street and assigned-route source join','sampling_rate_hz':20,'time_window':'entire stop event','reference_frame':'reviewed designation','uncertainty':'authority and assigned-route review'},
+        {'name':'passenger_baggage_purpose','unit':'categorical','method':'independent purpose review joined to stopped activity','sampling_rate_hz':20,'time_window':'entire stop event','reference_frame':'original source review','uncertainty':'intent review'},
+        {'name':'exception_and_bus_class','unit':'categorical','method':'independent bus classification and emergency circumstances review','sampling_rate_hz':20,'time_window':'entire stop event','reference_frame':'original source review','uncertainty':'exception review'},
         {'name':'four_camera_frame_identity','unit':'frame ID','method':'four synchronized original RGB cameras','sampling_rate_hz':20,'time_window':'all 900 frames','reference_frame':'original frame/time','uncertainty':'pixel review'}],
-        'context_inputs':[{'name':'reviewed_site_and_designation','unit':'structured original record','method':'source-hashed signed official stop boundary, jurisdiction, route termini and other permissible locations'},
-                          {'name':'bus_operator_and_activity','unit':'structured original record','method':'source-hashed non-tour bus/operator and independent conduct review'}],
-        'limitations':['Synthetic boundary and bus position are compatibility diagnostics only; original designation and legal outcome remain unverified.']}
+        'context_inputs':[{'name':'reviewed_site_designation_route','unit':'structured original record','method':'source-hashed official location boundaries, jurisdiction and assigned route'},
+                          {'name':'bus_operator_activity_purpose','unit':'structured original record','method':'source-hashed operator, bus class, purpose, emergency and independent stop review'}],
+        'limitations':['Synthetic positions and purpose are compatibility diagnostics only; original designation, physical conduct and legal outcome remain unverified.']}
     for case in plan['cases']:
         suffix=case['case_id'].split('__')[-1]
         folder=ROOT/'cases'/suffix
         config=dict(common)
         config['selected_case_id']=case['case_id']
-        config['case']={'case_id':case['case_id'],'conduct':case['conduct'],
-                        'location_relation':case['location_relation'],'recording_description':recording}
+        config['case']={'case_id':case['case_id'],
+                        **{key:case[key] for key in ('location_kind','loading_purpose','stop_reason','bus_class')},
+                        'recording_description':recording}
         scene={'case_id':case['case_id'],'cell_id':'C378132','actor':'bus_driver',
-               'source_kind':'synthetic_diagnostic_fixture','conduct':case['conduct'],
-               'location_relation':case['location_relation']}
+               'source_kind':'synthetic_diagnostic_fixture',
+               **{key:case[key] for key in ('location_kind','loading_purpose','stop_reason','bus_class')}}
         write(folder/'config.json',config);write(folder/'scene.json',scene)
         entries=[]
         for name,source in [('runner.py',ROOT/'runner.py'),('bus_location.py',ROOT/'bus_location.py'),
@@ -52,17 +54,19 @@ def build():
         construction={'law_id':plan['law_id'],'cell_id':plan['cell_id'],'actor':plan['actor'],
                       'case_id':case['case_id'],'entrypoint':'runner.py',
                       'recording_description':recording,'files':entries,
-                      'measurement_plan':{'bus_identity':'source-hashed covered non-tour bus and assigned route',
-                       'official_stop':'signed City Traffic Engineer stop boundary and alternatives',
-                       'activity_interval':'independent standing/parking start/end joined to original 900 Native frames',
-                       'body_position':'actual footprint inside or outside official stop polygon over full activity'},
-                      'static_checks':['exact C378132 selected case/config','reviewed original street, stop, route and designation SHA-256 before Native spawn','900 synchronized original frames and four cameras'],
-                      'termination_rules':['stop at 900 Native ticks','fail on incomplete stopped interval or body/camera source mismatch'],
-                      'mechanisms':['reviewed one-way street and designated bus-stop polygon','non-tour bus approach, controlled halt and departure at selected inside or outside pose','source-reviewed alternative permissible locations','four synchronized RGB cameras and Native bus footprint samples']}
+                      'measurement_plan':{'bus_identity':'source-hashed operator and regular/tour bus class',
+                       'official_locations':'City Traffic Engineer stop, stand, passenger zone and assigned-route endpoint boundaries',
+                       'activity_interval':'independent stopped interval joined to original 900 Native frames',
+                       'loading_purpose':'independent passenger, baggage or cargo-only purpose review',
+                       'emergency':'independent ordinary or emergency circumstance review',
+                       'body_position':'actual footprint relative to all permitted polygons over the complete stop'},
+                      'static_checks':['exact C378132 selected case/config','reviewed original street, five locations, route and designation SHA-256 before Native spawn','900 synchronized original frames and four cameras'],
+                      'termination_rules':['stop at 900 Native ticks','fail on incomplete stop interval or body/camera source mismatch'],
+                      'mechanisms':['reviewed business-district street and five official location polygons','bus approach, controlled halt and departure at selected location','source-reviewed purpose, tour status and emergency circumstances','four synchronized RGB cameras and Native bus footprint samples']}
         write(folder/'construction.json',construction)
     for name in ('config.json','scene.json','construction.json'):
-        (ROOT/name).write_text((ROOT/'cases/stand_inside'/name).read_text())
-    print('four exact source-gated inline bus constructions generated')
+        (ROOT/name).write_text((ROOT/'cases/outside_passenger'/name).read_text())
+    print(f"{len(ids)} exact source-gated inline bus constructions generated")
 
 
 if __name__=='__main__':build()

@@ -1,4 +1,4 @@
-"""Build source-shaped bus location diagnostics for pinned runtime compatibility."""
+"""Build source-shaped A2 bus loading-stop diagnostics for pinned runtime compatibility."""
 from __future__ import annotations
 
 import copy
@@ -33,17 +33,18 @@ def build() -> None:
         suffix=case['case_id'].split('__')[-1]
         folder=ROOT/'cases'/suffix
         source=folder/'fixture-sources';source.mkdir(parents=True,exist_ok=True)
-        for name in ('site','designation','identity','activity','native'):
+        for name in ('site','designation','route','identity','activity','purpose','circumstances','native'):
             value=json.loads((folder/'diagnostic-sources'/(name+'.json')).read_text())
             if name=='native':
                 for row in value['frames']:
                     row['original_frame']=row['frame']
             write(source/(name+'.json'),value)
         refs={name:{'path':name+'.json','sha256':sha(source/(name+'.json'))}
-              for name in ('site','designation','identity','activity','native')}
+              for name in ('site','designation','route','identity','activity','purpose','circumstances','native')}
         packet={'assignment_id':AID,'case_id':case['case_id'],'cell_id':'C378132',
                 'law_id':'LVMC-11-60-030-A2','actor':'bus_driver',
-                'diagnostic_fixture':True,'location_relation':case['location_relation'],
+                'diagnostic_fixture':True,
+                **{key:case[key] for key in ('location_kind','loading_purpose','stop_reason','bus_class')},
                 'source_refs':refs}
         write(source/'location-source-packet.json',packet)
         native=json.loads((source/'native.json').read_text())
@@ -61,7 +62,7 @@ def build() -> None:
                          recording_time_s=i/20,replay_simulation_time_s=i/20)
             body=[[x,y,z] for x,y in row['bus_footprint_xy_m'] for z in (0.0,2.5)]
             event['ego'].update(position_m=[*row['bus_center_xy_m'],0.0],heading_deg=0.0,
-                                speed_mps=0.0,speed_provenance='synthetic_native_sample',
+                                speed_mps=row['bus_speed_mps'],speed_provenance='synthetic_native_sample',
                                 body_vertices_m=body)
             event['original_observations'].update(frame=i,time_s=i/20)
             events.append(event)
@@ -82,7 +83,7 @@ def build() -> None:
         write(map_facts,{'map':'Carla/Maps/OpenDriveMap','junctions':[],
                          'crosswalk_vertices_m':[],'crosswalk_inventory_scope':'synthetic diagnostic'})
         write(capture/'manifest.json',{'status':'draft','acquisition':'synthetic_fixture',
-              'case_id':case['case_id'],'source_run':'synthetic C378132 CPU fixture',
+              'case_id':case['case_id'],'source_run':'synthetic C378132 A2 CPU fixture',
               'map':'Carla/Maps/OpenDriveMap','frames':900,'required_observations':[],
               'extraction_confirmed':True,'complete_driving_lanes':True,
               'observation_contract_version':2,'road_user_visibility_observed':False,
@@ -103,7 +104,7 @@ def build() -> None:
         spec_path=folder/'diagnostic.json';write(spec_path,spec)
         recipe['generator']={'source':str(spec_path.relative_to(REPO)),'sha256':sha(spec_path)}
         write(folder/'fixture-recipe.json',recipe)
-    print('six source-shaped 900-frame bus fixture recipes built')
+    print(f"{len(plan['cases'])} source-shaped 900-frame bus fixture recipes built")
 
 if __name__=='__main__':
     build()

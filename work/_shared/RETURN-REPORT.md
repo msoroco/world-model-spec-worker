@@ -2,6 +2,14 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 12:36 UTC: C378707 canonical semantic stages pass
+
+- Root C378707/NRS-484B-477-1a remains **partial**. Its source-grounded relevance, exact-law template, four judgment observables, frozen-cell binding and six selected canonical cases pass pinned stage validation. The goods exception and local ordinance remain separate, with no invented legal cutoff. The source-sealed Native activity, four-camera capture and five comparison audits passed 15 focused CPU tests; exact offline, compatibility, saved-only, physical and independent delivery proofs remain. No physical or legal acceptance is claimed. No Git command was run.
+
+## 2026-11-27 12:32 UTC: business-alley Native and comparison construction advances
+
+- Root `testing__C378707__NRS-484B-477-1a__motor_vehicle_driver` remains **partial**. It now has six source-reviewed passenger/goods/ordinance construction targets for both approach directions, a 900-frame original activity and four-camera capture path, sealed saved-source and five controlled comparison audits. Fifteen focused CPU tests pass; the scoped partial `--complete` check passed after the latest source-seal addition. Native operator, semantic stages, pinned compatibility, saved-only, physical and independent delivery proofs remain CPU work. No physical or legal acceptance is claimed. Three independent owners continue C179819, C378132 and C386411. No Git command was run.
+
 ## 2026-11-27 12:23 UTC: C177249 railroad stop package published
 
 - `testing__C177249__NRS-484B-560-7b__motor_vehicle_driver` passed the owner's exact strict gate and the lead's independent exact strict gate. Its six exact cases and one risk-justified fallback each passed offline, pinned compatibility, saved-only, physical preparation, independent positive/negative delivery and comparison CPU proofs. The proposal published **6 cases, 5 comparisons, 53 syntax-checked commands**. Shared queue is now **223 ready assignments, 1,538 cases, 1,070 comparisons**, 4,173,223 bytes, SHA256 `444695e9bd4d0b07f71a01303e6054819458f9adbe2934e783b847cee48d30c6`. A freed owner slot is now assigned to the separate bus loading A2 law. No Git command was run.

@@ -31,7 +31,7 @@ def bind():
         case_id = entry['case_id']
         suffix = case_id.split('__')[-1]
         folder = ROOT / 'cases' / suffix
-        compat = SCRATCH / ('compat-' + suffix + ('-v3' if suffix=='stand_inside' else '-v1'))
+        compat = SCRATCH / ('compatibility-' + suffix + ('-v4' if suffix=='stand_inside' else '-v2'))
         proof = json.loads((compat / 'compatibility.json').read_text())
         if proof['construction_sha256'] != entry['construction_sha256'] or not proof['passed']:
             raise ValueError('changed exact compatibility proof: ' + suffix)
@@ -53,7 +53,7 @@ def bind():
             raise ValueError('missing fresh offline log')
         offline_command = ('PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest '
             + str(draft.relative_to(REPO)) + ' --case ' + case_id + ' --output .runtime-work/c386411-bus/offline-'
-            + suffix + ('-v3' if suffix=='stand_inside' else '-v1') + ' --python "$PWD/.venv-cpu/bin/python"')
+            + suffix + ('-v4' if suffix=='stand_inside' else '-v2') + ' --python "$PWD/.venv-cpu/bin/python"')
         entry['offline'] = {'command': offline_command, 'exit_code': 0,
                             'construction_sha256': entry['construction_sha256'],
                             'log': str(log.relative_to(ROOT)), 'log_sha256': sha(log)}

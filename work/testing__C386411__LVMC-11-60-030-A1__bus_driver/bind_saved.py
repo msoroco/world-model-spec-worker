@@ -1,4 +1,4 @@
-"""Bind saved-only CPU rerun receipts for all six diagnostic bus attempts."""
+"""Bind saved-only CPU rerun receipts for all four diagnostic bus attempts."""
 import hashlib
 import json
 from pathlib import Path
@@ -18,14 +18,16 @@ def main():
     for entry in manifest['cases']:
         suffix=entry['case_id'].split('__')[-1]
         folder=ROOT/'cases'/suffix
-        source=SCRATCH/('saved-'+suffix+'-v1')/'v0001'/'processing.json'
+        versions=sorted((SCRATCH/('saved-'+suffix+('-v4' if suffix=='stand_inside' else '-v2'))).glob('v*/processing.json'))
+        if not versions:raise ValueError('missing saved processing receipt: '+suffix)
+        source=versions[-1]
         proof=json.loads(source.read_text())
         if (proof.get('case_id')!=entry['case_id'] or proof.get('recorded_only') is not True
                 or proof.get('originals_preserved') is not True or proof.get('passed') is not True
                 or proof.get('missing_evidence') is not False
                 or proof['analysis_revision']['construction_sha256']!=entry['construction_sha256']):
             raise ValueError('incomplete saved-only source proof: '+suffix)
-        log_source=SCRATCH/('saved-'+suffix+'-v1-cli.log')
+        log_source=SCRATCH/('saved-'+suffix+('-v4' if suffix=='stand_inside' else '-v2')+'-cli.log')
         log=folder/'saved-processing.log'
         log.write_text(log_source.read_text().rstrip()+'\n')
         receipt=folder/'saved-processing-receipt.json'

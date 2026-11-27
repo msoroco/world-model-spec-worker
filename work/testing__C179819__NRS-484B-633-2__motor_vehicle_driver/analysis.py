@@ -100,6 +100,8 @@ def saved_result(attempt: Path, report: dict) -> dict:
                 if name == "four_camera_pixels":
                     value = {"frame": row["original_frame"],
                              "views": ["overview", "approach", "reference_corner", "driver_reference"]}
+                elif name == "observed_crossing_speed_mph":
+                    value = row["ego_speed_mps"] * 2.2369362920544
                 else:
                     value = row[name]
                 stream.write(json.dumps({"time_s": row["time_s"], "value": value}) + "\n")
@@ -121,6 +123,10 @@ def saved_result(attempt: Path, report: dict) -> dict:
     measured = report["measurements"]["crossing_speed_observation"]["value"]
     requested = measured["declared_maximum_mph"] + config["case"]["requested_speed_delta_from_declared_maximum_mph"]
     observed = measured["observed_crossing_speed_mph"]["maximum"]
+    crossing_frames = report["measurements"]["structure_crossing_observation"]["value"]["crossing_original_frames"]
+    crossing_times = [row["time_s"] for row in trace if row["original_frame"] in crossing_frames]
+    if len(crossing_times) != 2:
+        raise ValueError("original crossing time window unavailable")
     result = {
         "case_id": report["case_id"], "measured_values": report["measurements"],
         "target_checks": [{"target": "authored engineering crossing speed maximum",
@@ -138,6 +144,12 @@ def saved_result(attempt: Path, report: dict) -> dict:
         "realized_observables": {},
     }
     result = physical_result(attempt, result)
+    result["realized_observables"]["observed_crossing_speed_mph"] = {
+        "unit": "mph", "method": "original 20 Hz crossing speed samples converted from m/s",
+        "time_window": "entire original crossing", "statistic": "max",
+        "reference": "channels/observed_crossing_speed_mph.jsonl",
+        "sample_window_s": crossing_times, "value": observed,
+    }
     validate_result(result)
     return result
 

@@ -6,7 +6,7 @@ import unittest
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
-from bus_location import inside
+from bus_location import inside, boundary_relation
 import runner
 
 
@@ -24,6 +24,10 @@ class BundleTest(unittest.TestCase):
         polygon=[[-42,-8],[-18,-8],[-18,0],[-42,0]]
         self.assertTrue(inside([-30,-4],polygon))
         self.assertFalse(inside([-30,-12],polygon))
+        self.assertEqual(boundary_relation([[-32,-6],[-28,-6],[-28,-4],[-32,-4]],polygon),'inside')
+        self.assertEqual(boundary_relation([[-32,-12],[-28,-12],[-28,-10],[-32,-10]],polygon),'outside')
+        self.assertEqual(boundary_relation([[-32,-9],[-28,-9],[-28,-7],[-32,-7]],polygon),'mixed')
+        self.assertEqual(boundary_relation([[-45,-5],[-15,-5],[-15,-3],[-45,-3]],polygon),'mixed')
 
     def test_no_unreviewed_native_entry(self):
         import native_capture

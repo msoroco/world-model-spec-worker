@@ -1,4 +1,4 @@
-"""Exact C378132 bus-stop position construction and source-gated Native entry."""
+"""Exact C378132 bus loading-stop construction and source-gated Native entry."""
 from __future__ import annotations
 
 import argparse
@@ -16,15 +16,18 @@ def check() -> dict:
     if (config["law_id"] != "LVMC-11-60-030-A2" or config["cell_id"] != "C378132" or
             config["actor"] != "bus_driver" or config["selected_case_id"] != scene["case_id"] or
             case["case_id"] != scene["case_id"]):
-        raise ValueError("exact bus-stop position identity changed")
+        raise ValueError("exact bus loading-stop identity changed")
     if config["rate_hz"] != 20 or config["duration_s"] != 45 or len(config["cameras"]) != 4:
-        raise ValueError("position/camera capture contract changed")
+        raise ValueError("loading-stop camera capture contract changed")
     if scene["source_kind"] != "synthetic_diagnostic_fixture" or scene["cell_id"] != "C378132":
         raise ValueError("diagnostic scene source identity changed")
-    if scene["conduct"] != case["conduct"] or scene["location_relation"] != case["location_relation"]:
-        raise ValueError("case activity/location target changed")
-    if case["location_relation"] not in ("inside", "outside") or case["conduct"] not in ("stand", "park"):
-        raise ValueError("unknown exact stop-position case")
+    for key in ("location_kind", "loading_purpose", "stop_reason", "bus_class"):
+        if scene[key] != case[key]:
+            raise ValueError("case loading-stop target changed: " + key)
+    if case["location_kind"] not in ("outside", "bus_stop", "bus_stand", "passenger_loading_zone", "route_origin", "route_destination"):
+        raise ValueError("unknown exact loading location")
+    if case["loading_purpose"] not in ("passenger", "baggage", "cargo_only") or case["stop_reason"] not in ("ordinary", "emergency") or case["bus_class"] not in ("regular", "tour"):
+        raise ValueError("unknown purpose, reason or bus classification")
     return scene
 
 
@@ -39,7 +42,7 @@ def main() -> None:
     args = parser.parse_args()
     scene = check()
     if args.check:
-        print("exact diagnostic bus-stop position check passed: " + scene["case_id"])
+        print("exact diagnostic bus loading-stop check passed: " + scene["case_id"])
         return
     site = args.site or os.environ.get("C378132_REVIEWED_SITE")
     module = args.adapter_module or os.environ.get("C378132_NATIVE_ADAPTER_MODULE")

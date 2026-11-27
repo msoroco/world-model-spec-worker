@@ -2,43 +2,6 @@
   "assignment_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver",
   "cases": [
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -49,22 +12,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_a_speed_below-fallback1.log",
-            "negative_log": "proof-negative-bridge_a_speed_below-fallback1.log",
-            "receipt": "receipt-compat-bridge_a_speed_below-fallback1.json",
-            "sha256": "9399a9a7ae7e0d042cf8d65000ffcf2fe2ae51ac261fbbc914f13780aea2239e"
-          },
           "construction": "cases/bridge_a_speed_below/fallback1/construction.json",
-          "construction_sha256": "3281075f91a6ec8cbef434e6d83366eed0928ed25a89860c2f0bbce1c0ca62fc",
+          "construction_sha256": "37a7b4e1db85057d749e3b4361f46bc7f35c7a567eeafc82d4c17171530b92e4",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_below --output .runtime-work/c179819/offline-bridge_a_speed_below-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "3281075f91a6ec8cbef434e6d83366eed0928ed25a89860c2f0bbce1c0ca62fc",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_a_speed_below-fallback1.log",
-            "log_sha256": "e5839a33bbd007413904821318102740691b91c2060247ffbe7b8137cc4fe386"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -73,40 +23,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_below",
-      "compatibility": {
-        "log": "proof-compat-bridge_a_speed_below-primary.log",
-        "negative_log": "proof-negative-bridge_a_speed_below-primary.log",
-        "receipt": "receipt-compat-bridge_a_speed_below-primary.json",
-        "sha256": "0a44f1eb9f367f27c06d37187d6bb222d1a4020db7b5d84b018e6a077aaf49e6"
-      },
       "construction": "construction.json",
-      "construction_sha256": "1b4ae04cce05bf30f61bbc9b3484b1a1c9984b5493e37047fe5c6cac3fb62cde",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_below",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_below --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_speed_below-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_below --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_speed_below-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_a_speed_below.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_a_speed_below.log",
-        "test_log_sha256": "a682fb49f3ddd5b7b432d8f29f89103656ea03ef11ec45e27c141699a9e8b84f"
-      },
+      "construction_sha256": "471af11fd35ecbfe534b77c39e3027e8b3bdabf28d6381d8b91baa57baa7d93e",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_a_speed_below-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -118,68 +36,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_a_speed_below-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_below --output .runtime-work/c179819/offline-bridge_a_speed_below-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "1b4ae04cce05bf30f61bbc9b3484b1a1c9984b5493e37047fe5c6cac3fb62cde",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_a_speed_below-primary.log",
-        "log_sha256": "3850b2daa73bbc52424350934a4e8ae26997d8b3d6a30ec791618421bc0d05c9"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_a_speed_below.json",
-        "sha256": "6baaf284ec37a47766e091fd50e7128c77e337e76a0bf9c245eced70b2014b94"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_below --attempt .runtime-work/c179819/saved-attempt-bridge_a_speed_below-v2 --output .runtime-work/c179819/saved-output-bridge_a_speed_below-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_a_speed_below.log",
-        "test_log_sha256": "7888f9e3379f1a8827edf649830462c55f0662332628385add60f6c527b45fa0"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -190,22 +49,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_a_speed_at-fallback1.log",
-            "negative_log": "proof-negative-bridge_a_speed_at-fallback1.log",
-            "receipt": "receipt-compat-bridge_a_speed_at-fallback1.json",
-            "sha256": "e67cc012b921b165653f9de9e714997c36ba0a40263d72b9ec09360eba687ac7"
-          },
           "construction": "cases/bridge_a_speed_at/fallback1/construction.json",
-          "construction_sha256": "5044243ef086bae9c416b17f63d52fe4619f48353e76be94ee0f8075b9367cc8",
+          "construction_sha256": "676078ac66208d7b8aca3825a2d049218364ce37637cc1cc272724215486e794",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_at --output .runtime-work/c179819/offline-bridge_a_speed_at-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "5044243ef086bae9c416b17f63d52fe4619f48353e76be94ee0f8075b9367cc8",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_a_speed_at-fallback1.log",
-            "log_sha256": "94aa0adaf9c86a57403cff3dc77eb361c17e1e870f164eda5c4e08151478b9d7"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -214,40 +60,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_at",
-      "compatibility": {
-        "log": "proof-compat-bridge_a_speed_at-primary.log",
-        "negative_log": "proof-negative-bridge_a_speed_at-primary.log",
-        "receipt": "receipt-compat-bridge_a_speed_at-primary.json",
-        "sha256": "c3c4104094c2e823e54af1a99caa87f281727f5f9a4f71b1efa12bf9ee3adac7"
-      },
       "construction": "cases/bridge_a_speed_at/construction.json",
-      "construction_sha256": "a12fe03a782125899f09b1045ec8f813c8dd0d77b09241b20d38a13054523bbb",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_at",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_at --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_speed_at-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_at --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_speed_at-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_a_speed_at.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_a_speed_at.log",
-        "test_log_sha256": "15e0afe07b9b2af60038c2b1285820a71f05dc6d930e12305bebdc5d8fed1172"
-      },
+      "construction_sha256": "4fc06c4f3775e7bf56db17d51834f8c744ee63f101ec0448746755974c583747",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_a_speed_at-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -259,68 +73,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_a_speed_at-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_at --output .runtime-work/c179819/offline-bridge_a_speed_at-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "a12fe03a782125899f09b1045ec8f813c8dd0d77b09241b20d38a13054523bbb",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_a_speed_at-primary.log",
-        "log_sha256": "2d0b1d4dc54c19ca818024a6061b73c3f2e38ebc3962590062bc5e4817512ce6"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_a_speed_at.json",
-        "sha256": "a45ae6150badcd956dd99e98aafa85141aa0ed0d7d47dd8ed013b1486e6cae6f"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_at --attempt .runtime-work/c179819/saved-attempt-bridge_a_speed_at-v2 --output .runtime-work/c179819/saved-output-bridge_a_speed_at-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_a_speed_at.log",
-        "test_log_sha256": "00a183b27415cbdc4f4d28ef4d5f334a1b5d92e92f8e7c121c127c2b34faf9e6"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -331,22 +86,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_a_speed_above-fallback1.log",
-            "negative_log": "proof-negative-bridge_a_speed_above-fallback1.log",
-            "receipt": "receipt-compat-bridge_a_speed_above-fallback1.json",
-            "sha256": "c36fb153e6d6a36ce43348f7286294a458760ad4161776d740f07cbc7008e7bf"
-          },
           "construction": "cases/bridge_a_speed_above/fallback1/construction.json",
-          "construction_sha256": "b064cc3b47cec54f2ae4a20909b7096b62d73d6e2c7c79f71d2f52f7c3a654e9",
+          "construction_sha256": "75cbb77f049a49daee74cfedeab2a09d55742931e61d4f31234783ac62ed75a3",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_above --output .runtime-work/c179819/offline-bridge_a_speed_above-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "b064cc3b47cec54f2ae4a20909b7096b62d73d6e2c7c79f71d2f52f7c3a654e9",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_a_speed_above-fallback1.log",
-            "log_sha256": "1a886cc014e46c66472674ba9003baf5b45d08775f4ffe1a3584a318185d431c"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -355,40 +97,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_above",
-      "compatibility": {
-        "log": "proof-compat-bridge_a_speed_above-primary.log",
-        "negative_log": "proof-negative-bridge_a_speed_above-primary.log",
-        "receipt": "receipt-compat-bridge_a_speed_above-primary.json",
-        "sha256": "0a0940b3bd36c1f8d20b4b51c567657c38a448bfd64cc88d0e7fdf2e22af9db6"
-      },
       "construction": "cases/bridge_a_speed_above/construction.json",
-      "construction_sha256": "403e26cf546bf862073d2f57d22bfcf842669652333e78cbbca51c68cf94094a",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_above",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_above --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_speed_above-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_above --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_speed_above-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_a_speed_above.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_a_speed_above.log",
-        "test_log_sha256": "7ed17c1a7eefe343e11742a35506aee17a13d9e5d88a62769f9d87899112d0ae"
-      },
+      "construction_sha256": "efed7eaeb072938072e50c5564aa1544ffc0b520b9d9aa3d6c661620174b46f6",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_a_speed_above-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -400,68 +110,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_a_speed_above-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_above --output .runtime-work/c179819/offline-bridge_a_speed_above-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "403e26cf546bf862073d2f57d22bfcf842669652333e78cbbca51c68cf94094a",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_a_speed_above-primary.log",
-        "log_sha256": "98d7ab905d783e87dcc5ff1bbd516dcbf85e65c99a85cc5cda27feff7a78ed1c"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_a_speed_above.json",
-        "sha256": "3d68c2f45f3328f0e839df4ecc56ce6b8f3d5c3efbcb42cfc689c43520a44836"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_speed_above --attempt .runtime-work/c179819/saved-attempt-bridge_a_speed_above-v2 --output .runtime-work/c179819/saved-output-bridge_a_speed_above-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_a_speed_above.log",
-        "test_log_sha256": "a070175de5e1188ccd10c0e0b004f5aed641284c92b02cf521228f8525622686"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -472,22 +123,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_b_speed_below-fallback1.log",
-            "negative_log": "proof-negative-bridge_b_speed_below-fallback1.log",
-            "receipt": "receipt-compat-bridge_b_speed_below-fallback1.json",
-            "sha256": "c2198261c6e9188ba3798da3d22f3151a6d394afb95de97e4e2847399f060446"
-          },
           "construction": "cases/bridge_b_speed_below/fallback1/construction.json",
-          "construction_sha256": "3b347715412d43c5755019caa9c03893261297a77e3aa1538a0fc0c9423d5480",
+          "construction_sha256": "9b64face6984575ade2cdc2e98ea0abd22d740d67f392a82aea2407da8a5b97c",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_below --output .runtime-work/c179819/offline-bridge_b_speed_below-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "3b347715412d43c5755019caa9c03893261297a77e3aa1538a0fc0c9423d5480",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_b_speed_below-fallback1.log",
-            "log_sha256": "178d752026cb032fecefb312154e3521b24fe7a3505978f1e276f0d86befce2a"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -496,40 +134,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_below",
-      "compatibility": {
-        "log": "proof-compat-bridge_b_speed_below-primary.log",
-        "negative_log": "proof-negative-bridge_b_speed_below-primary.log",
-        "receipt": "receipt-compat-bridge_b_speed_below-primary.json",
-        "sha256": "43e66eceb466fb0aa0a09c6fa3f5fd25f766c4b0df46fdc5379ebb1667187f40"
-      },
       "construction": "cases/bridge_b_speed_below/construction.json",
-      "construction_sha256": "763676519055fb520b9cabeeb4c00205afdb12b0eea1c8570d74b295589daa12",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_below",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_below --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_speed_below-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_below --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_speed_below-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_b_speed_below.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_b_speed_below.log",
-        "test_log_sha256": "d658508712ce0a68924266e53e46e8f0f82be486624cd73f706e9159fe756bf0"
-      },
+      "construction_sha256": "8571f9b63811b5252c85b957f68f9d82b45dc0d8ee0b6f6cb341c21c45b74847",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_b_speed_below-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -541,68 +147,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_b_speed_below-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_below --output .runtime-work/c179819/offline-bridge_b_speed_below-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "763676519055fb520b9cabeeb4c00205afdb12b0eea1c8570d74b295589daa12",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_b_speed_below-primary.log",
-        "log_sha256": "ce5d2e5a70316162440e72a3d4cb4f669513a91d9e41fc85981c071ff790d31f"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_b_speed_below.json",
-        "sha256": "0f03e61f640302162e19da757d7d10d60d9db484cc0e1a448cc9849bdcb59ec4"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_below --attempt .runtime-work/c179819/saved-attempt-bridge_b_speed_below-v2 --output .runtime-work/c179819/saved-output-bridge_b_speed_below-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_b_speed_below.log",
-        "test_log_sha256": "1bc1324dac56e3bf3d4cf7bf7e927b238736ab2541041c146acf9e4f97379be2"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -613,22 +160,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_b_speed_at-fallback1.log",
-            "negative_log": "proof-negative-bridge_b_speed_at-fallback1.log",
-            "receipt": "receipt-compat-bridge_b_speed_at-fallback1.json",
-            "sha256": "8ee2346777b909a4cce6285ee0544e1278db810cd4b1c19aaec51306d35123ff"
-          },
           "construction": "cases/bridge_b_speed_at/fallback1/construction.json",
-          "construction_sha256": "c5921743d379b0319c6c720b225207d8c27a42f00f4c6c4a126a3cb2f55e66ea",
+          "construction_sha256": "d507c7bc5740e86d497cdaa4eea5790642b0f6d39374aa149a72a5f154ea4d8f",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_at --output .runtime-work/c179819/offline-bridge_b_speed_at-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "c5921743d379b0319c6c720b225207d8c27a42f00f4c6c4a126a3cb2f55e66ea",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_b_speed_at-fallback1.log",
-            "log_sha256": "a18ffd924a356a39dfbd53da91301e3a5618d3f72d573f3304095f16fed4edbe"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -637,40 +171,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_at",
-      "compatibility": {
-        "log": "proof-compat-bridge_b_speed_at-primary.log",
-        "negative_log": "proof-negative-bridge_b_speed_at-primary.log",
-        "receipt": "receipt-compat-bridge_b_speed_at-primary.json",
-        "sha256": "902e5d410753876d82e2296745338e9533a767f5a9884c24ad22b33865ba6c0c"
-      },
       "construction": "cases/bridge_b_speed_at/construction.json",
-      "construction_sha256": "487c68211781860321fa4034395ef1c2e3e165eef4d1a5b85a6a74ef56af059a",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_at",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_at --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_speed_at-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_at --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_speed_at-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_b_speed_at.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_b_speed_at.log",
-        "test_log_sha256": "ae01ffc13bf8180016f368e2595b54da5e57acc54fefe60efc778b52776b0f1d"
-      },
+      "construction_sha256": "4496fe2b2c56acbf184d875b623f206163937dab376635cb1c53c56503b105b3",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_b_speed_at-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -682,68 +184,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_b_speed_at-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_at --output .runtime-work/c179819/offline-bridge_b_speed_at-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "487c68211781860321fa4034395ef1c2e3e165eef4d1a5b85a6a74ef56af059a",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_b_speed_at-primary.log",
-        "log_sha256": "33304229d6ac47913784bcce9ae1d8a9de7ea62941fbcf25244c68c5f639d890"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_b_speed_at.json",
-        "sha256": "bf916bfe3682fdddbe6363849b6787975cb73589419edfe999b910e033213c2e"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_at --attempt .runtime-work/c179819/saved-attempt-bridge_b_speed_at-v2 --output .runtime-work/c179819/saved-output-bridge_b_speed_at-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_b_speed_at.log",
-        "test_log_sha256": "57b789c23ea6424c1ccada9846946d268de4a2b7b65b631b2d3a0935f3830705"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -754,22 +197,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_b_speed_above-fallback1.log",
-            "negative_log": "proof-negative-bridge_b_speed_above-fallback1.log",
-            "receipt": "receipt-compat-bridge_b_speed_above-fallback1.json",
-            "sha256": "ed413c3a04e9c857abc3cd0a86ea10ecdfcf1472cddd55b016e180601d6a2fa2"
-          },
           "construction": "cases/bridge_b_speed_above/fallback1/construction.json",
-          "construction_sha256": "68f381425332aa052d4df8f76bb68814bbcf9272e08c434c62dbe315d674dcd1",
+          "construction_sha256": "1344c2b5e54524021531c763efdb4306d9045e7e73d5196c76431bf676f627a4",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_above --output .runtime-work/c179819/offline-bridge_b_speed_above-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "68f381425332aa052d4df8f76bb68814bbcf9272e08c434c62dbe315d674dcd1",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_b_speed_above-fallback1.log",
-            "log_sha256": "868bb411ed0d9ae8489c67b488050f0622e54aad38537628ceddd340c7f16bfb"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -778,40 +208,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_above",
-      "compatibility": {
-        "log": "proof-compat-bridge_b_speed_above-primary.log",
-        "negative_log": "proof-negative-bridge_b_speed_above-primary.log",
-        "receipt": "receipt-compat-bridge_b_speed_above-primary.json",
-        "sha256": "fadef8e9bd9007710aa93a85ef02149368e8eb35e042793ca670f2236420d67c"
-      },
       "construction": "cases/bridge_b_speed_above/construction.json",
-      "construction_sha256": "ad69b062866b707954b7112b462faf857e90bb4de4220b606cf243f57f9b6085",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_above",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_above --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_speed_above-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_above --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_speed_above-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_b_speed_above.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_b_speed_above.log",
-        "test_log_sha256": "e068a85da9b873ad635006672d506f69e9969ed4580a97b5596f2542dddcdf2b"
-      },
+      "construction_sha256": "049421d79f78992f132a2d319616d3d4c986ac9ddee617e67d51f3785e1d2dab",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_b_speed_above-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -823,68 +221,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_b_speed_above-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_above --output .runtime-work/c179819/offline-bridge_b_speed_above-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "ad69b062866b707954b7112b462faf857e90bb4de4220b606cf243f57f9b6085",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_b_speed_above-primary.log",
-        "log_sha256": "ae8a7d7fe9313e76436a53acbb39b8e4bd5b890777dc0964afa72ab6ee0e8d5c"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_b_speed_above.json",
-        "sha256": "be0f9e59eda14392df388d55bf363c3859b2ee29f6d7c97374bf4c1cdac5a04d"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_speed_above --attempt .runtime-work/c179819/saved-attempt-bridge_b_speed_above-v2 --output .runtime-work/c179819/saved-output-bridge_b_speed_above-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_b_speed_above.log",
-        "test_log_sha256": "f8224760fe492025828ca267815a554461952e3dfddc74b21dfa34465357488b"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -895,22 +234,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_a_sign_99ft-fallback1.log",
-            "negative_log": "proof-negative-bridge_a_sign_99ft-fallback1.log",
-            "receipt": "receipt-compat-bridge_a_sign_99ft-fallback1.json",
-            "sha256": "d99134075efb65566af59f62d5e11765368250705dfeb107dc28c4cdd44a7906"
-          },
           "construction": "cases/bridge_a_sign_99ft/fallback1/construction.json",
-          "construction_sha256": "f0a30a1686bcf1ab82daa0861accf747f5e67aece703f0ca89bd063955cc6ad4",
+          "construction_sha256": "3b1d13b08883a0a6c9d6b5275bcf394eec93c7a108f5e61665fec6ed9dc776ab",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_99ft --output .runtime-work/c179819/offline-bridge_a_sign_99ft-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "f0a30a1686bcf1ab82daa0861accf747f5e67aece703f0ca89bd063955cc6ad4",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_a_sign_99ft-fallback1.log",
-            "log_sha256": "526b5564bf934e2fd936cf345dc250f12caab9d00090614c191d23c696b9b1ef"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -919,40 +245,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_99ft",
-      "compatibility": {
-        "log": "proof-compat-bridge_a_sign_99ft-primary.log",
-        "negative_log": "proof-negative-bridge_a_sign_99ft-primary.log",
-        "receipt": "receipt-compat-bridge_a_sign_99ft-primary.json",
-        "sha256": "a1cf9e69648b72c71bbebd5603e5aba8e51c0dc8433bfcdc77e6dddbd2f84723"
-      },
       "construction": "cases/bridge_a_sign_99ft/construction.json",
-      "construction_sha256": "51dd59414933219cf64c65144036b75134697f4d6a9673947414ed64c62c71b4",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_99ft",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_99ft --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_sign_99ft-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_99ft --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_sign_99ft-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_a_sign_99ft.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_a_sign_99ft.log",
-        "test_log_sha256": "b01bb5042b0960f7dee0921935dd73fe85c271deccccc97d75978696ad617bc9"
-      },
+      "construction_sha256": "7e51f449786dcbc57a9e33fecd976c857cec5cde6dcb9d47056137a34a50a395",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_a_sign_99ft-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -964,68 +258,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_a_sign_99ft-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_99ft --output .runtime-work/c179819/offline-bridge_a_sign_99ft-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "51dd59414933219cf64c65144036b75134697f4d6a9673947414ed64c62c71b4",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_a_sign_99ft-primary.log",
-        "log_sha256": "a132a7d0efc875b71118a04c3124cc16025fbd35e138c6dbcc813450f08c3969"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_a_sign_99ft.json",
-        "sha256": "c7a1709dadea1cd338b4c7ff1aa19a27447dcfd5895984e0e2fcbc797c109050"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_99ft --attempt .runtime-work/c179819/saved-attempt-bridge_a_sign_99ft-v2 --output .runtime-work/c179819/saved-output-bridge_a_sign_99ft-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_a_sign_99ft.log",
-        "test_log_sha256": "623d61cbe1bb59bc9b5071b4310f673176dec8b1bedc1564c7f8598d4a523fda"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -1036,22 +271,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_a_sign_101ft-fallback1.log",
-            "negative_log": "proof-negative-bridge_a_sign_101ft-fallback1.log",
-            "receipt": "receipt-compat-bridge_a_sign_101ft-fallback1.json",
-            "sha256": "48dfc54b3d58b8928e7fbde93855ec2262acc8e57ba773271c645cf38c6fc61e"
-          },
           "construction": "cases/bridge_a_sign_101ft/fallback1/construction.json",
-          "construction_sha256": "15be320d758ec3b2a4ad9dfe50884e41c41c14370ddec71a706a0489f3f589b8",
+          "construction_sha256": "61a97788bb68c679d79a279d1663715727b430d013151827fc4f7872c6722ae7",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_101ft --output .runtime-work/c179819/offline-bridge_a_sign_101ft-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "15be320d758ec3b2a4ad9dfe50884e41c41c14370ddec71a706a0489f3f589b8",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_a_sign_101ft-fallback1.log",
-            "log_sha256": "b8953ac04bf27e0046372ed44e747de8a539c93b5dd29349b2e1890469502e12"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -1060,40 +282,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_101ft",
-      "compatibility": {
-        "log": "proof-compat-bridge_a_sign_101ft-primary.log",
-        "negative_log": "proof-negative-bridge_a_sign_101ft-primary.log",
-        "receipt": "receipt-compat-bridge_a_sign_101ft-primary.json",
-        "sha256": "f6f51a00fb9a728a2bece9491d5b09fa0bc2e938441ec8fc3d4fdfe10ea0f001"
-      },
       "construction": "cases/bridge_a_sign_101ft/construction.json",
-      "construction_sha256": "0ea979bfa19452d01c5dbdc09c9f6a92b771f05c17fdf22b07ef0adcb29da9e5",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_101ft",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_101ft --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_sign_101ft-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_101ft --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_a_sign_101ft-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_a_sign_101ft.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_a_sign_101ft.log",
-        "test_log_sha256": "4196edf5ca2586fa294cac403630045b9ebf12b969413756d90c44c95b6d96df"
-      },
+      "construction_sha256": "9952899d2821e3b268e8bdfb248677f9f7930e81e16e23895b16f031b84a25a2",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_a_sign_101ft-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -1105,68 +295,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_a_sign_101ft-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_101ft --output .runtime-work/c179819/offline-bridge_a_sign_101ft-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "0ea979bfa19452d01c5dbdc09c9f6a92b771f05c17fdf22b07ef0adcb29da9e5",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_a_sign_101ft-primary.log",
-        "log_sha256": "65b16c64ebc805be6638959afe3db7934788547cb4db2f24328186d4cb36a1ae"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_a_sign_101ft.json",
-        "sha256": "0b29cfab519096a38bd69bfb637e325322e1e25b4b3bb42125838363858477ce"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_a_sign_101ft --attempt .runtime-work/c179819/saved-attempt-bridge_a_sign_101ft-v2 --output .runtime-work/c179819/saved-output-bridge_a_sign_101ft-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_a_sign_101ft.log",
-        "test_log_sha256": "76966f0676ee6c0f2416886854073d6c3aa418193936b8123cf4f193746b2aee"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -1177,22 +308,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_b_sign_99ft-fallback1.log",
-            "negative_log": "proof-negative-bridge_b_sign_99ft-fallback1.log",
-            "receipt": "receipt-compat-bridge_b_sign_99ft-fallback1.json",
-            "sha256": "941d08ba210b4a99918de01bb1aa9e5941ae6d3cb89a5831e072848a221e4c62"
-          },
           "construction": "cases/bridge_b_sign_99ft/fallback1/construction.json",
-          "construction_sha256": "4329688c1b07980796295ac5f821575549c98b00fd908492e56faca4226d28f8",
+          "construction_sha256": "f8be5f75559bdc4e85d49a613bb842bba93a67c71d8d731ac8eed701ec79659b",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_99ft --output .runtime-work/c179819/offline-bridge_b_sign_99ft-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "4329688c1b07980796295ac5f821575549c98b00fd908492e56faca4226d28f8",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_b_sign_99ft-fallback1.log",
-            "log_sha256": "f62cdc985a77eb88c620d206ccfad22e1d56a0ffab5a1b189977a7e0dcc94377"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -1201,40 +319,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_99ft",
-      "compatibility": {
-        "log": "proof-compat-bridge_b_sign_99ft-primary.log",
-        "negative_log": "proof-negative-bridge_b_sign_99ft-primary.log",
-        "receipt": "receipt-compat-bridge_b_sign_99ft-primary.json",
-        "sha256": "05b6f33ba2c16e9b21fb20e99941e75935401f88214be8ed8f9e608f05f7f8d1"
-      },
       "construction": "cases/bridge_b_sign_99ft/construction.json",
-      "construction_sha256": "6edc582282a858d9219d4113bc6f4e9295775ea21fda84eb3f54f3a6cb9818b5",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_99ft",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_99ft --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_sign_99ft-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_99ft --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_sign_99ft-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_b_sign_99ft.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_b_sign_99ft.log",
-        "test_log_sha256": "816eade50454f4d149bcfdd6ac725d2cdde55ff9ffc16184efb7a22a91454e6a"
-      },
+      "construction_sha256": "2fd5e8efb6070757f30c11dfd95e5a5b13150a6509ccae4cd39e6e204defb9a5",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_b_sign_99ft-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -1246,68 +332,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_b_sign_99ft-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_99ft --output .runtime-work/c179819/offline-bridge_b_sign_99ft-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "6edc582282a858d9219d4113bc6f4e9295775ea21fda84eb3f54f3a6cb9818b5",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_b_sign_99ft-primary.log",
-        "log_sha256": "31c9a02a9503d627a7fd2acb016cd3fbe909747b982b2ab80ff036ceb43a2e93"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_b_sign_99ft.json",
-        "sha256": "dcec9e2ee678104acd23c7f1916f111a7ebf72bb6efa6bad9543f3d7fd3b7f48"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_99ft --attempt .runtime-work/c179819/saved-attempt-bridge_b_sign_99ft-v2 --output .runtime-work/c179819/saved-output-bridge_b_sign_99ft-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_b_sign_99ft.log",
-        "test_log_sha256": "bfd6c2add4ea4ab460e27bb0f04b2fef43fc8755bbf3c599a91634a7b278603a"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -1318,22 +345,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-bridge_b_sign_101ft-fallback1.log",
-            "negative_log": "proof-negative-bridge_b_sign_101ft-fallback1.log",
-            "receipt": "receipt-compat-bridge_b_sign_101ft-fallback1.json",
-            "sha256": "1016e58d2d5249b47f5ab3523d856aa506b841dd0fbfa44fee94fad3d33fa11c"
-          },
           "construction": "cases/bridge_b_sign_101ft/fallback1/construction.json",
-          "construction_sha256": "976b00d8f5f667b4041ff32434cd260105191b1b7c66e9c2008823bfd52d4736",
+          "construction_sha256": "022ab4f4e45f6563c5da4d18ac969062121d1bde75709dfc13aba7f9507dc48d",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_101ft --output .runtime-work/c179819/offline-bridge_b_sign_101ft-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "976b00d8f5f667b4041ff32434cd260105191b1b7c66e9c2008823bfd52d4736",
-            "exit_code": 0,
-            "log": "proof-offline-bridge_b_sign_101ft-fallback1.log",
-            "log_sha256": "3e3c105a25e0d9e1917b2ad6e11cd43bae7c7284591722c98d2d2c73c51ff62f"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -1342,40 +356,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_101ft",
-      "compatibility": {
-        "log": "proof-compat-bridge_b_sign_101ft-primary.log",
-        "negative_log": "proof-negative-bridge_b_sign_101ft-primary.log",
-        "receipt": "receipt-compat-bridge_b_sign_101ft-primary.json",
-        "sha256": "305b8a01084b91075bb619d557eaa7d8746638174e6e30c96c38abfcb9e36e99"
-      },
       "construction": "cases/bridge_b_sign_101ft/construction.json",
-      "construction_sha256": "d4807ea98bd0f584bb438dc3f621dabc2b3734b9067b57a8f947e4f4f415af39",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_101ft",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_101ft --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_sign_101ft-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_101ft --diagnostic-source .runtime-work/c179819/saved-attempt-bridge_b_sign_101ft-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-bridge_b_sign_101ft.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-bridge_b_sign_101ft.log",
-        "test_log_sha256": "160445ed9ca1b31ce6a4d2425c509a972ccf86f1d53d4cb2f180fbff71fb74d2"
-      },
+      "construction_sha256": "d4f30444231fb8c9378246b32743c7ae2521f52cfbd5687af6fff9d7806dd84e",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/bridge_b_sign_101ft-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -1387,68 +369,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-bridge_b_sign_101ft-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_101ft --output .runtime-work/c179819/offline-bridge_b_sign_101ft-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "d4807ea98bd0f584bb438dc3f621dabc2b3734b9067b57a8f947e4f4f415af39",
-        "exit_code": 0,
-        "log": "proof-offline-bridge_b_sign_101ft-primary.log",
-        "log_sha256": "95dcc16bf6df8fbac6cfeae32fb29065d3e74867fadb3836981650e4feaa0757"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-bridge_b_sign_101ft.json",
-        "sha256": "c8ee9227d16fba4cbb343bbbdba11afea25c372e523643de85c2b6122a595b35"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__bridge_b_sign_101ft --attempt .runtime-work/c179819/saved-attempt-bridge_b_sign_101ft-v2 --output .runtime-work/c179819/saved-output-bridge_b_sign_101ft-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-bridge_b_sign_101ft.log",
-        "test_log_sha256": "8a796059726d9bc0e3c3e6882fcfef619b3eeb1aba8683b4c3d4a280b982ca01"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -1459,22 +382,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-elevated_a_speed_at-fallback1.log",
-            "negative_log": "proof-negative-elevated_a_speed_at-fallback1.log",
-            "receipt": "receipt-compat-elevated_a_speed_at-fallback1.json",
-            "sha256": "441322fcdab206eca6eb8729162946b322b9540ca2729113d57e92880c87cc34"
-          },
           "construction": "cases/elevated_a_speed_at/fallback1/construction.json",
-          "construction_sha256": "7a08e74799d39f67e72161c64a5ee22310858bcc63e095895835d271d4e2fd2b",
+          "construction_sha256": "69529bf9ecd1dab88ad983e160031377653f4661da9a9184d4495f9372ccd3f1",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_at --output .runtime-work/c179819/offline-elevated_a_speed_at-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "7a08e74799d39f67e72161c64a5ee22310858bcc63e095895835d271d4e2fd2b",
-            "exit_code": 0,
-            "log": "proof-offline-elevated_a_speed_at-fallback1.log",
-            "log_sha256": "e4925686accbeff768f4af5fd375d16e6a62d7f4a9a33f62a1f8e958c208af57"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -1483,40 +393,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_at",
-      "compatibility": {
-        "log": "proof-compat-elevated_a_speed_at-primary.log",
-        "negative_log": "proof-negative-elevated_a_speed_at-primary.log",
-        "receipt": "receipt-compat-elevated_a_speed_at-primary.json",
-        "sha256": "41a9ecbc22be9457442f0f18151091f1811b3b5b6f041ade377d9a879ce9607f"
-      },
       "construction": "cases/elevated_a_speed_at/construction.json",
-      "construction_sha256": "2dcd92672bea67cdd34df93dad87a5e5cfed2246df5f03297f7abdc5fa8fe788",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_at",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_at --diagnostic-source .runtime-work/c179819/saved-attempt-elevated_a_speed_at-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_at --diagnostic-source .runtime-work/c179819/saved-attempt-elevated_a_speed_at-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-elevated_a_speed_at.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-elevated_a_speed_at.log",
-        "test_log_sha256": "8d84a416b31499a257605447bfeae79daaf8600e3494f92fc6c95330708bd060"
-      },
+      "construction_sha256": "7025094c04cedb4664156a1b992dbe8ed3fb1156b04b4ab0c592a5305fe6b5a4",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/elevated_a_speed_at-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -1528,68 +406,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
-      "negative": {
-        "log": "proof-negative-elevated_a_speed_at-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_at --output .runtime-work/c179819/offline-elevated_a_speed_at-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "2dcd92672bea67cdd34df93dad87a5e5cfed2246df5f03297f7abdc5fa8fe788",
-        "exit_code": 0,
-        "log": "proof-offline-elevated_a_speed_at-primary.log",
-        "log_sha256": "66a8fcfd01ffa479c3682978ea16695f85dee7dd28133ebaa953de69313e6a84"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-elevated_a_speed_at.json",
-        "sha256": "34b6059428d87e7a4a26f3b6730af833fed22f1ab795a45e16180d15bd5efc43"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_at --attempt .runtime-work/c179819/saved-attempt-elevated_a_speed_at-v2 --output .runtime-work/c179819/saved-output-elevated_a_speed_at-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-elevated_a_speed_at.log",
-        "test_log_sha256": "bd574fe2a1272b1fb8a804891ffde5cae362fb33cac43043ee50cb86efe04978"
-      },
       "preparation_status": "partial_offline_only"
     },
     {
-      "acquisition": {
-        "ego_speed_mps": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original vehicle velocity magnitude per world tick",
-          "method": "acquire"
-        },
-        "ego_station_m": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original surveyed centreline station per ego world tick",
-          "method": "acquire"
-        },
-        "four_camera_pixels": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "four original per-tick PNG bytes and FFV1 source videos",
-          "method": "acquire"
-        },
-        "kin.position": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original mapped ego station and source capture graph position",
-          "method": "acquire"
-        },
-        "kin.speed": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original ego_speed_mps readback and speed channel",
-          "method": "acquire"
-        },
-        "kin.time": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original tick time_s and video_frames.jsonl join",
-          "method": "acquire"
-        },
-        "original_frame": {
-          "entrypoint": "native_acquisition.py",
-          "evidence": "original simulator frame identity and four-camera join",
-          "method": "acquire"
-        }
-      },
       "candidate_risk": {
         "failure_trigger": "original map stationing, spawn clearance or full crossing/readback unavailable",
         "reason": "An original map bridge may lack a long enough approach and a stable two-way motor-vehicle lane; source-gated map review and spawn readback are required.",
@@ -1600,22 +419,9 @@
           "changed_knobs": [
             "spawn_station_adjust_m: 0 to 3 m upstream on the same lane"
           ],
-          "compatibility": {
-            "log": "proof-compat-elevated_a_speed_above-fallback1.log",
-            "negative_log": "proof-negative-elevated_a_speed_above-fallback1.log",
-            "receipt": "receipt-compat-elevated_a_speed_above-fallback1.json",
-            "sha256": "1d747b0f7234260999cab05ed066a492ba7d9e64fa0fa34417ff1e7e4687c79a"
-          },
           "construction": "cases/elevated_a_speed_above/fallback1/construction.json",
-          "construction_sha256": "a2b834ab3aacdf2562eec950cb438b01d6be396f76a714abce8b9699169ebfb0",
+          "construction_sha256": "944c549a29e2337826014f263fc2b9ebd717d385e5b8810321a2160c2f760869",
           "id": "fallback1",
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_above --output .runtime-work/c179819/offline-elevated_a_speed_above-fallback1-v4 --python .venv-cpu/bin/python --candidate fallback1",
-            "construction_sha256": "a2b834ab3aacdf2562eec950cb438b01d6be396f76a714abce8b9699169ebfb0",
-            "exit_code": 0,
-            "log": "proof-offline-elevated_a_speed_above-fallback1.log",
-            "log_sha256": "1ef291c30da951bfa4553ce1c78f33fada6808ec29b8560fa3d8f9f33c4fafd0"
-          },
           "trigger": {
             "failure_condition": "less than 2 m on the same governing approach",
             "metric": "spawn_clearance_m",
@@ -1624,40 +430,8 @@
         }
       ],
       "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_above",
-      "compatibility": {
-        "log": "proof-compat-elevated_a_speed_above-primary.log",
-        "negative_log": "proof-negative-elevated_a_speed_above-primary.log",
-        "receipt": "receipt-compat-elevated_a_speed_above-primary.json",
-        "sha256": "73f5f10c2d896cf2a249c4648b69d9c3d5995a81b4af173514d2ff1466b135f3"
-      },
       "construction": "cases/elevated_a_speed_above/construction.json",
-      "construction_sha256": "0d6220a018660c23b87f472fa068984bcba4f077fdfa2cc3e13ed12d6dceb7a5",
-      "delivery_acceptance": {
-        "case_id": "testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_above",
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_above --diagnostic-source .runtime-work/c179819/saved-attempt-elevated_a_speed_above-v2 --mode diagnostic-positive",
-        "negative_command": ".venv-cpu/bin/python work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/delivery_audit.py --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_above --diagnostic-source .runtime-work/c179819/saved-attempt-elevated_a_speed_above-v2 --mode delivery-negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "original Native attempt required; diagnostic fixture rejected",
-        "negative_log": "proof-delivery-negative-elevated_a_speed_above.log",
-        "negative_log_sha256": "c3a2d880f3f25940b98a63b620e8fbb10e9f069bc77c3a53f6f96e6b742b1b58",
-        "positive_scope": "synthetic protocol only; no original physical acceptance",
-        "script": "delivery_audit.py",
-        "script_sha256": "e186f1e8ba48f476b173c4cb95d425a951c2e896d2b80aa5aa70808e161d310b",
-        "sets": [
-          "full-test"
-        ],
-        "test_exit_code": 0,
-        "test_log": "proof-delivery-elevated_a_speed_above.log",
-        "test_log_sha256": "b1704a8fe66e44c64cd1387721df695d4c7721db4dea3706fafad9c595d208e9"
-      },
+      "construction_sha256": "111eeef4d1f014db18a3ea67fa8a6b9d7d2107495cda584bb34afcc2dbd2d32e",
       "fixture_recipe": "work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/diagnostic-sources/elevated_a_speed_above-recipe.json",
       "kind": "delivery",
       "measurement_contract": "measurement-contract.json",
@@ -1668,28 +442,6 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
-      },
-      "negative": {
-        "log": "proof-negative-elevated_a_speed_above-primary.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_above --output .runtime-work/c179819/offline-elevated_a_speed_above-primary-v4 --python .venv-cpu/bin/python --candidate primary",
-        "construction_sha256": "0d6220a018660c23b87f472fa068984bcba4f077fdfa2cc3e13ed12d6dceb7a5",
-        "exit_code": 0,
-        "log": "proof-offline-elevated_a_speed_above-primary.log",
-        "log_sha256": "1ef291c30da951bfa4553ce1c78f33fada6808ec29b8560fa3d8f9f33c4fafd0"
-      },
-      "physical_preparation": {
-        "receipt": "physical-preparation-elevated_a_speed_above.json",
-        "sha256": "ff4d9a4d3c02151605197e9abb16d753cf042c043abfce7f71cd4bf59d752729"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C179819__NRS-484B-633-2__motor_vehicle_driver/execution-manifest.json --case testing__C179819__NRS-484B-633-2__motor_vehicle_driver__elevated_a_speed_above --attempt .runtime-work/c179819/saved-attempt-elevated_a_speed_above-v2 --output .runtime-work/c179819/saved-output-elevated_a_speed_above-v2 --library runtime/library --validator .runtime-work/c227824-owner/decoder/.lake/build/bin/adapterCheck",
-        "feedback_command": "inspect saved-output/v0001/feedback.json on nonzero exit",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "proof-saved-elevated_a_speed_above.log",
-        "test_log_sha256": "ea10e916dc72463c3053d74dabddf00cd38290c6f4d22e140e7f527375138552"
       },
       "preparation_status": "partial_offline_only"
     }

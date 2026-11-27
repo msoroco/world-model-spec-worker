@@ -35,6 +35,35 @@ def inside(point, polygon):
     return hit
 
 
+def boundary_relation(footprint, polygon):
+    """Classify a complete bus body; reject any contact with a stop edge."""
+    statuses = [inside(point, polygon) for point in footprint]
+    if all(statuses):
+        return 'inside'
+
+    def orientation(a, b, c):
+        return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
+
+    def crosses(a, b, c, d):
+        ab_c, ab_d = orientation(a,b,c), orientation(a,b,d)
+        cd_a, cd_b = orientation(c,d,a), orientation(c,d,b)
+        return ((ab_c == 0 and min(a[0],b[0]) <= c[0] <= max(a[0],b[0]) and min(a[1],b[1]) <= c[1] <= max(a[1],b[1]))
+                or (ab_d == 0 and min(a[0],b[0]) <= d[0] <= max(a[0],b[0]) and min(a[1],b[1]) <= d[1] <= max(a[1],b[1]))
+                or (cd_a == 0 and min(c[0],d[0]) <= a[0] <= max(c[0],d[0]) and min(c[1],d[1]) <= a[1] <= max(c[1],d[1]))
+                or (cd_b == 0 and min(c[0],d[0]) <= b[0] <= max(c[0],d[0]) and min(c[1],d[1]) <= b[1] <= max(c[1],d[1]))
+                or ((ab_c > 0) != (ab_d > 0) and (cd_a > 0) != (cd_b > 0)))
+
+    if any(statuses):
+        return 'mixed'
+    for i in range(len(footprint)):
+        for j in range(len(polygon)):
+            if crosses(footprint[i-1], footprint[i], polygon[j-1], polygon[j]):
+                return 'mixed'
+    if any(inside(point, footprint) for point in polygon):
+        return 'mixed'
+    return 'outside'
+
+
 def measure(root: Path, refs: dict, *, expected_frames: int = 900, diagnostic: bool = False) -> dict:
     kinds = {'site':'reviewed_bus_stop_site', 'designation':'bus_stop_designation',
              'identity':'bus_operator_identity', 'activity':'bus_activity_review',
@@ -87,10 +116,10 @@ def measure(root: Path, refs: dict, *, expected_frames: int = 900, diagnostic: b
         raise ValueError('activity interval outside capture')
     if any(e.get('event') in ('load','unload','merchandise') for e in events):
         raise ValueError('activity changed; independent segmentation required')
-    observed=[frames[i]['inside_stop_boundary'] for i in range(begin,finish+1)]
-    relation='inside' if all(observed) else 'outside' if not any(observed) else 'mixed'
-    if relation=='mixed':
-        raise ValueError('bus crossed stop boundary during standing or parking')
+    observed=[boundary_relation(frames[i]['bus_footprint_xy_m'],polygon) for i in range(begin,finish+1)]
+    if 'mixed' in observed or len(set(observed)) != 1:
+        raise ValueError('bus body crossed or straddled stop boundary during standing or parking')
+    relation=observed[0]
     if relation=='outside' and not all(frames[i].get('outside_other_permitted_location') is True for i in range(begin,finish+1)):
         raise ValueError('outside stop may be origin, destination or bus stand')
     return {'case_measurement':'bus_stand_park_designated_location','site_stop_id':site['stop_id'],

@@ -1,4 +1,4 @@
-"""Source-faithful semantic stage proposals for bus-stop location probes."""
+"""Source-faithful semantic stage proposals for A2 loading-stop alternatives."""
 from pathlib import Path
 import hashlib
 import json
@@ -29,18 +29,19 @@ def build():
     relevance_ref=write('relevance.json',relevance)
     write('relevance-batch.json',relevance)
     parameters=[
-      {'name':'official_bus_stop_polygon','kind':'world_setup','range_or_domain':'original City Traffic Engineer designated stop boundary and signs','unit':'geometry'},
-      {'name':'assigned_route_permitted_locations','kind':'world_setup','range_or_domain':'source-reviewed bus stand, assigned-route origin and destination','unit':'geometry'},
-      {'name':'observed_bus_body_location','kind':'subject_behavior','range_or_domain':'source-bound original body footprint for complete activity','unit':'geometry'},
-      {'name':'conduct','kind':'world_setup','range_or_domain':'stand or park by independent activity review','unit':'category'},
+      {'name':'official_permitted_location_polygons','kind':'world_setup','range_or_domain':'source-reviewed City-designated stop, stand, passenger zone and assigned-route endpoints','unit':'geometry'},
+      {'name':'observed_bus_body_location','kind':'subject_behavior','range_or_domain':'source-bound original bus footprint throughout stopped interval','unit':'geometry'},
+      {'name':'loading_purpose','kind':'subject_behavior','range_or_domain':'independently reviewed passenger, baggage or cargo-only purpose','unit':'category'},
+      {'name':'stop_reason','kind':'world_setup','range_or_domain':'independently reviewed ordinary or emergency circumstance','unit':'category'},
+      {'name':'bus_class','kind':'world_setup','range_or_domain':'independently reviewed regular or excluded tour bus','unit':'category'},
     ]
     template={'template_id':TEMPLATE,'law_id':LAW,'actor':ACTOR,'status':'draft','quote':quote,
       'structure':{'law_id':LAW,
-        'activation':{'condition':'Covered operator of non-tour bus stands or parks upon a public street; original status and assigned route reviewed.','numeric_conditions':[]},
-        'obligation':{'description':'Do not stand or park on the street except at officially designated bus stop, bus stand, or assigned-route origin/destination designated under Section 11.60.010.','type':'must','numeric_conditions':[]},
-        'exceptions':[{'description':'Tour bus excluded from this paragraph.'},{'description':'Officially designated bus stop, bus stand or assigned-route origin/destination location.'}],
-        'timing':{'description':'Evaluate full independently reviewed standing or parking activity and Native body position, not one frame.','numeric_conditions':[]},
-        'judgment_calls_needed':['original designation, stop boundary, route termini and conduct remain source judgments']},
+        'activation':{'condition':'Covered operator of a non-tour bus stops on a street for the purpose of loading or unloading passengers or their baggage.','numeric_conditions':[]},
+        'obligation':{'description':'Do not make such a loading stop except at a bus stop, bus stand, passenger loading zone or designated assigned-route origin/destination.','type':'must','numeric_conditions':[]},
+        'exceptions':[{'description':'Tour bus excluded from this paragraph.'},{'description':'Case of an emergency.'},{'description':'Officially permitted stop, stand, passenger loading zone or designated assigned-route origin/destination.'}],
+        'timing':{'description':'Evaluate independently reviewed stop interval, loading purpose and bus footprint, not one frame.','numeric_conditions':[]},
+        'judgment_calls_needed':['bus classification, loading purpose, emergency, designation qualifier scope and location boundaries remain source judgments']},
       'parameter_refs':parameters}
     template_ref=write('template.json',template)
     binding={'cell_id':'C378132','actor':ACTOR,'status':'draft',
@@ -48,35 +49,37 @@ def build():
              'context_refs':[],'fixed_parameters':[],
              'variable_parameters':[dict(x,used_by_laws=[LAW]) for x in parameters]}
     binding_ref=write('bindings.json',binding)
-    first=json.loads((ROOT/'cases/stand_inside/construction.json').read_text())
-    def values(conduct,relation):
-        return {'official_bus_stop_polygon':{'kind':'world_setup','value':'source-reviewed stop polygon','unit':'geometry'},
-                'assigned_route_permitted_locations':{'kind':'world_setup','value':'source-reviewed bus stand and route termini','unit':'geometry'},
-                'observed_bus_body_location':{'kind':'subject_behavior','value':None,'unit':'geometry'},
-                'conduct':{'kind':'world_setup','value':conduct,'unit':'category'}}
+    first=json.loads((ROOT/'cases/outside_passenger/construction.json').read_text())
+    def values(case):
+        return {'official_permitted_location_polygons':{'kind':'world_setup','value':'source-reviewed five-place polygon inventory','unit':'geometry'},
+                'observed_bus_body_location':{'kind':'subject_behavior','value':case['location_kind'],'unit':'geometry'},
+                'loading_purpose':{'kind':'subject_behavior','value':case['loading_purpose'],'unit':'category'},
+                'stop_reason':{'kind':'world_setup','value':case['stop_reason'],'unit':'category'},
+                'bus_class':{'kind':'world_setup','value':case['bus_class'],'unit':'category'}}
+    baseline=plan['cases'][0]
     cases=[{'case_id':AID+'__baseline','target_law_id':None,'target_type':'baseline','status':'draft',
-            'rationale':'Common source-gated non-tour bus and official bus stop on one-way public street; no original location or legal finding.',
-            'variable_assignments':values('stand','inside'),'unresolved_judgment_calls':[],
+            'rationale':'Common source-gated bus loading-stop street and independent designation review; no original location or legal finding.',
+            'variable_assignments':values(baseline),'unresolved_judgment_calls':[],
             'recording_description':first['recording_description']}]
     for case in plan['cases']:
         construction=json.loads((ROOT/'cases'/case['case_id'].split('__')[-1]/'construction.json').read_text())
         cases.append({'case_id':case['case_id'],'target_law_id':LAW,'target_type':'branch_probe','status':'draft',
-          'rationale':'Inside or outside original designated stop must be measured against reviewed boundary; original alternative permitted locations separately checked.',
-          'paired_probe_id':'stop_boundary_and_conduct',
-          'deliberate_differences':['observed_bus_body_location','conduct'],
-          'variable_assignments':values(case['conduct'],case['location_relation']),
-          'unresolved_judgment_calls':['original designation, standing/parking and alternative-location review'],
+          'rationale':'Original stopped footprint, purpose, classification and emergency facts must be independently measured; no legal verdict follows from target labels.',
+          'paired_probe_id':'loading_location_purpose_exception',
+          'deliberate_differences':['observed_bus_body_location','loading_purpose','stop_reason','bus_class'],
+          'variable_assignments':values(case),
+          'unresolved_judgment_calls':['original designation, passenger/baggage purpose, tour status, emergency and location review'],
           'recording_description':construction['recording_description'],
-          'probe':{'primary_variable':'observed_bus_body_location','comparison_or_standard':'original reviewed designated stop boundary',
-                   'target_value_or_branch':case['location_relation'],'threshold_ref':'none: qualitative source boundary',
-                   'operator':'inside_or_outside','unit':'geometry','test_value':case['location_relation']}})
+          'probe':{'primary_variable':'observed_bus_body_location','comparison_or_standard':'original reviewed five-place designation and selected exception facts',
+                   'target_value_or_branch':case['location_kind'],'threshold_ref':'none: qualitative source boundary',
+                   'operator':'source_measured_place','unit':'geometry','test_value':case['location_kind']}})
     cases_ref=write('cases.json',{'cell_id':'C378132','actor':ACTOR,'status':'draft',
                                   'cases':cases,'sweep_specs':[],'sweeps_expanded':True})
     write('semantic-index.json',{'format':'worker-semantic-delivery','assignment_id':AID,
-      'status':'complete_source_gated_stop_position_plan',
+      'status':'complete_source_gated_loading_stop_plan',
       'stages':{'relevance_batch':relevance_ref,'relevance':relevance_ref,'template':template_ref,
                 'judgment_observables':[],'bindings':binding_ref,'cases':cases_ref}})
-    print('four-case canonical semantic chain prepared')
+    print(f"{len(plan['cases'])}-case canonical semantic chain prepared")
 
 
 if __name__=='__main__':build()

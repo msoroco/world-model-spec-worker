@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import importlib.util
 import json
 import os
 from pathlib import Path
@@ -60,19 +59,11 @@ def main():
     site_path = _source(os.environ.get("SCENARIO_BRIDGE_SITE"),
                         os.environ.get("SCENARIO_BRIDGE_SITE_SHA256"), "bridge site dossier")
     site = verify_site_bundle(site_path, os.environ["SCENARIO_BRIDGE_SITE_SHA256"], case["case_id"])
-    operator_path = _source(os.environ.get("SCENARIO_BRIDGE_OPERATOR"),
-                            os.environ.get("SCENARIO_BRIDGE_OPERATOR_SHA256"), "bridge Native operator")
-    spec = importlib.util.spec_from_file_location("reviewed_bridge_operator", operator_path)
-    if spec is None or spec.loader is None:
-        raise ValueError("reviewed bridge operator cannot load")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    if not callable(getattr(module, "make_adapter", None)):
-        raise ValueError("reviewed bridge Native adapter factory missing")
     import carla
     client = carla.Client(args.host, args.port)
     client.set_timeout(30)
-    adapter = module.make_adapter(client.get_world(), site, case)
+    from bridge_operator import make_adapter
+    adapter = make_adapter(client, site, case)
     from native_acquisition import acquire
     receipt = acquire(adapter, site_path, os.environ["SCENARIO_BRIDGE_SITE_SHA256"],
                       case, args.output_dir,

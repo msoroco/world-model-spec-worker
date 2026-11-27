@@ -1,22 +1,30 @@
-# testing__C179819__NRS-484B-633-2__motor_vehicle_driver
+# C179819 NRS 484B.633(2) motor vehicle driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: **partial**. Twelve exact cases and five controlled comparisons are selected for the paved elevated highway branch. No accepted original recording exists in the frozen evidence inventory. The 25 mph value in diagnostic fixtures is synthetic and is never treated as a statutory speed. Original Department records, structure stationing, signs, camera pixels and legal interpretation remain source gated.
 
-Exact law: NRS 484B.633(2); with 484B.633(3) — It is unlawful for any person to drive a vehicle over any bridge or other elevated structure constituting a part of a highway at a speed which is greater than the maximum speed which can be maintained with safety to the bridge or structure, when such structure is signposted as provided in this section [(3) appended below]. The Department of Transportation upon request from any local authority shall, or upon its own initiative may, conduct an investigation of any bridge or other elevated structure constituting a part of a highway constructed and maintained under the authority granted by chapter 408 of NRS, and if it thereupon finds that such structure cannot with safety to itself withstand vehicles traveling at the speed otherwise permissible under chapters 484A to 484E, inclusive, of NRS, the Department shall determine and declare the maximum speed of vehicles which such structure can safely withstand, and shall cause or permit suitable signs stating such maximum speed to be erected and maintained at a distance of 100 feet before each end of such structure.
-Assigned branch(es): Paved elevated highway with statutory sign placement.
-Cell: C179819 (paved_road, travel, speed_limit_sign); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Exact cases and coverage
 
-## Next CPU actions
+- `bridge_a_speed_below`, `bridge_a_speed_at`, `bridge_a_speed_above`: source declared structural maximum minus 5, at, and plus 5 mph on the A to B bridge approach.
+- `bridge_b_speed_below`, `bridge_b_speed_at`, `bridge_b_speed_above`: the same three settings on the B to A approach.
+- `bridge_a_sign_99ft`, `bridge_a_sign_101ft` with `bridge_a_speed_at`: 99, 100, 101 feet before end A.
+- `bridge_b_sign_99ft`, `bridge_b_sign_101ft` with `bridge_b_speed_at`: 99, 100, 101 feet before end B.
+- `elevated_a_speed_at`, `elevated_a_speed_above`: another elevated structure at and above its separately declared maximum.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C179819__NRS-484B-633-2__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Every ID has the assignment prefix `testing__C179819__NRS-484B-633-2__motor_vehicle_driver__`. The five comparisons are `bridge_a_speed`, `bridge_b_speed`, `bridge_a_sign_station`, `bridge_b_sign_station`, and `elevated_structure_speed`. `case-plan.json` links every selected statutory requirement to exact cases and source requirements. The canonical `proposals/semantic-index.json` validates the 100-foot sign boundary and a three point source relative speed sweep while retaining structural safety as an unresolved judgment.
 
-## Proven checks and dependency boundary
+## Current CPU proofs
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- 24 of 24 primary and fallback offline constructions pass `runtime.py offline`.
+- 24 of 24 primary and fallback compatibility proofs pass the Native validator, Core conversion, Lean validation and full synthetic video decode. Every negative source check rejects its altered packet.
+- 12 of 12 recorded-only `runtime.py process-saved` runs pass with source preservation.
+- 12 of 12 physical diagnostic triplets and ordered lifecycle checks pass. They are explicitly synthetic and make no original physical acceptance claim.
+- 12 of 12 independent delivery protocol positive and negative checks pass. Positive checks join motion, four camera frames and fully decoded videos from synthetic protocol sources. Negative checks reject those same sources as original delivery.
+- Five of five comparison protocols pass their current case seal/isolation tests and reject mutated engineering spacing.
+- Ten focused source, construction and analysis tests pass. `runtime.py preflight` passes on the pinned CPU environment.
+- Direct `execution_manifest.validate`, `package_compatibility.check_receipts`, `semantic_delivery.validate`, and all 12 `delivery_handoff.validate_case` calls pass against the current package.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+The exact proof commands and hashes are in `execution-manifest.json`, `cpu-comparison-proofs.json`, and `result.json`. Temporary diagnostic attempts are under `.runtime-work/c179819/`.
+
+## Remaining worker owned CPU work
+
+The current `runner.py` requires a separately source hashed CARLA operator factory. `native_acquisition.py` captures original motion and videos but does not yet emit the full standard Core capture graph needed by saved processing. Implement and CPU test that Native path, bind any changed implementation into exact constructions, rerun affected proofs, then run `.venv-cpu/bin/python worker_check.py --assignment testing__C179819__NRS-484B-633-2__motor_vehicle_driver --complete --require-delivery-ready`. Keep `result.json` partial until that exact command passes.

@@ -1,4 +1,4 @@
-"""Saved source finalizer for actual bus-stop designation versus full interval."""
+"""Saved source finalizer for A2 loading-stop location, purpose and exceptions."""
 from __future__ import annotations
 
 import argparse
@@ -11,7 +11,8 @@ from bus_location import measure
 ASSIGNMENT = 'testing__C378132__LVMC-11-60-030-A2__bus_driver'
 VIEWS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 SOURCES = ('location-source-packet.json', 'site.json', 'designation.json',
-           'identity.json', 'activity.json', 'native.json')
+           'route.json', 'identity.json', 'activity.json', 'purpose.json',
+           'circumstances.json', 'native.json')
 
 
 def source(attempt: Path, name: str) -> Path:
@@ -36,28 +37,54 @@ def trace_row(index: int, row: dict) -> dict:
                         'hand_brake': False, 'steer': 0.0}}
 
 
-def measure_bus_identity(observation: dict) -> dict:
-    return {'covered_non_tour_bus_operator': True,
+def measure_bus_class(observation: dict) -> dict:
+    return {'bus_class': observation['bus_class'], 'covered_operator': True,
             'source_sha256': observation['source_refs']['identity']['sha256']}
 
 
-def measure_public_street(observation: dict) -> dict:
+def measure_street(observation: dict) -> dict:
     return {'public_street': True, 'source_sha256': observation['source_refs']['site']['sha256']}
 
 
-def measure_stop_designation(observation: dict) -> dict:
-    return {'stop_id': observation['site_stop_id'], 'other_permitted_locations_reviewed': True,
+def measure_bus_stop(observation: dict) -> dict:
+    return {'location_kind': observation['location_kind'], 'permitted_kind': 'bus_stop',
             'source_sha256': observation['source_refs']['designation']['sha256']}
 
 
+def measure_bus_stand(observation: dict) -> dict:
+    return {'location_kind': observation['location_kind'], 'permitted_kind': 'bus_stand',
+            'source_sha256': observation['source_refs']['designation']['sha256']}
+
+
+def measure_loading_zone(observation: dict) -> dict:
+    return {'location_kind': observation['location_kind'], 'permitted_kind': 'passenger_loading_zone',
+            'source_sha256': observation['source_refs']['designation']['sha256']}
+
+
+def measure_route_endpoint(observation: dict) -> dict:
+    return {'location_kind': observation['location_kind'], 'assigned_route_source_sha256': observation['source_refs']['route']['sha256']}
+
+
 def measure_activity_interval(observation: dict) -> dict:
-    return {'conduct': observation['conduct'], 'interval_frames': observation['interval_frames'],
+    return {'conduct': 'stop', 'interval_frames': observation['interval_frames'],
             'observed_duration_s': observation['observed_duration_s']}
 
 
-def measure_location_relation(observation: dict) -> dict:
-    return {'location_relation': observation['location_relation'],
+def measure_footprint(observation: dict) -> dict:
+    return {'location_kind': observation['location_kind'],
             'interval_frames': observation['interval_frames'], 'legal_verdict': None}
+
+
+def measure_loading_purpose(observation: dict) -> dict:
+    return {'loading_purpose': observation['loading_purpose'],
+            'source_sha256': observation['source_refs']['purpose']['sha256'],
+            'legal_verdict': None}
+
+
+def measure_emergency(observation: dict) -> dict:
+    return {'stop_reason': observation['stop_reason'],
+            'source_sha256': observation['source_refs']['circumstances']['sha256'],
+            'legal_verdict': None}
 
 
 def write_saved_outputs(attempt: Path, packet: dict, observation: dict) -> None:
@@ -90,10 +117,11 @@ def write_saved_outputs(attempt: Path, packet: dict, observation: dict) -> None:
     channels = attempt / 'channels'
     channels.mkdir(exist_ok=False)
     observations = {
-        'bus_stopped_interval': lambda row,i: {'conduct': observation['conduct'],
+        'original_bus_stop_history': lambda row,i: {'conduct': 'stop',
                                                   'inside': observation['interval_frames'][0] <= i <= observation['interval_frames'][1]},
-        'designated_stop_and_alternatives': lambda row,i: {'stop_id': observation['site_stop_id'], 'designation_sha256': observation['source_refs']['designation']['sha256']},
-        'body_inside_stop': lambda row,i: row['inside_stop_boundary'],
+        'designated_location_and_route': lambda row,i: {'location_kind': row['measured_location'], 'designation_sha256': observation['source_refs']['designation']['sha256'], 'route_sha256': observation['source_refs']['route']['sha256']},
+        'passenger_baggage_purpose': lambda row,i: {'loading_purpose': observation['loading_purpose'], 'purpose_sha256': observation['source_refs']['purpose']['sha256']},
+        'exception_and_bus_class': lambda row,i: {'stop_reason': observation['stop_reason'], 'bus_class': observation['bus_class'], 'circumstances_sha256': observation['source_refs']['circumstances']['sha256']},
         'four_camera_frame_identity': lambda row,i: {'original_frame': row.get('original_frame',i),
                                                         'video_frame': i, 'video_sha256': video_hashes},
     }
@@ -105,17 +133,18 @@ def write_saved_outputs(attempt: Path, packet: dict, observation: dict) -> None:
                                   for i,row in enumerate(frames)))
         evidence.append({'name':name, 'unit':channel['unit'], 'reference':str(target.relative_to(attempt))})
     context = channels / 'source_context.json'
-    context.write_text(json.dumps({'reviewed_site_and_designation': {'site_sha256': observation['source_refs']['site']['sha256'], 'designation_sha256': observation['source_refs']['designation']['sha256']}, 'bus_operator_and_activity': {'identity_sha256': observation['source_refs']['identity']['sha256'], 'activity_sha256': observation['source_refs']['activity']['sha256']}}, indent=2, sort_keys=True) + '\n')
+    context.write_text(json.dumps({'reviewed_site_designation_route': {'site_sha256': observation['source_refs']['site']['sha256'], 'designation_sha256': observation['source_refs']['designation']['sha256'], 'route_sha256': observation['source_refs']['route']['sha256']}, 'bus_operator_activity_purpose': {'identity_sha256': observation['source_refs']['identity']['sha256'], 'activity_sha256': observation['source_refs']['activity']['sha256'], 'purpose_sha256': observation['source_refs']['purpose']['sha256'], 'circumstances_sha256': observation['source_refs']['circumstances']['sha256']}}, indent=2, sort_keys=True) + '\n')
     evidence.extend({'name':item['name'], 'unit':item['unit'], 'reference':str(context.relative_to(attempt))}
                     for item in description['context_inputs'])
     result = {'case_id': packet['case_id'],
               'measured_values': {'observed_duration_s': observation['observed_duration_s'],
-                                  'location_relation': observation['location_relation'], 'conduct': observation['conduct']},
-              'target_checks': [{'target':'bus body relative to reviewed signed stop and other permitted locations',
-                                 'requested': packet['location_relation'],
-                                 'measured': observation['location_relation'],
-                                 'method':'reviewed stop polygon and 900 original Native body footprints during complete activity',
-                                 'tolerance': None, 'matched': packet['location_relation'] == observation['location_relation'],
+                                  'location_kind': observation['location_kind'], 'loading_purpose': observation['loading_purpose'],
+                                  'stop_reason': observation['stop_reason'], 'bus_class': observation['bus_class']},
+              'target_checks': [{'target':'bus stop location, loading purpose, bus class and emergency circumstances',
+                                 'requested': {key:packet[key] for key in ('location_kind','loading_purpose','stop_reason','bus_class')},
+                                 'measured': {key:observation[key] for key in ('location_kind','loading_purpose','stop_reason','bus_class')},
+                                 'method':'reviewed five-location polygons and 900 Native footprints, independent purpose, classification and circumstance packets',
+                                 'tolerance': None, 'matched': all(packet[key]==observation[key] for key in ('location_kind','loading_purpose','stop_reason','bus_class')),
                                  'physical_cause_confirmed': False,
                                  'cause_evidence': {key:ref['sha256'] for key,ref in observation['source_refs'].items()}}],
               'setup_confirmed': False, 'behavior_attempted': False, 'maneuver_completed': False,
@@ -136,22 +165,24 @@ def analyze(attempt: Path, output: Path) -> dict:
     packet=json.loads(source(attempt,'location-source-packet.json').read_text())
     case_id=packet.get('case_id')
     if not isinstance(case_id,str) or not case_id.startswith(ASSIGNMENT+'__'):
-        raise ValueError('exact bus duration case identity required')
+        raise ValueError('exact A2 bus loading-stop case identity required')
     config=json.loads(source(attempt,'config.json').read_text())
     if config['selected_case_id']!=case_id:
         raise ValueError('saved bus case differs from selected construction')
     observation=measure(attempt,packet['source_refs'],diagnostic=packet.get('diagnostic_fixture') is True)
-    if observation['conduct']!=config['case']['conduct'] or observation['location_relation']!=config['case']['location_relation']:
-        raise ValueError('measured bus conduct differs from selected case')
-    methods=[('bus_identity',measure_bus_identity),('public_street',measure_public_street),
-             ('stop_designation',measure_stop_designation),('activity_interval',measure_activity_interval),
-             ('location_relation',measure_location_relation)]
+    if any(observation[key]!=config['case'][key] for key in ('location_kind','loading_purpose','stop_reason','bus_class')):
+        raise ValueError('measured A2 bus loading-stop conditions differ from selected case')
+    methods=[('bus_class',measure_bus_class),('street',measure_street),
+             ('loading_purpose',measure_loading_purpose),('bus_stop',measure_bus_stop),
+             ('bus_stand',measure_bus_stand),('loading_zone',measure_loading_zone),
+             ('route_endpoint',measure_route_endpoint),('footprint',measure_footprint),
+             ('emergency',measure_emergency)]
     hashes={name:sha(source(attempt,name)) for name in SOURCES}
-    report={'format':'worker-bus-stop-position-source-analysis','case_id':case_id,
+    report={'format':'worker-bus-loading-stop-source-analysis','case_id':case_id,
             'measurements':{key:{'method':method.__name__,'value':method(observation),'sources':hashes}
                             for key,method in methods},
             'observation':observation,'legal_verdict':None,
-            'scope':'source-bound saved stop-position and conduct; original physical and legal acceptance separate'}
+            'scope':'source-bound saved stop location, purpose and exceptions; original physical and legal acceptance separate'}
     if output.name!='analysis-report.json':
         raise ValueError('analysis output must be analysis-report.json')
     output.write_text(json.dumps(report,indent=2,sort_keys=True)+'\n')

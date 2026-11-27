@@ -23,6 +23,32 @@ def inside(point,polygon):
     return hit
 
 
+def body_relation(body,stop):
+    """Independent footprint/stop intersection check for the activity interval."""
+    flags=[inside(point,stop) for point in body]
+    if all(flags):
+        return 'inside'
+    if any(flags):
+        return 'mixed'
+
+    def turn(a,b,c):
+        return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
+
+    def touches(a,b,c,d):
+        x,y=turn(a,b,c),turn(a,b,d)
+        u,v=turn(c,d,a),turn(c,d,b)
+        for p,q,r in ((a,b,c),(a,b,d),(c,d,a),(c,d,b)):
+            if turn(p,q,r)==0 and min(p[0],q[0])<=r[0]<=max(p[0],q[0]) and min(p[1],q[1])<=r[1]<=max(p[1],q[1]):
+                return True
+        return (x>0)!=(y>0) and (u>0)!=(v>0)
+
+    if any(touches(body[i-1],body[i],stop[j-1],stop[j]) for i in range(len(body)) for j in range(len(stop))):
+        return 'mixed'
+    if any(inside(point,body) for point in stop):
+        return 'mixed'
+    return 'outside'
+
+
 def verify(case_id: str,attempt: Path,source: dict,decode: dict,physical: dict,
            pixels: dict,activity: dict,designation: dict,core: dict) -> dict:
     if case_id not in {ASSIGNMENT+'__'+suffix for suffix in SUFFIXES}:
@@ -100,7 +126,10 @@ def verify(case_id: str,attempt: Path,source: dict,decode: dict,physical: dict,
         row=frames[i];footprint=row.get('bus_footprint_xy_m')
         if row.get('frame')!=i or row.get('time_s')!=i/20 or not isinstance(footprint,list) or len(footprint)!=4:
             raise ValueError('original bus footprint/time join missing')
-        inside_stop=all(inside(point,polygon) for point in footprint)
+        location=body_relation(footprint,polygon)
+        if location=='mixed':
+            raise ValueError('original bus body straddles stop boundary')
+        inside_stop=location=='inside'
         if row.get('inside_stop_boundary') is not inside_stop:
             raise ValueError('original stop body measurement changed')
         observed.append(inside_stop)

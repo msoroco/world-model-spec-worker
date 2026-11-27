@@ -1,4 +1,4 @@
-"""Independent bus-stop comparisons from source-bound saved analysis reports."""
+"""Independent A2 pair audit: fixed reviewed conditions and one declared difference."""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -7,6 +7,8 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
 AID=ROOT.name
+FIELDS=('location_kind','loading_purpose','stop_reason','bus_class')
+FIXED={'site','designation','route','identity','activity','purpose','circumstances'}
 
 
 def sha(path):
@@ -17,42 +19,55 @@ def audit_comparison(comparison, reports, *, diagnostic=False):
     ids=comparison['case_ids']
     if len(ids)!=2 or set(reports)!=set(ids):
         raise ValueError('exact comparison cases missing')
-    samples=[]
+    plan=json.loads((ROOT/'case-plan.json').read_text())
+    cases={case['case_id']:case for case in plan['cases']}
+    observations=[]
     for case_id in ids:
+        if case_id not in cases:
+            raise ValueError('comparison case absent from exact plan')
         report=reports[case_id]
         if report.get('case_id')!=case_id or report.get('legal_verdict') is not None:
             raise ValueError('wrong analysis case or legal verdict')
-        observation=report.get('observation',{})
-        if observation.get('diagnostic_only') is not diagnostic:
+        observed=report.get('observation',{})
+        if observed.get('diagnostic_only') is not diagnostic:
             raise ValueError('original versus diagnostic source status differs')
-        conduct,relation=case_id.removeprefix(AID+'__').split('_')
-        if observation.get('conduct')!=conduct or observation.get('location_relation')!=relation:
-            raise ValueError('observed conduct or stop boundary differs from selected probe')
-        refs=observation.get('source_refs',{})
-        if not {'site','designation','identity','activity','native'}<=set(refs):
+        if any(observed.get(key)!=cases[case_id][key] for key in FIELDS):
+            raise ValueError('observed A2 loading-stop condition differs from selected probe')
+        refs=observed.get('source_refs',{})
+        if not FIXED|{'native'}<=set(refs):
             raise ValueError('source-bound comparison observations incomplete')
-        samples.append((conduct,relation,refs,observation))
-    first,second=samples
-    for key in ('site','designation','identity'):
-        if first[2][key]['sha256']!=second[2][key]['sha256']:
-            raise ValueError('fixed reviewed site, designation or bus identity changed: '+key)
-    if first[3].get('observed_duration_s')!=second[3].get('observed_duration_s'):
+        observations.append(observed)
+    first,second=observations
+    changed={key for key in FIELDS if first[key]!=second[key]}
+    if len(changed)!=1:
+        raise ValueError('comparison requires exactly one observed difference')
+    field=next(iter(changed))
+    cid=comparison['comparison_id']
+    expected='location_kind' if cid in {
+        'bus_stop_boundary','bus_stand_location','passenger_loading_zone_location',
+        'assigned_route_origin','assigned_route_destination'} else (
+        'loading_purpose' if cid in {'passenger_versus_baggage','passenger_versus_cargo'} else (
+        'stop_reason' if cid=='emergency_exception' else (
+        'bus_class' if cid=='tour_bus_exclusion' else None)))
+    if field!=expected:
+        raise ValueError('comparison changed a condition other than declared contrast')
+    if first.get('observed_duration_s')!=second.get('observed_duration_s'):
         raise ValueError('fixed stopped interval duration changed')
-    differences=comparison.get('deliberate_differences',[])
-    if comparison['comparison_id'].endswith('stop_boundary'):
-        if (first[0],second[0]) not in (('stand','stand'),('park','park')) or {first[1],second[1]}!={'inside','outside'}:
-            raise ValueError('stop boundary contrast collapsed')
-    elif comparison['comparison_id']=='stand_versus_park_inside':
-        if {first[0],second[0]}!={'stand','park'} or first[1]!='inside' or second[1]!='inside':
-            raise ValueError('standing versus parking contrast collapsed')
-    else:
-        raise ValueError('unknown bus-stop comparison')
-    if not differences or not comparison.get('fixed_conditions'):
+    variable_source={'location_kind':'native','loading_purpose':'purpose',
+                     'stop_reason':'circumstances','bus_class':'identity'}[field]
+    fixed_sources=FIXED-{variable_source}
+    for key in fixed_sources:
+        if first['source_refs'][key]['sha256']!=second['source_refs'][key]['sha256']:
+            raise ValueError('fixed reviewed A2 source changed: '+key)
+    if field!='location_kind' and first['location_kind']!=second['location_kind']:
+        raise ValueError('fixed stopped location changed')
+    if not comparison.get('deliberate_differences') or not comparison.get('fixed_conditions'):
         raise ValueError('comparison conditions missing')
-    return {'format':'worker-bus-stop-comparison-audit','comparison_id':comparison['comparison_id'],
+    return {'format':'worker-bus-loading-comparison-audit','comparison_id':cid,
             'case_ids':ids,'passed':True,'diagnostic_only':diagnostic,
-            'fixed_source_sha256':{key:first[2][key]['sha256'] for key in ('site','designation','identity')},
-            'deliberate_differences':differences,'legal_verdict':None}
+            'fixed_source_sha256':{key:first['source_refs'][key]['sha256'] for key in sorted(fixed_sources)},
+            'observed_difference':field,'deliberate_differences':comparison['deliberate_differences'],
+            'legal_verdict':None}
 
 
 def main():
@@ -73,7 +88,7 @@ def main():
     if args.output.exists():raise ValueError('retain prior independent comparison receipt')
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(receipt,indent=2,sort_keys=True)+'\n')
-    print('original source-bound comparison audited: '+args.comparison)
+    print('original source-bound A2 comparison audited: '+args.comparison)
 
 
 if __name__=='__main__':main()

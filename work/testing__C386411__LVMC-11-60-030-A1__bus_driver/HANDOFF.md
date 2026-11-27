@@ -1,22 +1,23 @@
-# testing__C386411__LVMC-11-60-030-A1__bus_driver
+# C386411 LVMC 11.60.030(A)(1) bus-stop position package
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: CPU construction and exact source-bound proofs prepared. The assignment strict gate passed on 2026-11-27. No original CARLA motion, pixel visibility, designation or legal compliance is claimed.
 
-Exact law: LVMC 11.60.030(A)(1) — The operator of a bus, other than a tour bus, shall: Not stand or park such vehicle upon any street at any place other than a bus stop, bus stand or the origin or destination point for the route to which such vehicle is assigned which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010] of this Chapter.
-Assigned branch(es): Standing relative to a designated bus stop.
-Cell: C386411 (one_way_road, stop_stand, bus_stop); actor: bus_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The frozen law covers an operator of a bus other than a tour bus who stands or parks on a street, with exceptions for an officially designated bus stop, bus stand, or origin or destination of the assigned route designated under Section 11.60.010. The selected C386411 one-way-road cell fixes a bus stop. The four selected cases are `stand_inside`, `stand_outside`, `park_inside`, and `park_outside`, each prefixed by `testing__C386411__LVMC-11-60-030-A1__bus_driver__`. They give standing and parking stop-boundary contrasts and a conduct contrast. The outside cases explicitly require source review showing the body is not at a bus stand or assigned-route origin/destination; a simple outside-stop pixel is insufficient. No numeric legal boundary was invented.
 
-## Next CPU actions
+The frozen accepted evidence inventory is empty. `case-plan.json` records the two source gaps, three fixed-condition comparisons, all selected requirements, and the 45-second four-camera plan. The unrelated judgment ranges in the exported `judgment_ranges.json` have no entry for this law and actor.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C386411__LVMC-11-60-030-A1__bus_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`runner.py` selects an exact inline bundle and only enters Native operation with a reviewed site and attested adapter. `native_capture.py` requires a SHA-bound original site, official signed designation, public-street and route sources, stop and other-location polygons, distinct inside/outside stop poses, non-tour bus identity, four original RGB cameras, 900 synchronous 20 Hz world ticks, per-frame bus footprint, and world-settings restoration readback. `bus_location.py` requires complete original source packets, checks the body footprint against the reviewed stop polygon during the independently reviewed conduct interval, rejects edge contact, mixed locations and other permitted outside locations, and returns no legal verdict. The independent delivery audit separately rejects a body that straddles the stop boundary. `analysis.py` materializes selected saved measurements, Native frame map and channel files without treating synthetic diagnostics as original evidence. `assemble_reviewed_activity.py` attaches independently reviewed original conduct only after Native exit and seal.
 
-## Proven checks and dependency boundary
+`execution-manifest.json` binds each exact construction, measurement contract, acquisition method, offline result, positive and missing-designation negative compatibility proof, physical outcome/lifecycle receipts, saved-only processing, and independent positive/negative delivery audit. `independent/delivery_audit.py` checks original provenance, four decoded camera streams, 900-frame Core join, independent pixel and official designation reviews, actual activity interval, and original body footprints; it rejects unsigned stops, changed sources, and outside positions that could be another permitted location. `comparison_audit.py` checks fixed site, designation, identity and stopped duration against the declared location/conduct changes; its CPU diagnostic proof rejects a changed observed relation. `queue-proposal.json` contains exact local prepare, execute, process, audit and accept commands for lead integration.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+CPU diagnostics are explicitly synthetic: source-shaped 900-frame textual inputs and four generated videos under `.runtime-work/c386411-bus/`. They demonstrate software compatibility and source rejection only. The original site must be independently reviewed before any GPU run, and actual street status, bus/operator identity, signs, stop boundary, other permitted locations, standing/parking activity, motion, footage, camera coverage and physical completion remain local review tasks. The fixed 45-second capture requires an original approach, complete stopped interval and departure; if the reviewed site cannot realize it, replan and rerun CPU proofs.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Resume proof commands from repository root with `TMPDIR="$PWD/.runtime-work/c386411-tmp"` and no Git command:
+
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C386411__LVMC-11-60-030-A1__bus_driver/tests`
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C386411__LVMC-11-60-030-A1__bus_driver/prove_comparisons.py`
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C386411__LVMC-11-60-030-A1__bus_driver --complete --require-delivery-ready`
+
+The exact construction and fixture recipes are under `cases/<suffix>/`. Physical CARLA and canonical set acceptance are not run in this CPU worker.
+
+The exact scoped strict command above exited 0 on 2026-11-27 after the polygon-contact correction and refreshed four-case offline, compatibility, saved processing, delivery audit, comparison and physical receipts. Its output reported `static_checks_passed: true` for this assignment. The lead's independent check and shared queue integration remain separate.

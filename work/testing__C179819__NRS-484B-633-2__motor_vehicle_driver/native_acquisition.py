@@ -23,7 +23,7 @@ def _write(path, text):
 
 
 def acquire(adapter, site_path: Path, site_sha256: str, case: dict, output: Path,
-            *, spawn_adjust_m: float = 0.0) -> dict:
+            *, spawn_adjust_m: float = 0.0, capture_factory=None) -> dict:
     """Own world settings, actors, capture and closure for one fresh attempt."""
     output = Path(output)
     if not output.is_dir() or not (output / "construction.json").is_file():
@@ -39,11 +39,20 @@ def acquire(adapter, site_path: Path, site_sha256: str, case: dict, output: Path
     files = {name: [] for name in CAMERAS}
     errors = []
     destroyed = []
+    capture = None
     try:
         adapter.configure_sync(rate_hz=20)
         if adapter.readback_sync(rate_hz=20) is not True:
             raise ValueError("original 20 Hz world readback failed")
         built = construct(adapter, site, case, owned, spawn_adjust_m=spawn_adjust_m)
+        site = dict(site, ego_actor_id=adapter.actor_id(built["ego"]))
+        if capture_factory is None:
+            from pipeline_capture import PipelineCapture
+            capture_factory = PipelineCapture
+        client = getattr(adapter, "client", None)
+        if client is None:
+            raise ValueError("Native operator must retain the original CARLA client for graph capture")
+        capture = capture_factory(client, built["ego"], output, case["case_id"])
         for index in range(900):
             tick, images = adapter.tick_capture(index, built["ego"], built["cameras"])
             if not isinstance(tick, dict) or not isinstance(images, dict) or set(images) != set(CAMERAS):
@@ -52,6 +61,10 @@ def acquire(adapter, site_path: Path, site_sha256: str, case: dict, output: Path
             row["index"] = index
             if row.get("original_frame") is None or row.get("time_s") is None:
                 raise ValueError("original simulator frame/time missing")
+            recorded = capture.capture(row["original_frame"], row["time_s"],
+                                       extra={"bridge_station_m": row.get("ego_station_m")})
+            if recorded.get("frame") != row["original_frame"]:
+                raise ValueError("original graph capture frame differs from motion readback")
             rows.append(row)
             mapping.append({"video_frame": index, "carla_frame": row["original_frame"],
                             "native_frame": row["original_frame"], "time_s": row["time_s"]})
@@ -69,14 +82,18 @@ def acquire(adapter, site_path: Path, site_sha256: str, case: dict, output: Path
         errors.append(str(error))
         raise
     finally:
-        destroyed = destroy_owned(adapter, owned, original_settings)
+        try:
+            if capture is not None:
+                capture.close(confirmed=not errors)
+        finally:
+            destroyed = destroy_owned(adapter, owned, original_settings)
         if errors:
             _write(output / "native-run-status.json", json.dumps(
                 {"case_id": case["case_id"], "errors": errors,
                  "destroyed_actor_ids": destroyed, "world_restored": True},
                 sort_keys=True, indent=2) + "\n")
     source_root = Path(site_path).resolve().parent
-    shutil.copy2(site_path, output / "bridge-site.json")
+    _write(output / "bridge-site.json", json.dumps(site, sort_keys=True, indent=2) + "\n")
     source_refs = [site["maximum_declaration_source"], site["stationing_source"]]
     source_refs.extend(site["authority"].values())
     for sign in site["signs"].values():
@@ -92,6 +109,7 @@ def acquire(adapter, site_path: Path, site_sha256: str, case: dict, output: Path
         {"case_id": case["case_id"], "cameras": files}, sort_keys=True, indent=2) + "\n")
     _write(output / "original-source-receipt.json", json.dumps(
         {"case_id": case["case_id"], "site_sha256": sha(output / "bridge-site.json"),
+         "reviewed_site_sha256": site_sha256,
          "trace_sha256": sha(output / "original-motion.jsonl"),
          "frame_map_sha256": sha(output / "video_frames.jsonl"),
          "camera_manifest_sha256": sha(output / "camera-source-manifest.json"),

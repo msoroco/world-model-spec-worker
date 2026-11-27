@@ -23,7 +23,10 @@ def assess(case, kind):
     if kind == 'complete_motion':
         observations = {'frame_count': 900, 'camera_count': 4,
                         'source_measured_position_frames': 900,
-                        'selected_relation': case['location_relation'],
+                        'selected_location': case['location_kind'],
+                        'selected_loading_purpose': case['loading_purpose'],
+                        'selected_stop_reason': case['stop_reason'],
+                        'selected_bus_class': case['bus_class'],
                         'bus_activity_reviewed': True,
                         'stopped_duration_s': 15}
         status = 'met'
@@ -42,8 +45,8 @@ def assess(case, kind):
             'case_id': case['case_id'], 'maneuver_completed': status == 'met',
             'realized_observables': observations,
             'physical_checks': {'maneuver': {'status': status,
-                'method': 'synthetic 900-frame four-camera bus body/stop polygon relation and independently reviewed activity check',
-                'sources': ['synthetic Native frame ledger', 'synthetic activity review']}}}
+                'method': 'synthetic 900-frame four-camera body/five-location polygon and independent activity, purpose and exception review',
+                'sources': ['synthetic Native frame ledger', 'synthetic activity, purpose and circumstance review']}}}
 
 
 def build():
@@ -91,4 +94,4 @@ if __name__ == '__main__':
         print(json.dumps(assess(case, args.kind), indent=2, sort_keys=True))
     else:
         build()
-        print('four physical diagnostic receipts built')
+        print('ten physical diagnostic receipts built')

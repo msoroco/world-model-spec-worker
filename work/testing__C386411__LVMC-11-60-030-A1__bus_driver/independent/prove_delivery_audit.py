@@ -4,7 +4,7 @@ import argparse
 import json
 import tempfile
 from pathlib import Path
-from delivery_audit import ASSIGNMENT,SUFFIXES,VIEWS,CHECKS,sha,verify
+from delivery_audit import ASSIGNMENT,SUFFIXES,VIEWS,CHECKS,sha,verify,body_relation
 
 REPO=Path(__file__).resolve().parents[3]
 SCRATCH=REPO/'.runtime-work/c386411-bus/delivery-audit-tests'
@@ -56,6 +56,10 @@ def fixture(root,suffix):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('case_id',choices=[ASSIGNMENT+'__'+s for s in SUFFIXES]);parser.add_argument('--negative',action='store_true')
     args=parser.parse_args();SCRATCH.mkdir(parents=True,exist_ok=True)
+    if body_relation([[-34,-9],[-26,-9],[-26,-7],[-34,-7]],POLYGON)!='mixed':
+        raise AssertionError('bus body straddling stop edge was accepted')
+    if body_relation([[-45,-5],[-15,-5],[-15,-3],[-45,-3]],POLYGON)!='mixed':
+        raise AssertionError('bus body crossing stop without contained corners was accepted')
     with tempfile.TemporaryDirectory(prefix='bus-stop-proof-',dir=SCRATCH) as name:
         root=Path(name);items=list(fixture(root,args.case_id.removeprefix(ASSIGNMENT+'__')))
         if args.negative:

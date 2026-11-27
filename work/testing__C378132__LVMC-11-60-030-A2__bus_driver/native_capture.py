@@ -1,4 +1,4 @@
-"""Source-gated CARLA bus-stop location acquisition with owned actors.
+"""Source-gated CARLA bus loading-stop acquisition with owned actors.
 
 The requested inside/outside stop is an engineering target. Original activity timing
 and location are measured from Native frames and independently reviewed later.
@@ -39,46 +39,50 @@ def pose(value: dict) -> dict:
 def read_site(path: Path, expected_sha256: str) -> dict:
     path = Path(path)
     if sha(path) != expected_sha256:
-        raise ValueError('reviewed bus-stop site SHA256 differs')
+        raise ValueError('reviewed bus loading site SHA256 differs')
     site = json.loads(path.read_text())
     if site.get('source_kind') != 'original_independent_site_review' or site.get('cell_id') != 'C378132':
         raise ValueError('original independent C378132 site review required')
-    if site.get('layout') != 'one_way_road' or site.get('stop_kind') != 'bus_stop' or site.get('public_street') is not True:
-        raise ValueError('reviewed one-way public-street bus stop differs')
-    for key in ('reviewer', 'map_sha256', 'stop_id', 'stop_boundary_source_sha256',
+    if site.get('layout') != 'business_district' or site.get('public_street') is not True:
+        raise ValueError('reviewed business-district public street differs')
+    for key in ('reviewer', 'map_sha256', 'boundary_source_sha256',
                 'designation_source_sha256', 'operator_source_sha256', 'jurisdiction_source_sha256', 'route_source_sha256'):
         if not site.get(key):
-            raise ValueError('missing reviewed bus-stop source: ' + key)
+            raise ValueError('missing reviewed bus loading source: ' + key)
     designation = site.get('designation')
     if not isinstance(designation, dict) or designation.get('authority') != 'City Traffic Engineer' or \
-            designation.get('stop_id') != site['stop_id'] or designation.get('signed') is not True or \
-            not designation.get('route_termini_reviewed') or not designation.get('other_permitted_locations_reviewed') or \
+            set(designation.get('designated_locations', [])) != {'bus_stop','bus_stand','passenger_loading_zone','route_origin','route_destination'} or \
+            designation.get('signs_reviewed') is not True or \
             designation.get('source_sha256') != site['designation_source_sha256']:
-        raise ValueError('actual stop-specific designation unproved')
-    boundary = site.get('stop_polygon_xy_m')
-    if not isinstance(boundary, list) or len(boundary) < 4 or any(not isinstance(point, list) or len(point) != 2 for point in boundary):
-        raise ValueError('reviewed bus stop boundary polygon required')
-    for point in boundary:
-        finite(point[0], 'stop boundary x');finite(point[1], 'stop boundary y')
-    for key in ('bus_stand_polygons_xy_m', 'route_origin_polygons_xy_m', 'route_destination_polygons_xy_m'):
-        polygons=site.get(key)
-        if not isinstance(polygons,list):
-            raise ValueError('other permitted location source inventory missing: '+key)
-        for polygon in polygons:
-            if len(polygon)<4 or any(len(point)!=2 for point in polygon):
-                raise ValueError('other permitted location polygon incomplete')
-    outside=site.get('native_scene',{}).get('outside_pose')
-    pose(outside)
-    if inside_polygon([outside['x'],outside['y']],boundary):
-        raise ValueError('outside bus pose remains inside reviewed stop')
+        raise ValueError('actual five-location designation unproved')
+    from bus_location import PERMITTED, footprint_location
+    polygons = site.get('location_polygons_xy_m')
+    if not isinstance(polygons, dict) or set(polygons) != set(PERMITTED):
+        raise ValueError('all five reviewed location polygons required')
+    for name, polygon in polygons.items():
+        if not isinstance(polygon,list) or len(polygon)<4 or any(not isinstance(point,list) or len(point)!=2 for point in polygon):
+            raise ValueError('incomplete location polygon: '+name)
+        for point in polygon:
+            finite(point[0], name+' x');finite(point[1], name+' y')
     identity = site.get('bus_identity')
-    if not isinstance(identity, dict) or identity.get('tour_bus') is not False or not identity.get('covered_operator') or not identity.get('bus_id') or not identity.get('assigned_route'):
-        raise ValueError('covered non-tour bus/operator identity unproved')
+    if not isinstance(identity, dict) or identity.get('tour_bus') not in (True,False) or not identity.get('covered_operator') or not identity.get('bus_id') or not identity.get('assigned_route') or not identity.get('bus_class_source_sha256'):
+        raise ValueError('bus/operator classification unproved')
+    if not isinstance(site.get('route'),dict) or site['route'].get('route_id')!=identity['assigned_route'] or not site['route'].get('origin_destination_reviewed'):
+        raise ValueError('assigned-route endpoints unreviewed')
     scene = site.get('native_scene')
     if not isinstance(scene, dict) or not str(scene.get('bus_blueprint_id', '')).startswith('vehicle.'):
         raise ValueError('reviewed Native bus blueprint required')
-    for key in ('approach_pose', 'stop_pose', 'outside_pose', 'exit_pose'):
+    for key in ('approach_pose', 'exit_pose'):
         pose(scene.get(key))
+    stop_poses=scene.get('stop_poses')
+    if not isinstance(stop_poses,dict) or set(stop_poses)!=set(PERMITTED)|{'outside'}:
+        raise ValueError('six reviewed Native stop poses required')
+    for key, target in stop_poses.items():
+        pose(target)
+        x,y=target['x'],target['y']
+        body=[[x-3,y-1],[x+3,y-1],[x+3,y+1],[x-3,y+1]]
+        if footprint_location(body,polygons)!=key:
+            raise ValueError('Native stop pose differs from reviewed location: '+key)
     cameras = scene.get('camera_mounts')
     if not isinstance(cameras, dict) or set(cameras) != set(VIEWS):
         raise ValueError('four reviewed camera mounts required')
@@ -107,9 +111,9 @@ def steer_toward(transform, target: dict) -> float:
     return max(-1.0,min(1.0,delta/45.0))
 
 
-def requested_hold(site: dict, relation: str) -> float:
-    if relation not in ('inside','outside'):
-        raise ValueError('unknown stop location relation')
+def requested_hold(site: dict, location_kind: str) -> float:
+    if location_kind not in ('outside','bus_stop','bus_stand','passenger_loading_zone','route_origin','route_destination'):
+        raise ValueError('unknown stop location')
     return 15.0
 
 
@@ -166,12 +170,10 @@ class NativeBusOperator:
         if errors:
             raise ValueError('Native bus ownership cleanup failed') from errors[0]
 
-    def capture(self, output: Path, conduct: str, relation: str) -> dict:
+    def capture(self, output: Path, location_kind: str) -> dict:
         if self.bus is None or set(self.cameras) != set(VIEWS):
             raise ValueError('bus and four cameras must be constructed')
-        if conduct not in ('stand', 'park'):
-            raise ValueError('unknown standing or parking conduct')
-        hold = requested_hold(self.site, relation)
+        hold = requested_hold(self.site, location_kind)
         output = Path(output)
         if output.exists():
             raise ValueError('retain prior Native bus attempt')
@@ -183,7 +185,7 @@ class NativeBusOperator:
         inbox = {name: queue.Queue() for name in VIEWS}
         rows = []
         state = 'approach'; hold_start = None; hold_end = None
-        stop = self.site['native_scene']['stop_pose' if relation=='inside' else 'outside_pose']; exit_pose = self.site['native_scene']['exit_pose']
+        stop = self.site['native_scene']['stop_poses'][location_kind]; exit_pose = self.site['native_scene']['exit_pose']
         try:
             for name, sensor in self.cameras.items():
                 sensor.listen(lambda image, q=inbox[name]: q.put(image))
@@ -206,7 +208,7 @@ class NativeBusOperator:
                     control = self.carla.VehicleControl(throttle=.28, steer=steer_toward(transform,target), brake=0, hand_brake=False)
                 else:
                     control = self.carla.VehicleControl(throttle=0, brake=1,
-                                                        hand_brake=(state == 'hold' and conduct == 'park'))
+                                                        hand_brake=False)
                 self.bus.apply_control(control)
                 frame = self.world.tick()
                 cameras = {}
@@ -225,12 +227,12 @@ class NativeBusOperator:
                 for sx,sy in ((-1,-1),(1,-1),(1,1),(-1,1)):
                     vertex=transform.transform(box.location+self.carla.Location(x=sx*box.extent.x,y=sy*box.extent.y,z=0))
                     corners.append([finite(vertex.x,'body x'),finite(vertex.y,'body y')])
-                in_stop=all(inside_polygon(point,self.site['stop_polygon_xy_m']) for point in corners)
+                from bus_location import footprint_location
+                actual_location=footprint_location(corners,self.site['location_polygons_xy_m'])
                 rows.append({'frame': index,'time_s':index/20,'original_frame':frame,'bus_id':self.site['bus_identity']['bus_id'],'native_actor_id':self.bus.id,
                              'bus_center_xy_m':[finite(loc.x,'bus x'),finite(loc.y,'bus y')],
                              'bus_footprint_xy_m':corners,'bus_speed_mps':speed,
-                             'controller_state':state,'inside_stop_boundary':in_stop,
-                             'outside_other_permitted_location': not any(any(inside_polygon(point,poly) for point in corners) for key in ('bus_stand_polygons_xy_m','route_origin_polygons_xy_m','route_destination_polygons_xy_m') for poly in self.site[key]),
+                             'controller_state':state,'measured_location':actual_location,
                              'cameras':cameras})
             if hold_start is None or hold_end is None or state not in ('depart','clear'):
                 raise ValueError('Native bus did not complete requested stopped interval and departure')
@@ -257,17 +259,21 @@ def capture(adapter, site_path: Path, case_id: str, destination: Path) -> dict:
     if not expected.is_file():
         raise ValueError('independent reviewed site SHA256 sidecar required')
     site=read_site(site_path,expected.read_text().strip())
-    relation=case_id.split('__')[-1].split('_')[-1]
-    conduct=case_id.split('__')[-1].split('_')[0]
     destination=Path(destination)
     if not destination.is_dir() or not (destination/'construction.json').is_file():
         raise ValueError('Native attempt must be a materialized exact construction')
+    config=json.loads((destination/'config.json').read_text())
+    if config.get('selected_case_id')!=case_id or config.get('cell_id')!='C378132':
+        raise ValueError('materialized case/config identity differs')
+    selected=config['case']
+    if selected['bus_class']!=('tour' if site['bus_identity']['tour_bus'] else 'regular'):
+        raise ValueError('reviewed bus class differs from selected construction')
     raw=destination/'native-bus-capture'
     operator=NativeBusOperator(adapter.world,adapter.carla,site)
     prior=copy.deepcopy(adapter.world.get_settings())
     try:
         setup=operator.setup()
-        result=operator.capture(raw,conduct,relation)
+        result=operator.capture(raw,selected['location_kind'])
         result.update(setup)
         result['case_id']=case_id
         result['reviewed_site_sha256']=sha(site_path)
@@ -283,27 +289,27 @@ def capture(adapter, site_path: Path, case_id: str, destination: Path) -> dict:
         raise ValueError('Native bus capture incomplete')
     (destination/'native.json').write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n')
     reviewed_packets={
-        'site.json': {'kind':'reviewed_bus_stop_site','source_class':'original_independent_review',
-            'cell_id':'C378132','layout':'one_way_road','stop_kind':'bus_stop','public_street':True,
-            'jurisdiction_source_sha256':site['jurisdiction_source_sha256'],'stop_polygon_xy_m':site['stop_polygon_xy_m'],
-            'bus_stand_polygons_xy_m':site['bus_stand_polygons_xy_m'],
-            'route_origin_polygons_xy_m':site['route_origin_polygons_xy_m'],
-            'route_destination_polygons_xy_m':site['route_destination_polygons_xy_m'],
-            'stop_id':site['stop_id'],'reviewer':site['reviewer'],
+        'site.json': {'kind':'reviewed_bus_loading_site','source_class':'original_independent_review',
+            'cell_id':'C378132','layout':'business_district','public_street':True,
+            'jurisdiction_source_sha256':site['jurisdiction_source_sha256'],
+            'location_polygons_xy_m':site['location_polygons_xy_m'],
+            'reviewer':site['reviewer'],
             'designation_source_sha256':site['designation_source_sha256'],
-            'boundary_source_sha256':site['stop_boundary_source_sha256']},
-        'designation.json': {'kind':'bus_stop_designation','source_class':'original_independent_review',
-            'stop_id':site['stop_id'],'authority':'City Traffic Engineer',
-            'signed':site['designation']['signed'],
-            'route_termini_reviewed':site['designation']['route_termini_reviewed'],
-            'other_permitted_locations_reviewed':site['designation']['other_permitted_locations_reviewed'],
+            'boundary_source_sha256':site['boundary_source_sha256']},
+        'designation.json': {'kind':'bus_loading_designations','source_class':'original_independent_review',
+            'authority':'City Traffic Engineer',
+            'signs_reviewed':site['designation']['signs_reviewed'],
+            'designated_locations':site['designation']['designated_locations'],
             'source_sha256':site['designation_source_sha256']},
+        'route.json': {'kind':'assigned_bus_route','source_class':'original_independent_review',
+            'route_id':site['route']['route_id'],'origin_destination_reviewed':site['route']['origin_destination_reviewed'],
+            'source_sha256':site['route_source_sha256']},
         'identity.json': {'kind':'bus_operator_identity','source_class':'original_independent_review',
-            'bus_id':site['bus_identity']['bus_id'],'tour_bus':False,
+            'bus_id':site['bus_identity']['bus_id'],'tour_bus':site['bus_identity']['tour_bus'],
             'covered_operator':site['bus_identity']['covered_operator'],
             'assigned_route':site['bus_identity']['assigned_route'],
-            'route_source_sha256':site['route_source_sha256'],
-            'source_sha256':site['operator_source_sha256']}}
+            'bus_class_source_sha256':site['bus_identity']['bus_class_source_sha256'],
+            'operator_source_sha256':site['operator_source_sha256']}}
     for name,packet in reviewed_packets.items():
         (destination/name).write_text(json.dumps(packet,indent=2,sort_keys=True)+'\n')
     for view in VIEWS:
@@ -338,8 +344,8 @@ def capture(adapter, site_path: Path, case_id: str, destination: Path) -> dict:
     from worker_exchange.native_output import seal_capture
     seal_capture(destination,frames=900,restoration={'restored':True,'method':'Native world settings readback'},
                  errors=[],encoder_exit_codes={view:0 for view in VIEWS},
-                 context={'reviewed_site_sha256':sha(site_path),'stop_id':site['stop_id']})
+                 context={'reviewed_site_sha256':sha(site_path),'assigned_route':site['route']['route_id']})
     result['camera_encodes_sha256']={view:sha(destination/(view+'.mkv')) for view in VIEWS}
     result['capture_seal_sha256']=sha(destination/'capture-seal.json')
-    result['remaining']='Independent activity start/end review and stop-position source packet assembly before saved law analysis'
+    result['remaining']='Independent stop activity, loading-purpose and emergency review before saved law analysis'
     return result

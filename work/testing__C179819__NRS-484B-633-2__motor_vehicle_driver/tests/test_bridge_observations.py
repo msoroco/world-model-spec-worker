@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 SOURCE = Path(__file__).resolve().parents[1] / "bridge_observations.py"
@@ -126,7 +127,7 @@ class FakeAdapter:
     def spawn_cameras(self, ego, names, site): return {name: name for name in names}
     def tick_capture(self, *args): raise AssertionError("not needed in construction test")
     def destroy(self, actor): self.calls.append(("destroy", actor))
-    def actor_id(self, actor): return str(actor)
+    def actor_id(self, actor): return 17 if actor == "ego" else str(actor)
 
 
 class BridgeConstructionTest(unittest.TestCase):
@@ -185,6 +186,57 @@ class SavedAnalysisTest(unittest.TestCase):
             trace.unlink()
             with self.assertRaisesRegex(ValueError, "Missing required source: original-motion.jsonl"):
                 analysis.build_report(attempt, "exact_case")
+
+
+class NativeAcquisitionTest(unittest.TestCase):
+    def test_original_tick_graph_join_and_owner_closure(self):
+        import native_acquisition
+        from PIL import Image
+        import io
+        scratch = SOURCE.parents[2] / ".runtime-work"
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temp:
+            source = Path(temp) / "source"
+            output = Path(temp) / "attempt"
+            source.mkdir()
+            output.mkdir()
+            (output / "construction.json").write_text("{}\n")
+            (source / "review-record.txt").write_bytes(b"review record\n")
+            site_path = source / "bridge-site.json"
+            site_path.write_text(json.dumps(dossier(), sort_keys=True) + "\n")
+            image = Image.new("RGB", (2, 2), (40, 60, 80))
+            png = io.BytesIO()
+            image.save(png, format="PNG")
+            class AcquisitionAdapter(FakeAdapter):
+                client = object()
+                def tick_capture(self, index, ego, cameras):
+                    return rows_cache[index], {name: png.getvalue() for name in cameras}
+            rows_cache = rows()
+            capture_events = []
+            class Capture:
+                def __init__(self, client, ego, folder, case_id):
+                    self.folder = folder
+                    capture_events.append(("open", case_id))
+                def capture(self, frame, time_s, extra=None):
+                    capture_events.append(("capture", frame, time_s, extra["bridge_station_m"]))
+                    return {"frame": frame}
+                def close(self, confirmed=True):
+                    capture_events.append(("close", confirmed))
+            def fake_ffmpeg(command, cwd, check, timeout):
+                (Path(cwd) / command[-1]).write_bytes(b"diagnostic video test only")
+            case = {"case_id": "exact_case", "travel_direction_request": "a_to_b",
+                    "structure_kind_request": "bridge",
+                    "requested_speed_delta_from_declared_maximum_mph": 0}
+            adapter = AcquisitionAdapter()
+            with patch.object(native_acquisition.subprocess, "run", side_effect=fake_ffmpeg):
+                result = native_acquisition.acquire(adapter, site_path,
+                    hashlib.sha256(site_path.read_bytes()).hexdigest(), case, output,
+                    capture_factory=Capture)
+            self.assertEqual(result["original_frame_count"], 900)
+            self.assertEqual(len([event for event in capture_events if event[0] == "capture"]), 900)
+            self.assertEqual(capture_events[-1], ("close", True))
+            self.assertEqual(len([call for call in adapter.calls if call[0] == "destroy"]), 7)
+            self.assertTrue((output / "original-source-receipt.json").is_file())
 
 
 if __name__ == "__main__":
