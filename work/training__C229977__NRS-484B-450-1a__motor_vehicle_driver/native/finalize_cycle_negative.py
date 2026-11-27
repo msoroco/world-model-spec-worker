@@ -9,7 +9,7 @@ from sidewalk_occupancy import measure_frame
 
 FRAMES = 600
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
-SOURCES = ('config.json', 'vehicle-trace.jsonl', 'video_frames.jsonl', 'camera-frames.jsonl',
+SOURCES = ('actor-assignment.json', 'vehicle-trace.jsonl', 'video_frames.jsonl', 'camera-frames.jsonl',
            'map-packet.json', 'authority-context.json', 'native-road.xodr')
 
 
@@ -42,11 +42,14 @@ def observe(attempt):
     stopped = overlap = joined = entire = 0
     first_stop = first_joined = None
     actor_id = trace[0].get('actor_id')
+    if not str(trace[0].get('blueprint_id', '')).startswith('vehicle.'):
+        raise ValueError('Cycle eligibility control has no source vehicle blueprint')
     for i, (row, frame) in enumerate(zip(trace, mapping)):
         if (row.get('frame') != i or frame.get('video_frame') != i or
                 row.get('native_frame') != frame.get('native_frame') or
                 abs(row['time_s'] - frame['time_s']) > 1e-4 or
                 row.get('actor_id') != actor_id or
+                row.get('blueprint_id') != trace[0].get('blueprint_id') or
                 set(frame.get('camera_native_frames', {})) != set(CAMERAS)):
             raise ValueError('Original sidewalk frame/time/actor join differs')
         speed = float(row['speed_mps'])
@@ -96,7 +99,10 @@ def sidewalk_stop(observed, packet, authority, config):
 
 
 def cycle_eligibility(config, actor):
-    if config.get('actor') != 'motor_vehicle_driver':
+    source = json.loads(required(config['_attempt'], 'actor-assignment.json').read_text())
+    if (config.get('actor') != 'motor_vehicle_driver' or
+            source.get('actor') != config['actor'] or
+            source.get('assignment_id') != config['case_id'].rsplit('__', 1)[0]):
         raise ValueError('Cycle eligibility control lost the frozen motor-vehicle actor')
     return {'subject_actor': config['actor'], 'exception_actor': actor,
             'actor_eligible': False, 'positive_exception_executed': False,
@@ -128,6 +134,7 @@ def finalize(attempt, output):
     if output.exists() or (attempt / 'result.json').exists():
         raise ValueError('Use fresh recorded-only analysis output')
     config = json.loads(required(attempt, 'config.json').read_text())
+    config['_attempt'] = str(attempt)
     packet = json.loads(required(attempt, 'map-packet.json').read_text())
     authority = json.loads(required(attempt, 'authority-context.json').read_text())
     observed = observe(attempt)

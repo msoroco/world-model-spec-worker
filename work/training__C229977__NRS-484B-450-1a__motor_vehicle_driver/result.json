@@ -5,6 +5,9 @@
   "candidate_count": 10,
   "checkpoint_receipts": [
     "comparison-audit-specs.json",
+    "compatibility/probe_1-primary.json",
+    "compatibility/probe_2-primary.json",
+    "cycle-saved-manifest.json",
     "delivery-proofs/officer_direction_absent-positive.log",
     "delivery-proofs/officer_direction_present-positive.log",
     "delivery-proofs/official_device_absent-positive.log",
@@ -15,6 +18,7 @@
     "law-comparison-audit.json",
     "law-execution-manifest.json",
     "law-saved-manifest.json",
+    "measurement-contract-cycle-negative.json",
     "measurement-contract-device.json",
     "measurement-contract-law.json",
     "native/actor_eligibility_audit.json",
@@ -27,7 +31,10 @@
     "physical-proof/governing_law_present/proof.json",
     "physical-proof/official_device_absent/proof.json",
     "physical-proof/official_device_present/proof.json",
+    "physical-proof/probe_1/proof.json",
+    "physical-proof/probe_2/proof.json",
     "proposals/semantic-index.json",
+    "scoped-complete-cycle-negative.log",
     "scoped-complete-law.log",
     "scoped-partial-after-delivery.log",
     "scoped-partial-after-device.log",
@@ -40,7 +47,7 @@
   "input_sha256": "3fb8f9c96d304e7ff8d42e6136449110c42dcabddd2f1bef35ab1e9b0692cf38",
   "planned_case_count": 10,
   "readiness_kind": "implementation_checkpoint",
-  "reason": "Probe1/2 negative actor eligibility measurements are being bound for the three subsection-3 cycle actor variants; exact scoped strict currently fails measurement_contract.py:17. Positive cycle exception remains pending an eligible actor cell.",
+  "reason": "Exact scoped strict is validating the ready candidate snapshot; result held partial during the active timer checkpoint until final gate outcome.",
   "remaining_gpu_checks": [
     "Original Native motion, stop and sidewalk geometry",
     "Actual four-camera pixel coverage and full video review",
@@ -75,6 +82,12 @@
       "exit_code": 0,
       "log": "law-comparison-selftest.log",
       "sha256": "fa64439db5f457e37ad82edfab03af11223309361c0c3b2c89fc76e57eb065f0"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c229977-temp/output TMPDIR=$PWD/.runtime-work/c229977-temp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B worker_check.py --assignment training__C229977__NRS-484B-450-1a__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "scoped-complete-cycle-negative.log",
+      "sha256": "41d1df030e20779a2f6eac5bb631fa5ad9928b6e21190c38700dc5e11b97b3eb"
     }
   ],
   "unresolved_branch_count": 4

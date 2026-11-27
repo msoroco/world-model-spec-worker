@@ -4,6 +4,34 @@
   "blockers": [
     "Governing-law exact cases remain unselected because the frozen source identifies no separate law authorizing this motor-vehicle sidewalk stop. The selected device pair measures traffic-prop candidate presence, not official status or direction. Subsection 3 cycle/scooter exception requires a different frozen actor binding. Original Native sidewalk status, device and officer authority, physical realization and legal outcome remain independently unverified."
   ],
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "0-30 s",
+        "subject": "full sidewalk, motor-vehicle body, curb and legal-map reference",
+        "view": "overview"
+      },
+      {
+        "interval": "0-30 s",
+        "subject": "approaching traffic and subject stop path",
+        "view": "approach"
+      },
+      {
+        "interval": "0-30 s",
+        "subject": "vehicle-to-sidewalk overlap, curb and pedestrian path",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "0-30 s",
+        "subject": "driver approach, stopping position and traffic-control candidates",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "limitation": "Authored fixed-world camera placements; original pixel visibility and legal sidewalk status require independent review.",
+    "profile": "overview1080-capability"
+  },
   "candidate_plans": [],
   "cases": [
     {
@@ -323,54 +351,69 @@
   },
   "observations": [
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "drv.standing_or_parked",
-      "reason": "the vehicle at rest"
+      "reason": "the vehicle at rest; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "st.sidewalk",
-      "reason": "the sidewalk"
+      "reason": "the sidewalk; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "rel.occupies",
-      "reason": "the footprint on it"
+      "reason": "the footprint on it; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "ru.bicycle",
-      "reason": "the permitted exception"
+      "reason": "the permitted exception; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "ru.electric_bicycle",
-      "reason": "or an electric bicycle"
+      "reason": "or an electric bicycle; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "ru.electric_scooter",
-      "reason": "or an electric scooter"
+      "reason": "or an electric scooter; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "ru.pedestrian",
-      "reason": "pedestrians whose movement must not be impeded"
+      "reason": "pedestrians whose movement must not be impeded; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "rel.surface_gap",
-      "reason": "the width left for them"
+      "reason": "the width left for them; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
     },
     {
-      "mandatory": true,
+      "mandatory": false,
       "name": "kin.velocity",
-      "reason": "a pedestrian forced to divert or stop"
+      "reason": "a pedestrian forced to divert or stop; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
+    },
+    {
+      "mandatory": false,
+      "name": "drv.forced_halt",
+      "reason": "the traffic-conflict exception; semantic source term mapped to captured channel or source reference below, not a direct root capture-channel name"
     },
     {
       "mandatory": true,
-      "name": "drv.forced_halt",
-      "reason": "the traffic-conflict exception"
+      "name": "sidewalk_overlap",
+      "reason": "Exact canonical root construction recording channel"
+    },
+    {
+      "mandatory": true,
+      "name": "vehicle_body_pose",
+      "reason": "Exact canonical root construction recording channel"
+    },
+    {
+      "mandatory": true,
+      "name": "vehicle_speed",
+      "reason": "Exact canonical root construction recording channel"
     }
   ],
   "requirement_dispositions": [
@@ -488,8 +531,7 @@
   "source_observation_mapping": {
     "drv.forced_halt": {
       "channels": [
-        "vehicle_speed",
-        "other_traffic_trajectory"
+        "vehicle_speed"
       ],
       "evidence": "selected traffic pair measures frame-aligned subject speed and separate other-traffic actor presence; necessity to stop remains unverified",
       "measurement": "600 joined subject and other-traffic trajectory rows with recorded context; no physical necessity verdict",

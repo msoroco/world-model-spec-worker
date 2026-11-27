@@ -1,25 +1,21 @@
-# training__C179799__NRS-484B-653-1a__motor_vehicle_driver
+# C179799 selected delivery handoff
 
-Status: partial. A source-shaped person-interaction proof is present; this is not a deployable delivery package.
+Status: ready for original Native delivery preparation. The local CPU package passed the exact scoped strict gate on 2026-11-27. The diagnostic fixtures establish software behavior only; they do not establish the premises, participant authority, physical outcome, mental state, or legal conclusion.
 
-## 2026-11-23 CPU construction checkpoint
+## Selected comparison
 
-`native/person_interaction.py` defines two engineering response settings for a controlled person-interaction comparison and measures a 600-frame, 20 Hz raw trace. It requires highway or public-access premises provenance, driver and distinct person sources, synchronized actor motion and collision-sensor readings. Outputs include surface gap, projected time to conflict, vehicle speed, longitudinal acceleration, yaw rate, person acceleration and contact frames. None establishes willful or wanton mental state or a legal recklessness conclusion.
+The two exact selected cases are `training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__condition_a` and `training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__condition_b`. They share a 180 m paved two-lane route, a distinct roadside person, the original source packet requirements, a 600-frame/20 Hz capture plan, four synchronized source cameras, and all nine mapped observation channels. The controlled difference is the earlier or later driver braking response. `comparison-proof/` binds a positive fixed-context comparison with 79 differing speed frames and a changed-person negative. The fallback moves the roadside person from y=-5.2 m to y=-4.8 m only if the original pose or pixels fail the visibility or stability criterion.
 
-`native/prove_person_interaction.py` passes a 30-second synthetic actor/scene fixture and rejects missing frames, broken time join, absent yaw-rate source, missing collision-sensor source and missing public-access source. Synthetic speeds and people are diagnostic only. Proof log: `native/person-interaction-proof.log`, SHA-256 `d11dccad1c709dfbfede7dd604a3ca87398972141d711a96835bb624d6884eb2`. Analyzer SHA-256: `4e1313613b08ca22f4b9675f5a5513b4c6bc5b642c9d35a7a656e303504a219a`; proof SHA-256: `3ac1f6152c532e182e502a03cebf0b0bf446d3d946b56df96825bea1d1273852`.
+`runner.py` captures original CARLA actor motion, person and collision-sensor readings, road readback, four original camera streams, a frame map, and the source packet. `finalize.py` reads saved sources only. It calculates distance, projected closing time, speed, acceleration, yaw rate, person motion and contact observations across the complete trace. It preserves source references and leaves willful or wanton mental state and legal outcome unresolved.
 
-Next CPU work: bind an actual public-access highway or premises and person interaction to Native construction, add exact comparison cases and four source cameras, then prove offline, compatibility, saved processing, physical-risk fallbacks, semantic proposals and independent audits. Keep the planned cases unselected until those proofs pass.
+## CPU proof and binding
 
-Exact law: It is unlawful for a person to: Drive a vehicle in willful or wanton disregard of the safety of persons or property on a highway or premises to which the public has access.
+`execution-manifest.json` binds the current runtime SHA-256 `5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3`, two primary constructions and two physical-risk fallbacks, four passing offline checks, four passing current-runtime package compatibility checks, two passing saved-only processing checks, three physical diagnostic outcomes per selected case, source-bound positive and missing-source-negative measurement tests, and independent positive/negative delivery audit tests. `semantic-delivery/` contains the exact-law relevance, bindings, judgment observables, baseline and selected sweep stages. The two selected conditions and the comparison are bound to the original source topics in `case-plan.json`.
 
-Selected witness scope: Paved-route driving with constructed person interaction. The case plan inventories 3 source topics and drafts one controlled comparison on `observable_driving_interaction`. Neither case has a Native realization or legal outcome.
+The command `.venv-cpu/bin/python worker_check.py --assignment training__C179799__NRS-484B-653-1a__motor_vehicle_driver --complete --require-delivery-ready` returned `static_checks_passed: true` after all package files were bound. `result.json` records the first canonical original GPU dispatch command and the passing CPU test logs. The execution manifest SHA-256 is `8846517bbee5f5c6e3b289c5844a9d824fc2627de5135f5698f2630040862af1`.
 
-The local snapshot lists 0 accepted membership rows. No source-hashed equivalence receipt was available, so no historical recording is claimed reusable.
+## Original delivery acceptance
 
-Remaining gap: Native physical mechanism, exact constructions, offline/compatibility recipes, measured saved fixtures and independent audits are not yet produced for the selected law branch and source alternatives.
+The original attempt must provide an independently sourced highway or public-access premises packet, including the relevant driveway or farm-way exclusion, original driver and vehicle identity, distinct person identity and role, sight lines, surface conditions, nearby property and complete encounter timeline. The independent `delivery_audit.py` requires original Native capture sealing and owner release, all 600 actor and camera frame joins, four complete video decodes, reviewed original vehicle and person pixels, source hashes, saved-only processing and physical completion. The source packet and diagnostic fixtures cannot substitute for this review. No accepted membership row or historical reuse is claimed.
 
-Resume: validate source alternatives and exceptions against the exact law; implement the selected comparison and each additional runnable source branch with semantic proposals, four distinct candidate plans, native and camera configuration, offline and compatibility proofs, saved positive/negative audit, and comparison audit. Reuse a historical original only with an exact source-hashed equivalence receipt. Set ready only after all CPU proofs pass.
-
-Physical prerequisites: Capture physical interactions involving people or property and a public-access highway/premises, including motion, proximity and controls.
-
-Legal limit: Willful or wanton mental state cannot be inferred from telemetry alone.
+Exact law: NRS 484B.653(1)(a). No duration, contact, emergency, speed threshold, synthetic premises label, or telemetry-derived mental-state rule is treated as a legal prerequisite or verdict.

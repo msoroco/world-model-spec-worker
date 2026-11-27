@@ -2,29 +2,40 @@
   "cell_id": "C179799",
   "actor": "motor_vehicle_driver",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__response_observation",
+      "target_law_id": "NRS-484B-653-1a",
+      "judgment_refs": [
+        {
+          "phrase": "willful or wanton disregard of the safety of persons or property",
+          "note": "An interior state and qualitative standard; telemetry, short control requests or contact cannot establish a legal verdict."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Two engineering responses are prepared, but legal mental state and original access/encounter facts are not established by worker telemetry.",
+      "missing_inputs": [
+        "Independent original highway or public-access premises and exclusion source review",
+        "Independent original worker, driver, physical encounter and pixel review",
+        "Authoritative qualitative mental-state interpretation; no worker cutoff supplied"
+      ]
+    }
+  ],
   "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__condition_a",
-      "target_law_id": "NRS-484B-653-1a",
-      "target_type": "delivery",
-      "rationale": "Controlled earlier versus later original driver response to the same distinct roadside worker; no legal result.",
+      "case_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected shared paved-road and roadside-worker context.",
       "variable_assignments": {
         "observable_driving_interaction": {
-          "kind": "vehicle_control",
-          "value": "earlier_response",
-          "unit": "engineering mode",
-          "source": "selected exact Native config"
+          "kind": "controller",
+          "value": "unselected",
+          "unit": "engineering mode"
         }
       },
-      "unresolved_judgment_calls": [
-        "Highway/public access, role, complete visibility and willful or wanton mental state require independent review."
-      ],
-      "paired_probe_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__comparison",
-      "deliberate_differences": [
-        "observable_driving_interaction"
-      ],
+      "unresolved_judgment_calls": [],
       "recording_description": {
         "channels": [
           {
@@ -118,20 +129,20 @@
       }
     },
     {
-      "case_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__condition_b",
+      "case_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__condition_a",
       "target_law_id": "NRS-484B-653-1a",
-      "target_type": "delivery",
+      "target_type": "judgment_sweep",
       "rationale": "Controlled earlier versus later original driver response to the same distinct roadside worker; no legal result.",
       "variable_assignments": {
         "observable_driving_interaction": {
-          "kind": "vehicle_control",
-          "value": "later_response",
+          "kind": "controller",
+          "value": "earlier_response",
           "unit": "engineering mode",
           "source": "selected exact Native config"
         }
       },
       "unresolved_judgment_calls": [
-        "Highway/public access, role, complete visibility and willful or wanton mental state require independent review."
+        "willful or wanton disregard of the safety of persons or property"
       ],
       "paired_probe_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__comparison",
       "deliberate_differences": [
@@ -227,6 +238,128 @@
           "A roadside worker identity and role require original scene and independent review.",
           "No telemetry surrogate or threshold establishes willful or wanton disregard."
         ]
+      },
+      "probe": {
+        "primary_variable": "observable_driving_interaction",
+        "comparison_or_standard": "same sourced road/worker; original full encounter measured without mental-state label",
+        "target_value_or_branch": "earlier_response"
+      }
+    },
+    {
+      "case_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__condition_b",
+      "target_law_id": "NRS-484B-653-1a",
+      "target_type": "judgment_sweep",
+      "rationale": "Controlled earlier versus later original driver response to the same distinct roadside worker; no legal result.",
+      "variable_assignments": {
+        "observable_driving_interaction": {
+          "kind": "controller",
+          "value": "later_response",
+          "unit": "engineering mode",
+          "source": "selected exact Native config"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "willful or wanton disregard of the safety of persons or property"
+      ],
+      "paired_probe_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__comparison",
+      "deliberate_differences": [
+        "observable_driving_interaction"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego and distinct roadside-worker pose, velocity, acceleration, collision and context source joined by frame",
+            "time_window": "complete 600-frame, 30-second encounter",
+            "reference_frame": "authored paved-road coordinates and original Native frame",
+            "uncertainty": "Highway/access legal status, worker role, sight lines, weather and willful or wanton mental state require independent source review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego and distinct roadside-worker pose, velocity, acceleration, collision and context source joined by frame",
+            "time_window": "complete 600-frame, 30-second encounter",
+            "reference_frame": "authored paved-road coordinates and original Native frame",
+            "uncertainty": "Highway/access legal status, worker role, sight lines, weather and willful or wanton mental state require independent source review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego and distinct roadside-worker pose, velocity, acceleration, collision and context source joined by frame",
+            "time_window": "complete 600-frame, 30-second encounter",
+            "reference_frame": "authored paved-road coordinates and original Native frame",
+            "uncertainty": "Highway/access legal status, worker role, sight lines, weather and willful or wanton mental state require independent source review"
+          },
+          {
+            "name": "kin.accel_longitudinal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego and distinct roadside-worker pose, velocity, acceleration, collision and context source joined by frame",
+            "time_window": "complete 600-frame, 30-second encounter",
+            "reference_frame": "authored paved-road coordinates and original Native frame",
+            "uncertainty": "Highway/access legal status, worker role, sight lines, weather and willful or wanton mental state require independent source review"
+          },
+          {
+            "name": "kin.yaw_rate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego and distinct roadside-worker pose, velocity, acceleration, collision and context source joined by frame",
+            "time_window": "complete 600-frame, 30-second encounter",
+            "reference_frame": "authored paved-road coordinates and original Native frame",
+            "uncertainty": "Highway/access legal status, worker role, sight lines, weather and willful or wanton mental state require independent source review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego and distinct roadside-worker pose, velocity, acceleration, collision and context source joined by frame",
+            "time_window": "complete 600-frame, 30-second encounter",
+            "reference_frame": "authored paved-road coordinates and original Native frame",
+            "uncertainty": "Highway/access legal status, worker role, sight lines, weather and willful or wanton mental state require independent source review"
+          },
+          {
+            "name": "rel.contact",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego and distinct roadside-worker pose, velocity, acceleration, collision and context source joined by frame",
+            "time_window": "complete 600-frame, 30-second encounter",
+            "reference_frame": "authored paved-road coordinates and original Native frame",
+            "uncertainty": "Highway/access legal status, worker role, sight lines, weather and willful or wanton mental state require independent source review"
+          },
+          {
+            "name": "st.highway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego and distinct roadside-worker pose, velocity, acceleration, collision and context source joined by frame",
+            "time_window": "complete 600-frame, 30-second encounter",
+            "reference_frame": "authored paved-road coordinates and original Native frame",
+            "uncertainty": "Highway/access legal status, worker role, sight lines, weather and willful or wanton mental state require independent source review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego and distinct roadside-worker pose, velocity, acceleration, collision and context source joined by frame",
+            "time_window": "complete 600-frame, 30-second encounter",
+            "reference_frame": "authored paved-road coordinates and original Native frame",
+            "uncertainty": "Highway/access legal status, worker role, sight lines, weather and willful or wanton mental state require independent source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic CPU samples do not establish original highway dedication or public access.",
+          "A roadside worker identity and role require original scene and independent review.",
+          "No telemetry surrogate or threshold establishes willful or wanton disregard."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observable_driving_interaction",
+        "comparison_or_standard": "same sourced road/worker; original full encounter measured without mental-state label",
+        "target_value_or_branch": "later_response"
       }
     }
   ]

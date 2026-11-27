@@ -50,7 +50,7 @@ def overlaps(first, second):
     return True
 
 
-def measure(frames, map_context, *, source_kind):
+def measure(frames, map_context, *, source_kind, camera_names=CAMERAS):
     if source_kind not in ("original_native", "synthetic_native_sample"):
         raise ValueError("undeclared source kind")
     if len(frames) < 600:
@@ -76,7 +76,7 @@ def measure(frames, map_context, *, source_kind):
             raise ValueError("20 Hz frame timing gap")
         previous_time = time
         camera_frames = frame.get("camera_frames")
-        if not isinstance(camera_frames, dict) or set(camera_frames) != set(CAMERAS) or any(camera_frames[name] != i for name in CAMERAS):
+        if not isinstance(camera_frames, dict) or set(camera_frames) != set(camera_names) or any(camera_frames[name] != i for name in camera_names):
             raise ValueError("four source-camera frame join missing or mismatched")
         body = polygon(frame.get("ego_footprint"), "ego footprint")
         number(frame.get("ego_heading_deg"), "ego heading")

@@ -2,9 +2,9 @@
   "format": "worker-package-compatibility",
   "case_id": "training__C229977__NRS-484B-450-1a__motor_vehicle_driver__probe_1",
   "candidate_id": "fallback1",
-  "construction_sha256": "784fbd930487f65df915460fc4894227568af8ebd7f06e65040e0afcbc2e1daa",
+  "construction_sha256": "823edc62bc7d58304f3ce124972e37d7ac1ca83bfb16d48476f8d7808c30f745",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "fixture_sha256": "86f7b09a019f5df0d7ca11756ee034e63bc7eb209ca67ec9fb5754fcd18a71ba",
+  "fixture_sha256": "d92bf93a6a58e9a425c3fdac93529858db7b98a6ea6ce9d7a541519c5945a0c6",
   "passed": true,
   "checks": [
     "acquisition_unchanged",
@@ -20,9 +20,10 @@
     "negative_case_source"
   ],
   "scope": "diagnostic software compatibility only",
-  "analysis_sha256": "082213c5a134545b2870d22d4b7d80349e467ede40be7e52eb993e285a3263d2",
+  "analysis_sha256": "75784f4a70b941acfcb82762ef20e0db9dbac3e2eea6b17da24c1b0fa03623f7",
   "fixture_manifest": {
     "acquisition-provenance.json": "d6a8483c652d5fe531281fb6d5051a6832af9901ad5ae9b77909c0811c123774",
+    "actor-assignment.json": "3fb8f9c96d304e7ff8d42e6136449110c42dcabddd2f1bef35ab1e9b0692cf38",
     "approach.mkv": "507e88478bb9893113af48b3f3fa50de63be4d9dfe35a963b453dc713a0d2417",
     "authority-context.json": "45b15ed48d9026c7febf20ded20e7b51ef429c5c495deff2e2406d7b2e9d3c1f",
     "camera-frames.jsonl": "0b81b213c1b16fa64cf9237568e2662b806e327fac774fa0400189eec15fd2d7",
@@ -640,12 +641,15 @@
     "vehicle-trace.jsonl": "81b6fe33c76d7b396f6e3a28304d1109b518934eb054fb4a735bf7ed6791fe2a",
     "video_frames.jsonl": "7228582637aceff5d95677fd76f399a49e2a54413bc74d25fde8b7841f15b076"
   },
-  "log_sha256": "849b01f455e6de210fa7ab050289cafb15b6312bf35959d4f51f6c07fc965680",
+  "log_sha256": "51eb0f395dccc1e899d113c69643dceefbb2d334f8ffc16eb7c952c572780213",
   "fixture_generator_sha256": "0857d9ac6c0a08c5bc25f4b58fef81c93cf1fe31d6845e904ce6a10c4f6eab53",
-  "fixture_recipe_sha256": "770a44847de7b99621e2533b910f7d18b272833c8dd34bc644d3d699b31748ef",
-  "measurement_contract_sha256": "b90486b0df256d6eb06de1b62cff4c56b00e8075716b3b064453c41b9f66cdf8",
-  "analysis_report_sha256": "a503bdde9f8031bf424ae3e94b29caf3aeb9cff510af3891bcd15f877661889d",
+  "fixture_recipe_sha256": "31a7870d199117f6823a2edac614e25b3f02e1ebb7039dcdca867ecc53af3f1b",
+  "measurement_contract_sha256": "3194d47ab4c47dbc6af227e8d27f3afee0831b4572ab36ad4c9360fafd5a2d6f",
+  "analysis_report_sha256": "2d462fdce1e802f2c9231f2e2a71628ce8207bec7f1d8da03c2eb5befdc1cd99",
   "measurement_keys": [
+    "bicycle_actor_eligibility",
+    "electric_bicycle_actor_eligibility",
+    "electric_scooter_actor_eligibility",
     "sidewalk_stop_occupancy"
   ],
   "measurement_examples": {
@@ -669,9 +673,51 @@
         "authority-context.json": "45b15ed48d9026c7febf20ded20e7b51ef429c5c495deff2e2406d7b2e9d3c1f",
         "native-road.xodr": "2c7490e14e87fcea88ae41dcbbdcfe64fdafa0c6cdf5ef1aa0fd1a863fa31235"
       }
+    },
+    "bicycle_actor_eligibility": {
+      "method": "bicycle_actor_eligibility",
+      "value": {
+        "subject_actor": "motor_vehicle_driver",
+        "exception_actor": "bicycle",
+        "actor_eligible": false,
+        "positive_exception_executed": false,
+        "source": "NRS 484B.450(3) names only bicycle, electric bicycle and electric scooter"
+      },
+      "sources": {
+        "actor-assignment.json": "3fb8f9c96d304e7ff8d42e6136449110c42dcabddd2f1bef35ab1e9b0692cf38",
+        "vehicle-trace.jsonl": "81b6fe33c76d7b396f6e3a28304d1109b518934eb054fb4a735bf7ed6791fe2a"
+      }
+    },
+    "electric_bicycle_actor_eligibility": {
+      "method": "electric_bicycle_actor_eligibility",
+      "value": {
+        "subject_actor": "motor_vehicle_driver",
+        "exception_actor": "electric_bicycle",
+        "actor_eligible": false,
+        "positive_exception_executed": false,
+        "source": "NRS 484B.450(3) names only bicycle, electric bicycle and electric scooter"
+      },
+      "sources": {
+        "actor-assignment.json": "3fb8f9c96d304e7ff8d42e6136449110c42dcabddd2f1bef35ab1e9b0692cf38",
+        "vehicle-trace.jsonl": "81b6fe33c76d7b396f6e3a28304d1109b518934eb054fb4a735bf7ed6791fe2a"
+      }
+    },
+    "electric_scooter_actor_eligibility": {
+      "method": "electric_scooter_actor_eligibility",
+      "value": {
+        "subject_actor": "motor_vehicle_driver",
+        "exception_actor": "electric_scooter",
+        "actor_eligible": false,
+        "positive_exception_executed": false,
+        "source": "NRS 484B.450(3) names only bicycle, electric bicycle and electric scooter"
+      },
+      "sources": {
+        "actor-assignment.json": "3fb8f9c96d304e7ff8d42e6136449110c42dcabddd2f1bef35ab1e9b0692cf38",
+        "vehicle-trace.jsonl": "81b6fe33c76d7b396f6e3a28304d1109b518934eb054fb4a735bf7ed6791fe2a"
+      }
     }
   },
   "negative_removed": "map-packet.json",
   "negative_error_contains": "Missing required source: map-packet.json",
-  "negative_log_sha256": "b34c101041bc1faf4635666227858020f539cb370b409c9f301d0906f9bee28f"
+  "negative_log_sha256": "e1da08a3525e7d0f1ab30c4cc950dda009189cf2ff71768ba58d5420a5f171a9"
 }
