@@ -58,12 +58,64 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _selected_camera_contract(attempt: Path, case_id: str) -> dict:
+    """Read the exact selected Native camera source, never a claimed camera label."""
+    manifest_path = Path(__file__).resolve().with_name("execution-manifest.json")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    entries = [item for item in manifest["cases"] if item["case_id"] == case_id]
+    if len(entries) != 1:
+        raise ValueError("comparison case absent from frozen manifest")
+    selection_path = attempt / "candidate-selection.json"
+    if selection_path.is_file():
+        selection = json.loads(selection_path.read_text(encoding="utf-8"))
+        candidate_id = selection.get("candidate_id")
+    else:
+        selection = None
+        candidate_id = "primary"
+    entry = entries[0]
+    if candidate_id == "primary":
+        selected = entry
+    else:
+        matches = [item for item in entry.get("candidates", [])
+                   if item.get("id") == candidate_id]
+        if len(matches) != 1:
+            raise ValueError("comparison candidate selection invalid")
+        selected = matches[0]
+    construction_path = manifest_path.parent / selected["construction"]
+    expected_hash = selected["construction_sha256"]
+    if _sha(construction_path) != expected_hash:
+        raise ValueError("comparison manifest construction hash stale")
+    if selection is not None and (selection.get("case_id") != case_id or
+                                  selection.get("construction_sha256") != expected_hash or
+                                  selection.get("manifest_sha256") != _sha(manifest_path)):
+        raise ValueError("comparison candidate selection receipt stale")
+    if candidate_id != "primary" and selection is None:
+        raise ValueError("comparison fallback selection receipt missing")
+    actual = json.loads((attempt / "construction.json").read_text(encoding="utf-8"))
+    expected = json.loads(construction_path.read_text(encoding="utf-8"))
+    if actual != expected:
+        raise ValueError("comparison original construction differs from selected candidate")
+    sources = [item["content"] for item in actual["files"]
+               if item["path"] == "native_capture.py"]
+    configs = [json.loads(item["content"]) for item in actual["files"]
+               if item["path"] == "config.json"]
+    if len(sources) != 1 or len(configs) != 1:
+        raise ValueError("comparison selected camera source missing")
+    config = json.loads((attempt / "config.json").read_text(encoding="utf-8"))
+    if config != configs[0]:
+        raise ValueError("comparison original camera config differs from construction")
+    return {"source_sha256": hashlib.sha256(sources[0].encode()).hexdigest(),
+            "cameras": config["cameras"], "duration_s": config["duration_s"],
+            "rate_hz": config["rate_hz"]}
+
+
 def audit_saved_attempts(plan: dict, comparison_id: str, left_attempt: Path,
                          right_attempt: Path, left_audit: Path, right_audit: Path) -> dict:
     """Compare measured original packets and bind each to its Native delivery audit."""
     records = []
     native_hashes = []
     audit_hashes = []
+    camera_contracts = []
     planned = {case["case_id"]: case["controller"]["target_speed_mps"]
                for case in plan["cases"]}
     for attempt, audit_path in ((Path(left_attempt), Path(left_audit)),
@@ -75,6 +127,7 @@ def audit_saved_attempts(plan: dict, comparison_id: str, left_attempt: Path,
         native = json.loads(native_path.read_text(encoding="utf-8"))
         receipt = json.loads(audit_path.read_text(encoding="utf-8"))
         case_id = native.get("case_id")
+        camera_contracts.append(_selected_camera_contract(attempt, case_id))
         if native.get("diagnostic_fixture") is not False:
             raise ValueError("comparison requires non-diagnostic Native result")
         target_checks = native.get("target_checks")
@@ -101,7 +154,10 @@ def audit_saved_attempts(plan: dict, comparison_id: str, left_attempt: Path,
         records.append(record)
         native_hashes.append(_sha(native_path))
         audit_hashes.append(_sha(audit_path))
+    if camera_contracts[0] != camera_contracts[1]:
+        raise ValueError("fixed camera source or capture contract changed")
     result = audit(plan, comparison_id, *records)
+    result["selected_camera_contract"] = camera_contracts[0]
     result["native_result_sha256"] = native_hashes
     result["delivery_audit_sha256"] = audit_hashes
     result["original_inventory_sha256"] = [_sha(Path(p) / "inventory.json")

@@ -74,6 +74,9 @@ def main():
         elif suffix=="passage_blocked":
             fallback["standing_body_xy_m"]=[-2.5,.2,2.5,2.2]
         else:
+            # Keep the visibility pair's standing footprint identical when
+            # both physical-risk fallbacks are selected.
+            fallback["standing_body_xy_m"]=[-2.5,-4.0,2.5,-2.0]
             fallback["sight_occluders_xy_m"]=[[-31,-.9,-29,-.1],[29,-.9,31,-.1]]
         fallback["candidate_id"]="fallback1"
         fallback_measured=measure(fallback)

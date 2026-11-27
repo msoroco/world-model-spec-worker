@@ -26,7 +26,8 @@ def main():
             "candidate_risk":{"status":"physical","reason":case["physical_risk_assessment"]["risk"]},
             "candidates":[{"id":"fallback1","construction":f"cases/{suffix}/fallback1-construction.json",
                 "construction_sha256":sha(fallback),
-                "changed_knobs":["standing body lateral position" if suffix!="view_occluded_both" else "two occluder lateral positions"],
+                "changed_knobs":(["standing body lateral position", "two occluder lateral positions"]
+                                 if suffix=="view_occluded_both" else ["standing body lateral position"]),
                 "trigger":{"source":"standing-measurement.json",
                     "metric":"original body passage or two-sided sight geometry",
                     "failure_condition":"primary original measurement misses the requested physical contrast"}}],

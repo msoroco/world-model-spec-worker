@@ -1,8 +1,8 @@
 {
   "assignment_id": "testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver",
   "input_sha256": "a66665a8e71e0be2875d9faba2026fdba763387e61e4bbaa6bf53541606979e3",
-  "status": "partial",
-  "readiness_kind": "partial",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
@@ -208,6 +208,18 @@
       "exit_code": 0,
       "log": "cpu-deferred-ready-validators.log",
       "sha256": "661399962d37fe15fc9a133734b822a4c96540609ed9874d4e27411a67f5d00d"
+    },
+    {
+      "command": "TMPDIR=.runtime-work/c150153-postcapture/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150153-postcapture/pipeline MPLCONFIGDIR=.runtime-work/c150153-postcapture/matplotlib PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver/prove_post_capture.py",
+      "exit_code": 0,
+      "log": "cpu-selected-post-capture.log",
+      "sha256": "29722f99e5408012b59022b6dd9328d70eabd8095c8726a7bf5b8b95db12aa70"
+    },
+    {
+      "command": "TMPDIR=.runtime-work/c150153-postcapture/tmp SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c150153-postcapture/pipeline MPLCONFIGDIR=.runtime-work/c150153-postcapture/matplotlib PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "cpu-post-capture-strict.log",
+      "sha256": "d71e85fe1c24f5283493287976b41c26ad5867a640594eb3ac09ec1bb436cf00"
     }
   ],
   "remaining_gpu_checks": [
@@ -215,6 +227,6 @@
     "Observed one-way approach, curb stop/stand/park realization and body-to-fixture geometry",
     "Four-camera full-duration visibility and pixel review"
   ],
-  "reason": "Selected manifest lacks bound recorded_only post-capture command and feedback command for all 12 cases; source-bound saved-only positive and missing-source/validator feedback proofs are in progress.",
+  "reason": null,
   "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver --case testing__C150153__LVMC-11-52-130-A5__motor_vehicle_driver__front_park --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

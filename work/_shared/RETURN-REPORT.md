@@ -2058,3 +2058,15 @@ All 14 exact cases bind recorded-only post-capture and feedback commands. The ow
 ## 2026-11-27 — C262661 reopened for saved-processing commands
 
 The C262661/NRS-484B-363-1 owner set its 15-case result to truthful partial while adding recorded-only post-capture and feedback commands. The lead withdrew 15 cases and 12 comparison commands from the ready queue, set 12 branch rows pending, and updated the branch-review hash and missing-assignment marker. The refreshed queue audit passed 22,462 static checks with zero errors across 239 ready assignments, 1,663 cases and 1,190 comparisons. C149470 and C150153 are also partial while their source-shaped CPU proof work continues. The batch-wide strict delivery gate remains pending.
+
+## 2026-11-27 — C262661 NRS-484B-363-1 strict pass
+
+All 15 exact cases now bind recorded-only post-capture and feedback commands. The owner passed 45 source-shaped positive, missing-original-trace and missing-validator CPU proofs and its exact scoped strict gate. The lead independently reran `.venv-cpu/bin/python worker_check.py --assignment testing__C262661__NRS-484B-363-1__bus_driver --complete --require-delivery-ready`; it exited 0 with `static_checks_passed: true`. The lead restored 15 queue jobs, 12 comparison commands and 12 runnable branch rows. The owner scanned its 455 returned files with no size, encoding or whitespace issue. C149470's independent repeat is still running; C150153 remains partial. The full batch gate has not passed.
+
+## 2026-11-27 — C10307 fallback camera repair opened
+
+The C10307/LVMC-11-40-130 owner reopened its five-case package as truthful partial to resolve the documented reference fallback camera-site mismatch, missing fallback metadata and missing comparison camera isolation check. The lead withdrew five queue jobs and four comparison commands, set four matrix rows pending, and updated the branch-review SHA and missing-assignment marker. The owner is repairing the candidate construction and proving mixed-camera rejection under CPU fixtures. No ready claim is made until its exact scoped strict gate passes.
+
+## 2026-11-27 — C188132 camera comparison repair opened
+
+The C188132/LVMC-11-30-060-B owner reopened its three-case package as truthful partial to repair fallback camera-site changes that the existing independent comparison audits do not bind. The lead withdrew three case jobs and two comparison commands, set two branch rows pending, and updated the branch-review hash and missing-assignment marker. The refreshed ready-only queue audit passed 22,556 static checks with zero errors over 238 assignments and 1,670 cases. C149470's first lead strict repeat passed, but its result ledger changed during that run, so the lead is checking the final settled version before restoration. C150153 and C10307 remain owned partials. Batch-wide strict delivery remains pending.

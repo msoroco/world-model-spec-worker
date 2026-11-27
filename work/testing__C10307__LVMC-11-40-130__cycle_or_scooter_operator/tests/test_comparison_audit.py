@@ -134,10 +134,18 @@ class ComparisonAuditTest(unittest.TestCase):
             base = Path(directory)
             attempts = []
             receipts = []
+            own = Path(__file__).resolve().parents[1]
+            manifest = json.loads((own / "execution-manifest.json").read_text())
             for suffix, speed in (("reference", 3.0), ("faster", 5.0)):
                 attempt = base / suffix
                 attempt.mkdir()
                 case = AID + "__" + suffix
+                selected = next(item for item in manifest["cases"] if item["case_id"] == case)
+                construction = json.loads((own / selected["construction"]).read_text())
+                (attempt / "construction.json").write_text(json.dumps(construction))
+                config = next(json.loads(item["content"]) for item in construction["files"]
+                              if item["path"] == "config.json")
+                (attempt / "config.json").write_text(json.dumps(config))
                 frames = [{"frame": 1000 + n, "time_s": (n + 1) / 20}
                           for n in range(900)]
                 motion = {"case_id": case, "samples": [dict(row, velocity_mps=[speed, 0, 0])
@@ -173,6 +181,19 @@ class ComparisonAuditTest(unittest.TestCase):
                                           *attempts, *receipts)
             self.assertTrue(result["independent_delivery_audits"])
             self.assertEqual(len(result["original_inventory_sha256"]), 2)
+            self.assertEqual(len(result["selected_camera_contract"]["source_sha256"]), 64)
+            fallback = next(item for item in selected["candidates"] if item["id"] == "fallback1")
+            fallback_construction = json.loads((own / fallback["construction"]).read_text())
+            (attempts[1] / "construction.json").write_text(json.dumps(fallback_construction))
+            (attempts[1] / "candidate-selection.json").write_text(json.dumps({
+                "case_id": AID + "__faster", "candidate_id": "fallback1",
+                "construction_sha256": fallback["construction_sha256"],
+                "manifest_sha256": hashlib.sha256((own / "execution-manifest.json").read_bytes()).hexdigest()}))
+            with self.assertRaisesRegex(ValueError, "fixed camera source"):
+                audit_saved_attempts(self.plan, "speed_under_clear_conditions",
+                                     *attempts, *receipts)
+            (attempts[1] / "candidate-selection.json").unlink()
+            (attempts[1] / "construction.json").write_text(json.dumps(construction))
             changed_native = json.loads((attempts[1] / "result.json").read_text())
             changed_native["target_checks"][0]["requested"] = 3.0
             (attempts[1] / "result.json").write_text(json.dumps(changed_native))

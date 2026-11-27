@@ -1,6 +1,6 @@
 # testing__C262661__NRS-484B-363-1__bus_driver
 
-Status: partial, source-gated CPU construction and analysis checkpoint. No original CARLA recording or legal/physical acceptance is claimed.
+Status: ready, CPU delivery preparation with source-gated physical and legal review. No original CARLA recording or legal/physical acceptance is claimed.
 
 ## Frozen scope and selected coverage
 
@@ -67,3 +67,9 @@ Current source/proof hashes:
 The lead owns integration of `gpu-queue-proposal.json` into the shared queue and checkpoint publication. Its 15 case rows and 12 comparison rows contain exact production commands. Start the first selected local job using `result.json:first_gpu_delivery_command` with `CARLA_PYTHON`, `CARLA_HOST`, `CARLA_PORT`, `DB`, `RUN` and `JOB_ID` set by the local operator. Source packet path is supplied through `SCENARIO_SCHOOL_SITE_PACKET` and reviewed before acquisition. Keep Native owner release before saved processing; use the original index with `delivery_audit.py --case ID --index PATH --output PATH` and `comparison_audit.py` for accepted local data. Diagnostic receipts only establish CPU software compatibility.
 
 To recheck current preparation, export `SCENARIO_PIPELINE_OUTPUT_ROOT` and `TMPDIR` to a directory under `.runtime-work/`, then run `.venv-cpu/bin/python worker_check.py --assignment testing__C262661__NRS-484B-363-1__bus_driver --complete --require-delivery-ready`. The passing output is retained in `cpu-strict-ready.log`. Run the 21 focused tests with `.venv-cpu/bin/python -m unittest discover -s work/testing__C262661__NRS-484B-363-1__bus_driver/tests -v`.
+
+## 2026-11-27 recorded-only post-capture completion
+
+All 15 exact cases now bind `post_capture.recorded_only`, saved processing and feedback commands in `execution-manifest.json`. `post-capture-proofs.json` records exact positive source-shaped diagnostic processing, missing `original-trace.jsonl` feedback, and missing-validator feedback for each case. The 45 proof logs are `cpu-post-capture-<case>-<variant>.log`. Every positive pass preserved original sources, completed the full video decode, and asserted no physical acceptance. Every missing-source variant returned actionable incomplete-evidence feedback without Native replay; every missing-validator variant returned a nonzero error and feedback without Native replay. `prove_post_capture.py` reproduces these CPU checks using scratch exclusively under `.runtime-work/c262661-postcapture/`.
+
+The assignment-scoped `--complete` and strict `--complete --require-delivery-ready` checks passed; retained strict output is `cpu-post-capture-strict.log`. Prior file hashes in the Nov 26 section describe that prior snapshot; the current manifest and result hashes changed with these command bindings and proof receipts. Original school site/operator evidence, physical CARLA performance and independent legal review remain local checks.

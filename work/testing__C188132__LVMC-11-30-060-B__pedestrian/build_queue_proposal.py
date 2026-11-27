@@ -53,7 +53,7 @@ def main():
         comparisons.append({
             'assignment_id': ASSIGNMENT, 'comparison_id': comparison,
             'case_ids': [f'{ASSIGNMENT}__{first}', f'{ASSIGNMENT}__{second}'],
-            'command': (f'.venv-cpu/bin/python {PREFIX}/overpass_source.py --comparison {comparison} '
+            'command': (f'.venv-cpu/bin/python {PREFIX}/camera_comparison_audit.py --comparison {comparison} '
                 '--first "$FIRST_ATTEMPT" --second "$SECOND_ATTEMPT" '
                 '--first-processing "$FIRST_OUTPUT/v0001/processing.json" '
                 '--second-processing "$SECOND_OUTPUT/v0001/processing.json"'),
