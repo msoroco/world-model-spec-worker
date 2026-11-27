@@ -82,6 +82,13 @@ def capture(slug, output, host="127.0.0.1", port=2000):
 
     scene = request(slug)
     validate(scene)
+    config = json.loads(Path(__file__).with_name("config.json").read_text())
+    if config.get("selected_case_id") != case_id(slug):
+        raise ValueError("Native config selects another exact case")
+    requested = config.get("requested_stop_front_x_m")
+    if not isinstance(requested, (int, float)) or not -12 <= requested <= -3:
+        raise ValueError("Requested front-bumper stop differs from safe construction range")
+    scene["controller"]["requested_stop_front_x_m"] = requested
     output = Path(output).resolve()
     if output.exists() and any((output / name).exists() for name in
                                ("video_frames.jsonl", "yield_motion.jsonl", "capture", "capture-seal.json")):
@@ -111,10 +118,12 @@ def capture(slug, output, host="127.0.0.1", port=2000):
             core = PipelineCapture(client, actors["ego"], output, case_id(slug),
                                    required_observations=[])
             first_elapsed = None
+            sight_path = output / "viewpoint_sight_rays.jsonl" if scene["reference_kind"] == "viewpoint" else None
             with (output / "video_frames.jsonl").open("x") as frame_file, \
                     (output / "yield_motion.jsonl").open("x") as motion_file, \
                     (output / "ego_body.jsonl").open("x") as ego_file, \
                     (output / "intersecting_body.jsonl").open("x") as other_file:
+                sight_file = sight_path.open("x") if sight_path else None
                 for i in range(COUNT):
                     apply_control(carla, actors, scene, i)
                     native = world.tick()
@@ -158,6 +167,18 @@ def capture(slug, output, host="127.0.0.1", port=2000):
                                                "body_vertices_m": ego_body}, allow_nan=False) + "\n")
                     other_file.write(json.dumps({"native_frame": native, "actor_id": other.id,
                                                  "body_vertices_m": other_body}, allow_nan=False) + "\n")
+                    if sight_file:
+                        if not hasattr(world, "cast_ray"):
+                            raise ValueError("Original nearest-viewpoint source requires CARLA cast_ray")
+                        eye = ego.get_location() + carla.Location(z=1.25)
+                        target = other.get_location() + carla.Location(z=1.0)
+                        hits = world.cast_ray(eye, target)
+                        sight_file.write(json.dumps({"native_frame": native, "time_s": elapsed,
+                            "ego_eye_m": xyz(eye), "traffic_target_m": xyz(target),
+                            "hit_labels": [str(hit.label) for hit in hits],
+                            "nearest_legal_viewpoint_unassessed": True}, allow_nan=False) + "\n")
+                if sight_file:
+                    sight_file.close()
             for process in encoders.values():
                 process.stdin.close()
                 if process.wait(timeout=120) != 0:
@@ -174,9 +195,14 @@ def capture(slug, output, host="127.0.0.1", port=2000):
             map_hash = sha(output / "road.xodr")
             write_json(output / "yield_sign.json", {"id": "yield-111343",
                 "map_readback_sha256": map_hash, "original_map_readback": True})
-            write_json(output / "near_crosswalk.json", {"id": "near-crosswalk-111343",
-                "near_x_m": scene["crosswalk_near_x_m"], "far_x_m": scene["crosswalk_far_x_m"],
-                "map_readback_sha256": map_hash, "original_map_readback": True})
+            kind = scene["reference_kind"]
+            reference_file = {"crosswalk": "near_crosswalk.json", "stop_line": "marked_stop_line.json",
+                              "viewpoint": "nearest_viewpoint.json"}[kind]
+            write_json(output / reference_file, {"reference_kind": kind,
+                "near_x_m": scene["reference_near_x_m"], "far_x_m": scene["reference_far_x_m"],
+                "crosswalk_present": kind == "crosswalk", "marked_stop_line_present": kind == "stop_line",
+                "candidate_viewpoint_only": kind == "viewpoint", "map_readback_sha256": map_hash,
+                "original_map_readback": True})
             write_json(output / "intersecting_traffic.json", {"actor_id": actors["intersecting"].id,
                 "body_source": "intersecting_body.jsonl", "motion_source": "yield_motion.jsonl",
                 "map_readback_sha256": map_hash})
@@ -185,16 +211,19 @@ def capture(slug, output, host="127.0.0.1", port=2000):
                 "safety_stop_required": "unassessed", "time_to_conflict_legal_cutoff": None,
                 "independent_judgment_required": True})
             sources = {"native_map": "road.xodr", "yield_sign": "yield_sign.json",
-                "near_crosswalk": "near_crosswalk.json", "ego_body": "ego_body.jsonl",
+                "stop_reference": reference_file, "ego_body": "ego_body.jsonl",
                 "ego_motion": "yield_motion.jsonl", "intersecting_traffic": "intersecting_traffic.json",
                 "safety_context": "safety_context.json", "camera_manifest": "video_frames.jsonl"}
+            if sight_path:
+                sources["sight_rays"] = sight_path.name
             write_json(output / "yield_context.json", {
                 "case_id": case_id(slug), "source_kind": "original_native_yield_crosswalk_readback",
                 "source_files": sources, **{key + "_sha256": sha(output / filename)
                                             for key, filename in sources.items()},
-                "governing_yield_sign": True, "near_side_crosswalk": True,
-                "crosswalk_near_x_m": scene["crosswalk_near_x_m"],
-                "crosswalk_far_x_m": scene["crosswalk_far_x_m"],
+                "governing_yield_sign": True, "near_side_crosswalk": kind == "crosswalk",
+                "reference_kind": kind, "reference_source": reference_file,
+                "reference_near_x_m": scene["reference_near_x_m"],
+                "reference_far_x_m": scene["reference_far_x_m"],
                 "intersection_near_x_m": scene["intersection_near_x_m"],
                 "safety_context_present": True, "safety_stop_required": "unassessed",
                 "physical_acceptance_claimed": False, "legal_compliance": "unassessed"})

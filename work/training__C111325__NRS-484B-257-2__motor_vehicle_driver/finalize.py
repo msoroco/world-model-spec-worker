@@ -15,7 +15,7 @@ COUNT = 600
 def required(root, name):
     path = (root / name).resolve()
     if not path.is_relative_to(root) or not path.is_file():
-        raise ValueError('Missing required saved source: ' + name)
+        raise ValueError('Missing required source: ' + name)
     return path
 
 
@@ -86,6 +86,19 @@ def verify_source_joins(root, packet, observed):
             raise ValueError('Source camera decoded frame count differs: ' + name)
 
 
+def measure_pre_entry(observed):
+    return {'near_zero_frames': observed['pre_entry_near_zero_frames_before_reference'],
+            'subject_control': observed['subject_control'],
+            'stop_reference': observed['stop_reference']}
+
+
+def measure_counterpart(observed):
+    return {'inside_at_entry': observed['counterpart_inside_at_entry'],
+            'inside_during_frames': observed['counterpart_inside_during_crossing_frames'],
+            'approach_ttc_min_s': observed['counterpart_approach_ttc_min_s'],
+            'not_obligated': observed['counterpart_not_obligated_to_stop_or_yield']}
+
+
 def finalize(attempt, output):
     root = Path(attempt).resolve()
     target = Path(output)
@@ -100,29 +113,62 @@ def finalize(attempt, output):
     verify_source_joins(root, packet, observed)
     channel = root / 'channels'
     channel.mkdir(exist_ok=True)
-    (channel / 'subject_counterpart_crossing_trace.jsonl').write_text(''.join(
-        json.dumps({'time_s': row['t_s'], 'value': {
+    def stream(name, value):
+        (channel / (name + '.jsonl')).write_text(''.join(
+            json.dumps({'time_s': row['t_s'], 'value': value(row)}, allow_nan=False) + '\n'
+            for row in packet['frames']))
+
+    stream('subject_counterpart_crossing_trace', lambda row: {
             'subject_speed_mps': row['subject_speed_mps'],
             'counterpart_speed_mps': row['counterpart_speed_mps'],
             'subject_inside': row['subject_inside'],
             'counterpart_inside': row['counterpart_inside'],
-            'counterpart_distance_to_conflict_m': row['counterpart_distance_to_conflict_m']}},
-            allow_nan=False) + '\n' for row in packet['frames']))
-    (channel / 'all_entrance_controls.json').write_text(json.dumps({
-        'value': observed['all_entrance_controls'],
-        'source_sha256': sha(controls_path)}, allow_nan=False) + '\n')
+            'counterpart_distance_to_conflict_m': row['counterpart_distance_to_conflict_m']})
+    stream('all_entrance_controls', lambda row: observed['all_entrance_controls'])
+    stream('stopping_reference_hierarchy', lambda row: {
+        'reference': observed['stop_reference'],
+        'subject_front_before_reference': row['subject_front_before_reference'],
+        'subject_body_vertices_m': row['subject_body_vertices_m']})
+    stream('original_control_state', lambda row: {
+        'officer_controlling': row['officer_controlling'],
+        'signal_controlling': row['signal_controlling'],
+        'direction_legally_unassessed': row['control_direction_legally_unassessed']})
+    stream('ego_pose', lambda row: {
+        'body_vertices_m': row['subject_body_vertices_m'],
+        'speed_mps': row['subject_speed_mps']})
+    contexts = {
+        'context_subject_counterpart_crossing_trace': {
+            'subject_id': packet['subject_id'], 'counterpart_id': packet['counterpart_id'],
+            'source_sha256': sha(packet_path)},
+        'context_all_entrance_controls': {
+            'entrance_controls': observed['all_entrance_controls'],
+            'source_sha256': sha(controls_path)},
+        'context_stopping_reference_hierarchy': {
+            'stop_reference': observed['stop_reference'],
+            'source_sha256': sha(controls_path)},
+        'context_original_control_state': {
+            'control_exception': json.loads(controls_path.read_text())['control_exception'],
+            'source_sha256': sha(packet_path)}}
+    for name, value in contexts.items():
+        (channel / (name + '.json')).write_text(json.dumps({name: value}, allow_nan=False) + '\n')
+    (root / 'interaction_history.jsonl').write_text(''.join(
+        json.dumps({'frame': row['native_frame'], 'time_s': row['t_s'],
+                    'ego': {'body_vertices_m': row['subject_body_vertices_m']},
+                    'counterpart': {'body_vertices_m': row['counterpart_body_vertices_m']}},
+                   allow_nan=False) + '\n' for row in packet['frames']))
+    (root / 'control_context.json').write_text(json.dumps({
+        'intersection_xy_m': [[-3.5, -3.5], [3.5, -3.5], [3.5, 3.5], [-3.5, 3.5]],
+        'authored_geometry_source_sha256': sha(required(root, 'road.xodr')),
+        'control_inventory_source_sha256': sha(controls_path),
+        'interpretation': 'engineering intersection footprint; not legal stop or hazard threshold'},
+        allow_nan=False) + '\n')
     measurements = {
-        'pre_entry_stop_or_slow': {'method': 'measure_paths',
-            'value': {'near_zero_frames': observed['pre_entry_near_zero_frames_before_reference'],
-                      'subject_control': observed['subject_control'],
-                      'stop_reference': observed['stop_reference']},
+        'pre_entry_stop_or_slow': {'method': 'measure_pre_entry',
+            'value': measure_pre_entry(observed),
             'sources': {'nonthrough_saved_packet.json': sha(packet_path),
                         'entrance_controls.json': sha(controls_path)}},
-        'counterpart_crossing_and_approach': {'method': 'measure_paths',
-            'value': {'inside_at_entry': observed['counterpart_inside_at_entry'],
-                      'inside_during_frames': observed['counterpart_inside_during_crossing_frames'],
-                      'approach_ttc_min_s': observed['counterpart_approach_ttc_min_s'],
-                      'not_obligated': observed['counterpart_not_obligated_to_stop_or_yield']},
+        'counterpart_crossing_and_approach': {'method': 'measure_counterpart',
+            'value': measure_counterpart(observed),
             'sources': {'nonthrough_saved_packet.json': sha(packet_path),
                         'entrance_controls.json': sha(controls_path)}}}
     result = {'case_id': case, 'measured_values': observed,
@@ -143,10 +189,14 @@ def finalize(attempt, output):
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': config['recording_description'],
               'recording_evidence': [
-                  {'name': 'subject_counterpart_crossing_trace', 'unit': 'structured',
-                   'reference': 'channels/subject_counterpart_crossing_trace.jsonl'},
-                  {'name': 'all_entrance_controls', 'unit': 'structured',
-                   'reference': 'channels/all_entrance_controls.json'}],
+                  {'name': item['name'], 'unit': item['unit'],
+                   'reference': 'channels/' + item['name'] + '.jsonl'}
+                  for item in config['recording_description']['channels']
+              ] + [
+                  {'name': item['name'], 'unit': item['unit'],
+                   'reference': 'channels/' + item['name'] + '.json'}
+                  for item in config['recording_description']['context_inputs']
+              ],
               'realized_observables': {},
               'provenance_kind': 'native' if observed['source_kind'] == 'native_saved_sample' else 'synthetic_fixture',
               'diagnostic_fixture': observed['source_kind'] != 'native_saved_sample',

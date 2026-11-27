@@ -71,6 +71,13 @@ def main():
                 'method': 'four original synchronized RGB streams',
                 'evidence': ['overview.mkv', 'approach.mkv', 'reference_corner.mkv',
                              'driver_reference.mkv', 'video_frames.jsonl']}}
+        for channel in ('drv.speed_below_traffic', 'drv.queue_behind',
+                        'drv.laned_roadway', 'drv.extreme_lane', 'rel.occupies',
+                        'drv.overtaking', 'st.lane_adjacency'):
+            entry['acquisition'][channel] = {'entrypoint': 'capture.py',
+                'method': 'original frame-joined Native source projection for ' + channel,
+                'evidence': ['native.jsonl', 'geometry.json',
+                             'context-survey.json', 'channels/' + channel + '.jsonl']}
         recorded = read(proof)
         entry['post_capture'] = {'recorded_only': True,
             'command': 'runtime.py process-saved --manifest work/' + preflight['assignment_id'] +

@@ -138,7 +138,9 @@ def capture(slug, output, host, port):
 
     scene = scene_for(slug)
     output = Path(output).resolve()
-    if output.exists() and any(output.iterdir()):
+    retained = ('capture', 'trace.jsonl', 'video_frames.jsonl', 'nonthrough_saved_packet.json',
+                'acquisition-provenance.json', 'entrance_controls.json')
+    if output.exists() and any((output / name).exists() for name in retained):
         raise ValueError('Retain prior attempt; choose a fresh Native output directory')
     output.mkdir(parents=True, exist_ok=True)
     config_source = Path(__file__).with_name('config.json')

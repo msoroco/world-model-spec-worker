@@ -100,14 +100,31 @@ def actor_at(world, carla, blueprint, pose):
 def derive_channels(output):
     native = [json.loads(x) for x in (output/'native.jsonl').read_text().splitlines()]
     frames = [json.loads(x) for x in (output/'video_frames.jsonl').read_text().splitlines()]
+    geometry = json.loads((output/'geometry.json').read_text())
     if len(native) != COUNT or len(frames) != COUNT:
         raise ValueError('Full original source and camera join required')
     channels = output/'channels'
     channels.mkdir(exist_ok=False)
     result = []
-    for name, records in (
-        ('native_lane_body_follower_and_pass', native),
-        ('four_camera_video', [r['source_cameras'] for r in frames])):
+    terms = {
+        'drv.speed_below_traffic': lambda r: {k:r['actors'][k]['speed_mps'] for k in ('ego','follower')},
+        'drv.queue_behind': lambda r: {'follower':r['actors']['follower'],'ego':r['actors']['ego']},
+        'drv.laned_roadway': lambda r: {'lane_source':geometry['same_direction_marked_lanes_source'],
+                                        'ego':r['actors']['ego']},
+        'drv.extreme_lane': lambda r: {'outer_right_lane_radius_m':geometry['outer_right_lane_radius_m'],
+                                      'ego_body':r['actors']['ego']['body_vertices_native_m']},
+        'rel.occupies': lambda r: {'ego_body':r['actors']['ego']['body_vertices_native_m'],
+                                   'outer_right_lane_radius_m':geometry['outer_right_lane_radius_m'],
+                                   'inner_left_lane_radius_m':geometry['inner_left_lane_radius_m']},
+        'drv.overtaking': lambda r: {'pass_observation':r.get('pass_observation'),
+                                    'slower_vehicle':r['actors'].get('slower_vehicle')},
+        'st.lane_adjacency': lambda r: {'outer_right_lane_radius_m':geometry['outer_right_lane_radius_m'],
+                                       'inner_left_lane_radius_m':geometry['inner_left_lane_radius_m'],
+                                       'same_direction_marked_lanes_source':geometry['same_direction_marked_lanes_source']}}
+    sources = [('native_lane_body_follower_and_pass', native),
+               ('four_camera_video', [r['source_cameras'] for r in frames])]
+    sources.extend((name,[method(row) for row in native]) for name,method in terms.items())
+    for name, records in sources:
         path = channels/(name+'.jsonl')
         path.write_text(''.join(json.dumps({'time_s': i/RATE, 'value': row},
                                            allow_nan=False)+'\n' for i,row in enumerate(records)))

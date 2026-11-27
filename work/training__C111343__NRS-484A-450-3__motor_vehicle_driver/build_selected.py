@@ -118,6 +118,14 @@ def build(slug):
                        "source-joined four-view FFV1 and Native telemetry"]}
     path = HERE / "selected" / slug / "construction.json"
     put(path, construction)
+    fallback = json.loads(json.dumps(construction))
+    fallback_config = dict(cfg)
+    fallback_config["requested_stop_front_x_m"] = -10.0 if slug == "before_crosswalk" else -5.0
+    for item in fallback["files"]:
+        if item["path"] == "config.json":
+            item["content"] = json.dumps(fallback_config, indent=2) + "\n"
+    fallback_path = HERE / "selected" / slug / "fallback1-construction.json"
+    put(fallback_path, fallback)
     return {"case_id": cid, "kind": "delivery",
             "construction": str(path.relative_to(HERE)), "construction_sha256": sha(path),
             "measurement_procedure": {"entrypoint": "finalize.py"},
@@ -128,7 +136,13 @@ def build(slug):
                                "port_env_var": "CARLA_PORT"},
             "candidate_risk": {"status": "physical",
                 "reason": "Actual brake tracking near the crosswalk or four-camera visibility may fail"},
-            "candidates": []}
+            "candidates": [{"id": "fallback1", "construction": str(fallback_path.relative_to(HERE)),
+                "construction_sha256": sha(fallback_path),
+                "changed_knobs": ["requested_stop_front_x_m: " + str(cfg["requested_stop_front_x_m"])
+                                  + " to " + str(fallback_config["requested_stop_front_x_m"])],
+                "trigger": {"source": "original saved ego_body.jsonl and near_crosswalk.json",
+                    "metric": "first rest full-body front-bumper x versus near-side crosswalk edge",
+                    "failure_condition": "Primary requested rest is not physically realized or body visibility is inadequate"}}]}
 
 
 def main():

@@ -29,7 +29,7 @@ def main():
     for entry in entries:
         case = entry['case_id']
         suffix = case.rsplit('__',1)[-1]
-        attempt = SCRATCH/'offline-batch'/suffix
+        attempt = SCRATCH/'offline-batch-v2'/suffix
         if attempt.exists():
             raise ValueError('Retain prior offline attempt: '+suffix)
         command = [str(REPO/'.venv-cpu/bin/python'),'-B',str(REPO/'runtime.py'),

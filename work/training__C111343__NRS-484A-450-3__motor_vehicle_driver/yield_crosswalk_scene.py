@@ -2,11 +2,18 @@
 
 import xml.etree.ElementTree as ET
 
-CASES = {"before_crosswalk": -9.0, "past_crosswalk": -4.0}
+CASES = {"before_crosswalk": -9.0, "past_crosswalk": -4.0,
+         "before_stop_line": -9.0, "past_stop_line": -4.0,
+         "before_viewpoint": -9.0, "past_viewpoint": -4.0}
 CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 
 
-def road_xml():
+def reference_kind(case):
+    return "crosswalk" if case.endswith("crosswalk") else (
+        "stop_line" if case.endswith("stop_line") else "viewpoint")
+
+
+def road_xml(kind="crosswalk"):
     root = ET.Element("OpenDRIVE")
     ET.SubElement(root, "header", revMajor="1", revMinor="4", name="C111343-yield-crosswalk",
                   version="1", north="80", south="-80", east="80", west="-80", vendor="full-train-worker")
@@ -29,9 +36,20 @@ def road_xml():
         objects = ET.SubElement(road, "objects")
         signals = ET.SubElement(road, "signals")
         if ident == 111343:
-            ET.SubElement(objects, "object", id="near-crosswalk-111343", s="74", t="-1.75",
-                          name="near_side_crosswalk", type="crosswalk", orientation="none",
-                          zOffset="0", length="2", width="3.5", hdg="0", pitch="0", roll="0")
+            if kind == "crosswalk":
+                ET.SubElement(objects, "object", id="near-crosswalk-111343", s="74", t="-1.75",
+                              name="near_side_crosswalk", type="crosswalk", orientation="none",
+                              zOffset="0", length="2", width="3.5", hdg="0", pitch="0", roll="0")
+            elif kind == "stop_line":
+                ET.SubElement(objects, "object", id="marked-stop-line-111343", s="74", t="-1.75",
+                              name="marked_stop_line", type="stopLine", orientation="none",
+                              zOffset="0", length="0.2", width="3.5", hdg="0", pitch="0", roll="0")
+            elif kind == "viewpoint":
+                ET.SubElement(objects, "object", id="sight-obstruction-111343", s="72", t="-5.2",
+                              name="sight_obstruction", type="building", orientation="none",
+                              zOffset="0", length="4", width="1", height="3", hdg="0", pitch="0", roll="0")
+            else:
+                raise ValueError("Unknown stopping reference")
             ET.SubElement(signals, "signal", id="yield-111343", s="70", t="-3.7", name="YIELD",
                           dynamic="no", orientation="+", zOffset="0", country="US", type="205",
                           subtype="0", value="0", unit="", height="0.8", width="0.8")
@@ -41,9 +59,13 @@ def road_xml():
 def request(case):
     if case not in CASES:
         raise ValueError("Unknown crosswalk stop policy")
+    kind = reference_kind(case)
     return {"format": "worker-authored-yield-crosswalk-request", "case": case,
-            "road_opendrive": road_xml(), "crosswalk_near_x_m": -6, "crosswalk_far_x_m": -4,
-            "intersection_near_x_m": -3.5, "stop_line_present": False,
+            "road_opendrive": road_xml(kind), "reference_kind": kind,
+            "reference_near_x_m": -6, "reference_far_x_m": -4,
+            "crosswalk_near_x_m": -6 if kind == "crosswalk" else None,
+            "crosswalk_far_x_m": -4 if kind == "crosswalk" else None,
+            "intersection_near_x_m": -3.5, "stop_line_present": kind == "stop_line",
             "ego": {"blueprint": "vehicle.tesla.model3", "start_xyz": [-45, -1.75, 0.5],
                     "heading_deg": 0, "body_length_m": 4.5},
             "intersecting_vehicle": {"blueprint": "vehicle.tesla.model3", "start_xyz": [1.75, -40, 0.5],
@@ -70,8 +92,13 @@ def validate(value):
     roads = root.findall("road")
     if root.tag != "OpenDRIVE" or {r.attrib["id"] for r in roads} != {"111343", "111344"}:
         raise ValueError("Intersection roads missing")
-    if roads[0].find("objects/object").attrib.get("type") != "crosswalk":
-        raise ValueError("Near-side crosswalk missing")
+    kind = value.get("reference_kind")
+    objects = roads[0].findall("objects/object")
+    types = {item.attrib.get("type") for item in objects}
+    if (kind == "crosswalk" and types != {"crosswalk"}) or (
+            kind == "stop_line" and types != {"stopLine"}) or (
+            kind == "viewpoint" and types != {"building"}):
+        raise ValueError("Stopping reference hierarchy differs")
     if roads[0].find("signals/signal").attrib.get("name") != "YIELD":
         raise ValueError("Yield sign missing")
     if set(c["name"] for c in value["cameras"]) != CAMERAS:

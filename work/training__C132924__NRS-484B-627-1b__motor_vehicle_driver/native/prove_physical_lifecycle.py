@@ -13,7 +13,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 REPO = ROOT.parents[1]
-SCRATCH = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) / "physical-fixtures"
+SCRATCH = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) / "physical-fixtures-v2"
 sys.path.insert(0, str(REPO / "runtime"))
 from scenario_pipeline.worker_exchange.native_output import assess_physical, seal_capture
 from scenario_pipeline.worker_exchange.saved_processing import (

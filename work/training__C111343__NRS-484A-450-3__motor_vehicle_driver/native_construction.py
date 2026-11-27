@@ -15,7 +15,7 @@ def transform(carla, xyz, pitch=0, yaw=0):
                            carla.Rotation(pitch=pitch, yaw=yaw, roll=0))
 
 
-def checked_map(world):
+def checked_map(world, scene):
     source = world.get_map().to_opendrive()
     roads = {road.get("id"): road for road in ET.fromstring(source).findall("road")}
     if not {"111343", "111344"} <= set(roads):
@@ -27,13 +27,14 @@ def checked_map(world):
             or abs(float(sign.get("s", -1)) - 70) > .01):
         raise ValueError("Original governing YIELD sign differs")
     markings = approach.findall("objects/object")
-    near = next((item for item in markings if item.get("id") == "near-crosswalk-111343"), None)
-    if (near is None or near.get("type") != "crosswalk"
-            or abs(float(near.get("s", -1)) - 74) > .01
-            or abs(float(near.get("length", -1)) - 2) > .01):
-        raise ValueError("Original near-side crosswalk differs")
-    if any(item.get("type") == "stopLine" for item in markings):
-        raise ValueError("Unexpected marked stop line changes reference hierarchy")
+    kind = scene["reference_kind"]
+    expected = {"crosswalk": ("near-crosswalk-111343", "crosswalk"),
+                "stop_line": ("marked-stop-line-111343", "stopLine"),
+                "viewpoint": ("sight-obstruction-111343", "building")}[kind]
+    if (len(markings) != 1 or markings[0].get("id") != expected[0] or
+            markings[0].get("type") != expected[1] or
+            abs(float(markings[0].get("s", -1)) - (72 if kind == "viewpoint" else 74)) > .01):
+        raise ValueError("Original stopping-reference map hierarchy differs")
     return source
 
 
@@ -42,7 +43,7 @@ def constructed_scene(client, carla, scene):
     """Own all created actors and restore world timing on exit."""
     validate(scene)
     world = client.generate_opendrive_world(scene["road_opendrive"])
-    checked_map(world)
+    checked_map(world, scene)
     settings = world.get_settings()
     old_sync = settings.synchronous_mode
     old_delta = settings.fixed_delta_seconds
@@ -81,7 +82,7 @@ def constructed_scene(client, carla, scene):
             raise ValueError("Four source camera actors missing")
         yield {"world": world, "ego": vehicles["ego"],
                "intersecting": vehicles["intersecting"], "cameras": cameras,
-               "map_opendrive": checked_map(world)}
+               "map_opendrive": checked_map(world, scene)}
     finally:
         for actor in reversed(owned):
             actor.destroy()

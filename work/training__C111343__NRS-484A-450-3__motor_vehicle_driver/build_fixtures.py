@@ -102,7 +102,9 @@ def build(slug):
         lines(root / filename, values)
     put(root / "acquisition-provenance.json", {"provenance_kind": "synthetic_fixture",
         "diagnostic_fixture": True, "native_executed": False})
-    (root / "capture/recorder_info.txt").write_text("Synthetic CPU fixture; no CARLA recording\n")
+    (root / "capture/recorder_info.txt").write_text(
+        "Synthetic diagnostic recorder summary; no CARLA server used.\n"
+        "Create 1: vehicle.tesla.model3 (0) at (-45, -1.75, 0.5)\n")
     put(root / "capture/manifest.json", {"extraction_confirmed": True, "frames": 600,
         "required_observations": [], "synthetic_diagnostic": True,
         "sources": {"road.xodr": map_hash, "trace.jsonl": sha(root / "trace.jsonl")}})

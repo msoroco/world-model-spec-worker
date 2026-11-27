@@ -51,7 +51,7 @@ def main():
             rows[13]['carla_frame'] -= 1
             write_rows(video, rows)
             (root / 'trace.jsonl').unlink()
-            rejects(lambda: verify_source_joins(root, packet, observed), 'Missing required saved source')
+        rejects(lambda: verify_source_joins(root, packet, observed), 'Missing required source: trace.jsonl')
     print('saved-only 600-frame Core/body/video join passes; changed frame and missing trace reject')
 
 

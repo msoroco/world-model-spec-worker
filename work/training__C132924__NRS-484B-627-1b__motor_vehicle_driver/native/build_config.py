@@ -15,6 +15,14 @@ FOV = (85,90,85,90)
 
 def build(suffix):
     case_id = AID+'__'+suffix
+    source_terms = {
+        'drv.speed_below_traffic':'Original ego and immediately following vehicle speeds by Native frame',
+        'drv.queue_behind':'Original immediately following vehicle identity and position by Native frame',
+        'drv.laned_roadway':'Original marked same-direction Native roundabout lane survey and readback',
+        'drv.extreme_lane':'Original extreme-right lane boundary and ego body vertices by Native frame',
+        'rel.occupies':'Original ego body occupancy against surveyed lane boundaries by Native frame',
+        'drv.overtaking':'Original slower vehicle, relative motion and clearance by Native frame',
+        'st.lane_adjacency':'Original adjacent same-direction lane topology from Native map and survey'}
     description = {
         'channels': [
             {'name':'native_lane_body_follower_and_pass',
@@ -25,7 +33,11 @@ def build(suffix):
             {'name':'four_camera_video','method':'Four synchronized original RGB views',
              'sampling_rate_hz':20,'time_window':'600 frames','unit':'structured',
              'reference_frame':'original Native frame joined to four-camera frame map',
-             'uncertainty':'software fixture cannot prove original pixel visibility'}],
+             'uncertainty':'software fixture cannot prove original pixel visibility'}] + [
+            {'name':name,'method':method,'sampling_rate_hz':20,'time_window':'600 frames',
+             'unit':'structured','reference_frame':'original Native frame joined to four-camera frame map',
+             'uncertainty':'Source facts do not settle statutory impeding or passing necessity'}
+            for name,method in source_terms.items()],
         'context_inputs':[],
         'limitations':['Original marked roundabout lane topology requires Native operator survey',
                        'Requested slow speed, lane and pass phase do not establish impeding or necessity']}

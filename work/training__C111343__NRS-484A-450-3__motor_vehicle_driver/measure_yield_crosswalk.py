@@ -5,7 +5,7 @@ import math
 FRAMES = 600
 RATE_HZ = 20
 CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
-HASHES = ("native_map", "yield_sign", "near_crosswalk", "ego_body", "ego_motion",
+HASHES = ("native_map", "yield_sign", "stop_reference", "ego_body", "ego_motion",
           "intersecting_traffic", "safety_context", "camera_manifest")
 
 
@@ -23,21 +23,26 @@ def measure(context, rows):
         value = context.get(name + "_sha256")
         if not isinstance(value, str) or len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
             raise ValueError("Missing source hash: " + name)
-    if context.get("governing_yield_sign") is not True or context.get("near_side_crosswalk") is not True:
-        raise ValueError("Governing yield sign and near-side crosswalk required")
+    kind = context.get("reference_kind")
+    if kind not in {"crosswalk", "stop_line", "viewpoint"} or context.get("governing_yield_sign") is not True:
+        raise ValueError("Governing YIELD sign or stopping-reference hierarchy missing")
+    if context.get("near_side_crosswalk") is not (kind == "crosswalk"):
+        raise ValueError("Crosswalk presence differs from selected reference")
+    if kind == "viewpoint" and not context.get("sight_rays_sha256"):
+        raise ValueError("Nearest viewpoint lacks source-bound sight rays")
     if context.get("safety_context_present") is not True or context.get("safety_stop_required") != "unassessed":
         raise ValueError("Conditional safety context missing or legal judgment invented")
-    near = number(context.get("crosswalk_near_x_m"), "crosswalk near edge")
-    far = number(context.get("crosswalk_far_x_m"), "crosswalk far edge")
+    near = number(context.get("reference_near_x_m"), "reference near edge")
+    far = number(context.get("reference_far_x_m"), "reference far edge")
     intersection = number(context.get("intersection_near_x_m"), "intersection near edge")
     if not near < far < intersection:
-        raise ValueError("Crosswalk and intersection ordering invalid")
+        raise ValueError("Stopping reference and intersection ordering invalid")
     if len(rows) != FRAMES:
         raise ValueError("Incomplete 30-second trace")
     previous_native = None
     previous_front = None
     stopped = []
-    first_crosswalk = None
+    first_reference = None
     first_intersection = None
     for i, row in enumerate(rows):
         if row.get("video_frame") != i:
@@ -62,22 +67,26 @@ def measure(context, rows):
         if previous_front is not None and front < previous_front - 0.001:
             raise ValueError("Ego reversed on approach")
         previous_front = front
-        if first_crosswalk is None and front >= near:
-            first_crosswalk = i
+        if first_reference is None and front >= near:
+            first_reference = i
         if first_intersection is None and front >= intersection:
             first_intersection = i
         if speed <= 0.1:
             stopped.append({"frame": i, "front_x_m": front, "before_near_edge": front < near,
                             "in_crosswalk": near <= front <= far, "intersecting_vehicle_y_m": other})
-    if not stopped or first_crosswalk is None or first_intersection is None:
+    if not stopped or first_reference is None or first_intersection is None:
         raise ValueError("Stop and complete approach missing")
     first_stop = stopped[0]
-    return {"format": "worker-source-yield-crosswalk-measurement", "frame_count": FRAMES,
+    return {"format": "worker-source-yield-reference-measurement", "frame_count": FRAMES,
             "rate_hz": RATE_HZ, "first_stop_frame": first_stop["frame"],
             "first_stop_front_x_m": first_stop["front_x_m"],
+            "reference_kind": kind,
+            "first_stop_before_reference": first_stop["before_near_edge"],
+            "first_stop_in_reference": first_stop["in_crosswalk"],
+            "first_reference_entry_frame": first_reference,
             "first_stop_before_crosswalk": first_stop["before_near_edge"],
             "first_stop_in_crosswalk": first_stop["in_crosswalk"],
-            "stopped_frame_count": len(stopped), "first_crosswalk_entry_frame": first_crosswalk,
+            "stopped_frame_count": len(stopped), "first_crosswalk_entry_frame": first_reference,
             "first_intersection_entry_frame": first_intersection,
             "intersecting_vehicle_y_at_stop_m": first_stop["intersecting_vehicle_y_m"],
             "safety_stop_requirement": "unassessed", "legal_compliance": "unassessed",

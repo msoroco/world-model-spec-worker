@@ -1,0 +1,339 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver",
+  "status": "draft_incomplete_proofs",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "physical_acceptance_claimed": false,
+  "cases": [
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+      "kind": "delivery",
+      "construction": "selected/before_crosswalk/construction.json",
+      "construction_sha256": "b7d3c5994f6d28a446a847544d65ef21c46992bd6642bdef51254c0a9811cf1e",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "measurement-before_crosswalk.json",
+      "fixture_recipe": "work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/selected-recipe-before_crosswalk.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego transform and full body extent joined to each frame",
+            "time_window": "all 600 frames, including first rest and crossing",
+            "reference_frame": "original CARLA XY and Native frame",
+            "uncertainty": "50 ms sampling; original pixels and body visibility need independent review"
+          },
+          {
+            "name": "conditional_stop_position",
+            "unit": "m,m/s",
+            "sampling_rate_hz": 20,
+            "method": "first recorded rest front-bumper extent versus original near-side crosswalk edge",
+            "time_window": "all 600 frames through intersection entry",
+            "reference_frame": "source-hashed original map crosswalk and vehicle body",
+            "uncertainty": "0.1 m/s rest diagnostic; no legal safety threshold or compliance judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "governing_yield_sign",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "near_side_crosswalk",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "intersecting_traffic",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "safety_context",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          }
+        ],
+        "limitations": [
+          "Whether safety required a stop is an unresolved independent judgment.",
+          "Authored stop request and synthetic fixture do not prove physical stopping or legal compliance."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual brake tracking near the crosswalk or four-camera visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected/before_crosswalk/fallback1-construction.json",
+          "construction_sha256": "1af3fbfc25f77f30edffca811f58ed9820633d70d4bfc37ad45f12ff08b481bb",
+          "changed_knobs": [
+            "requested_stop_front_x_m: -9.0 to -10.0"
+          ],
+          "trigger": {
+            "source": "original saved ego_body.jsonl and near_crosswalk.json",
+            "metric": "first rest full-body front-bumper x versus near-side crosswalk edge",
+            "failure_condition": "Primary requested rest is not physically realized or body visibility is inadequate"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/draft-native-manifest.json --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk --candidate fallback1 --output .runtime-work/c111343-yield/offline-before-fallback1-v6",
+            "construction_sha256": "1af3fbfc25f77f30edffca811f58ed9820633d70d4bfc37ad45f12ff08b481bb",
+            "exit_code": 0,
+            "log": "native-offline-before_crosswalk-fallback1.log",
+            "log_sha256": "770741d1a4a71074dd01b4937cb7cf76f2d39ed8513572db0d3e60ad209ae334"
+          },
+          "compatibility": {
+            "receipt": "compatibility-before_crosswalk-fallback1.json",
+            "sha256": "b1d5d8dd8c3944771bdbeac22722d9f86a1ef40cd0e925cfc3a72eb7949465e5",
+            "log": "compatibility-before_crosswalk-fallback1-analysis.log",
+            "negative_log": "compatibility-before_crosswalk-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/draft-native-manifest.json --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk --candidate primary --output .runtime-work/c111343-yield/offline-before-primary-v6",
+        "construction_sha256": "b7d3c5994f6d28a446a847544d65ef21c46992bd6642bdef51254c0a9811cf1e",
+        "exit_code": 0,
+        "log": "native-offline-before_crosswalk.log",
+        "log_sha256": "40f9e6e89ee38a3773349662a029cf2fb4e3da99657f07f9f7d20ca1370cfe70"
+      },
+      "compatibility": {
+        "receipt": "compatibility-before_crosswalk.json",
+        "sha256": "0c63dbbc77a2ba0e646689aa32d007a455d7b24e8225e5f3b18458ec53e4307b",
+        "log": "compatibility-before_crosswalk-analysis.log"
+      },
+      "negative": {
+        "log": "compatibility-before_crosswalk-negative.log"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "finalize.py",
+          "method": "original same-frame subject transform and body source",
+          "evidence": "channels/ego_pose.jsonl"
+        },
+        "conditional_stop_position": {
+          "entrypoint": "finalize.py",
+          "method": "original front-bumper first rest versus map-readback crosswalk edge",
+          "evidence": "channels/conditional_stop_position.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/before_crosswalk/proof.json",
+        "sha256": "2a0c4d01df1adf8ae9f598f44724baea050215aae219aef9988f0b8cef076aac"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/execution-manifest.json --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json # training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/before_crosswalk-analysis.log",
+        "test_log_sha256": "3ff06a8f0afc292e1a6f534f40c01298961bf732ff38233bf9521ca283abbc2d",
+        "processing_receipt": "saved/before_crosswalk-processing.json",
+        "processing_receipt_sha256": "2e976a4f02e9d3104ef65d455bcd54d5e7f4f5bd46345c898aa47d750ce5171f",
+        "diagnostic_scope": "Synthetic saved-only test; original Native processing still pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bfad2bb5b531084e5200bb1871526b7e732bd9c52c4112832e95b3ed53d0234f",
+        "command": ".venv-cpu/bin/python -B work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/delivery_audit.py --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-before_crosswalk-positive.log",
+        "test_log_sha256": "9449abf8aaea6195fd9a9ecb36242826007bd31c738a660ea32c712d0ad41af6",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/delivery_audit.py --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "delivery-before_crosswalk-negative.log",
+        "negative_log_sha256": "a4f6e4ab9a83ddb78e1dfcdea2c47f2c0efa5c6e5b43d1f7c8fd6dc84f359231",
+        "diagnostic_scope": "CPU predicate check only; original Native pixels, safety and physical result require independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/delivery_audit.py --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk --attempt $ATTEMPT --review original-review.json --video raw.mkv --trace trace.json --job $JOB_ID --recording-id $RECORDING_ID --output $AUDIT_OUTPUT"
+      }
+    },
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk",
+      "kind": "delivery",
+      "construction": "selected/past_crosswalk/construction.json",
+      "construction_sha256": "10509f43f1e3333c86c2229c3128c2f24766b7c84bc6a659bab2f493fd8d3cd2",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "measurement-past_crosswalk.json",
+      "fixture_recipe": "work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/selected-recipe-past_crosswalk.json",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native ego transform and full body extent joined to each frame",
+            "time_window": "all 600 frames, including first rest and crossing",
+            "reference_frame": "original CARLA XY and Native frame",
+            "uncertainty": "50 ms sampling; original pixels and body visibility need independent review"
+          },
+          {
+            "name": "conditional_stop_position",
+            "unit": "m,m/s",
+            "sampling_rate_hz": 20,
+            "method": "first recorded rest front-bumper extent versus original near-side crosswalk edge",
+            "time_window": "all 600 frames through intersection entry",
+            "reference_frame": "source-hashed original map crosswalk and vehicle body",
+            "uncertainty": "0.1 m/s rest diagnostic; no legal safety threshold or compliance judgment"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "governing_yield_sign",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "near_side_crosswalk",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "intersecting_traffic",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          },
+          {
+            "name": "safety_context",
+            "unit": "structured",
+            "method": "original Native source hash and per-frame identity join"
+          }
+        ],
+        "limitations": [
+          "Whether safety required a stop is an unresolved independent judgment.",
+          "Authored stop request and synthetic fixture do not prove physical stopping or legal compliance."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual brake tracking near the crosswalk or four-camera visibility may fail"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected/past_crosswalk/fallback1-construction.json",
+          "construction_sha256": "9836db3ae2e1dac6bc3cb1f8debf07de821d73c7af6de86ab4a314aa04caa54a",
+          "changed_knobs": [
+            "requested_stop_front_x_m: -4.0 to -5.0"
+          ],
+          "trigger": {
+            "source": "original saved ego_body.jsonl and near_crosswalk.json",
+            "metric": "first rest full-body front-bumper x versus near-side crosswalk edge",
+            "failure_condition": "Primary requested rest is not physically realized or body visibility is inadequate"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/draft-native-manifest.json --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk --candidate fallback1 --output .runtime-work/c111343-yield/offline-past-fallback1-v6",
+            "construction_sha256": "9836db3ae2e1dac6bc3cb1f8debf07de821d73c7af6de86ab4a314aa04caa54a",
+            "exit_code": 0,
+            "log": "native-offline-past_crosswalk-fallback1.log",
+            "log_sha256": "83d0ff4f0064f030e88226b1d80c5190c8625718ea4197a94293e5ff9ae4c624"
+          },
+          "compatibility": {
+            "receipt": "compatibility-past_crosswalk-fallback1.json",
+            "sha256": "5dee8cb274cc81a77189f30ba6e27f16cf753008f4e98cc71f6fec388f80c97f",
+            "log": "compatibility-past_crosswalk-fallback1-analysis.log",
+            "negative_log": "compatibility-past_crosswalk-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/draft-native-manifest.json --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk --candidate primary --output .runtime-work/c111343-yield/offline-past-primary-v6",
+        "construction_sha256": "10509f43f1e3333c86c2229c3128c2f24766b7c84bc6a659bab2f493fd8d3cd2",
+        "exit_code": 0,
+        "log": "native-offline-past_crosswalk.log",
+        "log_sha256": "9c25f8de2c40a2fbfee76ac6ba16fde09774a7aa1f4b1b4e1f7ae24ad199e5bf"
+      },
+      "compatibility": {
+        "receipt": "compatibility-past_crosswalk.json",
+        "sha256": "06ee09255bcac02b3d39b19864d533c5b263cedac0e901685799eb971ec98609",
+        "log": "compatibility-past_crosswalk-analysis.log"
+      },
+      "negative": {
+        "log": "compatibility-past_crosswalk-negative.log"
+      },
+      "acquisition": {
+        "ego_pose": {
+          "entrypoint": "finalize.py",
+          "method": "original same-frame subject transform and body source",
+          "evidence": "channels/ego_pose.jsonl"
+        },
+        "conditional_stop_position": {
+          "entrypoint": "finalize.py",
+          "method": "original front-bumper first rest versus map-readback crosswalk edge",
+          "evidence": "channels/conditional_stop_position.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/past_crosswalk/proof.json",
+        "sha256": "8b8663c0aa5ab02368f51003901bd2eead2603396b2b302e6cd5a8afb4db299a"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/execution-manifest.json --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json # training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/past_crosswalk-analysis.log",
+        "test_log_sha256": "9d920f87184d9bc2dc34ab39f30a7f1ebc139d91e64588fde44ec8bb0c818791",
+        "processing_receipt": "saved/past_crosswalk-processing.json",
+        "processing_receipt_sha256": "d7a5b74bc5e991e28fdd1d48ae4cf4a55ecf23773921c2eae8da6863dae45cf5",
+        "diagnostic_scope": "Synthetic saved-only test; original Native processing still pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bfad2bb5b531084e5200bb1871526b7e732bd9c52c4112832e95b3ed53d0234f",
+        "command": ".venv-cpu/bin/python -B work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/delivery_audit.py --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-past_crosswalk-positive.log",
+        "test_log_sha256": "7fe67313ca362b24f5722f153f2212221604495362ff533e3655555e2dc642c0",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/delivery_audit.py --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "delivery-past_crosswalk-negative.log",
+        "negative_log_sha256": "a4f6e4ab9a83ddb78e1dfcdea2c47f2c0efa5c6e5b43d1f7c8fd6dc84f359231",
+        "diagnostic_scope": "CPU predicate check only; original Native pixels, safety and physical result require independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111343__NRS-484A-450-3__motor_vehicle_driver/delivery_audit.py --case training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk --attempt $ATTEMPT --review original-review.json --video raw.mkv --trace trace.json --job $JOB_ID --recording-id $RECORDING_ID --output $AUDIT_OUTPUT"
+      }
+    }
+  ]
+}

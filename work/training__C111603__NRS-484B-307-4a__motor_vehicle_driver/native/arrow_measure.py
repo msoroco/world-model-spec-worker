@@ -42,11 +42,17 @@ def measure(folder):
     first_enter = first_wrong_direction = first_unlit_motion = None
     first_ped_overlap = first_traffic_overlap = None
     arrow_frames = 0
+    first_frame = signal[0].get('native_frame')
+    first_signal_time = signal[0].get('time_s')
+    first_motion_time = motion[0].get('time_s')
+    if type(first_frame) is not int or first_signal_time is None or first_motion_time is None:
+        raise ValueError('Original Native frame and time origin required')
     for index, (s, m) in enumerate(zip(signal, motion)):
         frame = s.get('native_frame')
-        if frame != index or m.get('native_frame') != index:
+        if frame != first_frame + index or m.get('native_frame') != frame:
             raise ValueError('Original Native frame join differs')
-        if abs(s.get('time_s', -1) - index / 20) > 1e-5 or abs(m.get('time_s', -1) - index / 20) > 1e-5:
+        if (abs(s.get('time_s', -1) - first_signal_time - index / 20) > 1e-5
+                or abs(m.get('time_s', -1) - first_motion_time - index / 20) > 1e-5):
             raise ValueError('Original Native time join differs')
         if type(s.get('green_arrow_alone')) is not bool or type(s.get('illuminated')) is not bool:
             raise ValueError('Signal program state incomplete')

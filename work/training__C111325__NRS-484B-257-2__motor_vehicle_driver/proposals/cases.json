@@ -1,0 +1,1550 @@
+{
+  "cell_id": "C111325",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "unresolved_1",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "proceed cautiously",
+          "note": "Original motion, conflict and visibility measurements do not define a legal cautiousness cutoff."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Fixed case matrix samples this clause; no legal cutoff or independently verified physical sweep range is supplied.",
+      "missing_inputs": [
+        "Original Native trace and four-camera source review",
+        "Source-backed physical sweep range and spacing if local review requires it"
+      ]
+    },
+    {
+      "sweep_id": "unresolved_2",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "approaching so closely as to constitute an immediate hazard",
+          "note": "Keep measured approach distance and time to conflict separate from legal hazard judgment."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Fixed case matrix samples this clause; no legal cutoff or independently verified physical sweep range is supplied.",
+      "missing_inputs": [
+        "Original Native trace and four-camera source review",
+        "Source-backed physical sweep range and spacing if local review requires it"
+      ]
+    },
+    {
+      "sweep_id": "unresolved_3",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "yielding to vehicles not so obligated to stop or yield",
+          "note": "Whole-intersection sign inventory and original counterpart occupancy are needed; right-of-way conclusion is independent."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Fixed case matrix samples this clause; no legal cutoff or independently verified physical sweep range is supplied.",
+      "missing_inputs": [
+        "Original Native trace and four-camera source review",
+        "Source-backed physical sweep range and spacing if local review requires it"
+      ]
+    },
+    {
+      "sweep_id": "unresolved_4",
+      "target_law_id": "NRS-484B-257-2",
+      "judgment_refs": [
+        {
+          "phrase": "traffic is being controlled by a police officer or a traffic-control signal",
+          "note": "Original per-frame officer direction or governing signal state requires independent review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Fixed case matrix samples this clause; no legal cutoff or independently verified physical sweep range is supplied.",
+      "missing_inputs": [
+        "Original Native trace and four-camera source review",
+        "Source-backed physical sweep range and spacing if local review requires it"
+      ]
+    }
+  ],
+  "sweeps_expanded": false,
+  "cases": [
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__shared_baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "Neutral signed local-road crossing setup; not selected for delivery.",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "inside_or_entering",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "stop_then_yield",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_unobligated_inside",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "stop obligation before marked line and yielding to an unregulated counterpart inside at entry",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "inside_or_entering",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "stop_then_yield",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "stop_action",
+      "deliberate_differences": [
+        "requested_subject_policy"
+      ],
+      "probe": {
+        "primary_variable": "requested_subject_policy",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "stop_then_yield"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_roll_through_inside",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "same stop sign, reference and counterpart with requested roll through",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "inside_or_entering",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "roll_through",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "stop_action",
+      "deliberate_differences": [
+        "requested_subject_policy"
+      ],
+      "probe": {
+        "primary_variable": "requested_subject_policy",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "roll_through"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_unobligated_approaching",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "yield sign, slowed/yielding approach, unregulated counterpart approaching",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "yield",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "approaching",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "yield_then_proceed",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "yield_action",
+      "deliberate_differences": [
+        "requested_subject_policy"
+      ],
+      "probe": {
+        "primary_variable": "requested_subject_policy",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "yield_then_proceed"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_no_yield_approaching",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "same yield sign and approaching counterpart, no requested yielding",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "yield",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "approaching",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "no_yield",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "yield_action",
+      "deliberate_differences": [
+        "requested_subject_policy"
+      ],
+      "probe": {
+        "primary_variable": "requested_subject_policy",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "no_yield"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_crosswalk_reference",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "no marked line; near-side crosswalk reference",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "crosswalk",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "inside_or_entering",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "stop_then_yield",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "stopping_reference",
+      "deliberate_differences": [
+        "stopping_reference"
+      ],
+      "probe": {
+        "primary_variable": "stopping_reference",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "crosswalk"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_nearest_viewpoint",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "no marked line or crosswalk; nearest-viewpoint survey",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "nearest_viewpoint",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "inside_or_entering",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "stop_then_yield",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "stopping_reference",
+      "deliberate_differences": [
+        "stopping_reference"
+      ],
+      "probe": {
+        "primary_variable": "stopping_reference",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "nearest_viewpoint"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_inside_during_crossing",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "counterpart enters after subject entry but during crossing",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "inside_or_entering",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "stop_then_yield",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "counterpart_phase",
+      "deliberate_differences": [
+        "counterpart_phase"
+      ],
+      "probe": {
+        "primary_variable": "counterpart_phase",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "inside_or_entering"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_counterpart_signed",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "counterpart entrance also signed; other-driver obligation differs",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "inside_or_entering",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "stop_then_yield",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "counterpart_obligation",
+      "deliberate_differences": [
+        "entrance_control_inventory"
+      ],
+      "probe": {
+        "primary_variable": "entrance_control_inventory",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "stop"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__police_control",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "original officer direction exception to sign rule",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "inside_or_entering",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "stop_then_yield",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "police",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "police_exception",
+      "deliberate_differences": [
+        "control_exception"
+      ],
+      "probe": {
+        "primary_variable": "control_exception",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "police"
+      }
+    },
+    {
+      "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__signal_control",
+      "target_law_id": "NRS-484B-257-2",
+      "target_type": "boundary_probe",
+      "cell_id": "C111325",
+      "actor": "motor_vehicle_driver",
+      "rationale": "original governing signal exception to sign rule",
+      "variable_assignments": {
+        "subject_sign": {
+          "kind": "world_setup",
+          "value": "stop",
+          "unit": "category"
+        },
+        "stopping_reference": {
+          "kind": "world_setup",
+          "value": "stop_line",
+          "unit": "category"
+        },
+        "entrance_control_inventory": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "category"
+        },
+        "counterpart_phase": {
+          "kind": "world_setup",
+          "value": "inside_or_entering",
+          "unit": "category"
+        },
+        "requested_subject_policy": {
+          "kind": "controller",
+          "value": "stop_then_yield",
+          "unit": "category"
+        },
+        "observed_stop_and_yield": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "control_exception": {
+          "kind": "world_setup",
+          "value": "signal",
+          "unit": "category"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously",
+        "approaching so closely as to constitute an immediate hazard",
+        "yielding to vehicles not so obligated to stop or yield",
+        "traffic is being controlled by a police officer or a traffic-control signal"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "all_entrance_controls",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "stopping_reference_hierarchy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "original_control_state",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original frames including approach and crossing",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling and physical source review pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_subject_counterpart_crossing_trace",
+            "unit": "structured",
+            "method": "original frame-joined subject/counterpart body vertices, speeds, occupancy and approach distance"
+          },
+          {
+            "name": "context_all_entrance_controls",
+            "unit": "structured",
+            "method": "original map sign inventory and bound participant entrances with independent sign review pending"
+          },
+          {
+            "name": "context_stopping_reference_hierarchy",
+            "unit": "structured",
+            "method": "original stop-line, crosswalk or viewpoint ray geometry and subject front body"
+          },
+          {
+            "name": "context_original_control_state",
+            "unit": "structured",
+            "method": "original officer actor pose or governing signal state per frame; legal direction review pending"
+          }
+        ],
+        "limitations": [
+          "No legal cutoff or verdict is inferred from the fixture or controller request.",
+          "Original road designation, sign direction, officer/signal control, pixels and physical completion require independent review."
+        ]
+      },
+      "paired_probe_id": "signal_exception",
+      "deliberate_differences": [
+        "control_exception"
+      ],
+      "probe": {
+        "primary_variable": "control_exception",
+        "comparison_or_standard": "paired physical branch comparison without legal verdict",
+        "target_value_or_branch": "signal"
+      }
+    }
+  ]
+}
