@@ -37,6 +37,21 @@ class BodyOrderTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "body polygons"):
             measure_case(case, site, frames)
 
+    def test_missing_visible_preparation_rejected(self):
+        case = next(item for item in CASES if item.suffix == "preparing_visible_hand_signal")
+        site, frames = self.load(case)
+        for frame in frames:
+            frame["visible_hand_signal"] = False
+        with self.assertRaisesRegex(ValueError, "visible hand signal"):
+            measure_case(case, site, frames)
+
+    def test_inactive_lights_contrast_rejects_flashing(self):
+        case = next(item for item in CASES if item.suffix == "lights_inactive")
+        site, frames = self.load(case)
+        frames[0]["flashing_light_on"] = True
+        with self.assertRaisesRegex(ValueError, "inactive light contrast"):
+            measure_case(case, site, frames)
+
     def test_route_and_qualification_required(self):
         case = CASES[0]
         m = {

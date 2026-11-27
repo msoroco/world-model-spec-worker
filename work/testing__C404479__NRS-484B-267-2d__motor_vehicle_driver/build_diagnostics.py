@@ -1,4 +1,4 @@
-"""Generate eight explicit synthetic sources for software compatibility only."""
+"""Generate ten exact synthetic sources for software compatibility only."""
 
 from __future__ import annotations
 

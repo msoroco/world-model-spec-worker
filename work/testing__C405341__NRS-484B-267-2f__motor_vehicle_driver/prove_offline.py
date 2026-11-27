@@ -43,7 +43,7 @@ def proof():
                                "port_env_var": "CARLA_PORT"},
             "acquisition": {channel: {"entrypoint": "runner.py", "method": "capture_original",
                 "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."}
-                for channel in ("sealed_native_original_frames", "unit_motion", "unit_state", "subsection_1_referral",
+                for channel in ("sealed_native_original_frames", "driver_view_movement_cue", "unit_motion", "unit_state", "subsection_1_referral",
                 "qualifying_flashing_lights", "target_authorization", "subject_driver",
                                 "relative_approach", "right_of_way_order",
                                 "ego_approach", "ego_response", "officer_direction", "video_four_views")},

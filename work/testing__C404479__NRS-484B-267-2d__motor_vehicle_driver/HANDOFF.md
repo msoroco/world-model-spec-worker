@@ -1,22 +1,15 @@
-# testing__C404479__NRS-484B-267-2d__motor_vehicle_driver
+# C404479 / NRS 484B.267(2)(d) CPU handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial while current-runtime compatibility and delivery proofs run. No physical or legal acceptance is claimed.
 
-Exact law: NRS 484B.267(2)(d); with 484B.267(4) — Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If the authorized emergency vehicle or official vehicle of a regulatory agency is moving in the same direction of travel as the driver, not drive abreast of or overtake the authorized emergency vehicle or official vehicle of a regulatory agency. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.
-Assigned branch(es): Same-direction movement; overtaking.
-Cell: C404479 (adjacent_lanes, overtake, emergency_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The frozen evidence inventory has no accepted recording. The exact C404479 cell has adjacent traversable lanes, an overtaking maneuver, an emergency-vehicle control and an ordinary motor-vehicle driver. The law requires an approach to a moving or visibly preparing authorized emergency or regulatory official vehicle that uses qualifying flashing lights; for same-direction movement the driver must not drive abreast of or overtake it, absent contrary law-enforcement direction. This clause does not itself add a siren or front-red-lamp prerequisite. No numeric gap or overlap duration is treated as a legal cutoff.
 
-## Next CPU actions
+Ten selected cases: moving_hold_behind; moving_overtake; moving_abreast; unit_overtakes_ego; preparing_visible_hand_signal; lights_inactive; lights_unqualified; officer_directs_otherwise; regulatory_official_hold_behind; no_approach. Nine baseline-controlled comparisons hold undeclared conditions fixed. case-plan.json maps each to the no-original-2d-recording gap. Original body polygons and same-direction route tangents distinguish longitudinal overlap, ego behind-to-ahead overtaking, reverse unit overtaking and no approach. Actual original source review remains required.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C404479__NRS-484B-267-2d__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Source-gated Native construction is in emergency_construction.py, runner.py and native_packet.py. The reviewed packet requires connected adjacent same-direction routes, traversable lanes, body extents, clearance source, target authorization, qualifying flashing equipment, original camera poses and any officer/visible-preparation source. The saved finalizer is analysis.py. Synthetic fixtures in diagnostics/ provide software probes only. All ten primary and ten fallback pinned-runtime offline checks passed; all ten physical/lifecycle probes passed; four focused tests passed in cpu-tests.log. Current-runtime compatibility is running. Semantic drafts are under proposals/.
 
-## Proven checks and dependency boundary
+Next CPU actions: complete all 20 primary/fallback compatibility receipts; run prove_saved.py; run prove_audits.py with the independent body-order comparison audit; build_queue_proposal.py; review exact law/source semantics; run the exact strict gate and repair any failure. Keep scratch under .runtime-work/c404479-2d/ and export SCENARIO_PIPELINE_OUTPUT_ROOT before direct runtime imports.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+Strict command: .venv-cpu/bin/python worker_check.py --assignment testing__C404479__NRS-484B-267-2d__motor_vehicle_driver --complete --require-delivery-ready
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Remaining local GPU checks: actual target authority and equipment, moving/visible preparation, ego approach, actor body extents and lane clearance, camera pixels, complete overtaking episode, officer context and independent legal review.

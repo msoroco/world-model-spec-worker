@@ -1,4 +1,4 @@
-"""Synthetic motion outcome and Native ownership closure for each 2f case."""
+"""Synthetic body-order outcome and Native ownership closure for each 2d case."""
 
 import argparse
 import hashlib
@@ -10,6 +10,7 @@ import tempfile
 
 from emergency_construction import CASES
 from native_packet import AID
+from analysis import measure_case
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
@@ -82,6 +83,8 @@ def probe(case_id, kind, output):
         origin = rows[0]["ego_xy"]
         rows = [{**row, "ego_xy": origin} for row in rows]
     if kind == "complete_motion":
+        site_data = json.loads(site.read_text(encoding="utf-8"))
+        measured = measure_case(cases[case_id], site_data, rows)
         displacement = rows[-1]["ego_xy"][0] - rows[0]["ego_xy"][0]
         if abs(displacement) <= 0:
             raise ValueError("ego motion diagnostic absent")
@@ -96,8 +99,9 @@ def probe(case_id, kind, output):
         status = "unverified"
     result = {"case_id": case_id,
         "physical_checks": {"maneuver": {"status": status,
-            "method": "900 source-bound synthetic ego positions and joined camera frames",
+            "method": "900 source-bound synthetic actor body polygons, same-direction poses and joined camera frames",
             "sources": sources, "original_ego_displacement_m": displacement,
+            "body_order": measured if kind == "complete_motion" else None,
             "legal_verdict_claimed": False}},
         "maneuver_completed": status == "met",
         "realized_observables": {"ego_displacement_m": {"value": displacement,
