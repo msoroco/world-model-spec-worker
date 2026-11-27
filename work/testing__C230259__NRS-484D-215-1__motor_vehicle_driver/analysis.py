@@ -92,6 +92,8 @@ def build(attempt: Path, *, expected_frames: int = 900,
             site.get("requested_start_body_gap_ft") != case.get("requested_start_body_gap_ft")):
         raise ValueError("saved original site does not bind exact case")
     receipt = json.loads(_path(root, "native-source-receipt.json").read_text())
+    if not diagnostic and expected_frames != 900:
+        raise ValueError("original Native delivery requires 900 frames")
     if (receipt.get("format") != "beam-road-native-source-v1" or
             receipt.get("case_id") != case_id or
             receipt.get("frame_count") != expected_frames or
@@ -156,6 +158,8 @@ def main():
         raise ValueError("saved analysis output already exists")
     receipt = json.loads(_path(Path(args.attempt), "native-source-receipt.json").read_text())
     diagnostic = receipt.get("diagnostic_fixture") is True
+    if not diagnostic and receipt.get("frame_count") != 900:
+        raise ValueError("original Native delivery requires 900 frames")
     report = build(Path(args.attempt), expected_frames=receipt.get("frame_count", 900),
                    diagnostic=diagnostic)
     output.parent.mkdir(parents=True, exist_ok=True)

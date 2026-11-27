@@ -8,7 +8,7 @@ import shutil
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-RUN = REPO / ".runtime-work" / "c230259-proof-run-v2"
+RUN = REPO / ".runtime-work" / "c230259-proof-run-v3"
 PLAN = json.loads((ROOT / "case-plan.json").read_text())
 ASSIGNMENT = PLAN["assignment_id"]
 VALIDATOR = ".runtime-work/c111125-owner/validator/.lake/build/bin/adapterCheck"
@@ -48,7 +48,7 @@ def proof(case, candidate):
     command = (".venv-cpu/bin/python runtime.py offline --manifest " +
                rel(ROOT / "execution-manifest.draft.json") + " --case " + case["case_id"] +
                ("" if candidate == "primary" else " --candidate fallback1") +
-               " --output .runtime-work/c230259-proof-run-v2/offline-" + suffix + "-" + candidate +
+               " --output .runtime-work/c230259-proof-run-v3/offline-" + suffix + "-" + candidate +
                " --python \"$PWD/.venv-cpu/bin/python\"")
     return ({"command": command, "construction_sha256": sha(construction),
              "exit_code": 0, "log": offline_log.name, "log_sha256": sha(offline_log)},
@@ -76,7 +76,7 @@ def main():
             offline, compatible = proof(case, candidate["id"])
             candidate["offline"] = offline
             candidate["compatibility"] = compatible
-        attempt = ".runtime-work/c230259-proof-run-v2/compatibility-" + suffix + "-primary"
+        attempt = ".runtime-work/c230259-proof-run-v3/compatibility-" + suffix + "-primary"
         delivery_log = ROOT / ("delivery-diagnostic-" + suffix + ".log")
         negative_log = ROOT / ("delivery-negative-" + suffix + ".log")
         entry["delivery_acceptance"] = {"case_id": case["case_id"],
@@ -87,7 +87,7 @@ def main():
                        " --attempt " + attempt + " --output " +
                        rel(ROOT / ("delivery-diagnostic-" + suffix + ".json")) + " --diagnostic-fixture",
             "negative_command": ".venv-cpu/bin/python " + rel(script) + " --case " + case["case_id"] +
-                       " --attempt " + attempt + " --output .runtime-work/c230259-proof-run-v2/delivery-negative-" +
+                       " --attempt " + attempt + " --output .runtime-work/c230259-proof-run-v3/delivery-negative-" +
                        suffix + ".json --diagnostic-fixture --negative-remove-source roi-frames.jsonl",
             "test_exit_code": 0, "test_log": delivery_log.name,
             "test_log_sha256": sha(delivery_log),

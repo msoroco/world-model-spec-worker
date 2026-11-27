@@ -1,0 +1,109 @@
+{
+  "template_id": "LVMC-11-52-305-A@heavy_vehicle_driver",
+  "law_id": "LVMC-11-52-305-A",
+  "actor": "heavy_vehicle_driver",
+  "quote": "Except as otherwise provided in this Section or as permitted by posted sign, it is unlawful for a person to stand, park or store, upon any street adjacent to a residence district, public school or public park, a commercial vehicle, recreational vehicle, trailer, or any combination of vehicle and trailer having an overall length of twenty-four feet or more or an unladen weight in excess of eight thousand pounds. For purposes of the preceding sentence, a \"residence district\" means the territory contiguous to a street, not comprising a business district, in which the parcels abutting such street for a distance of three hundred feet or more are mainly occupied by dwellings or by dwellings and buildings in use for residence. The provisions of Subsection (A) do not apply to a commercial vehicle that is: (1) Parked in front of property from which or to which goods or passengers are being picked up or delivered, but only for that period of time during which goods or passengers are being expeditiously loaded or unloaded; or (2) Being used in conjunction with the performance of service, repair, construction or similar essential use within the immediate neighborhood.",
+  "structure": {
+    "law_id": "LVMC-11-52-305-A",
+    "activation": {
+      "condition": "A commercial vehicle, recreational vehicle, trailer, or vehicle/trailer combination is parked on a street adjacent to a residence district, public school, or public park; length and weight are alternative statutory thresholds. Residence district also requires nonbusiness, mainly residential contiguous frontage.",
+      "numeric_conditions": [
+        {
+          "variable": "overall_length_ft",
+          "operator": ">=",
+          "value": 24,
+          "unit": "ft"
+        },
+        {
+          "variable": "unladen_weight_lb",
+          "operator": ">",
+          "value": 8000,
+          "unit": "lb"
+        },
+        {
+          "variable": "residential_frontage_ft",
+          "operator": ">=",
+          "value": 300,
+          "unit": "ft"
+        }
+      ]
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Except as otherwise provided in this Section or as permitted by posted sign, it is unlawful for a person to stand, park or store, upon any street adjacent to a residence district, public school or public park, a commercial vehicle, recreational vehicle, trailer, or any combination of vehicle and trailer having an overall length of twenty-four feet or more or an unladen weight in excess of eight thousand pounds. For purposes of the preceding sentence, a \"residence district\" means the territory contiguous to a street, not comprising a business district, in which the parcels abutting such street for a distance of three hundred feet or more are mainly occupied by dwellings or by dwellings and buildings in use for residence. The provisions of Subsection (A) do not apply to a commercial vehicle that is: (1) Parked in front of property from which or to which goods or passengers are being picked up or delivered, but only for that period of time during which goods or passengers are being expeditiously loaded or unloaded; or (2) Being used in conjunction with the performance of service, repair, construction or similar essential use within the immediate neighborhood.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Authorized posted sign permission",
+        "effect": "Subsection (A) prohibition does not apply when permitted by posted sign",
+        "replacement_obligation": null,
+        "source_clause": "as permitted by posted sign"
+      },
+      {
+        "trigger": "Commercial vehicle expeditiously loading or unloading relevant property",
+        "effect": "Subsection (A) does not apply for that period",
+        "replacement_obligation": null,
+        "source_clause": "Parked in front of property from which or to which goods or passengers are being picked up or delivered, but only for that period of time during which goods or passengers are being expeditiously loaded or unloaded"
+      },
+      {
+        "trigger": "Commercial vehicle actually used with service, repair, construction or similar essential use within immediate neighborhood",
+        "effect": "Subsection (A) does not apply",
+        "replacement_obligation": null,
+        "source_clause": "Being used in conjunction with the performance of service, repair, construction or similar essential use within the immediate neighborhood"
+      }
+    ],
+    "timing": {
+      "description": "Original complete parked interval; loading is limited to the expeditious interval and work use must be active during parking.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "commercial_vehicle_status",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed commercial classification"
+    },
+    {
+      "name": "overall_length_ft",
+      "kind": "world_setup",
+      "range_or_domain": "independently reviewed overall length in ft"
+    },
+    {
+      "name": "unladen_weight_lb",
+      "kind": "world_setup",
+      "range_or_domain": "independently reviewed unladen weight in lb"
+    },
+    {
+      "name": "adjacent_place",
+      "kind": "world_setup",
+      "range_or_domain": "source-verified public school, public park or residence district"
+    },
+    {
+      "name": "residential_frontage_ft",
+      "kind": "world_setup",
+      "range_or_domain": "residential street frontage in ft"
+    },
+    {
+      "name": "work_kind",
+      "kind": "world_setup",
+      "range_or_domain": "actual service, repair, construction, similar essential activity or none"
+    },
+    {
+      "name": "work_near",
+      "kind": "world_setup",
+      "range_or_domain": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+    },
+    {
+      "name": "posted_sign_permission",
+      "kind": "world_setup",
+      "range_or_domain": "exact sign text and authority"
+    },
+    {
+      "name": "expeditious_loading",
+      "kind": "world_setup",
+      "range_or_domain": "goods or passenger loading in front of relevant property"
+    }
+  ]
+}

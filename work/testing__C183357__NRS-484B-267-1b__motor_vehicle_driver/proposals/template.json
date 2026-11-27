@@ -1,0 +1,115 @@
+{
+  "template_id": "NRS-484B-267-1b@motor_vehicle_driver",
+  "law_id": "NRS-484B-267-1b",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Upon the immediate approach of an authorized emergency vehicle or an official vehicle of a regulatory agency, making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of every other vehicle shall, except when otherwise directed by a law enforcement officer: Except as otherwise provided in this paragraph, immediately drive to a position parallel to, and as close as possible to, the right-hand edge or, if applicable, curb of a highway and clear of any intersection. The driver shall not drive to and stop in a position on a paved shoulder of a highway where lawfully placed signage allows a vehicle described in paragraphs (a) to (f), inclusive, of subsection 4 of NRS 484B.210 [list appended below] to drive on the shoulder. The provisions of subparagraph (1) of paragraph (c) of subsection 1 do not apply to: (a) An authorized emergency vehicle described in NRS 484A.480; (b) A vehicle which has been issued a permit to operate as an authorized emergency vehicle pursuant to NRS 484A.490; (c) A traffic incident management vehicle; (d) A tow car; (e) A coroner vehicle; or (f) A public transit motor bus, that is being driven on the paved shoulder of a highway where lawfully placed signage allows that vehicle to use the shoulder in that manner.",
+  "structure": {
+    "law_id": "NRS-484B-267-1b",
+    "activation": {
+      "condition": "Immediate approach of an authorized emergency or regulatory official vehicle using qualifying flashing lights.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Drive immediately to a parallel position as close as possible to the right edge or applicable curb and clear of any intersection; do not drive to and stop on a signed paved shoulder permitting a listed class.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "except when otherwise directed by a law enforcement officer",
+        "description": "Source-bound law-enforcement direction can alter the driver's response."
+      }
+    ],
+    "timing": {
+      "description": "Observe the immediate approach and response over the original 45 seconds.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "immediate approach",
+        "note": "Observe original relative routes, positions and motion without a numeric legal cutoff."
+      },
+      {
+        "phrase": "parallel to, and as close as possible",
+        "note": "Measure actual body yaw and body-to-right-edge distance, retaining feasibility and legal judgment for review."
+      },
+      {
+        "phrase": "clear of any intersection",
+        "note": "Measure original body polygon overlap with the reviewed intersection boundary."
+      },
+      {
+        "phrase": "paved shoulder signed stopping restriction",
+        "note": "Measure actual stop/traverse state and the reviewed lawful sign's listed class and segment applicability."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "unit_class",
+      "kind": "world_setup",
+      "range_or_domain": "authorized emergency or regulatory official",
+      "unit": "class"
+    },
+    {
+      "name": "light_request",
+      "kind": "world_setup",
+      "range_or_domain": "qualified active, qualified inactive or unqualified active",
+      "unit": "class"
+    },
+    {
+      "name": "immediate_request",
+      "kind": "controller",
+      "range_or_domain": "false or true",
+      "unit": "boolean"
+    },
+    {
+      "name": "edge_type",
+      "kind": "world_setup",
+      "range_or_domain": "curb or right_edge",
+      "unit": "class"
+    },
+    {
+      "name": "parallel_request",
+      "kind": "controller",
+      "range_or_domain": "parallel or skewed",
+      "unit": "class"
+    },
+    {
+      "name": "closeness_request",
+      "kind": "controller",
+      "range_or_domain": "nearest_feasible or intentionally_offset",
+      "unit": "class"
+    },
+    {
+      "name": "intersection_request",
+      "kind": "world_setup",
+      "range_or_domain": "outside_intersection or inside_intersection",
+      "unit": "class"
+    },
+    {
+      "name": "subject_position_request",
+      "kind": "controller",
+      "range_or_domain": "roadway, paved_shoulder_stop or paved_shoulder_traverse",
+      "unit": "class"
+    },
+    {
+      "name": "sign_permitted_class",
+      "kind": "world_setup",
+      "range_or_domain": "none or one of the six listed shoulder-permitted classes",
+      "unit": "class"
+    },
+    {
+      "name": "officer_direction_request",
+      "kind": "world_setup",
+      "range_or_domain": "none or contrary_direction",
+      "unit": "class"
+    },
+    {
+      "name": "approach_direction",
+      "kind": "world_setup",
+      "range_or_domain": "opposing or same_direction",
+      "unit": "class"
+    }
+  ]
+}

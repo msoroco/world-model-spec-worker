@@ -1,19 +1,21 @@
 {
   "assignment_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver",
   "input_sha256": "16a6fdb292b575ad8ae4c250be600bf812667e85afda736a27904f9e37bd4e35",
-  "status": "partial",
-  "readiness_kind": "exact_plan_and_source_gated_construction_partial",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C230259__NRS-484D-215-1__motor_vehicle_driver -p 'test_*.py' -v",
       "exit_code": 0,
       "log": "cpu-beam-tests.log",
-      "sha256": "33bc708e15df611c5b0bb5c805582f407348afcf513b36e686044a540d5df6ed"
+      "sha256": "10495bebf4314d680a358838ef67de9ba9975e574c255721d6a3dbfdcbf6a123"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Actual CARLA motion, camera visibility and original optical capture quality",
+    "Independent source review of visibility, safe distance ahead and oncoming driver-eye glare"
   ],
-  "reason": "Eight exact cases and six comparisons, source-gated construction, original 20 Hz beam/geometry measurements, camera pixel measurements and original projection math are CPU-tested; Native capture fake tests, finalizers, selected bundles, semantic proposals, case compatibility proofs and independent audits remain CPU work."
+  "reason": "Eight exact source-bound cases and one reviewed-source camera fallback per case pass CPU offline/compatibility, saved-only lifecycle processing, diagnostic delivery audits and six controlled comparison audits. Original physical capture and legal judgment remain for local review.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C230259__NRS-484D-215-1__motor_vehicle_driver --case testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_high --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

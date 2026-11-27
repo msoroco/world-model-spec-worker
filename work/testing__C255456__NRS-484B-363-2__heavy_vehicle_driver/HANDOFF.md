@@ -1,22 +1,23 @@
-# testing__C255456__NRS-484B-363-2__heavy_vehicle_driver
+# NRS 484B.363(2) heavy vehicle crossing-zone delivery handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Assignment: `testing__C255456__NRS-484B-363-2__heavy_vehicle_driver`. CPU delivery package is prepared for 14 exact cases and 11 controlled comparisons. Zero frozen accepted recordings establish this branch, so all selected cases remain unexecuted physical targets. No synthetic fixture is claimed as original CARLA evidence, physical acceptance, or legal acceptance.
 
-Exact law: NRS 484B.363(2); with 484B.363(9) — A person shall not drive a motor vehicle at a speed in excess of 25 miles per hour in an area designated as a school crossing zone except: (a) On a day on which school is not in session; (b) During the period from a half hour after school is no longer in operation to a half hour before school is next in operation; (c) If the zone is designated by an operational speed limit beacon, during the hours when the pupils of the school are in class and the yellow lights of the speed limit beacon are not flashing in the manner which indicates that the speed limit is in effect; or (d) If the zone is not designated by an operational speed limit beacon, during the times when the sign designating the school zone indicates that the speed limit is not in effect. As used in this section, “speed limit beacon” means a device which is used in conjunction with a sign and equipped with two or more yellow lights that flash alternately to indicate when the speed limit in a school zone or school crossing zone is in effect.
-Assigned branch(es): Heavy motor vehicle at a school-crossing-zone crosswalk.
-Cell: C255456 (school_crossing_zone, travel, crosswalk); actor: heavy_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Exact selected cases
 
-## Next CPU actions
+`beacon_flashing_24_9`, `beacon_flashing_25_0`, `beacon_flashing_25_1`, `no_session_25_1`, `after_operation_25_1`, `before_next_start_25_1`, `beacon_class_not_flashing_25_1`, `beacon_class_flashing_25_1`, `nonbeacon_sign_off_25_1`, `nonbeacon_sign_on_25_1`, `beacon_one_yellow_25_1`, `beacon_non_alternating_25_1`, `outside_zone_25_1`, `no_children_25_1`.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C255456__NRS-484B-363-2__heavy_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Each construction source-gates the designated school crossing zone and boundaries, crosswalk and designated pupil walking route, nonadjacent school property, heavy vehicle blueprint and driver, civil calendar/clock, and beacon/sign source facts. Native execution captures 900 synchronized frames at 20 Hz and four RGB views. The saved finalizer measures source-bound speed, zone membership and statutory exception inputs without issuing a legal verdict.
 
-## Proven checks and dependency boundary
+## CPU proof inventory
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+- 25 worker unit tests passed in `cpu-tests.log`.
+- All 14 exact offline proof commands passed; each case has `cases/<suffix>/cpu-offline-proof.log`.
+- All 14 compatibility positive and missing-source negative checks passed with Lean decoder and final video decode; each has `compatibility.json`, analysis logs and negative logs.
+- All 14 three-outcome physical lifecycle diagnostic probes passed, with receipts and fixture logs. They test complete, incomplete and missing-evidence states; they do not prove Native motion.
+- All 14 independent delivery acceptance positive and negative diagnostic audits passed. All 11 controlled comparison positive and swapped-case negative audits passed.
+- All 14 saved-only positive and missing-context negative fixture checks passed. Each `cases/<suffix>/cpu-saved-only.log` binds both `processing.json` receipts; the manifest has executable saved-only processing and feedback commands.
+- The scoped strict command `.venv-cpu/bin/python worker_check.py --assignment testing__C255456__NRS-484B-363-2__heavy_vehicle_driver --complete --require-delivery-ready` passed after semantic observable names were aligned with the selected recording channel. It is rerun after this handoff update.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Delivery
+
+`gpu-queue-proposal.json` contains 14 exact job commands and 11 comparison audit commands for lead integration. The first job command is in `result.json`. Physical delivery requires the reviewed original school site packet and a CARLA run. Review original vehicle speed and traversal, school calendar, beacon lamp alternation/sign text, all participant routes, four camera pixels and time joins, and actual completion before local acceptance. Retain original media and operator closure receipts. The local acceptance workflow must review the actual originals for the requested target set.

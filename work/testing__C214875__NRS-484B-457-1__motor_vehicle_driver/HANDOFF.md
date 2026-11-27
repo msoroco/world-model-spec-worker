@@ -1,6 +1,6 @@
 # testing__C214875__NRS-484B-457-1__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: ready for local GPU delivery; exact scoped strict CPU gate passed on 2026-11-27. Original physical and legal review remain local.
 
 ## 2026-11-27 14:12 UTC — selected right-curb boundary and source measurement
 
@@ -28,3 +28,11 @@ Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, in
 ## 2026-11-27 14:17 UTC — construction, original readback and comparison checkpoint
 
 `curb_construction.py` derives both right-wheel placement requests from source-reviewed curb tangent, roadway side and wheelbase; a bounded same-curb station fallback is tested for all five cases. `native_acquisition.py` records an immutable original attempt with 20 Hz frame/time/wheel/parking-control joins, all four synchronized original PNG streams, map identity checks and owner brake/cleanup on success or failure. `audit_original_attempt.py` independently verifies source hashes, frame continuity and camera archives; `audit_comparisons.py` checks all four planned pairs, fixed site/capture sources and observed distance/alignment/activity contrasts. `analysis.py` replays source-bound measurements without legal verdict. Five measurement contracts validate against pinned runtime; 13 focused synthetic tests pass, including stale source/camera and diagnostic-attestation negatives. `.venv-cpu/bin/python runtime.py verify --runtime runtime`, `runtime.py preflight` and scoped static worker check pass. The status remains partial: selected bundles, canonical proposals, offline/compatibility proofs, physical lifecycle and independent delivery audits are still CPU work.
+
+## 2026-11-27 14:49 UTC — scoped strict gate passed and queue published
+
+Five exact cases are selected: `park_17in_parallel`, `park_18in_parallel`, `park_19in_parallel`, `park_17in_skew`, `stop_18in_parallel`. Four comparisons are `inside_vs_boundary`, `boundary_vs_outside`, `parallel_vs_skew`, `park_vs_stop`. `execution-manifest.json` binds primary and same-curb fallback constructions, five exact fixture recipes, physical preparation receipts, offline and compatibility positive/negative proofs, saved-only processing logs, and per-case independent delivery acceptance probes. `gpu-queue-proposal.json` gives the Native capture, owner release, saved processing, delivery and comparison audit commands. The shared queue now includes all five cases and four comparisons.
+
+All ten primary/fallback offline and ten compatibility commands exited zero on the pinned runtime. All five saved-only processing commands exited zero with source-preservation receipts, four-view source decodes, 20 Hz frame joins and full final-video decode receipts. The source-bound delivery auditor passed five diagnostic positives and rejected five tampered original wheel sources. The independent comparison auditor passed all four source-bound diagnostic contrasts and rejected four changed fixed-site source probes. Sixteen focused CPU tests passed from `tests/`. Exact `worker_check.py --assignment testing__C214875__NRS-484B-457-1__motor_vehicle_driver --complete --require-delivery-ready` exited zero.
+
+The 9-frame compatibility graphics and the 900-frame synthetic physical probes are diagnostic only; they do not establish a real CARLA maneuver or visible original pixels. At local acquisition, review surveyed right curb and ordinance absence, run the exact queued Native 900-frame capture and owner-release sequence, then saved-only processing and independent delivery/comparison audits. The term `parallel` remains a source-measured alignment for reviewer judgment; no legal cutoff was invented.

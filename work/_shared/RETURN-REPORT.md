@@ -1,5 +1,22 @@
 # Return report
 
+## 2026-11-27 14:56 UTC — C230259 moving-beam package published
+
+- `testing__C230259__NRS-484D-215-1__motor_vehicle_driver` passed its owner and independent lead exact scoped strict gates. Its eight exact case commands and six comparison audit commands were integrated into the shared queue; the corresponding original commands were added to the 16 sharded dispatch catalogs and checked by bash syntax and exact dispatcher resolution. Queue totals are 238 assignments, 1,654 cases and 1,153 comparisons (4,634,396 bytes). Four assignment results remain partial, so batch-wide strict delivery is pending.
+- The package passed eight primary and eight fallback offline checks, eight primary and eight fallback compatibility checks, eight saved-only/lifecycle proofs, eight positive/negative delivery and six comparison audits, plus 35 local tests. The operator still must obtain and review original CARLA optical evidence for beam distribution and glare; diagnostic video is CPU proof only.
+- C183357 and C229439 have independent owners building their selected constructions and proofs. C158190 and C178244 retain truthful partial status because their frozen selected branches conflict with fixed cell control/maneuver. The current update notice version is zero. No Git command was run by the lead.
+
+## 2026-11-27 14:50 UTC — C229435 and C255456 published
+
+- `testing__C229435__LVMC-11-52-300__horse_drawn_vehicle_operator` passed its owner and independent lead scoped strict gates; 12 cases and nine comparison commands were integrated. `testing__C255456__NRS-484B-363-2__heavy_vehicle_driver` passed its owner and independent lead scoped strict gates; 14 cases and 11 comparison commands were integrated. The shared queue now holds 237 assignments, 1,646 cases and 1,147 comparisons (4,618,014 bytes). Five assignments remain outside the queue, including two frozen branch/cell conflicts; batch-wide strict delivery is pending.
+- C230259 remains in the proof and gate phase. C183357 and C229439 have separate owners building complete CPU packages. C158190 and C178244 retain partial status because the selected frozen branch conflicts with their fixed cell maneuver/control; neither is being labeled ready from unrelated diagnostic packages.
+
+## 2026-11-27 14:49 UTC — C214875 right-curb package published
+
+- `testing__C214875__NRS-484B-457-1__motor_vehicle_driver` passed its exact scoped strict delivery gate and was integrated into the GPU queue: five cases (`park_17in_parallel`, `park_18in_parallel`, `park_19in_parallel`, `park_17in_skew`, `stop_18in_parallel`) and four exact comparison commands. Queue totals: 235 assignments, 1,620 cases, 1,127 comparisons, 4,515,227 bytes. Seven assignments remain outside the current queue; batch-wide strict acceptance is pending.
+- Ten primary/fallback offline and ten compatibility proofs passed. Five exact saved-only runs passed with four-view decode and source preservation. The delivery auditor passed five diagnostic probes and rejected five changed original wheel sources; comparison audits passed four controlled source-bound probes and rejected four changed fixed-site sources. Sixteen focused tests passed. Diagnostic video and synthetic motion are not physical acceptance; the local operator must review real 900-frame CARLA motion, site/ordinance evidence, pixels and legal parallel judgment.
+- C229435 independently passed its exact strict gate and awaits its owner-authored queue proposal for immediate integration. C230259 and C255456 remain active with their separate owners and honest partial statuses.
+
 ## 2026-11-27 14:06 UTC — C228096 private-way package published
 
 - `testing__C228096__NRS-484B-260__motor_vehicle_driver` passed its exact scoped strict delivery gate and was added to the shared queue: nine exact cases, six comparison commands, 78 syntax-checked commands. Queue counts are now **233 ready assignments, 1,613 exact cases and 1,122 comparisons** (4,485,999 bytes). Nine results remain partial; the batch-wide strict gate is pending.

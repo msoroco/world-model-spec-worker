@@ -1,6 +1,6 @@
 # testing__C183357__NRS-484B-267-1b__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial construction in progress. Nineteen exact original-capture cases and eighteen controlled comparisons are selected; no physical recording or legal acceptance is claimed.
 
 Exact law: NRS 484B.267(1)(b); with NRS 484B.210(4) — Upon the immediate approach of an authorized emergency vehicle or an official vehicle of a regulatory agency, making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of every other vehicle shall, except when otherwise directed by a law enforcement officer: Except as otherwise provided in this paragraph, immediately drive to a position parallel to, and as close as possible to, the right-hand edge or, if applicable, curb of a highway and clear of any intersection. The driver shall not drive to and stop in a position on a paved shoulder of a highway where lawfully placed signage allows a vehicle described in paragraphs (a) to (f), inclusive, of subsection 4 of NRS 484B.210 [list appended below] to drive on the shoulder. The provisions of subparagraph (1) of paragraph (c) of subsection 1 do not apply to: (a) An authorized emergency vehicle described in NRS 484A.480; (b) A vehicle which has been issued a permit to operate as an authorized emergency vehicle pursuant to NRS 484A.490; (c) A traffic incident management vehicle; (d) A tow car; (e) A coroner vehicle; or (f) A public transit motor bus, that is being driven on the paved shoulder of a highway where lawfully placed signage allows that vehicle to use the shoulder in that manner.
 Assigned branch(es): curb_positioning_with_paved_shoulder.
@@ -8,12 +8,13 @@ Cell: C183357 (paved_shoulder, travel, curb); actor: motor_vehicle_driver.
 Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
 Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
 
-## Next CPU actions
+## Current construction and next CPU actions
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C183357__NRS-484B-267-1b__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`case-plan.json` now enumerates 19 exact cases and 18 comparisons. The cases cover parallel versus skewed and near versus offset curb positioning, intersection clearance, right edge when no curb applies, roadway versus paved-shoulder stop/traverse, each of the six listed signage-permitted vehicle classes, unsigned shoulder, contrary officer direction, regulatory official unit, inactive/unqualified lamps, absent immediate approach and same-direction approach. The sign variants compare against the same unsigned shoulder geometry. No numeric distance is asserted as a legal threshold.
+
+`curb_construction.py` validates reviewed highway, curb, shoulder, intersection, authority, lights, siren, lawful sign class and actual Native blueprints before issuing actor spawn, route, light, movement, shoulder sign and subject-position calls. `native_packet.py` requires hash-bound reviewed source files and camera poses; `runner.py` requires a hash-bound Native adapter and restores the world after capture. Four focused construction tests pass in `cpu-construction-tests.log`, including all six sign classes and missing-geometry/sign negatives.
+
+Next: bind all nineteen inline constructions to executable source-gated bundles and source-specific saved measurement; author canonical proposals and diagnostics; run per-case offline, compatibility positive/negative, saved-only and delivery/physical audit proofs; author comparison audit and fallback; pass exact strict gate; emit GPU queue proposal. All these are CPU work, and status remains partial until done.
 
 ## Proven checks and dependency boundary
 

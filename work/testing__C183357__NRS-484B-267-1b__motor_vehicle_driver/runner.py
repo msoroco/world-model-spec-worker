@@ -1,0 +1,80 @@
+"""Exact source-gated Native entrypoint for emergency curb positioning."""
+
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import json
+import os
+from pathlib import Path
+
+from curb_construction import execute
+from native_packet import AID, sha, validate_packet
+
+ROOT = Path(__file__).resolve().parent
+LAW = "NRS-484B-267-1b"
+CELL = "C183357"
+
+
+def check(root=ROOT):
+    config = json.loads((Path(root) / "config.json").read_text(encoding="utf-8"))
+    case_id = config.get("selected_case_id")
+    if (config.get("assignment_id"), config.get("law_id"), config.get("cell_id"),
+            config.get("actor")) != (AID, LAW, CELL, "motor_vehicle_driver"):
+        raise ValueError("exact assignment identity differs")
+    if case_id not in config.get("supported_case_ids", []) or not case_id.startswith(AID + "__"):
+        raise ValueError("selected exact curb case absent")
+    if (config.get("rate_hz"), config.get("duration_s"), config.get("frame_count")) != (20, 45, 900):
+        raise ValueError("original capture clock differs")
+    case = config.get("case")
+    if not isinstance(case, dict) or case.get("case_id") != case_id:
+        raise ValueError("selected construction request missing")
+    return config
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--reviewed-packet", default=os.environ.get("C183357_1B_REVIEWED_PACKET"))
+    parser.add_argument("--adapter-module", default=os.environ.get("C183357_1B_NATIVE_ADAPTER_MODULE"))
+    parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--host", default=os.environ.get("CARLA_HOST"))
+    parser.add_argument("--port", type=int, default=os.environ.get("CARLA_PORT"))
+    args = parser.parse_args()
+    config = check()
+    case = config["case"]
+    if args.check:
+        print("exact curb/shoulder bundle passed: " + case["case_id"])
+        return
+    if not all((args.reviewed_packet, args.adapter_module, args.output_dir,
+                args.host, args.port)):
+        raise ValueError("reviewed original packet, Native adapter and endpoint required")
+    packet = validate_packet(args.reviewed_packet, case)
+    module_path = Path(args.adapter_module)
+    binding = packet.get("native_adapter")
+    if (not module_path.is_file() or module_path.is_symlink() or not isinstance(binding, dict)
+            or binding.get("sha256") != sha(module_path) or not binding.get("citation")
+            or not binding.get("reviewer")):
+        raise ValueError("hash-bound original Native adapter required")
+    spec = importlib.util.spec_from_file_location("curb_native_adapter", module_path)
+    if spec is None or spec.loader is None:
+        raise ValueError("reviewed Native adapter module missing")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    adapter = module.open_native_adapter(args.host, args.port)
+    snapshot = adapter.snapshot_world()
+    try:
+        execute(adapter, case, packet["map_source"], packet["actor_source"],
+                packet["authority"], packet["shoulder_source"], config.get("engineering"))
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        adapter.capture_original(case["case_id"], 900, packet["cameras"], args.output_dir)
+    finally:
+        try:
+            adapter.restore_world(snapshot)
+            adapter.verify_restoration(snapshot)
+        finally:
+            adapter.close()
+
+
+if __name__ == "__main__":
+    main()

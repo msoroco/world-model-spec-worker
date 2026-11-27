@@ -1,0 +1,2911 @@
+{
+  "cell_id": "C229439",
+  "actor": "heavy_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Common parked heavy commercial vehicle with independent source references.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ]
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__service_school_24ft_8001lb",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "compliant_attempt",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "service_presence",
+      "deliberate_differences": [
+        "work_kind"
+      ],
+      "probe": {
+        "primary_variable": "work_kind",
+        "comparison_or_standard": "Source-reviewed service exception and parked interval; no legal finding.",
+        "target_value_or_branch": "service_school_24ft_8001lb"
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__no_service",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "violating_attempt",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "service_presence",
+      "deliberate_differences": [
+        "work_kind"
+      ],
+      "probe": {
+        "primary_variable": "work_kind",
+        "comparison_or_standard": "Source-reviewed service exception and parked interval; no legal finding.",
+        "target_value_or_branch": "no_service"
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__repair_near",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "compliant_attempt",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "repair",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "repair_near",
+      "deliberate_differences": [
+        "work_kind"
+      ],
+      "probe": {
+        "primary_variable": "work_kind",
+        "comparison_or_standard": "Source-reviewed service exception and parked interval; no legal finding.",
+        "target_value_or_branch": "repair_near"
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__construction_near",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "compliant_attempt",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "construction",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "construction_near",
+      "deliberate_differences": [
+        "work_kind"
+      ],
+      "probe": {
+        "primary_variable": "work_kind",
+        "comparison_or_standard": "Source-reviewed service exception and parked interval; no legal finding.",
+        "target_value_or_branch": "construction_near"
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__similar_essential_near",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "compliant_attempt",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "similar_essential",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "similar_essential_near",
+      "deliberate_differences": [
+        "work_kind"
+      ],
+      "probe": {
+        "primary_variable": "work_kind",
+        "comparison_or_standard": "Source-reviewed service exception and parked interval; no legal finding.",
+        "target_value_or_branch": "similar_essential_near"
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__service_far",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "compliant_attempt",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "service_far",
+      "deliberate_differences": [
+        "work_near"
+      ],
+      "probe": {
+        "primary_variable": "work_near",
+        "comparison_or_standard": "Source-reviewed service exception and parked interval; no legal finding.",
+        "target_value_or_branch": "service_far"
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__posted_permission",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "compliant_attempt",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "posted_permission",
+      "deliberate_differences": [
+        "posted_sign_permission"
+      ],
+      "probe": {
+        "primary_variable": "posted_sign_permission",
+        "comparison_or_standard": "Source-reviewed service exception and parked interval; no legal finding.",
+        "target_value_or_branch": "posted_permission"
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__expeditious_loading",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "compliant_attempt",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "none",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "expeditious_loading",
+      "deliberate_differences": [
+        "expeditious_loading"
+      ],
+      "probe": {
+        "primary_variable": "expeditious_loading",
+        "comparison_or_standard": "Source-reviewed service exception and parked interval; no legal finding.",
+        "target_value_or_branch": "expeditious_loading"
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__length_23_9ft",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 23.9,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 7999.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "length_boundary",
+      "deliberate_differences": [
+        "overall_length_ft"
+      ],
+      "probe": {
+        "primary_variable": "overall_length_ft",
+        "comparison_or_standard": "Exact statutory numeric threshold; other qualifying dimensions and legal context remain separately sourced.",
+        "target_value_or_branch": 23.9,
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 23.9
+      },
+      "epsilon_used": {
+        "value": 0.1,
+        "unit": "ft",
+        "rationale": "Engineering probe separation around the exact statutory boundary, without legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__length_24_0ft",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 7999.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "length_boundary",
+      "deliberate_differences": [
+        "overall_length_ft"
+      ],
+      "probe": {
+        "primary_variable": "overall_length_ft",
+        "comparison_or_standard": "Exact statutory numeric threshold; other qualifying dimensions and legal context remain separately sourced.",
+        "target_value_or_branch": 24.0,
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 24.0
+      },
+      "epsilon_used": {
+        "value": 0.1,
+        "unit": "ft",
+        "rationale": "Engineering probe separation around the exact statutory boundary, without legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__length_24_1ft",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.1,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 7999.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "length_boundary",
+      "deliberate_differences": [
+        "overall_length_ft"
+      ],
+      "probe": {
+        "primary_variable": "overall_length_ft",
+        "comparison_or_standard": "Exact statutory numeric threshold; other qualifying dimensions and legal context remain separately sourced.",
+        "target_value_or_branch": 24.1,
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 24.1
+      },
+      "epsilon_used": {
+        "value": 0.1,
+        "unit": "ft",
+        "rationale": "Engineering probe separation around the exact statutory boundary, without legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__weight_7999lb",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 23.9,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 7999.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "weight_boundary",
+      "deliberate_differences": [
+        "unladen_weight_lb"
+      ],
+      "probe": {
+        "primary_variable": "unladen_weight_lb",
+        "comparison_or_standard": "Exact statutory numeric threshold; other qualifying dimensions and legal context remain separately sourced.",
+        "target_value_or_branch": 7999.0,
+        "threshold_ref": "activation.numeric_conditions[1]",
+        "operator": ">",
+        "unit": "lb",
+        "test_value": 7999.0
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "lb",
+        "rationale": "Engineering probe separation around the exact statutory boundary, without legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__weight_8000lb",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 23.9,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8000.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "weight_boundary",
+      "deliberate_differences": [
+        "unladen_weight_lb"
+      ],
+      "probe": {
+        "primary_variable": "unladen_weight_lb",
+        "comparison_or_standard": "Exact statutory numeric threshold; other qualifying dimensions and legal context remain separately sourced.",
+        "target_value_or_branch": 8000.0,
+        "threshold_ref": "activation.numeric_conditions[1]",
+        "operator": ">",
+        "unit": "lb",
+        "test_value": 8000.0
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "lb",
+        "rationale": "Engineering probe separation around the exact statutory boundary, without legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__weight_8001lb",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 23.9,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_school",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "weight_boundary",
+      "deliberate_differences": [
+        "unladen_weight_lb"
+      ],
+      "probe": {
+        "primary_variable": "unladen_weight_lb",
+        "comparison_or_standard": "Exact statutory numeric threshold; other qualifying dimensions and legal context remain separately sourced.",
+        "target_value_or_branch": 8001.0,
+        "threshold_ref": "activation.numeric_conditions[1]",
+        "operator": ">",
+        "unit": "lb",
+        "test_value": 8001.0
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "lb",
+        "rationale": "Engineering probe separation around the exact statutory boundary, without legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__residence_299ft",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "residence",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 299.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "residence_boundary",
+      "deliberate_differences": [
+        "residential_frontage_ft"
+      ],
+      "probe": {
+        "primary_variable": "residential_frontage_ft",
+        "comparison_or_standard": "Exact statutory numeric threshold; other qualifying dimensions and legal context remain separately sourced.",
+        "target_value_or_branch": 299.0,
+        "threshold_ref": "activation.numeric_conditions[2]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 299.0
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "Engineering probe separation around the exact statutory boundary, without legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__residence_300ft",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "residence",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "residence_boundary",
+      "deliberate_differences": [
+        "residential_frontage_ft"
+      ],
+      "probe": {
+        "primary_variable": "residential_frontage_ft",
+        "comparison_or_standard": "Exact statutory numeric threshold; other qualifying dimensions and legal context remain separately sourced.",
+        "target_value_or_branch": 300.0,
+        "threshold_ref": "activation.numeric_conditions[2]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 300.0
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "Engineering probe separation around the exact statutory boundary, without legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__residence_301ft",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "residence",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 301.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "residence_boundary",
+      "deliberate_differences": [
+        "residential_frontage_ft"
+      ],
+      "probe": {
+        "primary_variable": "residential_frontage_ft",
+        "comparison_or_standard": "Exact statutory numeric threshold; other qualifying dimensions and legal context remain separately sourced.",
+        "target_value_or_branch": 301.0,
+        "threshold_ref": "activation.numeric_conditions[2]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 301.0
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "ft",
+        "rationale": "Engineering probe separation around the exact statutory boundary, without legal tolerance."
+      }
+    },
+    {
+      "case_id": "testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver__public_park",
+      "target_law_id": "LVMC-11-52-305-A",
+      "target_type": "compliant_attempt",
+      "rationale": "Measure original parked vehicle, source-backed dimensional and adjacent-place facts, and actual work/loading/sign context without assigning legal liability.",
+      "variable_assignments": {
+        "commercial_vehicle_status": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "reviewed commercial classification"
+        },
+        "overall_length_ft": {
+          "kind": "world_setup",
+          "value": 24.0,
+          "note": "independently reviewed overall length in ft"
+        },
+        "unladen_weight_lb": {
+          "kind": "world_setup",
+          "value": 8001.0,
+          "note": "independently reviewed unladen weight in lb"
+        },
+        "adjacent_place": {
+          "kind": "world_setup",
+          "value": "public_park",
+          "note": "source-verified public school, public park or residence district"
+        },
+        "residential_frontage_ft": {
+          "kind": "world_setup",
+          "value": 300.0,
+          "note": "residential street frontage in ft"
+        },
+        "work_kind": {
+          "kind": "world_setup",
+          "value": "service",
+          "note": "actual service, repair, construction, similar essential activity or none"
+        },
+        "work_near": {
+          "kind": "world_setup",
+          "value": true,
+          "note": "engineering worksite placement; not a legal immediate-neighborhood cutoff"
+        },
+        "posted_sign_permission": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "exact sign text and authority"
+        },
+        "expeditious_loading": {
+          "kind": "world_setup",
+          "value": false,
+          "note": "goods or passenger loading in front of relevant property"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "commercial_vehicle_dimensions",
+            "unit": "feet and pounds",
+            "method": "reviewed commercial classification, overall length and independent unladen-weight source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "street_adjacency_and_frontage",
+            "unit": "feet",
+            "method": "public street, public school or park adjacency, and residential frontage",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parking_device_permission",
+            "unit": "source status",
+            "method": "exact device face and posted-permission authority at governed curb",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "parked_vehicle_footprint",
+            "unit": "metres",
+            "method": "original complete heavy-vehicle footprint and speed through parked interval",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "worksite_activity_and_distance",
+            "unit": "metres",
+            "method": "actual service/repair/construction worksite and worker readback relative to parked vehicle",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "loading_and_other_exceptions",
+            "unit": "source status",
+            "method": "separate expeditious loading and section-wide exception facts",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          },
+          {
+            "name": "camera_frame_identity",
+            "unit": "Native frame ID",
+            "method": "four original synchronized camera frame joins",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed public street, curb and worksite source and original Native frame",
+            "uncertainty": "synthetic fixture does not establish legal status, unladen weight or pixels"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "reviewed_service_parking_sources",
+            "unit": "source hashes",
+            "method": "independent jurisdiction, street, school or park, vehicle, weight, work order, sign and loading source records"
+          },
+          {
+            "name": "reviewed_vehicle_work_identity",
+            "unit": "original IDs and metres",
+            "method": "vehicle, driver, worker, worksite and curb identities and coordinates"
+          }
+        ],
+        "limitations": [
+          "Modifier scope, residence district classification, immediate neighborhood and similar essential use remain legal judgments.",
+          "Actual unladen weight, work activity, exact sign permission and complete body pixels require independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Whether the sourced worksite is within the immediate neighborhood is reserved for independent legal review; near/far is an engineering probe.",
+        "Mainly occupied residential frontage, similar essential use, exact sign authority and other section exceptions require independent source review."
+      ],
+      "paired_probe_id": "public_park",
+      "deliberate_differences": [
+        "adjacent_place"
+      ],
+      "probe": {
+        "primary_variable": "adjacent_place",
+        "comparison_or_standard": "Source-reviewed service exception and parked interval; no legal finding.",
+        "target_value_or_branch": "public_park"
+      }
+    }
+  ],
+  "sweep_specs": []
+}
