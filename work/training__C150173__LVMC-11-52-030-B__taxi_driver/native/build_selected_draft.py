@@ -49,6 +49,9 @@ def selected(source, desc):
 def selected_freight(source):
     result = copy.deepcopy(source)
     result['status'] = 'selected_cpu_proofs_pending'
+    result['recording_description'] = {
+        key: result['recording_description'][key]
+        for key in ('channels', 'context_inputs', 'limitations')}
     config_file = next(item for item in result['files'] if item['path'] == 'config.json')
     config = json.loads(config_file['content'])
     config['case']['recording_description'] = result['recording_description']

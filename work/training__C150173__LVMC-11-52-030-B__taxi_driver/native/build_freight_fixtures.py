@@ -70,8 +70,10 @@ def build(suffix):
                        ('video_frames.jsonl', mapping), ('trace.jsonl', trace),
                        ('capture/evidence.jsonl', evidence)):
         write(sources / name, lines(rows))
-    for name in ('road.xodr', 'yellow-freight-road.xodr'):
-        write(sources / name, (BASE / 'native/yellow-freight-road.xodr').read_text())
+    write(sources / 'road.xodr', (BASE / 'native/yellow-freight-road.xodr').read_text())
+    constructed_road = sources / 'yellow-freight-road.xodr'
+    if constructed_road.exists():
+        constructed_road.unlink()
     review = {'source_kind': 'synthetic_cpu_fixture', 'synthetic_cpu_fixture': True,
               'source_basis': 'Synthetic taxi/light-express CPU fixture only',
               'legal_verdict': None}

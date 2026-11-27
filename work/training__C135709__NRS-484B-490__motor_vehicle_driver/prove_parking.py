@@ -16,7 +16,7 @@ def sample(x=15.0, official=True):
         "road_type": "highway", "narrow_section_source_id": "synthetic-map-width-survey",
         "measured_road_width_m": 4.0, "device_id": "device-1", "device_erected": True,
         "device_official_source_id": "synthetic-authority-record" if official else "",
-        "device_prohibits_parking": True, "governed_extent_xyxy_m": [0.0, 30.0, -2.0, 2.0],
+        "device_prohibits_parking": True, "governed_extent_xyxy_m": [0.0, -2.0, 30.0, 2.0],
     }
     frames = [{
         "frame": i, "t_s": i / 20, "vehicle_id": "ego",

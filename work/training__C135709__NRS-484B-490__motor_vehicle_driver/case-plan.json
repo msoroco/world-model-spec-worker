@@ -5,7 +5,7 @@
   "actor": "motor_vehicle_driver",
   "source_law_text": "When official traffic-control devices are erected prohibiting parking upon a narrow highway, a person shall not park a vehicle upon any such highway.",
   "source_law_citation": "NRS 484B.490",
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "exact_source_reviewed_for_selected_construction",
   "selected_branch": "official narrow-highway parking ban",
   "cell_fixed_facts": {
     "layout": "narrow_road",
@@ -40,24 +40,74 @@
     {
       "case_id": "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_01",
       "target_law_id": "NRS-484B-490",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "park outside prohibited narrow-highway extent",
       "comparison_variable": "parking on governed highway",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "cpu_native_construction_source_review_pending",
+      "requested_not_measured": true,
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "source_branch": "park_on_governed_narrow_highway",
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "narrow_road",
+          "maneuver": "park",
+          "control": "parking_restriction_device"
+        },
+        "activation_conditions_to_verify": [
+          "narrow highway designation",
+          "erected official prohibitory device",
+          "subject parking footprint relative to governed extent"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "park outside prohibited narrow-highway extent"
+      },
+      "status": "cpu_construction_in_progress_original_capture_pending"
     },
     {
       "case_id": "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_02",
       "target_law_id": "NRS-484B-490",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "park on governed narrow-highway extent",
       "comparison_variable": "parking on governed highway",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "cpu_native_construction_source_review_pending",
+      "requested_not_measured": true,
+      "subject_behavior": {
+        "value": null,
+        "status": "unobserved"
+      },
+      "source_branch": "park_on_governed_narrow_highway",
+      "selection_targets": [
+        "full-train"
+      ],
+      "world_setup": {
+        "frozen_cell": {
+          "layout": "narrow_road",
+          "maneuver": "park",
+          "control": "parking_restriction_device"
+        },
+        "activation_conditions_to_verify": [
+          "narrow highway designation",
+          "erected official prohibitory device",
+          "subject parking footprint relative to governed extent"
+        ]
+      },
+      "controller": {
+        "requested_behavior": "park on governed narrow-highway extent"
+      },
+      "status": "cpu_construction_in_progress_original_capture_pending"
     }
   ],
   "comparisons": [
@@ -77,7 +127,8 @@
         "camera policy",
         "recording rate and duration",
         "nonvariable context"
-      ]
+      ],
+      "status": "selected_cpu_construction_in_progress"
     }
   ],
   "mandatory_observation_targets": [
@@ -174,24 +225,145 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage.",
-    "The official device and governed extent must physically exist and be auditable.",
-    "No CARLA execution or accepted recording is claimed."
+    "Original highway/narrow designation, official-device authority and erection, governed extent, visible sign pixels and actual parking purpose remain for local source review.",
+    "Native CARLA realization and four camera visibility remain unverified; CPU construction and tests are diagnostic."
   ],
   "requirement_dispositions": [
     {
       "requirement": "NRS-484B-490",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source": "NRS 484B.490",
       "branch": "park_on_governed_narrow_highway",
       "status": "selected_required",
       "case_ids": [
         "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_01",
         "training__C135709__NRS-484B-490__motor_vehicle_driver__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Two exact selected Native cases request parking outside versus within a sourced governed narrow-highway extent; original official-device and narrow-highway review required."
     }
-  ]
+  ],
+  "source_law": {
+    "source": "NRS 484B.490",
+    "text": "When official traffic-control devices are erected prohibiting parking upon a narrow highway, a person shall not park a vehicle upon any such highway."
+  },
+  "law_alternative_review": {
+    "original_text": "When official traffic-control devices are erected prohibiting parking upon a narrow highway, a person shall not park a vehicle upon any such highway.",
+    "activation": "erected official traffic-control device prohibiting parking on narrow highway",
+    "parking_comparison": "subject fully parked inside versus outside independently sourced governed stretch, while the road/device remain fixed",
+    "no_numeric_legal_cutoff": true,
+    "official_authority": "independent source required; OpenDRIVE signal alone is a request",
+    "narrow_highway": "independent classification required; 2.8 m lane is engineering geometry only"
+  },
+  "source_observation_mapping": {
+    "dev.zone_sign": {
+      "evidence": "Original Native pose/map and independently cited road/device review, never controller requests alone",
+      "channels": [
+        "dev.zone_sign"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "road-context.json",
+        "road-review.json",
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "source_context/narrow_designation.txt"
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Original Native pose/map and independently cited road/device review, never controller requests alone",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "road-context.json",
+        "road-review.json",
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "source_context/official_authority.txt"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Original Native pose/map and independently cited road/device review, never controller requests alone",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "road-context.json",
+        "road-review.json",
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "source_context/governed_extent.txt"
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Original Native pose/map and independently cited road/device review, never controller requests alone",
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "road-context.json",
+        "road-review.json",
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "source_context/highway.txt"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original Native pose/map and independently cited road/device review, never controller requests alone",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "road-context.json",
+        "road-review.json",
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "source_context/highway.txt"
+      ]
+    },
+    "st.lane_width": {
+      "evidence": "Original Native pose/map and independently cited road/device review, never controller requests alone",
+      "channels": [
+        "st.lane_width"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "road-context.json",
+        "road-review.json",
+        "vehicle-pose.jsonl",
+        "video_frames.jsonl",
+        "source_context/narrow_designation.txt"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full narrow road, device and vehicle",
+        "interval": "all 600 original parked frames"
+      },
+      {
+        "view": "approach",
+        "subject": "device face and vehicle approach",
+        "interval": "all 600 original parked frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "subject footprint and lane width",
+        "interval": "all 600 original parked frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject in governed stretch and surrounding road",
+        "interval": "all 600 original parked frames"
+      }
+    ]
+  }
 }

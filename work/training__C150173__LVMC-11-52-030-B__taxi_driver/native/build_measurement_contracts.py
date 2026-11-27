@@ -17,7 +17,7 @@ def main():
         case = entry['case_id']
         suffix = case.rsplit('__', 1)[1]
         freight = suffix in PURPOSES
-        sources = list(FREIGHT_SOURCES) if freight else PASSENGER_INPUTS
+        sources = [name for name in FREIGHT_SOURCES if name != 'yellow-freight-road.xodr'] if freight else PASSENGER_INPUTS
         negative = 'freight-purpose-review.json' if freight else 'observed-passenger-activity.jsonl'
         contract = {
             'format': 'worker-measurement-contract', 'case_id': case,

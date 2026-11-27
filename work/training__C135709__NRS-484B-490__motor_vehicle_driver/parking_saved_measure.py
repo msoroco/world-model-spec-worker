@@ -34,7 +34,7 @@ def measure(packet_bytes: bytes, inventory_bytes: bytes) -> dict:
     require(inventory["device_id"] and inventory["device_erected"] is True, "erected device missing")
     require(inventory["device_official_source_id"], "official-device authority missing")
     require(inventory["device_prohibits_parking"] is True, "parking prohibition missing")
-    x0, x1, y0, y1 = inventory["governed_extent_xyxy_m"]
+    x0, y0, x1, y1 = inventory["governed_extent_xyxy_m"]
     require(x0 < x1 and y0 < y1, "governed extent missing")
     frames = packet["frames"]
     require(len(frames) >= 600, "recording shorter than 30 seconds")

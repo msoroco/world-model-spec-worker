@@ -21,12 +21,35 @@ ACQUISITION = {
                        ['yellow-zone-native.jsonl', 'video_frames.jsonl']),
     'ru.taxicab': ('Original actor identity joined to independent taxicab classification',
                    ['yellow-zone-native.jsonl', 'taxicab-review.json']),
+    'ru.commercial_motor_vehicle': ('Original actor identity joined to independent commercial-use review',
+                                     ['yellow-zone-native.jsonl', 'commercial-status-review.json', 'overview.mkv']),
     'drv.standing_or_parked': ('Original taxi body and velocity samples over full interval',
                                ['yellow-zone-native.jsonl', 'trace.jsonl']),
     'sig.door_open': ('Independently reviewed original passenger activity joined to Native frames',
                       ['observed-passenger-activity.jsonl', 'passenger-purpose-review.json']),
     'ru.occupant_count': ('Independently reviewed original occupancy joined to Native frames',
                           ['observed-passenger-activity.jsonl', 'passenger-purpose-review.json']),
+    'kin.time': ('Original Native trace/frame elapsed time',
+                 ['trace.jsonl', 'video_frames.jsonl'])}
+FREIGHT_ACQUISITION = {
+    'st.curb_zone': ('Original yellow curb geometry and color review',
+                     ['yellow-freight-road.xodr', 'road.xodr', 'sign-review.json']),
+    'dev.regulatory_sign': ('Original freight sign pixels and wording review',
+                            ['reference_corner.mkv', 'sign-review.json']),
+    'drv.condition_in_effect': ('Original civil time joined to reviewed freight sign',
+                                ['freight-native.jsonl', 'sign-review.json']),
+    'env.civil_time': ('Original per-frame civil time and Native frame map',
+                       ['freight-native.jsonl', 'video_frames.jsonl']),
+    'ru.commercial_motor_vehicle': ('Original taxi actor and independent commercial-use review',
+                                     ['freight-native.jsonl', 'commercial-status-review.json', 'overview.mkv']),
+    'ru.taxicab': ('Original taxi actor identity and commercial-use review',
+                   ['freight-native.jsonl', 'commercial-status-review.json']),
+    'drv.standing_or_parked': ('Original taxi body and velocity samples over full interval',
+                               ['freight-native.jsonl', 'trace.jsonl']),
+    'sig.door_open': ('Independently reviewed cargo transfer motion joined to Native frames',
+                      ['freight-native.jsonl', 'freight-purpose-review.json']),
+    'ru.occupant_count': ('Original actor and cargo occupancy observation',
+                          ['freight-native.jsonl', 'overview.mkv']),
     'kin.time': ('Original Native trace/frame elapsed time',
                  ['trace.jsonl', 'video_frames.jsonl'])}
 
@@ -77,9 +100,11 @@ def main():
         entry['native_handoff'] = {'python_env_var': 'CARLA_PYTHON',
                                    'host_env_var': 'CARLA_HOST',
                                    'port_env_var': 'CARLA_PORT'}
-        entry['acquisition'] = {name: {'entrypoint': 'selected_finalize.py',
+        freight = case.rsplit('__', 1)[1].startswith('freight_')
+        acquisition = FREIGHT_ACQUISITION if freight else ACQUISITION
+        entry['acquisition'] = {name: {'entrypoint': 'freight_finalize.py' if freight else 'selected_finalize.py',
             'method': method, 'evidence': evidence}
-            for name, (method, evidence) in ACQUISITION.items()}
+            for name, (method, evidence) in acquisition.items()}
         prior_saved = saved[case]
         positive = prior_saved['files']['positive_analysis']
         saved_receipt = prior_saved['files']['positive_receipt']

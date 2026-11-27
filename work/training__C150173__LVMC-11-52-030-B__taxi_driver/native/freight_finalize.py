@@ -103,6 +103,7 @@ def source_measurement(attempt):
                 n.get('source_cameras') != cameras):
             raise ValueError('Freight original frame/time/four-view join differs')
     measured = measure_saved(native, config)
+    measured.pop('legal_verdict', None)
     measured['observed_purpose'] = purpose['observed_purpose']
     if (commercial.get('taxi_actor_id') != native[0]['taxi_actor_id'] or
             type(commercial.get('observed_taxicab')) is not bool or
@@ -155,7 +156,9 @@ def finalize(attempt, output):
     sources = {name: sha(attempt / name) for name in SOURCES}
     report = {'format': 'worker-analysis-report', 'case_id': config['case_id'],
               'measurements': {'freight_yellow_zone_measurement': {
-                  'method': 'source_measurement', 'value': measured, 'sources': sources}},
+                  'method': 'source_measurement', 'value': measured,
+                  'sources': {name: digest for name, digest in sources.items()
+                              if name != 'yellow-freight-road.xodr'}}},
               'source_complete': True, 'physical_or_legal_acceptance': False}
     result = {'case_id': config['case_id'], 'measured_values': measured,
               'target_checks': [{'target': 'observed cargo transfer motion',

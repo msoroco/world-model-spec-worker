@@ -18,8 +18,9 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         suffix = case.rsplit('__', 1)[1]
+        version = 'v24' if suffix.startswith('freight_') else 'v18'
         for candidate in ('primary', 'fallback1'):
-            source = SCRATCH / f'selected-compatibility-{suffix}-{candidate}-v18'
+            source = SCRATCH / f'selected-compatibility-{suffix}-{candidate}-{version}'
             receipt = json.loads((source / 'compatibility.json').read_text())
             construction_sha = (entry['construction_sha256'] if candidate == 'primary'
                                 else entry['candidates'][0]['construction_sha256'])

@@ -32,6 +32,7 @@ def main():
     for item in draft['cases']:
         case_id = item['case_id']
         suffix = case_id.rsplit('__', 1)[1]
+        version = 'v24' if suffix.startswith('freight_') else 'v18'
         contract_path = BASE / 'native-selected' / suffix / 'measurement-contract.json'
         if not contract_path.is_file():
             raise ValueError('Missing selected measurement contract: ' + suffix)
@@ -42,7 +43,7 @@ def main():
             raise ValueError('Missing exact taxi CPU diagnostic recipe: ' + suffix)
         receipt_map = {}
         for candidate in ('primary', 'fallback1'):
-            source = SCRATCH / f'selected-offline-{suffix}-{candidate}-v18' / 'offline.log'
+            source = SCRATCH / f'selected-offline-{suffix}-{candidate}-{version}' / 'offline.log'
             if not source.exists() or 'OK' not in source.read_text():
                 raise ValueError('Missing passing exact offline check: ' + suffix + ' ' + candidate)
             retained = BASE / 'native-selected' / suffix / (candidate + '-offline.log')

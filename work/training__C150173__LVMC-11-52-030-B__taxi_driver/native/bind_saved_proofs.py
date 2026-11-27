@@ -18,9 +18,10 @@ def main():
     cases = []
     for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d',
                    'freight_load', 'freight_unload', 'freight_wait'):
-        stem = f'saved-{suffix}-positive-v18-output'
+        version = 'v24' if suffix.startswith('freight_') else 'v18'
+        stem = f'saved-{suffix}-positive-{version}-output'
         source = SCRATCH / stem / 'v0001'
-        negative_stem = f'saved-{suffix}-negative-v18-output'
+        negative_stem = f'saved-{suffix}-negative-{version}-output'
         negative_source = SCRATCH / negative_stem / 'v0001'
         positive = json.loads((source / 'processing.json').read_text())
         negative = json.loads((negative_source / 'processing.json').read_text())

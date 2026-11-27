@@ -25,12 +25,16 @@ def prepare(folder, suffix):
         for row in rows:
             row['source_kind'] = 'original_native'
         path.write_text(''.join(json.dumps(row) + '\n' for row in rows))
-    for name in ('taxicab-review.json', 'sign-review.json',
+    for name in ('taxicab-review.json', 'commercial-status-review.json', 'sign-review.json',
                  'passenger-purpose-review.json', 'ordinary-rules-review.json'):
         path = folder / name
         review = read(path)
         review['source_kind'] = 'original_native'
         review.pop('synthetic_cpu_fixture', None)
+        if name == 'commercial-status-review.json':
+            review['source_refs'] = {
+                'yellow-zone-native.jsonl': sha(folder / 'yellow-zone-native.jsonl'),
+                'overview.mkv': sha(folder / 'overview.mkv')}
         if name != 'ordinary-rules-review.json':
             review['source_pixels'] = [{
                 'camera': 'reference_corner', 'video_frame': 250,

@@ -20,8 +20,8 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def run(case, negative, log_path):
-    command = [sys.executable, '-B', str(TEST), '--case', case]
+def run(case, negative, log_path, test, expected):
+    command = [sys.executable, '-B', str(test), '--case', case]
     if negative:
         command.append('--negative-pixels')
     completed = subprocess.run(command, cwd=ROOT, env=os.environ.copy(),
@@ -29,33 +29,39 @@ def run(case, negative, log_path):
                                text=True, timeout=120)
     log_path.write_text(completed.stdout.rstrip('\n') + '\n')
     if ((not negative and completed.returncode != 0) or
-            (negative and (completed.returncode == 0 or EXPECTED not in completed.stdout))):
+            (negative and (completed.returncode == 0 or expected not in completed.stdout))):
         raise ValueError('Exact taxi independent delivery test differs: ' + case)
     return completed.returncode
 
 
 def main():
     index = []
-    for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d'):
+    for suffix in ('probe_a', 'probe_b', 'probe_c', 'probe_d',
+                   'freight_load', 'freight_unload', 'freight_wait'):
         case = PACKAGE.name + '__' + suffix
+        freight = suffix.startswith('freight_')
+        script = PACKAGE / 'native' / ('freight_delivery_audit.py' if freight else 'delivery_audit.py')
+        test = PACKAGE / 'native' / ('test_freight_delivery.py' if freight else 'test_delivery.py')
+        expected = ('Original freight actual-pixel review is not video-bound: sign-review.json'
+                    if freight else EXPECTED)
         destination = PACKAGE / 'native-selected' / suffix
         positive = destination / 'delivery-positive.log'
         negative = destination / 'delivery-negative-pixels.log'
-        good = run(case, False, positive)
-        bad = run(case, True, negative)
+        good = run(case, False, positive, test, expected)
+        bad = run(case, True, negative, test, expected)
         receipt = {
             'case_id': case, 'sets': ['full-train'], 'checks': CHECKS,
-            'script': 'native/delivery_audit.py', 'script_sha256': sha(SCRIPT),
+            'script': str(script.relative_to(PACKAGE)), 'script_sha256': sha(script),
             'command': '.venv-cpu/bin/python -B work/' + PACKAGE.name +
-                       '/native/test_delivery.py --case ' + case,
+                       '/' + str(test.relative_to(PACKAGE)) + ' --case ' + case,
             'test_exit_code': good,
             'test_log': str(positive.relative_to(PACKAGE)),
             'test_log_sha256': sha(positive),
             'negative_command': '.venv-cpu/bin/python -B work/' + PACKAGE.name +
-                                '/native/test_delivery.py --case ' + case +
+                                '/' + str(test.relative_to(PACKAGE)) + ' --case ' + case +
                                 ' --negative-pixels',
             'negative_exit_code': bad,
-            'negative_expected_error': EXPECTED,
+            'negative_expected_error': expected,
             'negative_log': str(negative.relative_to(PACKAGE)),
             'negative_log_sha256': sha(negative),
             'diagnostic_scope': 'Synthetic structural audit test; original pixels and physical acceptance unobserved'}
