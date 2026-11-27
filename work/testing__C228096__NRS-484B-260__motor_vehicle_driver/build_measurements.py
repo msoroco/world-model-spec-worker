@@ -46,7 +46,7 @@ def main():
             "requirements": requirements,
             "negative": {
                 "remove": ["original-attempt/motion.jsonl"],
-                "error_contains": "Missing required original source: motion.jsonl",
+                "error_contains": "Missing required source: original-attempt/motion.jsonl",
             },
         }
         filename = ROOT / ("measurement-" + case["variant"] + ".json")

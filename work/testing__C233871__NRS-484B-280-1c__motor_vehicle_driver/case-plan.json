@@ -24,9 +24,77 @@
   "topic_inventory": {
     "exact-text": "A driver of a motor vehicle shall: Exercise proper caution upon observing a pedestrian: (1) On or near a highway, street or road; (2) At or near a bus stop or bench, shelter or transit stop for passengers of public mass transportation or in the act of boarding a bus or other public transportation vehicle; or (3) In or near a school zone or a school crossing zone marked in accordance with NRS 484B.363 or a marked or unmarked crosswalk."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "Pedestrian bodily on the reviewed road; source-recorded driver observation followed by a prompt engineering brake response",
+      "gap_ids": [
+        "missing_original_observation"
+      ]
+    },
+    {
+      "case_id": "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "The same pedestrian and road encounter with a delayed engineering brake response; record the original history without assigning a legal proper-caution cutoff",
+      "gap_ids": [
+        "missing_original_observation"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "on_road_response_timing",
+      "case_ids": [
+        "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+        "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake"
+      ],
+      "fixed_conditions": [
+        "same reviewed road without sidewalk, road edges and classification",
+        "same motor vehicle driver and pedestrian classifications",
+        "same ego and pedestrian routes, initial positions and body geometry",
+        "same separate original driver observation event source",
+        "same four camera views, 20 Hz and 30 second duration"
+      ],
+      "deliberate_differences": [
+        "engineering driver brake response timing after the original observation event"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed_and_brake_history",
+      "mandatory": true
+    },
+    {
+      "name": "driver_observation_input_history",
+      "mandatory": true
+    },
+    {
+      "name": "road_boundary_context",
+      "mandatory": true
+    },
+    {
+      "name": "participant_classification_context",
+      "mandatory": true
+    },
+    {
+      "name": "contact_events",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/assignment.json",
@@ -51,17 +119,24 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Source-gated Native road site, actual driver observation input, actor motion, pixel visibility and capture quality require later physical execution; no legal verdict follows from engineering response timing.",
+    "Native runtime cannot establish a human cognitive observation from pixels alone; the saved audit must require an original driver input event and leave the legal interpretation unresolved."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Read the frozen evidence.json, assignment.json, witness and exact law. Inventory contains zero accepted recordings, so no existing source demonstrates on-road pedestrian position, driver observation, or response. Both cases address the same missing original encounter with controlled response timing.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "missing_original_observation",
+        "requirement": "Original qualifying road-without-sidewalk encounter with a separate pedestrian on the road and actual driver observation and response history",
+        "source": "NRS 484B.280(1)(c) exact text and frozen C233871 witness",
+        "why_existing_insufficient": "The frozen accepted recording inventory is empty."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "source_gated_construction",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -82,5 +157,45 @@
       ],
       "reason": "The control pedestrian can be on the road without adding a sidewalk or changing the travel task."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "status": "selected_required",
+      "requirement": "Exercise proper caution upon observing a pedestrian on or near a highway, street or road; selected pedestrian bodily on road",
+      "source": "NRS 484B.280(1)(c) exact text and frozen witness source index 383",
+      "evidence_or_gap": "Original road identity, no sidewalk, pedestrian body path, separate driver observation input and control/vehicle response history required; no legal numeric cutoff inferred",
+      "case_ids": [
+        "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+        "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake"
+      ]
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego vehicle, road edges and pedestrian",
+        "interval": "approach through clearance",
+        "view": "overview"
+      },
+      {
+        "subject": "ego-to-pedestrian road encounter",
+        "interval": "approach through clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "pedestrian body and road boundary",
+        "interval": "approach through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver-facing encounter view",
+        "interval": "approach through clearance",
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
 }

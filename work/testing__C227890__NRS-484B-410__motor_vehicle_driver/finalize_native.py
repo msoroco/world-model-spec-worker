@@ -44,8 +44,8 @@ def _encode_view(source, destination, name, frames, width, height):
                 (png_root / f"{index:04d}.png").write_bytes(archive.read(expected))
         subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y",
                         "-framerate", "20", "-i", str(png_root / "%04d.png"),
-                        "-c:v", "libx264", "-preset", "fast", "-crf", "18",
-                        "-pix_fmt", "yuv420p", str(destination)],
+                        "-c:v", "ffv1", "-level", "3", "-pix_fmt", "rgb24",
+                        str(destination)],
                        check=True, capture_output=True, text=True, timeout=900)
     probe = subprocess.run(["ffprobe", "-v", "error", "-count_frames",
                             "-select_streams", "v:0",

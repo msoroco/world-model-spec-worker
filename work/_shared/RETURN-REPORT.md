@@ -1,5 +1,11 @@
 # Return report
 
+## 2026-11-27 13:55 UTC — three scoped packages published; C228096 compatibility underway
+
+- C213645 LVMC-11-20-060, C238432 LVMC-11-43-010-A and C227890 NRS-484B-410 each passed owner and independent lead scoped strict delivery gates. Their exact queue proposals were integrated after command syntax validation: 8/4, 2/1 and 6/5 case/comparison counts respectively. The shared queue is now 232 ready assignments, 1,604 exact cases and 1,116 comparison commands; 10 assignment results remain partial.
+- Lead-owned C228096 NRS-484B-260 remains partial. Nine exact primary and nine bounded-spawn fallback offline checks pass. Twelve focused source and diagnostic tests pass. Its first pinned positive/negative compatibility proof passed; the remaining candidate runs are in progress. Saved-only source measurement and a full original Native finalizer are authored. Physical lifecycle, semantic, independent delivery/comparison and strict assignment proofs remain CPU work.
+- C230259, C229435 and C233871 have separate owners on distinct partial assignments. No Git command or frozen input/runtime/batch edit was made by the lead. Batch-wide strict gate remains pending while partial results exist.
+
 ## 2026-11-27 13:34 UTC — C261489 published; private-way Native diagnostic tested
 
 - C261489 NRS-484B-363-4 passed the owner and independent lead scoped strict delivery gates. Its 12 cases and nine comparisons were syntax checked and published to the shared queue. The live queue is 229 ready assignments, 1,588 exact cases and 1,106 comparisons; 13 assignment results remain partial.

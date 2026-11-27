@@ -61,15 +61,20 @@ for case in PLAN["cases"]:
     for i, frame in enumerate(rows):
         ped = None
         if case["world_setup"]["pedestrian"] != "pedestrian_absent":
+            intrude = case["world_setup"]["pedestrian"].endswith("_intrude")
             ped = {"actor_id": "diagnostic-pedestrian", "source": "synthetic fixture",
-                   "xy_m": [0, -2 + i * .5], "speed_mps": 1.0}
+                   "xy_m": [0, -1.5 + i * .5 if intrude else -2 + i * .5],
+                   "speed_mps": 1.0}
         road = None
         mode = case["world_setup"]["roadway_vehicle"]
         if mode != "roadway_clear":
             direction = "left" if mode.startswith("left_") else "right"
+            intrude = mode.endswith("_intrude")
             road = {"actor_id": "diagnostic-roadway-vehicle", "source": "synthetic fixture",
                     "approach_direction": direction,
-                    "xy_m": [4, -6 + i * .5] if direction == "left" else [8, 6 - i * .5],
+                    "xy_m": [4, -5 + i * .5] if direction == "left" and intrude else
+                            [4, -6 + i * .5] if direction == "left" else
+                            [8, 5 - i * .5] if intrude else [8, 6 - i * .5],
                     "speed_mps": 3.0}
         activity.append({"frame": frame["carla_frame"], "time_s": frame["time_s"],
                          "ego": {"actor_id": "diagnostic-ego", "source": "synthetic fixture",

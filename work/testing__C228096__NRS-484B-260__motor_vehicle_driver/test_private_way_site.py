@@ -4,6 +4,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import sys
 import tempfile
 import unittest
@@ -21,6 +22,7 @@ sys.path.insert(0, str(MODULE_PATH.parent))
 from private_way_motion import measure
 from native_acquisition import capture
 from native_operator import _station
+from analysis import measure_original_private_way, save_result
 CASE = "testing__C228096__NRS-484B-260__motor_vehicle_driver__enter_right_wait"
 
 
@@ -265,6 +267,30 @@ class PrivateWaySiteTest(unittest.TestCase):
         self.assertTrue((output / "inventory.json").is_file())
         self.assertEqual(json.loads((output / "inventory.json").read_text())[
             "source_kind"], "synthetic_fixture")
+        saved = self.root / "saved"
+        saved.mkdir()
+        shutil.copytree(output, saved / "original-attempt")
+        config = json.loads((MODULE_PATH.parent / "cases" / "enter_both_wait" /
+                             "config.json").read_text())
+        (saved / "config.json").write_text(json.dumps(config) + "\n")
+        report = measure_original_private_way(saved)
+        self.assertEqual(report["measurements"]["private_way_requirement_2"]
+                         ["value"]["highway_actor_ids"],
+                         {"left": "left-car", "right": "right-car"})
+        self.assertFalse(report["legal_verdict_claimed"])
+        self.assertTrue(report["diagnostic_fixture"])
+        with (saved / "video_frames.jsonl").open("x") as stream:
+            for frame in json.loads((output / "frame-map.json").read_text())["frames"]:
+                stream.write(json.dumps({"video_frame": frame["frame"],
+                                         "carla_frame": frame["native_frame"],
+                                         "time_s": frame["native_time_s"]}) + "\n")
+        processed = save_result(saved, report)
+        self.assertEqual(processed["case_id"], self.site["case_id"])
+        self.assertEqual(len(processed["recording_evidence"]), 7)
+        self.assertFalse(processed["physical_acceptance_claimed"])
+        (saved / "original-attempt" / "motion.jsonl").unlink()
+        with self.assertRaisesRegex(ValueError, "Missing required source: original-attempt/motion.jsonl"):
+            measure_original_private_way(saved)
 
 
 if __name__ == "__main__":

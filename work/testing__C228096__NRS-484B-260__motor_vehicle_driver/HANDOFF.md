@@ -2,6 +2,12 @@
 
 Status: partial CPU construction. Nine cases and six comparisons are selected; the Native delivery package remains in progress.
 
+## 2026-11-27 exact offline and compatibility checkpoint
+
+Nine primary and nine bounded-spawn fallback inline bundles pass `runtime.py offline` exact identity/import tests. `build_bundles.py`, `prove_offline.py` and `build_diagnostics.py` retain source-hashed constructions, exact measurement contracts, nine synthetic source-shaped diagnostics and a canonical draft cases proposal. `analysis.py` requires the original sealed motion, reviewed site sources, frame/actor inventory and case identity, writes six source-joined channels and four source-specific requirement measurements, and rejects missing original motion. `finalize_native.py` binds a full 900-frame original Native attempt, four video sources and acquisition seal; diagnostic attempts cannot be sealed as Native. All 18 pinned primary/fallback compatibility runs passed positive analysis, Native validation, Core/Lean/video decode and missing-motion negatives. Twelve focused CPU tests pass. All diagnostic source assertions are synthetic and do not prove physical or legal outcomes.
+
+Remaining CPU work: complete saved-only processing and negative-source proofs, physical completion lifecycle, semantic proposals, independent original delivery and comparison audits, queue proposal and exact scoped strict gate.
+
 ## 2026-11-27 selected construction checkpoint
 
 Status: partial CPU construction. `case-plan.json` now selects nine exact cases and six controlled comparisons: `enter_right_wait`, `enter_right_intrude`, `enter_left_wait`, `enter_left_intrude`, `cross_both_wait`, `cross_both_intrude`, `enter_both_wait`, `enter_both_yield_one`, and `enter_no_approach`. Each ID is prefixed by this assignment ID. The comparisons are `right_wait_vs_intrude`, `left_wait_vs_intrude`, `cross_wait_vs_intrude`, `both_wait_vs_yield_one`, `right_approach_vs_none`, and `entry_vs_crossing`. No accepted original evidence is listed in the frozen evidence inventory.

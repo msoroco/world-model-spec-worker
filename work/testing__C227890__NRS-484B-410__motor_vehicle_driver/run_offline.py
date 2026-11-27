@@ -23,7 +23,7 @@ def run():
         raise ValueError("offline scratch must be under .runtime-work")
     scratch.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(MANIFEST.read_text())
-    python = Path(sys.executable).resolve()
+    python = Path(sys.executable)
     for entry in manifest["cases"]:
         variant = entry["case_id"].removeprefix(manifest["assignment_id"] + "__")
         for candidate, target in ((None, entry), ("fallback1", entry["candidates"][0])):
