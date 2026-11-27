@@ -1,0 +1,38 @@
+{
+  "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__before_start_30min",
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 2,
+      "requirement": "text-2",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "requirement_2",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "method": "time_window",
+      "inputs": [
+        "pass_trace.jsonl",
+        "school_zone_context.json"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "requirement_6",
+      "kind": "measured",
+      "value_type": "object",
+      "method": "same_direction_pass",
+      "inputs": [
+        "pass_trace.jsonl",
+        "school_zone_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "school_zone_context.json"
+    ],
+    "error_contains": "Missing required source: school_zone_context.json"
+  }
+}

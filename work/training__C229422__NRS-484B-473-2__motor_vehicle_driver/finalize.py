@@ -21,7 +21,7 @@ def require(ok,message):
 
 def source(root,name):
     path=root/name
-    require(path.is_file(),'Missing required original source: '+name)
+    require(path.is_file(),'Missing required source: '+name)
     return path
 
 
@@ -121,6 +121,14 @@ def finalize(attempt,output):
         path.write_text(''.join(json.dumps({'time_s':i/20,'value':values[name](i)},
             allow_nan=False)+'\n' for i in range(FRAMES)))
         evidence.append({'name':name,'unit':'structured','reference':'channels/'+name+'.jsonl'})
+    context_folder=root/'contexts';context_folder.mkdir(exist_ok=True)
+    for item in config['recording_description']['context_inputs']:
+        name=item['name']
+        original=source(root,name)
+        reference='contexts/'+name
+        (root/reference).write_text(json.dumps({name:{'source_sha256':digest(original),
+            'source_kind':'original_acquisition_or_cited_review'}},allow_nan=False)+'\n')
+        evidence.append({'name':name,'unit':item['unit'],'reference':reference})
     from worker_exchange.native_output import write_result
     result={'case_id':case,'measured_values':measured,
         'target_checks':[{'target':'full-interval original optical lamp state',

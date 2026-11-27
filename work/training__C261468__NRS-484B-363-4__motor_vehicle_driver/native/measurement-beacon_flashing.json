@@ -1,0 +1,53 @@
+{
+  "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__beacon_flashing",
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 3,
+      "requirement": "text-3",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "requirement_3",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "method": "beacon_exception",
+      "inputs": [
+        "pass_trace.jsonl",
+        "school_zone_context.json",
+        "beacon_lamps.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 5,
+      "requirement": "text-5",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "requirement_5",
+      "kind": "sourced_context",
+      "value_type": "object",
+      "method": "beacon_definition",
+      "inputs": [
+        "pass_trace.jsonl",
+        "school_zone_context.json",
+        "beacon_lamps.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 6,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "requirement_6",
+      "kind": "measured",
+      "value_type": "object",
+      "method": "same_direction_pass",
+      "inputs": [
+        "pass_trace.jsonl",
+        "school_zone_context.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "school_zone_context.json"
+    ],
+    "error_contains": "Missing required source: school_zone_context.json"
+  }
+}

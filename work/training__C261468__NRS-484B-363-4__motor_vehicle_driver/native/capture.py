@@ -96,8 +96,7 @@ def execute(config, output_dir, survey_path, host='127.0.0.1', port=2000):
     require(survey.get('route_direction_id'), 'Original route direction identity missing')
     import carla
     from pipeline_capture import PipelineCapture
-    from worker_exchange.native_output import FrameMap, seal_capture, write_result
-    from worker_exchange.saved_processing import record_native_exit
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import restore, snapshot
 
     output = Path(output_dir)
@@ -212,22 +211,8 @@ def execute(config, output_dir, survey_path, host='127.0.0.1', port=2000):
         restored = restore(client, original)
         if completed and len(codes) == 4:
             seal_capture(output, frames=600, restoration=restored, errors=[],
-                         encoder_exit_codes=codes, context={'case_id': config['case_id']})
-            write_result(output, {
-                'case_id': config['case_id'], 'measured_values': {'captured_frames': 600},
-                'target_checks': [], 'setup_confirmed': False, 'behavior_attempted': True,
-                'maneuver_completed': False, 'termination_reason': 'Source review pending',
-                'physical_failure_flags': ['pass_motion_unreviewed', 'beacon_pixels_unreviewed',
-                                           'school_calendar_unreviewed'],
-                'trace_reference': 'trace.jsonl',
-                'video_references': [x + '.mkv' for x in VIEWS],
-                'video_frame_map_reference': 'video_frames.jsonl',
-                'recording_description': config['recording_description'],
-                'recording_evidence': {}, 'realized_observables': {},
-                'provenance_kind': 'native', 'diagnostic_fixture': False,
-                'physical_acceptance_claimed': False, 'legal_verdict_claimed': False,
-                'accepted': False})
-            record_native_exit(output)
+                         encoder_exit_codes=codes,
+                         context={'case_id': config['case_id'], 'source_review': 'pending'})
 
 
 if __name__ == '__main__':

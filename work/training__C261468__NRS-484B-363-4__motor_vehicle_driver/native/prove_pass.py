@@ -79,8 +79,8 @@ def main():
                'sign_says_limit_in_effect': True,
                'civil_time_unix_s': 1000000, 'operation_end_unix_s': 1003600,
                'next_operation_start_unix_s': 1086400,
-               'camera_sha256': {k: module.sha(ROOT / (k + '.mkv'))
-                                 for k in module.CAMERAS}}
+               'camera_rgb_sequence_sha256': {k: module.decoded_rgb_sha(ROOT / (k + '.mkv'))
+                                              for k in module.CAMERAS}}
     write(context_path, context)
     active = module.measure(ROOT)
     assert active['pass_crossing_in_signed_zone'] and active['beacon_yellow_alternating']

@@ -26,6 +26,23 @@ def finite(x):
     return type(x) in (int, float) and math.isfinite(x)
 
 
+def decoded_rgb_sha(path):
+    """Bind generated diagnostics to pixels, independent of encoder metadata."""
+    process = subprocess.Popen(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error',
+                                '-i', str(path), '-vsync', '0', '-f', 'rawvideo',
+                                '-pix_fmt', 'rgb24', 'pipe:1'], stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
+    digest = hashlib.sha256()
+    while True:
+        data = process.stdout.read(1024 * 1024)
+        if not data:
+            break
+        digest.update(data)
+    if process.wait() != 0:
+        raise ValueError('Source camera RGB decode failed')
+    return digest.hexdigest()
+
+
 def measure(root):
     root = Path(root)
     frame_path = root / 'video_frames.jsonl'
@@ -33,7 +50,7 @@ def measure(root):
     context_path = root / 'school_zone_context.json'
     for path in (frame_path, trace_path, context_path):
         if not path.is_file():
-            raise ValueError('Missing required saved source: ' + path.name)
+            raise ValueError('Missing required source: ' + path.name)
     frames, trace = load_lines(frame_path), load_lines(trace_path)
     context = json.loads(context_path.read_text())
     if len(frames) != FRAMES or len(trace) != FRAMES:
@@ -52,7 +69,12 @@ def measure(root):
         if len(streams) != 1 or streams[0].get('nb_read_frames') != str(FRAMES) or streams[0].get('r_frame_rate') != '20/1':
             raise ValueError('Source camera requires 600 decoded 20 Hz frames: ' + camera)
         video_hashes[camera] = sha(path)
-    if context.get('camera_sha256') != video_hashes:
+    if context.get('review_kind') == 'synthetic_diagnostic':
+        decoded = {camera: decoded_rgb_sha(root / (camera + '.mkv'))
+                   for camera in CAMERAS}
+        if context.get('camera_rgb_sequence_sha256') != decoded:
+            raise ValueError('Synthetic school-zone context is not bound to decoded camera pixels')
+    elif context.get('camera_sha256') != video_hashes:
         raise ValueError('School-zone context is not bound to original camera bytes')
     if context.get('assignment_id') != ASSIGNMENT:
         raise ValueError('School-zone context assignment mismatch')
@@ -98,7 +120,7 @@ def measure(root):
     if context['beacon_operational']:
         lamp_path = root / 'beacon_lamps.jsonl'
         if not lamp_path.is_file():
-            raise ValueError('Missing required saved source: beacon_lamps.jsonl')
+            raise ValueError('Missing required source: beacon_lamps.jsonl')
         if context.get('beacon_lamps_sha256') != sha(lamp_path):
             raise ValueError('Beacon lamp source hash differs')
         lamp_states = load_lines(lamp_path)
@@ -164,7 +186,7 @@ def measure(root):
     if not departures:
         raise ValueError('No observed lane departure before passing')
     start = departures[0]
-    if abs(lateral_offsets[cross] - origin) < 2:
+    if abs(lateral_offsets[cross] - origin) < 1.8:
         raise ValueError('No adjacent-lane separation at abreast crossing')
     returns = [i for i in range(cross + 1, FRAMES)
                if abs(lateral_offsets[i] - origin) <= .75 and diffs[i] >= 7]

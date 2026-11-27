@@ -59,7 +59,7 @@ def build(suffix):
               'native_elapsed_s':50+i/20,'time_s':i/20} for i in range(600)]
     (folder/'parked-lamp-trace.jsonl').write_text(lines(trace))
     (folder/'video_frames.jsonl').write_text(lines(mapping))
-    generic=[{'frame':1000+i,'time_s':i/20,'position_m':[0,0,0],
+    generic=[{'frame':1000+i,'time_s':i/20,'position':{'x':0,'y':0,'z':0},'position_m':[0,0,0],
               'speed_mps':0.0,'speed_mph':0.0,'velocity_mps':[0,0,0],
               'heading_deg':0,'control':{'throttle':0.0,'brake':1.0,'hand_brake':True}}
              for i in range(600)]
