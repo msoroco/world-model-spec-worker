@@ -37,7 +37,7 @@ def sha(path):
     return digest.hexdigest()
 
 
-def run(case, candidate, attempt, root, validator):
+def run(case, candidate, attempt, root, validator, allow_prior_source_selection=False):
     manifest = ROOT / 'execution-manifest.json'
     attempt = Path(attempt).resolve()
     root = Path(root).resolve()
@@ -48,16 +48,27 @@ def run(case, candidate, attempt, root, validator):
         raise ValueError('Use a fresh direct-compatibility output root')
     case_id = ROOT.name + '__' + case
     selection = json.loads((attempt / 'candidate-selection.json').read_text())
-    if selection['case_id'] != case_id or selection['candidate_id'] != candidate or \
-            selection['manifest_sha256'] != sha(manifest):
+    if selection['case_id'] != case_id or selection['candidate_id'] != candidate:
+        raise ValueError('Attempt selection differs from exact case and candidate')
+    prior_selection = selection['manifest_sha256'] != sha(manifest)
+    if prior_selection and not allow_prior_source_selection:
         raise ValueError('Attempt selection differs from canonical manifest')
     frames = json.loads((attempt / 'config.json').read_text())['capture_frames']
     if frames not in (36120, 36121, 36122):
         raise ValueError('Expected exact long diagnostic frame count')
+    contract = ROOT / 'selected-primary' / case / \
+               'selected-measurement-contracts' / (case + '.json')
+    contract_json = json.loads(contract.read_text())
+    required_passenger_source = contract_json['negative']['remove'][0]
+    if required_passenger_source not in ('native-passenger-actors.jsonl',
+                                         'native-passenger-inventory.jsonl'):
+        raise ValueError('Unexpected exact passenger-source contract')
     root.mkdir(parents=True)
     fixture = root / 'fixture'
     fixture.mkdir()
     for name in SOURCES:
+        if name == 'native-passenger-actors.jsonl':
+            name = required_passenger_source
         source = attempt / name
         if not source.is_file():
             raise ValueError('Missing exact long source: ' + name)
@@ -75,9 +86,6 @@ def run(case, candidate, attempt, root, validator):
     if receipt['passed'] is not True or receipt['case_id'] != case_id or \
             receipt['candidate_id'] != candidate:
         raise ValueError('Pinned compatibility core did not pass exact selection')
-    contract = ROOT / 'selected-primary' / case / \
-               'selected-measurement-contracts' / (case + '.json')
-    contract_json = json.loads(contract.read_text())
     measurements = verify_report(contract_json,
                                  json.loads((output / 'analysis-report.json').read_text()),
                                  fixture)
@@ -98,7 +106,10 @@ def run(case, candidate, attempt, root, validator):
     return {'format': 'c150142-direct-long-compatibility-core-v1',
             'passed': True, 'case_id': case_id, 'candidate_id': candidate,
             'frames': frames, 'manifest_sha256': sha(manifest),
-            'construction_sha256': selection['construction_sha256'],
+            'construction_sha256': receipt['construction_sha256'],
+            'source_selection_manifest_sha256': selection['manifest_sha256'],
+            'source_selection_construction_sha256': selection['construction_sha256'],
+            'prior_source_selection': prior_selection,
             'core_checks': receipt['checks'],
             'positive_fixture_sha256': receipt['fixture_sha256'],
             'positive_analysis_sha256': receipt['analysis_sha256'],
@@ -119,6 +130,8 @@ if __name__ == '__main__':
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--output', required=True)
     parser.add_argument('--validator', required=True)
+    parser.add_argument('--allow-prior-source-selection', action='store_true')
     args = parser.parse_args()
     print(json.dumps(run(args.case, args.candidate, args.attempt,
-                         args.output, Path(args.validator).resolve()), indent=2))
+                         args.output, Path(args.validator).resolve(),
+                         args.allow_prior_source_selection), indent=2))

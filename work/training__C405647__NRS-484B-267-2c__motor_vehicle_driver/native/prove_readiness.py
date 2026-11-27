@@ -67,6 +67,7 @@ def main():
     response = module.measure(ROOT)
     assert response['trigger_frame'] == 50 and response['first_brake_frame'] == 55
     assert response['brake_delay_s'] == .25 and response['stopped_frame'] == 205
+    assert response['braked_approaching_frame_count'] > 0
     no_brake = copy.deepcopy(trace)
     for row in no_brake:
         row['ego_speed_mps'] = 15
@@ -74,6 +75,7 @@ def main():
     write_lines(trace_path, no_brake)
     absent = module.measure(ROOT)
     assert absent['first_brake_frame'] is None and absent['stopped_frame'] is None
+    assert absent['braked_approaching_frame_count'] == 0
     write_lines(trace_path, trace)
     failures = {}
     failures['missing_trace'] = reject('missing_trace', 'Missing required saved source',

@@ -101,8 +101,11 @@ for number,call in enumerate(template['structure']['judgment_calls_needed']):
 index={'format':'worker-semantic-delivery','assignment_id':root.name,
        'stages':{name:{'path':'proposals/'+name+'.json','sha256':sha256((out/(name+'.json')).read_bytes()).hexdigest()}
                  for name in ('relevance_batch','relevance','template','bindings','cases')},
-       'judgment_observables':[{'path':'proposals/'+name+'.json',
-                                'sha256':sha256((out/(name+'.json')).read_bytes()).hexdigest()}
-                               for name in judgment_files]}
+       }
+index['stages']['judgment_observables']=[
+    {'path':'proposals/'+name+'.json',
+     'sha256':sha256((out/(name+'.json')).read_bytes()).hexdigest()}
+    for name in judgment_files]
 (out/'semantic-index.json').write_text(json.dumps(index,indent=2)+'\n')
-print(json.dumps({name:row['sha256'] for name,row in index['stages'].items()}))
+print(json.dumps({name:row['sha256'] for name,row in index['stages'].items()
+                  if isinstance(row,dict)}))

@@ -35,3 +35,15 @@ The lazy `native/runner.py` passes CPU preflight for both saved exact requests w
 The acquisition controller now requests a 5 m/s cruise ceiling before the emergency response, keeping the 30 s unbraked contrast on the authored 200 m road; the brake-ready case requests 0.8 brake from frame 180. These remain requested settings, not measured Native trajectories. Both regenerated exact request hashes and CPU preflights pass.
 
 Each regenerated request now includes a physical risk assessment for road extent, four-view lamp/motion visibility, statutory vehicle/lamp qualification and the limits of brake response as a legal proxy. These are requested construction risks, not observed outcomes. The latest two request preflights, focused tests and scoped partial check pass.
+
+## 2026-11-27 independent source-bound comparison
+
+`native/audit_comparison.py` recomputes the two 600-frame saved observations from original-shaped sources, checks each bound exact Native request, verifies fixed scene settings, full emergency trajectory, indication and reviewed trigger context, and requires the measured brake-response contrast. `native/prove_comparison.py` passes a synthetic positive and rejects a wrong request, stale reported observation, changed emergency trajectory at and after the trigger, changed reviewed class or officer direction, and absent brake contrast. This is a software fixture, not physical or legal acceptance. Proof: `native/comparison-proof.log` SHA-256 e58c1dccf23442e52e769fd779ceb3dead47a067b1c0dd28af12d3a9d8a6ac3f.
+
+The lazy physical runner now seals `native-request.json` beside its capture sources for later independent comparison. Exact selected offline/public compatibility, semantic stages, full source branches and delivery audit remain CPU work; status stays partial.
+
+The saved meter also reports the number and fraction of approaching frames with observed brake readback after the trigger, preserving a continuous-response engineering observation without imposing a legal stopping threshold.
+
+The focused conversion test now exercises `from_original.process` end to end on 600 original-shaped Native rows under `.runtime-work/`, confirms the produced trace, and rejects a missing actor source. The rows are synthetic test values; original CARLA capture and independent pixel review remain unperformed. Scene/conversion test log SHA-256 `2d51d47ee743889ca5d48b6d66a17f12e0132f35c5f52a0c9f33388b13bfd48c`.
+
+`case-plan.json.source_observation_mapping` now names the concrete Native, saved and camera channels for all eight source terms. It explicitly leaves original capture, statutory vehicle/lamp qualification, actual visibility and the officer-direction exception unverified. This is a source-to-channel plan, not an accepted evidence mapping.

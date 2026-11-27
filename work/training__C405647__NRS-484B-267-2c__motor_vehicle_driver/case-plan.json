@@ -170,72 +170,81 @@
   ],
   "source_observation_mapping": {
     "drv.responding_emergency": {
-      "evidence": "Proposed capture only: the emergency or official vehicle with its lamps. No Native channel or Core atom proof yet.",
+      "evidence": "Original Native emergency actor pose/light readback and independently reviewed vehicle class and flashing-light source are captured; legal qualification remains unverified.",
       "channels": [
-        "ego_stop_preparedness"
+        "observed-actors.jsonl",
+        "emergency_review.json",
+        "overview.mkv",
+        "approach.mkv"
       ],
       "source_refs": [
         "inputs/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.approaching": {
-      "evidence": "Proposed capture only: the subject approaching it. No Native channel or Core atom proof yet.",
+      "evidence": "Saved source joins ego motion and declining body surface gap by original frame; original motion is pending physical capture.",
       "channels": [
-        "ego_stop_preparedness"
+        "approach_trace.jsonl:ego_speed_mps",
+        "approach_trace.jsonl:surface_gap_m"
       ],
       "source_refs": [
         "inputs/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.visible": {
-      "evidence": "Proposed capture only: the emergency or official vehicle, and the indication that it is preparing to move, are in the subject's line of sight — 'visible to an approaching driver'. No Native channel or Core atom proof yet.",
+      "evidence": "Four source camera videos are byte-bound to per-frame emergency motion/flashing annotations; actual approaching-driver visibility is pending independent original-pixel review.",
       "channels": [
-        "ego_stop_preparedness"
+        "emergency_review.json:frame_annotations",
+        "approach.mkv",
+        "driver_reference.mkv"
       ],
       "source_refs": [
         "inputs/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.speed": {
-      "evidence": "Proposed capture only: a speed from which a stop is achievable. No Native channel or Core atom proof yet.",
+      "evidence": "Original Native ego velocity is converted per frame; synthetic CPU values test the converter only.",
       "channels": [
-        "ego_stop_preparedness"
+        "approach_trace.jsonl:ego_speed_mps"
       ],
       "source_refs": [
         "inputs/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.stopping_distance": {
-      "evidence": "Proposed capture only: the surrogate for readiness to stop: the distance needed at the current speed against the distance available. No Native channel or Core atom proof yet.",
+      "evidence": "Saved meter reports observed stopping distance when a stop occurs and post-trigger brake coverage, without a legal readiness threshold.",
       "channels": [
-        "ego_stop_preparedness"
+        "saved-emergency-approach-observation:observed_stop_distance_m",
+        "saved-emergency-approach-observation:braked_approach_fraction"
       ],
       "source_refs": [
         "inputs/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.surface_gap": {
-      "evidence": "Proposed capture only: the distance to the emergency vehicle. No Native channel or Core atom proof yet.",
+      "evidence": "Native body vertices are converted to per-frame surface gap; exact physical trajectory remains unobserved.",
       "channels": [
-        "ego_stop_preparedness"
+        "approach_trace.jsonl:surface_gap_m"
       ],
       "source_refs": [
         "inputs/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/assignment.json"
       ]
     },
     "sig.brake_lamp": {
-      "evidence": "Proposed capture only: evidence of preparation. No Native channel or Core atom proof yet.",
+      "evidence": "Native ego brake readback is recorded per frame as an engineering response proxy; brake lamp pixels are not yet independently measured.",
       "channels": [
-        "ego_stop_preparedness"
+        "observed-actors.jsonl:ego_brake_observed",
+        "approach_trace.jsonl:ego_brake"
       ],
       "source_refs": [
         "inputs/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/assignment.json"
       ]
     },
     "dev.human_direction": {
-      "evidence": "Proposed capture only: the officer exception. No Native channel or Core atom proof yet.",
+      "evidence": "Officer-direction presence is an independently reviewed context field, not inferred from a control request; the exception branch remains unconstructed.",
       "channels": [
-        "ego_stop_preparedness"
+        "emergency_review.json:officer_direction_present",
+        "emergency_review.json:officer_direction_source"
       ],
       "source_refs": [
         "inputs/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/assignment.json"

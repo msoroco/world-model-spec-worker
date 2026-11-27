@@ -107,6 +107,7 @@ def execute(case, output, host, port):
     changed, frames, error, restored = False, 0, None, None
     try:
         xml = item["source_map"]
+        _write_once(output / "native-request.json", item)
         (output / "scene.xodr").write_text(xml + "\n")
         world = client.generate_opendrive_world(xml, carla.OpendriveGenerationParameters(
             vertex_distance=.25, max_road_length=50, wall_height=0,

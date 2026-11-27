@@ -124,6 +124,8 @@ def measure(root):
     brake = next((i for i in range(trigger, FRAMES) if brakes[i] > 0), None)
     stopped = next((i for i in range(trigger, FRAMES) if speeds[i] == 0), None)
     decels = [(speeds[i-1] - speeds[i]) / (times[i] - times[i-1]) for i in range(trigger+1, FRAMES)]
+    approaching = [i for i in range(trigger + 1, FRAMES) if gaps[i] < gaps[i - 1]]
+    braked_while_approaching = sum(brakes[i] > 0 for i in approaching)
     return {
         'format': 'saved-emergency-approach-observation', 'assignment_id': ASSIGNMENT,
         'source_kind': review['review_kind'],
@@ -140,6 +142,9 @@ def measure(root):
         'lights_meet_484A_480_3_reviewed': review['lights_meet_484A_480_3'],
         'officer_direction_present_reviewed': review['officer_direction_present'],
         'first_brake_frame': brake, 'brake_delay_s': None if brake is None else times[brake] - times[trigger],
+        'approaching_frame_count_after_trigger': len(approaching),
+        'braked_approaching_frame_count': braked_while_approaching,
+        'braked_approach_fraction': None if not approaching else braked_while_approaching / len(approaching),
         'stopped_frame': stopped, 'observed_stop_distance_m': None if stopped is None else sum(speeds[i] * (times[i+1]-times[i]) for i in range(trigger, stopped)),
         'peak_observed_deceleration_mps2': max(decels), 'minimum_surface_gap_m': min(gaps),
         'measurement_note':'Brake and stopping measurements are engineering observations, not a legal threshold for prepared to stop.',

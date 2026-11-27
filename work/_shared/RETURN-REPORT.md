@@ -85,3 +85,19 @@ C405647 now requests a bounded 5 m/s cruise before its emergency response to kee
 C177626 now passes exact semantic-stage validators for relevance, template, bindings, cases and three judgment-observable proposals, plus latest A/B primary offline proofs. Public compatibility exposed a saved-channel format defect; its owner corrected the 20 Hz time/value streams and context evidence and is rerunning on final bytes. Status remains partial. C183394 semantic review found the two authored beam-policy cases do not yet satisfy the explicit 500-foot below/at/above boundary, neutral baseline and safe-distance/glare judgment sweep coverage. Its owner is continuing saved-only and audit construction; status remains partial.
 
 C183394 has now passed all four exact current-runtime public compatibility paths (both conditions, primary and fallback1), including the source-negative check. Its owner is binding final receipts and saved-only evidence while expanding the statutory boundary/sweep cases. The scoped strict gate has not passed, and status remains partial.
+
+C405647 exact requests now carry explicit physical risk assessments. The regenerated two-case preflights, focused tests and scoped partial check pass; selected-case and source-bound delivery proofs are still outstanding.
+
+C183394 additionally passed `runtime.py process-saved` for both primary diagnostic captures with 600 decoded frames each, using their recorded historical manifests; all four selected public compatibility receipts are bound with hashes. New manifest proof fields change the self-hash, so those historical attempts are not claimed as reprocessable against later manifest bytes. Full semantic branch coverage and original Native evidence remain outstanding; status stays partial.
+
+## 2026-11-27 continuation checkpoint
+
+Current-runtime source verification, CPU preflight and update notice check pass (`runtime_sources_verified: true`, `cpu_preflight_passed: true`, update 16 and no pauses). The inventory remains 233 ready / 20 partial; the batch-wide strict gate has not passed. No ready status was changed in this checkpoint.
+
+C405647 now binds each original capture to its exact `native-request.json`. Its independent comparison audit recomputes both 600-frame saved observations, checks the fixed Native plan, complete emergency trajectory and indications, reviewed context, and measured brake-response contrast. A synthetic positive and negatives for wrong request, stale observation, changed emergency trajectory and absent contrast pass; proof `work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/native/comparison-proof.log` SHA-256 `6e560a9e6353d4c119e073635a9010dc945679dcb3f0ae8cffccdcbbdc282408`. The assignment-scoped `--complete` static check passes. C405647 stays partial because selected offline/public compatibility, semantic/full branch and delivery audits are unfinished.
+
+Three disjoint owners continue C177626, C183394 and C150142. C177626 reports a corrected eight-stage semantic index and source-backed synthetic physical positives/negatives; its construction change requires new compatibility receipts, which are running. C183394 reports a new comparison audit under test. C150142 continues full-duration public receipt work. Their statuses remain partial until their scoped strict gates pass and the lead verifies them. The independent checkpoint timer handles publication; no Git command was run.
+
+C405647 saved measurement now reports post-trigger approach-frame brake coverage as a continuous engineering observation; the brake/no-brake diagnostic and independent comparison proofs reran on final bytes. This remains a proxy and does not decide the statutory preparedness standard.
+
+C405647 also passed an end-to-end 600-row original-shaped conversion test and missing-actor-source rejection. This checks conversion code only; no original physical capture is present.

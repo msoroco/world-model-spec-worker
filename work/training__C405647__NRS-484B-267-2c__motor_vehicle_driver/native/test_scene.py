@@ -1,11 +1,14 @@
 """Verify the controlled physical request before any CARLA acquisition."""
 
 import copy
+import json
+from pathlib import Path
+import shutil
 import unittest
 
 from scene import CASES, check_pair, request
 from measure_readiness import CAMERA_DIMENSIONS
-from from_original import convert
+from from_original import convert, process
 
 
 class SceneTest(unittest.TestCase):
@@ -80,6 +83,27 @@ class SceneTest(unittest.TestCase):
         no_readback[180].pop("ego_brake_observed")
         with self.assertRaisesRegex(ValueError, "brake readback"):
             convert(frames, no_readback, review)
+        scratch = Path(__file__).resolve().parents[3] / ".runtime-work" / "C405647-original-converter-test"
+        if scratch.exists():
+            shutil.rmtree(scratch)
+        scratch.mkdir(parents=True)
+        try:
+            for name, rows in (("video_frames.jsonl", frames),
+                               ("observed-actors.jsonl", actors)):
+                (scratch / name).write_text("".join(json.dumps(row) + "\n" for row in rows))
+            (scratch / "emergency_review.json").write_text(json.dumps({
+                "assignment_id": request(CASES[0])["assignment_id"],
+                "review_kind": "original_source_review", "frame_annotations": review,
+            }) + "\n")
+            result = process(scratch)
+            self.assertEqual(result["rows"], 600)
+            self.assertEqual(len((scratch / "approach_trace.jsonl").read_text().splitlines()), 600)
+            (scratch / "approach_trace.jsonl").unlink()
+            (scratch / "observed-actors.jsonl").unlink()
+            with self.assertRaisesRegex(ValueError, "Missing original source"):
+                process(scratch)
+        finally:
+            shutil.rmtree(scratch)
 
 
 if __name__ == "__main__":

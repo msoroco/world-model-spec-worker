@@ -1,0 +1,64 @@
+{
+  "template_id": "NRS-484D-215-1@motor_vehicle_driver",
+  "law_id": "NRS-484D-215-1",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Whenever a motor vehicle is being operated on the traveled portion of the highway, or shoulder adjacent thereto, during the times specified in NRS 484D.100 [NRS-484D-100-1], the driver shall use a distribution of light, or composite beam, directed high enough and of sufficient intensity to reveal persons and vehicles at a safe distance in advance of the vehicle, subject to the following requirements and limitations: Whenever a driver of a vehicle approaches an oncoming vehicle within 500 feet, the driver shall use a distribution of light, or composite beam, so aimed that the glaring rays are not projected into the eyes of the oncoming driver. The lowermost distribution of light, or composite beam, specified in subsection 2 of NRS 484D.210 [DEF-NRS-484D-210-1-2] shall be deemed to avoid glare at all times, regardless of road contour and loading.",
+  "structure": {
+    "activation": {
+      "condition": "Motor vehicle operated on traveled highway or adjacent shoulder during one of the times specified in incorporated NRS 484D.100.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Reveal persons and vehicles ahead at a safe distance with sufficient illumination and, when approaching within 500 feet, avoid glaring rays in the oncoming driver eyes.",
+      "source_clause": "the driver shall use a distribution of light, or composite beam",
+      "numeric_conditions": [
+        {
+          "variable": "oncoming_centre_distance_ft",
+          "operator": "<=",
+          "value": 500,
+          "unit": "ft"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "trigger": "Exact statutory lowermost distribution under NRS 484D.210(2)",
+        "effect": "Deemed to avoid glare regardless of contour and loading only if exact equipment identity is established.",
+        "replacement_obligation": "Forward illumination duty remains.",
+        "source_clause": "The lowermost distribution of light, or composite beam, specified in subsection 2 of NRS 484D.210 [DEF-NRS-484D-210-1-2] shall be deemed to avoid glare at all times, regardless of road contour and loading."
+      }
+    ],
+    "timing": {
+      "description": "Lighting duty during incorporated NRS 484D.100 times; avoid glare throughout observed approach at or inside 500 feet.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "safe distance in advance of the vehicle",
+        "note": "No numeric safe-distance substitute; original forward person/vehicle illumination requires independent review."
+      },
+      {
+        "phrase": "glaring rays are not projected into the eyes of the oncoming driver",
+        "note": "Original driver-eye light rays and pixels need independent review; lamp API bit is insufficient."
+      },
+      {
+        "phrase": "lowermost distribution of light, or composite beam, specified in subsection 2 of NRS 484D.210",
+        "note": "Equipment specifications are unavailable; do not invoke statutory deeming without their source."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "oncoming_centre_distance_ft",
+      "kind": "subject_behavior",
+      "range_or_domain": "Original pairwise measured centre separation across 500 feet"
+    },
+    {
+      "name": "beam_request_policy",
+      "kind": "controller",
+      "range_or_domain": "dim before 500-foot entry or retain high beam"
+    }
+  ]
+}
