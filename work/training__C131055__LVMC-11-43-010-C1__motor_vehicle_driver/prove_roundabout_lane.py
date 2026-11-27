@@ -73,7 +73,7 @@ if __name__ == "__main__":
     negatives.append(reject("unsourced_intention", source, trace("left_lane"), "intention"))
     negatives.append(reject("short_capture", context(), trace("left_lane")[:-1], "Incomplete"))
     rows = trace("left_lane")
-    rows[200]["source_cameras"].pop("exit_lane")
+    rows[200]["source_cameras"].pop("driver_reference")
     negatives.append(reject("missing_camera", context(), rows, "camera"))
     rows = trace("left_lane")
     rows[200]["native_frame"] = rows[199]["native_frame"]

@@ -2,7 +2,7 @@
 
 import math
 
-CAMERAS = {"overview", "ego_front", "entry_lane", "exit_lane"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 LANES = {"left_lane": 12.0, "right_lane": 16.0,
          "u_turn_left_lane": 12.0, "u_turn_right_lane": 16.0}
 
@@ -36,11 +36,13 @@ def request(case):
                            "circulatory_waypoints": points,
                            "exit_heading_deg": 270 if turn == "u_turn" else 180,
                            "lane_change_requested": False},
-            "cameras": [{"name": "overview", "xyz": [0, 0, 35], "pitch": -90, "size": [1920, 1080]},
-                        {"name": "ego_front", "xyz": [1, 0, 2], "pitch": -8,
-                         "attach_to_ego": True, "size": [1280, 720]},
-                        {"name": "entry_lane", "xyz": [12, -26, 9], "pitch": -25, "size": [1280, 720]},
-                        {"name": "exit_lane", "xyz": [-25, 12, 9], "pitch": -25, "size": [1280, 720]}],
+            "cameras": [{"name": "overview", "xyz": [0, 0, 45], "pitch": -90, "size": [1920, 1080]},
+                        {"name": "approach", "xyz": [0, -30, 15], "pitch": -35,
+                         "size": [1280, 720]},
+                        {"name": "reference_corner", "xyz": [-24, -12, 18], "pitch": -35,
+                         "size": [1280, 720]},
+                        {"name": "driver_reference", "xyz": [0, -18, 9], "pitch": -18,
+                         "size": [1280, 720]}],
             "rate_hz": 20, "duration_s": 30, "planned_frames": 600,
             "native_topology_verified": False, "physical_success_claimed": False}
 

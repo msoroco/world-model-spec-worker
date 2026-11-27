@@ -34,7 +34,9 @@
       "evidence_or_gap": "statutory_text: The following regulations pertain to the operation of vehicles within a roundabout: | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
       "case_ids": [
         "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane",
-        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane"
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane",
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane",
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane"
       ]
     },
     {
@@ -44,7 +46,9 @@
       "evidence_or_gap": "statutory_text: The operator of a vehicle who intends to exit a roundabout: | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
       "case_ids": [
         "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane",
-        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane"
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane",
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane",
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane"
       ]
     },
     {
@@ -54,7 +58,9 @@
       "evidence_or_gap": "statutory_text: Shall use the left lane to turn left or complete a U-turn. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
       "case_ids": [
         "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane",
-        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane"
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane",
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane",
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane"
       ]
     }
   ],
@@ -63,7 +69,7 @@
       "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane",
       "target_law_id": "LVMC-11-43-010-C1",
       "planning_status": "unverified_definition",
-      "target_type": "attempt",
+      "target_type": "controlled_attempt",
       "comparison_variable": "exit_lane_choice",
       "comparison_unit": "category",
       "requested_setting": "left_lane",
@@ -75,13 +81,62 @@
         "text-1",
         "text-2"
       ],
-      "selected": false
+      "selected": true,
+      "kind": "delivery",
+      "selection_status": "selected",
+      "construction_status": "source_bound_cpu_diagnostic_original_native_unverified",
+      "gap_ids": [
+        "left_turn_left_lane_original",
+        "left_turn_right_lane_original"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_lane_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map lane topology and frame-joined subject body occupancy",
+            "time_window": "all 600 original Native frames from approach through exit",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "physical lane geometry and body projection require original review"
+          },
+          {
+            "name": "entry_exit_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-backed requested exit plus actual entry, ring sweep and exit heading",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "intention and exit classification require independent review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling; original motion unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_roundabout_topology",
+            "unit": "structured",
+            "method": "original map ring lane and entry/exit links"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixtures establish software behavior only; original Native motion and pixels unverified.",
+          "Lane choice and intended exit are measured separately from any legal verdict."
+        ]
+      }
     },
     {
       "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane",
       "target_law_id": "LVMC-11-43-010-C1",
       "planning_status": "unverified_definition",
-      "target_type": "attempt",
+      "target_type": "controlled_attempt",
       "comparison_variable": "exit_lane_choice",
       "comparison_unit": "category",
       "requested_setting": "right_lane",
@@ -93,7 +148,190 @@
         "text-1",
         "text-2"
       ],
-      "selected": false
+      "selected": true,
+      "kind": "delivery",
+      "selection_status": "selected",
+      "construction_status": "source_bound_cpu_diagnostic_original_native_unverified",
+      "gap_ids": [
+        "left_turn_left_lane_original",
+        "left_turn_right_lane_original"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_lane_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map lane topology and frame-joined subject body occupancy",
+            "time_window": "all 600 original Native frames from approach through exit",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "physical lane geometry and body projection require original review"
+          },
+          {
+            "name": "entry_exit_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-backed requested exit plus actual entry, ring sweep and exit heading",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "intention and exit classification require independent review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling; original motion unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_roundabout_topology",
+            "unit": "structured",
+            "method": "original map ring lane and entry/exit links"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixtures establish software behavior only; original Native motion and pixels unverified.",
+          "Lane choice and intended exit are measured separately from any legal verdict."
+        ]
+      }
+    },
+    {
+      "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane",
+      "target_law_id": "LVMC-11-43-010-C1",
+      "planning_status": "unverified_definition",
+      "target_type": "controlled_attempt",
+      "comparison_variable": "u_turn_lane_choice",
+      "comparison_unit": "category",
+      "requested_setting": "u_turn_left_lane",
+      "recorded_value": null,
+      "case_description": "same two-lane roundabout and south entry; U-turn exit intention and actual south exit; left circulatory lane",
+      "fixed_context": "Hold C131055 roundabout geometry, south entry, actor, controls, speed policy and four-camera 600-frame profile fixed against the other U-turn lane case.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "selected": true,
+      "kind": "delivery",
+      "selection_status": "selected",
+      "construction_status": "source_bound_cpu_diagnostic_original_native_unverified",
+      "gap_ids": [
+        "u_turn_left_lane_original"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_lane_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map lane topology and frame-joined subject body occupancy",
+            "time_window": "all 600 original Native frames from approach through exit",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "physical lane geometry and body projection require original review"
+          },
+          {
+            "name": "entry_exit_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-backed requested exit plus actual entry, ring sweep and exit heading",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "intention and exit classification require independent review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling; original motion unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_roundabout_topology",
+            "unit": "structured",
+            "method": "original map ring lane and entry/exit links"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixtures establish software behavior only; original Native motion and pixels unverified.",
+          "Lane choice and intended exit are measured separately from any legal verdict."
+        ]
+      },
+      "physical_target": "u_turn from south entry back to south exit while occupying left circulatory lane"
+    },
+    {
+      "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane",
+      "target_law_id": "LVMC-11-43-010-C1",
+      "planning_status": "unverified_definition",
+      "target_type": "controlled_attempt",
+      "comparison_variable": "u_turn_lane_choice",
+      "comparison_unit": "category",
+      "requested_setting": "u_turn_right_lane",
+      "recorded_value": null,
+      "case_description": "same two-lane roundabout and south entry; U-turn exit intention and actual south exit; right circulatory lane",
+      "fixed_context": "Hold C131055 roundabout geometry, south entry, actor, controls, speed policy and four-camera 600-frame profile fixed against the other U-turn lane case.",
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "selected": true,
+      "kind": "delivery",
+      "selection_status": "selected",
+      "construction_status": "source_bound_cpu_diagnostic_original_native_unverified",
+      "gap_ids": [
+        "u_turn_right_lane_original"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_lane_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map lane topology and frame-joined subject body occupancy",
+            "time_window": "all 600 original Native frames from approach through exit",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "physical lane geometry and body projection require original review"
+          },
+          {
+            "name": "entry_exit_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-backed requested exit plus actual entry, ring sweep and exit heading",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "intention and exit classification require independent review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling; original motion unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_roundabout_topology",
+            "unit": "structured",
+            "method": "original map ring lane and entry/exit links"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixtures establish software behavior only; original Native motion and pixels unverified.",
+          "Lane choice and intended exit are measured separately from any legal verdict."
+        ]
+      },
+      "physical_target": "u_turn from south entry back to south exit while occupying right circulatory lane"
     }
   ],
   "comparisons": [
@@ -118,6 +356,28 @@
       ],
       "status": "planned_unverified",
       "measurement_method": "Record lane topology, ego lane occupancy and exit path."
+    },
+    {
+      "comparison_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_lane_comparison",
+      "case_ids": [
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane",
+        "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane"
+      ],
+      "deliberate_differences": [
+        "u_turn_lane_choice"
+      ],
+      "fixed_conditions": [
+        "C131055 two-lane roundabout geometry",
+        "south entry and south U-turn exit intention",
+        "actor",
+        "controls",
+        "participants",
+        "weather",
+        "controller speed and exit path except radial lane choice",
+        "20 Hz 600-frame four-camera profile"
+      ],
+      "status": "planned_unverified",
+      "measurement_method": "Compare original ring lane occupancy and actual U-turn path while holding entry and exit intent fixed."
     }
   ],
   "observations": [
@@ -235,8 +495,14 @@
     {
       "set_id": "full-train",
       "membership_rows": 5,
-      "status": "unreviewed_membership_only",
-      "reuse_receipt": null
+      "status": "source_equivalence_unverified",
+      "reuse_receipt": null,
+      "reviewed_membership_ids": [
+        "8722d769fd0e7905636540338cba2f3e20c6469281fd2803cb2c6140c35e4268",
+        "73fb19c6f685244c3a4e89fa5820f949cb369f6ea0e27cbebee2aa31f1ea8e32",
+        "1d443a92d509ad59b4ac8b86b507db386d68ebd30a1dc8f8746d26053cb7b8ad",
+        "d76f009a4e2ad172e0ae997769815a403f5455b8433980fdfd05c0d109ab61fc"
+      ]
     }
   ],
   "runtime_uncertainties": [
@@ -260,9 +526,9 @@
     "rate_hz": 20,
     "cameras": [
       "overview",
-      "ego_front",
-      "entry_lane",
-      "exit_lane"
+      "approach",
+      "reference_corner",
+      "driver_reference"
     ],
     "observed_native": false,
     "selected_delivery": false
@@ -271,6 +537,65 @@
     "roundabout_topology": "native map, circulatory lane and entry/exit link hashes required",
     "left_lane": "inner of two sourced circulatory lanes with body occupancy measured each frame",
     "left_turn_exit": "sourced exit intention plus entry/exit heading and path sweep",
-    "lane_change": "changes in measured ring lane occupancy; no assumption from requested policy"
+    "lane_change": "changes in measured ring lane occupancy; no assumption from requested policy",
+    "u_turn_exit": "sourced U-turn intention plus south exit heading and full 2pi ring sweep"
+  },
+  "evidence_review": {
+    "reviewer": "worker CPU source review",
+    "method": "Compared all five frozen accepted membership rows and review-context descriptors with supplied source inventories. No evidence.json or per-recording source packets were exported; membership and labels alone cannot establish original roundabout topology, intended maneuver, lane occupancy or full-event pixels. No accepted original is replayed or claimed equivalent.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "left_turn_left_lane_original",
+        "requirement": "source-verified left-turn exit using left circulatory lane",
+        "source": "LVMC 11.43.010(C)(1); frozen membership 8722d769fd0e7905636540338cba2f3e20c6469281fd2803cb2c6140c35e4268",
+        "why_existing_insufficient": "accepted membership lacks original source packet and source-hashed body, lane and exit evidence"
+      },
+      {
+        "id": "left_turn_right_lane_original",
+        "requirement": "source-verified left-turn exit using right circulatory lane",
+        "source": "LVMC 11.43.010(C)(1); frozen membership 73fb19c6f685244c3a4e89fa5820f949cb369f6ea0e27cbebee2aa31f1ea8e32",
+        "why_existing_insufficient": "accepted membership lacks original source packet and source-hashed body, lane and exit evidence"
+      },
+      {
+        "id": "u_turn_left_lane_original",
+        "requirement": "source-verified U-turn exit using left circulatory lane",
+        "source": "LVMC 11.43.010(C)(1); frozen membership 1d443a92d509ad59b4ac8b86b507db386d68ebd30a1dc8f8746d26053cb7b8ad",
+        "why_existing_insufficient": "accepted membership lacks original source packet and source-hashed body, lane and exit evidence"
+      },
+      {
+        "id": "u_turn_right_lane_original",
+        "requirement": "source-verified U-turn exit using right circulatory lane",
+        "source": "LVMC 11.43.010(C)(1); frozen membership d76f009a4e2ad172e0ae997769815a403f5455b8433980fdfd05c0d109ab61fc",
+        "why_existing_insufficient": "accepted membership lacks original source packet and source-hashed body, lane and exit evidence"
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "whole roundabout ring, both circulatory lanes, subject body and south/west exits",
+        "interval": "all 600 original Native frames, 0–30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "south entry and subject approach/entry body",
+        "interval": "all 600 original Native frames, 0–30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "inner and outer circulatory lane occupancy and west/south exit links",
+        "interval": "all 600 original Native frames, 0–30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject driver view of entry, circulating lanes and intended exit",
+        "interval": "all 600 original Native frames, 0–30 s"
+      }
+    ]
   }
 }

@@ -1,16 +1,41 @@
 {
   "format": "worker-diagnostic-measurement-contract",
   "law_source": "LVMC 11.43.010(C)(1)",
-  "scope": "C131055 two-lane roundabout, left-turn exit intention, lane-choice comparison",
+  "scope": "C131055 two-lane roundabout, left-turn and U-turn exit intentions, paired lane-choice comparisons",
   "rate_hz": 20,
   "duration_s": 30,
   "frames": 600,
-  "source_cameras": ["overview", "ego_front", "entry_lane", "exit_lane"],
-  "required_source_hashes": ["native_map", "roundabout_lanes", "entry_exit_links", "ego_body", "ego_motion", "exit_intention", "camera_manifest"],
-  "measurements": ["entry/circulation/exit ordering", "radial circulatory lane occupancy", "lane changes", "angular sweep", "westbound exit heading"],
+  "source_cameras": [
+    "overview",
+    "approach",
+    "reference_corner",
+    "driver_reference"
+  ],
+  "required_source_hashes": [
+    "native_map",
+    "roundabout_lanes",
+    "entry_exit_links",
+    "ego_body",
+    "ego_motion",
+    "exit_intention",
+    "camera_manifest"
+  ],
+  "measurements": [
+    "entry/circulation/exit ordering",
+    "radial circulatory lane occupancy",
+    "lane changes",
+    "270-degree left-turn or 360-degree U-turn sweep",
+    "westbound left-turn or southbound U-turn exit heading"
+  ],
   "comparison_variable": "circulatory lane choice",
-  "fixed_conditions": ["roundabout geometry", "entry and left-turn exit intention", "ego actor", "capture duration and cameras", "non-target traffic and weather"],
+  "fixed_conditions": [
+    "roundabout geometry",
+    "entry and exit intention within each comparison",
+    "ego actor",
+    "capture duration and cameras",
+    "non-target traffic and weather"
+  ],
   "legal_compliance": "unassessed",
-  "unselected_alternative": "U-turn intention with linked lane-choice comparison",
-  "limitations": "This is a source-shaped synthetic diagnostic, not exact runtime offline/compatibility, saved processing, independent audit, or original Native motion."
+  "unselected_alternative": null,
+  "limitations": "This source-shaped diagnostic proves only the CPU meter. Original Native motion, map topology, body footprint, pixels, independent audits and legal judgment remain unverified."
 }

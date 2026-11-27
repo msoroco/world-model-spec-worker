@@ -1,25 +1,9 @@
-# training__C149498__NRS-484B-503__motor_vehicle_driver
+# C149498 NRS 484B.503 passenger curb loading handoff
 
-Status: partial. A source-shaped loading timeline proof is present; this is not a deployable delivery package.
+Status: ready for CPU delivery preparation. The exact scoped strict gate exited 0 on 2026-11-26. Original Native capture and independent legal review remain for GPU delivery.
 
-## 2026-11-23 CPU construction checkpoint
+Six selected 600-frame, 20 Hz Native cases cover passenger movement requested versus no transfer, effective versus outside signed hours, and brief stop versus extended park. Four exact comparisons hold the other scene requests fixed. The selected package includes an authored one-way road, marked passenger curb object, sign text and civil-time clock; these are requests and source readbacks, not proof of regulatory authority. Four cameras use the pinned overview, approach, reference_corner and driver_reference profile.
 
-`native/passenger_loading.py` measures a 600-frame, 20 Hz loading episode from raw zone, speed, door, occupancy, passenger doorway and civil-time fields. It interprets explicit sign hours in a declared time zone, including intervals crossing midnight. It reports time in the marked zone, halt time, door time and observed transfer frames without deciding zone validity or expeditiousness. `audit_selected_pair` checks the planned loading/no-transfer comparison over 600 frames: zone, civil time, vehicle motion and door channels remain fixed, while transfer/occupancy channels change; the audit does not confirm a physical transfer. The 0.05 m/s halt classification is an engineering motion tolerance, not a statutory grace period.
+CPU receipts: all six exact offline checks, six current-runtime compatibility positive and missing-source-negative checks, six three-outcome physical and lifecycle fixture proofs, and six recorded-only saved-processing checks passed. The semantic stage chain validated eight stages and six selected cases. Independent delivery audit predicates passed positive and synthetic-source-negative tests for all six cases. Four comparison audits passed positive and changed-actor-negative tests. The exact command `.venv-cpu/bin/python -B worker_check.py --assignment training__C149498__NRS-484B-503__motor_vehicle_driver --complete --require-delivery-ready` exited 0; see `strict-assignment.log`. The execution manifest binds source-hashed constructions and receipts; `cpu-diagnostic-proof.json` indexes them.
 
-`native/prove_passenger_loading.py` passes a 30-second synthetic sample and rejects missing frames, broken time join, missing occupant source, missing doorway source and missing sign source. Its paired proof also rejects a changed door, changed civil timestamp, transfer in the no-transfer branch, and an occupant change without transfer. Its sign, curb and passenger observations are labeled synthetic diagnostics. The proof log is `native/passenger-loading-proof.log` (SHA-256 `e1f862f22debffe2fa386fee27a60e1cc2c79f6f6a898c5edfac4f2995f4da9b`). The analyzer SHA-256 is `e26ef548d1029f05b99522ec86d5d03ebfb4934c03d9d37f6c1780eb4f9b6e7f`; proof script SHA-256 is `c866ba9b8e96ce80bbcf41db97ca55a580a6926acbe545fc194c3a70e6fb5204`.
-
-Next CPU work: bind a real passenger curb zone, its sign and applicable regulations to Native source acquisition; implement the exact comparison of observed passenger transfer versus no transfer while holding zone, time, vehicle and halt fixed; add four source cameras, selected construction and risk fallbacks; then run offline, compatibility, saved processing and independent audit proofs. Leave both cases unselected until these paths pass.
-
-Exact law: A person shall not stop, stand or park a vehicle for any purpose or period of time except for the expeditious loading or unloading of passengers in any place marked as a passenger curb loading zone during hours when the regulations applicable to such passenger curb loading zone are effective.
-
-Selected witness scope: Actual passenger loading during effective hours. The case plan inventories 2 source topics and drafts one controlled comparison on `actual_passenger_loading`. Neither case has a Native realization or legal outcome.
-
-The local snapshot lists 0 accepted membership rows. No source-hashed equivalence receipt was available, so no historical recording is claimed reusable.
-
-Remaining gap: Native physical mechanism, exact constructions, offline/compatibility recipes, measured saved fixtures and independent audits are not yet produced for the selected law branch and source alternatives.
-
-Resume: validate source alternatives and exceptions against the exact law; implement the selected comparison and each additional runnable source branch with semantic proposals, four distinct candidate plans, native and camera configuration, offline and compatibility proofs, saved positive/negative audit, and comparison audit. Reuse a historical original only with an exact source-hashed equivalence receipt. Set ready only after all CPU proofs pass.
-
-Physical prerequisites: Use an actual marked passenger curb loading zone with effective civil hours, stationary episode, door/occupant events and expeditious passenger transfer.
-
-Legal limit: A stopped vehicle alone cannot establish loading; the statutory exception is purpose and duration dependent.
+Production acceptance must read the original Native bodies, sign, civil time, synchronized video pixels and independent source review. Actual passenger exchange, legal effect of signed hours, regulatory authority and expeditiousness are unresolved original-source judgments. The 20 m or 30 m authored arrival and departure engineering motion goals are physical completion checks, not statutory time limits or legal cutoffs. No legal outcome or accepted recording is claimed.

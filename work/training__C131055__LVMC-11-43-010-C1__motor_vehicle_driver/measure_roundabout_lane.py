@@ -4,7 +4,7 @@ import math
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "entry_lane", "exit_lane"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 HASHES = ("native_map", "roundabout_lanes", "entry_exit_links", "ego_body",
           "ego_motion", "exit_intention", "camera_manifest")
 

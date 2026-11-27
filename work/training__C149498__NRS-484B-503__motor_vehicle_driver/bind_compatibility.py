@@ -22,7 +22,8 @@ def main():
     for entry in manifest["cases"]:
         slug = entry["case_id"].rsplit("__", 1)[1]
         label = "condition-a" if slug == "condition_a" else slug
-        source = REPO / ".runtime-work" / "c149498-loading" / ("compat-" + label + "-v8")
+        version = "v9" if slug == "extended_park_no_transfer" else "v8"
+        source = REPO / ".runtime-work" / "c149498-loading" / ("compat-" + label + "-" + version)
         receipt_path = source / "compatibility.json"
         if not receipt_path.is_file():
             raise ValueError("Current-runtime compatibility proof missing: " + slug)
@@ -37,12 +38,11 @@ def main():
         entry["compatibility"] = {"receipt": copy.name, "sha256": sha(copy),
             "log": "cpu-compat-" + slug + "-analysis.log"}
         entry["negative"] = {"log": "cpu-compat-" + slug + "-negative.log"}
-        entry["acquisition"] = {"loading_zone": {"entrypoint": "finalize.py",
-            "method": "original OpenDRIVE curb and sign readback",
-            "evidence": "channels/loading_zone.json"},
-            "passenger_context": {"entrypoint": "finalize.py",
-                "method": "original passenger actor and four-camera frame join",
-                "evidence": "channels/ru.pedestrian.jsonl"}}
+        entry["acquisition"] = {channel["name"]: {
+            "entrypoint": "finalize.py",
+            "method": "source-hashed original Native actor, sign, civil-time and four-camera frame join",
+            "evidence": "channels/" + channel["name"] + ".jsonl"}
+            for channel in entry["recording_description"]["channels"]}
     put(path, manifest)
     return {"cases": len(manifest["cases"]), "manifest_sha256": sha(path)}
 
