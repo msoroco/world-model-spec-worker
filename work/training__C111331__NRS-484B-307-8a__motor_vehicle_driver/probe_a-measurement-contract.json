@@ -1,0 +1,42 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "signal_governing_id",
+      "method": "measure_activation",
+      "value_type": "text",
+      "kind": "sourced_context",
+      "inputs": [
+        "steady-red-native-samples.jsonl",
+        "signal_survey.json",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "red_stopped_frames",
+      "method": "measure_stop_and_hold",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "steady-red-native-samples.jsonl",
+        "signal_survey.json",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "steady-red-native-samples.jsonl"
+    ],
+    "error_contains": "Missing required source: steady-red-native-samples.jsonl"
+  }
+}

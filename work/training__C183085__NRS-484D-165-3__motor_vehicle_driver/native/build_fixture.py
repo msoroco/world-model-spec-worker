@@ -84,7 +84,7 @@ def main():
             videos = [{"path": name + ".mkv", "frames": 600,
                        "width": 1920 if name == "overview" else 1280,
                        "height": 1080 if name == "overview" else 720,
-                       "fps": 20, "color": "blue" if suffix.endswith("1") else "green"}
+                       "fps": 20, "color": "blue"}
                       for name in CAMERAS]
             specification = {"files": files, "graphs": graphs, "videos": videos}
             spec_path = HERE / ("selected-" + suffix + "-fixture.json")

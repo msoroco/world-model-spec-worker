@@ -35,6 +35,8 @@ def stop_reference(row: dict) -> tuple[str, float]:
     if crosswalk is not None:
         if sign is None and marking is None:
             raise ValueError("Crosswalk stop indication is not sourced")
+        if any(abs(float(indication) - float(crosswalk)) > 0.05 for indication in (sign, marking) if indication is not None):
+            raise ValueError("Crosswalk and stop indication positions conflict")
         return "nearest_crosswalk", float(crosswalk)
     if sign is not None:
         return "indicated_sign", float(sign)
@@ -43,7 +45,7 @@ def stop_reference(row: dict) -> tuple[str, float]:
     return "intersection_entry", float(row["intersection_entry_y_m"])
 
 
-def analyze(rows: list[dict], *, expected_signal_id: str) -> dict:
+def analyze(rows: list[dict], *, expected_signal_id: str, allow_fixture: bool = False) -> dict:
     """Measure the original stop, hold, entry and turn/yield facts.
 
     Engineering sample brackets and the 0.05 m geometry tolerance describe
@@ -56,7 +58,7 @@ def analyze(rows: list[dict], *, expected_signal_id: str) -> dict:
         missing = set(REQUIRED) - set(row)
         if missing:
             raise ValueError("Missing original Native source: " + ", ".join(sorted(missing)))
-        if row["source_kind"] != "native_observed":
+        if row["source_kind"] != ("synthetic_native_sample" if allow_fixture else "native_observed"):
             raise ValueError("Requested or synthetic source is not Native observation")
         if row["governing_signal_id"] != expected_signal_id:
             raise ValueError("Signal does not govern the observed approach")
@@ -97,8 +99,10 @@ def analyze(rows: list[dict], *, expected_signal_id: str) -> dict:
     yield_observation = {
         "pedestrian_priority_present": any(r["pedestrian_priority_present"] for r in rows),
         "traffic_priority_present": any(r["traffic_priority_present"] for r in rows),
-        "pedestrian_yielded": all(r["pedestrian_yielded"] for r in rows if r["pedestrian_priority_present"]),
-        "traffic_yielded": all(r["traffic_yielded"] for r in rows if r["traffic_priority_present"]),
+        "pedestrian_yielded": (all(r["pedestrian_yielded"] for r in rows if r["pedestrian_priority_present"])
+                               if any(r["pedestrian_priority_present"] for r in rows) else None),
+        "traffic_yielded": (all(r["traffic_yielded"] for r in rows if r["traffic_priority_present"])
+                            if any(r["traffic_priority_present"] for r in rows) else None),
     }
     return {
         "stop_reference_kind": reference[0], "stop_reference_y_m": reference[1],
@@ -111,7 +115,7 @@ def analyze(rows: list[dict], *, expected_signal_id: str) -> dict:
         "observed_maneuver": turn,
         "turn_permission_context": permission_context,
         "yield_observation": yield_observation,
-        "source_kind": "native_observed",
+        "source_kind": "synthetic_native_sample" if allow_fixture else "native_observed",
         "legal_outcome": None,
         "physical_visibility_verified": False,
     }

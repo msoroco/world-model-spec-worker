@@ -15,7 +15,7 @@ def rows(**override):
         "source_kind": "native_observed", "signal_state": "red",
         "governing_signal_id": "head-307-8a", "ego_front_y_m": -3.0,
         "ego_speed_mps": 2.0, "nearest_crosswalk_y_m": 0.0,
-        "indicated_sign_y_m": -0.5, "indicated_marking_y_m": None,
+        "indicated_sign_y_m": 0.0, "indicated_marking_y_m": None,
         "intersection_entry_y_m": 5.0, "ego_lane_side": "right",
         "ego_lane_extreme": True, "ego_maneuver": "straight",
         "approach_one_way": False, "downstream_direction": "two_directional",
@@ -84,6 +84,8 @@ class RedMeasurementTest(unittest.TestCase):
     def test_conflicting_references_rejected(self):
         with self.assertRaisesRegex(ValueError, "Conflicting sign"):
             red.analyze(rows(indicated_marking_y_m=0.25), expected_signal_id="head-307-8a")
+        with self.assertRaisesRegex(ValueError, "Crosswalk and stop indication positions conflict"):
+            red.analyze(rows(indicated_sign_y_m=-0.5), expected_signal_id="head-307-8a")
 
 
 if __name__ == "__main__":

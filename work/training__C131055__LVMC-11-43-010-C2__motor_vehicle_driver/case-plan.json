@@ -61,45 +61,146 @@
   },
   "cases": [
     {
-      "case_id": "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__probe_01",
+      "case_id": "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__right_lane",
       "target_law_id": "LVMC-11-43-010-C2",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
-      "physical_target": "right exit from right lane",
-      "comparison_variable": "exit lane used to turn right",
-      "selection_status": "not_selected",
+      "physical_target": "east first exit from right lane circulatory lane",
+      "comparison_variable": "circulatory lane choice for same right exit",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "authored_original_native_unverified",
+      "selected": true,
+      "gap_ids": [
+        "right_exit_right_lane_original"
+      ],
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_lane_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map lane topology and frame-joined subject body occupancy",
+            "time_window": "all 600 original Native frames from approach through exit",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "physical lane geometry and body projection require original review"
+          },
+          {
+            "name": "entry_exit_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-backed requested exit plus actual entry, ring sweep and exit heading",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "intention and exit classification require independent review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling; original motion unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_roundabout_topology",
+            "unit": "structured",
+            "method": "original map ring lane and entry/exit links"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixtures establish software behavior only; original Native motion and pixels unverified.",
+          "Lane choice and intended exit are measured separately from any legal verdict."
+        ]
+      }
     },
     {
-      "case_id": "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__probe_02",
+      "case_id": "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__left_lane",
       "target_law_id": "LVMC-11-43-010-C2",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
-      "physical_target": "right exit from left lane",
-      "comparison_variable": "exit lane used to turn right",
-      "selection_status": "not_selected",
+      "physical_target": "east first exit from left lane circulatory lane",
+      "comparison_variable": "circulatory lane choice for same right exit",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "authored_original_native_unverified",
+      "selected": true,
+      "gap_ids": [
+        "right_exit_left_lane_original"
+      ],
+      "source_topic_ids": [
+        "text-0",
+        "text-1",
+        "text-2"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "roundabout_lane_occupancy",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original map lane topology and frame-joined subject body occupancy",
+            "time_window": "all 600 original Native frames from approach through exit",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "physical lane geometry and body projection require original review"
+          },
+          {
+            "name": "entry_exit_intent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "source-backed requested exit plus actual entry, ring sweep and exit heading",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA map and Native frame",
+            "uncertainty": "intention and exit classification require independent review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "m,deg",
+            "sampling_rate_hz": 20,
+            "method": "original Native subject transform, velocity and body extent",
+            "time_window": "all 600 original Native frames",
+            "reference_frame": "original CARLA world and Native frame",
+            "uncertainty": "50 ms sampling; original motion unverified"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "context_roundabout_topology",
+            "unit": "structured",
+            "method": "original map ring lane and entry/exit links"
+          }
+        ],
+        "limitations": [
+          "Synthetic fixtures establish software behavior only; original Native motion and pixels unverified.",
+          "Lane choice and intended exit are measured separately from any legal verdict."
+        ]
+      }
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__planned_comparison",
+      "comparison_id": "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__right_exit_lane_comparison",
       "case_ids": [
-        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__probe_01",
-        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__probe_02"
+        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__right_lane",
+        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__left_lane"
       ],
       "deliberate_differences": [
-        "exit lane used to turn right"
+        "requested and measured circulatory lane choice for same east first right exit"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "physical route topology",
-        "participant identities",
-        "camera policy",
-        "recording rate and duration",
-        "nonvariable context"
+        "frozen law, cell and actor",
+        "south entry and east first-exit route",
+        "roundabout geometry and participant identity",
+        "20 Hz, 30-second four-camera capture policy",
+        "controller policy and nonvariable context"
       ]
     }
   ],
@@ -156,10 +257,9 @@
     "The three accepted membership rows are not proof of current requirement equivalence; inspect source-hashed accepted comparison before any new selection."
   ],
   "runtime_gaps": [
-    "No Native construction or physically verified map/route/footprint and camera implementation.",
-    "No four distinct candidate files with offline and positive/negative compatibility proofs.",
-    "No saved measured-result fixtures, Core mapping or independent acceptance/comparison audit.",
-    "No source-hashed equivalence receipt for any accepted recording; membership alone does not prove current requirement coverage."
+    "Exact selected primary and risk-based fallback offline/public/saved receipts and independent delivery/comparison audits remain to be proven.",
+    "Source-hashed accepted-recording equivalence cannot be established from absent original recording files; new selected pair is authored.",
+    "Original Native route, lane projection, four camera pixels and physical completion remain local review."
   ],
   "observations": [
     {
@@ -245,10 +345,10 @@
       "branch": "roundabout exit intention",
       "status": "selected_required",
       "case_ids": [
-        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__probe_01",
-        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__probe_02"
+        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__right_lane",
+        "training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver__left_lane"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Selected source-bound right-exit lane pair; original Native motion, camera pixels and legal outcome unverified."
     }
   ],
   "roundabout_source_capture_checkpoint": {
@@ -263,6 +363,193 @@
     "test_exit_code": 0,
     "synthetic_only": true,
     "positive_lane_variants": 3,
-    "negative_rejections": 7
+    "negative_rejections": 7,
+    "authored_native": {
+      "runner": "runner.py",
+      "geometry": "geometry.py",
+      "scene": "roundabout_scene.py",
+      "finalizer": "finalize.py",
+      "meter": "measure_roundabout_lane.py",
+      "cpu_proof": "native/prove_right_exit.py",
+      "original_native_executed": false
+    }
+  },
+  "evidence_review": {
+    "reviewer": "worker CPU source review",
+    "method": "Read every frozen accepted membership and exported review-context row; compared right-exit lane-choice labels, but referenced video/trace/metadata paths are absent from this export and receipt_sources are empty. Labels are not source-verified physical observations. No accepted original is replayed or claimed equivalent.",
+    "facts": [
+      {
+        "recording_id": "84523764671c975a7c9c04c7c19badb6ea6bbe817da5a92bb03548200b299fd6",
+        "demonstrated_fact": "Exported accepted membership and review label left-left-lane; unresolved maneuver intention",
+        "limitations": "No supplied original video, trace, metadata bytes or source-hashed equivalence receipt; physical lane occupancy and exit cannot be established.",
+        "sources": [
+          {
+            "path": "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json",
+            "sha256": "08662696830dbd5d23dbec4e8d353a1c1cb5c03a3ca06f432a97025243f9b9ad"
+          },
+          {
+            "path": "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/README.md",
+            "sha256": "0ee64c367ddd5f63203d6b35b24d8b6fdd8aa6af7407ed6dbcc3d6d49e36f201"
+          }
+        ]
+      },
+      {
+        "recording_id": "9994ff19d7874fe5f0ea8ef67da59e5c73efa63bb7f9efd62823e658c93eda71",
+        "demonstrated_fact": "Exported accepted membership and review label right-left-lane; right exit requested, left lane label",
+        "limitations": "No supplied original video, trace, metadata bytes or source-hashed equivalence receipt; physical lane occupancy and exit cannot be established.",
+        "sources": [
+          {
+            "path": "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json",
+            "sha256": "08662696830dbd5d23dbec4e8d353a1c1cb5c03a3ca06f432a97025243f9b9ad"
+          },
+          {
+            "path": "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/README.md",
+            "sha256": "0ee64c367ddd5f63203d6b35b24d8b6fdd8aa6af7407ed6dbcc3d6d49e36f201"
+          }
+        ]
+      },
+      {
+        "recording_id": "f9ded071da8b82c7a1eca454a23d4766f8d9e3483d9eef8c6162d5e796fdb357",
+        "demonstrated_fact": "Exported accepted membership and review label right-right-lane; right exit requested, right lane label",
+        "limitations": "No supplied original video, trace, metadata bytes or source-hashed equivalence receipt; physical lane occupancy and exit cannot be established.",
+        "sources": [
+          {
+            "path": "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json",
+            "sha256": "08662696830dbd5d23dbec4e8d353a1c1cb5c03a3ca06f432a97025243f9b9ad"
+          },
+          {
+            "path": "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/README.md",
+            "sha256": "0ee64c367ddd5f63203d6b35b24d8b6fdd8aa6af7407ed6dbcc3d6d49e36f201"
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      {
+        "id": "right_exit_right_lane_original",
+        "requirement": "source-verified right first exit using right lane circulatory lane",
+        "source": "LVMC 11.43.010(C)(2); inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json and inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/README.md",
+        "why_existing_insufficient": "Accepted membership and label lack original source packet, camera bytes, physical body/lane evidence and source-hashed equivalence review."
+      },
+      {
+        "id": "right_exit_left_lane_original",
+        "requirement": "source-verified right first exit using left lane circulatory lane",
+        "source": "LVMC 11.43.010(C)(2); inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json and inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/README.md",
+        "why_existing_insufficient": "Accepted membership and label lack original source packet, camera bytes, physical body/lane evidence and source-hashed equivalence review."
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "st.roundabout": {
+      "evidence": "Original map topology, actor/body/pose, control intent and synchronized camera sources are required by the authored saved finalizer; synthetic source-shaped fixture does not prove original motion or legal outcome.",
+      "channels": [
+        "entry_exit_intent",
+        "ego_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json"
+      ]
+    },
+    "st.lane": {
+      "evidence": "Original map topology, actor/body/pose, control intent and synchronized camera sources are required by the authored saved finalizer; synthetic source-shaped fixture does not prove original motion or legal outcome.",
+      "channels": [
+        "roundabout_lane_occupancy"
+      ],
+      "source_refs": [
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "Original map topology, actor/body/pose, control intent and synchronized camera sources are required by the authored saved finalizer; synthetic source-shaped fixture does not prove original motion or legal outcome.",
+      "channels": [
+        "roundabout_lane_occupancy"
+      ],
+      "source_refs": [
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original map topology, actor/body/pose, control intent and synchronized camera sources are required by the authored saved finalizer; synthetic source-shaped fixture does not prove original motion or legal outcome.",
+      "channels": [
+        "roundabout_lane_occupancy"
+      ],
+      "source_refs": [
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Original map topology, actor/body/pose, control intent and synchronized camera sources are required by the authored saved finalizer; synthetic source-shaped fixture does not prove original motion or legal outcome.",
+      "channels": [
+        "entry_exit_intent",
+        "ego_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json"
+      ]
+    },
+    "kin.heading": {
+      "evidence": "Original map topology, actor/body/pose, control intent and synchronized camera sources are required by the authored saved finalizer; synthetic source-shaped fixture does not prove original motion or legal outcome.",
+      "channels": [
+        "entry_exit_intent",
+        "ego_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "Original map topology, actor/body/pose, control intent and synchronized camera sources are required by the authored saved finalizer; synthetic source-shaped fixture does not prove original motion or legal outcome.",
+      "channels": [
+        "roundabout_lane_occupancy"
+      ],
+      "source_refs": [
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json"
+      ]
+    },
+    "kin.path_length": {
+      "evidence": "Original map topology, actor/body/pose, control intent and synchronized camera sources are required by the authored saved finalizer; synthetic source-shaped fixture does not prove original motion or legal outcome.",
+      "channels": [
+        "entry_exit_intent",
+        "ego_pose"
+      ],
+      "source_refs": [
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/assignment.json",
+        "inputs/training__C131055__LVMC-11-43-010-C2__motor_vehicle_driver/review-context/review.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "whole ring, both circulatory lanes, subject body, south entry and east first exit",
+        "interval": "all 600 original Native frames, 0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "south entry and subject body",
+        "interval": "all 600 original Native frames, 0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "inner/outer lane occupancy and east first-exit link",
+        "interval": "all 600 original Native frames, 0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "subject view of entry, circulatory lane and right exit",
+        "interval": "all 600 original Native frames, 0-30 s"
+      }
+    ]
   }
 }
