@@ -51,6 +51,7 @@ def measure(attempt, *, require_original=False):
     onset = None
     longest_ms = 0
     first_ms = last_ms = None
+    first_recording_s = None
     with actor_path.open() as actors, mapping_path.open() as mappings:
         for actor_line, map_line in zip(actors, mappings):
             actor = json.loads(actor_line)
@@ -59,7 +60,12 @@ def measure(attempt, *, require_original=False):
                     mapping.get("native_frame"), int) or actor.get("native_frame") != mapping[
                     "native_frame"]:
                 raise ValueError("Original actor/video frame join differs")
-            if mapping.get("time_s") != count / 20:
+            recording_s = mapping.get("time_s")
+            if not isinstance(recording_s, (int, float)) or not math.isfinite(recording_s):
+                raise ValueError("Original frame timestamp missing")
+            if first_recording_s is None:
+                first_recording_s = recording_s
+            if abs(recording_s - first_recording_s - count / 20) > 1e-5:
                 raise ValueError("Original frame timestamp differs")
             center = actor.get("center_xyz_m")
             velocity = actor.get("velocity_xyz_mps")

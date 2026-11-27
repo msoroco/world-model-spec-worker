@@ -1,0 +1,77 @@
+{
+  "template_id": "LVMC-11-52-300@nonmotor_vehicle_operator",
+  "law_id": "LVMC-11-52-300",
+  "actor": "nonmotor_vehicle_operator",
+  "status": "draft",
+  "quote": "Except for a motor vehicle, no person shall park any vehicle on any street for a period of time longer than thirty minutes between the hours of one a.m. and six a.m. of any day.",
+  "structure": {
+    "activation": {
+      "description": "A person parks a qualifying nonmotor vehicle on a reviewed street during the civil nighttime interval.",
+      "source_clause": "Except for a motor vehicle, no person shall park any vehicle on any street"
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Retain the source-observed continuous duration and compare to the exact statutory threshold without claiming a verdict.",
+      "source_clause": "for a period of time longer than thirty minutes",
+      "numeric_conditions": [
+        {
+          "variable": "night_parking_duration_s",
+          "operator": ">",
+          "value": 1800,
+          "unit": "s"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "description": "Motor vehicle class is excluded; original legal classification required.",
+        "source_clause": "Except for a motor vehicle"
+      }
+    ],
+    "timing": {
+      "description": "Original civil-clock samples inside 01:00\u201306:00 of any day; endpoints need independent review.",
+      "source_clause": "between the hours of one a.m. and six a.m. of any day"
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "motor vehicle",
+        "note": "Independent legal vehicle and propulsion class review; blueprint is insufficient."
+      },
+      {
+        "phrase": "park any vehicle",
+        "note": "Responsible person, parking purpose and actual stillness require source review."
+      },
+      {
+        "phrase": "on any street",
+        "note": "Public street access, jurisdiction and original on-street position require review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "night_parking_duration_s",
+      "kind": "subject_behavior",
+      "range_or_domain": "source-measured continuous seconds below/at/above thirty minutes"
+    },
+    {
+      "name": "parking_request_duration_s",
+      "kind": "controller",
+      "range_or_domain": "1799, 1800, 1801 seconds requested"
+    },
+    {
+      "name": "approach_target_speed_mps",
+      "kind": "controller",
+      "range_or_domain": "derived 5 m approach divided by stop time"
+    },
+    {
+      "name": "on_street",
+      "kind": "world_setup",
+      "range_or_domain": "authored street, pending original review"
+    },
+    {
+      "name": "qualifying_nonmotor_review",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed, not blueprint inferred"
+    }
+  ]
+}

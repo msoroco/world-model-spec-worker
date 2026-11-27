@@ -26,6 +26,8 @@ def build():
     for suffix in ("below_30", "at_30", "above_30"):
         case = ASSIGNMENT + "__" + suffix
         spec = json.loads(json.dumps(baseline))
+        spec["videos"].append({"path": "raw.mkv", "frames": 9, "width": 1920,
+                               "height": 1080, "fps": 20, "color": "black"})
         files = spec["files"]
         findings = {"transport_capability": True, "excluded_device": False,
                     "self_propulsion": False, "responsible_person": "synthetic operator",
@@ -51,20 +53,15 @@ def build():
             "source_kind": "synthetic_cpu"})
         actors = []
         maps = []
-        traces = []
+        original_map = [json.loads(line) for line in files["video_frames.jsonl"].splitlines()]
         for index in range(9):
-            native = 38033 + index
+            native = original_map[index]["native_frame"]
             actors.append({"frame": index, "native_frame": native,
                            "center_xyz_m": [40.0, -1.75, 0.5],
                            "velocity_xyz_mps": [0.0, 0.0, 0.0]})
-            maps.append({"video_frame": index, "carla_frame": native,
-                         "native_frame": native, "time_s": index / 20})
-            trace = json.loads(files["trace.jsonl"].splitlines()[index])
-            trace["time_s"] = index / 20
-            traces.append(trace)
+            maps.append(original_map[index])
         files["native-actor-frames.jsonl"] = "".join(json.dumps(x) + "\n" for x in actors)
         files["video_frames.jsonl"] = "".join(json.dumps(x) + "\n" for x in maps)
-        files["trace.jsonl"] = "".join(json.dumps(x) + "\n" for x in traces)
         manifest = json.loads(files["capture/manifest.json"])
         manifest["case_id"] = case
         manifest["source_run"] = "synthetic-c229398-nine-frame-diagnostic"
@@ -76,7 +73,8 @@ def build():
             "scope": "nine-frame CPU software diagnostic; does not prove thirty-minute capture",
             "case_id": case, "frames": 9, "physical_or_legal_acceptance": False})
         spec_path = ROOT / ("diagnostic-" + suffix + ".json")
-        spec_path.write_text(encoded(spec))
+        spec_path.write_text(json.dumps(spec, separators=(",", ":"),
+                                        allow_nan=False) + "\n")
         recipe = {"format": "worker-fixture-recipe",
                   "sources": [{"path": "fixture-assignment.json",
                                "source": str(original.relative_to(REPO)),

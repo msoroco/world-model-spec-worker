@@ -1,4 +1,4 @@
-"""Independent request-axis audit for unselected statutory variants."""
+"""Independent request-axis audit for source-shaped statutory diagnostics."""
 from __future__ import annotations
 
 import json
@@ -33,10 +33,15 @@ def audit(left_path: Path, right_path: Path, axis: str) -> dict:
     for item in (left, right):
         if item.get("source_gate_passed") is not True or not item.get("source_gate_sha256"):
             raise ValueError("Original source gate missing")
+        if item.get("source_gate_kind") not in {"synthetic_cpu", "original_native"}:
+            raise ValueError("Source gate provenance missing")
         if item.get("physical_acceptance_claimed") is not False or item.get("legal_acceptance_claimed") is not False:
             raise ValueError("Unverified outcome asserted")
     return {"format": "c135702-statutory-comparison-draft",
             "case_ids": [left["case_id"], right["case_id"]],
             "axis": axis, "fixed_conditions": list(FIXED),
             "source_gates": [left["source_gate_sha256"], right["source_gate_sha256"]],
+            "source_gate_kinds": [left["source_gate_kind"], right["source_gate_kind"]],
+            "original_capture_attested": all(item["source_gate_kind"] == "original_native"
+                                             for item in (left, right)),
             "physical_acceptance_claimed": False, "legal_acceptance_claimed": False}

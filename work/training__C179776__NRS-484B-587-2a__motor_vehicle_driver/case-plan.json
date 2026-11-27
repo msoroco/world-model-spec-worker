@@ -1,51 +1,67 @@
 {
-  "assignment_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver",
-  "law_id": "NRS-484B-587-2a",
-  "cell_id": "C179776",
-  "actor": "motor_vehicle_driver",
-  "selected_branch": "Outside-lane travel on a paved highway segment",
-  "requirement_dispositions": [
-    {
-      "requirement": "NRS-484B-587-2a",
-      "source": "NRS 484B.587(2)(a); with 484B.587(3), NRS 484B.210(4)",
-      "branch": "Outside-lane travel on a paved highway segment",
-      "status": "selected_required",
-      "case_ids": [
-        "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a",
-        "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b"
-      ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
-    }
+  "activation_conditions_from_unreviewed_summary": [
+    "the subject drives on a controlled-access highway",
+    "the footprint is on a portion outside a marked traffic lane or marked entrance or exit lane"
   ],
+  "actor": "motor_vehicle_driver",
+  "assignment_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full original 30 s attempt",
+        "subject": "ordinary subject, lane/shoulder boundary and traffic context",
+        "view": "overview"
+      },
+      {
+        "interval": "full original 30 s attempt",
+        "subject": "ordinary subject, lane/shoulder boundary and traffic context",
+        "view": "approach"
+      },
+      {
+        "interval": "full original 30 s attempt",
+        "subject": "ordinary subject, lane/shoulder boundary and traffic context",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full original 30 s attempt",
+        "subject": "ordinary subject, lane/shoulder boundary and traffic context",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "case_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a",
-      "target_law_id": "NRS-484B-587-2a",
-      "kind": "planned_only",
-      "target_type": "compliant_attempt",
-      "physical_target": "remain in marked travel lane",
       "comparison_variable": "controlled_access_lane_occupancy",
-      "draft_construction": "runner.py --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --check",
-      "construction_status": "draft_static_cpu_checked_original_native_unverified"
+      "construction_status": "selected_candidate_bundle_offline_cpu_passed_original_native_unverified",
+      "draft_construction": "selected-candidates/probe_a/primary/construction.json",
+      "kind": "planned_only",
+      "physical_target": "remain in marked travel lane",
+      "target_law_id": "NRS-484B-587-2a",
+      "target_type": "compliant_attempt"
     },
     {
       "case_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b",
-      "target_law_id": "NRS-484B-587-2a",
-      "kind": "planned_only",
-      "target_type": "violating_attempt",
-      "physical_target": "drive beyond marked lane without documented exception",
       "comparison_variable": "controlled_access_lane_occupancy",
-      "draft_construction": "runner.py --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --check",
-      "construction_status": "draft_static_cpu_checked_original_native_unverified"
+      "construction_status": "selected_candidate_bundle_offline_cpu_passed_original_native_unverified",
+      "draft_construction": "selected-candidates/probe_b/primary/construction.json",
+      "kind": "planned_only",
+      "physical_target": "drive beyond marked lane without documented exception",
+      "target_law_id": "NRS-484B-587-2a",
+      "target_type": "violating_attempt"
     }
   ],
+  "cell_id": "C179776",
   "comparisons": [
     {
-      "comparison_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__comparison",
       "case_ids": [
         "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a",
         "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b"
       ],
+      "comparison_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__comparison",
       "deliberate_differences": [
         "controlled_access_lane_occupancy"
       ],
@@ -54,76 +70,82 @@
       ]
     }
   ],
+  "draft_original_native_construction": {
+    "authored_route": "positive-ID lane decreasing road station, lateral target only differs",
+    "authority_packet": "independent controlled-access designation source required at execution; none supplied",
+    "camera_names": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ],
+    "candidate_plans_cpu_checked": 8,
+    "duration_s": 30,
+    "entrypoint": "runner.py",
+    "limitations": [
+      "native map readback and motion unverified",
+      "entrance/exit lane survey incomplete",
+      "original physical marking pixels and legal designation unverified",
+      "no selected execution manifest or saved-only receipt"
+    ],
+    "offline_proof": "selected-offline-proof.json",
+    "rate_hz": 20,
+    "road_source": "native/controlled_access_road.py",
+    "status": "static_cpu_check_passed_original_execution_unverified"
+  },
+  "existing_evidence": [],
+  "law_id": "NRS-484B-587-2a",
   "observations": [
     {
-      "name": "st.controlled_access",
       "mandatory": true,
+      "name": "st.controlled_access",
       "reason": "the highway and its entrance and exit lanes"
     },
     {
-      "name": "st.lane",
       "mandatory": true,
+      "name": "st.lane",
       "reason": "the marked traffic lanes"
     },
     {
-      "name": "st.lane_marking",
       "mandatory": true,
+      "name": "st.lane_marking",
       "reason": "the markings that bound them"
     },
     {
-      "name": "rel.occupies",
       "mandatory": true,
+      "name": "rel.occupies",
       "reason": "the footprint outside any marked lane"
     },
     {
-      "name": "st.shoulder",
       "mandatory": true,
+      "name": "st.shoulder",
       "reason": "the paved shoulder, with its paved attribute"
     },
     {
-      "name": "dev.regulatory_sign",
       "mandatory": true,
+      "name": "dev.regulatory_sign",
       "reason": "code shoulder_use_permitted for the excepted classes"
     },
     {
-      "name": "ru.emergency_vehicle",
       "mandatory": true,
+      "name": "ru.emergency_vehicle",
       "reason": "the excepted classes"
     },
     {
-      "name": "ru.official_vehicle",
       "mandatory": true,
+      "name": "ru.official_vehicle",
       "reason": "tow, coroner, incident-management"
     },
     {
-      "name": "ru.transit_bus",
       "mandatory": true,
+      "name": "ru.transit_bus",
       "reason": "a public transit motor bus"
     },
     {
-      "name": "drv.responding_emergency",
       "mandatory": true,
+      "name": "drv.responding_emergency",
       "reason": "the emergency that excuses"
     }
-  ],
-  "sources": [
-    {
-      "path": "inputs/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/assignment.json",
-      "sha256": "1c98ddb04121ac5ee430df5add5c6a5a2a326cbe242685331887deb3546e9243"
-    }
-  ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
-  ],
-  "statutory_text": "Except if required by an emergency or as otherwise authorized by subsection 3 [(3) appended below], a person shall not drive a vehicle on a controlled-access highway: Upon any portion of the highway that lies outside of a marked traffic lane or marked entrance or exit lane. A person driving a vehicle described in paragraphs (a) to (f), inclusive, of subsection 4 of NRS 484B.210 [list appended below] may drive that vehicle on a paved shoulder of a controlled-access highway where lawfully placed signage allows that vehicle to use the shoulder in that manner. The provisions of subparagraph (1) of paragraph (c) of subsection 1 do not apply to: (a) An authorized emergency vehicle described in NRS 484A.480; (b) A vehicle which has been issued a permit to operate as an authorized emergency vehicle pursuant to NRS 484A.490; (c) A traffic incident management vehicle; (d) A tow car; (e) A coroner vehicle; or (f) A public transit motor bus, that is being driven on the paved shoulder of a highway where lawfully placed signage allows that vehicle to use the shoulder in that manner.",
-  "activation_conditions_from_unreviewed_summary": [
-    "the subject drives on a controlled-access highway",
-    "the footprint is on a portion outside a marked traffic lane or marked entrance or exit lane"
-  ],
-  "witness_branches": [
-    "Outside-lane travel on a paved highway segment"
   ],
   "physical_capability_to_check": [
     "controlled_access_lane_occupancy",
@@ -138,25 +160,134 @@
     "ru.transit_bus",
     "drv.responding_emergency"
   ],
-  "draft_original_native_construction": {
-    "entrypoint": "runner.py",
-    "road_source": "native/controlled_access_road.py",
-    "status": "static_cpu_check_passed_original_execution_unverified",
-    "camera_names": [
-      "overview",
-      "approach",
-      "reference_corner",
-      "driver_reference"
-    ],
-    "duration_s": 30,
-    "rate_hz": 20,
-    "authored_route": "positive-ID lane decreasing road station, lateral target only differs",
-    "authority_packet": "independent controlled-access designation source required at execution; none supplied",
-    "limitations": [
-      "native map readback and motion unverified",
-      "entrance/exit lane survey incomplete",
-      "original physical marking pixels and legal designation unverified",
-      "no selected execution manifest or saved-only receipt"
-    ]
-  }
+  "requirement_dispositions": [
+    {
+      "branch": "Outside-lane travel on a paved highway segment",
+      "case_ids": [
+        "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a",
+        "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b"
+      ],
+      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven.",
+      "requirement": "NRS-484B-587-2a",
+      "source": "NRS 484B.587(2)(a); with 484B.587(3), NRS 484B.210(4)",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
+    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+  ],
+  "selected_branch": "Outside-lane travel on a paved highway segment",
+  "source_observation_mapping": {
+    "dev.regulatory_sign": {
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    },
+    "drv.responding_emergency": {
+      "channels": [
+        "drv.responding_emergency"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    },
+    "rel.occupies": {
+      "channels": [
+        "rel.occupies"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    },
+    "ru.emergency_vehicle": {
+      "channels": [
+        "ru.emergency_vehicle"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    },
+    "ru.official_vehicle": {
+      "channels": [
+        "ru.official_vehicle"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    },
+    "ru.transit_bus": {
+      "channels": [
+        "ru.transit_bus"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    },
+    "st.controlled_access": {
+      "channels": [
+        "st.controlled_access"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    },
+    "st.lane": {
+      "channels": [
+        "st.lane"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    },
+    "st.lane_marking": {
+      "channels": [
+        "st.lane_marking"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    },
+    "st.shoulder": {
+      "channels": [
+        "st.shoulder"
+      ],
+      "evidence": "Original Native frame-joined source plus independent authority/class/event context; physical verification pending",
+      "source_refs": [
+        "designation-source.json",
+        "native-road-readback.json"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "path": "inputs/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/assignment.json",
+      "sha256": "1c98ddb04121ac5ee430df5add5c6a5a2a326cbe242685331887deb3546e9243"
+    }
+  ],
+  "statutory_text": "Except if required by an emergency or as otherwise authorized by subsection 3 [(3) appended below], a person shall not drive a vehicle on a controlled-access highway: Upon any portion of the highway that lies outside of a marked traffic lane or marked entrance or exit lane. A person driving a vehicle described in paragraphs (a) to (f), inclusive, of subsection 4 of NRS 484B.210 [list appended below] may drive that vehicle on a paved shoulder of a controlled-access highway where lawfully placed signage allows that vehicle to use the shoulder in that manner. The provisions of subparagraph (1) of paragraph (c) of subsection 1 do not apply to: (a) An authorized emergency vehicle described in NRS 484A.480; (b) A vehicle which has been issued a permit to operate as an authorized emergency vehicle pursuant to NRS 484A.490; (c) A traffic incident management vehicle; (d) A tow car; (e) A coroner vehicle; or (f) A public transit motor bus, that is being driven on the paved shoulder of a highway where lawfully placed signage allows that vehicle to use the shoulder in that manner.",
+  "witness_branches": [
+    "Outside-lane travel on a paved highway segment"
+  ]
 }

@@ -2,20 +2,50 @@
   "cell_id": "C229398",
   "actor": "nonmotor_vehicle_operator",
   "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "nonmotor-parking-source-review",
+      "target_law_id": "LVMC-11-52-300",
+      "judgment_refs": [
+        {
+          "phrase": "motor vehicle",
+          "note": "Independent legal vehicle and propulsion class review; blueprint is insufficient."
+        },
+        {
+          "phrase": "park any vehicle",
+          "note": "Responsible person, parking purpose and actual stillness require source review."
+        },
+        {
+          "phrase": "on any street",
+          "note": "Public street access, jurisdiction and original on-street position require review."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original vehicle, parking activity and street review remains open.",
+      "missing_inputs": [
+        "Independent original legal vehicle, purpose and jurisdiction sources."
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
   "cases": [
     {
-      "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30",
-      "target_law_id": "LVMC-11-52-300",
-      "target_type": "compliant_attempt",
-      "rationale": "Exact source-bound strictly longer than thirty minutes boundary probe; physical and legal status unresolved",
-      "paired_probe_id": "c229398_duration_boundary",
-      "deliberate_differences": [
-        "parking stop frame and derived approach target speed"
-      ],
+      "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Observe curb scene before parking request.",
       "variable_assignments": {
         "night_parking_duration_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "parking_request_duration_s": {
           "kind": "controller",
-          "value": 1799.0
+          "value": null
+        },
+        "approach_target_speed_mps": {
+          "kind": "controller",
+          "value": null
         },
         "on_street": {
           "kind": "world_setup",
@@ -26,13 +56,12 @@
           "value": "requires original source review"
         }
       },
+      "unresolved_judgment_calls": [
+        "motor vehicle",
+        "park any vehicle",
+        "on any street"
+      ],
       "recording_description": {
-        "camera_views": [
-          "overview",
-          "approach",
-          "reference_corner",
-          "driver_reference"
-        ],
         "channels": [
           {
             "method": "original Native pose/velocity plus reviewed source context",
@@ -105,30 +134,164 @@
             "unit": "structured"
           }
         ],
-        "duration_s": 1803.15,
         "limitations": [
           "Bicycle blueprint alone does not certify a qualifying legal vehicle",
           "No Native execution or real source media captured"
-        ],
-        "rate_hz": 20
+        ]
+      }
+    },
+    {
+      "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30",
+      "target_law_id": "LVMC-11-52-300",
+      "target_type": "boundary_probe",
+      "rationale": "Exact statutory duration bracket on source-reviewed nonmotor parking branch; original acceptance unresolved.",
+      "paired_probe_id": "c229398_duration_boundary",
+      "deliberate_differences": [
+        "parking_request_duration_s",
+        "approach_target_speed_mps"
+      ],
+      "variable_assignments": {
+        "night_parking_duration_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "parking_request_duration_s": {
+          "kind": "controller",
+          "value": 1799.0
+        },
+        "approach_target_speed_mps": {
+          "kind": "controller",
+          "value": 1.2195121951219512
+        },
+        "on_street": {
+          "kind": "world_setup",
+          "value": true
+        },
+        "qualifying_nonmotor_review": {
+          "kind": "world_setup",
+          "value": "requires original source review"
+        }
+      },
+      "probe": {
+        "primary_variable": "night_parking_duration_s",
+        "comparison_or_standard": "strictly longer than thirty minutes",
+        "target_value_or_branch": "below_30",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "s",
+        "test_value": 1799.0
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "s",
+        "rationale": "One-second engineering bracket around exact legal threshold; no tolerance implied."
       },
       "unresolved_judgment_calls": [
-        "vehicle classification, parking purpose, street jurisdiction and continuous original episode"
-      ]
+        "motor vehicle",
+        "park any vehicle",
+        "on any street"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose/velocity plus reviewed source context",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "Native world and civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 36063 original frames",
+            "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native pose/velocity plus reviewed source context",
+            "name": "ru.motor_vehicle",
+            "reference_frame": "Native world and civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 36063 original frames",
+            "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native pose/velocity plus reviewed source context",
+            "name": "ru.trailer_or_combination",
+            "reference_frame": "Native world and civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 36063 original frames",
+            "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native pose/velocity plus reviewed source context",
+            "name": "kin.time",
+            "reference_frame": "Native world and civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 36063 original frames",
+            "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native pose/velocity plus reviewed source context",
+            "name": "env.civil_time",
+            "reference_frame": "Native world and civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 36063 original frames",
+            "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native pose/velocity plus reviewed source context",
+            "name": "drv.condition_in_effect",
+            "reference_frame": "Native world and civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 36063 original frames",
+            "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native pose/velocity plus reviewed source context",
+            "name": "st.roadway",
+            "reference_frame": "Native world and civil clock",
+            "sampling_rate_hz": 20,
+            "time_window": "all 36063 original frames",
+            "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "original hash-bound source packet",
+            "name": "qualifying_source_review",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "Bicycle blueprint alone does not certify a qualifying legal vehicle",
+          "No Native execution or real source media captured"
+        ]
+      }
     },
     {
       "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30",
       "target_law_id": "LVMC-11-52-300",
-      "target_type": "compliant_attempt",
-      "rationale": "Exact source-bound strictly longer than thirty minutes boundary probe; physical and legal status unresolved",
+      "target_type": "boundary_probe",
+      "rationale": "Exact statutory duration bracket on source-reviewed nonmotor parking branch; original acceptance unresolved.",
       "paired_probe_id": "c229398_duration_boundary",
       "deliberate_differences": [
-        "parking stop frame and derived approach target speed"
+        "parking_request_duration_s",
+        "approach_target_speed_mps"
       ],
       "variable_assignments": {
         "night_parking_duration_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "parking_request_duration_s": {
           "kind": "controller",
           "value": 1800.0
+        },
+        "approach_target_speed_mps": {
+          "kind": "controller",
+          "value": 1.6129032258064515
         },
         "on_street": {
           "kind": "world_setup",
@@ -139,13 +302,26 @@
           "value": "requires original source review"
         }
       },
+      "probe": {
+        "primary_variable": "night_parking_duration_s",
+        "comparison_or_standard": "strictly longer than thirty minutes",
+        "target_value_or_branch": "at_30",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "s",
+        "test_value": 1800.0
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "s",
+        "rationale": "One-second engineering bracket around exact legal threshold; no tolerance implied."
+      },
+      "unresolved_judgment_calls": [
+        "motor vehicle",
+        "park any vehicle",
+        "on any street"
+      ],
       "recording_description": {
-        "camera_views": [
-          "overview",
-          "approach",
-          "reference_corner",
-          "driver_reference"
-        ],
         "channels": [
           {
             "method": "original Native pose/velocity plus reviewed source context",
@@ -218,30 +394,34 @@
             "unit": "structured"
           }
         ],
-        "duration_s": 1803.15,
         "limitations": [
           "Bicycle blueprint alone does not certify a qualifying legal vehicle",
           "No Native execution or real source media captured"
-        ],
-        "rate_hz": 20
-      },
-      "unresolved_judgment_calls": [
-        "vehicle classification, parking purpose, street jurisdiction and continuous original episode"
-      ]
+        ]
+      }
     },
     {
       "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30",
       "target_law_id": "LVMC-11-52-300",
-      "target_type": "violating_attempt",
-      "rationale": "Exact source-bound strictly longer than thirty minutes boundary probe; physical and legal status unresolved",
+      "target_type": "boundary_probe",
+      "rationale": "Exact statutory duration bracket on source-reviewed nonmotor parking branch; original acceptance unresolved.",
       "paired_probe_id": "c229398_duration_boundary",
       "deliberate_differences": [
-        "parking stop frame and derived approach target speed"
+        "parking_request_duration_s",
+        "approach_target_speed_mps"
       ],
       "variable_assignments": {
         "night_parking_duration_s": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "parking_request_duration_s": {
           "kind": "controller",
           "value": 1801.0
+        },
+        "approach_target_speed_mps": {
+          "kind": "controller",
+          "value": 2.380952380952381
         },
         "on_street": {
           "kind": "world_setup",
@@ -252,13 +432,26 @@
           "value": "requires original source review"
         }
       },
+      "probe": {
+        "primary_variable": "night_parking_duration_s",
+        "comparison_or_standard": "strictly longer than thirty minutes",
+        "target_value_or_branch": "above_30",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">",
+        "unit": "s",
+        "test_value": 1801.0
+      },
+      "epsilon_used": {
+        "value": 1,
+        "unit": "s",
+        "rationale": "One-second engineering bracket around exact legal threshold; no tolerance implied."
+      },
+      "unresolved_judgment_calls": [
+        "motor vehicle",
+        "park any vehicle",
+        "on any street"
+      ],
       "recording_description": {
-        "camera_views": [
-          "overview",
-          "approach",
-          "reference_corner",
-          "driver_reference"
-        ],
         "channels": [
           {
             "method": "original Native pose/velocity plus reviewed source context",
@@ -331,18 +524,11 @@
             "unit": "structured"
           }
         ],
-        "duration_s": 1803.15,
         "limitations": [
           "Bicycle blueprint alone does not certify a qualifying legal vehicle",
           "No Native execution or real source media captured"
-        ],
-        "rate_hz": 20
-      },
-      "unresolved_judgment_calls": [
-        "vehicle classification, parking purpose, street jurisdiction and continuous original episode"
-      ]
+        ]
+      }
     }
-  ],
-  "sweep_specs": [],
-  "sweeps_expanded": true
+  ]
 }

@@ -11,7 +11,8 @@ from statutory_comparison import audit
 
 class StatutoryComparisonTest(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix="c135702-comparison-")
+        self.temp = tempfile.TemporaryDirectory(dir=ROOT.parents[1] / ".runtime-work",
+                                                prefix="c135702-comparison-")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.left = {"case_id": "left", "law_id": "NRS-484B-450-1k", "cell_id": "C135702",
@@ -20,6 +21,7 @@ class StatutoryComparisonTest(unittest.TestCase):
                      "rate_hz": 20, "passing_controller": "fixed", "activity_request": "park",
                      "placement_request": "opposite", "obstruction_kind_request": "physical_obstruction",
                      "exception_request": None, "source_gate_passed": True,
+                     "source_gate_kind": "synthetic_cpu",
                      "source_gate_sha256": "left-source", "physical_acceptance_claimed": False,
                      "legal_acceptance_claimed": False}
         self.right = dict(self.left, case_id="right", source_gate_sha256="right-source")

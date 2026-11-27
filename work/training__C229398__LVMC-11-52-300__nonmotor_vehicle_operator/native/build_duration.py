@@ -91,8 +91,6 @@ def build():
                              "kin.time", "env.civil_time", "drv.condition_in_effect", "st.roadway")],
             "context_inputs": [{"name": "qualifying_source_review", "unit": "structured",
                                 "method": "original hash-bound source packet"}],
-            "duration_s": TOTAL_FRAMES / RATE_HZ, "rate_hz": RATE_HZ,
-            "camera_views": [camera["name"] for camera in cameras],
             "limitations": ["Bicycle blueprint alone does not certify a qualifying legal vehicle",
                             "No Native execution or real source media captured"]}
         config["recording_description"] = recording

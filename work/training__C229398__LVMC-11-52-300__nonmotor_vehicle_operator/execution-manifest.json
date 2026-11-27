@@ -8,7 +8,7 @@
       "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "4df82f9e1c371fc0801b1c9cee9b2262d17cda62d2c182034878d0e3436bac84",
+      "construction_sha256": "2ab1baa2736168ee93d1435483ab601307aaebd8e2a35cddc0b4d860ac3c8074",
       "candidate_risk": {
         "status": "none",
         "reason": "No observed original Native failure trigger yet; retain current primary request"
@@ -16,9 +16,9 @@
       "candidates": [],
       "delivery_readiness": "incomplete",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/duration-construction-draft.json --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30 --output .runtime-work/c229398-duration-offline-v7-below_30",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/duration-construction-draft.json --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30 --output .runtime-work/c229398-duration-offline-v10-below_30",
         "exit_code": 0,
-        "construction_sha256": "4df82f9e1c371fc0801b1c9cee9b2262d17cda62d2c182034878d0e3436bac84",
+        "construction_sha256": "2ab1baa2736168ee93d1435483ab601307aaebd8e2a35cddc0b4d860ac3c8074",
         "log": "native/duration-offline-below_30.log",
         "log_sha256": "65195d90e4f5ec9b0592500bf7e7061379646fd6f0139a39b8cf0f9e646d560e"
       },
@@ -32,13 +32,88 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "fixture_recipe": "work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/fixture-below_30.json"
+      "fixture_recipe": "work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/fixture-below_30.json",
+      "compatibility": {
+        "receipt": "compat-below_30.json",
+        "sha256": "503c416cff0b5ffefebf041e7bcb7812b66058b8fb48e97c138075ec04eb3459",
+        "log": "compat-below_30.log"
+      },
+      "negative": {
+        "log": "negative-below_30.log"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/drv.standing_or_parked.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/ru.motor_vehicle.jsonl"
+        },
+        "ru.trailer_or_combination": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/ru.trailer_or_combination.jsonl"
+        },
+        "kin.time": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/kin.time.jsonl"
+        },
+        "env.civil_time": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/env.civil_time.jsonl"
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/drv.condition_in_effect.jsonl"
+        },
+        "st.roadway": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/st.roadway.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/below_30/physical-preparation.json",
+        "sha256": "61cd9fa69423ce554cad1b3517493e25f87a907bb2a809186375938b2a1b7234"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "0296a7a05de6812ef653edbbf19514f826944df95fe6580dda3a049dc31d9f6c",
+        "command": ".venv-cpu/bin/python work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/native/delivery_audit.py --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30 --attempt .runtime-work/c229398-compat-below_30-v13",
+        "negative_command": ".venv-cpu/bin/python work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/native/delivery_audit.py --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30 --attempt .runtime-work/c229398-compat-below_30-v13 --negative-selftest",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: native-actor-frames.jsonl",
+        "test_log": "native/delivery-below_30.log",
+        "test_log_sha256": "20ab07b07f3152f5027194f0f57a14b16bfafbe54a2fafb4729aa54980568336",
+        "negative_log": "native/delivery-negative-below_30.log",
+        "negative_log_sha256": "3c1a999177ca0ec2a9936095224775c8c78f6f4bb02f911306b1c83f8bba8eca",
+        "diagnostic_only": true
+      }
     },
     {
       "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30",
       "kind": "delivery",
       "construction": "cases/at_30/construction.json",
-      "construction_sha256": "a29b4e83bd8e3276bb31e9af7be2647226d316aa66f2b9218828fab18c745662",
+      "construction_sha256": "c342fc00e39a90e36d616589a9a853bec84881750326a8608d7b5538560c298f",
       "candidate_risk": {
         "status": "none",
         "reason": "No observed original Native failure trigger yet; retain current primary request"
@@ -46,9 +121,9 @@
       "candidates": [],
       "delivery_readiness": "incomplete",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/duration-construction-draft.json --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30 --output .runtime-work/c229398-duration-offline-v7-at_30",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/duration-construction-draft.json --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30 --output .runtime-work/c229398-duration-offline-v10-at_30",
         "exit_code": 0,
-        "construction_sha256": "a29b4e83bd8e3276bb31e9af7be2647226d316aa66f2b9218828fab18c745662",
+        "construction_sha256": "c342fc00e39a90e36d616589a9a853bec84881750326a8608d7b5538560c298f",
         "log": "native/duration-offline-at_30.log",
         "log_sha256": "60c0620d3dabad9ba0db801c3afdc690a230818208c04aafc581676329345794"
       },
@@ -62,13 +137,88 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "fixture_recipe": "work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/fixture-at_30.json"
+      "fixture_recipe": "work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/fixture-at_30.json",
+      "compatibility": {
+        "receipt": "compat-at_30.json",
+        "sha256": "3c9e46f5170df55359722ec104cf4dd7203a15de21fe986828b0f95b51d47195",
+        "log": "compat-at_30.log"
+      },
+      "negative": {
+        "log": "negative-at_30.log"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/drv.standing_or_parked.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/ru.motor_vehicle.jsonl"
+        },
+        "ru.trailer_or_combination": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/ru.trailer_or_combination.jsonl"
+        },
+        "kin.time": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/kin.time.jsonl"
+        },
+        "env.civil_time": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/env.civil_time.jsonl"
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/drv.condition_in_effect.jsonl"
+        },
+        "st.roadway": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/st.roadway.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/at_30/physical-preparation.json",
+        "sha256": "2364fdaaa857172480043231ac69c8a7777215ab39c97c81e78ebb164bf9af89"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "0296a7a05de6812ef653edbbf19514f826944df95fe6580dda3a049dc31d9f6c",
+        "command": ".venv-cpu/bin/python work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/native/delivery_audit.py --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30 --attempt .runtime-work/c229398-compat-at_30-v13",
+        "negative_command": ".venv-cpu/bin/python work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/native/delivery_audit.py --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30 --attempt .runtime-work/c229398-compat-at_30-v13 --negative-selftest",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: native-actor-frames.jsonl",
+        "test_log": "native/delivery-at_30.log",
+        "test_log_sha256": "a0c6e7375c1118c248517436e1701de095477c3faf755c6fdc175938a31d56d1",
+        "negative_log": "native/delivery-negative-at_30.log",
+        "negative_log_sha256": "3c1a999177ca0ec2a9936095224775c8c78f6f4bb02f911306b1c83f8bba8eca",
+        "diagnostic_only": true
+      }
     },
     {
       "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30",
       "kind": "delivery",
       "construction": "cases/above_30/construction.json",
-      "construction_sha256": "d404bb230dc742fe8d90a9191241acfbabbec1977aa6bec1aa55dbb11ad0e80a",
+      "construction_sha256": "9f506509438d06b2559c7e5f6f0b317d4114d389fccf91204758cb96c411dd36",
       "candidate_risk": {
         "status": "none",
         "reason": "No observed original Native failure trigger yet; retain current primary request"
@@ -76,9 +226,9 @@
       "candidates": [],
       "delivery_readiness": "incomplete",
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/duration-construction-draft.json --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30 --output .runtime-work/c229398-duration-offline-v7-above_30",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/duration-construction-draft.json --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30 --output .runtime-work/c229398-duration-offline-v10-above_30",
         "exit_code": 0,
-        "construction_sha256": "d404bb230dc742fe8d90a9191241acfbabbec1977aa6bec1aa55dbb11ad0e80a",
+        "construction_sha256": "9f506509438d06b2559c7e5f6f0b317d4114d389fccf91204758cb96c411dd36",
         "log": "native/duration-offline-above_30.log",
         "log_sha256": "3428418a7ddb948e2137fbba915ccfd54a9c75ca0746419245859089b5cc2b97"
       },
@@ -92,7 +242,82 @@
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
       },
-      "fixture_recipe": "work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/fixture-above_30.json"
+      "fixture_recipe": "work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/fixture-above_30.json",
+      "compatibility": {
+        "receipt": "compat-above_30.json",
+        "sha256": "2bce1debf6fa7c8e36dd7394026a3b0c5aff5e50c2a76a2d16a0b561def5c6ff",
+        "log": "compat-above_30.log"
+      },
+      "negative": {
+        "log": "negative-above_30.log"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/drv.standing_or_parked.jsonl"
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/ru.motor_vehicle.jsonl"
+        },
+        "ru.trailer_or_combination": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/ru.trailer_or_combination.jsonl"
+        },
+        "kin.time": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/kin.time.jsonl"
+        },
+        "env.civil_time": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/env.civil_time.jsonl"
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/drv.condition_in_effect.jsonl"
+        },
+        "st.roadway": {
+          "entrypoint": "finalize.py",
+          "method": "write_channels from joined source actor frames and reviewed context",
+          "evidence": "channels/st.roadway.jsonl"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "physical/above_30/physical-preparation.json",
+        "sha256": "4f1ab24a98238f40c7df4dc92ec20a00bf14152fd546b51d045b38a3e206c774"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "0296a7a05de6812ef653edbbf19514f826944df95fe6580dda3a049dc31d9f6c",
+        "command": ".venv-cpu/bin/python work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/native/delivery_audit.py --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30 --attempt .runtime-work/c229398-compat-above_30-v13",
+        "negative_command": ".venv-cpu/bin/python work/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/native/delivery_audit.py --case training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30 --attempt .runtime-work/c229398-compat-above_30-v13 --negative-selftest",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: native-actor-frames.jsonl",
+        "test_log": "native/delivery-above_30.log",
+        "test_log_sha256": "ae826c800d4458746167cf1826527ff759c3c3c73bcda10eaebe70e06f9146f4",
+        "negative_log": "native/delivery-negative-above_30.log",
+        "negative_log_sha256": "3c1a999177ca0ec2a9936095224775c8c78f6f4bb02f911306b1c83f8bba8eca",
+        "diagnostic_only": true
+      }
     }
   ]
 }

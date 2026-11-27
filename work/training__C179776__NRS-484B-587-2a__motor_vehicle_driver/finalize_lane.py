@@ -32,7 +32,10 @@ def analyze(attempt):
     road = json.loads((attempt / 'native-road-readback.json').read_text())
     if not all(designation.get(key) for key in ('public_authority_source',
                                                 'highway_boundary_source',
-                                                'access_restriction_source')):
+                                                'access_restriction_source',
+                                                'vehicle_class_source',
+                                                'emergency_event_source',
+                                                'sign_source')):
         raise ValueError('Original controlled-access designation source missing')
     if road.get('source_kind') != 'original_native_map_readback' or len(road.get('lanes', [])) != 9:
         raise ValueError('Original Native lane/shoulder map readback missing')
@@ -124,13 +127,63 @@ def finalize(attempt, output):
         raise ValueError('Saved original analysis already exists')
     analysis = analyze(attempt)
     channels = attempt / 'channels'
-    channels.mkdir()
+    channels.mkdir(exist_ok=True)
     channel = channels / 'lane-footprint.jsonl'
     channel.write_text(''.join(json.dumps({'time_s': row['time_s'], 'value': row},
                                           sort_keys=True) + '\n' for row in analysis['rows']))
     for name, expected in analysis['source_sha256'].items():
         if digest(attempt / name) != expected:
             raise ValueError('Original source changed during saved analysis: ' + name)
+    config = json.loads((attempt / 'config.json').read_text())
+    planned_recording = config.get('recording_description')
+    if planned_recording:
+        designation = json.loads((attempt / 'designation-source.json').read_text())
+        road = json.loads((attempt / 'native-road-readback.json').read_text())
+        context = attempt / 'context.json'
+        if not context.exists():
+            context.write_text(json.dumps({'designation_source': designation,
+                                           'native_road_readback': road},
+                                          sort_keys=True) + '\n')
+        stream_values = {item['name']: [] for item in planned_recording['channels']}
+        for row in analysis['rows']:
+            t = row['time_s']
+            lane_id = 2 if row['fully_paved_shoulder'] else 1
+            values = {
+                'st.controlled_access': {'road_id': 1, 'designation_source': designation['public_authority_source'], 'designation_verified': False},
+                'st.lane': {'road_id': 1, 'lane_id': lane_id, 'marked_travel_bounds_y_m': [0, 4]},
+                'st.lane_marking': {'lane_edge_y_m': 4, 'pixel_verified': False},
+                'rel.occupies': {'footprint_y_min_m': row['footprint_y_min_m'], 'footprint_y_max_m': row['footprint_y_max_m'], 'outside_marked_lane': row['outside_marked_lane']},
+                'st.shoulder': {'paved': True, 'bounds_y_m': [4, 6]},
+                'dev.regulatory_sign': {'source': designation['sign_source'], 'shoulder_use_permitted': False, 'pixel_verified': False},
+                'ru.emergency_vehicle': {'source': designation['vehicle_class_source'], 'is_emergency_vehicle': False},
+                'ru.official_vehicle': {'source': designation['vehicle_class_source'], 'is_official_vehicle': False},
+                'ru.transit_bus': {'source': designation['vehicle_class_source'], 'is_transit_bus': False},
+                'drv.responding_emergency': {'source': designation['emergency_event_source'], 'emergency_required': False}}
+            for name in stream_values:
+                stream_values[name].append({'time_s': t, 'value': values[name]})
+        for name, rows in stream_values.items():
+            (channels / (name + '.jsonl')).write_text(''.join(
+                json.dumps(row, sort_keys=True) + '\n' for row in rows))
+        recording_evidence = [
+            {'name': item['name'], 'unit': item['unit'],
+             'reference': 'channels/' + item['name'] + '.jsonl'}
+            for item in planned_recording['channels']]
+        recording_evidence += [
+            {'name': item['name'], 'unit': item['unit'],
+             'reference': 'context.json'}
+            for item in planned_recording['context_inputs']]
+    else:
+        planned_recording = {'channels': [
+            {'name': 'lane_footprint', 'unit': 'structured',
+             'sampling_rate_hz': 20,
+             'method': 'original body extent plus Native map lane/shoulder boundaries',
+             'time_window': 'all 600 original frames',
+             'reference_frame': 'original CARLA road',
+             'uncertainty': 'body/map/pixel review pending'}],
+             'context_inputs': ['designation-source.json', 'native-road-readback.json'],
+             'limitations': ['no original authority or physical acceptance claim']}
+        recording_evidence = [{'name': 'lane_footprint', 'unit': 'structured',
+                               'reference': 'channels/lane-footprint.jsonl'}]
     result = {'case_id': analysis['case_id'],
               'measured_values': {'outside_marked_lane_frames': analysis['outside_marked_lane_frames'],
                                   'fully_paved_shoulder_frames': analysis['fully_paved_shoulder_frames']},
@@ -148,17 +201,8 @@ def finalize(attempt, output):
               'trace_reference': 'trace.jsonl',
               'video_references': list(analysis['video_sha256']),
               'video_frame_map_reference': 'video_frames.jsonl',
-              'recording_description': {'channels': [
-                  {'name': 'lane_footprint', 'unit': 'structured',
-                   'sampling_rate_hz': 20,
-                   'method': 'original body extent plus Native map lane/shoulder boundaries',
-                   'time_window': 'all 600 original frames',
-                   'reference_frame': 'original CARLA road',
-                   'uncertainty': 'body/map/pixel review pending'}],
-                   'context_inputs': ['designation-source.json', 'native-road-readback.json'],
-                   'limitations': ['no original authority or physical acceptance claim']},
-              'recording_evidence': [{'name': 'lane_footprint', 'unit': 'structured',
-                                      'reference': 'channels/lane-footprint.jsonl'}],
+              'recording_description': planned_recording,
+              'recording_evidence': recording_evidence,
               'realized_observables': {'outside_marked_lane_frames': {
                   'value': analysis['outside_marked_lane_frames'], 'unit': 'count',
                   'method': 'source-joined full-body footprint',

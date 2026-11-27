@@ -37,6 +37,10 @@ class SelectedMeasurementTest(unittest.TestCase):
         config["selected_case_id"] = case
         config["case"]["case_id"] = case
         (folder / "config.json").write_text(json.dumps(config) + "\n")
+        construction_path = (Path(__file__).resolve().parents[1] /
+                             ("construction.json" if suffix == "below_30" else
+                              "cases/" + suffix + "/construction.json"))
+        (folder / "construction.json").write_bytes(construction_path.read_bytes())
         stop = stop_frame(case)
         with (folder / "native-actor-frames.jsonl").open("w") as actor_out, (
                 folder / "video_frames.jsonl").open("w") as map_out:

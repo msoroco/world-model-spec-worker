@@ -1,7 +1,9 @@
-"""Source-shaped saved-only meter tests, without fabricated video acceptance."""
+"""Source-shaped saved-only meter tests with decoded synthetic media."""
 
 import importlib.util
 import json
+import os
+import subprocess
 import tempfile
 from pathlib import Path
 
@@ -16,6 +18,24 @@ comparison_spec.loader.exec_module(comparison)
 SCRATCH = ROOT.parent.parent / '.runtime-work' / 'c179776-saved-fixtures'
 SCRATCH.mkdir(parents=True, exist_ok=True)
 ASSIGNMENT = 'training__C179776__NRS-484B-587-2a__motor_vehicle_driver'
+MEDIA = {}
+
+
+def media(path, width, height):
+    subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-f', 'lavfi',
+                    '-i', f'color=c=gray:s={width}x{height}:r=20:d=30',
+                    '-frames:v', '600', '-c:v', 'libx264', '-preset', 'ultrafast',
+                    '-crf', '45', '-pix_fmt', 'yuv420p', '-y', str(path)], check=True)
+    result = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+                             '-count_frames', '-show_entries',
+                             'stream=width,height,r_frame_rate,nb_read_frames',
+                             '-of', 'json', str(path)], check=True,
+                            capture_output=True, text=True)
+    stream = json.loads(result.stdout)['streams'][0]
+    assert (stream['width'], stream['height'], stream['r_frame_rate'],
+            int(stream['nb_read_frames'])) == (width, height, '20/1', 600)
+    subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-i', str(path),
+                    '-map', '0:v:0', '-f', 'null', '-'], check=True)
 
 
 def write_lines(path, rows):
@@ -27,7 +47,10 @@ def make(folder, suffix, shoulder):
     (folder / 'designation-source.json').write_text(json.dumps({
         'public_authority_source': 'synthetic document',
         'highway_boundary_source': 'synthetic boundary',
-        'access_restriction_source': 'synthetic restriction'}) + '\n')
+        'access_restriction_source': 'synthetic restriction',
+        'vehicle_class_source': 'synthetic ordinary motor vehicle',
+        'emergency_event_source': 'synthetic no emergency',
+        'sign_source': 'synthetic no shoulder sign'}) + '\n')
     (folder / 'road.xodr').write_text('<OpenDRIVE>synthetic map fixture</OpenDRIVE>\n')
     (folder / 'native-road-readback.json').write_text(json.dumps({
         'source_kind': 'original_native_map_readback',
@@ -60,7 +83,7 @@ def make(folder, suffix, shoulder):
                        ('trace.jsonl', trace), ('video_frames.jsonl', frames)):
         write_lines(folder / name, rows)
     for name in module.CAMERAS:
-        (folder / (name + '.mkv')).write_text('synthetic placeholder; not decoded\n')
+        os.link(MEDIA[name], folder / (name + '.mkv'))
 
 
 def reject(folder, mutation, expected):
@@ -75,6 +98,13 @@ def reject(folder, mutation, expected):
 
 with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
     base = Path(temporary)
+    for name, size in (('overview', (1920, 1080)),
+                       ('approach', (1280, 720)),
+                       ('reference_corner', (1280, 720)),
+                       ('driver_reference', (1280, 720))):
+        path = base / (name + '.mkv')
+        media(path, *size)
+        MEDIA[name] = path
     positives = {}
     for suffix, shoulder in (('probe_a', False), ('probe_b', True)):
         folder = base / suffix
@@ -142,4 +172,5 @@ with tempfile.TemporaryDirectory(dir=SCRATCH) as temporary:
                       'negative': negative, 'saved_finalizer_executed': True,
                       'independent_comparison_passed': True,
                       'source_shaped_only': True,
-                      'full_video_decode_claimed': False}, sort_keys=True))
+                      'full_video_decode_claimed': True,
+                      'original_native_video_decode_claimed': False}, sort_keys=True))

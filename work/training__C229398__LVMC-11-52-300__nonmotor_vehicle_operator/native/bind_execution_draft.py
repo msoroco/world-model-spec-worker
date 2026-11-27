@@ -67,7 +67,7 @@ def bind():
                         "candidates": [], "delivery_readiness": "incomplete",
                         "offline": {"command": ".venv-cpu/bin/python runtime.py offline --manifest work/" +
                             ASSIGNMENT + "/duration-construction-draft.json --case " + case_id +
-                            " --output .runtime-work/c229398-duration-offline-v8-" + suffix,
+                            " --output .runtime-work/c229398-duration-offline-v10-" + suffix,
                             "exit_code": 0, "construction_sha256": offline["construction_sha256"],
                             "log": offline["offline_log"],
                             "log_sha256": offline["offline_log_sha256"]},

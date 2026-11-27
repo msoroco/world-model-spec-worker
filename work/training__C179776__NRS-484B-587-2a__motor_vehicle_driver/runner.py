@@ -58,18 +58,20 @@ def _speed(actor):
     return math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
 
 
-def _control(actor, target, carla):
+def _control(actor, target, carla, controller=None):
+    controller = controller or {}
     pose = actor.get_transform()
     wanted_yaw = math.atan2(target[1] - pose.location.y, target[0] - pose.location.x)
     error = math.atan2(math.sin(wanted_yaw - math.radians(pose.rotation.yaw)),
                        math.cos(wanted_yaw - math.radians(pose.rotation.yaw)))
     delta = 4.0 - _speed(actor)
-    return carla.VehicleControl(throttle=max(0, min(.45, delta * .22)),
+    return carla.VehicleControl(throttle=max(0, min(.45, delta * controller.get('throttle_gain', .22))),
                                 brake=max(0, min(1, -delta * .38)),
-                                steer=max(-.65, min(.65, error * 1.2)))
+                                steer=max(-.65, min(.65, error * controller.get('steer_gain', 1.2))))
 
 
-def execute(case_id, output_dir, authority_packet, host='127.0.0.1', port=2000):
+def execute(case_id, output_dir, authority_packet, host='127.0.0.1', port=2000,
+            controller=None):
     import carla
     from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap, seal_capture
@@ -82,7 +84,10 @@ def execute(case_id, output_dir, authority_packet, host='127.0.0.1', port=2000):
     packet = json.loads(source.read_text())
     if not all(packet.get(key) for key in ('public_authority_source',
                                            'highway_boundary_source',
-                                           'access_restriction_source')):
+                                           'access_restriction_source',
+                                           'vehicle_class_source',
+                                           'emergency_event_source',
+                                           'sign_source')):
         raise ValueError('Independent controlled-access designation source incomplete')
     output = Path(output_dir).resolve()
     if output.exists() and any(output.iterdir()):
@@ -156,7 +161,7 @@ def execute(case_id, output_dir, authority_packet, host='127.0.0.1', port=2000):
             target_name = CASES[case_id.removeprefix(ASSIGNMENT + '__')]
             for index in range(600):
                 target = planned_xy(target_name, index / 20)
-                command = _control(ego, target, carla)
+                command = _control(ego, target, carla, controller)
                 ego.apply_control(command)
                 native = world.tick()
                 snap = world.get_snapshot()
@@ -245,17 +250,22 @@ def execute(case_id, output_dir, authority_packet, host='127.0.0.1', port=2000):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--case', required=True)
+    parser.add_argument('--case')
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--output-dir')
     parser.add_argument('--authority-packet')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('--port', type=int, default=2000)
     args = parser.parse_args()
+    config = json.loads(Path('config.json').read_text()) if Path('config.json').is_file() else {}
+    case_id = args.case or config.get('case_id')
+    if not case_id:
+        raise SystemExit('--case or config.json case_id required')
     if args.check:
-        print(json.dumps(check(args.case), sort_keys=True))
+        print(json.dumps(check(case_id), sort_keys=True))
     else:
         if not args.output_dir or not args.authority_packet:
             raise SystemExit('--output-dir and --authority-packet required')
-        print(json.dumps(execute(args.case, args.output_dir,
-                                 args.authority_packet, args.host, args.port)))
+        print(json.dumps(execute(case_id, args.output_dir,
+                                 args.authority_packet, args.host, args.port,
+                                 config.get('controller')), sort_keys=True))

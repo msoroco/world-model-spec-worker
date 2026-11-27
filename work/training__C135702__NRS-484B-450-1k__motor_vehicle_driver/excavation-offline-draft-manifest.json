@@ -1,0 +1,39 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "unselected_excavation_offline_draft",
+  "cases": [
+    {
+      "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind",
+      "kind": "delivery",
+      "construction": "cases/excavation_kind/excavation-construction.json",
+      "construction_sha256": "95d0eb6146c0bb07092eb857f77b255423344e57fddf0792d6a18ba7265f52fd",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original passing vehicle may not sustain a stable pre-excavation halt with the primary braking station."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/excavation_kind/excavation-fallback1-construction.json",
+          "construction_sha256": "5d8108f8f5e037c29e28500a92f8a132cbd93e44e7a732ac97f3225e15427883",
+          "trigger": {
+            "source": "original native_samples.jsonl",
+            "metric": "minimum_passing_speed_m_s and passing_halt_frames",
+            "failure_condition": "fewer than 20 source halt frames before excavation"
+          },
+          "changed_knobs": [
+            "passing_throttle .25 to .35",
+            "brake_station_x_m -11 to -15"
+          ]
+        }
+      ],
+      "fixture_recipe": "work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/selected-recipe-statutory-excavation_kind.json",
+      "measurement_contract": "measurement-statutory-excavation_kind.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      }
+    }
+  ]
+}

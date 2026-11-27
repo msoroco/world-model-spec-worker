@@ -13,7 +13,8 @@ import statutory_variants as variants
 
 class StatutoryVariantTest(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix="c135702-statutory-")
+        self.temp = tempfile.TemporaryDirectory(dir=ROOT.parents[1] / ".runtime-work",
+                                                prefix="c135702-statutory-")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.config_path = self.root / "config.json"
