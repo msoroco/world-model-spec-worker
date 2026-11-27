@@ -54,7 +54,7 @@ def validate_site(site: dict, case_name: str):
     vehicle = site.get("vehicle")
     if not isinstance(vehicle, dict) or vehicle.get("driver_role") != ACTOR:
         raise ValueError("actual vehicle driver source required")
-    for key in ("blueprint_id", "blueprint_source_ref", "actor_id", "driver_identity_ref"):
+    for key in ("blueprint_id", "blueprint_source_ref", "driver_identity_ref"):
         if not vehicle.get(key):
             raise ValueError("vehicle or driver source missing: " + key)
     device = site.get("device")
@@ -69,7 +69,7 @@ def validate_site(site: dict, case_name: str):
         raise ValueError("selected instruction construction mismatch")
     if axis == "officer":
         officer = site.get("officer")
-        if not isinstance(officer, dict) or not all(officer.get(k) for k in ("actor_id", "identity_ref", "position_ref", "direction_channel_ref")):
+        if not isinstance(officer, dict) or not all(officer.get(k) for k in ("identity_ref", "position_ref", "direction_channel_ref")):
             raise ValueError("actual police officer and direction source required")
     return site
 

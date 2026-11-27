@@ -26,7 +26,7 @@ def require_adapter(adapter):
         raise ValueError("Native elevated-highway adapter methods missing: " + ", ".join(absent))
 
 
-def construct(adapter, dossier, case, owned=None):
+def construct(adapter, dossier, case, owned=None, *, spawn_adjust_m=0.0):
     """Configure one exact case; all structure, vehicle and sign facts read back."""
     require_adapter(adapter)
     site = validate_site(dossier, expected_case=case["case_id"])
@@ -42,7 +42,10 @@ def construct(adapter, dossier, case, owned=None):
         raise ValueError("reviewed structure kind differs from exact case")
     if owned is None:
         owned = []
-    ego = adapter.spawn_vehicle("motor_vehicle", direction, dossier["structure_id"])
+    if not isinstance(spawn_adjust_m, (int, float)) or not 0 <= spawn_adjust_m <= 5:
+        raise ValueError("bounded engineering spawn adjustment required")
+    ego = adapter.spawn_vehicle("motor_vehicle", direction, dossier["structure_id"],
+                                spawn_adjust_m=spawn_adjust_m)
     owned.append(ego)
     if adapter.read_vehicle_class(ego) != "motor_vehicle":
         raise ValueError("conventional motor vehicle readback required")

@@ -1,0 +1,58 @@
+{
+  "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_14mph",
+  "engineering_target": {
+    "exception_setup": "none",
+    "is_observed_outcome": false,
+    "sight_setup": "obscured",
+    "traversal_mph": 14
+  },
+  "format": "worker-measurement-contract",
+  "legal_conclusion": null,
+  "limitations": [
+    "The engineering target does not establish measured speed, sight or exception state.",
+    "A CPU fixture cannot establish CARLA motion, pixel quality or legal visibility."
+  ],
+  "negative": {
+    "error_contains": "Missing required source: native-rail-frames.json",
+    "remove": [
+      "native-rail-frames.json"
+    ]
+  },
+  "original_capture": {
+    "camera_views": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ],
+    "duration_s": 45,
+    "fps": 20,
+    "frame_count": 900
+  },
+  "physical_completion_confirmed": false,
+  "required_original_sources": [
+    "native-rail-receipt.json",
+    "reviewed-rail-packet.json",
+    "native-rail-frames.json",
+    "native-rail-camera-map.json",
+    "original-frames/*",
+    "original-rays/*",
+    "original-exceptions/*",
+    "original-cameras/*"
+  ],
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "native-rail-frames.json",
+        "reviewed-rail-packet.json"
+      ],
+      "kind": "measured",
+      "method": "measure_traversal_sight",
+      "output_key": "traversal_speed_and_sight",
+      "requirement": "Sight-conditioned 15 mph prima facie speed during railway grade-crossing traversal",
+      "source": "LVMC 11.16.030",
+      "value_type": "object"
+    }
+  ]
+}

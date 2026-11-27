@@ -1,0 +1,507 @@
+{
+  "actor": "bus_driver",
+  "cases": [
+    {
+      "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__baseline",
+      "rationale": "Common source-gated non-tour bus and official bus stop on one-way public street; no original location or legal finding.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "independent source-reviewed activity start/end joined to 900 Native frames",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "standing/parking conduct review",
+            "unit": "s"
+          },
+          {
+            "method": "official stop, signs, public-street and other permitted-location source join",
+            "name": "designated_stop_and_alternatives",
+            "reference_frame": "reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "authority and assigned-route review",
+            "unit": "structured source"
+          },
+          {
+            "method": "Native bus-body corners against reviewed stop polygon",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "body and boundary localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized original RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed signed official stop boundary, jurisdiction, route termini and other permissible locations",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent conduct review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic boundary and bus position are compatibility diagnostics only; original designation and legal outcome remain unverified."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "assigned_route_permitted_locations": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed bus stand and route termini"
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "stand"
+        },
+        "observed_bus_body_location": {
+          "kind": "subject_behavior",
+          "unit": "geometry",
+          "value": null
+        },
+        "official_bus_stop_polygon": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed stop polygon"
+        },
+        "requested_stop_relation": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "inside"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+      "deliberate_differences": [
+        "requested_stop_relation",
+        "conduct"
+      ],
+      "paired_probe_id": "stop_boundary_and_conduct",
+      "probe": {
+        "comparison_or_standard": "original reviewed designated stop boundary",
+        "primary_variable": "requested_stop_relation",
+        "target_value_or_branch": "inside"
+      },
+      "rationale": "Inside or outside original designated stop must be measured against reviewed boundary; original alternative permitted locations separately checked.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "independent source-reviewed activity start/end joined to 900 Native frames",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "standing/parking conduct review",
+            "unit": "s"
+          },
+          {
+            "method": "official stop, signs, public-street and other permitted-location source join",
+            "name": "designated_stop_and_alternatives",
+            "reference_frame": "reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "authority and assigned-route review",
+            "unit": "structured source"
+          },
+          {
+            "method": "Native bus-body corners against reviewed stop polygon",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "body and boundary localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized original RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed signed official stop boundary, jurisdiction, route termini and other permissible locations",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent conduct review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic boundary and bus position are compatibility diagnostics only; original designation and legal outcome remain unverified."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A1",
+      "target_type": "compliant_attempt",
+      "unresolved_judgment_calls": [
+        "original designation, standing/parking and alternative-location review"
+      ],
+      "variable_assignments": {
+        "assigned_route_permitted_locations": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed bus stand and route termini"
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "stand"
+        },
+        "observed_bus_body_location": {
+          "kind": "subject_behavior",
+          "unit": "geometry",
+          "value": null
+        },
+        "official_bus_stop_polygon": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed stop polygon"
+        },
+        "requested_stop_relation": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "inside"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_outside",
+      "deliberate_differences": [
+        "requested_stop_relation",
+        "conduct"
+      ],
+      "paired_probe_id": "stop_boundary_and_conduct",
+      "probe": {
+        "comparison_or_standard": "original reviewed designated stop boundary",
+        "primary_variable": "requested_stop_relation",
+        "target_value_or_branch": "outside"
+      },
+      "rationale": "Inside or outside original designated stop must be measured against reviewed boundary; original alternative permitted locations separately checked.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "independent source-reviewed activity start/end joined to 900 Native frames",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "standing/parking conduct review",
+            "unit": "s"
+          },
+          {
+            "method": "official stop, signs, public-street and other permitted-location source join",
+            "name": "designated_stop_and_alternatives",
+            "reference_frame": "reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "authority and assigned-route review",
+            "unit": "structured source"
+          },
+          {
+            "method": "Native bus-body corners against reviewed stop polygon",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "body and boundary localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized original RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed signed official stop boundary, jurisdiction, route termini and other permissible locations",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent conduct review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic boundary and bus position are compatibility diagnostics only; original designation and legal outcome remain unverified."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A1",
+      "target_type": "violating_attempt",
+      "unresolved_judgment_calls": [
+        "original designation, standing/parking and alternative-location review"
+      ],
+      "variable_assignments": {
+        "assigned_route_permitted_locations": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed bus stand and route termini"
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "stand"
+        },
+        "observed_bus_body_location": {
+          "kind": "subject_behavior",
+          "unit": "geometry",
+          "value": null
+        },
+        "official_bus_stop_polygon": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed stop polygon"
+        },
+        "requested_stop_relation": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "outside"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside",
+      "deliberate_differences": [
+        "requested_stop_relation",
+        "conduct"
+      ],
+      "paired_probe_id": "stop_boundary_and_conduct",
+      "probe": {
+        "comparison_or_standard": "original reviewed designated stop boundary",
+        "primary_variable": "requested_stop_relation",
+        "target_value_or_branch": "inside"
+      },
+      "rationale": "Inside or outside original designated stop must be measured against reviewed boundary; original alternative permitted locations separately checked.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "independent source-reviewed activity start/end joined to 900 Native frames",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "standing/parking conduct review",
+            "unit": "s"
+          },
+          {
+            "method": "official stop, signs, public-street and other permitted-location source join",
+            "name": "designated_stop_and_alternatives",
+            "reference_frame": "reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "authority and assigned-route review",
+            "unit": "structured source"
+          },
+          {
+            "method": "Native bus-body corners against reviewed stop polygon",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "body and boundary localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized original RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed signed official stop boundary, jurisdiction, route termini and other permissible locations",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent conduct review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic boundary and bus position are compatibility diagnostics only; original designation and legal outcome remain unverified."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A1",
+      "target_type": "compliant_attempt",
+      "unresolved_judgment_calls": [
+        "original designation, standing/parking and alternative-location review"
+      ],
+      "variable_assignments": {
+        "assigned_route_permitted_locations": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed bus stand and route termini"
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "park"
+        },
+        "observed_bus_body_location": {
+          "kind": "subject_behavior",
+          "unit": "geometry",
+          "value": null
+        },
+        "official_bus_stop_polygon": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed stop polygon"
+        },
+        "requested_stop_relation": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "inside"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside",
+      "deliberate_differences": [
+        "requested_stop_relation",
+        "conduct"
+      ],
+      "paired_probe_id": "stop_boundary_and_conduct",
+      "probe": {
+        "comparison_or_standard": "original reviewed designated stop boundary",
+        "primary_variable": "requested_stop_relation",
+        "target_value_or_branch": "outside"
+      },
+      "rationale": "Inside or outside original designated stop must be measured against reviewed boundary; original alternative permitted locations separately checked.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "independent source-reviewed activity start/end joined to 900 Native frames",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "standing/parking conduct review",
+            "unit": "s"
+          },
+          {
+            "method": "official stop, signs, public-street and other permitted-location source join",
+            "name": "designated_stop_and_alternatives",
+            "reference_frame": "reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "authority and assigned-route review",
+            "unit": "structured source"
+          },
+          {
+            "method": "Native bus-body corners against reviewed stop polygon",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "body and boundary localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized original RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed signed official stop boundary, jurisdiction, route termini and other permissible locations",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent conduct review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic boundary and bus position are compatibility diagnostics only; original designation and legal outcome remain unverified."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A1",
+      "target_type": "violating_attempt",
+      "unresolved_judgment_calls": [
+        "original designation, standing/parking and alternative-location review"
+      ],
+      "variable_assignments": {
+        "assigned_route_permitted_locations": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed bus stand and route termini"
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "park"
+        },
+        "observed_bus_body_location": {
+          "kind": "subject_behavior",
+          "unit": "geometry",
+          "value": null
+        },
+        "official_bus_stop_polygon": {
+          "kind": "world_setup",
+          "unit": "geometry",
+          "value": "source-reviewed stop polygon"
+        },
+        "requested_stop_relation": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "outside"
+        }
+      }
+    }
+  ],
+  "cell_id": "C386411",
+  "status": "draft",
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}

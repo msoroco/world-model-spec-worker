@@ -69,7 +69,7 @@ def build():
                 "context_inputs": [{"name": "reviewed_railway_site", "unit": "source",
                     "description": "Original crossing, official device placement and officer identity source."}],
                 "sweep_dimensions": [], "landmarks": [],
-                "recording_needs": [{"name": "four_view_frame_join", "unit": "structured",
+                "recording_needs": [{"name": "four_camera_frame_join", "unit": "structured",
                     "description": "Original synchronized crossing, device/officer, vehicle and driver-reference views."}],
                 "limitations": ["No officiality, authentic officer direction or legal verdict is inferred from a CPU fixture."]}}
         observed.append(write(f"judgment-{index}.json", obs))
@@ -82,7 +82,21 @@ def build():
         "variable_parameters": [dict(ref, used_by_laws=[LAW]) for ref in refs]}
     binding_ref = write("bindings.json", binding)
     description = json.loads((HERE / manifest["cases"][0]["construction"]).read_text())["recording_description"]
-    cases = []
+    cases = [{"case_id": AID + "__baseline", "paired_probe_id": "baseline",
+        "rationale": "Shared source-reviewed crossing, installed device and ordinary motor vehicle; this neutral baseline is not dispatched.",
+        "recording_description": description, "target_law_id": LAW,
+        "target_type": "baseline",
+        "unresolved_judgment_calls": [j["phrase"] for j in judgments],
+        "variable_assignments": {
+            "authority_channel": {"kind": "world_setup", "value": "device"},
+            "instruction": {"kind": "controller", "value": "stop"},
+            "response": {"kind": "controller", "value": "halt"},
+            "crossing_geometry": {"kind": "world_setup", "value": "source-reviewed grade crossing"},
+            "vehicle_class": {"kind": "world_setup", "value": "source-reviewed ordinary motor vehicle"}},
+        "deliberate_differences": [ref["name"] for ref in refs],
+        "probe": {"primary_variable": "response",
+                  "comparison_or_standard": "original instruction-to-body-response join",
+                  "target_value_or_branch": "halt"}}]
     for row in plan["cases"]:
         case_id = row["case_id"]
         name = case_id.removeprefix(AID + "__")

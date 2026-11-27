@@ -38,13 +38,13 @@ def site(name):
                             ("rail_geometry_ref", "road_geometry_ref", "approach_lane_ref",
                              "crossing_entry_ref", "crossing_exit_ref")}},
             "vehicle": {"driver_role": law.ACTOR, "blueprint_id": "vehicle.carla.car",
-                        "blueprint_source_ref": "diagnostic:blueprint", "actor_id": 501,
+                        "blueprint_source_ref": "diagnostic:blueprint",
                         "driver_identity_ref": "diagnostic:driver"},
             "device": {key: "diagnostic:" + key for key in
                        ("actor_or_map_id", "device_type", "placement_ref",
                         "erection_authority_ref", "traffic_purpose_ref",
                         "governed_movement_ref", "instruction_source_ref")},
-            "officer": {"actor_id": 502, "identity_ref": "diagnostic:officer",
+            "officer": {"identity_ref": "diagnostic:officer",
                         "position_ref": "diagnostic:position",
                         "direction_channel_ref": "diagnostic:gesture"},
             "case": case}

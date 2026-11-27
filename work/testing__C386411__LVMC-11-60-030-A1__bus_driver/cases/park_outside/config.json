@@ -1,0 +1,107 @@
+{
+  "actor": "bus_driver",
+  "cameras": [
+    {
+      "fov_deg": 75,
+      "height": 1080,
+      "name": "overview",
+      "pose_strategy": "reviewed stop, complete bus body, signs and street context",
+      "width": 1920
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "approach",
+      "pose_strategy": "reviewed stop, complete bus body, signs and street context",
+      "width": 1280
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "reference_corner",
+      "pose_strategy": "reviewed stop, complete bus body, signs and street context",
+      "width": 1280
+    },
+    {
+      "fov_deg": 75,
+      "height": 720,
+      "name": "driver_reference",
+      "pose_strategy": "reviewed stop, complete bus body, signs and street context",
+      "width": 1280
+    }
+  ],
+  "candidate_id": "primary",
+  "case": {
+    "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside",
+    "conduct": "park",
+    "location_relation": "outside",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "independent source-reviewed activity start/end joined to 900 Native frames",
+          "name": "bus_stopped_interval",
+          "reference_frame": "original frame/time",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "uncertainty": "standing/parking conduct review",
+          "unit": "s"
+        },
+        {
+          "method": "official stop, signs, public-street and other permitted-location source join",
+          "name": "designated_stop_and_alternatives",
+          "reference_frame": "reviewed designation",
+          "sampling_rate_hz": 20,
+          "time_window": "entire stop event",
+          "uncertainty": "authority and assigned-route review",
+          "unit": "structured source"
+        },
+        {
+          "method": "Native bus-body corners against reviewed stop polygon",
+          "name": "body_inside_stop",
+          "reference_frame": "original frame/time",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "uncertainty": "body and boundary localization",
+          "unit": "bool"
+        },
+        {
+          "method": "four synchronized original RGB cameras",
+          "name": "four_camera_frame_identity",
+          "reference_frame": "original frame/time",
+          "sampling_rate_hz": 20,
+          "time_window": "all 900 frames",
+          "uncertainty": "pixel review",
+          "unit": "frame ID"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "source-hashed signed official stop boundary, jurisdiction, route termini and other permissible locations",
+          "name": "reviewed_site_and_designation",
+          "unit": "structured original record"
+        },
+        {
+          "method": "source-hashed non-tour bus/operator and independent conduct review",
+          "name": "bus_operator_and_activity",
+          "unit": "structured original record"
+        }
+      ],
+      "limitations": [
+        "Synthetic boundary and bus position are compatibility diagnostics only; original designation and legal outcome remain unverified."
+      ]
+    }
+  },
+  "cell_id": "C386411",
+  "duration_s": 45,
+  "law_id": "LVMC-11-60-030-A1",
+  "rate_hz": 20,
+  "required_atoms": [],
+  "selected_case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside",
+  "source_packets": [],
+  "supported_case_ids": [
+    "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+    "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_outside",
+    "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside",
+    "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside"
+  ]
+}

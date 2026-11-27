@@ -1,22 +1,23 @@
-# testing__C177249__NRS-484B-560-7b__motor_vehicle_driver
+# C177249 NRS 484B.560(7)(b) railway instructions
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: `delivery_prepared`. The exact scoped strict gate passed on the current pinned runtime. Actual CARLA execution, original physical evidence and legal interpretation remain pending.
 
-Exact law: NRS 484B.560(7)(b) — It is unlawful for the driver of any vehicle: To fail to obey an official traffic-control device or the directions of a police officer at a railroad crossing.
-Assigned branch(es): Official traffic-control device on a paved-road railway approach..
-Cell: C177249 (paved_road, cross_railway, traffic_control_device); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Source and coverage review
 
-## Next CPU actions
+- Exact law: a vehicle driver must obey an official traffic-control device or a police officer's directions at a railroad crossing. The frozen selected branch is the paved-road official-device approach. The same fixed crossing retains its device while an actual officer supplies the alternative instruction channel. No generic control-device flag establishes an official railroad instruction, and no train presence or unconditional stop duty is assumed.
+- Frozen `evidence.json` lists zero accepted recordings. The conditional witness at source index 462 requires actual device identity, placement/erection authority, traffic purpose, governed movement, instruction history, railroad geometry, vehicle driver, clearance and exit space. Officiality and any incomplete external legal-consistency references remain for independent source review. The exact-law judgment-range inventory is empty; no numeric legal cutoff is invented.
+- `case-plan.json` includes six exact delivery cases: `device_stop_halt`, `device_stop_cross`, `device_clear_cross`, `device_clear_halt`, `officer_stop_halt`, and `officer_stop_cross`, each prefixed by the assignment ID. The five controlled comparisons are `device_stop_response`, `device_indication`, `clear_response`, `officer_stop_response`, and `governing_channel`. Clear is treated as permissive, not an affirmative command to proceed. Neither a fixture nor a proposed response is a legal verdict.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C177249__NRS-484B-560-7b__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+## Construction and measurements
 
-## Proven checks and dependency boundary
+- `build_plan.py`, `build_config.py`, and `build_offline.py` generate the exact plan, four-camera 45-second 20 Hz config, and inline construction for every selected case. The single fallback per case moves the approach start from 55 m to 75 m only when the original response or synchronized instruction/body visibility fails. It does not alter the case or desired legal result.
+- `runner.py` requires a SHA-256 bound reviewed crossing packet and reviewed operator module before importing CARLA. `native_capture.py` checks the live map, crossing/device placement readback, ordinary vehicle blueprint, actual device and optional officer, 900 consecutive ticks, original speed/body geometry, indication and direction sources, all four synchronized RGB views and world restoration. `native_output_bridge.py` seals the original Native/Core packet without rewriting original observations.
+- `railway_7b.py` measures original instruction-to-entry/halt/exit history and rejects missing officiality sources, officer direction sources, frame gaps and changed indication. `analysis.py` is saved-only; its original source hashes, frame joins and measurement channels feed Native result and Core conversion. It reports observed response and leaves officiality, officer authenticity and legal judgment unresolved.
+- `delivery_audit.py` independently checks case identity, original source/video/frame joins, vehicle and instruction sources, and full decode of four camera files. `comparison_audit.py` checks fixed crossing, vehicle and camera/duration fields plus observed instruction/response differences. `physical_probe.py` exercises matching, nonmatching and missing-source outcomes and Native exit/owner-release lifecycle on synthetic CPU fixtures only.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+## CPU proofs and current remaining work
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+- Runtime verify and preflight pass with pinned CPU dependencies. Focused source tests pass three tests. Twelve exact primary/fallback `runtime.py offline` runs pass. Twelve positive/negative case-specific `runtime.py compatibility` runs pass. Six saved-only positive and missing-history runs pass. Six synthetic physical/lifecycle triples and six independent delivery audits plus five comparison audits pass. These receipts are under this assignment folder; media and temporary attempts remain under `.runtime-work/`.
+- The final source revision was rebuilt and all bound proofs rerun. `proposals/semantic-index.json`, `execution-manifest.json`, `comparison-audits.json`, `queue-proposal.json` and `cpu-strict-assignment.log` are current. Actual CARLA geometry, device provenance, officer direction, motion, pixel content and original physical completion remain later local checks.
+
+The exact gate command `.venv-cpu/bin/python worker_check.py --assignment testing__C177249__NRS-484B-560-7b__motor_vehicle_driver --complete --require-delivery-ready` passed. Only the lead publishes the shared queue entry after an independent pass. No GPU command has been launched here.

@@ -12,7 +12,7 @@ import railway_7b as law
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 AID = HERE.name
-SCRATCH = REPO / ".runtime-work" / "c177249-offline"
+SCRATCH = REPO / ".runtime-work" / "c177249-offline-v3"
 
 
 def clean_copy(source, target):

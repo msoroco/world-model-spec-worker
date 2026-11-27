@@ -113,8 +113,8 @@ class FakeAdapter:
     def restore_settings(self, settings): self.calls.append(("restore", settings))
     def readback_restored(self, settings): return True
     def read_structure_ends(self, structure_id): return (0.0, 60.0)
-    def spawn_vehicle(self, actor_class, direction, structure_id):
-        self.calls.append(("spawn_vehicle", actor_class, direction, structure_id))
+    def spawn_vehicle(self, actor_class, direction, structure_id, *, spawn_adjust_m):
+        self.calls.append(("spawn_vehicle", actor_class, direction, structure_id, spawn_adjust_m))
         return "ego"
     def read_vehicle_class(self, ego): return "motor_vehicle"
     def set_crossing_route(self, *args): self.calls.append(("route", *args))
@@ -140,6 +140,7 @@ class BridgeConstructionTest(unittest.TestCase):
                           "requested_speed_delta_from_declared_maximum_mph": 5}
                 built = bridge_native.construct(adapter, dossier(direction), target)
                 self.assertEqual(built["requested_speed_mph"], 30)
+                self.assertEqual(adapter.calls[0][-1], 0.0)
                 self.assertEqual(len([c for c in adapter.calls if c[0] == "spawn_sign"]), 2)
                 self.assertEqual(len(built["owned"]), 7)
                 destroyed = bridge_native.destroy_owned(adapter, built["owned"], {})

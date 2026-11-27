@@ -22,7 +22,8 @@ def _write(path, text):
         stream.write(text)
 
 
-def acquire(adapter, site_path: Path, site_sha256: str, case: dict, output: Path) -> dict:
+def acquire(adapter, site_path: Path, site_sha256: str, case: dict, output: Path,
+            *, spawn_adjust_m: float = 0.0) -> dict:
     """Own world settings, actors, capture and closure for one fresh attempt."""
     output = Path(output)
     if not output.is_dir() or not (output / "construction.json").is_file():
@@ -42,7 +43,7 @@ def acquire(adapter, site_path: Path, site_sha256: str, case: dict, output: Path
         adapter.configure_sync(rate_hz=20)
         if adapter.readback_sync(rate_hz=20) is not True:
             raise ValueError("original 20 Hz world readback failed")
-        built = construct(adapter, site, case, owned)
+        built = construct(adapter, site, case, owned, spawn_adjust_m=spawn_adjust_m)
         for index in range(900):
             tick, images = adapter.tick_capture(index, built["ego"], built["cameras"])
             if not isinstance(tick, dict) or not isinstance(images, dict) or set(images) != set(CAMERAS):

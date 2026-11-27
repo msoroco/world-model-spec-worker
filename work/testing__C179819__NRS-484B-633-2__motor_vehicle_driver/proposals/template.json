@@ -1,0 +1,70 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-633-2",
+  "parameter_refs": [
+    {
+      "kind": "subject_behavior",
+      "name": "observed_crossing_speed_mph",
+      "range_or_domain": "source reviewed original observation",
+      "unit": "mph"
+    },
+    {
+      "kind": "subject_behavior",
+      "name": "observed_sign_offsets_ft",
+      "range_or_domain": "source reviewed original observation",
+      "unit": "ft"
+    },
+    {
+      "kind": "world_setup",
+      "name": "requested_sign_offset_ft",
+      "range_or_domain": "engineering setpoint around source declared maximum or sign station",
+      "unit": "ft"
+    },
+    {
+      "kind": "controller",
+      "name": "requested_speed_delta_from_declared_maximum_mph",
+      "range_or_domain": "engineering setpoint around source declared maximum or sign station",
+      "unit": "mph"
+    },
+    {
+      "kind": "world_setup",
+      "name": "structure_kind_request",
+      "range_or_domain": "source bound structure type and direction",
+      "unit": "categorical"
+    },
+    {
+      "kind": "world_setup",
+      "name": "travel_direction_request",
+      "range_or_domain": "source bound structure type and direction",
+      "unit": "categorical"
+    }
+  ],
+  "quote": "It is unlawful for any person to drive a vehicle over any bridge or other elevated structure constituting a part of a highway at a speed which is greater than the maximum speed which can be maintained with safety to the bridge or structure, when such structure is signposted as provided in this section [(3) appended below]. The Department of Transportation upon request from any local authority shall, or upon its own initiative may, conduct an investigation of any bridge or other elevated structure constituting a part of a highway constructed and maintained under the authority granted by chapter 408 of NRS, and if it thereupon finds that such structure cannot with safety to itself withstand vehicles traveling at the speed otherwise permissible under chapters 484A to 484E, inclusive, of NRS, the Department shall determine and declare the maximum speed of vehicles which such structure can safely withstand, and shall cause or permit suitable signs stating such maximum speed to be erected and maintained at a distance of 100 feet before each end of such structure.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "sign_distance": {
+        "operator": "=",
+        "source_clause": "at a distance of 100 feet before each end of such structure",
+        "unit": "ft",
+        "value": 100,
+        "variable": "requested_sign_offset_ft"
+      },
+      "source_clause": "when such structure is signposted as provided in this section"
+    },
+    "exceptions": [],
+    "judgment_calls_needed": [
+      {
+        "note": "Department declaration and original crossing samples remain separate from legal interpretation.",
+        "phrase": "maximum speed which can be maintained with safety to the bridge or structure"
+      }
+    ],
+    "obligation": {
+      "source_clause": "It is unlawful for any person to drive a vehicle over any bridge or other elevated structure constituting a part of a highway at a speed which is greater than the maximum speed which can be maintained with safety to the bridge or structure"
+    },
+    "timing": {
+      "source_clause": "when such structure is signposted as provided in this section"
+    }
+  },
+  "template_id": "NRS-484B-633-2@motor_vehicle_driver"
+}

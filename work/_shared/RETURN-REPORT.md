@@ -2,6 +2,19 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 12:23 UTC: C177249 railroad stop package published
+
+- `testing__C177249__NRS-484B-560-7b__motor_vehicle_driver` passed the owner's exact strict gate and the lead's independent exact strict gate. Its six exact cases and one risk-justified fallback each passed offline, pinned compatibility, saved-only, physical preparation, independent positive/negative delivery and comparison CPU proofs. The proposal published **6 cases, 5 comparisons, 53 syntax-checked commands**. Shared queue is now **223 ready assignments, 1,538 cases, 1,070 comparisons**, 4,173,223 bytes, SHA256 `444695e9bd4d0b07f71a01303e6054819458f9adbe2934e783b847cee48d30c6`. A freed owner slot is now assigned to the separate bus loading A2 law. No Git command was run.
+
+## 2026-11-27 12:20 UTC: C410753 railway sight package published
+
+- `testing__C410753__LVMC-11-16-030__motor_vehicle_driver` passed the exact scoped strict gate after a root measurement contract already embedded in its construction was materialized. All seven primary and seven justified fallback cases passed exact offline and pinned compatibility proofs; saved-only, physical preparation, independent delivery and comparison CPU audits also passed. The queue proposal published **7 cases, 3 comparisons, 59 syntax-checked commands**. Shared queue is now **222 ready assignments, 1,532 cases, 1,065 comparisons**, 4,144,897 bytes, SHA256 `545cf549802b2304761736e20eda88d665770c8884912a8d85bbc626e83c8c48`. Actual CARLA motion, railway sight, camera coverage and local legal review remain pending physical capture. No Git command was run.
+
+## 2026-11-27 12:14 UTC: railway fallback proofs complete; scoped strict gate running
+
+- Root `testing__C410753__LVMC-11-16-030__motor_vehicle_driver`: all seven justified fallback constructions passed pinned positive/negative compatibility, completing 14 exact compatibility receipts across primary and fallback. The final focused suite passed **38/38** tests. The seven-case/three-comparison queue proposal is authored; the exact scoped strict gate is running. Result readiness is provisional pending its exit code, so this assignment has **not** been published. Physical CARLA and legal review remain future local checks.
+- `testing__C158190__NRS-484B-257-1__motor_vehicle_driver` remains **partial**. A source-hashed allocation audit shows its frozen selected yield-sign branch conflicts with the cell's fixed stop-sign control; adjacent C158208 already owns the matching yield-sign cell. Its owner authored a source-bound stop-sign alternative and passed 38 focused tests, then left the result partial. `testing__C386411__LVMC-11-60-030-A1__bus_driver` is now separately owned for construction and proofs.
+
 ## 2026-11-27 12:07 UTC: C150078 cycle and scooter parking package published
 
 - `testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator` passed the owner's exact strict gate twice and the lead's independent exact strict gate. The final Native test repairs the source-bound parking act. Its proposal published **8 cases, 3 comparisons, 67 syntax-checked commands**. Shared queue is now **221 ready assignments, 1,525 cases, 1,062 comparisons**, 4,116,110 bytes, SHA256 `8bb6dedb0d62d2ca9fb6d67f6199b1ae0286dbff13682871e1bde96ffb3da592`. The freed owner slot now works `testing__C158190__NRS-484B-257-1__motor_vehicle_driver`. No Git command was run.

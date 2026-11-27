@@ -1,32 +1,322 @@
 {
-  "assignment_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver",
   "actor": "bus_driver",
-  "cell_id": "C386411",
-  "law_id": "LVMC-11-60-030-A1",
-  "selected_branches": [
+  "assignment_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45 s capture",
+        "subject": "complete bus body, public one-way street, stop boundary and route context",
+        "view": "overview"
+      },
+      {
+        "interval": "full 45 s capture",
+        "subject": "bus approach, stopped interval and departure",
+        "view": "approach"
+      },
+      {
+        "interval": "full 45 s capture",
+        "subject": "official stop designation, signs and source-reviewed boundary",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full 45 s capture",
+        "subject": "body position, door side and standing or parking activity",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability",
+    "rate_hz": 20,
+    "views": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ]
+  },
+  "cases": [
     {
-      "law_id": "LVMC-11-60-030-A1",
-      "cell_id": "C386411",
-      "actor": "bus_driver",
-      "requirement": "LVMC-11-60-030-A1",
-      "branch": "Standing relative to a designated bus stop",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 317,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
+      "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+      "conduct": "stand",
+      "gap_ids": [
+        "no_accepted_original_source",
+        "no_reviewed_designation_and_termini"
+      ],
+      "kind": "delivery",
+      "location_relation": "inside",
+      "note": "Inside/outside is a measured body-to-reviewed-boundary relation; other permissible termini must be checked before legal interpretation.",
+      "site_source_requirement": "original public-street and stop designation, signs, boundary, route origin/destination and bus/operator identity",
+      "target_law_id": "LVMC-11-60-030-A1"
+    },
+    {
+      "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_outside",
+      "conduct": "stand",
+      "gap_ids": [
+        "no_accepted_original_source",
+        "no_reviewed_designation_and_termini"
+      ],
+      "kind": "delivery",
+      "location_relation": "outside",
+      "note": "Inside/outside is a measured body-to-reviewed-boundary relation; other permissible termini must be checked before legal interpretation.",
+      "site_source_requirement": "original public-street and stop designation, signs, boundary, route origin/destination and bus/operator identity",
+      "target_law_id": "LVMC-11-60-030-A1"
+    },
+    {
+      "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside",
+      "conduct": "park",
+      "gap_ids": [
+        "no_accepted_original_source",
+        "no_reviewed_designation_and_termini"
+      ],
+      "kind": "delivery",
+      "location_relation": "inside",
+      "note": "Inside/outside is a measured body-to-reviewed-boundary relation; other permissible termini must be checked before legal interpretation.",
+      "site_source_requirement": "original public-street and stop designation, signs, boundary, route origin/destination and bus/operator identity",
+      "target_law_id": "LVMC-11-60-030-A1"
+    },
+    {
+      "case_id": "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside",
+      "conduct": "park",
+      "gap_ids": [
+        "no_accepted_original_source",
+        "no_reviewed_designation_and_termini"
+      ],
+      "kind": "delivery",
+      "location_relation": "outside",
+      "note": "Inside/outside is a measured body-to-reviewed-boundary relation; other permissible termini must be checked before legal interpretation.",
+      "site_source_requirement": "original public-street and stop designation, signs, boundary, route origin/destination and bus/operator identity",
+      "target_law_id": "LVMC-11-60-030-A1"
     }
   ],
-  "law_text": "The operator of a bus, other than a tour bus, shall: Not stand or park such vehicle upon any street at any place other than a bus stop, bus stand or the origin or destination point for the route to which such vehicle is assigned which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010] of this Chapter.",
-  "law_source": "LVMC 11.60.030(A)(1)",
-  "topic_inventory": {
-    "exact-text": "The operator of a bus, other than a tour bus, shall: Not stand or park such vehicle upon any street at any place other than a bus stop, bus stand or the origin or destination point for the route to which such vehicle is assigned which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010] of this Chapter."
+  "cell_id": "C386411",
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_outside"
+      ],
+      "comparison_id": "stand_stop_boundary",
+      "deliberate_differences": [
+        "source-measured standing body position inside versus outside designated stop boundary"
+      ],
+      "fixed_conditions": [
+        "same reviewed one-way public street and designated bus stop",
+        "same covered non-tour bus, operator and assigned route",
+        "same standing activity and complete 45 s four-camera capture",
+        "same bus dimensions, approach and stop duration"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside"
+      ],
+      "comparison_id": "park_stop_boundary",
+      "deliberate_differences": [
+        "source-measured parking body position inside versus outside designated stop boundary"
+      ],
+      "fixed_conditions": [
+        "same reviewed one-way public street and designated bus stop",
+        "same covered non-tour bus, operator and assigned route",
+        "same parking activity and complete 45 s four-camera capture",
+        "same bus dimensions, approach and stop duration"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside"
+      ],
+      "comparison_id": "stand_versus_park_inside",
+      "deliberate_differences": [
+        "source-reviewed standing versus parking conduct"
+      ],
+      "fixed_conditions": [
+        "same reviewed one-way public street and designated bus stop",
+        "same covered non-tour bus, operator and assigned route",
+        "same source-measured inside-stop body position and complete 45 s four-camera capture"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_original_source",
+        "requirement": "Original covered bus, operator, public street and continuous conduct evidence",
+        "source": {
+          "path": "inputs/testing__C386411__LVMC-11-60-030-A1__bus_driver/assignment.json",
+          "sha256": "40f1f1a95d67db3de560f2ef0658604758f1d482a18ca32db5029592e48b052e"
+        },
+        "why_existing_insufficient": "Frozen accepted evidence inventory is empty."
+      },
+      {
+        "id": "no_reviewed_designation_and_termini",
+        "requirement": "Official bus stop designation, signed boundary and assigned route origin/destination exclusion",
+        "source": {
+          "path": "inputs/testing__C386411__LVMC-11-60-030-A1__bus_driver/assignment.json",
+          "sha256": "40f1f1a95d67db3de560f2ef0658604758f1d482a18ca32db5029592e48b052e"
+        },
+        "why_existing_insufficient": "The frozen conditional witness contains no independent original site or route designation."
+      }
+    ],
+    "method": "Reviewed the frozen evidence inventory: zero accepted recordings. The conditional witness supplies no original City Traffic Engineer stop designation, boundary, route termini or public-street proof. No equivalent recording is available.",
+    "reviewer": "CPU worker"
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "LVMC-11-60-030-A1",
+  "law_source": "LVMC 11.60.030(A)(1)",
+  "law_text": "The operator of a bus, other than a tour bus, shall: Not stand or park such vehicle upon any street at any place other than a bus stop, bus stand or the origin or destination point for the route to which such vehicle is assigned which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010] of this Chapter.",
+  "observations": [
+    {
+      "channels": [
+        "native.json",
+        "activity.json",
+        "identity.json"
+      ],
+      "mandatory": true,
+      "name": "bus_stopped_interval",
+      "source": "900 original Native frames and independently reviewed complete standing or parking activity"
+    },
+    {
+      "channels": [
+        "site.json",
+        "designation.json"
+      ],
+      "mandatory": true,
+      "name": "designated_stop_and_alternatives",
+      "source": "official designation, signs, stop polygon, public-street status and route origin/destination locations"
+    },
+    {
+      "channels": [
+        "native.json",
+        "site.json"
+      ],
+      "mandatory": true,
+      "name": "body_inside_stop",
+      "source": "Native bus footprint against official stop polygon during complete activity"
+    },
+    {
+      "channels": [
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv",
+        "video_frames.jsonl"
+      ],
+      "mandatory": true,
+      "name": "four_camera_frame_identity",
+      "source": "four synchronized original camera streams and Native frame map"
+    }
+  ],
+  "planning_status": "selected_source_gated_stop_boundary_cases",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_outside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside"
+      ],
+      "disposition_index": 0,
+      "evidence_or_gap": "No accepted original recording; retained as source-required original observation.",
+      "requirement": "covered bus operator and non-tour-bus exclusion",
+      "source": {
+        "path": "inputs/testing__C386411__LVMC-11-60-030-A1__bus_driver/assignment.json",
+        "sha256": "40f1f1a95d67db3de560f2ef0658604758f1d482a18ca32db5029592e48b052e"
+      },
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_outside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside"
+      ],
+      "disposition_index": 1,
+      "evidence_or_gap": "No accepted original recording; retained as source-required original observation.",
+      "requirement": "public street and applicable city jurisdiction",
+      "source": {
+        "path": "inputs/testing__C386411__LVMC-11-60-030-A1__bus_driver/assignment.json",
+        "sha256": "40f1f1a95d67db3de560f2ef0658604758f1d482a18ca32db5029592e48b052e"
+      },
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_outside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside"
+      ],
+      "disposition_index": 2,
+      "evidence_or_gap": "No accepted original recording; retained as source-required original observation.",
+      "requirement": "official bus stop, bus stand and assigned-route origin/destination designation and boundary",
+      "source": {
+        "path": "inputs/testing__C386411__LVMC-11-60-030-A1__bus_driver/assignment.json",
+        "sha256": "40f1f1a95d67db3de560f2ef0658604758f1d482a18ca32db5029592e48b052e"
+      },
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_outside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside"
+      ],
+      "disposition_index": 3,
+      "evidence_or_gap": "No accepted original recording; retained as source-required original observation.",
+      "requirement": "standing or parking activity with complete interval",
+      "source": {
+        "path": "inputs/testing__C386411__LVMC-11-60-030-A1__bus_driver/assignment.json",
+        "sha256": "40f1f1a95d67db3de560f2ef0658604758f1d482a18ca32db5029592e48b052e"
+      },
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__stand_outside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_inside",
+        "testing__C386411__LVMC-11-60-030-A1__bus_driver__park_outside"
+      ],
+      "disposition_index": 4,
+      "evidence_or_gap": "No accepted original recording; retained as source-required original observation.",
+      "requirement": "observed bus-body position relative to designated stop and other permitted locations",
+      "source": {
+        "path": "inputs/testing__C386411__LVMC-11-60-030-A1__bus_driver/assignment.json",
+        "sha256": "40f1f1a95d67db3de560f2ef0658604758f1d482a18ca32db5029592e48b052e"
+      },
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Original stop designation, signs, exact boundary and assigned route termini require independent source review.",
+    "Standing versus parking and continuous interval require independent original activity review.",
+    "Actual Native motion, footprint, pixels and complete camera coverage remain unverified until CARLA/original review.",
+    "The C386411 bus-stop cell does not itself construct a bus stand or route origin/destination alternative; comparison checks their absence at the selected outside position."
+  ],
+  "selected_branches": [
+    {
+      "actor": "bus_driver",
+      "branch": "Standing relative to a designated bus stop",
+      "cell_id": "C386411",
+      "coverage_status": "pending_review",
+      "law_id": "LVMC-11-60-030-A1",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "LVMC-11-60-030-A1",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 317,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C386411__LVMC-11-60-030-A1__bus_driver/assignment.json",
@@ -49,27 +339,15 @@
       "sha256": "36b65747218e0afffbddf94048876e6b8069dd4e108e82023387b9d7108fdfc4"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": []
+  "topic_inventory": {
+    "exact-text": "The operator of a bus, other than a tour bus, shall: Not stand or park such vehicle upon any street at any place other than a bus stop, bus stand or the origin or destination point for the route to which such vehicle is assigned which has been designated in accordance with Section 11.60.010 [DEF-LVMC-11-60-010] of this Chapter."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 317,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Standing relative to a designated bus stop",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "The one-way bus-stop cell supports standing within or outside the designated stop boundary while retaining the fixed stop.",
       "required_context": [
         "Construct curb geometry and stopping position; distinguish standing purpose from actual passenger receiving or discharging.",
         "Establish operator identity, bus classification and non-tour-bus status through ownership, design and actual use facts.",
@@ -81,7 +359,9 @@
         "Supply official designation, appropriate signing, governed boundaries and any designated dwell conditions.",
         "Supply stop designation, authority, boundaries, appropriate signs and any designated duration."
       ],
-      "reason": "The one-way bus-stop cell supports standing within or outside the designated stop boundary while retaining the fixed stop."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 317,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

@@ -75,7 +75,8 @@ def main():
     adapter = module.make_adapter(client.get_world(), site, case)
     from native_acquisition import acquire
     receipt = acquire(adapter, site_path, os.environ["SCENARIO_BRIDGE_SITE_SHA256"],
-                      case, args.output_dir)
+                      case, args.output_dir,
+                      spawn_adjust_m=config.get("spawn_station_adjust_m", 0.0))
     print(json.dumps({"case_id": receipt["case_id"],
                       "original_frames": receipt["original_frame_count"]}))
 
