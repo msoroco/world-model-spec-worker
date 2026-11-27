@@ -11,7 +11,9 @@ import re
 from pathlib import Path
 
 ASSIGNMENT = 'training__C261468__NRS-484B-363-4__motor_vehicle_driver'
-CASE_PLAN = Path(__file__).resolve().parents[1] / 'case-plan.json'
+CASE_PLAN = Path(__file__).resolve().with_name('case-plan.json')
+if not CASE_PLAN.is_file():
+    CASE_PLAN = Path(__file__).resolve().parents[1] / 'case-plan.json'
 
 
 def _finite_tuple(value, length):

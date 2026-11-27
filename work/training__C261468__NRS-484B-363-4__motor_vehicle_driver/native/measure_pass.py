@@ -10,7 +10,7 @@ import subprocess
 from pathlib import Path
 
 ASSIGNMENT = 'training__C261468__NRS-484B-363-4__motor_vehicle_driver'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 FRAMES = 600
 
 
@@ -40,7 +40,7 @@ def measure(root):
         raise ValueError('Requires all 600 original 20 Hz samples')
     video_hashes = {}
     for camera in CAMERAS:
-        path = root / ('camera_' + camera + '.mkv')
+        path = root / (camera + '.mkv')
         if not path.is_file() or not path.stat().st_size:
             raise ValueError('Missing nonempty source camera: ' + camera)
         probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
@@ -62,11 +62,12 @@ def measure(root):
         for camera in CAMERAS:
             out = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
                                   '-show_entries', 'stream=width,height', '-of', 'json',
-                                  str(root / ('camera_' + camera + '.mkv'))],
+                                  str(root / (camera + '.mkv'))],
                                  capture_output=True, text=True, check=True)
             dim = json.loads(out.stdout)['streams'][0]
-            if (dim['width'], dim['height']) != (1920, 1080):
-                raise ValueError('Original source camera must be full resolution: ' + camera)
+            expected = (1920, 1080) if camera == 'overview' else (1280, 720)
+            if (dim['width'], dim['height']) != expected:
+                raise ValueError('Original source camera resolution differs: ' + camera)
     for key in ('reviewer', 'zone_sign_source', 'zone_boundary_source', 'route_direction_source', 'school_calendar_source',
                 'operation_hours_source', 'civil_time_source', 'beacon_or_sign_source'):
         if not context.get(key):
@@ -78,7 +79,7 @@ def measure(root):
             not all(finite(v) for v in boundary) or boundary[0] >= boundary[1]):
         raise ValueError('Signed zone boundaries invalid')
     for key in ('school_in_session', 'pupils_in_class', 'beacon_operational',
-                'beacon_yellow_alternating', 'sign_says_limit_in_effect'):
+                'sign_says_limit_in_effect'):
         if type(context.get(key)) is not bool:
             raise ValueError('Missing source-reviewed condition: ' + key)
     for key in ('civil_time_unix_s', 'operation_end_unix_s', 'next_operation_start_unix_s'):
@@ -93,6 +94,21 @@ def measure(root):
         raise ValueError('Beacon definition requires at least two yellow lights')
     if context['beacon_operational'] and not context.get('beacon_with_sign'):
         raise ValueError('Beacon definition requires an accompanying sign')
+    lamp_states = None
+    if context['beacon_operational']:
+        lamp_path = root / 'beacon_lamps.jsonl'
+        if not lamp_path.is_file():
+            raise ValueError('Missing required saved source: beacon_lamps.jsonl')
+        if context.get('beacon_lamps_sha256') != sha(lamp_path):
+            raise ValueError('Beacon lamp source hash differs')
+        lamp_states = load_lines(lamp_path)
+        if len(lamp_states) != FRAMES:
+            raise ValueError('Beacon lamp source needs 600 joined frames')
+        ids = context.get('beacon_lamp_actor_ids')
+        if (not isinstance(ids, list) or len(ids) < 2 or
+                any(type(x) is not int for x in ids) or len(set(ids)) != len(ids) or
+                len(ids) != context['beacon_yellow_lights']):
+            raise ValueError('Two distinct source-identified beacon lamp actors required')
     prev_native, prev_time = -1, -1.0
     diffs, inside, times, lateral_offsets = [], [], [], []
     route = context.get('route_direction_id')
@@ -106,6 +122,15 @@ def measure(root):
             raise ValueError('Original 20 Hz cadence invalid')
         if row.get('video_frame') != i or row.get('native_frame') != native:
             raise ValueError('Pass trace does not join original frame map')
+        if lamp_states is not None:
+            lamp = lamp_states[i]
+            if (lamp.get('video_frame') != i or lamp.get('native_frame') != native or
+                    lamp.get('source_kind') != ('synthetic_lamp_sample' if context['review_kind'] == 'synthetic_diagnostic' else 'original_lamp_state') or
+                    lamp.get('lamp_actor_ids') != context['beacon_lamp_actor_ids'] or
+                    not isinstance(lamp.get('yellow_lit'), list) or
+                    len(lamp['yellow_lit']) != len(context['beacon_lamp_actor_ids']) or
+                    any(type(v) is not bool for v in lamp['yellow_lit'])):
+                raise ValueError('Beacon lamps do not join original frame and actor sources')
         if row.get('source_kind') != ('synthetic_native_sample' if context['review_kind'] == 'synthetic_diagnostic' else 'original_native_pose'):
             raise ValueError('Pass trace source kind does not match review kind')
         if row.get('ego_route_direction_id') != route or row.get('other_route_direction_id') != route:
@@ -148,6 +173,12 @@ def measure(root):
     end = returns[0]
     if not all(inside[start:end + 1]):
         raise ValueError('Whole pass and lane return must remain in signed school zone')
+    alternating = False
+    if lamp_states is not None:
+        states = [tuple(x['yellow_lit']) for x in lamp_states[start:end + 1]]
+        exclusive = [x.index(True) for x in states if sum(x) == 1]
+        alternating = (not any(sum(x) > 1 for x in states) and
+                       len(set(exclusive)) >= 2)
     civil_at_cross = context['civil_time_unix_s'] + times[cross] - times[0]
     seconds_after_end = civil_at_cross - context['operation_end_unix_s']
     seconds_before_next = context['next_operation_start_unix_s'] - civil_at_cross
@@ -156,7 +187,8 @@ def measure(root):
         'source_kind': context['review_kind'],
         'sources': {'video_frames.jsonl': sha(frame_path), 'pass_trace.jsonl': sha(trace_path),
                     'school_zone_context.json': sha(context_path),
-                    **{'camera_' + k + '.mkv': v for k, v in video_hashes.items()}},
+                    **({'beacon_lamps.jsonl': sha(root / 'beacon_lamps.jsonl')} if lamp_states is not None else {}),
+                    **{k + '.mkv': v for k, v in video_hashes.items()}},
         'sample_count': FRAMES, 'sample_span_s': times[-1] - times[0],
         'pass_crossing_video_frame': cross, 'pass_crossing_time_s': times[cross],
         'pass_crossing_in_signed_zone': inside[cross],
@@ -173,7 +205,8 @@ def measure(root):
         'within_half_hour_window_observed': seconds_after_end >= 1800 and seconds_before_next >= 1800,
         'beacon_operational': context['beacon_operational'],
         'beacon_yellow_lights': context.get('beacon_yellow_lights'),
-        'beacon_yellow_alternating': context['beacon_yellow_alternating'],
+        'beacon_yellow_alternating': alternating,
+        'beacon_lamp_state_source': 'joined_saved_lamp_states' if lamp_states is not None else None,
         'sign_says_limit_in_effect': context['sign_says_limit_in_effect'],
         'physical_acceptance_claimed': False, 'legal_verdict_claimed': False,
     }

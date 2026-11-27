@@ -1,0 +1,151 @@
+{
+  "assignment_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver",
+  "case_id": "training__C261468__NRS-484B-363-4__motor_vehicle_driver__nonbeacon_sign_inactive",
+  "law_id": "NRS-484B-363-4",
+  "frozen_cell": {
+    "layout": "school_zone",
+    "maneuver": "overtake",
+    "control": "other_vehicle"
+  },
+  "requested_context": {
+    "zone_kind": "school_zone",
+    "school_in_session": true,
+    "pupils_in_class": true,
+    "beacon_operational": false,
+    "sign_says_limit_in_effect": false,
+    "school_operating_at_pass": true,
+    "beacon_with_sign": false,
+    "beacon_yellow_lights": null,
+    "beacon_yellow_alternating": false
+  },
+  "frames": 600,
+  "fps": 20,
+  "duration_s": 30,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fps": 20,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        -8,
+        0,
+        6
+      ],
+      "rotation_pyr_deg": [
+        -23,
+        0,
+        0
+      ],
+      "pose_strategy": "ego_relative_proposed_source_camera"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        4,
+        0,
+        2
+      ],
+      "rotation_pyr_deg": [
+        -5,
+        0,
+        0
+      ],
+      "pose_strategy": "ego_relative_proposed_source_camera"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        -4,
+        4,
+        2
+      ],
+      "rotation_pyr_deg": [
+        -7,
+        -40,
+        0
+      ],
+      "pose_strategy": "ego_relative_proposed_source_camera"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        -7,
+        0,
+        2
+      ],
+      "rotation_pyr_deg": [
+        0,
+        180,
+        0
+      ],
+      "pose_strategy": "ego_relative_proposed_source_camera"
+    }
+  ],
+  "required_atoms": [
+    "ru.motor_vehicle",
+    "kin.position",
+    "kin.heading",
+    "kin.speed"
+  ],
+  "pass_side": 1,
+  "pass_lane_width_m": 3.5,
+  "ego_speed_mps": 8.0,
+  "other_speed_mps": 4.0,
+  "physical_completion": {},
+  "legal_verdict": null,
+  "recording_description": {
+    "channels": [
+      {
+        "name": "original_ego_other_pose",
+        "method": "original Native actor transforms and frame map",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "structured",
+        "reference_frame": "surveyed same-direction route axis",
+        "uncertainty": "requested velocity does not establish observed pass"
+      },
+      {
+        "name": "original_beacon_lamp_state",
+        "method": "live source-identified lamp actor get_state at each joined frame",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "structured",
+        "reference_frame": "source-identified installed sign and lamp actors",
+        "uncertainty": "original pixels and legal condition require independent review"
+      },
+      {
+        "name": "four_source_cameras",
+        "method": "synchronized original RGB cameras",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "video",
+        "reference_frame": "original Native frame map",
+        "uncertainty": "physical visibility unverified"
+      }
+    ],
+    "context_inputs": [
+      "original school zone designation",
+      "original school calendar and operation times",
+      "civil time",
+      "installed sign and beacon source",
+      "same-direction route survey"
+    ],
+    "limitations": [
+      "Original physical pass, sign pixels, school calendar and legal outcome remain unverified"
+    ]
+  }
+}

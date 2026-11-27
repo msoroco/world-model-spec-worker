@@ -40,10 +40,11 @@ def main():
     for camera, color in zip(module.CAMERAS, ('red', 'green', 'blue', 'yellow')):
         subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-f', 'lavfi', '-i',
                         'color=c=' + color + ':s=64x48:r=20', '-frames:v', '600',
-                        '-c:v', 'ffv1', str(ROOT / ('camera_' + camera + '.mkv'))], check=True)
+                        '-c:v', 'ffv1', str(ROOT / (camera + '.mkv'))], check=True)
     frame_path = ROOT / 'video_frames.jsonl'
     trace_path = ROOT / 'pass_trace.jsonl'
     context_path = ROOT / 'school_zone_context.json'
+    lamp_path = ROOT / 'beacon_lamps.jsonl'
     frames = [{'video_frame': i, 'native_frame': 100 + i, 'time_s': i / 20} for i in range(600)]
     def lateral(i):
         if i < 100 or i >= 370:
@@ -61,6 +62,10 @@ def main():
              for i in range(600)]
     lines(frame_path, frames)
     lines(trace_path, trace)
+    lamps = [{'video_frame': i, 'native_frame': 100 + i,
+              'source_kind': 'synthetic_lamp_sample', 'lamp_actor_ids': [501, 502],
+              'yellow_lit': [i % 2 == 0, i % 2 == 1]} for i in range(600)]
+    lines(lamp_path, lamps)
     context = {'assignment_id': module.ASSIGNMENT, 'review_kind': 'synthetic_diagnostic',
                'reviewer': 'synthetic fixture', 'zone_kind': 'school_zone',
                'zone_station_m': [0, 180], 'route_direction_id': 'route_A',
@@ -70,10 +75,11 @@ def main():
                'beacon_or_sign_source': 'synthetic fixture',
                'school_in_session': True, 'pupils_in_class': True,
                'beacon_operational': True, 'beacon_with_sign': True, 'beacon_yellow_lights': 2,
-               'beacon_yellow_alternating': True, 'sign_says_limit_in_effect': True,
+               'beacon_lamp_actor_ids': [501, 502], 'beacon_lamps_sha256': module.sha(lamp_path),
+               'sign_says_limit_in_effect': True,
                'civil_time_unix_s': 1000000, 'operation_end_unix_s': 1003600,
                'next_operation_start_unix_s': 1086400,
-               'camera_sha256': {k: module.sha(ROOT / ('camera_' + k + '.mkv'))
+               'camera_sha256': {k: module.sha(ROOT / (k + '.mkv'))
                                  for k in module.CAMERAS}}
     write(context_path, context)
     active = module.measure(ROOT)
@@ -86,10 +92,15 @@ def main():
     holiday = module.measure(ROOT)
     assert holiday['school_in_session'] is False and holiday['pass_crossing_video_frame'] == active['pass_crossing_video_frame']
     unlit = copy.deepcopy(context)
-    unlit['beacon_yellow_alternating'] = False
+    quiet_lamps = copy.deepcopy(lamps)
+    for row in quiet_lamps:
+        row['yellow_lit'] = [False, False]
+    lines(lamp_path, quiet_lamps)
+    unlit['beacon_lamps_sha256'] = module.sha(lamp_path)
     write(context_path, unlit)
     beacon_quiet = module.measure(ROOT)
     assert beacon_quiet['beacon_operational'] and not beacon_quiet['beacon_yellow_alternating']
+    lines(lamp_path, lamps)
     sign_off = copy.deepcopy(context)
     sign_off['beacon_operational'] = False
     sign_off['beacon_yellow_lights'] = None
@@ -126,6 +137,21 @@ def main():
     assert module.measure(ROOT)['within_half_hour_window_observed']
     write(context_path, context)
     failures = {}
+    failures['missing_lamp_source'] = rejected('missing_lamp_source', 'beacon_lamps.jsonl',
+        lambda: lamp_path.unlink(), lambda: lines(lamp_path, lamps))
+    stale = copy.deepcopy(lamps)
+    stale[100]['yellow_lit'] = [False, False]
+    failures['changed_lamp_source'] = rejected('changed_lamp_source', 'lamp source hash differs',
+        lambda: lines(lamp_path, stale), lambda: lines(lamp_path, lamps))
+    bad_lamps = copy.deepcopy(lamps)
+    bad_lamps[100]['native_frame'] += 1
+    bad_context_lamps = copy.deepcopy(context)
+    lines(lamp_path, bad_lamps)
+    bad_context_lamps['beacon_lamps_sha256'] = module.sha(lamp_path)
+    lines(lamp_path, lamps)
+    failures['broken_lamp_join'] = rejected('broken_lamp_join', 'do not join',
+        lambda: (lines(lamp_path, bad_lamps), write(context_path, bad_context_lamps)),
+        lambda: (lines(lamp_path, lamps), write(context_path, context)))
     failures['missing_trace'] = rejected('missing_trace', 'Missing required saved source',
         lambda: trace_path.unlink(), lambda: lines(trace_path, trace))
     bad = copy.deepcopy(trace)
@@ -160,7 +186,7 @@ def main():
     failures['no_lane_departure'] = rejected('no_lane_departure', 'No observed lane departure',
         lambda: lines(trace_path, bad), lambda: lines(trace_path, trace))
     bad_context = copy.deepcopy(context)
-    bad_context['camera_sha256']['forward'] = '0' * 64
+    bad_context['camera_sha256']['overview'] = '0' * 64
     failures['stale_video'] = rejected('stale_video', 'not bound to original camera bytes',
         lambda: write(context_path, bad_context), lambda: write(context_path, context))
     bad_context = copy.deepcopy(context)

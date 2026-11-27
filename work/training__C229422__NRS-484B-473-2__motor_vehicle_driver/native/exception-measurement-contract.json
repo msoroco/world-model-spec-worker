@@ -1,0 +1,30 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 1,
+      "requirement": "NRS-484B-473-2",
+      "source": "NRS 484B.473(2)",
+      "output_key": "exception_context",
+      "method": "measure_exception_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "parked-lamp-trace.jsonl",
+        "video_frames.jsonl",
+        "lamp-pixel-review.json",
+        "original-scene-review.json",
+        "original-highway.json",
+        "original-parking_rule.json",
+        "original-civil_clock.json",
+        "original-sunset_sunrise.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "lamp-pixel-review.json"
+    ],
+    "error_contains": "Missing required source: lamp-pixel-review.json"
+  }
+}
