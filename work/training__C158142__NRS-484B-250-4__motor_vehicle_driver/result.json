@@ -1,16 +1,66 @@
 {
   "assignment_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver",
   "input_sha256": "67eeb77a6c4bd5da1aad7258b821ddb3f0732947b0eb4184acf86317101c9033",
-  "status": "partial",
-  "reason": "CPU-tested a 600-frame saved-source diagnostic for the inoperative uncovered signal, statutory stop-reference hierarchy, subject stop before entry, and other vehicle's prior stop and intersection occupancy. Two fixed-world synthetic witness traces, two reference fallback checks and five missing-source negatives pass. Current runtime preflight and scoped complete checkpoint pass. Exact Native construction, real signal-state provenance, source camera video, pinned offline/compatibility/process-saved, semantic and independent audits remain unfinished; physical and legal outcomes are unverified.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": "Two exact selected cases and risk-based fallbacks have CPU offline, public compatibility positive/negative, saved-only, semantic, physical/lifecycle diagnostic, four-camera delivery, and independent comparison proofs. Actual Native signal pixels, motion and legal acceptance remain unverified.",
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 2,
   "comparison_count": 1,
-  "candidate_count": 0,
+  "candidate_count": 4,
   "source_law_review": "Exact frozen law text retained; recovered summary requires clause-by-clause source review before selection",
   "accepted_membership_count": 0,
   "reuse_count": 0,
   "unresolved_branch_count": 1,
   "applied_update": 16,
-  "draft_saved_measurement_proof": "native/inoperative-signal-proof.json"
+  "draft_saved_measurement_proof": "native/inoperative-signal-proof.json",
+  "candidate_plans_proven": 4,
+  "comparison_audits_passed": 1,
+  "cases_selected": 2,
+  "tests": [
+    {
+      "name": "root unit",
+      "command": "PYTHONPATH=work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/native PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/tests -p test*.py",
+      "exit_code": 0,
+      "log": "native/root-unit.log",
+      "sha256": "6f283ee6225d2cef4c0127d95456a6f954c45141c92b97dd89016cb1c630e8f4"
+    },
+    {
+      "name": "comparison",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/native/prove_comparison_audit.py",
+      "exit_code": 0,
+      "log": "proofs/comparison-audit.log",
+      "sha256": "2a331155b3fdd1cbf25f04dcd170233086cd5e3ddcbaeb35d3ca3a0c9b1ae222"
+    },
+    {
+      "name": "saved-only witness_1",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_1 --attempt .runtime-work/c158142-fresh-attempt-1 --output .runtime-work/c158142-saved-witness1-v4 --library runtime/library --validator .runtime-work/c111277-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "native/cpu-witness1-saved.log",
+      "sha256": "0413465f020fd4f8667016240d74fdf8c5b28ff3bf42ef7706cbf564407da4cc"
+    },
+    {
+      "name": "delivery witness_1",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/native/delivery_audit.py --attempt .runtime-work/c158142-compat-witness1-primary-v3 --case training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_1 --output work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/proofs/witness_1/delivery-positive.json",
+      "exit_code": 0,
+      "log": "proofs/witness_1/delivery-positive.log",
+      "sha256": "0c6503b6470f2416ca35cbabdb1886a8899acead150e555db9e621e9afa4357e"
+    },
+    {
+      "name": "saved-only witness_2",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved --manifest work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/execution-manifest.json --case training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_2 --attempt .runtime-work/c158142-fresh-attempt-2 --output .runtime-work/c158142-saved-witness2-v5 --library runtime/library --validator .runtime-work/c111277-validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "native/cpu-witness2-saved.log",
+      "sha256": "ca3d7bcbe52e3590677b737102035fc9d21ca758d4d811c545250750927d85b3"
+    },
+    {
+      "name": "delivery witness_2",
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/native/delivery_audit.py --attempt .runtime-work/c158142-compat-witness2-primary-v3 --case training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_2 --output work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/proofs/witness_2/delivery-positive.json",
+      "exit_code": 0,
+      "log": "proofs/witness_2/delivery-positive.log",
+      "sha256": "dffd292e17578ad33daf443126f83537c34b5f0016bd220d0a35e1206e2f7ab8"
+    }
+  ],
+  "carla_executed": false,
+  "recordings_accepted": 0,
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C158142__NRS-484B-250-4__motor_vehicle_driver --case training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

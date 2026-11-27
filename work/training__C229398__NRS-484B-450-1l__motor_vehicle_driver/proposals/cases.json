@@ -1,0 +1,1753 @@
+{
+  "cell_id": "C229398",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "double-parking-activity-and-exception",
+      "target_law_id": "NRS-484B-450-1l",
+      "judgment_refs": [
+        {
+          "phrase": "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+          "note": "Survey original highway and curb authority, both full-body footprints and the curbside vehicle halt."
+        },
+        {
+          "phrase": "stop, stand or park a vehicle",
+          "note": "Review original purpose, person, activity and rest duration without inventing a legal duration cutoff."
+        },
+        {
+          "phrase": "necessary to avoid conflict with other traffic",
+          "note": "Review original traffic paths and causal necessity for the stopping position."
+        },
+        {
+          "phrase": "in compliance with law",
+          "note": "Review the exact applicable lawful direction and its source."
+        },
+        {
+          "phrase": "directions of a police officer",
+          "note": "Review original officer identity, authority, communication and scope."
+        },
+        {
+          "phrase": "official traffic-control device",
+          "note": "Review original device identity, installation authority, pixels, conditions and effective instruction."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original Native and independent authority/context sources remain for local review.",
+      "missing_inputs": [
+        "Original highway, curb, activity and exception sources."
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C229398__NRS-484B-450-1l__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Neutral curbside road reference; no selected recording.",
+      "variable_assignments": {
+        "requested_rest_station": {
+          "kind": "controller",
+          "value": "clear"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "neutral"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "none_requested"
+        },
+        "observed_highway_side_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+        "stop, stand or park a vehicle",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "directions of a police officer",
+        "official traffic-control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_pose.jsonl"
+          },
+          {
+            "name": "curbside_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curbside_pose.jsonl"
+          },
+          {
+            "name": "curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curb_geometry.jsonl"
+          },
+          {
+            "name": "ego_highway_side_of_curbside",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_highway_side_of_curbside.jsonl"
+          },
+          {
+            "name": "longitudinal_overlap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longitudinal_overlap_m.jsonl"
+          },
+          {
+            "name": "lateral_surface_gap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/lateral_surface_gap_m.jsonl"
+          },
+          {
+            "name": "concurrent_overlap_at_rest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/concurrent_overlap_at_rest.jsonl"
+          },
+          {
+            "name": "longest_concurrent_run_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longest_concurrent_run_frames.jsonl"
+          },
+          {
+            "name": "activity_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/activity_context.jsonl"
+          },
+          {
+            "name": "traffic_conflict_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/traffic_conflict_context.jsonl"
+          },
+          {
+            "name": "law_compliance_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/law_compliance_context.jsonl"
+          },
+          {
+            "name": "police_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/police_direction_context.jsonl"
+          },
+          {
+            "name": "device_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/device_direction_context.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic two-vehicle geometry does not establish original highway designation, activity, exception or legal outcome."
+        ]
+      }
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1l__motor_vehicle_driver__clear",
+      "target_law_id": "NRS-484B-450-1l",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "highway-side-double-parking",
+      "rationale": "Request clear and measure original curbside two-body overlap; retain independent activity/exception review.",
+      "deliberate_differences": [
+        "requested_rest_station",
+        "requested_activity",
+        "exception_context"
+      ],
+      "variable_assignments": {
+        "requested_rest_station": {
+          "kind": "controller",
+          "value": "clear"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "neutral"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "none_requested"
+        },
+        "observed_highway_side_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+        "stop, stand or park a vehicle",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "directions of a police officer",
+        "official traffic-control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_pose.jsonl"
+          },
+          {
+            "name": "curbside_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curbside_pose.jsonl"
+          },
+          {
+            "name": "curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curb_geometry.jsonl"
+          },
+          {
+            "name": "ego_highway_side_of_curbside",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_highway_side_of_curbside.jsonl"
+          },
+          {
+            "name": "longitudinal_overlap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longitudinal_overlap_m.jsonl"
+          },
+          {
+            "name": "lateral_surface_gap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/lateral_surface_gap_m.jsonl"
+          },
+          {
+            "name": "concurrent_overlap_at_rest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/concurrent_overlap_at_rest.jsonl"
+          },
+          {
+            "name": "longest_concurrent_run_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longest_concurrent_run_frames.jsonl"
+          },
+          {
+            "name": "activity_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/activity_context.jsonl"
+          },
+          {
+            "name": "traffic_conflict_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/traffic_conflict_context.jsonl"
+          },
+          {
+            "name": "law_compliance_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/law_compliance_context.jsonl"
+          },
+          {
+            "name": "police_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/police_direction_context.jsonl"
+          },
+          {
+            "name": "device_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/device_direction_context.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic two-vehicle geometry does not establish original highway designation, activity, exception or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_highway_side_overlap",
+        "comparison_or_standard": "original curbside vehicle and full-body footprint",
+        "target_value_or_branch": "clear"
+      }
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1l__motor_vehicle_driver__stop",
+      "target_law_id": "NRS-484B-450-1l",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "highway-side-double-parking",
+      "rationale": "Request stop and measure original curbside two-body overlap; retain independent activity/exception review.",
+      "deliberate_differences": [
+        "requested_rest_station",
+        "requested_activity",
+        "exception_context"
+      ],
+      "variable_assignments": {
+        "requested_rest_station": {
+          "kind": "controller",
+          "value": "abreast"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "stop"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "none_requested"
+        },
+        "observed_highway_side_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+        "stop, stand or park a vehicle",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "directions of a police officer",
+        "official traffic-control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_pose.jsonl"
+          },
+          {
+            "name": "curbside_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curbside_pose.jsonl"
+          },
+          {
+            "name": "curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curb_geometry.jsonl"
+          },
+          {
+            "name": "ego_highway_side_of_curbside",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_highway_side_of_curbside.jsonl"
+          },
+          {
+            "name": "longitudinal_overlap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longitudinal_overlap_m.jsonl"
+          },
+          {
+            "name": "lateral_surface_gap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/lateral_surface_gap_m.jsonl"
+          },
+          {
+            "name": "concurrent_overlap_at_rest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/concurrent_overlap_at_rest.jsonl"
+          },
+          {
+            "name": "longest_concurrent_run_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longest_concurrent_run_frames.jsonl"
+          },
+          {
+            "name": "activity_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/activity_context.jsonl"
+          },
+          {
+            "name": "traffic_conflict_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/traffic_conflict_context.jsonl"
+          },
+          {
+            "name": "law_compliance_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/law_compliance_context.jsonl"
+          },
+          {
+            "name": "police_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/police_direction_context.jsonl"
+          },
+          {
+            "name": "device_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/device_direction_context.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic two-vehicle geometry does not establish original highway designation, activity, exception or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_highway_side_overlap",
+        "comparison_or_standard": "original curbside vehicle and full-body footprint",
+        "target_value_or_branch": "stop"
+      }
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1l__motor_vehicle_driver__stand",
+      "target_law_id": "NRS-484B-450-1l",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "highway-side-double-parking",
+      "rationale": "Request stand and measure original curbside two-body overlap; retain independent activity/exception review.",
+      "deliberate_differences": [
+        "requested_rest_station",
+        "requested_activity",
+        "exception_context"
+      ],
+      "variable_assignments": {
+        "requested_rest_station": {
+          "kind": "controller",
+          "value": "abreast"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "stand"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "none_requested"
+        },
+        "observed_highway_side_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+        "stop, stand or park a vehicle",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "directions of a police officer",
+        "official traffic-control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_pose.jsonl"
+          },
+          {
+            "name": "curbside_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curbside_pose.jsonl"
+          },
+          {
+            "name": "curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curb_geometry.jsonl"
+          },
+          {
+            "name": "ego_highway_side_of_curbside",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_highway_side_of_curbside.jsonl"
+          },
+          {
+            "name": "longitudinal_overlap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longitudinal_overlap_m.jsonl"
+          },
+          {
+            "name": "lateral_surface_gap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/lateral_surface_gap_m.jsonl"
+          },
+          {
+            "name": "concurrent_overlap_at_rest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/concurrent_overlap_at_rest.jsonl"
+          },
+          {
+            "name": "longest_concurrent_run_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longest_concurrent_run_frames.jsonl"
+          },
+          {
+            "name": "activity_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/activity_context.jsonl"
+          },
+          {
+            "name": "traffic_conflict_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/traffic_conflict_context.jsonl"
+          },
+          {
+            "name": "law_compliance_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/law_compliance_context.jsonl"
+          },
+          {
+            "name": "police_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/police_direction_context.jsonl"
+          },
+          {
+            "name": "device_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/device_direction_context.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic two-vehicle geometry does not establish original highway designation, activity, exception or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_highway_side_overlap",
+        "comparison_or_standard": "original curbside vehicle and full-body footprint",
+        "target_value_or_branch": "stand"
+      }
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1l__motor_vehicle_driver__park",
+      "target_law_id": "NRS-484B-450-1l",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "highway-side-double-parking",
+      "rationale": "Request park and measure original curbside two-body overlap; retain independent activity/exception review.",
+      "deliberate_differences": [
+        "requested_rest_station",
+        "requested_activity",
+        "exception_context"
+      ],
+      "variable_assignments": {
+        "requested_rest_station": {
+          "kind": "controller",
+          "value": "abreast"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "none_requested"
+        },
+        "observed_highway_side_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+        "stop, stand or park a vehicle",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "directions of a police officer",
+        "official traffic-control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_pose.jsonl"
+          },
+          {
+            "name": "curbside_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curbside_pose.jsonl"
+          },
+          {
+            "name": "curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curb_geometry.jsonl"
+          },
+          {
+            "name": "ego_highway_side_of_curbside",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_highway_side_of_curbside.jsonl"
+          },
+          {
+            "name": "longitudinal_overlap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longitudinal_overlap_m.jsonl"
+          },
+          {
+            "name": "lateral_surface_gap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/lateral_surface_gap_m.jsonl"
+          },
+          {
+            "name": "concurrent_overlap_at_rest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/concurrent_overlap_at_rest.jsonl"
+          },
+          {
+            "name": "longest_concurrent_run_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longest_concurrent_run_frames.jsonl"
+          },
+          {
+            "name": "activity_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/activity_context.jsonl"
+          },
+          {
+            "name": "traffic_conflict_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/traffic_conflict_context.jsonl"
+          },
+          {
+            "name": "law_compliance_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/law_compliance_context.jsonl"
+          },
+          {
+            "name": "police_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/police_direction_context.jsonl"
+          },
+          {
+            "name": "device_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/device_direction_context.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic two-vehicle geometry does not establish original highway designation, activity, exception or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_highway_side_overlap",
+        "comparison_or_standard": "original curbside vehicle and full-body footprint",
+        "target_value_or_branch": "park"
+      }
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1l__motor_vehicle_driver__traffic_conflict",
+      "target_law_id": "NRS-484B-450-1l",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "highway-side-double-parking",
+      "rationale": "Request traffic_conflict and measure original curbside two-body overlap; retain independent activity/exception review.",
+      "deliberate_differences": [
+        "requested_rest_station",
+        "requested_activity",
+        "exception_context"
+      ],
+      "variable_assignments": {
+        "requested_rest_station": {
+          "kind": "controller",
+          "value": "abreast"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "traffic_conflict"
+        },
+        "observed_highway_side_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+        "stop, stand or park a vehicle",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "directions of a police officer",
+        "official traffic-control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_pose.jsonl"
+          },
+          {
+            "name": "curbside_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curbside_pose.jsonl"
+          },
+          {
+            "name": "curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curb_geometry.jsonl"
+          },
+          {
+            "name": "ego_highway_side_of_curbside",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_highway_side_of_curbside.jsonl"
+          },
+          {
+            "name": "longitudinal_overlap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longitudinal_overlap_m.jsonl"
+          },
+          {
+            "name": "lateral_surface_gap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/lateral_surface_gap_m.jsonl"
+          },
+          {
+            "name": "concurrent_overlap_at_rest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/concurrent_overlap_at_rest.jsonl"
+          },
+          {
+            "name": "longest_concurrent_run_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longest_concurrent_run_frames.jsonl"
+          },
+          {
+            "name": "activity_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/activity_context.jsonl"
+          },
+          {
+            "name": "traffic_conflict_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/traffic_conflict_context.jsonl"
+          },
+          {
+            "name": "law_compliance_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/law_compliance_context.jsonl"
+          },
+          {
+            "name": "police_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/police_direction_context.jsonl"
+          },
+          {
+            "name": "device_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/device_direction_context.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic two-vehicle geometry does not establish original highway designation, activity, exception or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_highway_side_overlap",
+        "comparison_or_standard": "original curbside vehicle and full-body footprint",
+        "target_value_or_branch": "traffic_conflict"
+      }
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1l__motor_vehicle_driver__law_direction",
+      "target_law_id": "NRS-484B-450-1l",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "highway-side-double-parking",
+      "rationale": "Request law_direction and measure original curbside two-body overlap; retain independent activity/exception review.",
+      "deliberate_differences": [
+        "requested_rest_station",
+        "requested_activity",
+        "exception_context"
+      ],
+      "variable_assignments": {
+        "requested_rest_station": {
+          "kind": "controller",
+          "value": "abreast"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "law_direction"
+        },
+        "observed_highway_side_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+        "stop, stand or park a vehicle",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "directions of a police officer",
+        "official traffic-control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_pose.jsonl"
+          },
+          {
+            "name": "curbside_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curbside_pose.jsonl"
+          },
+          {
+            "name": "curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curb_geometry.jsonl"
+          },
+          {
+            "name": "ego_highway_side_of_curbside",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_highway_side_of_curbside.jsonl"
+          },
+          {
+            "name": "longitudinal_overlap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longitudinal_overlap_m.jsonl"
+          },
+          {
+            "name": "lateral_surface_gap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/lateral_surface_gap_m.jsonl"
+          },
+          {
+            "name": "concurrent_overlap_at_rest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/concurrent_overlap_at_rest.jsonl"
+          },
+          {
+            "name": "longest_concurrent_run_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longest_concurrent_run_frames.jsonl"
+          },
+          {
+            "name": "activity_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/activity_context.jsonl"
+          },
+          {
+            "name": "traffic_conflict_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/traffic_conflict_context.jsonl"
+          },
+          {
+            "name": "law_compliance_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/law_compliance_context.jsonl"
+          },
+          {
+            "name": "police_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/police_direction_context.jsonl"
+          },
+          {
+            "name": "device_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/device_direction_context.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic two-vehicle geometry does not establish original highway designation, activity, exception or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_highway_side_overlap",
+        "comparison_or_standard": "original curbside vehicle and full-body footprint",
+        "target_value_or_branch": "law_direction"
+      }
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1l__motor_vehicle_driver__police_direction",
+      "target_law_id": "NRS-484B-450-1l",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "highway-side-double-parking",
+      "rationale": "Request police_direction and measure original curbside two-body overlap; retain independent activity/exception review.",
+      "deliberate_differences": [
+        "requested_rest_station",
+        "requested_activity",
+        "exception_context"
+      ],
+      "variable_assignments": {
+        "requested_rest_station": {
+          "kind": "controller",
+          "value": "abreast"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "police_direction"
+        },
+        "observed_highway_side_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+        "stop, stand or park a vehicle",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "directions of a police officer",
+        "official traffic-control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_pose.jsonl"
+          },
+          {
+            "name": "curbside_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curbside_pose.jsonl"
+          },
+          {
+            "name": "curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curb_geometry.jsonl"
+          },
+          {
+            "name": "ego_highway_side_of_curbside",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_highway_side_of_curbside.jsonl"
+          },
+          {
+            "name": "longitudinal_overlap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longitudinal_overlap_m.jsonl"
+          },
+          {
+            "name": "lateral_surface_gap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/lateral_surface_gap_m.jsonl"
+          },
+          {
+            "name": "concurrent_overlap_at_rest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/concurrent_overlap_at_rest.jsonl"
+          },
+          {
+            "name": "longest_concurrent_run_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longest_concurrent_run_frames.jsonl"
+          },
+          {
+            "name": "activity_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/activity_context.jsonl"
+          },
+          {
+            "name": "traffic_conflict_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/traffic_conflict_context.jsonl"
+          },
+          {
+            "name": "law_compliance_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/law_compliance_context.jsonl"
+          },
+          {
+            "name": "police_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/police_direction_context.jsonl"
+          },
+          {
+            "name": "device_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/device_direction_context.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic two-vehicle geometry does not establish original highway designation, activity, exception or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_highway_side_overlap",
+        "comparison_or_standard": "original curbside vehicle and full-body footprint",
+        "target_value_or_branch": "police_direction"
+      }
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1l__motor_vehicle_driver__device_direction",
+      "target_law_id": "NRS-484B-450-1l",
+      "target_type": "boundary_probe",
+      "paired_probe_id": "highway-side-double-parking",
+      "rationale": "Request device_direction and measure original curbside two-body overlap; retain independent activity/exception review.",
+      "deliberate_differences": [
+        "requested_rest_station",
+        "requested_activity",
+        "exception_context"
+      ],
+      "variable_assignments": {
+        "requested_rest_station": {
+          "kind": "controller",
+          "value": "abreast"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "park"
+        },
+        "exception_context": {
+          "kind": "world_setup",
+          "value": "device_direction"
+        },
+        "observed_highway_side_overlap": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "highway side of any vehicle stopped or parked at the edge of or curb of a highway",
+        "stop, stand or park a vehicle",
+        "necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "directions of a police officer",
+        "official traffic-control device"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_pose.jsonl"
+          },
+          {
+            "name": "curbside_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curbside_pose.jsonl"
+          },
+          {
+            "name": "curb_geometry",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/curb_geometry.jsonl"
+          },
+          {
+            "name": "ego_highway_side_of_curbside",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/ego_highway_side_of_curbside.jsonl"
+          },
+          {
+            "name": "longitudinal_overlap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longitudinal_overlap_m.jsonl"
+          },
+          {
+            "name": "lateral_surface_gap_m",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/lateral_surface_gap_m.jsonl"
+          },
+          {
+            "name": "concurrent_overlap_at_rest",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/concurrent_overlap_at_rest.jsonl"
+          },
+          {
+            "name": "longest_concurrent_run_frames",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/longest_concurrent_run_frames.jsonl"
+          },
+          {
+            "name": "activity_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/activity_context.jsonl"
+          },
+          {
+            "name": "traffic_conflict_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/traffic_conflict_context.jsonl"
+          },
+          {
+            "name": "law_compliance_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/law_compliance_context.jsonl"
+          },
+          {
+            "name": "police_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/police_direction_context.jsonl"
+          },
+          {
+            "name": "device_direction_context",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/device_direction_context.jsonl"
+          },
+          {
+            "name": "source_camera_frame_join",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original two-actor footprint and Native frame joined to independent curb, activity, exception and pixel source",
+            "time_window": "600 original frames",
+            "reference_frame": "surveyed highway curb and Native frame",
+            "uncertainty": "50 ms sampling; legal activity and exception require independent review",
+            "source": "channels/source_camera_frame_join.jsonl"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic two-vehicle geometry does not establish original highway designation, activity, exception or legal outcome."
+        ]
+      },
+      "probe": {
+        "primary_variable": "observed_highway_side_overlap",
+        "comparison_or_standard": "original curbside vehicle and full-body footprint",
+        "target_value_or_branch": "device_direction"
+      }
+    }
+  ]
+}
