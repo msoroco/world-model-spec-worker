@@ -25,13 +25,16 @@ def _rows(path: Path) -> list[dict]:
 
 def load(attempt: Path, case_id: str) -> dict:
     attempt = Path(attempt)
-    for name in ('source-context.json', 'capture-seal.json'):
+    for name in ('authority-context.json', 'capture-seal.json'):
         if not (attempt / name).is_file():
             raise ValueError('Missing required source: ' + name)
-    context = json.loads((attempt / 'source-context.json').read_text())
+    context = json.loads((attempt / 'authority-context.json').read_text())
     seal = json.loads((attempt / 'capture-seal.json').read_text())
     if context.get('case_id') != case_id or context.get('source_kind') not in ('synthetic_native_sample', 'original_review_packet'):
         raise ValueError('Source context case or kind differs')
+    terms = ('ru.truck', 'ru.commercial_motor_vehicle', 'kin.extent', 'st.roadway', 'dev.regulatory_sign', 'env.civil_time', 'drv.condition_in_effect', 'kin.velocity')
+    if any(not isinstance(context.get(term), dict) or not context[term] for term in terms):
+        raise ValueError('Missing authored instance context')
     refs = context.get('authority_refs')
     if not isinstance(refs, dict) or set(refs) != set(REQUIRED_FACT_SOURCES):
         raise ValueError('Every factual authority needs an exact source reference')
@@ -39,13 +42,15 @@ def load(attempt: Path, case_id: str) -> dict:
         if not isinstance(ref, dict) or not isinstance(ref.get('path'), str) or not isinstance(ref.get('sha256'), str):
             raise ValueError('Malformed authority source reference: ' + key)
         path = attempt / ref['path']
-        if path.resolve().parent != attempt.resolve() or not path.is_file() or sha(path) != ref['sha256']:
-            raise ValueError('Missing or changed authority source: ' + key)
+        if path.resolve().parent != attempt.resolve() or not path.is_file():
+            raise ValueError('Missing required source: ' + ref['path'])
+        if sha(path) != ref['sha256']:
+            raise ValueError('Changed authority source: ' + key)
     rows = _rows(attempt / 'original-route-rows.jsonl')
     frames = _rows(attempt / 'video_frames.jsonl')
     if seal.get('case_id') != case_id:
         raise ValueError('Capture seal case differs')
-    protected = ('source-context.json', 'original-route-rows.jsonl', 'video_frames.jsonl')
+    protected = ('authority-context.json', 'original-route-rows.jsonl', 'video_frames.jsonl')
     hashes = seal.get('sha256')
     if not isinstance(hashes, dict) or any(hashes.get(name) != sha(attempt / name) for name in protected):
         raise ValueError('Original source seal differs')

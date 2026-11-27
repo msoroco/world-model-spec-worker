@@ -31,7 +31,7 @@ def check_result(result: dict, case: str) -> None:
             or measured.get("frames") != 600 or measured.get("parked_alongside_frames", 0) < 400
             or not measured.get("source_sha256")):
         raise ValueError("Original parked-alongside motion or measurement incomplete")
-    expected = {"drv.standing_or_parked", "st.obstruction", "rel.bearing",
+    expected = {"exception_authority", "drv.standing_or_parked", "st.obstruction", "rel.bearing",
                 "rel.centre_distance", "st.lane_width", "drv.hard_deceleration",
                 "kin.velocity", "drv.forced_halt"}
     if expected != {entry.get("name") for entry in result.get("recording_evidence", [])}:
@@ -106,7 +106,7 @@ def selftest(case: str, negative: bool) -> dict:
               "measured_values": {"frames": 600, "parked_alongside_frames": 450,
                                   "source_sha256": "a" * 64},
               "recording_evidence": [{"name": name} for name in (
-                  "drv.standing_or_parked", "st.obstruction", "rel.bearing",
+                  "exception_authority", "drv.standing_or_parked", "st.obstruction", "rel.bearing",
                   "rel.centre_distance", "st.lane_width", "drv.hard_deceleration",
                   "kin.velocity", "drv.forced_halt")]}
     if negative:

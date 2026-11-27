@@ -1,0 +1,68 @@
+{
+  "template_id": "LVMC-11-52-130-A4@motor_vehicle_driver",
+  "law_id": "LVMC-11-52-130-A4",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "No person shall stop, stand or park a vehicle except when necessary to avoid conflict with other traffic in compliance with law or the directions of a police officer or a traffic control device, in any of the following places: Within the following distances of any fire hydrant, whether or not the location is posted with a sign, whether or not the adjacent curb or roadway surface is painted red, and whether the location is on public or private property: (a) At a location where parallel parking is permitted, fifteen feet; (b) At a location where angle parking is permitted or no parking is permitted, twenty feet.",
+  "structure": {
+    "activation": {
+      "condition": "Motor vehicle stops, stands or parks within a source-measured body distance of a hydrant on public or private premises.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Retain fifteen feet where parallel parking is permitted and twenty feet where angle or no parking is permitted; independent permission source selects the branch.",
+      "source_clause": "Within the following distances of any fire hydrant",
+      "numeric_conditions": [
+        {
+          "variable": "parallel_hydrant_body_clearance_ft",
+          "operator": "<",
+          "value": 15,
+          "unit": "ft"
+        },
+        {
+          "variable": "angle_or_no_parking_hydrant_body_clearance_ft",
+          "operator": "<",
+          "value": 20,
+          "unit": "ft"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "when necessary to avoid conflict with other traffic",
+        "description": "Traffic conflict necessity requires original actor motion and independent causal review."
+      },
+      {
+        "source_clause": "in compliance with law",
+        "description": "An applicable law and the exact reason for parking require independent source review."
+      },
+      {
+        "source_clause": "the directions of a police officer or a traffic control device",
+        "description": "Original lawful direction and applicability require independent source review."
+      }
+    ],
+    "timing": {
+      "description": "Measure the entire stopped, standing or parked interval and retain frame uncertainty.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "where parallel parking is permitted",
+        "note": "Original parking permission selects the statutory distance; curb paint alone does not."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "parking_permission",
+      "kind": "world_setup",
+      "range_or_domain": "parallel, angle or no parking from original regulatory survey"
+    },
+    {
+      "name": "requested_clearance_ft",
+      "kind": "controller",
+      "range_or_domain": "authored 14.5 to 22 foot clearance targets; actual body distance measured from source"
+    }
+  ]
+}

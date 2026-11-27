@@ -36,9 +36,134 @@
   ],
   "cases": [
     {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__baseline",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "baseline",
+      "rationale": "Shared source context for all six hydrant comparisons",
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "where parallel parking is permitted"
+      ]
+    },
+    {
       "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__witness_1",
       "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
       "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__witness_comparison",
       "deliberate_differences": [
@@ -50,1266 +175,36 @@
         "target_value_or_branch": 22
       },
       "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
         "hydrant_parking_clearance": {
           "kind": "controller",
           "value": 22,
           "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__witness_2",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "controlled_attempt",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__witness_comparison",
-      "deliberate_differences": [
-        "hydrant_parking_clearance"
-      ],
-      "probe": {
-        "primary_variable": "hydrant_parking_clearance",
-        "comparison_or_standard": "Angle parking permitted: twenty feet",
-        "target_value_or_branch": 19.5
-      },
-      "variable_assignments": {
-        "hydrant_parking_clearance": {
-          "kind": "controller",
-          "value": 19.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_1_1",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "controlled_attempt",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_1_comparison",
-      "deliberate_differences": [
-        "exception_1_applicability"
-      ],
-      "probe": {
-        "primary_variable": "exception_1_applicability",
-        "comparison_or_standard": "when necessary to avoid conflict with other traffic",
-        "target_value_or_branch": 19.5
-      },
-      "variable_assignments": {
+        },
         "exception_1_applicability": {
-          "kind": "controller",
-          "value": 19.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_1_2",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "controlled_attempt",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_1_comparison",
-      "deliberate_differences": [
-        "exception_1_applicability"
-      ],
-      "probe": {
-        "primary_variable": "exception_1_applicability",
-        "comparison_or_standard": "when necessary to avoid conflict with other traffic",
-        "target_value_or_branch": 19.5
-      },
-      "variable_assignments": {
-        "exception_1_applicability": {
-          "kind": "controller",
-          "value": 19.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_2_1",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "controlled_attempt",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_2_comparison",
-      "deliberate_differences": [
-        "exception_2_applicability"
-      ],
-      "probe": {
-        "primary_variable": "exception_2_applicability",
-        "comparison_or_standard": "in compliance with law",
-        "target_value_or_branch": 19.5
-      },
-      "variable_assignments": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
         "exception_2_applicability": {
-          "kind": "controller",
-          "value": 19.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_2_2",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "controlled_attempt",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_2_comparison",
-      "deliberate_differences": [
-        "exception_2_applicability"
-      ],
-      "probe": {
-        "primary_variable": "exception_2_applicability",
-        "comparison_or_standard": "in compliance with law",
-        "target_value_or_branch": 19.5
-      },
-      "variable_assignments": {
-        "exception_2_applicability": {
-          "kind": "controller",
-          "value": 19.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_3_1",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "controlled_attempt",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_3_comparison",
-      "deliberate_differences": [
-        "exception_3_applicability"
-      ],
-      "probe": {
-        "primary_variable": "exception_3_applicability",
-        "comparison_or_standard": "in compliance with the directions of a police officer or a traffic control device",
-        "target_value_or_branch": 19.5
-      },
-      "variable_assignments": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
         "exception_3_applicability": {
-          "kind": "controller",
-          "value": 19.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_3_2",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "controlled_attempt",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_3_comparison",
-      "deliberate_differences": [
-        "exception_3_applicability"
-      ],
-      "probe": {
-        "primary_variable": "exception_3_applicability",
-        "comparison_or_standard": "in compliance with the directions of a police officer or a traffic control device",
-        "target_value_or_branch": 19.5
-      },
-      "variable_assignments": {
-        "exception_3_applicability": {
-          "kind": "controller",
-          "value": 19.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_0",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "below",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_comparison",
-      "deliberate_differences": [
-        "parallel_hydrant_clearance"
-      ],
-      "probe": {
-        "primary_variable": "parallel_hydrant_clearance",
-        "comparison_or_standard": "parallel hydrant clearance numeric boundary 15 feet",
-        "target_value_or_branch": 14.5
-      },
-      "variable_assignments": {
-        "parallel_hydrant_clearance": {
-          "kind": "controller",
-          "value": 14.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_1",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "at",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_comparison",
-      "deliberate_differences": [
-        "parallel_hydrant_clearance"
-      ],
-      "probe": {
-        "primary_variable": "parallel_hydrant_clearance",
-        "comparison_or_standard": "parallel hydrant clearance numeric boundary 15 feet",
-        "target_value_or_branch": 15
-      },
-      "variable_assignments": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
         "parallel_hydrant_clearance": {
           "kind": "controller",
           "value": 15,
           "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_2",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "above",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_comparison",
-      "deliberate_differences": [
-        "parallel_hydrant_clearance"
-      ],
-      "probe": {
-        "primary_variable": "parallel_hydrant_clearance",
-        "comparison_or_standard": "parallel hydrant clearance numeric boundary 15 feet",
-        "target_value_or_branch": 15.5
-      },
-      "variable_assignments": {
-        "parallel_hydrant_clearance": {
-          "kind": "controller",
-          "value": 15.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_0",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "below",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_comparison",
-      "deliberate_differences": [
-        "angle_or_prohibited_hydrant_clearance"
-      ],
-      "probe": {
-        "primary_variable": "angle_or_prohibited_hydrant_clearance",
-        "comparison_or_standard": "angle or prohibited hydrant clearance numeric boundary 20 feet",
-        "target_value_or_branch": 19.5
-      },
-      "variable_assignments": {
-        "angle_or_prohibited_hydrant_clearance": {
-          "kind": "controller",
-          "value": 19.5,
-          "unit": "feet"
-        }
-      },
-      "unresolved_judgment_calls": [
-        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
-        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
-      ],
-      "recording_description": {
-        "channels": [
-          {
-            "name": "st.fire_hydrant",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "rel.centre_distance",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.parking_space",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "dev.regulatory_sign",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "kin.extent",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          },
-          {
-            "name": "st.curb_zone",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native pose, inventory, permission survey and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "original survey and pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "hydrant_parking_survey",
-            "unit": "structured",
-            "method": "independent original premises, permission and hydrant survey"
-          }
-        ],
-        "limitations": [
-          "Curb paint does not select the statutory distance",
-          "Exception declarations do not establish legal applicability",
-          "CPU fixtures do not prove original motion or physical completion"
-        ]
-      }
-    },
-    {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_1",
-      "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "at",
-      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
-      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_comparison",
-      "deliberate_differences": [
-        "angle_or_prohibited_hydrant_clearance"
-      ],
-      "probe": {
-        "primary_variable": "angle_or_prohibited_hydrant_clearance",
-        "comparison_or_standard": "angle or prohibited hydrant clearance numeric boundary 20 feet",
-        "target_value_or_branch": 20
-      },
-      "variable_assignments": {
+        },
         "angle_or_prohibited_hydrant_clearance": {
           "kind": "controller",
           "value": 20,
@@ -1401,9 +296,1386 @@
       }
     },
     {
-      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_2",
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__witness_2",
       "target_law_id": "LVMC-11-52-130-A4",
-      "target_type": "above",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__witness_comparison",
+      "deliberate_differences": [
+        "hydrant_parking_clearance"
+      ],
+      "probe": {
+        "primary_variable": "hydrant_parking_clearance",
+        "comparison_or_standard": "Angle parking permitted: twenty feet",
+        "target_value_or_branch": 19.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_1_1",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_1_comparison",
+      "deliberate_differences": [
+        "exception_1_applicability"
+      ],
+      "probe": {
+        "primary_variable": "exception_1_applicability",
+        "comparison_or_standard": "when necessary to avoid conflict with other traffic",
+        "target_value_or_branch": 19.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_1_2",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_1_comparison",
+      "deliberate_differences": [
+        "exception_1_applicability"
+      ],
+      "probe": {
+        "primary_variable": "exception_1_applicability",
+        "comparison_or_standard": "when necessary to avoid conflict with other traffic",
+        "target_value_or_branch": 19.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "present",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_2_1",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_2_comparison",
+      "deliberate_differences": [
+        "exception_2_applicability"
+      ],
+      "probe": {
+        "primary_variable": "exception_2_applicability",
+        "comparison_or_standard": "in compliance with law",
+        "target_value_or_branch": 19.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_2_2",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_2_comparison",
+      "deliberate_differences": [
+        "exception_2_applicability"
+      ],
+      "probe": {
+        "primary_variable": "exception_2_applicability",
+        "comparison_or_standard": "in compliance with law",
+        "target_value_or_branch": 19.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "present",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_3_1",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_3_comparison",
+      "deliberate_differences": [
+        "exception_3_applicability"
+      ],
+      "probe": {
+        "primary_variable": "exception_3_applicability",
+        "comparison_or_standard": "in compliance with the directions of a police officer or a traffic control device",
+        "target_value_or_branch": 19.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_3_2",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "judgment_sweep",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__exception_3_comparison",
+      "deliberate_differences": [
+        "exception_3_applicability"
+      ],
+      "probe": {
+        "primary_variable": "exception_3_applicability",
+        "comparison_or_standard": "in compliance with the directions of a police officer or a traffic control device",
+        "target_value_or_branch": 19.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "present",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_0",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_comparison",
+      "deliberate_differences": [
+        "parallel_hydrant_clearance"
+      ],
+      "probe": {
+        "primary_variable": "parallel_hydrant_clearance",
+        "comparison_or_standard": "parallel hydrant clearance numeric boundary 15 feet",
+        "target_value_or_branch": 14.5,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 14.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "parallel_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 14.5,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      },
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "ft",
+        "rationale": "Authored diagnostic spacing; not a statutory tolerance."
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_1",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_comparison",
+      "deliberate_differences": [
+        "parallel_hydrant_clearance"
+      ],
+      "probe": {
+        "primary_variable": "parallel_hydrant_clearance",
+        "comparison_or_standard": "parallel hydrant clearance numeric boundary 15 feet",
+        "target_value_or_branch": 15,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 15
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "parallel_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      },
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "ft",
+        "rationale": "Authored diagnostic spacing; not a statutory tolerance."
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_2",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_1_comparison",
+      "deliberate_differences": [
+        "parallel_hydrant_clearance"
+      ],
+      "probe": {
+        "primary_variable": "parallel_hydrant_clearance",
+        "comparison_or_standard": "parallel hydrant clearance numeric boundary 15 feet",
+        "target_value_or_branch": 15.5,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 15.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "parallel_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15.5,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      },
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "ft",
+        "rationale": "Authored diagnostic spacing; not a statutory tolerance."
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_0",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
       "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
       "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_comparison",
       "deliberate_differences": [
@@ -1412,9 +1684,331 @@
       "probe": {
         "primary_variable": "angle_or_prohibited_hydrant_clearance",
         "comparison_or_standard": "angle or prohibited hydrant clearance numeric boundary 20 feet",
-        "target_value_or_branch": 20.5
+        "target_value_or_branch": 19.5,
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 19.5
       },
       "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      },
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "ft",
+        "rationale": "Authored diagnostic spacing; not a statutory tolerance."
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_1",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_comparison",
+      "deliberate_differences": [
+        "angle_or_prohibited_hydrant_clearance"
+      ],
+      "probe": {
+        "primary_variable": "angle_or_prohibited_hydrant_clearance",
+        "comparison_or_standard": "angle or prohibited hydrant clearance numeric boundary 20 feet",
+        "target_value_or_branch": 20,
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 20
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
+        "angle_or_prohibited_hydrant_clearance": {
+          "kind": "controller",
+          "value": 20,
+          "unit": "feet"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "which distance applies turns on what kind of parking is permitted at the place, which is a map or sign fact rather than a hydrant fact",
+        "the rule applies whether or not the curb is painted or a sign posted, so a rule keyed to curb colour alone misses it"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.fire_hydrant",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.parking_space",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "kin.extent",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native pose, inventory, permission survey and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "original survey and pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "hydrant_parking_survey",
+            "unit": "structured",
+            "method": "independent original premises, permission and hydrant survey"
+          }
+        ],
+        "limitations": [
+          "Curb paint does not select the statutory distance",
+          "Exception declarations do not establish legal applicability",
+          "CPU fixtures do not prove original motion or physical completion"
+        ]
+      },
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "ft",
+        "rationale": "Authored diagnostic spacing; not a statutory tolerance."
+      }
+    },
+    {
+      "case_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_2",
+      "target_law_id": "LVMC-11-52-130-A4",
+      "target_type": "boundary_probe",
+      "rationale": "Source-bound hydrant geometry and permission contrast; legal outcome unresolved",
+      "paired_probe_id": "training__C200568__LVMC-11-52-130-A4__motor_vehicle_driver__numeric_2_comparison",
+      "deliberate_differences": [
+        "angle_or_prohibited_hydrant_clearance"
+      ],
+      "probe": {
+        "primary_variable": "angle_or_prohibited_hydrant_clearance",
+        "comparison_or_standard": "angle or prohibited hydrant clearance numeric boundary 20 feet",
+        "target_value_or_branch": 20.5,
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 20.5
+      },
+      "variable_assignments": {
+        "parking_permission": {
+          "kind": "world_setup",
+          "value": "angle_permitted",
+          "unit": "categorical"
+        },
+        "hydrant_parking_clearance": {
+          "kind": "controller",
+          "value": 19.5,
+          "unit": "feet"
+        },
+        "exception_1_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_2_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "exception_3_applicability": {
+          "kind": "world_setup",
+          "value": "absent",
+          "unit": "categorical"
+        },
+        "parallel_hydrant_clearance": {
+          "kind": "controller",
+          "value": 15,
+          "unit": "feet"
+        },
         "angle_or_prohibited_hydrant_clearance": {
           "kind": "controller",
           "value": 20.5,
@@ -1503,6 +2097,11 @@
           "Exception declarations do not establish legal applicability",
           "CPU fixtures do not prove original motion or physical completion"
         ]
+      },
+      "epsilon_used": {
+        "value": 0.5,
+        "unit": "ft",
+        "rationale": "Authored diagnostic spacing; not a statutory tolerance."
       }
     }
   ],

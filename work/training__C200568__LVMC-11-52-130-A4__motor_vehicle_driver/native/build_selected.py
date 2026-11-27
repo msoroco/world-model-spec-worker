@@ -76,7 +76,7 @@ def main():
                   "requested_clearance_ft": distance,
                   "exception_context": exception,
                   "exception_source_verified": False,
-                  "required_atoms": list(CHANNELS),
+                  "required_atoms": ["rel.centre_distance", "kin.extent"],
                   "cameras": cameras, "physical_completion": {}, "legal_verdict": None,
                   "recording_description": description,
                   "case": {"case_id": case_id, "recording_description": description}}

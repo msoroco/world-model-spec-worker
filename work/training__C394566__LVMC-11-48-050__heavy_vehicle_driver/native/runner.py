@@ -72,6 +72,9 @@ def _copy_context(source,output,case_id):
     source=Path(source).resolve();context=json.loads(source.read_text())
     require(context.get('case_id')==case_id and context.get('source_kind')=='original_review_packet',
             'Original independent context required')
+    terms=('ru.truck','ru.commercial_motor_vehicle','kin.extent','st.roadway','dev.regulatory_sign','env.civil_time','drv.condition_in_effect','kin.velocity')
+    require(all(isinstance(context.get(term),dict) and context[term] for term in terms),
+            'Missing authored original instance context')
     refs=context.get('authority_refs')
     require(isinstance(refs,dict) and set(refs)=={'weight','district','truck_route','civil_clock','permit'},
             'Five independent authority source references required')
@@ -82,7 +85,7 @@ def _copy_context(source,output,case_id):
         require(original.is_file() and sha(original)==ref.get('sha256'),
                 'Changed authority source: '+key)
         shutil.copyfile(original,output/name)
-    (output/'source-context.json').write_text(json.dumps(context,indent=2)+'\n')
+    (output/'authority-context.json').write_text(json.dumps(context,indent=2)+'\n')
 
 
 def capture(config,output,survey,context_source,host,port):
@@ -157,7 +160,7 @@ def capture(config,output,survey,context_source,host,port):
             process.stdin.close();error=process.stderr.read();codes[name]=process.wait(timeout=180)
             require(codes[name]==0,'Camera encoding failed: '+name+' '+error.decode()[-200:])
         capture_tool.close(confirmed=True);capture_tool=None
-        names=('source-context.json','original-route-rows.jsonl','video_frames.jsonl')
+        names=('authority-context.json','original-route-rows.jsonl','video_frames.jsonl')
         (output/'capture-seal.json').write_text(json.dumps({'case_id':config['case_id'],
             'sha256':{name:sha(output/name) for name in names},'legal_verdict':None},indent=2)+'\n')
         finished=True

@@ -160,6 +160,8 @@ def finalize(attempt: Path, output: Path) -> dict:
     for name, rows in channels.items():
         (channel_root / (name + ".jsonl")).write_text("".join(
             json.dumps(row, allow_nan=False) + "\n" for row in rows))
+    (channel_root / "exception_authority.json").write_text(
+        json.dumps({"exception_authority": context}, indent=2) + "\n")
     result = {"case_id": cfg["case_id"], "measured_values": observed,
               "target_checks": [{"target": "traffic_opening_and_response",
                                  "requested": cfg["park_y_m"], "measured": observed,
@@ -178,7 +180,9 @@ def finalize(attempt: Path, output: Path) -> dict:
               "recording_description": cfg["recording_description"],
               "recording_evidence": [{"name": name, "unit": "structured",
                                        "reference": "channels/" + name + ".jsonl"}
-                                      for name in channels],
+                                      for name in channels] + [{"name": "exception_authority",
+                                                                "unit": "structured",
+                                                                "reference": "channels/exception_authority.json"}],
               "realized_observables": {"minimum_open_width_m": {
                   "value": observed["minimum_open_width_m"], "unit": "m",
                   "method": "sampled full-body rectangle free interval", "time_window": "600 frames",

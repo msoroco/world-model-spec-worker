@@ -22,9 +22,7 @@ def write(path, value):
 
 
 def main(suffix):
-    source = REPO / (".runtime-work/c200568-" + suffix + "-primary-compat-v2")
-    if suffix == "witness_1":
-        source = REPO / ".runtime-work/c200568-witness-1-primary-compat-v2"
+    source = REPO / (".runtime-work/c200568-reproof-v3-primary-compat-" + suffix)
     native = ROOT / "native"
     case_id = ROOT.name + "__" + suffix
     construction = native / ("selected-" + suffix + "-construction.json")
