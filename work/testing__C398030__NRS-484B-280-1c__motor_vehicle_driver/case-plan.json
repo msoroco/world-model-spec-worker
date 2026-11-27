@@ -1,0 +1,171 @@
+{
+  "assignment_id": "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C398030",
+  "law_id": "NRS-484B-280-1c",
+  "selected_branches": [
+    {
+      "law_id": "NRS-484B-280-1c",
+      "cell_id": "C398030",
+      "actor": "motor_vehicle_driver",
+      "requirement": "NRS-484B-280-1c",
+      "branch": "Pedestrian in or near a marked school zone or school crossing zone.",
+      "source": "inputs/coverage/branch-sources.json",
+      "source_topic": "exact-text",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "testing"
+    }
+  ],
+  "law_text": "A driver of a motor vehicle shall: Exercise proper caution upon observing a pedestrian: (1) On or near a highway, street or road; (2) At or near a bus stop or bench, shelter or transit stop for passengers of public mass transportation or in the act of boarding a bus or other public transportation vehicle; or (3) In or near a school zone or a school crossing zone marked in accordance with NRS 484B.363 or a marked or unmarked crosswalk.",
+  "law_source": "NRS 484B.280(1)(c)",
+  "topic_inventory": {
+    "exact-text": "A driver of a motor vehicle shall: Exercise proper caution upon observing a pedestrian: (1) On or near a highway, street or road; (2) At or near a bus stop or bench, shelter or transit stop for passengers of public mass transportation or in the act of boarding a bus or other public transportation vehicle; or (3) In or near a school zone or a school crossing zone marked in accordance with NRS 484B.363 or a marked or unmarked crosswalk."
+  },
+  "cases": [
+    {
+      "case_id": "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "Prompt engineering brake after the same school-setting pedestrian observation input",
+      "gap_ids": [
+        "missing_original_school_encounter"
+      ]
+    },
+    {
+      "case_id": "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "Deferred engineering brake after the same school-setting pedestrian observation input",
+      "gap_ids": [
+        "missing_original_school_encounter"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "school_observation_response_timing",
+      "case_ids": [
+        "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+        "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake"
+      ],
+      "fixed_conditions": [
+        "same original school signs and OpenDRIVE route",
+        "same pedestrian identity and placement between original school markers",
+        "same driver-observation input source and trigger",
+        "same four cameras at 20 Hz for 30 seconds"
+      ],
+      "deliberate_differences": [
+        "engineering brake response timing after original scripted-driver input"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed_and_brake_history",
+      "mandatory": true
+    },
+    {
+      "name": "driver_observation_input_history",
+      "mandatory": true
+    },
+    {
+      "name": "school_marker_context",
+      "mandatory": true
+    },
+    {
+      "name": "participant_classification_context",
+      "mandatory": true
+    },
+    {
+      "name": "contact_events",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "work/testing__C398030__NRS-484B-280-1c__motor_vehicle_driver/assignment.json",
+      "sha256": "42255119f97a51cf1288bd4519133894bd3d788ce34eaf7f4e9df49e6a8e490f"
+    },
+    {
+      "path": "inputs/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/evidence.json",
+      "sha256": "94ba6270fa082c7ba4a03f49d055d2d3ade2590fc6bc69fc91e2684a25ddae39"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "The original Native map may lack two school boundary signs in a drivable aligned road; CPU construction is source gated.",
+    "Original pedestrian motion and marker readability require local physical review. Instrumented observation is not proof of human perception; legal proper caution stays unresolved."
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Read original C233871 frozen assignment, evidence inventory and exact law. No accepted recordings are listed. Supplemental C398030 school setting is distinct from fixed road-without-sidewalk C233871.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "missing_original_school_encounter",
+        "requirement": "Original marked school setting with distinct pedestrian, observed driver input and response history",
+        "source": "NRS 484B.280(1)(c) and NRS 484B.363 marking reference",
+        "why_existing_insufficient": "Frozen accepted recording inventory contains zero accepted recordings."
+      }
+    ]
+  },
+  "judgment_range_inventory": [],
+  "planning_status": "source_gated_construction",
+  "requirement_dispositions": [
+    {
+      "status": "selected_required",
+      "requirement": "Exercise proper caution upon observing a pedestrian in or near a school zone or school crossing zone marked in accordance with NRS 484B.363",
+      "source": "NRS 484B.280(1)(c) exact text, clause (3)",
+      "evidence_or_gap": "Original school signs, pedestrian body, separate driver input and response; no legal numeric cutoff",
+      "case_ids": [
+        "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+        "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake"
+      ]
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "original school signs, ego vehicle and pedestrian",
+        "interval": "approach through clearance",
+        "view": "overview"
+      },
+      {
+        "subject": "school marker and ego approach",
+        "interval": "approach through clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "pedestrian body and school marker",
+        "interval": "approach through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver-facing encounter view",
+        "interval": "approach through clearance",
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "source_observation_mapping": {},
+  "selected_branch": "Pedestrian in or near a marked school zone or school crossing zone."
+}

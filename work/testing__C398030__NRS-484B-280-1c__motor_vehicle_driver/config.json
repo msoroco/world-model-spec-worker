@@ -1,0 +1,149 @@
+{
+  "assignment_id": "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver",
+  "selected_case_id": "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+  "supported_case_ids": [
+    "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+    "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake"
+  ],
+  "law_id": "NRS-484B-280-1c",
+  "cell_id": "C398030",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed school sign and pedestrian view",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed school sign and pedestrian view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed school sign and pedestrian view",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego mounted",
+      "fov_deg": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+    "response_policy": "prompt_brake",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original motor-vehicle body and route history.",
+          "time_window": "approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "pedestrian_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Separate original pedestrian body within the school marker positions.",
+          "time_window": "approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "ego_speed_and_brake_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original speed and braking commands.",
+          "time_window": "approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "driver_observation_input_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Instrumented scripted-driver observation input, distinct from visibility or cognition.",
+          "time_window": "approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "school_marker_context",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original school boundary sign identifiers and locations.",
+          "time_window": "approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "participant_classification_context",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original motor-vehicle driver and pedestrian classification sources.",
+          "time_window": "approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "contact_events",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original contact sensor event history.",
+          "time_window": "approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original synchronized four-camera identities.",
+          "time_window": "approach through pedestrian clearance",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "school_site_context",
+          "unit": "structured record",
+          "method": "Original OpenDRIVE and Native school sign readback."
+        },
+        {
+          "name": "driver_input_context",
+          "unit": "structured record",
+          "method": "Scripted driver-control input source; human observation remains unresolved."
+        }
+      ],
+      "limitations": [
+        "Native school site/pedestrian motion and camera pixels require physical verification.",
+        "Human observation and legal proper caution remain unresolved."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 5,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true
+  }
+}

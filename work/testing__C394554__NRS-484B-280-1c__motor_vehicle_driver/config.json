@@ -1,0 +1,167 @@
+{
+  "assignment_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver",
+  "selected_case_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop",
+  "supported_case_ids": [
+    "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop",
+    "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus"
+  ],
+  "law_id": "NRS-484B-280-1c",
+  "cell_id": "C394554",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "fixed transit encounter view",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed transit encounter view",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "fixed transit encounter view",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "ego mounted",
+      "fov_deg": 90
+    }
+  ],
+  "case": {
+    "case_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop",
+    "passenger_phase": "waiting_at_stop",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original motor-vehicle body and route history.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "pedestrian_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original pedestrian body and stop-to-bus motion history.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "bus_body_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original public-bus body and placement readback.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "ego_speed_and_brake_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original speed and braking commands.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "driver_observation_input_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Instrumented scripted-driver observation input, distinct from human cognition.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "passenger_phase_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Requested waiting or boarding-approach state with measured original body motion.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "transit_stop_context",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original physical bus-stop prop identity and placement.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "bus_door_region_gap_history",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Distance to engineering bus-side ingress proxy, not a verified actual door.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "contact_events",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original contact sensor event history.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        },
+        {
+          "name": "camera_frame_map",
+          "unit": "structured record",
+          "sampling_rate_hz": 20,
+          "method": "Original synchronized four-camera identities.",
+          "time_window": "approach through transit-stop encounter",
+          "reference_frame": "CARLA world with original frame and time",
+          "uncertainty": "20 Hz sampling and simulator body precision"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "transit_site_context",
+          "unit": "structured record",
+          "method": "Original OpenDRIVE, stop prop, bus actor, body and side region."
+        },
+        {
+          "name": "driver_input_context",
+          "unit": "structured record",
+          "method": "Scripted driver input; human observation unresolved."
+        }
+      ],
+      "limitations": [
+        "Actual stop, bus, door, passenger motion and four-camera pixels require physical review.",
+        "Human observation and statutory proper caution remain unresolved."
+      ]
+    }
+  },
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "motion_source": "trace.jsonl",
+    "position_key": "position_m",
+    "minimum_progress_m": 5,
+    "minimum_samples": 2,
+    "engineering_tolerances_not_legal": true
+  }
+}

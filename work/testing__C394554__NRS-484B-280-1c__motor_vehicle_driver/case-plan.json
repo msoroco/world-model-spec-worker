@@ -1,0 +1,186 @@
+{
+  "assignment_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C394554",
+  "law_id": "NRS-484B-280-1c",
+  "selected_branches": [
+    {
+      "law_id": "NRS-484B-280-1c",
+      "cell_id": "C394554",
+      "actor": "motor_vehicle_driver",
+      "requirement": "NRS-484B-280-1c",
+      "branch": "Pedestrian at or near a bus stop, bench, shelter or transit stop for passengers of public mass transportation, or in the act of boarding a bus or other public transportation vehicle.",
+      "source": "inputs/coverage/branch-sources.json",
+      "source_topic": "exact-text",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "testing"
+    }
+  ],
+  "law_text": "A driver of a motor vehicle shall: Exercise proper caution upon observing a pedestrian: (1) On or near a highway, street or road; (2) At or near a bus stop or bench, shelter or transit stop for passengers of public mass transportation or in the act of boarding a bus or other public transportation vehicle; or (3) In or near a school zone or a school crossing zone marked in accordance with NRS 484B.363 or a marked or unmarked crosswalk.",
+  "law_source": "NRS 484B.280(1)(c)",
+  "topic_inventory": {
+    "exact-text": "A driver of a motor vehicle shall: Exercise proper caution upon observing a pedestrian: (1) On or near a highway, street or road; (2) At or near a bus stop or bench, shelter or transit stop for passengers of public mass transportation or in the act of boarding a bus or other public transportation vehicle; or (3) In or near a school zone or a school crossing zone marked in accordance with NRS 484B.363 or a marked or unmarked crosswalk."
+  },
+  "cases": [
+    {
+      "case_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "Original pedestrian visibly waiting at a physical bus stop while a motorist observes and brakes",
+      "gap_ids": [
+        "missing_original_transit_encounter"
+      ]
+    },
+    {
+      "case_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "Same bus-stop setup with pedestrian moving toward and reaching the original bus-side ingress region; actual door and boarding require later physical review",
+      "gap_ids": [
+        "missing_original_transit_encounter"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "transit_passenger_state",
+      "case_ids": [
+        "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop",
+        "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus"
+      ],
+      "fixed_conditions": [
+        "same original road, stop prop, public bus blueprint and placement",
+        "same motor vehicle and driver route, initial position and fixed engineering brake controller",
+        "same pedestrian blueprint and initial waiting location",
+        "same scripted driver observation input definition and original source acquisition",
+        "same four camera views, 20 Hz and 30 second duration"
+      ],
+      "deliberate_differences": [
+        "passenger waiting at stop versus moving toward the bus-side ingress region; actual boarding remains a physical/pixel audit"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "bus_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed_and_brake_history",
+      "mandatory": true
+    },
+    {
+      "name": "driver_observation_input_history",
+      "mandatory": true
+    },
+    {
+      "name": "passenger_phase_history",
+      "mandatory": true
+    },
+    {
+      "name": "transit_stop_context",
+      "mandatory": true
+    },
+    {
+      "name": "bus_door_region_gap_history",
+      "mandatory": true
+    },
+    {
+      "name": "contact_events",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/assignment.json",
+      "sha256": "fd510a9a645413dec90749e51985c3de7206afddbfc0e50e3506b7032fa2de3d"
+    },
+    {
+      "path": "inputs/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/evidence.json",
+      "sha256": "94ba6270fa082c7ba4a03f49d055d2d3ade2590fc6bc69fc91e2684a25ddae39"
+    },
+    {
+      "path": "inputs/coverage/candidate-cells.json",
+      "sha256": "d067de719af99bb6b0bf1c0cf513f64df3f63e5e8f340d8339650770b711798a"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Original map stop prop and bus assets, stop/door geometry, pedestrian ingress motion and actual camera pixels require physical review. A bus-body ingress proxy cannot establish actual door position or legal boarding.",
+    "Scripted driver input does not establish human observation; statutory proper caution remains unresolved."
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Read frozen original C233871 evidence inventory (zero accepted recordings), exact NRS 484B.280(1)(c) text, original selected branch and C394554 candidate. No accepted source demonstrates a physical transit stop, waiting or boarding pedestrian, original driver observation or response.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "missing_original_transit_encounter",
+        "requirement": "Original physical bus stop or transit stop and a pedestrian waiting or in the act of boarding, with motorist observation and response history",
+        "source": "NRS 484B.280(1)(c) exact text; inputs/coverage/candidate-cells.json C394554",
+        "why_existing_insufficient": "The frozen original assignment has zero accepted recordings; C233871 covers only a pedestrian bodily on the road."
+      }
+    ]
+  },
+  "judgment_range_inventory": [],
+  "planning_status": "source_gated_construction",
+  "witness_review": [],
+  "requirement_dispositions": [
+    {
+      "status": "selected_required",
+      "requirement": "Exercise proper caution upon observing a pedestrian at or near a bus stop, bench, shelter or transit stop, or in the act of boarding public transportation",
+      "source": "NRS 484B.280(1)(c) exact text",
+      "evidence_or_gap": "Original road, physical stop, bus and pedestrian body/ingress state; separate scripted driver input and motorist response history; later actual pixels and legal review",
+      "case_ids": [
+        "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop",
+        "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus"
+      ]
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "motorist, physical stop, bus and pedestrian",
+        "interval": "approach through transit-stop encounter",
+        "view": "overview"
+      },
+      {
+        "subject": "approach to stop and bus",
+        "interval": "approach through transit-stop encounter",
+        "view": "approach"
+      },
+      {
+        "subject": "stop prop, bus side and passenger ingress",
+        "interval": "approach through transit-stop encounter",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver-facing transit encounter",
+        "interval": "approach through transit-stop encounter",
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "source_observation_mapping": {},
+  "comparison_proofs": [],
+  "selected_branch": "Pedestrian at or near a bus stop, bench, shelter or transit stop for passengers of public mass transportation, or in the act of boarding a bus or other public transportation vehicle."
+}

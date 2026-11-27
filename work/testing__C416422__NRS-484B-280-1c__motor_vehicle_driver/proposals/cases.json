@@ -1,0 +1,368 @@
+{
+  "cell_id": "C416422",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared road, participant identities, routes and instrumented input baseline.",
+      "variable_assignments": {
+        "response_policy": {
+          "kind": "controller",
+          "value": "prompt_brake",
+          "note": "Reference engineering controller only."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original motor-vehicle body and route history.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Separate original pedestrian body and off-road sidewalk route.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "ego_speed_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original speed and braking commands.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "driver_observation_input_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Instrumented scripted-driver observation input, distinct from visibility or cognition.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "road_boundary_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original reviewed road edge, sidewalk lane and adjacency context.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "participant_classification_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original motor-vehicle driver and pedestrian classification sources.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "contact_events",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original contact sensor event history.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized four-camera identities.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_site_context",
+            "unit": "structured record",
+            "method": "Original OpenDRIVE and Native road classification, edges and sidewalk review."
+          },
+          {
+            "name": "driver_input_context",
+            "unit": "structured record",
+            "method": "Scripted driver-control input source; human observation remains unresolved."
+          }
+        ],
+        "limitations": [
+          "Native road/pedestrian motion and camera pixels require physical verification.",
+          "Human observation, statutory near and legal proper caution remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Exercise proper caution upon observing a pedestrian"
+      ]
+    },
+    {
+      "case_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+      "target_law_id": "NRS-484B-280-1c",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled engineering response timing to the same off-road sidewalk pedestrian encounter.",
+      "variable_assignments": {
+        "response_policy": {
+          "kind": "controller",
+          "value": "prompt_brake",
+          "note": "Scripted driver input and brake response, not a legal cutoff."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original motor-vehicle body and route history.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Separate original pedestrian body and off-road sidewalk route.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "ego_speed_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original speed and braking commands.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "driver_observation_input_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Instrumented scripted-driver observation input, distinct from visibility or cognition.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "road_boundary_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original reviewed road edge, sidewalk lane and adjacency context.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "participant_classification_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original motor-vehicle driver and pedestrian classification sources.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "contact_events",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original contact sensor event history.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized four-camera identities.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_site_context",
+            "unit": "structured record",
+            "method": "Original OpenDRIVE and Native road classification, edges and sidewalk review."
+          },
+          {
+            "name": "driver_input_context",
+            "unit": "structured record",
+            "method": "Scripted driver-control input source; human observation remains unresolved."
+          }
+        ],
+        "limitations": [
+          "Native road/pedestrian motion and camera pixels require physical verification.",
+          "Human observation, statutory near and legal proper caution remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Exercise proper caution upon observing a pedestrian"
+      ],
+      "paired_probe_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__response_pair",
+      "deliberate_differences": [
+        "response_policy"
+      ],
+      "probe": {
+        "primary_variable": "response_policy",
+        "comparison_or_standard": "Original response timing, body gap and contact; legal caution unresolved.",
+        "target_value_or_branch": "prompt_brake"
+      }
+    },
+    {
+      "case_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake",
+      "target_law_id": "NRS-484B-280-1c",
+      "target_type": "boundary_probe",
+      "rationale": "Controlled engineering response timing to the same off-road sidewalk pedestrian encounter.",
+      "variable_assignments": {
+        "response_policy": {
+          "kind": "controller",
+          "value": "deferred_brake",
+          "note": "Scripted driver input and brake response, not a legal cutoff."
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original motor-vehicle body and route history.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "pedestrian_body_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Separate original pedestrian body and off-road sidewalk route.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "ego_speed_and_brake_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original speed and braking commands.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "driver_observation_input_history",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Instrumented scripted-driver observation input, distinct from visibility or cognition.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "road_boundary_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original reviewed road edge, sidewalk lane and adjacency context.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "participant_classification_context",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original motor-vehicle driver and pedestrian classification sources.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "contact_events",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original contact sensor event history.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          },
+          {
+            "name": "camera_frame_map",
+            "unit": "structured record",
+            "sampling_rate_hz": 20,
+            "method": "Original synchronized four-camera identities.",
+            "time_window": "approach through pedestrian clearance",
+            "reference_frame": "CARLA world with original frame and time",
+            "uncertainty": "20 Hz sampling and simulator body precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "road_site_context",
+            "unit": "structured record",
+            "method": "Original OpenDRIVE and Native road classification, edges and sidewalk review."
+          },
+          {
+            "name": "driver_input_context",
+            "unit": "structured record",
+            "method": "Scripted driver-control input source; human observation remains unresolved."
+          }
+        ],
+        "limitations": [
+          "Native road/pedestrian motion and camera pixels require physical verification.",
+          "Human observation, statutory near and legal proper caution remain unresolved."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Exercise proper caution upon observing a pedestrian"
+      ],
+      "paired_probe_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__response_pair",
+      "deliberate_differences": [
+        "response_policy"
+      ],
+      "probe": {
+        "primary_variable": "response_policy",
+        "comparison_or_standard": "Original response timing, body gap and contact; legal caution unresolved.",
+        "target_value_or_branch": "deferred_brake"
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "c416422-response",
+      "target_law_id": "NRS-484B-280-1c",
+      "judgment_refs": [
+        {
+          "phrase": "Exercise proper caution upon observing a pedestrian",
+          "note": "No numeric legal caution, response-delay or near-distance cutoff is supplied."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Original nontransient encounter range and human-observation status require physical source review.",
+      "missing_inputs": [
+        "Source-backed Native sidewalk and off-road encounter with driver input history",
+        "Feasible nontransient response range without a legal cutoff"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

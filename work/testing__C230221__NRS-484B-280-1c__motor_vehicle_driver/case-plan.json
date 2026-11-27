@@ -1,0 +1,175 @@
+{
+  "assignment_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C230221",
+  "law_id": "NRS-484B-280-1c",
+  "selected_branches": [
+    {
+      "law_id": "NRS-484B-280-1c",
+      "cell_id": "C230221",
+      "actor": "motor_vehicle_driver",
+      "requirement": "NRS-484B-280-1c",
+      "branch": "Pedestrian in or near a marked or unmarked crosswalk.",
+      "source": "inputs/coverage/branch-sources.json",
+      "source_topic": "exact-text",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "testing"
+    }
+  ],
+  "selected_branch": "Pedestrian in or near a marked or unmarked crosswalk.",
+  "law_text": "A driver of a motor vehicle shall: Exercise proper caution upon observing a pedestrian: (1) On or near a highway, street or road; (2) At or near a bus stop or bench, shelter or transit stop for passengers of public mass transportation or in the act of boarding a bus or other public transportation vehicle; or (3) In or near a school zone or a school crossing zone marked in accordance with NRS 484B.363 or a marked or unmarked crosswalk.",
+  "law_source": "NRS 484B.280(1)(c)",
+  "topic_inventory": {
+    "exact-text": "A driver of a motor vehicle shall: Exercise proper caution upon observing a pedestrian: (1) On or near a highway, street or road; (2) At or near a bus stop or bench, shelter or transit stop for passengers of public mass transportation or in the act of boarding a bus or other public transportation vehicle; or (3) In or near a school zone or a school crossing zone marked in accordance with NRS 484B.363 or a marked or unmarked crosswalk."
+  },
+  "cases": [
+    {
+      "case_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "Observe a pedestrian bodily in a source-marked crosswalk with original driver input and recorded response",
+      "gap_ids": [
+        "missing_original_crosswalk_observation"
+      ]
+    },
+    {
+      "case_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "Observe the same crossing geometry and response after removing the physical marking; retain intersection and curb continuity as an unmarked crosswalk",
+      "gap_ids": [
+        "missing_original_crosswalk_observation"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "marked_vs_unmarked_crosswalk",
+      "case_ids": [
+        "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk",
+        "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk"
+      ],
+      "fixed_conditions": [
+        "same original intersection roads, curbs, crossing extent and pedestrian route",
+        "same ego vehicle, driver identity, route, speed target and response policy",
+        "same separately recorded driver observation input source",
+        "same 20 Hz, duration and four-view camera contract"
+      ],
+      "deliberate_differences": [
+        "physical crosswalk marking present versus absent in the original map; crossing category read back from the Native scene"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed_and_brake_history",
+      "mandatory": true
+    },
+    {
+      "name": "driver_observation_input_history",
+      "mandatory": true
+    },
+    {
+      "name": "crossing_marking_and_intersection_readback",
+      "mandatory": true
+    },
+    {
+      "name": "road_and_curb_context",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true
+    },
+    {
+      "name": "contact_events",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "inputs/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/assignment.json",
+      "sha256": "04757220cd76fe9969d69c4d6e627bcbec36a0e92911f6c0e8a97197858e24ee"
+    },
+    {
+      "path": "inputs/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/evidence.json",
+      "sha256": "94ba6270fa082c7ba4a03f49d055d2d3ade2590fc6bc69fc91e2684a25ddae39"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+    },
+    {
+      "path": "inputs/coverage/candidate-cells.json",
+      "sha256": "d067de719af99bb6b0bf1c0cf513f64df3f63e5e8f340d8339650770b711798a"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "The authored crossing map must load in Native and its road, marking, curbs, pedestrian body, motion and camera pixels require local physical readback.",
+    "Original driver input is required separately from visual detectability; no numerical legal proper-caution threshold follows from crossing kind."
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Read frozen law, original C233871 evidence and candidate catalog; no accepted recording covers marked/unmarked crosswalk variation in the fixed original cell.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "missing_original_crosswalk_observation",
+        "requirement": "Original crossing kind, pedestrian body, driver input and response history",
+        "source": "NRS 484B.280(1)(c) exact text",
+        "why_existing_insufficient": "Frozen accepted evidence inventory has no crosswalk variant."
+      }
+    ]
+  },
+  "judgment_range_inventory": [],
+  "planning_status": "source_gated_construction",
+  "requirement_dispositions": [
+    {
+      "status": "selected_required",
+      "requirement": "Exercise proper caution upon observing a pedestrian in or near a marked or unmarked crosswalk",
+      "source": "NRS 484B.280(1)(c) exact text",
+      "evidence_or_gap": "Original crossing category, pedestrian body and driver input required; legal proper-caution interpretation remains unresolved",
+      "case_ids": [
+        "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk",
+        "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk"
+      ]
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego, pedestrian, crossing, curbs and marking",
+        "interval": "approach through clearance",
+        "view": "overview"
+      },
+      {
+        "subject": "ego, pedestrian, crossing, curbs and marking",
+        "interval": "approach through clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "ego, pedestrian, crossing, curbs and marking",
+        "interval": "approach through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "ego, pedestrian, crossing, curbs and marking",
+        "interval": "approach through clearance",
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "source_observation_mapping": {}
+}

@@ -1,0 +1,186 @@
+{
+  "assignment_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver",
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C416422",
+  "law_id": "NRS-484B-280-1c",
+  "selected_branches": [
+    {
+      "law_id": "NRS-484B-280-1c",
+      "cell_id": "C416422",
+      "actor": "motor_vehicle_driver",
+      "requirement": "NRS-484B-280-1c",
+      "branch": "Pedestrian near a highway, street or road, bodily off the road.",
+      "source": "inputs/coverage/branch-sources.json",
+      "source_topic": "exact-text",
+      "coverage_status": "pending_review",
+      "recording_ids": [],
+      "law_partition": "training",
+      "scenario_partition": "testing"
+    }
+  ],
+  "law_text": "A driver of a motor vehicle shall: Exercise proper caution upon observing a pedestrian: (1) On or near a highway, street or road; (2) At or near a bus stop or bench, shelter or transit stop for passengers of public mass transportation or in the act of boarding a bus or other public transportation vehicle; or (3) In or near a school zone or a school crossing zone marked in accordance with NRS 484B.363 or a marked or unmarked crosswalk.",
+  "law_source": "NRS 484B.280(1)(c)",
+  "topic_inventory": {
+    "exact-text": "A driver of a motor vehicle shall: Exercise proper caution upon observing a pedestrian: (1) On or near a highway, street or road; (2) At or near a bus stop or bench, shelter or transit stop for passengers of public mass transportation or in the act of boarding a bus or other public transportation vehicle; or (3) In or near a school zone or a school crossing zone marked in accordance with NRS 484B.363 or a marked or unmarked crosswalk."
+  },
+  "cases": [
+    {
+      "case_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "Pedestrian bodily on reviewed sidewalk off road, with original scripted-driver observation followed by prompt engineering braking",
+      "gap_ids": [
+        "missing_original_roadside_observation"
+      ]
+    },
+    {
+      "case_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake",
+      "target_law_id": "NRS-484B-280-1c",
+      "purpose": "Same roadside sidewalk encounter with delayed engineering braking; statutory near and proper caution remain unresolved",
+      "gap_ids": [
+        "missing_original_roadside_observation"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "near_road_response_timing",
+      "case_ids": [
+        "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+        "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake"
+      ],
+      "fixed_conditions": [
+        "same original single-lane-per-direction road and adjacent sidewalk",
+        "same motor vehicle driver and pedestrian classifications",
+        "same off-road pedestrian body route and road-edge gap",
+        "same separate scripted-driver observation input source",
+        "same four cameras, 20 Hz and 30 second duration"
+      ],
+      "deliberate_differences": [
+        "engineering brake response timing after original scripted-driver input"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "ego_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "pedestrian_body_history",
+      "mandatory": true
+    },
+    {
+      "name": "ego_speed_and_brake_history",
+      "mandatory": true
+    },
+    {
+      "name": "driver_observation_input_history",
+      "mandatory": true
+    },
+    {
+      "name": "road_boundary_context",
+      "mandatory": true
+    },
+    {
+      "name": "participant_classification_context",
+      "mandatory": true
+    },
+    {
+      "name": "contact_events",
+      "mandatory": true
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true
+    }
+  ],
+  "sources": [
+    {
+      "path": "work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/assignment.json",
+      "sha256": "6f0ce069dc3b83de8979e64320ff434b6049427714927c3ec05402181cad0db4"
+    },
+    {
+      "path": "inputs/coverage/candidate-cells.json",
+      "sha256": "d067de719af99bb6b0bf1c0cf513f64df3f63e5e8f340d8339650770b711798a"
+    },
+    {
+      "path": "inputs/coverage/branch-sources.json",
+      "sha256": "3d5e4cf5dfed72abf54d032e660d51264238fa911e2f2e50935647214209f9f2"
+    },
+    {
+      "path": "inputs/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/evidence.json",
+      "sha256": "94ba6270fa082c7ba4a03f49d055d2d3ade2590fc6bc69fc91e2684a25ddae39"
+    }
+  ],
+  "existing_evidence": [],
+  "runtime_uncertainties": [
+    "Actual Native road and sidewalk adjacency, pedestrian body off road, driver input, actor motion and pixels require physical execution. Statutory near and proper caution remain unresolved.",
+    "Scripted-driver observation input is not human cognitive observation."
+  ],
+  "evidence_review": {
+    "reviewer": "CPU worker",
+    "method": "Frozen original C233871 evidence inventory has zero accepted recordings; C416422 is an unallocated candidate with no original accepted evidence. No physical near-road status or actual observation inferred from the catalog.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "missing_original_roadside_observation",
+        "requirement": "Original single-lane-per-direction road with adjacent sidewalk, distinct pedestrian body off the road on that sidewalk, driver input event and response history",
+        "source": "NRS 484B.280(1)(c) exact text; frozen candidate C416422",
+        "why_existing_insufficient": "Original frozen evidence inventory contains zero accepted recordings and candidate catalog supplies no original Native site."
+      }
+    ]
+  },
+  "judgment_range_inventory": [],
+  "planning_status": "source_gated_sidewalk_construction",
+  "witness_review": [],
+  "requirement_dispositions": [
+    {
+      "status": "selected_required",
+      "requirement": "Exercise proper caution upon observing a pedestrian near a highway, street or road; selected pedestrian bodily off road on an adjacent sidewalk",
+      "source": "NRS 484B.280(1)(c) exact text and frozen C416422 candidate",
+      "evidence_or_gap": "Original road edges, sidewalk lane and adjacency, off-road pedestrian body path, driver input and response history; no legal numeric cutoff inferred",
+      "case_ids": [
+        "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+        "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake"
+      ]
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego vehicle, road edge and roadside pedestrian",
+        "interval": "approach through clearance",
+        "view": "overview"
+      },
+      {
+        "subject": "ego-to-sidewalk pedestrian encounter",
+        "interval": "approach through clearance",
+        "view": "approach"
+      },
+      {
+        "subject": "pedestrian body, sidewalk and road edge",
+        "interval": "approach through clearance",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "scripted-driver reference view",
+        "interval": "approach through clearance",
+        "view": "driver_reference"
+      }
+    ]
+  },
+  "source_observation_mapping": {},
+  "comparison_proofs": [
+    {
+      "comparison_id": "near_road_response_timing",
+      "receipt": "comparison-positive.log",
+      "sha256": "91ae0db4be2f7e8c3fd752331b0ca7911608da610bc0351b6dde9c787be383ff",
+      "negative_log": "comparison-negative.log",
+      "negative_log_sha256": "400806f0105f9908c50d60d9d61595d76598be570d1c605e1cd87ce4a9641ed6"
+    }
+  ],
+  "selected_branch": "Pedestrian near a highway, street or road, bodily off the road."
+}

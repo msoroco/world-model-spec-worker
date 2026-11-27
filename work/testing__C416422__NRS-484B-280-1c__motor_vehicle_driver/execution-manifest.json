@@ -1,0 +1,317 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "b3262f17a446ab6a421d54c8cee8f8d549e4a5701081a4382f2859e49f244f51",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/diagnostic-prompt_brake-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The primary Native ego spawn can be occupied by an ambient vehicle; a same-road upstream spawn is an engineering alternative shared across the pair."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-prompt_brake-construction.json",
+          "construction_sha256": "8a1ef534bb5d22851384e2f04bd29610e81455c53e29146d7296a23267bf8baf",
+          "changed_knobs": [
+            "ego_start_xy_m.x: primary -30 m -> fallback -33 m on the same reviewed road"
+          ],
+          "trigger": {
+            "source": "Native CARLA ego spawn result and original actor inventory",
+            "metric": "primary ego spawn availability",
+            "failure_condition": "primary ego spawn occupied or rejected by the Native world"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake --candidate fallback1 --output .runtime-work/c416422-offline-prompt_brake-fallback1-v1",
+            "construction_sha256": "8a1ef534bb5d22851384e2f04bd29610e81455c53e29146d7296a23267bf8baf",
+            "exit_code": 0,
+            "log": "proof-prompt_brake-fallback1.log",
+            "log_sha256": "d2e1b67e4f0ba80543abcff09f716c0f23d98e3097040e6f7d5d017f6198b1e8"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake --candidate fallback1 --output .runtime-work/c416422-compat-prompt_brake-fallback1-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "log": "compat-prompt_brake-fallback1-analysis.log",
+            "negative_log": "compat-prompt_brake-fallback1-negative.log",
+            "receipt": "compat-prompt_brake-fallback1-receipt.json",
+            "sha256": "93cd445f1e3b8da5fd04c274f242754f475e3f7bd134f94a433bb0133eb138cd"
+          }
+        }
+      ],
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/ego_body_history.jsonl"
+        },
+        "pedestrian_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/pedestrian_body_history.jsonl"
+        },
+        "ego_speed_and_brake_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/ego_speed_and_brake_history.jsonl"
+        },
+        "driver_observation_input_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/driver_observation_input_history.jsonl"
+        },
+        "road_boundary_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/road_boundary_context.jsonl"
+        },
+        "participant_classification_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/participant_classification_context.jsonl"
+        },
+        "contact_events": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/contact_events.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/camera_frame_map.jsonl"
+        },
+        "road_site_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original OpenDRIVE road and driver-input context projection",
+          "evidence": "channels/context.json"
+        },
+        "driver_input_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original OpenDRIVE road and driver-input context projection",
+          "evidence": "channels/context.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake --candidate primary --output .runtime-work/c416422-offline-prompt_brake-primary-v1",
+        "construction_sha256": "b3262f17a446ab6a421d54c8cee8f8d549e4a5701081a4382f2859e49f244f51",
+        "exit_code": 0,
+        "log": "proof-prompt_brake-primary.log",
+        "log_sha256": "4a96e82ab22f6396356af07387b870010f3bfe09499d7cdc91b9e80a83195027"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake --candidate primary --output .runtime-work/c416422-compat-prompt_brake-primary-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "log": "compat-prompt_brake-primary-analysis.log",
+        "negative_log": "compat-prompt_brake-primary-negative.log",
+        "receipt": "compat-prompt_brake-primary-receipt.json",
+        "sha256": "69d60d9c608b84e6b1fe0f60b9ec4f73c8e539599051d940621e3382b7d71d80"
+      },
+      "physical_preparation": {
+        "receipt": "physical-prompt_brake-proof.json",
+        "sha256": "8785bca299a1128a73ee3a51b72ce19ffb4d9c0be39d28618192ad7b987f84b5"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c416422-saved-prompt_brake-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c416422-saved-prompt_brake-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c416422-saved-prompt_brake-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c416422-saved-prompt_brake-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-prompt_brake.log",
+        "test_log_sha256": "0277e26b23d55186de427ae33143ae0bd857959573fa9ec90915b617adabfb7d",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "83728bef8eabd78149a2485ebfccf88e0c1c524eba7c5ddcb5a957fc945d1c2c",
+        "command": ".venv-cpu/bin/python work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake --output .runtime-work/c416422-audit-prompt_brake-positive-v1",
+        "test_exit_code": 0,
+        "test_log": "audit-prompt_brake-positive.log",
+        "test_log_sha256": "16d7adcf1f7bd794afa1fd7cf5ace6b548ea48c3a443525af5e2912318c94e95",
+        "negative_command": ".venv-cpu/bin/python work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake --output .runtime-work/c416422-audit-prompt_brake-negative-v1 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-prompt_brake-negative.log",
+        "negative_log_sha256": "a8b184a369433c1b44f19a8ae4e9f510bf7ba0c842645ff7821067148f27b99d"
+      },
+      "negative": {
+        "log": "compat-prompt_brake-primary-negative.log"
+      }
+    },
+    {
+      "case_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake",
+      "kind": "delivery",
+      "construction": "cases/deferred_brake/construction.json",
+      "construction_sha256": "310a0fe18aa76aaa6abfc5e2a3e983e14b76fa0aab69bfa063bb25c319bcb4b6",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/diagnostic-deferred_brake-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The primary Native ego spawn can be occupied by an ambient vehicle; a same-road upstream spawn is an engineering alternative shared across the pair."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-deferred_brake-construction.json",
+          "construction_sha256": "c44ca9f301601d7f84c4fa6d253c97fd985ac7baca9ecf1c88683f7563f68b63",
+          "changed_knobs": [
+            "ego_start_xy_m.x: primary -30 m -> fallback -33 m on the same reviewed road"
+          ],
+          "trigger": {
+            "source": "Native CARLA ego spawn result and original actor inventory",
+            "metric": "primary ego spawn availability",
+            "failure_condition": "primary ego spawn occupied or rejected by the Native world"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake --candidate fallback1 --output .runtime-work/c416422-offline-deferred_brake-fallback1-v1",
+            "construction_sha256": "c44ca9f301601d7f84c4fa6d253c97fd985ac7baca9ecf1c88683f7563f68b63",
+            "exit_code": 0,
+            "log": "proof-deferred_brake-fallback1.log",
+            "log_sha256": "8d59f1dfb524f63c7258f2da454f3162b290f090ca504a9e421c232c18b567f9"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake --candidate fallback1 --output .runtime-work/c416422-compat-deferred_brake-fallback1-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "log": "compat-deferred_brake-fallback1-analysis.log",
+            "negative_log": "compat-deferred_brake-fallback1-negative.log",
+            "receipt": "compat-deferred_brake-fallback1-receipt.json",
+            "sha256": "3afc7dcaaacd9634d1f3d7963755a8a70cda1c641bcc9169b1353e46b5658eb6"
+          }
+        }
+      ],
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/ego_body_history.jsonl"
+        },
+        "pedestrian_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/pedestrian_body_history.jsonl"
+        },
+        "ego_speed_and_brake_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/ego_speed_and_brake_history.jsonl"
+        },
+        "driver_observation_input_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/driver_observation_input_history.jsonl"
+        },
+        "road_boundary_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/road_boundary_context.jsonl"
+        },
+        "participant_classification_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/participant_classification_context.jsonl"
+        },
+        "contact_events": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/contact_events.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed on-road encounter projected by saved analyzer",
+          "evidence": "channels/camera_frame_map.jsonl"
+        },
+        "road_site_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original OpenDRIVE road and driver-input context projection",
+          "evidence": "channels/context.json"
+        },
+        "driver_input_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original OpenDRIVE road and driver-input context projection",
+          "evidence": "channels/context.json"
+        }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake --candidate primary --output .runtime-work/c416422-offline-deferred_brake-primary-v1",
+        "construction_sha256": "310a0fe18aa76aaa6abfc5e2a3e983e14b76fa0aab69bfa063bb25c319bcb4b6",
+        "exit_code": 0,
+        "log": "proof-deferred_brake-primary.log",
+        "log_sha256": "bce606c2cc57efa0712ea686b04875ac3d1ea4f2f322b05e2d54c0cbedd1daa4"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake --candidate primary --output .runtime-work/c416422-compat-deferred_brake-primary-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "log": "compat-deferred_brake-primary-analysis.log",
+        "negative_log": "compat-deferred_brake-primary-negative.log",
+        "receipt": "compat-deferred_brake-primary-receipt.json",
+        "sha256": "01b7a75bce7b1a91732a33a0f50f567bad6ca093fffe6d7045d9987657efc1a4"
+      },
+      "physical_preparation": {
+        "receipt": "physical-deferred_brake-proof.json",
+        "sha256": "2c954802c4ee4ac2d43d9dafa68126f29a8045b162cff7de1f5b8a01965c0c29"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c416422-saved-deferred_brake-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c416422-saved-deferred_brake-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c416422-saved-deferred_brake-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c416422-saved-deferred_brake-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-deferred_brake.log",
+        "test_log_sha256": "3e4cc5a6ba733c2bfb3f3d03ca0823388405324e08c96c6d476838e710e2dbd3",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "83728bef8eabd78149a2485ebfccf88e0c1c524eba7c5ddcb5a957fc945d1c2c",
+        "command": ".venv-cpu/bin/python work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake --output .runtime-work/c416422-audit-deferred_brake-positive-v1",
+        "test_exit_code": 0,
+        "test_log": "audit-deferred_brake-positive.log",
+        "test_log_sha256": "0b33144540898596ee71f6c20d0077976c2ae7c0d18a34848e10a3ab87f5fbe6",
+        "negative_command": ".venv-cpu/bin/python work/testing__C416422__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake --output .runtime-work/c416422-audit-deferred_brake-negative-v1 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-deferred_brake-negative.log",
+        "negative_log_sha256": "a8b184a369433c1b44f19a8ae4e9f510bf7ba0c842645ff7821067148f27b99d"
+      },
+      "negative": {
+        "log": "compat-deferred_brake-primary-negative.log"
+      }
+    }
+  ]
+}

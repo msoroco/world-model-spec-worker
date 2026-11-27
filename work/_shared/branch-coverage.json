@@ -1,5 +1,30 @@
 {
-  "additional_bindings": [],
+  "additional_bindings": [
+    {
+      "assignment_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver",
+      "original_assignment_id": "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver",
+      "original_cell_incompatibility": "The fixed C233871 road_without_sidewalk/pedestrian package requires the pedestrian body inside reviewed road bounds and has no sidewalk; off-road near-road sidewalk context changes that fixed construction.",
+      "binding_reason": "Frozen C416422 candidate is unallocated and motor_vehicle_driver-compatible, with sidewalk control and travel maneuver; construct and read back original road/sidewalk adjacency before any physical claim."
+    },
+    {
+      "assignment_id": "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver",
+      "original_assignment_id": "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver",
+      "original_cell_incompatibility": "The fixed C233871 road_without_sidewalk/pedestrian package contains no school-zone marker and measures an on-road pedestrian; the marked school-zone setting changes its fixed context.",
+      "binding_reason": "Frozen C398030 candidate is unallocated and motor_vehicle_driver-compatible, with school_zone layout, school control, and travel maneuver; construct and read back original school marking and pedestrian location before any physical claim."
+    },
+    {
+      "assignment_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver",
+      "original_assignment_id": "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver",
+      "original_cell_incompatibility": "The fixed C233871 road_without_sidewalk/pedestrian construction requires a bodily on-road pedestrian and has no bus_stop control or transit vehicle/boarding infrastructure.",
+      "binding_reason": "Frozen C394554 is unallocated road/travel/bus_stop and motor_vehicle_driver-compatible; original stop geometry, transit vehicle and passenger placement require construction and readback before any physical claim."
+    },
+    {
+      "assignment_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver",
+      "original_assignment_id": "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver",
+      "original_cell_incompatibility": "The fixed C233871 road_without_sidewalk/pedestrian construction contains no crosswalk control and requires a bodily on-road pedestrian; it cannot vary marked versus unmarked crossing context while preserving its fixed case.",
+      "binding_reason": "Frozen C230221 road/travel/crosswalk candidate is unallocated and motor_vehicle_driver-compatible. Build marked and unmarked physical crossings at an original intersection with source and Native readback of crossing geometry and pedestrian body location."
+    }
+  ],
   "batch_id": "full-test-delivery",
   "format": "worker-full-branch-coverage",
   "laws": {
@@ -13372,6 +13397,82 @@
           "topic_ids": [
             "exact-text"
           ]
+        },
+        {
+          "assignment_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver",
+          "branch_id": "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver::near_road_response_timing",
+          "case_ids": [
+            "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+            "testing__C416422__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake"
+          ],
+          "comparison_ids": [
+            "near_road_response_timing"
+          ],
+          "controlled_difference": [
+            "engineering driver brake response timing after the original near-road pedestrian observation event"
+          ],
+          "source_branch": "Pedestrian near a highway, street or road, bodily off the road.",
+          "status": "runnable",
+          "topic_ids": [
+            "exact-text"
+          ]
+        },
+        {
+          "assignment_id": "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver",
+          "branch_id": "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver::school_observation_response_timing",
+          "case_ids": [
+            "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake",
+            "testing__C398030__NRS-484B-280-1c__motor_vehicle_driver__deferred_brake"
+          ],
+          "comparison_ids": [
+            "school_observation_response_timing"
+          ],
+          "controlled_difference": [
+            "engineering driver brake response timing after the original school-zone pedestrian observation event"
+          ],
+          "source_branch": "Pedestrian in or near a marked school zone or school crossing zone.",
+          "status": "runnable",
+          "topic_ids": [
+            "exact-text"
+          ]
+        },
+        {
+          "assignment_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver",
+          "branch_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver::transit_passenger_state",
+          "case_ids": [
+            "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop",
+            "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus"
+          ],
+          "comparison_ids": [
+            "transit_passenger_state"
+          ],
+          "controlled_difference": [
+            "observed passenger waiting at stop versus actively boarding a transit vehicle"
+          ],
+          "source_branch": "Pedestrian at or near a transit stop or in the act of boarding public transportation.",
+          "status": "runnable",
+          "topic_ids": [
+            "exact-text"
+          ]
+        },
+        {
+          "assignment_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver",
+          "branch_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver::marked_vs_unmarked_crosswalk",
+          "case_ids": [
+            "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk",
+            "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk"
+          ],
+          "comparison_ids": [
+            "marked_vs_unmarked_crosswalk"
+          ],
+          "controlled_difference": [
+            "marked versus unmarked original crossing geometry while pedestrian route, driver observation source and response policy remain fixed"
+          ],
+          "source_branch": "Pedestrian in or near a marked or unmarked crosswalk.",
+          "status": "runnable",
+          "topic_ids": [
+            "exact-text"
+          ]
         }
       ]
     },
@@ -13742,7 +13843,7 @@
             "word_wait"
           ],
           "controlled_difference": [
-            "flashing Don\u2019t Walk versus Wait form"
+            "flashing Don’t Walk versus Wait form"
           ],
           "source_branch": "Crossing during flashing indication with countdown",
           "status": "runnable",
@@ -13761,7 +13862,7 @@
             "hand_symbol"
           ],
           "controlled_difference": [
-            "flashing Don\u2019t Walk versus upraised hand symbol"
+            "flashing Don’t Walk versus upraised hand symbol"
           ],
           "source_branch": "Crossing during flashing indication with countdown",
           "status": "runnable",

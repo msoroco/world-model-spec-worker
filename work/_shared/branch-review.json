@@ -1,6 +1,6 @@
 {
-  "candidate_review_method": "Structural inventory across 240 ready assignments and 1,691 cases: 1,276 physical-risk decisions and 415 no-candidate decisions, with zero missing status/reason, contradictory candidate count, or duplicate candidate IDs. Independent risk justification and comparison isolation review remains pending.",
-  "coverage_sha256": "caf4cf1ef34094f4087e25e0a7e20410a4dd267dc5d530fb05675e10e9c1c0ba",
+  "candidate_review_method": "Structural inventory across 240 ready assignments and 1,691 cases: 1,276 physical-risk decisions and 415 no-candidate decisions, with zero missing status/reason, contradictory candidate count, or duplicate candidate IDs. Independent risk justification and comparison isolation review remains pending. Differential construction-contract scan: 1,276 fallbacks across 1,691 ready cases, one C10307 metadata-preservation exception (work/_shared/candidate-differential-audit.json SHA-256 46aa64cd2f49b3595e6e1bf271a96eee8d0fe03022c9bf06d1c04c72d9ab4480). Physical risk and comparison isolation still require independent review.",
+  "coverage_sha256": "f08b891a99d1282168405f83350be3125cc5f860bc79e46a92f8ca74b3730ae0",
   "format": "worker-full-branch-review-draft",
   "missing_branches": [
     "testing__C158190__NRS-484B-257-1__motor_vehicle_driver::assignment_not_ready",
@@ -29,6 +29,11 @@
       "evidence": "inputs/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/assignment.json (SHA-256 04757220cd76fe9969d69c4d6e627bcbec36a0e92911f6c0e8a97197858e24ee); work/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/case-plan.json (SHA-256 bc641c8d6ac7f2d104bf646e2ed6235018bf08751c001ecfe559dfd0b86899b0)",
       "finding": "The exact law includes a pedestrian on or near a road, at or near a transit stop or boarding, and in or near a school zone or marked or unmarked crosswalk. The only current C233871 comparison changes brake response timing for a pedestrian bodily on the road. Distinct near-road, transit, school and crosswalk setting comparisons have no exact prepared cases in the current branch matrix. The completed C233871 package is preserved while compatible source-bound branch allocations are reviewed.",
       "law_id": "NRS-484B-280-1c"
+    },
+    {
+      "law_id": "LVMC-11-40-130",
+      "finding": "Independent primary/fallback differential audit of 1,276 candidates across 1,691 ready cases found one fallback construction with omitted top-level measurement_plan, termination_rules and static_checks. Its embedded case-plan also omits camera_plan and source_observation_mapping while changing the reference_corner camera pose. The primary and fallback carry the same identity and recording_description, but this exception needs case-specific semantic review before candidate review can be declared complete.",
+      "evidence": "work/_shared/candidate-differential-audit.json (SHA-256 46aa64cd2f49b3595e6e1bf271a96eee8d0fe03022c9bf06d1c04c72d9ab4480); work/testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator/execution-manifest.json"
     }
   ],
   "status": "incomplete",

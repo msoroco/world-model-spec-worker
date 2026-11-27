@@ -1,5 +1,12 @@
 # Return report
 
+## 2026-11-27 17:27 UTC — Supplemental NRS 484B.280(1)(c) construction under way
+
+- Pinned runtime verification, CPU preflight and update notices passed. The frozen C158190 and C178244 branch/cell conflicts remain; their results stay partial. The original batch still has 240 ready and two partial results. No batch-wide strict claim is made.
+- Independent full-law review found that C233871's ready on-road two-case comparison cannot represent a pedestrian near but off the road, a transit stop or boarding event, or a marked school setting on its fixed `road_without_sidewalk/pedestrian` cell. The lead registered three source-compatible, unallocated supplemental bindings under `work/_shared/branch-coverage.json`: C416422 `single_lane_per_direction/travel/sidewalk` for near-road, C394554 `road/travel/bus_stop` for transit, and C398030 `school_zone/travel/school` for school. Separate assignment owners are building physical context and exact CPU proof chains; no new assignment is ready or queued for GPU. The marked/unmarked crosswalk alternative remains to be allocated.
+- `work/_shared/candidate-differential-audit.py` independently compared 1,276 fallback constructions across 1,691 ready cases. One C10307 fallback omits top-level measurement, termination and static-check metadata and an embedded case-plan camera plan; its actual camera-pose change is declared. This precise exception is recorded in `branch-review.json` for case-specific review. The candidate review remains incomplete; the ready package was not silently rewritten or reproved.
+- The shared coverage matrix and review SHA binding were updated; scoped `--complete` for C158190 still passes with the new supplemental identities registered. All new returned shared files are below 2 MiB and contain no trailing whitespace, blank EOF or conflict markers. No frozen input, runtime or batch file was edited, and no Git command was run.
+
 ## 2026-11-27 17:14 UTC — Accepted-source reviewers corrected and checked
 
 - C178244/NRS-484B-413-2 now requires the separately reviewed packet to be present, path and SHA-256, in the frozen evidence source inventory. Its 35 focused tests and pinned preflight pass; the frozen inventory has no such original packet, so the result remains `partial`. The exact scoped strict check exits 1 at partial acceptance.
@@ -1753,3 +1760,13 @@ Latest full-batch strict gate exits 1 only at `Preparation acceptance failed: pa
 ## 2026-11-27 14:21 UTC — C233871 ready and queue published
 
 `testing__C233871__NRS-484B-280-1c__motor_vehicle_driver` passed independent exact scoped strict delivery check. Exact cases `__prompt_brake` and `__deferred_brake`, comparison `on_road_response_timing`, primary/fallback offline and positive/negative compatibility, saved-only, semantic, physical lifecycle and independent audit CPU proofs are retained in its assignment folder. Lead integrated its two cases and one comparison into `gpu-queue.json` after checking 17 command syntaxes; queue now has 234 assignments, 1,615 cases and 1,123 comparisons (4,494,522 bytes). Actual CARLA motion, pixels and legal review remain local checks. C255456 is next independently owned partial; C214875, C229435 and C230259 remain active CPU work.
+
+## 2026-11-27 09:37 PST supplemental crosswalk and near-road proof checkpoint
+
+The frozen 242-item batch still has 240 ready and two truthful partial assignments (C158190 and C178244). Four separately bound NRS 484B.280(1)(c) supplemental assignments are also partial: C416422 near-road, C398030 school zone, C394554 transit stop, and new C230221 crosswalk. The branch matrix now includes an unallocated motor-vehicle-compatible C230221 road/travel/crosswalk binding and exact marked/unmarked comparison; the independent branch review remains incomplete. No supplemental queue job has been published as ready.
+
+C416422 finished its source-gated CPU construction, exact offline, positive/negative compatibility, semantic, physical lifecycle, saved-only, delivery and comparison proof chain. Its scoped `--complete` check passed. A diagnostic in-memory supplemental-aware strict validation passed downstream package checks, but the exact unmodified `--require-delivery-ready` command fails in frozen `runtime/scenario_pipeline/worker_exchange/portable.py:validate_imports`, which reads `inputs/<supplemental-id>/assignment.json` instead of the contract-specified `work/<supplemental-id>/assignment.json`. The package remains partial; frozen inputs and runtime were not edited.
+
+C230221 now has a source-hashed assignment, exact two-case plan, `crosswalk_scene.py` requiring an original Native map/readback hash join, intersecting road IDs, both curbs, crossing continuity, and original driver-input separation. Six focused CPU tests pass, including changed-map, invented marking, hidden marking, missing curb continuity, visibility-substitution and stale source tests. The assignment-scoped `--complete` check passed. Its construction and proof chain remains in progress with the crosswalk owner; result stays partial. School and transit owners continue their exact CPU proofs.
+
+The original C158190 and C178244 source/cell mismatches remain as documented in their assignment handoffs. No original trace/video bytes or reviewed replacement site were introduced. Do not promote either based on diagnostics or metadata.
