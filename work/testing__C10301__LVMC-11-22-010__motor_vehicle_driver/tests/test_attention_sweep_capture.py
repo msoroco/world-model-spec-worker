@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from attention_sweep_capture import AttentionSweepCapture
 from attention_sweep_plan import draft
+from attention_source_audit import audit
 
 SCRATCH = Path.cwd() / ".runtime-work" / "c10301-attention-capture-tests"
 SCRATCH.mkdir(parents=True, exist_ok=True)
@@ -117,6 +118,42 @@ class AttentionSweepCaptureTests(unittest.TestCase):
         self.assertTrue(result["diagnostic_fixture"])
         self.assertFalse(result["selected_cases_changed"])
         self.assertNotIn("spec_version", spec)
+
+    def test_saved_source_audit_rejects_changes_and_diagnostic_production(self):
+        capture = AttentionSweepCapture(self.packet, CASE, 2, allow_diagnostic=True)
+        for index in range(4):
+            capture.request(Adapter(), self.actor, index)
+            capture.read(Adapter(), self.actor, SimpleNamespace(
+                frame=100 + index,
+                timestamp=SimpleNamespace(elapsed_seconds=10 + index / 20)))
+        receipt = capture.finish(self.root, expected_frames=4)
+        with self.assertRaisesRegex(ValueError, "diagnostic attention packet"):
+            audit(self.root, self.packet, receipt, expected_frames=4)
+        checked = audit(self.root, self.packet, receipt, allow_diagnostic=True,
+                        expected_frames=4)
+        self.assertEqual(checked["original_frames"], 4)
+        self.assertEqual(checked["measured_duration_s"], 0)
+        self.assertTrue(checked["diagnostic_fixture"])
+        control = self.root / "interior-control.jsonl"
+        original = control.read_bytes()
+        control.write_bytes(original.replace(b'"frame_index": 2', b'"frame_index": 5'))
+        with self.assertRaisesRegex(ValueError, "control source changed"):
+            audit(self.root, self.packet, receipt, allow_diagnostic=True,
+                  expected_frames=4)
+        control.write_bytes(original)
+        sensor = self.root / "interior-original.jsonl"
+        original = sensor.read_bytes()
+        sensor.write_bytes(original.replace(b'"native_frame": 102',
+                                            b'"native_frame": 105'))
+        with self.assertRaisesRegex(ValueError, "sensor source changed"):
+            audit(self.root, self.packet, receipt, allow_diagnostic=True,
+                  expected_frames=4)
+        sensor.write_bytes(original)
+        changed = dict(receipt)
+        changed["intake_packet_sha256"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "intake packet changed"):
+            audit(self.root, self.packet, changed, allow_diagnostic=True,
+                  expected_frames=4)
 
 
 if __name__ == "__main__":

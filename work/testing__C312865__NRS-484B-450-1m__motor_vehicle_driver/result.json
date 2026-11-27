@@ -1,12 +1,38 @@
 {
   "assignment_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver",
   "input_sha256": "64b7fffc8cbbc34c9053f411319fa2762146fcb12ca40f5a8deca7da5e157b61",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests-current.log",
+      "sha256": "fbbdbb7a2b561dc4ff2f1aac0474e363af482fd2bffc7f0c9bc86696b402ed4b"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight-current.log",
+      "sha256": "b6c646ba24d11e6466a49509ee6bd6dd71f28f855096b66e26db74a858070785"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C312865__NRS-484B-450-1m__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-static-current.log",
+      "sha256": "906e5963bf5af656d6f69ed2e1a8effcfd6879d59838276789cc630d8e367062"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C312865__NRS-484B-450-1m__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "log": "cpu-strict-final.log",
+      "sha256": "906e5963bf5af656d6f69ed2e1a8effcfd6879d59838276789cc630d8e367062"
+    }
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "remaining_gpu_checks": [
+    "Actual CARLA tunnel motion, original source identity, four-view pixels, physical halt and body location review, and independent exception review"
+  ],
+  "reason": null,
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C312865__NRS-484B-450-1m__motor_vehicle_driver --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__outside_stop --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

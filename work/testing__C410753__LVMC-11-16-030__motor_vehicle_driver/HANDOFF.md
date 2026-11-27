@@ -1,22 +1,21 @@
-# testing__C410753__LVMC-11-16-030__motor_vehicle_driver
+# C410753 / LVMC 11.16.030 railway grade crossing
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: **partial**. No accepted original recording is in the frozen evidence inventory. The selected branch is traversal of a railway grade crossing with the sight condition and neither exception. The exact text also requires independent coverage of the flagman and installed, clearly visible nonwarning crossing signal exceptions. No legal visibility or speed verdict is produced by this package.
 
-Exact law: LVMC 11.16.030 — The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.
-Assigned branch(es): Crossing traversal under the stated sight conditions without either exception..
-Cell: C410753 (paved_road, cross_railway, rail_track); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Current case and comparison construction
 
-## Next CPU actions
+`build_case_plan.py` expands `case-plan.json` into seven selected targets: `obscured_14mph`, `obscured_15mph`, `obscured_16mph`, `clear_view_16mph`, `flagman_16mph`, `signal_nonwarning_16mph`, and `signal_warning_16mph` (each prefixed with this assignment ID). The first three probe below, at and above the statutory 15 mph prima facie boundary; the latter four separate sight and the two exceptions. Three comparisons hold the reviewed site and vehicle fixed across speed, sight, and exception states. These are engineering targets, never observed outcomes.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C410753__LVMC-11-16-030__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`rail_sight_measurement.py` validates a source-hashed municipal railway grade-crossing review against live OpenDRIVE, enforces 100 feet of approach and 400 feet along the rail in both directions, checks contiguous original 20 Hz frame joins, separately hashes original frame and sight ray sources, measures body traversal speed, and leaves legal judgment null. `rail_route_reader.py` projects original ego position and all eight body vertices onto a reviewed source-hashed route to determine crossing occupancy. `rail_ray_reader.py` casts original Native rays from an ego reference eye to reviewed crossing geometry and samples of each 400-foot railway direction, retaining hit traces. `rail_exception_reader.py` requires reviewed duty and signal authority plus source-hashed original-frame readbacks rather than treating a spawned device as an established exception. `rail_construction.py` validates a separately reviewed occluder source, creates a Native prop only for obscured targets and checks spawn position and lifecycle. `rail_native_capture.py` is a lazy 900-frame operator capture that takes real route, ray, exception and four-camera readers, records original PNG bytes and source hashes, and brakes the ego on exit. The `frame_count` override is only for CPU tests; the production call requires 900 frames for its receipt.
 
-## Proven checks and dependency boundary
+The eleven focused CPU tests in `tests/test_rail_sight_measurement.py` exercise the measurement, tampered original ray and frame sources, relabeled body/exception state, signal exception separation, reviewed body occupancy, bidirectional railway ray hits, original exception readbacks, reviewed occluder spawning and a four-camera capture with fake world readers. Run:
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+`SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c410753-tests/output" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/tests -p 'test_rail_sight_measurement.py' -v`
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+The exact static partial gate passes:
+
+`SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c410753-gate/output" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C410753__LVMC-11-16-030__motor_vehicle_driver --complete`
+
+## Next CPU construction and proof
+
+Wire the reviewed occluder, 45-second Native controller, four cameras, finalization and saved-only processing into selected case commands. Then materialize each selected case and any risk-justified fallback, semantic proposals, positive and missing-source compatibility receipts, physical/lifecycle probes and independent delivery/comparison audits. Run the exact strict assignment gate only after those proofs are bound. Actual CARLA motion, visibility and camera quality remain later physical checks.

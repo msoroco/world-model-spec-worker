@@ -79,7 +79,9 @@ def measure(site, frames):
         "observed_center_lane_path_m": meters,
         "observed_center_lane_path_ft": feet,
         "statutory_boundary_ft": 200,
-        "boundary_relation_observed": "below" if feet < 200 else ("above" if feet > 200 else "at"),
+        "boundary_relation_observed": (
+            "at" if math.isclose(feet, 200, rel_tol=0, abs_tol=1e-9)
+            else ("below" if feet < 200 else "above")),
         "entry_exit_interpolation": "unresolved",
         "legal_judgment": None,
         "site_source_sha256": site["site_source_sha256"],

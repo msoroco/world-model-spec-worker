@@ -8,7 +8,7 @@ from pathlib import Path
 
 from tunnel import CASES, inside_polygon, measure_original, validate_site
 
-CAMERAS = ('overview', 'approach', 'tunnel_reference', 'driver_reference')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
 def sha(path):
@@ -128,7 +128,14 @@ def analyze(attempt):
         'exception_context': lambda row: {'probe': row['requested_exception_probe'],
                                           'source': row.get('exception_source_sha256')},
         'camera_frame_map': lambda row: {'frame': row['original_frame'],
-                                         'time_s': row['time_s']}}
+                                         'time_s': row['time_s']},
+        'highway_status': lambda row: site['highway_status'],
+        'ego_speed': lambda row: row['ego_speed_mps'],
+        'halt_activity': lambda row: row['requested_activity'],
+        'other_vehicle_motion': lambda row: row['other_vehicle_speed_mps'],
+        'exception_authority': lambda row: {
+            'source_sha256': row.get('exception_source_sha256'),
+            'source_present': bool(row.get('exception_source_sha256'))}}
     evidence = []
     for channel in description['channels']:
         name = channel['name']

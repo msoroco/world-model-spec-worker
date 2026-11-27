@@ -50,10 +50,12 @@ class AllDiagnosticCpuTests(unittest.TestCase):
         manifest = json.loads((HERE / "execution-manifest.diagnostic.json").read_text())
         cases = {entry["case_id"]: {"reviewed_site": "diagnostic-site.json"}
                  for entry in manifest["cases"]}
+        selected = HERE / "execution-manifest.json"
+        selected_before = selected.read_bytes()
         with tempfile.TemporaryDirectory() as directory:
             assembly = Path(directory) / "assembly.json"
             assembly.write_text(json.dumps({"assignment_id": HERE.name, "cases": cases}) + "\n")
-            with self.assertRaisesRegex(ValueError, "source-grounded sweeps"):
+            with self.assertRaisesRegex(ValueError, "Missing assignment source or receipt"):
                 select_production(assembly)
             construction = json.loads((HERE / "construction-marked_stop_line_response.json").read_text())
             site_text = next(row["content"] for row in construction["files"]
@@ -63,7 +65,7 @@ class AllDiagnosticCpuTests(unittest.TestCase):
             with self.assertRaises((ValueError, KeyError, TypeError)):
                 verify_review_sources(json.loads(site_text), site_path,
                                       diagnostic_fixture=False)
-        self.assertFalse((HERE / "execution-manifest.json").exists())
+        self.assertEqual(selected.read_bytes(), selected_before)
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 MANIFEST = HERE / "execution-manifest.json"
 PYTHON = str(REPO / ".venv-cpu/bin/python")
-SCRATCH = REPO / ".runtime-work/c382162-2233b-owner"
+SCRATCH = REPO / ".runtime-work/c382162-2233b-owner/r3"
 VALIDATOR = REPO / ".runtime-work/c110969-decoder/.lake/build/bin/adapterCheck"
 
 

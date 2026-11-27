@@ -323,3 +323,9 @@ The current preflight, isolated permission-aware trial, 59-test assignment suite
 - `cpu-nov26-final-static.log` SHA-256 `630978e272fdacb427c5a3e13d74d7ee08e295b9fb5c5ae36a6d8792d51d7c16`; exit 0.
 - `cpu-nov26-final-strict.log` SHA-256 `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638`; exit 1.
 - `result.json` SHA-256 `f9a61c9be2d3d9e87dc5767069fb47678ba42d8695eb620f6d05e772293a32b8`.
+
+## 2026-11-27 complete-route and fixed-head permission guard
+
+`permission_attempt_pair.py` now measures the full route polyline rather than comparing only endpoints. It rejects an out-and-back motion hidden inside the planned stationary green-arrow case. It also checks both overhead head displays in every requested construction, so the east head remains green while the west head is the deliberate variable in the adjacent-lane pair. Two negative tests alter and rehash the constructions to exercise those guards. The full 61-test assignment suite passed (`cpu-nov27-owner-tests.log`). `permission_attempt_pair.py` and the combined worker-only semantic package proof passed (`cpu-nov27-owner-pair.log`, `cpu-nov27-owner-permission-package.log`); proposal hashes were rebound.
+
+The scoped complete check passes (`cpu-nov27-owner-static.log`). Unmodified semantic validation still exits 1 at `batch_pipeline/validation.py:220`, `Missing plain-rule attempt pair: NRS-484B-307-12a@bus_driver` (`cpu-nov27-owner-pinned-semantic.log`). The exact scoped strict gate exits 1 because `result.json` remains partial (`cpu-nov27-owner-strict.log`). The frozen 12(a) permission clause supplies no violating act, so no case was relabelled as a violation. The tested permission-specific runtime proposal in `proposals/semantic-validator-repair.json` requires runtime-owner review/integration before this can pass the pinned semantic gate. Original reviewed public-highway/official-device provenance is also absent; actual Native bus motion and original pixels remain unverified.

@@ -27,12 +27,14 @@ class StatutoryMatrixTests(unittest.TestCase):
                             for row in matrix["additional_binding_candidates"]))
 
     def test_production_selection_requires_full_exact_branch_assembly(self):
+        selected = HERE / "execution-manifest.json"
+        selected_before = selected.read_bytes()
         with tempfile.TemporaryDirectory() as scratch:
             source = Path(scratch) / "assembly.json"
             source.write_text(json.dumps({"assignment_id": HERE.name, "cases": {}}))
             with self.assertRaisesRegex(ValueError, "every matrix case"):
                 select_production(source)
-        self.assertFalse((HERE / "execution-manifest.json").exists())
+        self.assertEqual(selected.read_bytes(), selected_before)
 
 
 if __name__ == "__main__":

@@ -17,13 +17,15 @@ CAMERAS = [
     for name, width, height, strategy in (
         ("overview", 1920, 1080, "fixed both portals, highway and vehicles"),
         ("approach", 1280, 720, "fixed ego and entry portal"),
-        ("tunnel_reference", 1280, 720, "fixed full ego body and tunnel interior"),
+        ("reference_corner", 1280, 720, "fixed full ego body and tunnel interior"),
         ("driver_reference", 1280, 720, "ego mounted other-vehicle context"))]
 CHANNELS = ("site_source", "tunnel_boundary", "ego_body_footprint",
             "ego_motion_history", "other_vehicle_motion_history",
             "other_vehicle_purpose", "halt_activity_history",
-            "exception_context", "camera_frame_map")
-CONTEXT = ("highway_status", "driver_identity", "motor_vehicle_class",
+            "exception_context", "camera_frame_map", "highway_status",
+            "ego_speed", "halt_activity", "other_vehicle_motion",
+            "exception_authority")
+CONTEXT = ("driver_identity", "motor_vehicle_class",
            "tunnel_portals", "traffic_conflict_necessity", "law_compliance",
            "police_direction", "official_device_direction")
 

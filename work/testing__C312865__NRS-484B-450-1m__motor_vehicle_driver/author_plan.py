@@ -80,7 +80,7 @@ def main() -> None:
                            "composition": "synchronized_four_view_primary", "coverage": [
         {"view": "overview", "subject": "both portals, approach, tunnel and both vehicles", "interval": "complete operation"},
         {"view": "approach", "subject": "ego and entry portal", "interval": "approach through halt"},
-        {"view": "tunnel_reference", "subject": "ego full body and tunnel boundary", "interval": "approach through halt"},
+        {"view": "reference_corner", "subject": "ego full body and tunnel boundary", "interval": "approach through halt"},
         {"view": "driver_reference", "subject": "ego control and other vehicle", "interval": "complete operation"},
     ]}
     plan["runtime_uncertainties"] = [
@@ -89,6 +89,17 @@ def main() -> None:
     ]
     plan["planning_status"] = "selected_tunnel_branch_construction_in_progress"
     path.write_text(json.dumps(plan, indent=2, ensure_ascii=False) + "\n")
+    contract = {"format": "worker-measurement-contract", "requirements": [{
+        "disposition_index": 0,
+        "requirement": plan["requirement_dispositions"][0]["requirement"],
+        "source": "inputs/" + AID + "/assignment.json",
+        "output_key": "tunnel_body_halt_and_exception_context",
+        "method": "analyze", "value_type": "object", "kind": "measured",
+        "inputs": ["tunnel-history.jsonl", "tunnel-site.json",
+                   "trace.jsonl", "video_frames.jsonl"],
+    }], "negative": {"remove": ["tunnel-site.json"],
+                     "error_contains": "Missing required source: tunnel-site.json"}}
+    (ROOT / "measurement-contract.json").write_text(json.dumps(contract, indent=2) + "\n")
     print(f"planned {len(plan['cases'])} exact cases and {len(plan['comparisons'])} comparisons")
 
 

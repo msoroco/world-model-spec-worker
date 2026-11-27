@@ -46,7 +46,7 @@ def steer_to(actor, xy):
 
 class Cameras:
     SPECS = (('overview', 1920, 1080), ('approach', 1280, 720),
-             ('tunnel_reference', 1280, 720), ('driver_reference', 1280, 720))
+             ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))
 
     def __init__(self, world, carla, ego, center_xy, output):
         self.sensors = []

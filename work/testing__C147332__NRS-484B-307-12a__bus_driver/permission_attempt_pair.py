@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 
@@ -49,11 +50,23 @@ def prove(root, assignment, *, manifest=None, constructions=None):
                 any(s["facing"] != "bus_approach" or s["placement"] != "over_individual_lanes"
                     for s in signals)):
             raise ValueError("requested facing lane-head mapping differs")
+        head_displays = {s["governed_lane_id"]: s["display"] for s in signals}
+        if any(value not in {"down_green_arrow", "dark"} for value in head_displays.values()):
+            raise ValueError("requested overhead head display differs")
         selected = next(s for s in signals if s["governed_lane_id"] == scene["bus_lane_id"])
         if selected["display"] not in {"down_green_arrow", "dark"}:
             raise ValueError("requested selected-lane display differs")
-        moving = scene["route_waypoint_centers_m"][0] != scene["route_waypoint_centers_m"][-1]
+        route = scene["route_waypoint_centers_m"]
+        if (not isinstance(route, list) or len(route) < 2 or any(
+                not isinstance(point, list) or len(point) != 2 or
+                any(not isinstance(value, (int, float)) or isinstance(value, bool) or
+                    not math.isfinite(value) for value in point)
+                for point in route)):
+            raise ValueError("requested route geometry missing or invalid")
+        route_length = sum(math.dist(a, b) for a, b in zip(route, route[1:]))
+        moving = route_length > 1e-9
         observed[kind] = {"construction_sha256": sha(raw), "bus_lane": scene["bus_lane_id"],
+                          "head_displays": head_displays, "route_length_m": route_length,
                           "selected_lane_display": selected["display"], "route_requests_motion": moving,
                           "requested_permission_configuration": moving and selected["display"] == "down_green_arrow"}
     expected = {
@@ -64,6 +77,10 @@ def prove(root, assignment, *, manifest=None, constructions=None):
     }
     for kind, values in expected.items():
         actual = observed[kind]
+        expected_heads = {"east": "down_green_arrow", "west": (
+            "down_green_arrow" if kind == "second_green_drive" else "dark")}
+        if actual["head_displays"] != expected_heads:
+            raise ValueError("requested fixed overhead head configuration differs: " + kind)
         if tuple(actual[key] for key in ("bus_lane", "selected_lane_display", "route_requests_motion",
                                          "requested_permission_configuration")) != values:
             raise ValueError("source-bound requested attempt differs: " + kind)

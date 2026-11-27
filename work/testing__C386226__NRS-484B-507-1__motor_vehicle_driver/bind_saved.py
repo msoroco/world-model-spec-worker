@@ -6,6 +6,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 SOURCE = ROOT / '.runtime-work/c386226-5071-saved-batch'
+SWEEP_SOURCE = ROOT / '.runtime-work/c386226-5071-saved-sweep'
 
 
 def sha(path):
@@ -18,7 +19,8 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         name = case.removeprefix(HERE.name + '__')
-        receipt = json.loads((SOURCE / name / 'v0001/processing.json').read_text())
+        origin = SWEEP_SOURCE if name.startswith('sweep_') else SOURCE
+        receipt = json.loads((origin / name / 'v0001/processing.json').read_text())
         if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True
                 or receipt.get('candidate_id') != 'primary' or receipt.get('case_id') != case
                 or receipt.get('native_revision', {}).get('construction_sha256') != entry['construction_sha256']

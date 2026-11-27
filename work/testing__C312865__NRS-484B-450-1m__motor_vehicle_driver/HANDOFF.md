@@ -1,22 +1,11 @@
-# testing__C312865__NRS-484B-450-1m__motor_vehicle_driver
+# C312865 highway tunnel delivery handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: `ready`, `delivery_prepared`. The exact assignment strict gate passed on 2026-11-27. See `cpu-strict-final.log` and `result.json` for the command and hashed proof. Readiness is CPU preparation for local Native execution; no original physical or legal acceptance is claimed.
 
-Exact law: NRS 484B.450(1)(m) — A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Upon any bridge or other elevated structure or within a highway tunnel.
-Assigned branch(es): Stopping or standing within a highway tunnel..
-Cell: C312865 (tunnel, stop_stand, other_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The frozen NRS 484B.450(1)(m) branch is stopping, standing or parking within a highway tunnel, with exceptions for necessary traffic conflict avoidance, compliance with law, police direction and official device direction. The assigned C312865 cell has no accepted recordings for this exact law. The reviewed source witness conditionally permits a tunnel destination once highway, tunnel, portal and route source readbacks are supplied.
 
-## Next CPU actions
+`case-plan.json` covers eight exact cases: an outside-portal stop, an inside stop, inside stand and park, and four inside stops probing each exception context. Seven comparisons isolate portal location, activity and each exception. `tunnel.py` constructs source-gated two-vehicle routes and measures the full ego body footprint, 900 original frames, terminal halt and authority source identity. `native_tunnel.py`, `runner.py`, `site_review.py` and `analysis.py` provide Native capture, reviewed source binding, four-view recording and saved-only analysis. Legal necessity and compliance remain unresolved for independent review.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C312865__NRS-484B-450-1m__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Every primary and fallback construction passed exact offline and positive/negative compatibility checks. Eight diagnostic captures passed recorded-only processing after Native lifecycle closure. Physical completion fixtures cover measured, unmeasured and missing-evidence states. The independent delivery audit passed protocol wiring and rejected a missing sealed tunnel source for all eight cases; seven comparison probes passed fixed-source positive and changed-source negative checks. These diagnostic proofs are not original tunnel evidence. `execution-manifest.json` binds the receipts and `gpu-queue-proposal.json` lists ordered local jobs and audits for lead integration.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+The local operator must supply a reviewed original highway/tunnel/portal/route packet, execute Native CARLA capture, verify actual vehicle motion and four-view pixels, run saved-only processing, and independently review each source-bound delivery and comparison audit. No files under `runtime/`, frozen inputs or `batch.json` were changed for this assignment.

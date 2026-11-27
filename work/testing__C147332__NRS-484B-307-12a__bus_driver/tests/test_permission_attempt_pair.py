@@ -19,6 +19,20 @@ class PermissionAttemptPairTests(unittest.TestCase):
         self.raw = {entry["case_id"].rsplit("__", 1)[-1]:
                     (ROOT / entry["construction"]).read_bytes() for entry in self.manifest["cases"]}
 
+    def changed_scene(self, kind, change):
+        constructions = dict(self.raw)
+        construction = json.loads(constructions[kind])
+        scene_file = next(item for item in construction["files"] if item["path"] == "scene.json")
+        scene = json.loads(scene_file["content"])
+        change(scene)
+        scene_file["content"] = json.dumps(scene)
+        constructions[kind] = (json.dumps(construction) + "\n").encode()
+        manifest = copy.deepcopy(self.manifest)
+        from permission_attempt_pair import sha
+        next(item for item in manifest["cases"] if item["case_id"].endswith("__" + kind))[
+            "construction_sha256"] = sha(constructions[kind])
+        return constructions, manifest
+
     def test_exact_source_bound_pairs(self):
         proof = prove(ROOT, self.assignment)
         self.assertEqual(len(proof["attempts"]), 4)
@@ -39,17 +53,26 @@ class PermissionAttemptPairTests(unittest.TestCase):
             prove(ROOT, self.assignment, constructions=constructions)
 
     def test_relabelled_dark_head_rejected_after_hash_update(self):
-        constructions = dict(self.raw)
         kind = "adjacent_dark_drive"
-        construction = json.loads(constructions[kind])
-        scene_file = next(item for item in construction["files"] if item["path"] == "scene.json")
-        scene = json.loads(scene_file["content"])
-        next(item for item in scene["signals"] if item["governed_lane_id"] == "west")["display"] = "down_green_arrow"
-        scene_file["content"] = json.dumps(scene)
-        constructions[kind] = (json.dumps(construction) + "\n").encode()
-        manifest = copy.deepcopy(self.manifest)
-        from permission_attempt_pair import sha
-        next(item for item in manifest["cases"] if item["case_id"].endswith("__" + kind))["construction_sha256"] = sha(constructions[kind])
+        constructions, manifest = self.changed_scene(kind, lambda scene: next(
+            item for item in scene["signals"] if item["governed_lane_id"] == "west"
+        ).update(display="down_green_arrow"))
+        with self.assertRaisesRegex(ValueError, "fixed overhead head configuration"):
+            prove(ROOT, self.assignment, manifest=manifest, constructions=constructions)
+
+    def test_fixed_green_head_cannot_change_in_second_lane_pair(self):
+        kind = "second_green_drive"
+        constructions, manifest = self.changed_scene(kind, lambda scene: next(
+            item for item in scene["signals"] if item["governed_lane_id"] == "east"
+        ).update(display="dark"))
+        with self.assertRaisesRegex(ValueError, "fixed overhead head configuration"):
+            prove(ROOT, self.assignment, manifest=manifest, constructions=constructions)
+
+    def test_stationary_route_cannot_hide_out_and_back_motion(self):
+        kind = "green_selected_stand"
+        def change(scene):
+            scene["route_waypoint_centers_m"][1] = [45.0, -1.8]
+        constructions, manifest = self.changed_scene(kind, change)
         with self.assertRaisesRegex(ValueError, "requested attempt differs"):
             prove(ROOT, self.assignment, manifest=manifest, constructions=constructions)
 

@@ -40,7 +40,9 @@ def build(kind: str, candidate: str = "primary") -> dict:
     files.pop("diagnostic-site.json", None)
     files.pop("review-context.json", None)
     files["runner.py"] = (HERE / "deferred_source_runner.py").read_text()
-    files["case-plan.json"] = (HERE / "case-plan.json").read_text()
+    # This sealed plan is the exact construction input used for the CPU proofs.
+    # The root plan adds only return-level camera and observation inventory.
+    files["case-plan.json"] = (HERE / "case-plan-bundle-v1.json").read_text()
     for name in SOURCE_NAMES:
         files[name] = (HERE / name).read_text()
     config = json.loads(files["config.json"])

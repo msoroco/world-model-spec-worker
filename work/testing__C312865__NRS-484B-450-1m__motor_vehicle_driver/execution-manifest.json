@@ -1,0 +1,1424 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__outside_stop",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "eded5d44a42a67bdecc20ee999655b4f77bc8256a27bf5b15b3faa7bb7a3c5c6",
+      "fixture_recipe": "work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/diagnostic-outside_stop-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway, tunnel, portal, route and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "tunnel_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-tunnel_boundary.jsonl"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_body_footprint.jsonl"
+        },
+        "ego_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_motion_history.jsonl"
+        },
+        "other_vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion_history.jsonl"
+        },
+        "other_vehicle_purpose": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_purpose.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        },
+        "highway_status": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_status.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_speed.jsonl"
+        },
+        "halt_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity.jsonl"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion.jsonl"
+        },
+        "exception_authority": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_authority.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel route clearance, lighting and full-body visibility may prevent stable halt and four-view review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/outside_stop/fallback1-construction.json",
+          "construction_sha256": "7fbd280b54187b85ae97cc2e0c5caf1c447ded76aa053f83cdc92a9931ac2f35",
+          "trigger": {
+            "source": "original Native trace.jsonl and tunnel-history.jsonl",
+            "metric": "terminal halt readback and source-bound full-body tunnel relation",
+            "failure_condition": "primary does not reach a stable terminal halt or tunnel body relation is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__outside_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-outside_stop-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-outside_stop-fallback1.log",
+            "log_sha256": "85237969d56cbb6a93bb8ba6cad1bb3db8d66c9a048938fc1d4db9e76774fe93",
+            "construction_sha256": "7fbd280b54187b85ae97cc2e0c5caf1c447ded76aa053f83cdc92a9931ac2f35"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-outside_stop-fallback1.json",
+            "sha256": "70f5fb10699620c948998e373741a7d28f01b76a52e65f434c0c718135928add",
+            "log": "proof-compat-analysis-outside_stop-fallback1.log",
+            "negative_log": "proof-compat-negative-outside_stop-fallback1.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__outside_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-outside_stop-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-outside_stop-primary.log",
+        "log_sha256": "1f6ed43bb358151382de5278b819c8b8be5b36af6c0e021109c656910719fa9e",
+        "construction_sha256": "eded5d44a42a67bdecc20ee999655b4f77bc8256a27bf5b15b3faa7bb7a3c5c6"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-outside_stop-primary.json",
+        "sha256": "d11d97c04a490650a017fc4452abacb092bab28bbfa73447bf763befdfaa8f4a",
+        "log": "proof-compat-analysis-outside_stop-primary.log",
+        "negative_log": "proof-compat-negative-outside_stop-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-outside_stop-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-outside_stop-receipt.json",
+        "sha256": "116df0d058c36494f862eb7816509e470886e7edadeca72b3ff729afc01b8b4e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__outside_stop --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__outside_stop --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-outside_stop.log",
+        "test_log_sha256": "9a0c26d0590eb6457da1ab4ce6b175def461834d53bd6968b1028db7a7bb3418",
+        "test_exit_code": 0,
+        "scope": "source-shaped diagnostic saved-only replay; original highway tunnel and actual pixels pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__outside_stop",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "0d87a99c15503cbb3649792bbbafbece778907eae7584e0c51ca77b6ed25d0e1",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__outside_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-outside_stop --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-outside_stop --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-outside_stop-positive.log",
+        "test_log_sha256": "a1ca17256b6c7e7cb4e68528f077eb4785bc80e7982cac338ef1b809e9215419",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__outside_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-outside_stop --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-outside_stop --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: tunnel-site.json",
+        "negative_log": "proof-delivery-outside_stop-missing_source.log",
+        "negative_log_sha256": "655d65756c9de51db26fee564e830ab48286040cb2c2d02971c0fd706033e8f9"
+      }
+    },
+    {
+      "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stop",
+      "kind": "delivery",
+      "construction": "cases/inside_stop/construction.json",
+      "construction_sha256": "5066ec6fa273cbbf493f978e1dc4f273b77c7831408c33a7c4daa0e1008d0a04",
+      "fixture_recipe": "work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/diagnostic-inside_stop-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway, tunnel, portal, route and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "tunnel_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-tunnel_boundary.jsonl"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_body_footprint.jsonl"
+        },
+        "ego_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_motion_history.jsonl"
+        },
+        "other_vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion_history.jsonl"
+        },
+        "other_vehicle_purpose": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_purpose.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        },
+        "highway_status": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_status.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_speed.jsonl"
+        },
+        "halt_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity.jsonl"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion.jsonl"
+        },
+        "exception_authority": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_authority.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel route clearance, lighting and full-body visibility may prevent stable halt and four-view review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/inside_stop/fallback1-construction.json",
+          "construction_sha256": "384925f172d82b61c378a50dc55b0d7261e81a7da98d1f85d827db4fe7126e11",
+          "trigger": {
+            "source": "original Native trace.jsonl and tunnel-history.jsonl",
+            "metric": "terminal halt readback and source-bound full-body tunnel relation",
+            "failure_condition": "primary does not reach a stable terminal halt or tunnel body relation is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_stop-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-inside_stop-fallback1.log",
+            "log_sha256": "05a954566c55f5726890b14a059303856641908971431b186cc8dea6f5bab3b1",
+            "construction_sha256": "384925f172d82b61c378a50dc55b0d7261e81a7da98d1f85d827db4fe7126e11"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-inside_stop-fallback1.json",
+            "sha256": "716e94e2c1c31af4db72e7bc1c4223c666732351278d4b30be12d6bbadab1687",
+            "log": "proof-compat-analysis-inside_stop-fallback1.log",
+            "negative_log": "proof-compat-negative-inside_stop-fallback1.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stop --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_stop-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-inside_stop-primary.log",
+        "log_sha256": "6b11493fabbf9e4786a69fcfdbffc1a43a4b5a86896d4b0cdc135d20fc45bed8",
+        "construction_sha256": "5066ec6fa273cbbf493f978e1dc4f273b77c7831408c33a7c4daa0e1008d0a04"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-inside_stop-primary.json",
+        "sha256": "cd77ee90e46bbec3c70f741f655a2a585e8389ca982dbe7e13fcaf45383a6655",
+        "log": "proof-compat-analysis-inside_stop-primary.log",
+        "negative_log": "proof-compat-negative-inside_stop-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-inside_stop-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-inside_stop-receipt.json",
+        "sha256": "e72ecc3190a7972a151c3c9291c7d93ebf1ee7ed805a2fd2d73a09085f72b85a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stop --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stop --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-inside_stop.log",
+        "test_log_sha256": "88f729192d8aa4fe494308b25c95540d5538f2e8d6baed69e99e406b0103f485",
+        "test_exit_code": 0,
+        "scope": "source-shaped diagnostic saved-only replay; original highway tunnel and actual pixels pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stop",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "0d87a99c15503cbb3649792bbbafbece778907eae7584e0c51ca77b6ed25d0e1",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_stop --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_stop --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-inside_stop-positive.log",
+        "test_log_sha256": "964720a5213a36b736dee0733f2e00890f1d0ca6ab77dd058b2aaeab67792093",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_stop --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_stop --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: tunnel-site.json",
+        "negative_log": "proof-delivery-inside_stop-missing_source.log",
+        "negative_log_sha256": "655d65756c9de51db26fee564e830ab48286040cb2c2d02971c0fd706033e8f9"
+      }
+    },
+    {
+      "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stand",
+      "kind": "delivery",
+      "construction": "cases/inside_stand/construction.json",
+      "construction_sha256": "9abce7bf7004fb128747742a666e0bc285c73b0c43e9cd7d0f8c4d14f8f90813",
+      "fixture_recipe": "work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/diagnostic-inside_stand-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway, tunnel, portal, route and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "tunnel_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-tunnel_boundary.jsonl"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_body_footprint.jsonl"
+        },
+        "ego_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_motion_history.jsonl"
+        },
+        "other_vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion_history.jsonl"
+        },
+        "other_vehicle_purpose": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_purpose.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        },
+        "highway_status": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_status.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_speed.jsonl"
+        },
+        "halt_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity.jsonl"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion.jsonl"
+        },
+        "exception_authority": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_authority.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel route clearance, lighting and full-body visibility may prevent stable halt and four-view review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/inside_stand/fallback1-construction.json",
+          "construction_sha256": "4255a8a537020175b5b55c6af28708d4cff9e2d2909c677c7a352c94f4c2e373",
+          "trigger": {
+            "source": "original Native trace.jsonl and tunnel-history.jsonl",
+            "metric": "terminal halt readback and source-bound full-body tunnel relation",
+            "failure_condition": "primary does not reach a stable terminal halt or tunnel body relation is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stand --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_stand-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-inside_stand-fallback1.log",
+            "log_sha256": "98be524d1c7b44dbf4b3536e0cd38a179ad63bc8a7a2a5d85f4c9ec3d5c9017a",
+            "construction_sha256": "4255a8a537020175b5b55c6af28708d4cff9e2d2909c677c7a352c94f4c2e373"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-inside_stand-fallback1.json",
+            "sha256": "4bc793d63a8cfe1aef29b039186abf3182ffde71583d21b46814a05964996595",
+            "log": "proof-compat-analysis-inside_stand-fallback1.log",
+            "negative_log": "proof-compat-negative-inside_stand-fallback1.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stand --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_stand-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-inside_stand-primary.log",
+        "log_sha256": "f3d3cc51e6317cdd8eec55dd16a50d407fa7e2a049aee216d11e9b9ca731ae46",
+        "construction_sha256": "9abce7bf7004fb128747742a666e0bc285c73b0c43e9cd7d0f8c4d14f8f90813"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-inside_stand-primary.json",
+        "sha256": "9100db9c18fc989fe1506b3da87dc367daa583bb5779f2cb01425a93f1344f59",
+        "log": "proof-compat-analysis-inside_stand-primary.log",
+        "negative_log": "proof-compat-negative-inside_stand-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-inside_stand-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-inside_stand-receipt.json",
+        "sha256": "3c23c29cf9189070c0bc4cb29e9356402a86a319a5fc521d5e7ff4b429ad47f2"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stand --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stand --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-inside_stand.log",
+        "test_log_sha256": "5cf2ce6b74a6cf37dd197a213c629f0867e49e40fe9ce6b442c8b8ffca6f3b70",
+        "test_exit_code": 0,
+        "scope": "source-shaped diagnostic saved-only replay; original highway tunnel and actual pixels pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stand",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "0d87a99c15503cbb3649792bbbafbece778907eae7584e0c51ca77b6ed25d0e1",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stand --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_stand --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_stand --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-inside_stand-positive.log",
+        "test_log_sha256": "21c3cc1cc67c107e91a4f4905e7b2c22b9c1981c89eea1ffca4d9487156111c6",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_stand --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_stand --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_stand --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: tunnel-site.json",
+        "negative_log": "proof-delivery-inside_stand-missing_source.log",
+        "negative_log_sha256": "655d65756c9de51db26fee564e830ab48286040cb2c2d02971c0fd706033e8f9"
+      }
+    },
+    {
+      "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_park",
+      "kind": "delivery",
+      "construction": "cases/inside_park/construction.json",
+      "construction_sha256": "79323fc65ab7dfbd90399b39a20ed0564c4530f1593c48bb04ad3fbd61ca0312",
+      "fixture_recipe": "work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/diagnostic-inside_park-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway, tunnel, portal, route and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "tunnel_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-tunnel_boundary.jsonl"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_body_footprint.jsonl"
+        },
+        "ego_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_motion_history.jsonl"
+        },
+        "other_vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion_history.jsonl"
+        },
+        "other_vehicle_purpose": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_purpose.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        },
+        "highway_status": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_status.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_speed.jsonl"
+        },
+        "halt_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity.jsonl"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion.jsonl"
+        },
+        "exception_authority": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_authority.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel route clearance, lighting and full-body visibility may prevent stable halt and four-view review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/inside_park/fallback1-construction.json",
+          "construction_sha256": "52a1adf5bc23ac502f4c2c1c73d025990d987c04c302d7001572151f53e31113",
+          "trigger": {
+            "source": "original Native trace.jsonl and tunnel-history.jsonl",
+            "metric": "terminal halt readback and source-bound full-body tunnel relation",
+            "failure_condition": "primary does not reach a stable terminal halt or tunnel body relation is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_park --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_park-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-inside_park-fallback1.log",
+            "log_sha256": "0aba3a08e00304389233f38662ce06f73d83c8f67021e9f1483e9c7f076a7206",
+            "construction_sha256": "52a1adf5bc23ac502f4c2c1c73d025990d987c04c302d7001572151f53e31113"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-inside_park-fallback1.json",
+            "sha256": "a681a9f84698ccb8adc2f7268932d643a7e54258de83672170470a1e284f49b7",
+            "log": "proof-compat-analysis-inside_park-fallback1.log",
+            "negative_log": "proof-compat-negative-inside_park-fallback1.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_park --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_park-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-inside_park-primary.log",
+        "log_sha256": "a32dc757e79428269dfc375106d360667c02af8cdae7b4d938fc28f08e409185",
+        "construction_sha256": "79323fc65ab7dfbd90399b39a20ed0564c4530f1593c48bb04ad3fbd61ca0312"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-inside_park-primary.json",
+        "sha256": "d50079ad97db566ab19f41b9ea23f19c87d3b7b13df8c87ae046a7efd5b28b56",
+        "log": "proof-compat-analysis-inside_park-primary.log",
+        "negative_log": "proof-compat-negative-inside_park-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-inside_park-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-inside_park-receipt.json",
+        "sha256": "5e5d59b1e45ecc4fd58d0f44fcdf9c9e4f179d1aaa8c7b6e623a057eca260b3f"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_park --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_park --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-inside_park.log",
+        "test_log_sha256": "e4b083bd02747bbbc82fb1690b27ee008bfa4ea62cba49870c8d04e98e239169",
+        "test_exit_code": 0,
+        "scope": "source-shaped diagnostic saved-only replay; original highway tunnel and actual pixels pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_park",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "0d87a99c15503cbb3649792bbbafbece778907eae7584e0c51ca77b6ed25d0e1",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-inside_park-positive.log",
+        "test_log_sha256": "1078d8bcb739396fa7adc50be232dc162828fb7d2494c1dbd9e1bdae1ec84b05",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: tunnel-site.json",
+        "negative_log": "proof-delivery-inside_park-missing_source.log",
+        "negative_log_sha256": "655d65756c9de51db26fee564e830ab48286040cb2c2d02971c0fd706033e8f9"
+      }
+    },
+    {
+      "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_conflict",
+      "kind": "delivery",
+      "construction": "cases/inside_conflict/construction.json",
+      "construction_sha256": "96913a3748550912c4c40cebe54b2fa3c2e634d48530c919848d6c095c9fb80d",
+      "fixture_recipe": "work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/diagnostic-inside_conflict-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway, tunnel, portal, route and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "tunnel_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-tunnel_boundary.jsonl"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_body_footprint.jsonl"
+        },
+        "ego_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_motion_history.jsonl"
+        },
+        "other_vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion_history.jsonl"
+        },
+        "other_vehicle_purpose": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_purpose.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        },
+        "highway_status": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_status.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_speed.jsonl"
+        },
+        "halt_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity.jsonl"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion.jsonl"
+        },
+        "exception_authority": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_authority.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel route clearance, lighting and full-body visibility may prevent stable halt and four-view review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/inside_conflict/fallback1-construction.json",
+          "construction_sha256": "068305a52e02cfad3ba9fdd475054d4d69352514bc5dd67253c83bda1b1bd9d0",
+          "trigger": {
+            "source": "original Native trace.jsonl and tunnel-history.jsonl",
+            "metric": "terminal halt readback and source-bound full-body tunnel relation",
+            "failure_condition": "primary does not reach a stable terminal halt or tunnel body relation is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_conflict --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_conflict-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-inside_conflict-fallback1.log",
+            "log_sha256": "ae63d5dfbe0e2708f69445f904cf7de11d614294c145c1ef028decf78571c86f",
+            "construction_sha256": "068305a52e02cfad3ba9fdd475054d4d69352514bc5dd67253c83bda1b1bd9d0"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-inside_conflict-fallback1.json",
+            "sha256": "0cb2ae84b401927f2ecde012934dc16a2f50250ed095010a596755cafb3ee440",
+            "log": "proof-compat-analysis-inside_conflict-fallback1.log",
+            "negative_log": "proof-compat-negative-inside_conflict-fallback1.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_conflict --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_conflict-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-inside_conflict-primary.log",
+        "log_sha256": "f3082c2a61b9249255830eaf9fbca802747c68ed9f4cbd386ea0c0d3ac55e9a7",
+        "construction_sha256": "96913a3748550912c4c40cebe54b2fa3c2e634d48530c919848d6c095c9fb80d"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-inside_conflict-primary.json",
+        "sha256": "890f3968f8c0bf126edddc8b14e22efacb2c309250cef7b5da08926b8660baaa",
+        "log": "proof-compat-analysis-inside_conflict-primary.log",
+        "negative_log": "proof-compat-negative-inside_conflict-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-inside_conflict-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-inside_conflict-receipt.json",
+        "sha256": "535c6b61533fee5f71db9b9c414b7580995c61be97b9f1e8f87f98d48bf025ce"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_conflict --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_conflict --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-inside_conflict.log",
+        "test_log_sha256": "3037924985440485b4a98693c51744a06e3963d99ab809e23522774d9a6c5a5f",
+        "test_exit_code": 0,
+        "scope": "source-shaped diagnostic saved-only replay; original highway tunnel and actual pixels pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_conflict",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "0d87a99c15503cbb3649792bbbafbece778907eae7584e0c51ca77b6ed25d0e1",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_conflict --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_conflict --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_conflict --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-inside_conflict-positive.log",
+        "test_log_sha256": "48a3ba89fca32c8022671c37b883d55cf647cdbff92f043109ac2ba6c8c5d60a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_conflict --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_conflict --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_conflict --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: tunnel-site.json",
+        "negative_log": "proof-delivery-inside_conflict-missing_source.log",
+        "negative_log_sha256": "655d65756c9de51db26fee564e830ab48286040cb2c2d02971c0fd706033e8f9"
+      }
+    },
+    {
+      "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_law",
+      "kind": "delivery",
+      "construction": "cases/inside_law/construction.json",
+      "construction_sha256": "fcbb01927067acd037dc1a3ee88d2752950573676c1eb3fa3c79c14cd616e699",
+      "fixture_recipe": "work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/diagnostic-inside_law-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway, tunnel, portal, route and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "tunnel_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-tunnel_boundary.jsonl"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_body_footprint.jsonl"
+        },
+        "ego_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_motion_history.jsonl"
+        },
+        "other_vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion_history.jsonl"
+        },
+        "other_vehicle_purpose": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_purpose.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        },
+        "highway_status": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_status.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_speed.jsonl"
+        },
+        "halt_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity.jsonl"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion.jsonl"
+        },
+        "exception_authority": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_authority.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel route clearance, lighting and full-body visibility may prevent stable halt and four-view review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/inside_law/fallback1-construction.json",
+          "construction_sha256": "425e449fe7170a221f228480146546dcba479216423229c43128022b94223fa6",
+          "trigger": {
+            "source": "original Native trace.jsonl and tunnel-history.jsonl",
+            "metric": "terminal halt readback and source-bound full-body tunnel relation",
+            "failure_condition": "primary does not reach a stable terminal halt or tunnel body relation is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_law --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_law-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-inside_law-fallback1.log",
+            "log_sha256": "23135b7ea259ce556578c8d3c3b61e684165f28d01bf37e228cd7caf0c0f6f35",
+            "construction_sha256": "425e449fe7170a221f228480146546dcba479216423229c43128022b94223fa6"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-inside_law-fallback1.json",
+            "sha256": "cfe52037cb9dc3654f974b4d87e054ecf7daa8be67c55117d65c338b6e53601c",
+            "log": "proof-compat-analysis-inside_law-fallback1.log",
+            "negative_log": "proof-compat-negative-inside_law-fallback1.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_law --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_law-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-inside_law-primary.log",
+        "log_sha256": "9274d7fa29118b8d43d392040a8081bfbc535821d5879ec04793743d208fac2d",
+        "construction_sha256": "fcbb01927067acd037dc1a3ee88d2752950573676c1eb3fa3c79c14cd616e699"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-inside_law-primary.json",
+        "sha256": "2359bb3402b9869c950e25ec481679f30eaef022d257b85a4df0a3cb7fcc9190",
+        "log": "proof-compat-analysis-inside_law-primary.log",
+        "negative_log": "proof-compat-negative-inside_law-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-inside_law-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-inside_law-receipt.json",
+        "sha256": "be4c440776ace0c7dc0ced0ff2e45a2f88b23a5589d3814bb0f42a7078c02192"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_law --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_law --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-inside_law.log",
+        "test_log_sha256": "352731ae46aaee2a3717d017f78fd7980aeae18f061ad729494fe60c9b7d8179",
+        "test_exit_code": 0,
+        "scope": "source-shaped diagnostic saved-only replay; original highway tunnel and actual pixels pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_law",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "0d87a99c15503cbb3649792bbbafbece778907eae7584e0c51ca77b6ed25d0e1",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_law --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_law --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_law --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-inside_law-positive.log",
+        "test_log_sha256": "a76ca50a7347ed3df5a3325e7e41a95d89328734de5d12972a0d389cabab6abe",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_law --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_law --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_law --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: tunnel-site.json",
+        "negative_log": "proof-delivery-inside_law-missing_source.log",
+        "negative_log_sha256": "655d65756c9de51db26fee564e830ab48286040cb2c2d02971c0fd706033e8f9"
+      }
+    },
+    {
+      "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_police",
+      "kind": "delivery",
+      "construction": "cases/inside_police/construction.json",
+      "construction_sha256": "9e158189dc726546577a41800715f25a77d39a6600fda9a20a7ed18a2b026b61",
+      "fixture_recipe": "work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/diagnostic-inside_police-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway, tunnel, portal, route and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "tunnel_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-tunnel_boundary.jsonl"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_body_footprint.jsonl"
+        },
+        "ego_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_motion_history.jsonl"
+        },
+        "other_vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion_history.jsonl"
+        },
+        "other_vehicle_purpose": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_purpose.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        },
+        "highway_status": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_status.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_speed.jsonl"
+        },
+        "halt_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity.jsonl"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion.jsonl"
+        },
+        "exception_authority": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_authority.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel route clearance, lighting and full-body visibility may prevent stable halt and four-view review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/inside_police/fallback1-construction.json",
+          "construction_sha256": "9bb261b4f465174253c119081e62b0653477dadd7a16acb878e5c06b57721c5c",
+          "trigger": {
+            "source": "original Native trace.jsonl and tunnel-history.jsonl",
+            "metric": "terminal halt readback and source-bound full-body tunnel relation",
+            "failure_condition": "primary does not reach a stable terminal halt or tunnel body relation is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_police --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_police-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-inside_police-fallback1.log",
+            "log_sha256": "26da6021ced714036f4776d9198b5c23cb14b545bf9d284209a5bd22df2fc13d",
+            "construction_sha256": "9bb261b4f465174253c119081e62b0653477dadd7a16acb878e5c06b57721c5c"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-inside_police-fallback1.json",
+            "sha256": "7300245a70ca2cd24a6fcf8340bd1f70155e0943cb1dc2af69f51d69a8193da9",
+            "log": "proof-compat-analysis-inside_police-fallback1.log",
+            "negative_log": "proof-compat-negative-inside_police-fallback1.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_police --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_police-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-inside_police-primary.log",
+        "log_sha256": "a9a8c91e2c22ca7e6f0aadde6fb501aea68edd78d21ddbe617972b3564094eb9",
+        "construction_sha256": "9e158189dc726546577a41800715f25a77d39a6600fda9a20a7ed18a2b026b61"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-inside_police-primary.json",
+        "sha256": "6318048d8aed125a6cc9430ffa0d26cb46bb7aedea050d2699cfa1be3d67af1c",
+        "log": "proof-compat-analysis-inside_police-primary.log",
+        "negative_log": "proof-compat-negative-inside_police-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-inside_police-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-inside_police-receipt.json",
+        "sha256": "37108f5cad2a073a1906a1be004b2c675a64305d58e046dcaaba87f4d53dc4dc"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_police --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_police --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-inside_police.log",
+        "test_log_sha256": "c62943474bc35d8aa12d87c4733f747b685a6a2337b60967662fcf646041babb",
+        "test_exit_code": 0,
+        "scope": "source-shaped diagnostic saved-only replay; original highway tunnel and actual pixels pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_police",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "0d87a99c15503cbb3649792bbbafbece778907eae7584e0c51ca77b6ed25d0e1",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_police --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_police --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_police --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-inside_police-positive.log",
+        "test_log_sha256": "f68a1034a3754905caec1fb08d028045f8f47193e8670f6678c118eece459a3a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_police --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_police --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_police --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: tunnel-site.json",
+        "negative_log": "proof-delivery-inside_police-missing_source.log",
+        "negative_log_sha256": "655d65756c9de51db26fee564e830ab48286040cb2c2d02971c0fd706033e8f9"
+      }
+    },
+    {
+      "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_device",
+      "kind": "delivery",
+      "construction": "cases/inside_device/construction.json",
+      "construction_sha256": "b7e4c53a4b087389a480252601736674f7031d80512b61c9a0ea8832c096a804",
+      "fixture_recipe": "work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/diagnostic-inside_device-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway, tunnel, portal, route and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "tunnel_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-tunnel_boundary.jsonl"
+        },
+        "ego_body_footprint": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_body_footprint.jsonl"
+        },
+        "ego_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_motion_history.jsonl"
+        },
+        "other_vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion_history.jsonl"
+        },
+        "other_vehicle_purpose": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_purpose.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        },
+        "highway_status": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_status.jsonl"
+        },
+        "ego_speed": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-ego_speed.jsonl"
+        },
+        "halt_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity.jsonl"
+        },
+        "other_vehicle_motion": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-other_vehicle_motion.jsonl"
+        },
+        "exception_authority": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_authority.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tunnel route clearance, lighting and full-body visibility may prevent stable halt and four-view review."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/inside_device/fallback1-construction.json",
+          "construction_sha256": "d64e4d56d06b76c74c150b9ee563370e648d751500880afcbbe16e5101afb1ef",
+          "trigger": {
+            "source": "original Native trace.jsonl and tunnel-history.jsonl",
+            "metric": "terminal halt readback and source-bound full-body tunnel relation",
+            "failure_condition": "primary does not reach a stable terminal halt or tunnel body relation is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_device --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_device-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-inside_device-fallback1.log",
+            "log_sha256": "ff6b0c3ce045beb2a8eb9ceb3ddfda148ab956755c747ac8c7379dcf21413d46",
+            "construction_sha256": "d64e4d56d06b76c74c150b9ee563370e648d751500880afcbbe16e5101afb1ef"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-inside_device-fallback1.json",
+            "sha256": "3949f7d3148386b97e6f4d4034d33ba9884a141ddd17823b9cf3a7d79e32b253",
+            "log": "proof-compat-analysis-inside_device-fallback1.log",
+            "negative_log": "proof-compat-negative-inside_device-fallback1.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_device --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/proofs-v5/offline-inside_device-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-inside_device-primary.log",
+        "log_sha256": "d6b1b9ece0d6b29caddcb5412ea8181b38ea908a75c37cb2cb49a6da2b055eaf",
+        "construction_sha256": "b7e4c53a4b087389a480252601736674f7031d80512b61c9a0ea8832c096a804"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-inside_device-primary.json",
+        "sha256": "88a101d1a42a0dfc3354397127e0b63a467c94240c36bedf9d71f4318b7fa842",
+        "log": "proof-compat-analysis-inside_device-primary.log",
+        "negative_log": "proof-compat-negative-inside_device-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-inside_device-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-inside_device-receipt.json",
+        "sha256": "c682cdc4f4003dae080aec7fadd1c9b822208eaeaa64c9c13c04efca0622ef68"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_device --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/execution-manifest.json --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_device --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-inside_device.log",
+        "test_log_sha256": "f944f14a175d963faac1d1c32843889cca5febb700ddda22b36d3c1e4e6bb857",
+        "test_exit_code": 0,
+        "scope": "source-shaped diagnostic saved-only replay; original highway tunnel and actual pixels pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_device",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "0d87a99c15503cbb3649792bbbafbece778907eae7584e0c51ca77b6ed25d0e1",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_device --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_device --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_device --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-inside_device-positive.log",
+        "test_log_sha256": "f1d6346c63232fe0708faf22bd8642d3c6c122eea58f44f0774d053566e0a7f3",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C312865__NRS-484B-450-1m__motor_vehicle_driver/delivery_probe.py --case testing__C312865__NRS-484B-450-1m__motor_vehicle_driver__inside_device --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/attempt-inside_device --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c312865-nov27/saved-v6/processed-inside_device --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: tunnel-site.json",
+        "negative_log": "proof-delivery-inside_device-missing_source.log",
+        "negative_log_sha256": "655d65756c9de51db26fee564e830ab48286040cb2c2d02971c0fd706033e8f9"
+      }
+    }
+  ]
+}
