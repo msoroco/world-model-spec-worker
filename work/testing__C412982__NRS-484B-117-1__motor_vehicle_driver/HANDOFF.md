@@ -23,3 +23,9 @@ Assignment strict gate: `.venv-cpu/bin/python worker_check.py --assignment testi
 ## Exact gate and file hygiene
 
 The assignment-scoped strict gate passed with exit code 0 after all nine current-runtime construction, compatibility, physical, saved-only and delivery audit proofs were bound. The final owned-tree scan found 182 UTF-8 files, none above 2 MiB, with no cache files, trailing whitespace, blank EOF or conflict markers. Only the lead may merge `queue-proposal.json` into `work/_shared/gpu-queue.json`.
+
+## Recorded-only feedback proof refresh
+
+Every exact case now binds `post_capture.recorded_only`, its saved processing and feedback commands, and a passing replay log in `execution-manifest.json`. For each case, `saved_probe.py --mode positive` executes the source-shaped diagnostic through `runtime.py process-saved` and checks the original acquisition hashes. `--mode missing_source` removes the required `sidewalk-site.json` before diagnostic sealing and verifies recorded-only incomplete-evidence feedback. `--mode missing_validator` verifies recorded-only failure feedback when the Lean validator is unavailable. The per-case passing logs are `cpu-saved-*.log`, `cpu-feedback-source-*.log` and `cpu-feedback-validator-*.log`; all 27 exit codes and SHA256 hashes are bound in the manifest. These are CPU software proofs, not original physical recordings.
+
+The exact strict assignment command above passed again after these additions.

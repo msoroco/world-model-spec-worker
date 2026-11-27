@@ -1,6 +1,6 @@
 # C202480 NRS 484B.557 delivery handoff
 
-Status: `partial` while current-runtime recorded-only post-capture handoff proofs are being refreshed. The prior scoped strict gate passed on 2026-11-25 against the previous runtime; current-runtime readiness is pending. No actual CARLA capture, physical completion, or legal verdict is claimed.
+Status: `ready` for current-runtime CPU delivery preparation after the 2026-11-27 scoped strict gate. The prior scoped strict gate passed on 2026-11-25 against the previous runtime. No actual CARLA capture, physical completion, or legal verdict is claimed.
 
 ## Exact package
 
@@ -10,10 +10,14 @@ The Native runner requires a reviewed source packet for DOT crossing designation
 
 ## CPU evidence
 
-The 40 focused unit tests passed (`cpu-tests.log`). All nine current primary and fallback offline/compatibility proofs passed. All nine saved-only positives and source-change negatives passed. All nine diagnostic delivery audits passed, along with source-change and incomplete-seal negatives. Four diagnostic comparison contrasts passed; synthetic sources were rejected by the production comparison path. `cpu-static-check.log` and `cpu-strict-check.log` record successful assignment-scoped checks.
+The 40 focused unit tests passed (`cpu-tests.log`). All nine current primary and fallback offline/compatibility proofs passed. All nine saved-only positives and source-change negatives passed. Current-runtime `prove_post_capture.py` also exercised the recorded-only processing command, missing rail-source feedback, missing-validator feedback, and explicit feedback command for every exact case; `execution-manifest.json.post_capture` binds passing logs and hashes. All nine diagnostic delivery audits passed, along with source-change and incomplete-seal negatives. Four diagnostic comparison contrasts passed; synthetic sources were rejected by the production comparison path. `cpu-static-check.log` and `cpu-strict-check.log` record successful assignment-scoped checks.
 
 The exact command was `PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c202480-owner" TMPDIR="$PWD/.runtime-work/c202480-owner" .venv-cpu/bin/python worker_check.py --assignment testing__C202480__NRS-484B-557__motor_vehicle_driver --complete --require-delivery-ready`. It exited 0. `queue-proposal.json` contains nine exact case commands and four comparison commands for lead integration.
 
 ## Physical delivery
 
 Supply a reviewed real site packet and a fresh CARLA attempt under `.runtime-work`, then run the canonical prepare, execute, owner-release, saved-processing, independent audit, and accept commands in the queue proposal. The production audit fails closed until an independent reviewer verifies original rail lines, stop device and authority, ego stop footprint, cessation, and departure clearance against original PNG/video frames and the capture seal. The fixed legal distance range remains an observed measurement pending review; due care remains unresolved until original scene and conflict evidence is reviewed.
+
+## Current-runtime post-capture handoff
+
+Run `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C202480__NRS-484B-557__motor_vehicle_driver/prove_post_capture.py` to reproduce all nine source-shaped saved-processing and failure-feedback proofs. The operator command in each manifest `post_capture` entry requires the real attempt, output, validator, and owner-release receipt; the CPU proof used synthetic saved attempts and does not establish original physical evidence. `post_capture_feedback.py` reads the latest immutable saved version and reports failure without requesting Native replay.

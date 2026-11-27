@@ -2022,3 +2022,15 @@ The owner completed all seven exact source-shaped saved-processing/negative feed
 ## 2026-11-27 — C412262 NRS-484B-493 strict pass
 
 The owner completed nine exact recorded-only saved-processing and missing-source/unavailable-validator feedback CPU proofs. The owner's final exact scoped strict gate and the lead's independent repeat exited 0 with `static_checks_passed: true`. The lead restored nine cases, eight comparison commands and eight runnable branch rows to the ready queue/matrix. Current queue: 240 ready assignments before the next demotion. C145696 and C202480 remain truthfully partial with proof work underway; C412982 has been assigned next. Batch-wide delivery readiness remains pending.
+
+## 2026-11-27 — C412982 NRS-484B-117-1 strict pass
+
+Nine exact cases now bind recorded-only post-capture and feedback commands with 27 passing positive/missing-source/missing-validator CPU logs. The owner's and lead's independent exact scoped strict gates exited 0 (`static_checks_passed: true`). The owner scanned all 200 returned files with no size, encoding, whitespace, blank EOF or cache issues. The lead restored nine queue cases, eight comparisons and eight runnable matrix branches. C145696 and C202480 remain owned partial repairs; C111125/NRS-484B-307-2b is assigned next. Queue had 240 ready assignments before the next demotion. Batch-wide strict readiness remains pending.
+
+## 2026-11-27 — C111125 pedestrian strict pass
+
+The C111125/NRS-484B-307-2b owner bound ten exact recorded-only processing and feedback commands to current-runtime source-shaped CPU proofs. Positive saved processing, missing-head incomplete-evidence feedback and missing-validator failure feedback passed for each case. The owner and lead independent exact scoped strict gates exited 0 (`static_checks_passed: true`). The lead restored ten ready case jobs, eight comparison commands and eight runnable branch rows. Queue reached 240 ready assignments before the next demotion. C179789/NRS-484B-627-1c is assigned next; C145696 and C202480 remain in proof/gating. Batch-wide strict readiness remains pending.
+
+## 2026-11-27 — C179789 NRS-484B-627-1c strict pass
+
+All ten exact cases now have recorded-only post-capture processing and feedback commands with source-shaped successful saved-processing and missing-validator feedback CPU proofs. The owner and lead independently passed the exact scoped strict gate (lead exit 0, `static_checks_passed: true`). The lead restored ten queue jobs, five comparison commands and five runnable branch rows. Queue reached 240 ready assignments before the next demotion. C412593/NRS-484B-413-2 is assigned next, while C145696 and C202480 finish strict checks. No batch-wide strict pass is claimed.

@@ -64,9 +64,9 @@ def run_case(case, variant):
     if variant == 'positive':
         assert proc.returncode == 0 and receipt and receipt['recorded_only'] and receipt['originals_preserved'] and not receipt['missing_evidence'], (case, proc.stdout[-1000:])
     elif variant == 'missing-source':
-        assert proc.returncode == 0 and receipt and receipt['missing_evidence'] and feedback and feedback['recorded_only'] and not feedback['native_replay_requested'], (case, proc.stdout[-1000:])
+        assert proc.returncode == 0 and receipt and receipt['missing_evidence'] and feedback and feedback['recorded_only'] and not feedback['native_replay_requested'] and 'Missing required source: lane-split-history.jsonl' in feedback['error'], (case, proc.stdout[-1000:])
     else:
-        assert proc.returncode != 0 and feedback and feedback['recorded_only'] and not feedback['native_replay_requested'], (case, proc.stdout[-1000:])
+        assert proc.returncode != 0 and feedback and feedback['recorded_only'] and not feedback['native_replay_requested'] and feedback['error_type'] == 'FileNotFoundError' and 'absent-adapterCheck' in feedback['error'], (case, proc.stdout[-1000:])
     return {'case_id': f'{ASSIGNMENT}__{case}', 'variant': variant, 'exit_code': proc.returncode, 'log': log.name, 'log_sha256': sha(log), 'feedback_sha256': sha(version / 'feedback.json') if feedback else None, 'processing_sha256': sha(version / 'processing.json') if receipt else None}
 
 if __name__ == '__main__':
