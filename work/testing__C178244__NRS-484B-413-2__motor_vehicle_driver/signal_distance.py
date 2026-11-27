@@ -56,6 +56,13 @@ def verify_source_bindings(packet: dict, source_root: Path) -> list[str]:
             "sealed result case identity disagrees with packet")
     require(sealed.get("turn_direction") == packet.get("turn_direction"),
             "sealed result turn direction disagrees with packet")
+    for key in ("original_trace_sha256", "original_video_sha256"):
+        value = packet.get(key)
+        require(isinstance(value, str) and len(value) == 64 and
+                all(c in "0123456789abcdef" for c in value),
+                f"missing original recording binding: {key}")
+        require(sealed.get(key) == value,
+                f"sealed result original recording binding disagrees: {key}")
     require(light.get("samples") == packet.get("samples"), "light/position samples disagree with source")
     expected_frames = [{"frame": row.get("frame"), "time_s": row.get("time_s")}
                        for row in packet.get("samples", [])]
@@ -82,6 +89,11 @@ def measure(packet: dict) -> dict:
     require(packet.get("fps") == FPS, "history must use 20 Hz")
     require(packet.get("sealed_result_sha256"), "missing sealed result hash")
     require(packet.get("frame_map_sha256"), "missing original frame map hash")
+    for key in ("original_trace_sha256", "original_video_sha256"):
+        value = packet.get(key)
+        require(isinstance(value, str) and len(value) == 64 and
+                all(c in "0123456789abcdef" for c in value),
+                f"missing original recording binding: {key}")
     require(packet.get("signal_source") == "vehicle_light_state_readback", "signal must be observed readback")
     require(packet.get("position_source") == "native_actor_transform", "position must be original Native transform")
     require(packet.get("turn_onset_source"), "missing independent turn-onset source")
@@ -125,6 +137,8 @@ def measure(packet: dict) -> dict:
         "weather": packet.get("weather"),
         "sealed_result_sha256": packet["sealed_result_sha256"],
         "frame_map_sha256": packet["frame_map_sha256"],
+        "original_trace_sha256": packet["original_trace_sha256"],
+        "original_video_sha256": packet["original_video_sha256"],
         "interpretation": "physical measurement only; legal applicability unresolved",
     }
 

@@ -17,6 +17,31 @@ DISTRICT_FROM_CASE = {
 }
 
 
+def verify_core_time_join(trace: Path, frames_declared: int, samples: list[dict]) -> dict:
+    """Join packet sample frames to the admitted original Core scene timeline."""
+    try:
+        original = json.loads(trace.read_bytes())
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise EvidenceError("original Core trace is unreadable") from exc
+    scenes = original.get("scenes") if isinstance(original, dict) else None
+    if not isinstance(scenes, list) or len(scenes) != frames_declared:
+        raise EvidenceError("complete original Core scene history is missing")
+    timestamps = []
+    for scene in scenes:
+        stamp = scene.get("t") if isinstance(scene, dict) else None
+        if isinstance(stamp, bool) or not isinstance(stamp, int):
+            raise EvidenceError("original Core scene timestamp is missing")
+        if timestamps and stamp <= timestamps[-1]:
+            raise EvidenceError("original Core scene timestamps must increase")
+        timestamps.append(stamp)
+    for sample in samples:
+        frame = sample["frame"]
+        if frame >= len(timestamps) or timestamps[frame] != round(sample["time_s"] * 1000):
+            raise EvidenceError("signal sample/Core timestamp join failed")
+    return {"scene_count": len(timestamps), "first_timestamp_ms": timestamps[0],
+            "last_timestamp_ms": timestamps[-1], "joined_signal_samples": len(samples)}
+
+
 def review(repo: Path, recording_id: str, trace: Path, video: Path,
            packet_path: Path, source_root: Path) -> dict:
     admission = verify_accepted(repo, recording_id, trace, video)
@@ -31,8 +56,13 @@ def review(repo: Path, recording_id: str, trace: Path, video: Path,
         raise EvidenceError("district differs from frozen case identity")
     if packet.get("duration_frames") != admission["frames_declared"]:
         raise EvidenceError("signal packet duration differs from accepted recording")
+    for key, accepted in (("original_trace_sha256", admission["trace_sha256"]),
+                          ("original_video_sha256", admission["video_sha256"])):
+        if packet.get(key) != accepted:
+            raise EvidenceError(f"signal packet {key} differs from accepted recording")
     bound = verify_source_bindings(packet, source_root)
     measurement = measure(packet)
+    core_time_join = verify_core_time_join(trace, admission["frames_declared"], packet["samples"])
     return {
         "format": "accepted-signal-distance-review",
         "assignment_id": admission["assignment_id"],
@@ -41,6 +71,7 @@ def review(repo: Path, recording_id: str, trace: Path, video: Path,
         "admission": admission,
         "packet_source_sha256": packet_hash,
         "signal_sources_verified": bound,
+        "core_time_join": core_time_join,
         "measurement": measurement,
         "finding": "source-bound physical distance measurement; district applicability and legal compliance remain independent review questions",
     }

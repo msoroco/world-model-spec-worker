@@ -43,6 +43,8 @@ class ReviewAcceptedTests(unittest.TestCase):
                            "trace_sha256": trace_hash, "video_sha256": video_hash},
         }) + "\n")
         self.packet = packet(case_id=self.case_id)
+        self.packet["original_trace_sha256"] = trace_hash
+        self.packet["original_video_sha256"] = video_hash
         evidence_path = self.root / "inputs" / ASSIGNMENT / "evidence.json"
         evidence_path.write_text(json.dumps({"recordings": [{
             "recording_id": self.rid,
@@ -78,6 +80,10 @@ class ReviewAcceptedTests(unittest.TestCase):
         self.assertEqual(len(finding["signal_sources_verified"]), 5)
         self.assertEqual(finding["packet_source_sha256"],
                          hashlib.sha256(self.packet_path.read_bytes()).hexdigest())
+        self.assertEqual(finding["measurement"]["original_trace_sha256"],
+                         hashlib.sha256(self.trace.read_bytes()).hexdigest())
+        self.assertEqual(finding["measurement"]["original_video_sha256"],
+                         hashlib.sha256(self.video.read_bytes()).hexdigest())
 
     def test_unbound_substitute_packet_rejected(self):
         self.packet["route_sha256"] = "substitute-route"
@@ -110,6 +116,19 @@ class ReviewAcceptedTests(unittest.TestCase):
         with self.assertRaisesRegex(EvidenceError, "district"):
             review(self.root, self.rid, self.trace, self.video,
                    self.packet_path, self.root)
+
+    def test_packet_from_other_original_bytes_rejected(self):
+        for key in ("original_trace_sha256", "original_video_sha256"):
+            with self.subTest(key=key):
+                original = self.packet[key]
+                self.packet[key] = "0" * 64
+                write_sources(self.root, self.packet)
+                self.save()
+                self.bind_packet(self.rid, self.packet_path)
+                with self.assertRaisesRegex(EvidenceError, key):
+                    review(self.root, self.rid, self.trace, self.video,
+                           self.packet_path, self.root)
+                self.packet[key] = original
 
     def second_side(self):
         folder = self.root / "second"
@@ -144,6 +163,8 @@ class ReviewAcceptedTests(unittest.TestCase):
         })
         evidence_path.write_text(json.dumps(evidence) + "\n")
         second = packet(start=10, case_id=case_id)
+        second["original_trace_sha256"] = th
+        second["original_video_sha256"] = vh
         write_sources(folder, second)
         packet_path = folder / "packet.json"
         packet_path.write_text(json.dumps(second) + "\n")

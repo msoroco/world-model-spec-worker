@@ -23,6 +23,8 @@ def packet(start=0, district="business", direction="left", case_id="a", step_m=1
                         "light_source": "vehicle_light_state_readback"})
     return {"format": "original-signal-history-v1", "fps": 20,
             "sealed_result_sha256": "a" * 64, "frame_map_sha256": "b" * 64,
+            "original_trace_sha256": "1" * 64,
+            "original_video_sha256": "2" * 64,
             "signal_source": "vehicle_light_state_readback",
             "position_source": "native_actor_transform", "turn_onset_source": "native_lane_deviation",
             "district_class": district, "district_source": "reviewed_frontage_packet",
@@ -35,7 +37,9 @@ def packet(start=0, district="business", direction="left", case_id="a", step_m=1
 
 def write_sources(root, p):
     values = {"sealed_result": {"source": "sealed", "case_id": p["case_id"],
-                                 "turn_direction": p["turn_direction"]},
+                                 "turn_direction": p["turn_direction"],
+                                 "original_trace_sha256": p["original_trace_sha256"],
+                                 "original_video_sha256": p["original_video_sha256"]},
               "frame_map": {"frames": [{"frame": row["frame"], "time_s": row["time_s"]}
                                        for row in p["samples"]]},
               "light_readback": {"samples": p["samples"]},
@@ -85,7 +89,8 @@ class SignalDistanceTest(unittest.TestCase):
         self.assertEqual(mod.measure(packet(direction="left"))["turn_direction"], "left")
 
     def test_reject_missing_original_sources(self):
-        for key in ("sealed_result_sha256", "frame_map_sha256", "turn_onset_source", "district_source"):
+        for key in ("sealed_result_sha256", "frame_map_sha256", "turn_onset_source",
+                    "district_source", "original_trace_sha256", "original_video_sha256"):
             with self.subTest(key=key):
                 p = packet()
                 p[key] = ""
@@ -186,11 +191,26 @@ class SignalDistanceTest(unittest.TestCase):
                 mod.verify_source_bindings(p, root)
             sealed = root / "sealed_result.json"
             sealed.write_text(json.dumps({"source": "sealed", "case_id": p["case_id"],
-                                          "turn_direction": "right"}) + "\n")
+                                          "turn_direction": "right",
+                                          "original_trace_sha256": p["original_trace_sha256"],
+                                          "original_video_sha256": p["original_video_sha256"]}) + "\n")
             digest = sha256(sealed.read_bytes()).hexdigest()
             p["source_files"]["sealed_result"]["sha256"] = digest
             p["sealed_result_sha256"] = digest
             with self.assertRaisesRegex(mod.EvidenceError, "observed turn direction"):
+                mod.verify_source_bindings(p, root)
+
+    def test_rebound_original_recording_hash_rejected(self):
+        p = packet()
+        with TemporaryDirectory(dir=SCRATCH) as temp:
+            root = Path(temp)
+            write_sources(root, p)
+            p["original_trace_sha256"] = "3" * 64
+            with self.assertRaisesRegex(mod.EvidenceError, "original recording binding disagrees"):
+                mod.verify_source_bindings(p, root)
+            p["original_trace_sha256"] = "1" * 64
+            p["original_video_sha256"] = ""
+            with self.assertRaisesRegex(mod.EvidenceError, "missing original recording binding"):
                 mod.verify_source_bindings(p, root)
 
     def test_cli_reads_and_verifies_source_packet(self):
