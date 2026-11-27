@@ -3,7 +3,7 @@
   "assignment_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver",
   "input_sha256": "d016fa0e3e1bb665756b4270d0ba9f3495e35bf6a0a3c95bd0a2a7acaa14f6f4",
   "readiness_kind": "source_bound_measurement_checkpoint",
-  "reason": "Frozen C178244 is left_turn while its selected branch is business-district right_turn. The source-bound C378304 compatible right_turn package passes the allocation audit, now including the exact frozen selected-branch match. Six C178244 historical accepted records are metadata only; original traces, videos and a frozen signal packet are absent. The 37 source-bound CPU tests and scoped --complete check pass, but the exact strict gate rejects truthful partial status. Do not claim C178244 right-turn delivery readiness until its frozen branch/cell allocation is reconciled.",
+  "reason": "Frozen C178244 is left_turn while its selected branch is business-district right_turn. C378304 has a separate compatible right_turn package and passed source-bound allocation audit. Six C178244 historical accepted records are metadata only; original traces, videos and a frozen signal packet are absent. Forty-eight source-bound CPU tests and scoped --complete pass, including strict integer frame and turn-onset validation; the exact strict gate rejects truthful partial status. Do not claim C178244 right-turn delivery readiness until its frozen branch/cell allocation is reconciled.",
   "remaining_gpu_checks": [
     "After CPU delivery readiness: actual CARLA motion, original signal readback, course-change onset, district frontage, full-duration four-camera decode and visibility"
   ],
@@ -182,6 +182,18 @@
       "exit_code": 0,
       "log": "cpu-nov27-original-join-tests.log",
       "sha256": "ffebf7fe6fc3d8286c567954ac9f45b19ed768e7cd587f5d43f7a5a87b1b5227"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c178244-nov27d/output TMPDIR=$PWD/.runtime-work/c178244-nov27d/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-nov27d-tests.log",
+      "sha256": "d24612b3cda9a26d52f453e61b63b2099a03da6757e5a11b872be999ad93b189"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c178244-nov27d/output TMPDIR=$PWD/.runtime-work/c178244-nov27d/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov27d-static.log",
+      "sha256": "f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec"
     }
   ]
 }

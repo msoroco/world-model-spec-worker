@@ -115,6 +115,16 @@ class SignalDistanceTest(unittest.TestCase):
         with self.assertRaisesRegex(mod.EvidenceError, "20 Hz"):
             mod.measure(p)
 
+    def test_reject_boolean_frame_identity_and_onset(self):
+        p = packet()
+        p["samples"][1]["frame"] = True
+        with self.assertRaisesRegex(mod.EvidenceError, "nonconsecutive original frames"):
+            mod.measure(p)
+        p = packet()
+        p["turn_onset_frame"] = True
+        with self.assertRaisesRegex(mod.EvidenceError, "missing observed turn onset"):
+            mod.measure(p)
+
     def test_reject_boolean_native_position(self):
         for key in ("x_m", "y_m"):
             with self.subTest(key=key):

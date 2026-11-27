@@ -108,11 +108,13 @@ def measure(packet: dict) -> dict:
     require(isinstance(first_time, (int, float)) and not isinstance(first_time, bool) and
             isfinite(first_time) and first_time >= 0, "invalid original first-frame time")
     onset = packet.get("turn_onset_frame")
-    require(isinstance(onset, int) and onset >= 2, "missing observed turn onset")
+    require(isinstance(onset, int) and not isinstance(onset, bool) and onset >= 2,
+            "missing observed turn onset")
     require(onset < len(samples), "turn onset outside samples")
     for i, s in enumerate(samples):
         require(isinstance(s, dict), "original signal sample must be an object")
-        require(s.get("frame") == i, "nonconsecutive original frames")
+        require(isinstance(s.get("frame"), int) and not isinstance(s["frame"], bool) and
+                s["frame"] == i, "nonconsecutive original frames")
         sample_time = s.get("time_s")
         require(isinstance(sample_time, (int, float)) and not isinstance(sample_time, bool) and
                 isfinite(sample_time) and abs(sample_time - first_time - i / FPS) <= 0.001,

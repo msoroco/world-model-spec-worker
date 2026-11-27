@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -13,6 +14,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from accepted_source import ASSIGNMENT, CASES, SourceError, verify
 from review_accepted import review
+from review_accepted_video import review_video
 
 
 def digest(data: bytes) -> str:
@@ -141,6 +143,27 @@ class AcceptedSourceTests(unittest.TestCase):
         self.save()
         with self.assertRaisesRegex(SourceError, "scene timestamp"):
             review(self.root, self.rid, self.trace, self.video)
+
+    def make_video(self, frames):
+        subprocess.run([
+            "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+            "-f", "lavfi", "-i", "color=c=red:s=16x16:r=20", "-frames:v", str(frames),
+            "-c:v", "ffv1", str(self.video),
+        ], check=True, timeout=120)
+        self.save()
+
+    def test_original_video_full_decode_binds_all_frames(self):
+        self.make_video(900)
+        result = review_video(self.root, self.rid, self.trace, self.video)
+        self.assertEqual(result["decoded_frames"], 900)
+        self.assertEqual(result["video_sha256"], self.row["video_sha256"])
+        self.assertEqual((result["width"], result["height"]), (16, 16))
+        self.assertIn("visibility", result["finding"])
+
+    def test_original_video_short_decode_rejected_despite_matching_metadata_hash(self):
+        self.make_video(899)
+        with self.assertRaisesRegex(SourceError, "decoded frame count differs"):
+            review_video(self.root, self.rid, self.trace, self.video)
 
 
 if __name__ == "__main__":

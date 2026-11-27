@@ -192,3 +192,19 @@ The current scoped `--complete` check passed (`cpu-current-static.log`). The exa
 The result success ledger now contains 42 exit-zero receipts. Eight expected-failure logs remain as files and proof-manifest references, but are excluded from `result.tests` because the pinned ready validator requires every listed test to exit zero. The 51-test assignment suite passed with `SCENARIO_PIPELINE_OUTPUT_ROOT` under `.runtime-work/`; scoped `--complete` passed. The exact scoped strict command still exits 1 at the truthful partial status.
 
 A read-only virtual-ready check, with only status and first GPU command substituted in memory, reaches the end of the static validator. This does not make the package delivery-ready: the frozen C158190 catalog cell fixes `stop_sign`, the selected law branch and three cases require `yield_sign`, the source-gated Native runner rejects that combination, and original reviewed site/trace/video bytes are absent. No result status or queue command was promoted. Resume only after an authorized source/cell correction, then rebuild and rerun exact selected proofs and the strict gate.
+
+## November 27 original-video decode review
+
+`review_accepted_video.py` first admits one of the two exact frozen accepted C158190 recording IDs through `accepted_source.verify`, including original trace/video hashes. It then probes the 20 Hz video stream, fully decodes every frame through FFmpeg frame digests, requires all 900 declared frames, and rechecks the video hash after decoding. The digest sequence is bound in the returned review. This is a CPU test of original-byte integrity for later accepted-evidence reuse; the original video bytes are absent from this worker checkout. It does not establish visible control, sight lines, stopping, traffic response, or legal coverage.
+
+The new 900-frame fixture passes, while a source-hash-consistent 899-frame fixture is rejected. The full assignment suite passes **53/53**. The pinned CPU preflight and `source_audit.py` pass; the latter still finds two accepted metadata rows and zero original files. Scoped `worker_check.py --complete` passes. The exact scoped strict gate exits 1 at the truthful partial-status check. Frozen C158190 remains `stop_sign` while the selected branch requires `yield_sign`; C158208 is the compatible yield cell. No result status or selected delivery case was promoted.
+
+| File or receipt | SHA-256 |
+| --- | --- |
+| `review_accepted_video.py` | `19de7ead766271b69648d8926f899ac08656e41ae0ed00318e45a16de872dbbe` |
+| `tests/test_accepted_source.py` | `8da62394bc5136458a1ac7c546032dc81414290deb7a57afb45d280728b364a7` |
+| `cpu-accepted-video-tests.log` | `7dcf184a9162d3daf20e79bed9d728377b1113ebb8f90928d83f4dcb56ade54a` |
+| `cpu-accepted-video-static.log` | `fc15fb1752fad1ac61dffd700aaaea71ef4633cfbcc3965bd69b2e3481373422` |
+| `cpu-accepted-video-strict.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+
+Resume: review the corrected immutable branch/cell allocation and obtain source-bound original surveys and accepted trace/video bytes; select only control-compatible original cases, rerun their bound CPU proofs, and run `.venv-cpu/bin/python worker_check.py --assignment testing__C158190__NRS-484B-257-1__motor_vehicle_driver --complete --require-delivery-ready` before changing `result.json.status` to ready.

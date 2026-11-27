@@ -4,6 +4,7 @@ import json
 import os
 import shutil
 import subprocess
+from uuid import uuid4
 from pathlib import Path
 
 
@@ -21,8 +22,8 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].rsplit("__", 1)[-1]
-        source = REPO / ".runtime-work" / f"c398030/compat-final-{suffix}-primary"
-        attempt = REPO / ".runtime-work" / f"c398030/saved-{suffix}-attempt"
+        source = REPO / ".runtime-work" / f"c398030/compat-update-{suffix}-primary"
+        attempt = REPO / ".runtime-work" / f"c398030/saved-{suffix}-{uuid4().hex}-attempt"
         command = [str(REPO / ".venv-cpu/bin/python"), "runtime.py", "materialize",
                    "--manifest", str(MANIFEST), "--case", entry["case_id"],
                    "--output", str(attempt)]
@@ -38,7 +39,7 @@ def main():
             target = attempt / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(original, target)
-        output = REPO / ".runtime-work" / f"c398030/saved-{suffix}"
+        output = REPO / ".runtime-work" / f"c398030/saved-{suffix}-{uuid4().hex}"
         args = [str(REPO / ".venv-cpu/bin/python"), "runtime.py", "process-saved",
                 "--manifest", str(MANIFEST), "--case", entry["case_id"],
                 "--attempt", str(attempt), "--output", str(output),

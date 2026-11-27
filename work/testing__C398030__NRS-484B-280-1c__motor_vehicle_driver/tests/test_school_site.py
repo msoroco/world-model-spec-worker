@@ -8,7 +8,7 @@ from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from native_capture import inspect_school
+from native_capture import Cameras, inspect_school
 from road_scene import load_site, observed_encounter
 
 
@@ -71,6 +71,17 @@ class SchoolSiteTests(unittest.TestCase):
         self.assertEqual(site['pedestrian_start_xy_m'], [0, 3.5])
         self.assertEqual(site['ego_start_xy_m'], [-35, 0.0])
         self.assertEqual(site['ego_end_xy_m'], [35, 0.0])
+
+    def test_static_cameras_follow_original_school_site(self):
+        site = self.inspect()
+        self.assertEqual(Cameras.placement('overview', site), (0, 0.0, 45, -90))
+        shifted = json.loads(json.dumps(site))
+        for marker in shifted['school_boundary_markers']:
+            marker['location_xy_m'][0] += 420
+        shifted['ego_start_xy_m'] = [385, 50]
+        self.assertEqual(Cameras.placement('overview', shifted), (420, 50, 45, -90))
+        self.assertEqual(Cameras.placement('approach', shifted), (390, 38, 12, -25))
+        self.assertEqual(Cameras.placement('driver_reference', shifted), (0, 0, 2, 0))
 
     def test_missing_original_school_sign_rejected(self):
         with self.assertRaisesRegex(ValueError, 'original Native school'):

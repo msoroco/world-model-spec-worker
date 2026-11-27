@@ -32,7 +32,7 @@ def speed(actor):
 
 def inspect_road(world, carla, scene, output):
     mapping = world.get_map()
-    road_samples, sidewalk_samples = [], []
+    road_samples, sidewalk_samples, opposing_samples = [], [], []
     start_x = round(scene["ego_start_xy_m"][0])
     end_x = round(scene["ego_end_xy_m"][0])
     if start_x >= end_x:
@@ -52,13 +52,36 @@ def inspect_road(world, carla, scene, output):
                      and lane.lane_type == carla.LaneType.Sidewalk]
         if len(sidewalks) != 1:
             raise ValueError("original Native roadside sidewalk is absent or ambiguous")
+        opposing = [lane for lane in adjacent if lane is not None
+                    and lane.lane_type == carla.LaneType.Driving
+                    and lane.road_id == waypoint.road_id
+                    and lane.lane_id * waypoint.lane_id < 0]
+        if len(opposing) != 1 or any(
+            lane is not None and lane not in sidewalks and lane not in opposing
+            for lane in adjacent
+        ):
+            raise ValueError("original Native road is not one driving lane per direction")
+        opposite = opposing[0]
+        if any(
+            neighbor is not None and neighbor.lane_type == carla.LaneType.Driving
+            and neighbor.road_id == waypoint.road_id
+            and neighbor.lane_id * opposite.lane_id > 0
+            and neighbor.lane_id != opposite.lane_id
+            for neighbor in (opposite.get_left_lane(), opposite.get_right_lane())
+        ):
+            raise ValueError("original Native opposing direction has additional driving lanes")
         sidewalk = sidewalks[0]
         if sidewalk.road_id != waypoint.road_id or not math.isfinite(sidewalk.lane_width):
             raise ValueError("original Native sidewalk is not adjacent to reviewed road")
         sidewalk_samples.append(sidewalk)
         road_samples.append(waypoint)
+        opposing_samples.append(opposing[0])
     if len({item.road_id for item in road_samples}) != 1:
         raise ValueError("ego route not on one original road")
+    if len({item.lane_id for item in road_samples}) != 1 or len({item.lane_id for item in opposing_samples}) != 1:
+        raise ValueError("driving lane identities change along original road")
+    if any(not math.isfinite(item.lane_width) or item.lane_width < 3 for item in opposing_samples):
+        raise ValueError("opposing driving lane width invalid")
     width = min(item.lane_width for item in road_samples)
     if not math.isfinite(width) or width < 3:
         raise ValueError("original road width cannot support authored roadside encounter")
@@ -89,6 +112,8 @@ def inspect_road(world, carla, scene, output):
             "road_id": road_samples[0].road_id,
             "sample_lane_ids": [item.lane_id for item in road_samples],
             "sample_lane_widths_m": [item.lane_width for item in road_samples],
+            "sample_opposing_lane_ids": [item.lane_id for item in opposing_samples],
+            "sample_opposing_lane_widths_m": [item.lane_width for item in opposing_samples],
             "sample_sidewalk_lane_ids": [item.lane_id for item in sidewalk_samples],
             "sample_sidewalk_lane_widths_m": [item.lane_width for item in sidewalk_samples]}
     from road_scene import load_site

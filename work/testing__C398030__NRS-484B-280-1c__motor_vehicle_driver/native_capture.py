@@ -91,15 +91,31 @@ class Cameras:
              ("reference_corner", 1280, 720, (4, 4, 12, -45)),
              ("driver_reference", 1280, 720, (0, 0, 2, 0)))
 
-    def __init__(self, world, ego, output, carla):
+    @staticmethod
+    def placement(name, site):
+        """Place fixed cameras around the read-back school site, not world zero."""
+        markers = site["school_boundary_markers"][:2]
+        midpoint_x = sum(item["location_xy_m"][0] for item in markers) / 2
+        lane_y = site["ego_start_xy_m"][1]
+        if name == "overview":
+            return midpoint_x, lane_y, 45, -90
+        if name == "approach":
+            return min(item["location_xy_m"][0] for item in markers) - 15, lane_y - 12, 12, -25
+        if name == "reference_corner":
+            return midpoint_x + 4, lane_y + 4, 12, -45
+        if name == "driver_reference":
+            return 0, 0, 2, 0
+        raise ValueError("unknown camera source")
+
+    def __init__(self, world, ego, output, carla, site):
         self.sensors, self.encoders, self.queues = [], {}, {}
         try:
-            for name, width, height, pose in self.SPECS:
+            for name, width, height, _ in self.SPECS:
                 blueprint = world.get_blueprint_library().find("sensor.camera.rgb")
                 blueprint.set_attribute("image_size_x", str(width))
                 blueprint.set_attribute("image_size_y", str(height))
                 blueprint.set_attribute("fov", "90")
-                x, y, z, pitch = pose
+                x, y, z, pitch = self.placement(name, site)
                 transform = carla.Transform(carla.Location(x=x, y=y, z=z),
                                             carla.Rotation(pitch=pitch))
                 sensor = world.spawn_actor(blueprint, transform,
@@ -163,6 +179,7 @@ def run_native(scene, output, host, port):
     world = client.get_world()
     original = world.get_settings()
     actors, cameras, capture, frame_map = [], None, None, None
+    recorder_started = False
     phase, errors, count, restored = "initializing", [], 0, False
     try:
         site = inspect_school(world, carla, scene, output)
@@ -175,6 +192,8 @@ def run_native(scene, output, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
+        client.start_recorder(str(output / "carla_recorder.log"), True)
+        recorder_started = True
 
         def spawn_at(point, yaw=0):
             waypoint = world.get_map().get_waypoint(carla.Location(x=point[0], y=point[1], z=0))
@@ -187,7 +206,7 @@ def run_native(scene, output, host, port):
         actors.append(pedestrian)
         if ego is None or pedestrian is None or ego.id == pedestrian.id:
             raise ValueError("original vehicle and pedestrian identities not distinct")
-        cameras = Cameras(world, ego, output, carla)
+        cameras = Cameras(world, ego, output, carla, site)
         capture = PipelineCapture(client, ego, output, scene["case_id"])
         frame_map = FrameMap(output / "video_frames.jsonl")
         collision_events = []
@@ -239,6 +258,7 @@ def run_native(scene, output, host, port):
         capture.close(); capture = None
         frame_map.close(); frame_map = None
         cameras.close(); cameras = None
+        client.stop_recorder(); recorder_started = False
         names = ["trace.jsonl", "video_frames.jsonl", "encounter-history.jsonl", "school-site.json",
                  "map.xodr", "carla_recorder.log",
                  *[name + ".mkv" for name, *_ in Cameras.SPECS]]
@@ -249,6 +269,11 @@ def run_native(scene, output, host, port):
         errors.append(repr(error))
         raise
     finally:
+        if recorder_started:
+            try:
+                client.stop_recorder()
+            except BaseException as error:
+                errors.append(repr(error))
         for resource in (capture, frame_map, cameras):
             if resource:
                 try:

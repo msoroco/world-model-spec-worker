@@ -92,10 +92,10 @@ def main():
                  "native_handoff": {"python_env_var": "CARLA_PYTHON",
                                     "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"},
                  "candidate_risk": {"status": "physical",
-                                    "reason": "A Native map lane or pedestrian asset may not realize the authored on-road encounter or four-camera coverage."},
+                                    "reason": "A Native map lane or pedestrian asset may not realize the authored off-road roadside encounter or four-camera coverage."},
                  "candidates": old.get("candidates", []) if old.get("construction_sha256") == sha(path) else []}
         entry["acquisition"] = {item["name"]: {"entrypoint": "analysis.py",
-            "method": "Original source-hashed on-road encounter projected by saved analyzer",
+            "method": "Original source-hashed off-road roadside encounter projected by saved analyzer",
             "evidence": "channels/" + item["name"] + ".jsonl"}
             for item in proposal["recording_description"]["channels"]}
         entry["acquisition"].update({item["name"]: {"entrypoint": "analysis.py",

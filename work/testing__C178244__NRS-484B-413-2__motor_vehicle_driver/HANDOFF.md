@@ -169,3 +169,9 @@ The full assignment suite passed 45/45, including a positive indicator join and 
 ## November 27 original position type proof
 
 `signal_distance.measure` now rejects Boolean Native x/y positions and non-object sample rows. Python otherwise treats `True` as an integer, which could turn an invalid original transform into a distance sample. Two CPU tests exercise both rejection paths. The full assignment suite passed 47/47; `cpu-nov27-original-join-tests.log` has SHA-256 `ffebf7fe6fc3d8286c567954ac9f45b19ed768e7cd587f5d43f7a5a87b1b5227`. All 29 result success-ledger hashes match their files. Pinned runtime verify/preflight and scoped `--complete` passed. The exact scoped strict command still exits 1 on truthful partial status. The frozen C178244 left-turn cell remains inconsistent with its selected business right-turn branch; original accepted trace/video and signal packet remain absent, so no source-bound physical outcome or GPU-ready promotion is claimed.
+
+## November 27 original frame identity proof
+
+`signal_distance.measure` now requires actual integer frame IDs and turn-onset index, excluding Boolean values that Python would otherwise treat as integers. The new CPU test rejects a Boolean frame 1 and Boolean turn onset. The full assignment suite passed 48/48 and scoped `--complete` passed. Exact `--require-delivery-ready` still exits 1 on truthful partial status: C178244 is frozen left-turn while its selected branch is right-turn, and the original accepted trace/video/signal packets are absent. No physical outcome or selected right-turn delivery is claimed.
+
+Test receipt: `cpu-nov27d-tests.log` SHA256 `d24612b3cda9a26d52f453e61b63b2099a03da6757e5a11b872be999ad93b189`; static receipt: `cpu-nov27d-static.log` SHA256 `f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec`.
