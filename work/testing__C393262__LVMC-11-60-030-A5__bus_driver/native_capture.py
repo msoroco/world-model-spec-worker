@@ -276,6 +276,23 @@ def capture(adapter, site_path: Path, case_id: str, destination: Path) -> dict:
     if len(frames)!=900:
         raise ValueError('Native bus capture incomplete')
     (destination/'native.json').write_text(json.dumps(ledger,indent=2,sort_keys=True)+'\n')
+    reviewed_packets={
+        'site.json': {'kind':'reviewed_bus_stop_site','source_class':'original_independent_review',
+            'cell_id':'C393262','layout':'residence_district','stop_kind':'bus_stop',
+            'stop_id':site['stop_id'],'reviewer':site['reviewer'],
+            'designation_source_sha256':site['designation_source_sha256'],
+            'boundary_source_sha256':site['stop_boundary_source_sha256']},
+        'designation.json': {'kind':'bus_stop_duration_designation','source_class':'original_independent_review',
+            'stop_id':site['stop_id'],'authority':'City Traffic Engineer',
+            'applicable_duration_s':site['designation']['applicable_duration_s'],
+            'conditions_reviewed':site['designation']['conditions_reviewed'],
+            'source_sha256':site['designation_source_sha256']},
+        'identity.json': {'kind':'bus_operator_identity','source_class':'original_independent_review',
+            'bus_id':site['bus_identity']['bus_id'],'tour_bus':False,
+            'covered_operator':site['bus_identity']['covered_operator'],
+            'source_sha256':site['operator_source_sha256']}}
+    for name,packet in reviewed_packets.items():
+        (destination/name).write_text(json.dumps(packet,indent=2,sort_keys=True)+'\n')
     for view in VIEWS:
         folder=raw/view
         for index,row in enumerate(frames):

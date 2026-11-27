@@ -41,7 +41,7 @@ class DurationTests(unittest.TestCase):
             root = Path(directory)
             packets = {
                 "parking-intervals.json": json.dumps({"vehicle_id": "ego", "window_history_status": "complete_original", "intervals": intervals((300, 2160))}),
-                "alley-context.json": json.dumps({"review_status": "original_reviewed", "municipal_alley_source": "source-a", "engineer_designation_source": "source-b", "angle_marking_source": "source-c", "other_parking_rules_source": "source-d"}),
+                "alley-context.json": json.dumps({"review_status": "original_reviewed", "municipal_alley_source": "source-a", "engineer_designation_source": "source-b", "angle_marking_source": "source-c", "other_parking_rules_source": "source-d", "loading_activity_source": "source-e"}),
                 "video_frames.jsonl": '{"frame": 1}\n',
             }
             for name, content in packets.items():

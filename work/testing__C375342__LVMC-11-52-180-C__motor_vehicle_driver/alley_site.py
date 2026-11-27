@@ -65,7 +65,8 @@ def load_site(path, case_id):
     alley = records['alley']
     if (alley.get('jurisdiction') != 'city' or alley.get('alley_status') != 'reviewed_original' or
             alley.get('rear_access_function') is not True or alley.get('cul_de_sac_excluded') is not True or
-            not alley.get('definition_source')):
+            not alley.get('definition_source') or
+            alley.get('nrs_definition_applicability') not in ('reviewed_applicable','reviewed_not_applicable','unresolved')):
         raise ValueError('original municipal alley definition and jurisdiction review required')
     designation = records['designation']
     marking = records['marking']
@@ -79,13 +80,19 @@ def load_site(path, case_id):
     if not inside(target, alley.get('alley_extent_polygon_xy')) or not inside(target, designation.get('permission_extent_polygon_xy')) or not inside(target, marking.get('governed_space_polygon_xy')):
         raise ValueError('target outside original reviewed angle-parking extent')
     rules = records['other_parking_rules']
-    if rules.get('review_status') != 'reviewed_original' or rules.get('otherwise_lawful') is not True or not rules.get('source'):
+    if (rules.get('review_status') != 'reviewed_original' or rules.get('otherwise_lawful') is not True or
+            not rules.get('source') or not isinstance(rules.get('applicable_rules_reviewed'), list) or
+            not rules['applicable_rules_reviewed'] or rules.get('loading_activity_status') != 'reviewed_original' or
+            not rules.get('loading_activity_source')):
         raise ValueError('original review of all other applicable parking restrictions required')
     if records['prior_history'].get('status') != 'reviewed_original_not_parked' or not records['prior_history'].get('source'):
         raise ValueError('original preceding vehicle parking history required')
     relocation = point(site.get('relocation_xy'))
-    if inside(relocation, alley.get('alley_extent_polygon_xy')) or inside(relocation, designation.get('permission_extent_polygon_xy')):
-        raise ValueError('relocation station remains inside reviewed alley or designation')
+    exit_station = point(site.get('exit_xy'))
+    if (inside(relocation, alley.get('alley_extent_polygon_xy')) or inside(relocation, designation.get('permission_extent_polygon_xy'))
+            or inside(exit_station, alley.get('alley_extent_polygon_xy')) or inside(exit_station, designation.get('permission_extent_polygon_xy'))
+            or math.dist(relocation, exit_station) < 5):
+        raise ValueError('relocation or exit station remains inside alley/designation or has insufficient departure')
     if not records['vehicle'].get('source') or records['vehicle'].get('identity_status') != 'reviewed_original':
         raise ValueError('original vehicle identity required')
     if not isinstance(records['map'].get('opendrive_sha256'), str) or len(records['map']['opendrive_sha256']) != 64:

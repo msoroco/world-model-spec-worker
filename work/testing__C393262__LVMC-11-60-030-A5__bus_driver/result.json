@@ -1,19 +1,34 @@
 {
   "applied_update": 0,
   "assignment_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver",
+  "first_gpu_delivery_command": "python3.11 -m scenario_pipeline.worker_exchange --project \"$PROJECT\" --root \"$LOCAL_ROOT\" execute-delivery --repo \"$WORKER_REPO\" --batch full-test-delivery --db \"$DB\" --assignment testing__C393262__LVMC-11-60-030-A5__bus_driver --run \"$RUN\" --case testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
   "input_sha256": "b35cc68fd3c364b214274642df6c4f71748d747be0b0b31ad13a547c18980510",
   "readiness_kind": "source_gated_construction_in_progress",
-  "reason": "Six exact source-gated duration cases and three comparisons are selected; diagnostic interval measurement passes positive and missing/changed-source tests. Exact Native construction, semantic chain, runtime offline/compatibility/saved receipts, and independent delivery/comparison audits remain CPU work.",
+  "reason": "Exact strict v1 found missing construction contract metadata; builder repaired it, fresh exact offline/compatibility/saved proofs and strict rerun in progress.",
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Review actual stop-specific designation, conditions, boundary, residential site and non-tour bus/operator sources",
+    "Run and source-audit original Native captures for all six exact cases, including independent activity and pixel reviews",
+    "Accept eligible full-test recordings and compare original measured standing and parking intervals"
   ],
   "status": "partial",
   "tests": [
     {
-      "command": "TMPDIR=$PWD/.runtime-work/c393262-bus PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C393262__LVMC-11-60-030-A5__bus_driver/tests -v",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c393262-bus/output TMPDIR=$PWD/.runtime-work/c393262-bus PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C393262__LVMC-11-60-030-A5__bus_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-duration-tests.log",
-      "sha256": "29b6b7b34a11ef8cef2208ff57afe192ee85df703257dddd1e2eda0bf35393e4"
+      "sha256": "43a05404434f35008ec54de9b274d66054575b01d916a57038ef7d596bc1c774"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C393262__LVMC-11-60-030-A5__bus_driver/prove_comparisons.py",
+      "exit_code": 0,
+      "log": "comparison-audit.log",
+      "sha256": "b017715494e8ba205fa208a62e63ed499874ebaece8b0c2026732774bdcc5709"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c393262-bus/output TMPDIR=$PWD/.runtime-work/c393262-bus PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -c \"from worker_exchange.semantic_delivery import validate\"",
+      "exit_code": 0,
+      "log": "semantic-stage-validation.log",
+      "sha256": "ea4734b62feabc1f753768d7b3a8bfc80d49d3049a906dd5bd22a345afd7ad48"
     }
   ]
 }

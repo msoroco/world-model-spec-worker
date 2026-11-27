@@ -121,6 +121,8 @@ class RailwayExactSourceTests(unittest.TestCase):
     def test_coupled_unit_requires_its_actual_body(self):
         p = site("space_halt_before_15ft")
         p["vehicle"]["coupled_units"] = [{"actor_id": "13",
+                                           "blueprint_id": "vehicle.carla.trailer",
+                                           "dimensions_m": [9., 2.5, 3.],
                                            "dimensions_source_ref": "original:trailer",
                                            "coupling_source_ref": "original:hitch"}]
         module.validate_site(p, "space_halt_before_15ft")

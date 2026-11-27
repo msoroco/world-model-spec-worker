@@ -65,12 +65,21 @@ def project(attempt, packet, case_id, observation):
         if cameras.get("original_frame") != identity:
             raise ValueError("original rail frame/camera identity differs")
         position = frame["position_xy_m"]
+        velocity = frame.get("velocity_mps")
+        if (not isinstance(velocity, list) or len(velocity) != 3 or
+                any(type(value) not in (int, float) or not math.isfinite(value)
+                    for value in velocity) or
+                abs(math.sqrt(sum(value ** 2 for value in velocity)) -
+                    frame["speed_mps"]) > 1e-6):
+            raise ValueError("original rail velocity vector missing or inconsistent")
         trace.append({"frame": identity, "time_s": time_s,
                       "position": {"x": position[0], "y": position[1], "z": 0.0},
                       "position_m": [position[0], position[1], 0.0],
                       "heading_deg": derived_headings[index],
                       "speed_mps": frame["speed_mps"],
-                      "speed_mph": frame["speed_mps"] / 0.44704})
+                      "velocity_mps": velocity,
+                      "speed_mph": frame["speed_mps"] / 0.44704,
+                      "control": frame.get("control", {})})
         mapping.append({"video_frame": index, "carla_frame": identity,
                         "native_frame": identity, "time_s": time_s})
         values = {
@@ -104,8 +113,18 @@ def project(attempt, packet, case_id, observation):
         _write_new(target, _jsonl(channel_rows[name]))
         evidence.append({"name": name, "unit": item["unit"],
                          "reference": str(target.relative_to(attempt))})
-    contexts = {"reviewed_map_source_sha256": packet["original_map_source"]["sha256"],
-                "reviewed_packet_sha256": receipt["packet"]["sha256"]}
+    contexts = {
+        "reviewed_railway_site": {
+            "map_source_sha256": packet["original_map_source"]["sha256"],
+            "packet_sha256": receipt["packet"]["sha256"],
+            "physical_review_pending": True,
+        },
+        "reviewed_exception_authority": {
+            "packet_sha256": receipt["packet"]["sha256"],
+            "frame_source_sha256": receipt["frames"]["sha256"],
+            "legal_review_pending": True,
+        },
+    }
     context_path = channels / "reviewed_source_context.json"
     _write_new(context_path, json.dumps(contexts, sort_keys=True, indent=2) + "\n")
     evidence.extend({"name": item["name"], "unit": item["unit"],

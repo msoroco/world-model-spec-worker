@@ -28,6 +28,7 @@ class ProjectionTests(unittest.TestCase):
         for index in range(900):
             frames.append({"original_frame": index, "time_s": index / 20,
                            "route_station_m": index / 10, "speed_mps": 5.0,
+                           "velocity_mps": [5.0, 0.0, 0.0],
                            "position_xy_m": [index / 10, 0.0],
                            "body_on_crossing": 400 <= index < 450,
                            "flagman_on_duty": False, "signal_installed": False,
@@ -70,6 +71,17 @@ class ProjectionTests(unittest.TestCase):
         receipt["camera_map"]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
         (self.attempt / "native-rail-receipt.json").write_text(json.dumps(receipt))
         with self.assertRaisesRegex(ValueError, "identity differs"):
+            project(self.attempt, self.packet, self.case_id, self.observation)
+
+    def test_original_velocity_vector_required_for_render_speed(self):
+        path = self.attempt / "native-rail-frames.json"
+        rows = json.loads(path.read_text())
+        rows[0].pop("velocity_mps")
+        path.write_text(json.dumps(rows))
+        receipt = json.loads((self.attempt / "native-rail-receipt.json").read_text())
+        receipt["frames"]["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        (self.attempt / "native-rail-receipt.json").write_text(json.dumps(receipt))
+        with self.assertRaisesRegex(ValueError, "velocity vector missing"):
             project(self.attempt, self.packet, self.case_id, self.observation)
 
 

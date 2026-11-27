@@ -1,22 +1,9 @@
-# testing__C135705__NRS-484B-477-1b__motor_vehicle_driver
+# C135705 / NRS 484B.477(1)(b) handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. The exact frozen cell is `narrow_road / park / other_vehicle`, with motor vehicle driver and full-test only. No accepted original recording is exported. The conditional witness allows this road to be a qualifying *other alley* only if original source establishes public highway status, city-block location, rear-access function, abutting property and connected through ends rather than a cul-de-sac. Local jurisdiction and an ordinance otherwise providing remain independent review requirements.
 
-Exact law: NRS 484B.477(1)(b) — Unless otherwise provided by ordinance of the local authority having jurisdiction, a person shall not: Stop, stand or park a vehicle in any other alley in such a manner, or under such conditions as to leave available less than 10 feet of the width of the alley for the free movement of vehicular traffic.
-Assigned branch(es): park.
-Cell: C135705 (narrow_road, park, other_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The six exact planned cases are `width_9_9ft`, `width_10_0ft`, `width_10_1ft`, `other_vehicle_close`, `other_vehicle_far`, and `ordinance_otherwise`, each prefixed by this assignment ID. Four comparisons test below/at/above the statutory 10-foot available-width boundary, actual other-vehicle constraint and reviewed ordinance exception. The 10-foot bound is statutory; physical free vehicular movement and ordinance applicability are not inferred from a calculated gap. No exact-law judgment range exists in the supplied 87 training ranges.
 
-## Next CPU actions
+`width_measurement.py` computes the largest *continuous* free cross-section interval from surveyed alley boundaries and original ego/other-vehicle body polygons for every 20 Hz parked-hold frame. It rejects missing source hashes, wrong alley classification, cul-de-sac geometry, frame gaps and absent parked hold. `cpu-width-tests.log` records fourteen passing geometry, target, Native acquisition, source-rejection and uncertainty tests. `alley_width_construction.py` derives surveyed lateral parking targets and actual other-vehicle close/far actor targets; `parking_controller.py` requests approach, hold and departure. `native_capture.py` requires actual map and actor readback, 900 consecutive 20 Hz original body/camera joins, four PNG archives, braking, cleanup and immutable inventory. `finalize_native.py` closes lossless four-view video and seals only original material. These still require runner/finalizer binding and full proof.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C135705__NRS-484B-477-1b__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
-
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Next CPU work: bind the source-gated Native operator/runner and saved-only finalizer with width observations; build six exact constructions with risk-justified fallbacks, diagnostic fixtures, offline and positive/negative compatibility receipts, canonical semantic proposals, physical/lifecycle tests, independent delivery and comparison audits; run the exact scoped strict gate. Actual parked width, free movement, ordinance and legal interpretation remain later original-source reviews.

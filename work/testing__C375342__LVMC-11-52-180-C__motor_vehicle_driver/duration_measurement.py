@@ -86,7 +86,7 @@ def measure_source_packet(root: Path, inventory: dict):
     context = json.loads(payloads["alley-context.json"])
     if context.get("review_status") != "original_reviewed" or not all(
         context.get(k) for k in ("municipal_alley_source", "engineer_designation_source",
-                                  "angle_marking_source", "other_parking_rules_source")
+                                  "angle_marking_source", "other_parking_rules_source", "loading_activity_source")
     ):
         raise ValueError("Original alley, designation or other-lawfulness review missing")
     record = json.loads(payloads["parking-intervals.json"])

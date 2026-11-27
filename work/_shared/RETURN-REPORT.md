@@ -2,6 +2,20 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 11:35 UTC: C375342 angle-parking duration published
+
+- `testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver` passed the owner's exact strict gate and the lead's independent exact strict gate. Its queue proposal published **5 cases, 2 comparisons, 42 syntax-checked commands**. Shared queue is now **218 ready assignments, 1,505 cases, 1,052 comparisons**, 4,035,720 bytes, SHA256 `c5269b451f41570668844f2a7ab738dfcc680af9ad2418210528218fd3aba6de`. The freed owner now owns `testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator`. No Git command was run.
+- Root `testing__C410753__LVMC-11-16-030__motor_vehicle_driver` remains **partial**. The 900-frame railway diagnostic now converts through the pinned Core adapter after a source-hashed subject blueprint and recorded controller field were added; all seven fixture specifications were regenerated and remain under 2 MiB. Pinned compatibility, focused proof refresh, saved-only delivery and independent comparison work continue. No physical or legal conclusion is claimed.
+
+## 2026-11-27 11:30 UTC: C410753 heavy-vehicle railway package published
+
+- `testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver` passed the owner's exact strict assignment gate and the lead's independent exact strict gate. Its exact queue proposal published **7 cases, 5 comparisons, 61 syntax-checked commands**. Shared queue is now **217 ready assignments, 1,500 cases, 1,050 comparisons**, 4,014,831 bytes, SHA256 `1b874096cc1a8433cb01b558bd4a33bd4107a281bccf09bd8603939cd31f0da4`. The freed owner now owns `testing__C135705__NRS-484B-477-1b__motor_vehicle_driver`. No Git command was run.
+
+## 2026-11-27 11:24 UTC: railway diagnostic compatibility construction
+
+- Root `testing__C410753__LVMC-11-16-030__motor_vehicle_driver` remains **partial**. Seven source-hashed 900-frame diagnostic fixture specifications and recipes now cover the exact railway cases; every returned spec is under 2 MiB. The first fixture materialized and its saved analysis produced a runtime-shaped result while leaving physical completion and legal conclusion unclaimed. The scoped partial `--complete` check, seven selected construction checks and semantic stage check pass after the source changes. Pinned compatibility exposed and drove repairs to the fixture frame map and authored context; the current full compatibility run is in progress. Refreshed focused and offline proofs are running. No assignment has been marked ready on this evidence.
+- The three owners continue `testing__C393262__LVMC-11-60-030-A5__bus_driver`, `testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver` and `testing__C410753__NRS-484B-560-7a__heavy_vehicle_driver` through their exact scoped gates. The last published queue remains **216 ready, 1,493 cases, 1,045 comparisons**, SHA256 `6b74adf79baeb1cb77ffb755a07c966fc29b4c18829248e09dbf618bf0cb6129`. No Git command was run.
+
 ## 2026-11-27 11:15 UTC: C377875 angle-parking package published
 
 - `testing__C377875__LVMC-11-52-070__motor_vehicle_driver` passed its owner's exact strict assignment gate twice and the lead's independent exact strict gate (`.runtime-work/c377875-lvmc-lead-nov27-strict.log`). The exact queue proposal published **4 cases and 2 comparisons** with 34 syntax-checked commands. Shared queue: **216 ready assignments, 1,493 exact cases, 1,045 comparisons**, 3,982,033 bytes; SHA256 `6b74adf79baeb1cb77ffb755a07c966fc29b4c18829248e09dbf618bf0cb6129`. The freed owner now owns `testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver`, alley angle-parking duration. No Git command was run.

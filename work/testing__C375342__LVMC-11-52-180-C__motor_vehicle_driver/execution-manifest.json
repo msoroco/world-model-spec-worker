@@ -5,7 +5,7 @@
     {
       "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m",
       "construction": "construction.json",
-      "construction_sha256": "4f0aa9266810fa6bccff21f3d8dabbf19393c27309a582da28b12b277368ef93",
+      "construction_sha256": "60692d3de5c482539dd8924fb1ceae08633bc7d5f92451ca9433a3ef61daa045",
       "candidate_risk": {
         "status": "physical",
         "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
@@ -14,7 +14,7 @@
         {
           "id": "fallback1",
           "construction": "fallback1-construction.json",
-          "construction_sha256": "2a7b7dfbf3554aca2683028c7a29c2cef2e502ea230e40a7a9c903c52c2dcfbb",
+          "construction_sha256": "f679dbba8162a243cc42c7da3efb14130a8e3d69bb6b905ebed75948fdd88d4a",
           "trigger": {
             "source": "original parking-history.jsonl and reference_corner.mkv",
             "metric": "entry/return duration, outside-space placement or lost frame continuity",
@@ -27,9 +27,15 @@
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m --candidate fallback1 --output .runtime-work/c375342-owner/offline-continuous_29m-fallback1",
             "exit_code": 0,
-            "construction_sha256": "2a7b7dfbf3554aca2683028c7a29c2cef2e502ea230e40a7a9c903c52c2dcfbb",
+            "construction_sha256": "f679dbba8162a243cc42c7da3efb14130a8e3d69bb6b905ebed75948fdd88d4a",
             "log": "cpu-offline-continuous_29m-fallback1.log",
             "log_sha256": "c5091839128d05c3af44e79c48d28f36cfc35e72c5e7c8ae4b0404ca73ca16a8"
+          },
+          "compatibility": {
+            "receipt": "compat-continuous_29m-fallback1.json",
+            "sha256": "d680f61de5a5db2745ee7526b588927f60c5aaaafa40d884a194da5b60ad2683",
+            "log": "compat-analysis-continuous_29m-fallback1.log",
+            "negative_log": "compat-negative-continuous_29m-fallback1.log"
           }
         }
       ],
@@ -80,15 +86,61 @@
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m --candidate primary --output .runtime-work/c375342-owner/offline-continuous_29m-primary",
         "exit_code": 0,
-        "construction_sha256": "4f0aa9266810fa6bccff21f3d8dabbf19393c27309a582da28b12b277368ef93",
+        "construction_sha256": "60692d3de5c482539dd8924fb1ceae08633bc7d5f92451ca9433a3ef61daa045",
         "log": "cpu-offline-continuous_29m-primary.log",
         "log_sha256": "80e4424a9b99194a792ae9bded92ca343fd07417c876119cd869d829b4e27489"
+      },
+      "compatibility": {
+        "receipt": "compat-continuous_29m-primary.json",
+        "sha256": "932988ec7509857340b8f2efb13dfeed109ebc0fcdbd2ae6586198afa0f63855",
+        "log": "compat-analysis-continuous_29m-primary.log",
+        "negative_log": "compat-negative-continuous_29m-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-continuous_29m-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-continuous_29m.log",
+        "test_log_sha256": "55ee3aafb5eee25e219b8411adf7b5dc2ee6a1340e5d30491da1a2432776ecfe"
+      },
+      "physical_preparation": {
+        "receipt": "physical-continuous_29m-receipt.json",
+        "sha256": "14f869625d0c8a2ddf4fdb6b25d896b1074a55815264e7eb79d799553fe4e155"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-continuous_29m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m --diagnostic --output .runtime-work/c375342-owner/delivery-continuous_29m-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-continuous_29m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_29m --output .runtime-work/c375342-owner/delivery-continuous_29m-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "8733a9b82d573f2e362a26b4c15af8433c736218b323f5e8055cec6395f5d07d",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-continuous_29m-positive.log",
+        "test_log_sha256": "303574bcfffcbfed320906b5fbc3c3a8671c187e9f0fb984b4dde9851f621fa8",
+        "negative_log": "cpu-delivery-continuous_29m-negative.log",
+        "negative_log_sha256": "fd2566ba65789c28d14f3a5936c99661e2ead9cb0a35294ee1f7583204ef1601"
       }
     },
     {
       "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m",
       "construction": "cases/continuous_30m/construction.json",
-      "construction_sha256": "f77c650a4c18527c9ae3e744c389f4ae9ee23d12b21764a94d01801c6231b89f",
+      "construction_sha256": "02435b9dd4bb22d75aa520ea41fdcd6e211d9795152d7b7815dc8c79203be773",
       "candidate_risk": {
         "status": "physical",
         "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
@@ -97,7 +149,7 @@
         {
           "id": "fallback1",
           "construction": "cases/continuous_30m/fallback1-construction.json",
-          "construction_sha256": "6460919e169a305a314e78193f27dc08ab7aae4c9621f181221e7d9dfaba9ec6",
+          "construction_sha256": "85ea3dce61b7e63cad809f1519b0247c3678a84e4afa66ff687ea623d3170803",
           "trigger": {
             "source": "original parking-history.jsonl and reference_corner.mkv",
             "metric": "entry/return duration, outside-space placement or lost frame continuity",
@@ -110,9 +162,15 @@
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m --candidate fallback1 --output .runtime-work/c375342-owner/offline-continuous_30m-fallback1",
             "exit_code": 0,
-            "construction_sha256": "6460919e169a305a314e78193f27dc08ab7aae4c9621f181221e7d9dfaba9ec6",
+            "construction_sha256": "85ea3dce61b7e63cad809f1519b0247c3678a84e4afa66ff687ea623d3170803",
             "log": "cpu-offline-continuous_30m-fallback1.log",
             "log_sha256": "6e94216307f650a57e98923a25f2d30d6fe7ad82062bed76108384b2bf23cd26"
+          },
+          "compatibility": {
+            "receipt": "compat-continuous_30m-fallback1.json",
+            "sha256": "9ec0f5cfe2e468e747dde4115a67bea8fd75eb871ef50fe6d32152666900ecaf",
+            "log": "compat-analysis-continuous_30m-fallback1.log",
+            "negative_log": "compat-negative-continuous_30m-fallback1.log"
           }
         }
       ],
@@ -163,15 +221,61 @@
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m --candidate primary --output .runtime-work/c375342-owner/offline-continuous_30m-primary",
         "exit_code": 0,
-        "construction_sha256": "f77c650a4c18527c9ae3e744c389f4ae9ee23d12b21764a94d01801c6231b89f",
+        "construction_sha256": "02435b9dd4bb22d75aa520ea41fdcd6e211d9795152d7b7815dc8c79203be773",
         "log": "cpu-offline-continuous_30m-primary.log",
         "log_sha256": "999ef604c83f303963a20aad7b737339729f947dde1b2f42d12f74c0a3eccd7c"
+      },
+      "compatibility": {
+        "receipt": "compat-continuous_30m-primary.json",
+        "sha256": "f0c2d601109fd8c62040db42b5e8da71c1a9296d903615afb5039724a6c5a76a",
+        "log": "compat-analysis-continuous_30m-primary.log",
+        "negative_log": "compat-negative-continuous_30m-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-continuous_30m-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-continuous_30m.log",
+        "test_log_sha256": "830a2ededa0521a7225591cf9e0cd0a981b5cd478b5e5ce60e47182256172a8b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-continuous_30m-receipt.json",
+        "sha256": "5b49fe00e7c695fa995be5fffc2c31864acbf67787484d70d0e0029cb6f99af8"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-continuous_30m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m --diagnostic --output .runtime-work/c375342-owner/delivery-continuous_30m-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-continuous_30m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_30m --output .runtime-work/c375342-owner/delivery-continuous_30m-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "8733a9b82d573f2e362a26b4c15af8433c736218b323f5e8055cec6395f5d07d",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-continuous_30m-positive.log",
+        "test_log_sha256": "67a16c8dd1d49ef37fad9c6d43f7cce977d5e7e45dc452f3f71e300ffc9b9a43",
+        "negative_log": "cpu-delivery-continuous_30m-negative.log",
+        "negative_log_sha256": "fd2566ba65789c28d14f3a5936c99661e2ead9cb0a35294ee1f7583204ef1601"
       }
     },
     {
       "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m",
       "construction": "cases/continuous_31m/construction.json",
-      "construction_sha256": "f7f6f5cb77dfb434ffe6b6ca7c1b7fdd9d215797f1865723d0a6555c4bd25ebc",
+      "construction_sha256": "66e57ec6fee387aaedb92b3c260ec5b17b27065027877413106190e97c989b72",
       "candidate_risk": {
         "status": "physical",
         "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
@@ -180,7 +284,7 @@
         {
           "id": "fallback1",
           "construction": "cases/continuous_31m/fallback1-construction.json",
-          "construction_sha256": "3773cb09131f164d3db872515dd670594d8e7f5a0d5de1732c2a9834a8a8e207",
+          "construction_sha256": "db57693412652fc0f4362edb8a37e49c57fd5c88331dc679315d7a6c3c61e801",
           "trigger": {
             "source": "original parking-history.jsonl and reference_corner.mkv",
             "metric": "entry/return duration, outside-space placement or lost frame continuity",
@@ -193,9 +297,15 @@
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m --candidate fallback1 --output .runtime-work/c375342-owner/offline-continuous_31m-fallback1",
             "exit_code": 0,
-            "construction_sha256": "3773cb09131f164d3db872515dd670594d8e7f5a0d5de1732c2a9834a8a8e207",
+            "construction_sha256": "db57693412652fc0f4362edb8a37e49c57fd5c88331dc679315d7a6c3c61e801",
             "log": "cpu-offline-continuous_31m-fallback1.log",
             "log_sha256": "291c9a30e0683564c8c5d622f7e43c7d09dc9fc603ff68a09aa06ca19f733457"
+          },
+          "compatibility": {
+            "receipt": "compat-continuous_31m-fallback1.json",
+            "sha256": "e108259f93f4534aaf58c9bb1b513a223332d0c3aaee8c302ec7ed42268ac08b",
+            "log": "compat-analysis-continuous_31m-fallback1.log",
+            "negative_log": "compat-negative-continuous_31m-fallback1.log"
           }
         }
       ],
@@ -246,15 +356,61 @@
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m --candidate primary --output .runtime-work/c375342-owner/offline-continuous_31m-primary",
         "exit_code": 0,
-        "construction_sha256": "f7f6f5cb77dfb434ffe6b6ca7c1b7fdd9d215797f1865723d0a6555c4bd25ebc",
+        "construction_sha256": "66e57ec6fee387aaedb92b3c260ec5b17b27065027877413106190e97c989b72",
         "log": "cpu-offline-continuous_31m-primary.log",
         "log_sha256": "c87b22bee23d717863eaa82566a2dba90b601ca1df1209083bfad67dd879b090"
+      },
+      "compatibility": {
+        "receipt": "compat-continuous_31m-primary.json",
+        "sha256": "fcb37c532081376d1b850403697a2aba112e00f94e986b6f213ce68e403116ef",
+        "log": "compat-analysis-continuous_31m-primary.log",
+        "negative_log": "compat-negative-continuous_31m-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-continuous_31m-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-continuous_31m.log",
+        "test_log_sha256": "8cdba7caeb3e7b38e35bb7a8cf882f8d47dd18d24236fef512b01effee3a2558"
+      },
+      "physical_preparation": {
+        "receipt": "physical-continuous_31m-receipt.json",
+        "sha256": "b935fa47e3f540b7e29db9059bee8020361e9f25ab459d177ae43c68332d5442"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-continuous_31m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m --diagnostic --output .runtime-work/c375342-owner/delivery-continuous_31m-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-continuous_31m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__continuous_31m --output .runtime-work/c375342-owner/delivery-continuous_31m-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "8733a9b82d573f2e362a26b4c15af8433c736218b323f5e8055cec6395f5d07d",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-continuous_31m-positive.log",
+        "test_log_sha256": "9eb1004d619583ca82ca6a765daeae0edf9000b36e562f19d0bd7f9ed3e45d8d",
+        "negative_log": "cpu-delivery-continuous_31m-negative.log",
+        "negative_log_sha256": "fd2566ba65789c28d14f3a5936c99661e2ead9cb0a35294ee1f7583204ef1601"
       }
     },
     {
       "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m",
       "construction": "cases/return_total_30m/construction.json",
-      "construction_sha256": "7767148d29b42948225c3be81a6f205a997542f81c59416dff9eda91c4608dff",
+      "construction_sha256": "0da6e955f11b5390df6bf0ce273b2a24924c771dfee761f165c8439a9d3cc3ee",
       "candidate_risk": {
         "status": "physical",
         "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
@@ -263,7 +419,7 @@
         {
           "id": "fallback1",
           "construction": "cases/return_total_30m/fallback1-construction.json",
-          "construction_sha256": "4dfb1b47190a0b280efe263888f16b79f34063a18a47fa7a31f95292065da271",
+          "construction_sha256": "b195fe8f85dd566029974d1ffe9c3066bde6e823319dd72a17c2442e2bef6b8c",
           "trigger": {
             "source": "original parking-history.jsonl and reference_corner.mkv",
             "metric": "entry/return duration, outside-space placement or lost frame continuity",
@@ -276,9 +432,15 @@
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m --candidate fallback1 --output .runtime-work/c375342-owner/offline-return_total_30m-fallback1",
             "exit_code": 0,
-            "construction_sha256": "4dfb1b47190a0b280efe263888f16b79f34063a18a47fa7a31f95292065da271",
+            "construction_sha256": "b195fe8f85dd566029974d1ffe9c3066bde6e823319dd72a17c2442e2bef6b8c",
             "log": "cpu-offline-return_total_30m-fallback1.log",
             "log_sha256": "bed254fa9fc0385b90978f9d3f92ca691a2780a31a4e80c62b12096925938051"
+          },
+          "compatibility": {
+            "receipt": "compat-return_total_30m-fallback1.json",
+            "sha256": "78195da265ac667afc06875f400c9c5e3f37a6efd4ab8fa3e4f9e62f06d0ff6c",
+            "log": "compat-analysis-return_total_30m-fallback1.log",
+            "negative_log": "compat-negative-return_total_30m-fallback1.log"
           }
         }
       ],
@@ -329,15 +491,61 @@
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m --candidate primary --output .runtime-work/c375342-owner/offline-return_total_30m-primary",
         "exit_code": 0,
-        "construction_sha256": "7767148d29b42948225c3be81a6f205a997542f81c59416dff9eda91c4608dff",
+        "construction_sha256": "0da6e955f11b5390df6bf0ce273b2a24924c771dfee761f165c8439a9d3cc3ee",
         "log": "cpu-offline-return_total_30m-primary.log",
         "log_sha256": "f0045b3110aee54389df9e08766c9cbff8f14ed6cc9e94e46278d5aca0c2344d"
+      },
+      "compatibility": {
+        "receipt": "compat-return_total_30m-primary.json",
+        "sha256": "3b85ec15487c003f40453a0235a8f92941011a20c0224cc42aade6467909d8e6",
+        "log": "compat-analysis-return_total_30m-primary.log",
+        "negative_log": "compat-negative-return_total_30m-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-return_total_30m-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-return_total_30m.log",
+        "test_log_sha256": "5a2d5e7e77ab4fedfe9259b65c0f33535130b816997bf50902c673ebe51bfe3e"
+      },
+      "physical_preparation": {
+        "receipt": "physical-return_total_30m-receipt.json",
+        "sha256": "8f3c3897cbdd3d091719ffb1c3f68d9bfefc7b611d55f545632bb7e51e39afd1"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-return_total_30m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m --diagnostic --output .runtime-work/c375342-owner/delivery-return_total_30m-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-return_total_30m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_30m --output .runtime-work/c375342-owner/delivery-return_total_30m-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "8733a9b82d573f2e362a26b4c15af8433c736218b323f5e8055cec6395f5d07d",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-return_total_30m-positive.log",
+        "test_log_sha256": "b891ca45e7fee3283ceb6689e2d9dae0420200ab55dc757b5245cd138d389572",
+        "negative_log": "cpu-delivery-return_total_30m-negative.log",
+        "negative_log_sha256": "fd2566ba65789c28d14f3a5936c99661e2ead9cb0a35294ee1f7583204ef1601"
       }
     },
     {
       "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m",
       "construction": "cases/return_total_31m/construction.json",
-      "construction_sha256": "4e54389bbf46c4c85615b57cc8aebe261ac9f7ffed8adb8390ff7cf4ac815995",
+      "construction_sha256": "6e968ef648b46feddca3ab2a94114c420da9e58c63b82fdf65baf30000dba44f",
       "candidate_risk": {
         "status": "physical",
         "reason": "Long source history or exact boundary placement may drift; original vehicle may miss the reviewed marked angle space or return interval."
@@ -346,7 +554,7 @@
         {
           "id": "fallback1",
           "construction": "cases/return_total_31m/fallback1-construction.json",
-          "construction_sha256": "2be2c2d72db940d5eb1c406d32026cf5df95d34b59dc2b842dbb130b87735002",
+          "construction_sha256": "e17edbbdd526da7972834986afe98a548873e2ecdee6722b469c45e95d101922",
           "trigger": {
             "source": "original parking-history.jsonl and reference_corner.mkv",
             "metric": "entry/return duration, outside-space placement or lost frame continuity",
@@ -359,9 +567,15 @@
           "offline": {
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m --candidate fallback1 --output .runtime-work/c375342-owner/offline-return_total_31m-fallback1",
             "exit_code": 0,
-            "construction_sha256": "2be2c2d72db940d5eb1c406d32026cf5df95d34b59dc2b842dbb130b87735002",
+            "construction_sha256": "e17edbbdd526da7972834986afe98a548873e2ecdee6722b469c45e95d101922",
             "log": "cpu-offline-return_total_31m-fallback1.log",
             "log_sha256": "cb4f3330807a34a66b36a5392c3fcad57e98dbcb6365ed38414afc948f2b9c0b"
+          },
+          "compatibility": {
+            "receipt": "compat-return_total_31m-fallback1.json",
+            "sha256": "0aa3baef1e4173bcd2f72de5a43efefc15734d99322278a5a3a87833fabc9baf",
+            "log": "compat-analysis-return_total_31m-fallback1.log",
+            "negative_log": "compat-negative-return_total_31m-fallback1.log"
           }
         }
       ],
@@ -412,9 +626,55 @@
       "offline": {
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m --candidate primary --output .runtime-work/c375342-owner/offline-return_total_31m-primary",
         "exit_code": 0,
-        "construction_sha256": "4e54389bbf46c4c85615b57cc8aebe261ac9f7ffed8adb8390ff7cf4ac815995",
+        "construction_sha256": "6e968ef648b46feddca3ab2a94114c420da9e58c63b82fdf65baf30000dba44f",
         "log": "cpu-offline-return_total_31m-primary.log",
         "log_sha256": "14d7acccfbebc0fc2ab67ef4954e0e0e967e8044288d0f742290bf8d99709bd4"
+      },
+      "compatibility": {
+        "receipt": "compat-return_total_31m-primary.json",
+        "sha256": "7bf120a159daa207d45e3578614ed94f7c22b384230552afec3e802852374f64",
+        "log": "compat-analysis-return_total_31m-primary.log",
+        "negative_log": "compat-negative-return_total_31m-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-return_total_31m-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/execution-manifest.json --case testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-return_total_31m.log",
+        "test_log_sha256": "d885d04095f37239029bc23a41abd9277146eb657239210420a962c3526c957c"
+      },
+      "physical_preparation": {
+        "receipt": "physical-return_total_31m-receipt.json",
+        "sha256": "08b1a7c55935e657d2e70b45d8c9f4da5bfcf5ea23404d88be81790e1d26f35f"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-return_total_31m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m --diagnostic --output .runtime-work/c375342-owner/delivery-return_total_31m-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver/delivery_audit.py --attempt .runtime-work/c375342-owner/audit-return_total_31m --case-id testing__C375342__LVMC-11-52-180-C__motor_vehicle_driver__return_total_31m --output .runtime-work/c375342-owner/delivery-return_total_31m-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "8733a9b82d573f2e362a26b4c15af8433c736218b323f5e8055cec6395f5d07d",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-return_total_31m-positive.log",
+        "test_log_sha256": "692f761baa5d2b6c1d06ee81b52fcc65ec75e6631f8e1892d2bb3d836caf6619",
+        "negative_log": "cpu-delivery-return_total_31m-negative.log",
+        "negative_log_sha256": "fd2566ba65789c28d14f3a5936c99661e2ead9cb0a35294ee1f7583204ef1601"
       }
     }
   ],

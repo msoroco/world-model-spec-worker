@@ -18,7 +18,7 @@ def main():
     hashes = {}
     for case in plan['cases']:
         suffix = case['case_id'].split('__')[-1]
-        source = REPO/'.runtime-work/c393262-bus'/('compat-'+suffix+'-v2')/'analysis-report.json'
+        source = REPO/'.runtime-work/c393262-bus'/('compat-'+suffix+'-v4')/'analysis-report.json'
         saved = ROOT/'cases'/suffix/'diagnostic-analysis-report.json'
         saved.write_bytes(source.read_bytes())
         compatibility = json.loads((ROOT/'cases'/suffix/'primary-compatibility.json').read_text())

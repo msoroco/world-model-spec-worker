@@ -51,6 +51,7 @@ def build() -> None:
         for name, source in [('runner.py', ROOT / 'runner.py'),
                              ('bus_duration.py', ROOT / 'bus_duration.py'),
                              ('native_capture.py', ROOT / 'native_capture.py'),
+                             ('assemble_reviewed_activity.py', ROOT / 'assemble_reviewed_activity.py'),
                              ('analysis.py', ROOT / 'analysis.py'),
                              ('tests/test_bundle.py', ROOT / 'tests/test_bundle.py'),
                              ('config.json', folder / 'config.json'),
@@ -59,7 +60,21 @@ def build() -> None:
                             'content': source.read_text()})
         construction = {'law_id': plan['law_id'], 'cell_id': plan['cell_id'], 'actor': plan['actor'],
                         'case_id': case['case_id'], 'entrypoint': 'runner.py',
-                        'recording_description': recording, 'files': entries}
+                        'recording_description': recording, 'files': entries,
+                        'measurement_plan': {
+                            'bus_identity': 'source-hashed non-tour bus and covered operator',
+                            'stop_designation': 'official location-specific City Traffic Engineer duration and conditions',
+                            'activity_interval': 'independent start/end review joined to 900 Native bus footprint frames',
+                            'duration_relation': 'observed uninterrupted interval versus actual D; no legal verdict'},
+                        'static_checks': ['exact C393262 case/config selection',
+                                          'reviewed original site and designation SHA-256 before Native spawn',
+                                          '900 synchronized frames and four camera sources'],
+                        'termination_rules': ['stop at 900 Native ticks',
+                                              'fail on incomplete bus interval or source/camera mismatch'],
+                        'mechanisms': ['reviewed original Native map and bus-stop site',
+                                       'non-tour bus with approach, stopped interval and departure',
+                                       'four synchronized RGB cameras',
+                                       'saved original bus footprint and velocity samples']}
         write(folder / 'construction.json', construction)
     for name in ('config.json', 'scene.json', 'construction.json'):
         (ROOT / name).write_text((ROOT / 'cases/park_below' / name).read_text())

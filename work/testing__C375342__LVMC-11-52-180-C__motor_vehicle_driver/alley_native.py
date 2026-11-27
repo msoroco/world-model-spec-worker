@@ -162,9 +162,11 @@ def run_native(cfg, site, records, site_path, output, host, port):
             raise ValueError('loaded original OpenDRIVE differs from reviewed source')
         target = site['target_xy']
         relocation = site['relocation_xy']
+        exit_station = site['exit_xy']
         target_wp = mapping.get_waypoint(carla.Location(x=target[0],y=target[1],z=0))
         relocation_wp = mapping.get_waypoint(carla.Location(x=relocation[0],y=relocation[1],z=0))
-        if not target_wp or target_wp.road_id != site['road_id'] or not relocation_wp:
+        exit_wp = mapping.get_waypoint(carla.Location(x=exit_station[0],y=exit_station[1],z=0))
+        if not target_wp or target_wp.road_id != site['road_id'] or not relocation_wp or not exit_wp:
             raise ValueError('Native target alley or relocation station differs from reviewed source')
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -199,6 +201,7 @@ def run_native(cfg, site, records, site_path, output, host, port):
                    'engineer_designation_source':site['sources']['designation']['sha256'],
                    'angle_marking_source':site['sources']['marking']['sha256'],
                    'other_parking_rules_source':site['sources']['other_parking_rules']['sha256'],
+                   'loading_activity_source':site['sources']['other_parking_rules']['sha256'],
                    'prior_vehicle_history_source':site['sources']['prior_history']['sha256'],
                    'review_status':'original_reviewed'}
         write(output/'alley-context.json',context)
@@ -218,7 +221,7 @@ def run_native(cfg, site, records, site_path, output, host, port):
         with (output/'parking-history.jsonl').open('x',buffering=1) as stream:
             for index in range(total_frames):
                 desired_park = desired_station(index/20,requested,lead)
-                station = target if desired_park else relocation
+                station = target if desired_park else (exit_station if index/20 >= requested[-1][1] else relocation)
                 transform = ego.get_transform()
                 velocity = ego.get_velocity()
                 speed = math.sqrt(velocity.x**2+velocity.y**2+velocity.z**2)
@@ -242,7 +245,8 @@ def run_native(cfg, site, records, site_path, output, host, port):
                 position = [transform.location.x,transform.location.y]
                 in_space = inside(tuple(position),marking['governed_space_polygon_xy'])
                 parked = bool(speed<=.15 and in_space)
-                row = {'frame':frame,'sample_index':index,'time_s':time_s-first_time,
+                row = {'frame':frame,'sample_index':index,'time_s':time_s,
+                       'relative_time_s':time_s-first_time,
                        'native_time_s':time_s,'position_xy':position,'body_yaw_degrees':transform.rotation.yaw,
                        'speed_mps':speed,'parked_observed':parked,'inside_marked_space':in_space,
                        'desired_park':desired_park,'control_state':state,'control_command':command,

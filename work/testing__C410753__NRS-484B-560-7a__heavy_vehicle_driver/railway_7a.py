@@ -86,8 +86,11 @@ def validate_site(site: dict, case_name: str):
     if not isinstance(coupled, list):
         raise ValueError("coupled-unit inventory required")
     for unit in coupled:
-        if not all(unit.get(k) for k in ("actor_id", "dimensions_source_ref", "coupling_source_ref")):
+        if not all(unit.get(k) for k in ("actor_id", "blueprint_id", "dimensions_m",
+                                         "dimensions_source_ref", "coupling_source_ref")):
             raise ValueError("coupled-unit source missing")
+        if min(_vector(unit["dimensions_m"], "coupled-unit dimensions")) <= 0:
+            raise ValueError("invalid coupled-unit dimensions")
     if not site.get("route_clearance_source_ref") or not site.get("approach_visibility_source_ref"):
         raise ValueError("road route and approach-visibility sources required")
     axis, mode = CASE_AXES[case_name]

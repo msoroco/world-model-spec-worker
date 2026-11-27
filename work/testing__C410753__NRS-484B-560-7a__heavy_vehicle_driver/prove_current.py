@@ -40,7 +40,7 @@ def prove():
         kind = entry["case_id"].removeprefix(HERE.name + "__")
         for candidate in ("primary", "fallback1"):
             tag = kind + "-" + candidate
-            offline = SCRATCH / ("offline-full1-" + tag)
+            offline = SCRATCH / ("offline-full2-" + tag)
             command = [PYTHON, str(REPO / "runtime.py"), "offline", "--manifest", str(MANIFEST),
                        "--case", entry["case_id"], "--output", str(offline), "--python", PYTHON]
             if candidate != "primary":
@@ -54,7 +54,7 @@ def prove():
                 entry["offline"] = proof
             else:
                 entry["candidates"][0]["offline"] = proof
-            compat = SCRATCH / ("compat-full1-" + tag)
+            compat = SCRATCH / ("compat-full2-" + tag)
             ccmd = [PYTHON, str(REPO / "runtime.py"), "compatibility", "--manifest", str(MANIFEST),
                     "--case", entry["case_id"], "--output", str(compat),
                     "--library", str(REPO / "runtime/library"), "--validator", str(VALIDATOR)]
@@ -76,9 +76,9 @@ def prove():
     MANIFEST.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n")
     for entry in manifest["cases"]:
         kind = entry["case_id"].removeprefix(HERE.name + "__")
-        attempt = SCRATCH / ("compat-full1-" + kind + "-primary")
+        attempt = SCRATCH / ("compat-full2-" + kind + "-primary")
         (attempt / "candidate-selection.json").unlink()
-        output = SCRATCH / ("saved-full1-" + kind)
+        output = SCRATCH / ("saved-full2-" + kind)
         cmd = [PYTHON, str(REPO / "runtime.py"), "process-saved", "--manifest", str(MANIFEST),
                "--case", entry["case_id"], "--attempt", str(attempt), "--output", str(output),
                "--library", str(REPO / "runtime/library"), "--validator", str(VALIDATOR)]
@@ -87,10 +87,10 @@ def prove():
             raise ValueError("positive saved-only result incomplete: " + kind)
         log = HERE / ("cpu-saved-" + kind + ".log")
         log.write_text(json.dumps(positive, sort_keys=True, indent=2) + "\n")
-        missing = SCRATCH / ("saved-full1-missing-attempt-" + kind)
+        missing = SCRATCH / ("saved-full2-missing-attempt-" + kind)
         shutil.copytree(attempt, missing)
         (missing / "history.json").unlink()
-        negative = SCRATCH / ("saved-full1-missing-" + kind)
+        negative = SCRATCH / ("saved-full2-missing-" + kind)
         ncmd = cmd.copy()
         ncmd[ncmd.index("--attempt") + 1] = str(missing)
         ncmd[ncmd.index("--output") + 1] = str(negative)

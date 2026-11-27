@@ -92,8 +92,17 @@ def capture(world, *, case_id, site_path, site_sha256, output, operator,
         if any(abs(x - y) > .1 for x, y in zip(dimensions, site["vehicle"]["dimensions_m"])):
             raise ValueError("actual heavy vehicle body dimensions differ")
         for actor, spec in zip(coupled, site["vehicle"]["coupled_units"]):
-            if str(actor.id) != str(spec["actor_id"]):
-                raise ValueError("actual coupled actor identity differs")
+            unit_extent = actor.bounding_box.extent
+            unit_dimensions = [float(unit_extent.x) * 2, float(unit_extent.y) * 2,
+                               float(unit_extent.z) * 2]
+            if (str(actor.id) != str(spec["actor_id"]) or
+                    actor.type_id != spec["blueprint_id"] or
+                    any(abs(x - y) > .1 for x, y in zip(unit_dimensions, spec["dimensions_m"]))):
+                raise ValueError("actual coupled actor identity, blueprint or dimensions differ")
+        if name.startswith("space_"):
+            obstruction = built.get("downstream_obstruction")
+            if obstruction not in owned or not getattr(obstruction, "is_alive", False):
+                raise ValueError("actual opposite-side obstruction actor missing")
         cameras, sensors = operator.cameras(world, vehicle, coupled, site, VIEWS)
         if not isinstance(cameras, dict) or set(cameras) != set(VIEWS) or any(not callable(cameras[v]) for v in VIEWS):
             raise ValueError("four synchronized original RGB sources missing")

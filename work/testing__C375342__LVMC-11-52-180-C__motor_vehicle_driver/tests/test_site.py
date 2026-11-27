@@ -40,10 +40,10 @@ class PositiveSiteTests(unittest.TestCase):
         square = [[0,0],[8,0],[8,8],[0,8]]
         sources = {
             'map': {'opendrive_sha256':'0'*64},
-            'alley': {'jurisdiction':'city','alley_status':'reviewed_original','rear_access_function':True,'cul_de_sac_excluded':True,'definition_source':'municipal-reviewed','alley_extent_polygon_xy':square},
+            'alley': {'jurisdiction':'city','alley_status':'reviewed_original','rear_access_function':True,'cul_de_sac_excluded':True,'definition_source':'municipal-reviewed','nrs_definition_applicability':'unresolved','alley_extent_polygon_xy':square},
             'designation': {'determining_office':'City Traffic Engineer','permission_status':'reviewed_original','angle_parking_permitted':True,'source':'determination-reviewed','permission_extent_polygon_xy':square},
             'marking': {'marking_status':'reviewed_original','permission_indicated':True,'content_review':'angle stalls','governed_space_polygon_xy':square,'prop_blueprint_id':'static.prop.sign','prop_pose':{'x':4,'y':4,'z':0,'yaw_deg':0}},
-            'other_parking_rules': {'review_status':'reviewed_original','otherwise_lawful':True,'source':'all-other-rules-reviewed'},
+            'other_parking_rules': {'review_status':'reviewed_original','otherwise_lawful':True,'source':'all-other-rules-reviewed','applicable_rules_reviewed':['synthetic rule inventory'], 'loading_activity_status':'reviewed_original','loading_activity_source':'synthetic loading review'},
             'vehicle': {'source':'vehicle-review','identity_status':'reviewed_original'},
             'prior_history': {'status':'reviewed_original_not_parked','source':'prior-history-reviewed'},
         }
@@ -54,7 +54,7 @@ class PositiveSiteTests(unittest.TestCase):
             refs[name]={'path':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
         site = {'assignment_id':m.ASSIGNMENT,'case_id':m.ASSIGNMENT+'__continuous_31m',
                 'requested_intervals_s':[[300,2160]],'sources':refs,
-                'target_xy':[4,4],'approach_xy':[20,4],'relocation_xy':[20,4],
+                'target_xy':[4,4],'approach_xy':[20,4],'relocation_xy':[20,4],'exit_xy':[30,4],
                 'map_id':'Town01','road_id':1,'vehicle_blueprint_id':'vehicle.tesla.model3',
                 'approach_heading_degrees':0,'target_heading_degrees':0}
         path=root/'site.json';path.write_text(json.dumps(site))
