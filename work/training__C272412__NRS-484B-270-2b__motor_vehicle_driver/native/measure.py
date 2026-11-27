@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 
 from scene import FRAMES, HZ, FOOT_M
 
-CAMERAS = {"overview", "approach", "reference", "driver"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 SOURCES = ("participant-poses.jsonl", "trace.jsonl", "video_frames.jsonl",
            "road.xodr", "pass-context.json", "capture/evidence.jsonl")
 

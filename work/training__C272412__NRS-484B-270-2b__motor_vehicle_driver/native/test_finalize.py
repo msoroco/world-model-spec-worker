@@ -21,6 +21,9 @@ class FinalizeTests(unittest.TestCase):
             result = finalize(attempt, Path(temp) / "analysis.json")
             self.assertFalse(result["physical_or_legal_acceptance"])
             self.assertEqual(len(list((attempt / "channels").glob("*.jsonl"))), len(CHANNELS))
+            context = json.loads((attempt / "channels/source_review.json").read_text())
+            self.assertIn("source_review", context)
+            self.assertFalse(context["source_review"]["continuous_between_frame_clearance_confirmed"])
             self.assertFalse(json.loads((attempt / "result.json").read_text())["accepted"])
         with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temp:
             attempt = fixture(Path(temp))

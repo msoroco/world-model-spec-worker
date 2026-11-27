@@ -1,5 +1,13 @@
 # NRS-484B-270-2b at C272412
 
+## 2026-11-26 selected Native CPU implementation (current)
+
+The older body-gap checkpoint below is historical. Nine exact selected cases now have inline Native constructions, source-bound measurement contracts, four synchronized camera acquisition plans, and diagnostic fixture recipes. Four comparisons isolate pass-gap, center/no-passing context, the 3-foot numeric edge, and return ordering. The selected rider in this frozen cell is an electric scooter; original rider classification is survey-gated and no bicycle/e-bike source is inferred. Exception cases require original no-passing-zone and cited NRS 484B.213/.217 applicability sources.
+
+The source reducer joins all 600 frames, four camera maps, original actor body polygons, lane/marking context, and the original survey hash. It measures sampled body-to-body gap and return order without treating requested speed or a software trajectory as observed driver behavior. It explicitly leaves continuous between-frame clearance, due care, safely-clear judgment, and conditional center/no-passing authorization for original-source review. A missing or altered required source fails.
+
+Eight focused tests pass. Nine current-runtime offline checks passed on the preceding inline test revision; the current manifest rerun is pending. The first full public compatibility proof (`witness_1`) passes its positive saved finalization, native validation, Core/video decode and missing-source negative after repairing the authored source-context schema. That proof preceded one added test assertion, so the current manifest rerun is pending. The current draft manifest SHA-256 is `7041a8c6d2d49040b38de0336f76cd2109505559fc5f371792c9dbac0180aa28`. Remaining public cases, recorded-only processing, semantic proposals, physical/lifecycle fixtures, independent delivery/comparison audits, and exact scoped strict remain. Status is partial.
+
 ## 2026-11-23 body-gap CPU continuation
 
 The exact source sets a floor of 3 feet (0.9144 m) between **any portion**

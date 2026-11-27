@@ -1,0 +1,156 @@
+{
+  "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane",
+  "selected_case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane",
+  "assignment_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver",
+  "law_id": "LVMC-11-43-010-C1",
+  "cell_id": "C131055",
+  "actor": "motor_vehicle_driver",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "frames": 600,
+  "duration_frames": 600,
+  "candidate_id": "primary",
+  "steer_gain": 1.3,
+  "required_atoms": [
+    "kin.position",
+    "kin.speed"
+  ],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "fps": 20,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "name": "approach",
+      "fps": 20,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "name": "reference_corner",
+      "fps": 20,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "name": "driver_reference",
+      "fps": 20,
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "case": {
+    "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane",
+    "target_law_id": "LVMC-11-43-010-C1",
+    "planning_status": "unverified_definition",
+    "target_type": "controlled_attempt",
+    "comparison_variable": "exit_lane_choice",
+    "comparison_unit": "category",
+    "requested_setting": "left_lane",
+    "recorded_value": null,
+    "case_description": "multi-lane roundabout; same left-turn exit intention and entry; lane allocation change only",
+    "fixed_context": "Keep cell C131055, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. multi-lane roundabout; same left-turn exit intention and entry; lane allocation change only",
+    "source_topic_ids": [
+      "text-0",
+      "text-1",
+      "text-2"
+    ],
+    "selected": true,
+    "kind": "delivery",
+    "selection_status": "selected",
+    "construction_status": "source_bound_cpu_diagnostic_original_native_unverified",
+    "gap_ids": [
+      "left_turn_left_lane_original",
+      "left_turn_right_lane_original"
+    ],
+    "recording_description": {
+      "channels": [
+        {
+          "name": "roundabout_lane_occupancy",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "original map lane topology and frame-joined subject body occupancy",
+          "time_window": "all 600 original Native frames from approach through exit",
+          "reference_frame": "original CARLA map and Native frame",
+          "uncertainty": "physical lane geometry and body projection require original review"
+        },
+        {
+          "name": "entry_exit_intent",
+          "unit": "structured",
+          "sampling_rate_hz": 20,
+          "method": "source-backed requested exit plus actual entry, ring sweep and exit heading",
+          "time_window": "all 600 original Native frames",
+          "reference_frame": "original CARLA map and Native frame",
+          "uncertainty": "intention and exit classification require independent review"
+        },
+        {
+          "name": "ego_pose",
+          "unit": "m,deg",
+          "sampling_rate_hz": 20,
+          "method": "original Native subject transform, velocity and body extent",
+          "time_window": "all 600 original Native frames",
+          "reference_frame": "original CARLA world and Native frame",
+          "uncertainty": "50 ms sampling; original motion unverified"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "context_roundabout_topology",
+          "unit": "structured",
+          "method": "original map ring lane and entry/exit links"
+        }
+      ],
+      "limitations": [
+        "Synthetic fixtures establish software behavior only; original Native motion and pixels unverified.",
+        "Lane choice and intended exit are measured separately from any legal verdict."
+      ]
+    }
+  },
+  "recording_description": {
+    "channels": [
+      {
+        "name": "roundabout_lane_occupancy",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "original map lane topology and frame-joined subject body occupancy",
+        "time_window": "all 600 original Native frames from approach through exit",
+        "reference_frame": "original CARLA map and Native frame",
+        "uncertainty": "physical lane geometry and body projection require original review"
+      },
+      {
+        "name": "entry_exit_intent",
+        "unit": "structured",
+        "sampling_rate_hz": 20,
+        "method": "source-backed requested exit plus actual entry, ring sweep and exit heading",
+        "time_window": "all 600 original Native frames",
+        "reference_frame": "original CARLA map and Native frame",
+        "uncertainty": "intention and exit classification require independent review"
+      },
+      {
+        "name": "ego_pose",
+        "unit": "m,deg",
+        "sampling_rate_hz": 20,
+        "method": "original Native subject transform, velocity and body extent",
+        "time_window": "all 600 original Native frames",
+        "reference_frame": "original CARLA world and Native frame",
+        "uncertainty": "50 ms sampling; original motion unverified"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "context_roundabout_topology",
+        "unit": "structured",
+        "method": "original map ring lane and entry/exit links"
+      }
+    ],
+    "limitations": [
+      "Synthetic fixtures establish software behavior only; original Native motion and pixels unverified.",
+      "Lane choice and intended exit are measured separately from any legal verdict."
+    ]
+  },
+  "physical_acceptance_claimed": false,
+  "legal_verdict": null
+}

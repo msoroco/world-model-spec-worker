@@ -55,14 +55,14 @@ def finalize(attempt, output):
         evidence.append({"name": name, "unit": channel["unit"],
                          "reference": "channels/" + path.name})
     source_review = channels / "source_review.json"
-    source_review.write_text(json.dumps({
+    source_review.write_text(json.dumps({"source_review": {
         "sampling_interval_s": facts["sample_interval_s"],
         "continuous_between_frame_clearance_confirmed": False,
         "safely_clear_legally_judged": False,
         "due_care_legally_judged": False,
         "center_crossing_safety_judged": False,
         "cited_laws_213_217_reviewed": False,
-        "original_sources": facts["source_sha256"]}) + "\n")
+        "original_sources": facts["source_sha256"]}}) + "\n")
     evidence.append({"name": "source_review", "unit": "source context",
                      "reference": "channels/source_review.json"})
     from worker_exchange.native_output import write_result

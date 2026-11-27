@@ -10,7 +10,7 @@ AID = HERE.name
 SUFFIXES = ("witness_1", "witness_2", "exception_1_1", "exception_1_2",
             "numeric_1_0", "numeric_1_1", "numeric_1_2", "ordering_1", "ordering_2")
 CAMERAS = (("overview", 1920, 1080), ("approach", 1280, 720),
-           ("reference", 1280, 720), ("driver", 1280, 720))
+           ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))
 CHANNELS = ("ego_body", "scooter_body", "body_surface_gap", "left_pass",
             "right_return", "center_marking")
 SOURCES = ["participant-poses.jsonl", "trace.jsonl", "video_frames.jsonl",

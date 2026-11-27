@@ -12,7 +12,7 @@ PACKAGE = HERE.parent
 REPO = PACKAGE.parents[1]
 SUFFIXES = tuple(PASS_TARGETS_M)
 CAMERAS = (("overview", 1920, 1080), ("approach", 1280, 720),
-           ("reference", 1280, 720), ("driver", 1280, 720))
+           ("reference_corner", 1280, 720), ("driver_reference", 1280, 720))
 
 
 def sha(path):

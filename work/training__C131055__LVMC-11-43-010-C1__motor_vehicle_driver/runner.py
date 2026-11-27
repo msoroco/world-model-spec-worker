@@ -171,6 +171,7 @@ def execute(output_dir,host,port):
                     'case_id':config['selected_case_id'],'actors':[observed]})+'\n')
                 controls.write(json.dumps({'video_frame':index,'native_frame':native,'time_s':elapsed,
                     'target_xy_m':xy,'target_speed_mps':wanted,'requested_phase':phase,
+                    'exit_intent':intent(case),
                     'throttle':command.throttle,'brake':command.brake,'steer':command.steer})+'\n')
                 trace.write(json.dumps({'frame':native,'time_s':elapsed,
                     'position':{'x':observed['x_m'],'y':observed['y_m'],'z':0},

@@ -14,7 +14,8 @@ class SceneTests(unittest.TestCase):
         self.assertEqual(proof["rate_hz"], 20)
         self.assertEqual(len(PASS_TARGETS_M), 9)
         self.assertEqual((FRAMES, HZ), (600, 20))
-        self.assertEqual([row[0] for row in CAMERAS], ["overview", "approach", "reference", "driver"])
+        self.assertEqual([row[0] for row in CAMERAS],
+                         ["overview", "approach", "reference_corner", "driver_reference"])
 
     def test_opposing_lane_and_marking_difference(self):
         for marking in (False, True):

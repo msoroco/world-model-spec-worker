@@ -56,7 +56,7 @@ def fixture(root, suffix="witness_1"):
         traces.append({"frame": native, "time_s": time_s})
         frames.append({"carla_frame": native, "time_s": time_s,
                        "camera_native_frames": {name: native for name in
-                                                ("overview", "approach", "reference", "driver")}})
+                                                ("overview", "approach", "reference_corner", "driver_reference")}})
         captures.append({"original_frame": native})
     for name, rows in (("participant-poses.jsonl", poses), ("trace.jsonl", traces),
                        ("video_frames.jsonl", frames), ("capture/evidence.jsonl", captures)):
@@ -80,7 +80,7 @@ class MeasureTests(unittest.TestCase):
             self.assertFalse(facts["safely_clear_legally_judged"])
             source = attempt / "video_frames.jsonl"
             original = source.read_text()
-            source.write_text(original.replace('"driver": 1200', '"driver": 9999', 1))
+            source.write_text(original.replace('"driver_reference": 1200', '"driver_reference": 9999', 1))
             with self.assertRaisesRegex(ValueError, "four-camera"):
                 measure(attempt)
             source.write_text(original)

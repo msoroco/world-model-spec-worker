@@ -18,8 +18,8 @@ from scene import PASS_TARGETS_M, FRAMES, HZ, check as scene_check, open_drive, 
 
 CAMERAS = (("overview", 1920, 1080, -10, -18, 28),
            ("approach", 1280, 720, -43, -12, 8),
-           ("reference", 1280, 720, 0, -12, 8),
-           ("driver", 1280, 720, 25, -12, 8))
+           ("reference_corner", 1280, 720, 0, -12, 8),
+           ("driver_reference", 1280, 720, 25, -12, 8))
 
 
 def check(case_suffix):
@@ -90,6 +90,10 @@ def execute(case_suffix, case_id, output, host, port):
     if not survey_path:
         raise ValueError("SCENARIO_CONTEXT_SURVEY required for original scooter identity")
         survey = survey_check(json.loads(Path(survey_path).read_text()))
+    if case_suffix == "exception_1_2" and not survey.get("no_passing_zone_source"):
+        raise ValueError("Original no-passing-zone designation source required")
+    if case_suffix.startswith("exception_") and not survey.get("cited_213_217_applicability_source"):
+        raise ValueError("Original NRS 484B.213/.217 applicability source required")
     output = Path(output).resolve()
     if not output.is_dir() or (output / "participant-poses.jsonl").exists():
         raise ValueError("Materialized original attempt must be fresh")

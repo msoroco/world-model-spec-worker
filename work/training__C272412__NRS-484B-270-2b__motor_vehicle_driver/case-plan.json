@@ -397,9 +397,9 @@
         "cycle_pass_clearance"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "same one-lane-per-direction map geometry except named center marking variable",
-        "same scooter/ego identities, longitudinal trajectories, recording policy, controller capability and 600-frame observation window"
+        "same frozen cell and driver actor",
+        "same one-lane-per-direction map and center marking",
+        "same surveyed electric-scooter identity, longitudinal trajectories, recording policy, controller capability and 600-frame observation window"
       ]
     },
     {
@@ -409,12 +409,12 @@
         "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__exception_1_2"
       ],
       "deliberate_differences": [
-        "exception_1_applicability"
+        "original center marking and no-passing-zone applicability source"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "same one-lane-per-direction map geometry except named center marking variable",
-        "same scooter/ego identities, longitudinal trajectories, recording policy, controller capability and 600-frame observation window"
+        "same frozen cell and driver actor",
+        "same one-lane-per-direction road geometry and surveyed electric-scooter identity",
+        "same requested body gap, longitudinal trajectories, recording policy, controller capability and 600-frame observation window"
       ]
     },
     {
@@ -428,7 +428,9 @@
         "minimum_bicycle/scooter_pass_gap"
       ],
       "fixed_conditions": [
-        "same applicable statutory branch, actor, map, controllers and observation policy; construction proof pending"
+        "same frozen cell and driver actor",
+        "same one-lane-per-direction map and center marking",
+        "same surveyed electric-scooter identity, longitudinal trajectories, recording policy, controller capability and 600-frame observation window"
       ]
     },
     {
@@ -483,7 +485,7 @@
     },
     {
       "term": "rel.surface_gap",
-      "purpose": "the lateral clearance, against the 3-foot minimum \u2014 body to body",
+      "purpose": "the lateral clearance, against the 3-foot minimum — body to body",
       "status": "measurement_mapping_pending"
     },
     {
@@ -503,7 +505,7 @@
     },
     {
       "term": "drv.within_signed_zone",
-      "purpose": "kind no_passing \u2014 the zone the pass may cross",
+      "purpose": "kind no_passing — the zone the pass may cross",
       "status": "measurement_mapping_pending"
     },
     {
@@ -514,64 +516,34 @@
   ],
   "observations": [
     {
-      "name": "drv.overtaking",
+      "name": "ego_body",
       "mandatory": true,
-      "reason": "the pass"
+      "reason": "Original motor-vehicle body vertices, joined to exact frame and camera IDs"
     },
     {
-      "name": "drv.passing_side",
+      "name": "scooter_body",
       "mandatory": true,
-      "reason": "it must be on the left"
+      "reason": "Original surveyed electric-scooter body vertices, joined to exact frame and camera IDs"
     },
     {
-      "name": "ru.bicycle",
+      "name": "body_surface_gap",
       "mandatory": true,
-      "reason": "the overtaken rider"
+      "reason": "Polygon surface distance at each recorded frame; between-frame clearance remains unverified"
     },
     {
-      "name": "ru.electric_bicycle",
+      "name": "left_pass",
       "mandatory": true,
-      "reason": "or an electric bicycle"
+      "reason": "Measured left-side relation during sampled abreast interval"
     },
     {
-      "name": "ru.electric_scooter",
+      "name": "right_return",
       "mandatory": true,
-      "reason": "or an electric scooter"
+      "reason": "Measured first return-right frame and order relative to last sampled abreast frame"
     },
     {
-      "name": "st.lane_adjacency",
+      "name": "center_marking",
       "mandatory": true,
-      "reason": "only one lane in the direction"
-    },
-    {
-      "name": "rel.surface_gap",
-      "mandatory": true,
-      "reason": "the lateral clearance, against the 3-foot minimum \u2014 body to body"
-    },
-    {
-      "name": "kin.extent",
-      "mandatory": true,
-      "reason": "'any portion of the vehicle': the clearance is measured from the bodies, not the centres"
-    },
-    {
-      "name": "rel.ahead_behind_in_lane",
-      "mandatory": true,
-      "reason": "'safely clear' before returning right"
-    },
-    {
-      "name": "st.centre_line",
-      "mandatory": true,
-      "reason": "the centre the pass may cross"
-    },
-    {
-      "name": "drv.within_signed_zone",
-      "mandatory": true,
-      "reason": "kind no_passing \u2014 the zone the pass may cross"
-    },
-    {
-      "name": "st.lane_marking",
-      "mandatory": true,
-      "reason": "the no-passing striping"
+      "reason": "Original authored road marking readback, with zone designation requiring separate source"
     }
   ],
   "candidate_plans": [],
@@ -595,5 +567,209 @@
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
     "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "source_observation_terms": [
+    {
+      "name": "drv.overtaking",
+      "mandatory": false,
+      "reason": "the pass"
+    },
+    {
+      "name": "drv.passing_side",
+      "mandatory": false,
+      "reason": "it must be on the left"
+    },
+    {
+      "name": "ru.bicycle",
+      "mandatory": false,
+      "reason": "the overtaken rider"
+    },
+    {
+      "name": "ru.electric_bicycle",
+      "mandatory": false,
+      "reason": "or an electric bicycle"
+    },
+    {
+      "name": "ru.electric_scooter",
+      "mandatory": false,
+      "reason": "or an electric scooter"
+    },
+    {
+      "name": "st.lane_adjacency",
+      "mandatory": false,
+      "reason": "only one lane in the direction"
+    },
+    {
+      "name": "rel.surface_gap",
+      "mandatory": false,
+      "reason": "the lateral clearance, against the 3-foot minimum — body to body"
+    },
+    {
+      "name": "kin.extent",
+      "mandatory": false,
+      "reason": "'any portion of the vehicle': the clearance is measured from the bodies, not the centres"
+    },
+    {
+      "name": "rel.ahead_behind_in_lane",
+      "mandatory": false,
+      "reason": "'safely clear' before returning right"
+    },
+    {
+      "name": "st.centre_line",
+      "mandatory": false,
+      "reason": "the centre the pass may cross"
+    },
+    {
+      "name": "drv.within_signed_zone",
+      "mandatory": false,
+      "reason": "kind no_passing — the zone the pass may cross"
+    },
+    {
+      "name": "st.lane_marking",
+      "mandatory": false,
+      "reason": "the no-passing striping"
+    }
+  ],
+  "source_observation_mapping": {
+    "drv.overtaking": {
+      "evidence": "Original longitudinal and lateral body histories establish the sampled pass",
+      "channels": [
+        "ego_body",
+        "scooter_body",
+        "left_pass"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.passing_side": {
+      "evidence": "Original body positions establish sampled left-side relation",
+      "channels": [
+        "left_pass",
+        "ego_body",
+        "scooter_body"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.bicycle": {
+      "evidence": "Legal rider-class alternative only; not the selected surveyed electric-scooter actor",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.electric_bicycle": {
+      "evidence": "Legal rider-class alternative only; not the selected surveyed electric-scooter actor",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.electric_scooter": {
+      "evidence": "Selected rider class requires original mobility design/use survey in pass-context.json",
+      "channels": [
+        "scooter_body"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "Original road.xodr and pass-context.json establish one same-direction lane; marking alone is insufficient",
+      "channels": [
+        "center_marking"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "Original body-polygon gap sampled every 50 ms, not a continuous guarantee",
+      "channels": [
+        "body_surface_gap",
+        "ego_body",
+        "scooter_body"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "kin.extent": {
+      "evidence": "Original body vertices, not actor centers, define measured extent",
+      "channels": [
+        "ego_body",
+        "scooter_body"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "rel.ahead_behind_in_lane": {
+      "evidence": "Longitudinal order and first right return are measured; legally safely clear remains unjudged",
+      "channels": [
+        "right_return",
+        "ego_body",
+        "scooter_body"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.centre_line": {
+      "evidence": "Original road.xodr center location and marking readback",
+      "channels": [
+        "center_marking"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.within_signed_zone": {
+      "evidence": "Original no-passing-zone source is separately required; marking alone does not establish zone",
+      "channels": [
+        "center_marking"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_marking": {
+      "evidence": "Original road.xodr and context marking readback",
+      "channels": [
+        "center_marking"
+      ],
+      "source_refs": [
+        "inputs/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "full motor vehicle and scooter body histories plus lane context",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "original scooter class and same-way approach context",
+        "interval": "startup through pass completion"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "body-to-body lateral gap and center marking",
+        "interval": "first abreast through last abreast"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver forward approach and return-right trajectory",
+        "interval": "startup through final observation"
+      }
+    ]
+  }
 }

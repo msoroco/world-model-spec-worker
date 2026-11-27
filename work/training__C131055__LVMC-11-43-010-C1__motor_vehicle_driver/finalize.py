@@ -121,6 +121,8 @@ def analyze(attempt):
             raise ValueError('Original subject roadway phase unobserved')
         if command.get('requested_phase') != phase:
             raise ValueError('Requested and observed roadway phase differ')
+        if command.get('exit_intent') != intent(case):
+            raise ValueError('Original control intent differs from selected exit')
         x, y = ego['x_m'], ego['y_m']
         unwrapped = None
         if phase == 'circulation':
@@ -183,7 +185,7 @@ def measure_exit_intent(analysis):
                       'legal_result': None},
             'method': 'measure_exit_intent',
             'sources': {name: hashes[name] for name in
-                        ('config.json', 'control-intent.jsonl',
+                        ('control-intent.jsonl',
                          'native-raw-actors.jsonl', 'video_frames.jsonl')}}
 
 
@@ -215,7 +217,19 @@ def finalize(attempt, output):
             for row in analysis['rows']:
                 stream.write(json.dumps({'time_s': row['time_s'], 'value': row},
                                         allow_nan=False) + '\n')
-        references.append({'name': name, 'unit': 'structured', 'reference': reference})
+        references.append({'name': name,
+                           'unit': 'm,deg' if name == 'ego_pose' else 'structured',
+                           'reference': reference})
+    context_reference = 'channels/context_roundabout_topology.json'
+    (attempt / context_reference).write_text(json.dumps({
+        'context_roundabout_topology': {
+            'source_sha256': {name: analysis['source_sha256'][name] for name in
+                              ('road.xodr', 'roundabout-map-readback.json')},
+            'ring_road_ids': [1, 2, 3, 4], 'entry_road_id': 5,
+            'exit_road_ids': [6, 7], 'physical_review_complete': False}},
+        indent=2) + '\n')
+    references.append({'name': 'context_roundabout_topology',
+                       'unit': 'structured', 'reference': context_reference})
     for name, expected in analysis['source_sha256'].items():
         if digest(attempt / name) != expected:
             raise ValueError('Original source changed during analysis: ' + name)
@@ -236,8 +250,9 @@ def finalize(attempt, output):
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': analysis['recording_description'],
               'recording_evidence': references,
-              'realized_observables': {'ring_lane': {'value': measurement,
-                  'unit': 'structured', 'method': 'source-bound 600-frame lane meter',
+              'realized_observables': {'left_lane_frame_count': {
+                  'value': measurement['left_lane_frame_count'],
+                  'unit': 'count', 'method': 'source-bound 600-frame lane meter',
                   'time_window': '600 original Native frames', 'statistic': 'all',
                   'reference': 'channels/roundabout_lane_occupancy.jsonl'}},
               'accepted': False, 'legal_verdict_claimed': False}
