@@ -1,0 +1,162 @@
+{
+  "assignment_id": "training__C179819__NRS-484B-600-1c__motor_vehicle_driver",
+  "law_id": "NRS-484B-600-1c",
+  "cell_id": "C179819",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__below_posted",
+  "case": {
+    "case_id": "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__below_posted",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "ego_pose",
+          "unit": "m",
+          "sampling_rate_hz": 20,
+          "method": "Original Native actor position after each tick",
+          "time_window": "600 frames / 30 s",
+          "reference_frame": "reviewed highway portion",
+          "uncertainty": "50 ms sampling and original map review"
+        },
+        {
+          "name": "measured_speed_vs_posted_limit",
+          "unit": "mph",
+          "sampling_rate_hz": 20,
+          "method": "Norm of original Native three-axis velocity with sourced posting context",
+          "time_window": "600 frames / 30 s",
+          "reference_frame": "original sign passage and governed portion",
+          "uncertainty": "50 ms sampling; original authority and posting review pending"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "public_authority_posting",
+          "unit": "structured",
+          "method": "original source with independent review"
+        },
+        {
+          "name": "governed_highway_portion",
+          "unit": "structured",
+          "method": "original source with independent review"
+        },
+        {
+          "name": "sign_position",
+          "unit": "structured",
+          "method": "original source with independent review"
+        },
+        {
+          "name": "native_map",
+          "unit": "structured",
+          "method": "original source with independent review"
+        }
+      ],
+      "limitations": [
+        "Requested speed does not establish measured speed.",
+        "Authored sign does not establish a public-authority posting.",
+        "No legal outcome is inferred from CPU diagnostics."
+      ]
+    }
+  },
+  "supported_case_ids": [
+    "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__below_posted",
+    "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__at_posted",
+    "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__above_posted"
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "rate_hz": 20,
+  "duration_s": 30,
+  "frames": 600,
+  "requested_speed_mph": 25.0,
+  "posted_speed_request_mph": 30,
+  "physical_completion": {
+    "criterion": "travel_progress",
+    "minimum_progress_m": 100.0,
+    "engineering_tolerances_not_legal": true,
+    "completion_goal_method": "Original Native roadway travel through sourced posted zone"
+  },
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fps": 20,
+      "fov_deg": 85,
+      "pose_strategy": "surveyed_world"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 85,
+      "pose_strategy": "surveyed_world"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 85,
+      "pose_strategy": "surveyed_world"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 85,
+      "pose_strategy": "ego_attached"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "Original Native actor position after each tick",
+        "time_window": "600 frames / 30 s",
+        "reference_frame": "reviewed highway portion",
+        "uncertainty": "50 ms sampling and original map review"
+      },
+      {
+        "name": "measured_speed_vs_posted_limit",
+        "unit": "mph",
+        "sampling_rate_hz": 20,
+        "method": "Norm of original Native three-axis velocity with sourced posting context",
+        "time_window": "600 frames / 30 s",
+        "reference_frame": "original sign passage and governed portion",
+        "uncertainty": "50 ms sampling; original authority and posting review pending"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "public_authority_posting",
+        "unit": "structured",
+        "method": "original source with independent review"
+      },
+      {
+        "name": "governed_highway_portion",
+        "unit": "structured",
+        "method": "original source with independent review"
+      },
+      {
+        "name": "sign_position",
+        "unit": "structured",
+        "method": "original source with independent review"
+      },
+      {
+        "name": "native_map",
+        "unit": "structured",
+        "method": "original source with independent review"
+      }
+    ],
+    "limitations": [
+      "Requested speed does not establish measured speed.",
+      "Authored sign does not establish a public-authority posting.",
+      "No legal outcome is inferred from CPU diagnostics."
+    ]
+  },
+  "physical_acceptance_claimed": false,
+  "legal_verdict": null
+}

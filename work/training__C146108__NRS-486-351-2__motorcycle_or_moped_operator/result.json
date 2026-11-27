@@ -1,18 +1,45 @@
 {
   "assignment_id": "training__C146108__NRS-486-351-2__motorcycle_or_moped_operator",
   "input_sha256": "f43b569aa480546e8455aa9ed5e06749982135451237b26b4c5f44676ed8e900",
-  "status": "partial",
-  "reason": "Controlled_2 motorcycle same-lane Native draft passes pinned offline and source-bound measurement diagnostics; following case, statutory alternatives, fallback candidates, compatibility, saved processing and independent audits remain unfinished CPU work. No physical realization claimed.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "planned_case_count": 2,
   "candidate_count": 0,
-  "source_law_review": "Exact law text and witness inspected; summary is recovered_requires_source_review",
+  "source_law_review": "Exact NRS 486.351(2) prohibits driving a motorcycle, moped or trimobile abreast of, overtaking or passing another vehicle in one lane. Subsection 3 permits no more than two motorcycles or mopeds abreast with driver consent; it cannot apply to the selected motorcycle and car pair. Following and passing cases are source-measured; no legal verdict or physical acceptance is claimed.",
   "accepted_membership_count": 0,
   "reuse_count": 0,
-  "unresolved_branch_count": 2,
+  "unresolved_branch_count": 0,
   "applied_update": 16,
   "cpu_proof_logs": [
     "cpu-offline-proof.log",
     "measurement-proof.log"
+  ],
+  "selected_delivery_case_count": 2,
+  "cpu_checkpoint": {
+    "selected_cases": 2,
+    "primary_offline_passed": 2,
+    "primary_public_positive_and_missing_source_negative_passed": 2,
+    "recorded_only_saved_passed": 2,
+    "physical_lifecycle_cpu_case_count": 2,
+    "semantic_stage_count": 6,
+    "independent_delivery_positive_negative_passed": 2,
+    "independent_comparison_diagnostic_passed": 1,
+    "original_native_executed": false,
+    "diagnostic_only": true
+  },
+  "remaining_gpu_checks": [
+    "Original Native motorcycle and car trajectories, full body positions, camera pixels and physical pass/follow review",
+    "Independent motorcycle/other-vehicle classification, same-lane and subsection 3 pair review",
+    "Canonical accepted delivery and legal judgment after original sources"
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C146108__NRS-486-351-2__motorcycle_or_moped_operator --case training__C146108__NRS-486-351-2__motorcycle_or_moped_operator__controlled_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "tests": [
+    {
+      "command": "cd work/training__C146108__NRS-486-351-2__motorcycle_or_moped_operator && PYTHONPATH=$PWD/native SCENARIO_PIPELINE_OUTPUT_ROOT=../../.runtime-work/c146108-moto ../../.venv-cpu/bin/python -B -m unittest discover -s tests -p test*.py -v",
+      "exit_code": 0,
+      "log": "native/combined-cpu-tests.log",
+      "sha256": "7c37a5a91485affe0b1180369c00c3db6821d2dbd53e618dbf90bdc21df1170e"
+    }
   ]
 }

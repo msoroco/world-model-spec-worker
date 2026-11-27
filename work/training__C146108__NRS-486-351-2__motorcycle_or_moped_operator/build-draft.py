@@ -36,7 +36,8 @@ def build():
         'limitations': ['CPU construction does not establish actual Native motion or pixels',
                         'Driver consent cannot be inferred from the actor arrangement',
                         'Operative subsection 3 text is absent from the frozen law field']}
-    config = {'case_id': CASE, 'selected_case_id': CASE, 'supported_case_ids': [CASE],
+    config = {'case_id': CASE, 'selected_case_id': CASE,
+              'supported_case_ids': [ROOT.name + '__controlled_1', CASE],
               'case_suffix': 'controlled_2', 'candidate_id': 'primary',
               'cell_id': 'C146108', 'law_id': 'NRS-486-351-2',
               'actor': 'motorcycle_or_moped_operator', 'rider_class': 'motorcycle',

@@ -46,7 +46,7 @@ def main():
             'obligation': {'type': 'must_not',
                            'description': 'Do not drive abreast of, overtake or pass the other vehicle within that lane.',
                            'numeric_conditions': []},
-            'exceptions': [{'source_clause': 'Except as provided in subsection 3; motorcycles and mopeds may, with consent of the drivers, be operated no more than two abreast in a single traffic lane.',
+            'exceptions': [{'source_clause': 'Motorcycles and mopeds may, with the consent of the drivers, be operated no more than two abreast in a single traffic lane.',
                             'condition': 'Two motorcycle or moped drivers consent and no more than two ride abreast.',
                             'effect': 'Permitted abreast operation; not applicable to a motorcycle-car pair.'}],
             'timing': {'description': 'Compare original complete body overlap and behind-to-ahead episode at 20 Hz over 30 seconds.',
@@ -65,7 +65,8 @@ def main():
             'context_inputs': [{'name': 'subsection_3_exception', 'unit': 'source text',
                                 'description': 'Class-pair and consent source review'}],
             'sweep_dimensions': [], 'landmarks': [],
-            'recording_needs': [],
+            'recording_needs': [{'name': 'ru.motorcycle', 'unit': 'structured',
+                'description': 'Original motorcycle and other-vehicle blueprint identities, complete body poses, four-view pixels and consent source review.'}],
             'limitations': [judgment['note'], 'Actual Native pass, pixels and classification require original physical review.']}})
     binding = {'cell_id': 'C146108', 'actor': ASSIGNMENT['actor'], 'status': 'draft',
         'established_contexts': [],

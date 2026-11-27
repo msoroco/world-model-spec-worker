@@ -27,9 +27,9 @@ def main():
     for i, case in enumerate(manifest['cases'], 1):
         suffix = f'controlled_{i}'
         proof = ROOT / 'native/proofs' / suffix
-        compat = SCRATCH / f'compat-{i}-v3'
-        offline = SCRATCH / f'offline-{i}-v5'
-        saved = SCRATCH / f'saved-{i}-v1/v0001'
+        compat = SCRATCH / f'compat-{i}-v4'
+        offline = SCRATCH / f'offline-{i}-v6'
+        saved = SCRATCH / f'saved-{i}-v2/v0001'
         for source, target in (
             (compat / 'compatibility.json', proof / 'compatibility.json'),
             (compat / 'compatibility-analysis.log', proof / 'positive-analysis.log'),
@@ -53,7 +53,7 @@ def main():
             'command': f'SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c146108-moto '
                        f'.venv-cpu/bin/python -B runtime.py offline --manifest '
                        f'work/{ROOT.name}/execution-manifest.json --case {case["case_id"]} '
-                       f'--output .runtime-work/c146108-moto/offline-{i}-v5',
+                       f'--output .runtime-work/c146108-moto/offline-{i}-v6',
             'log': str(offlog.relative_to(ROOT)), 'log_sha256': sha(offlog)}
         processing = proof / 'processing.json'
         saved_log = proof / 'saved.log'

@@ -28,6 +28,7 @@ def prove(case, source, scratch):
     suffix = case.rsplit('__', 1)[-1]
     config = package / ('native/config.json' if suffix == 'opening_left' else 'native/cases/' + suffix + '/config.json')
     rows = [json.loads(line) for line in (source / 'trace.jsonl').read_text().splitlines()]
+    body_rows = [json.loads(line) for line in (source / 'body_history.jsonl').read_text().splitlines()]
     fixtures = []
     for kind, expected in [('complete_motion', 'met'), ('incomplete_motion', 'not_met'), ('missing_evidence', 'unverified')]:
         attempt = scratch / kind
@@ -37,16 +38,18 @@ def prove(case, source, scratch):
         shutil.copyfile(source / 'acquisition-provenance.json', attempt / 'acquisition-provenance.json')
         if kind != 'missing_evidence':
             data = json.loads(json.dumps(rows))
-            if kind == 'complete_motion':
-                for index, row in enumerate(data):
-                    row['position_m'] = [index * .2, 0, 1]
-                    row['speed_mps'] = 4
+            body = json.loads(json.dumps(body_rows))
             if kind == 'incomplete_motion':
                 initial = data[0]['position_m']
                 for row in data:
                     row['position_m'] = initial
                     row['speed_mps'] = 0
+                for row in body:
+                    row['position_m'] = body[0]['position_m']
+                    row['body_vertices_m'] = body[0]['body_vertices_m']
+                    row['heading_deg'] = body[0]['heading_deg']
             (attempt / 'trace.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in data))
+            (attempt / 'body_history.jsonl').write_text(''.join(json.dumps(row) + '\n' for row in body))
         result = physical_result(attempt, {'target_checks': []})
         status = result['physical_checks']['maneuver']['status']
         if status != expected or result['maneuver_completed'] != (expected == 'met'):

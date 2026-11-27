@@ -54,9 +54,7 @@ def main():
                     acquisition={name: {'entrypoint': 'runner.py',
                            'method': 'Original Native actor bodies, lane source and synchronized four-camera capture',
                            'evidence': list(SOURCES)} for name in
-                           ('ru.motorcycle', 'ru.moped', 'st.lane', 'rel.occupies',
-                            'rel.longitudinal_overlap', 'drv.overtaking',
-                            'rel.bearing', 'ru.motor_vehicle', 'rel.surface_gap')},
+                           {channel['name'] for channel in proposal['recording_description']['channels']}},
                     offline={}, compatibility={}, negative={}, post_capture={},
                     physical_preparation={}, delivery_acceptance={})
         cases.append(case)
@@ -65,6 +63,10 @@ def main():
                 'status': 'partial', 'cases': cases}
     put(ROOT / 'execution-manifest.json', manifest)
     (ROOT / 'construction.json').write_text((ROOT / cases[0]['construction']).read_text())
+    for file in json.loads((ROOT / cases[0]['construction']).read_text())['files']:
+        path = ROOT / file['path']
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(file['content'])
     print(json.dumps({'cases': [c['case_id'] for c in cases],
                       'construction_sha256': [sha(ROOT / c['construction']) for c in cases]}))
 

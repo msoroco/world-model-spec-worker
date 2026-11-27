@@ -23,8 +23,8 @@ def require(value, message):
 def audit():
     configs, sources, values = [], [], []
     for i in (1, 2):
-        attempt = SCRATCH / f'compat-{i}-v3'
-        saved = SCRATCH / f'saved-{i}-v1/v0001'
+        attempt = SCRATCH / f'compat-{i}-v4'
+        saved = SCRATCH / f'saved-{i}-v2/v0001'
         config = read(attempt / 'config.json')
         processing = read(saved / 'processing.json')
         report = read(saved / 'analysis/analysis-report.json')

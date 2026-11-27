@@ -32,7 +32,7 @@
         "training__C146108__NRS-486-351-2__motorcycle_or_moped_operator__controlled_1",
         "training__C146108__NRS-486-351-2__motorcycle_or_moped_operator__controlled_2"
       ],
-      "evidence_or_gap": "Controlled_1 following and controlled_2 passing are selected with exact source-bound Native constructions; CPU compatibility, saved processing and independent acceptance are in progress."
+      "evidence_or_gap": "Controlled_1 following and controlled_2 passing have selected exact source-bound Native constructions. Both passed current-runtime offline, public positive and missing-source negative compatibility, recorded-only processing, semantic, physical/lifecycle, independent delivery and comparison CPU proofs. Original Native motion, camera pixels, physical completion and legal acceptance remain unverified until local source capture and review."
     },
     {
       "requirement": "NRS-486-351-2",
@@ -54,7 +54,7 @@
     {
       "case_id": "training__C146108__NRS-486-351-2__motorcycle_or_moped_operator__controlled_1",
       "target_law_id": "NRS-486-351-2",
-      "kind": "planned_only",
+      "kind": "selected_delivery",
       "source_branch": "Same-lane overtaking or passing on a multilane road",
       "physical_target": "remain behind other vehicle in same lane",
       "comparison_variable": "same-lane passing versus following",
@@ -66,7 +66,7 @@
     {
       "case_id": "training__C146108__NRS-486-351-2__motorcycle_or_moped_operator__controlled_2",
       "target_law_id": "NRS-486-351-2",
-      "kind": "planned_only",
+      "kind": "selected_delivery",
       "source_branch": "Same-lane overtaking or passing on a multilane road",
       "physical_target": "overtake other vehicle within same lane",
       "comparison_variable": "same-lane passing versus following",
@@ -200,9 +200,8 @@
   "existing_evidence": [],
   "reuse_count": 0,
   "runtime_uncertainties": [
-    "Controlled_2 has an offline-passing Native and source-bound measurement draft; physical Native motion and pixels remain unverified.",
-    "Controlled_1 following construction, abreast alternative, moped/trimobile alternatives, consent and subsection 3 exception review remain open.",
-    "No saved processing, compatibility, independent delivery audit, candidate fallbacks or complete selected manifest is proven."
+    "Original Native motion, pixels, class identities and same-lane full-body history require independent acceptance.",
+    "CPU source-shaped fixture proves the analysis path only; no legal or physical acceptance is claimed."
   ],
   "unverified_physical_assumptions": [
     "Frozen cell can physically realize required law context",
@@ -225,62 +224,125 @@
   },
   "source_observation_mapping": {
     "ru.motorcycle": {
-      "measurement": "original blueprint ID and independent Chapter 486 class review",
       "sources": [
         "pass-context.json",
         "participant-poses.jsonl"
-      ]
+      ],
+      "evidence": "original blueprint ID and independent Chapter 486 class review",
+      "channels": [
+        "ru.motorcycle"
+      ],
+      "source_refs": []
     },
     "ru.moped": {
-      "measurement": "statutory alternative pending distinct moped construction",
       "sources": [
         "assignment.json"
-      ]
+      ],
+      "evidence": "statutory alternative pending distinct moped construction",
+      "channels": [
+        "ru.moped"
+      ],
+      "source_refs": []
     },
     "st.lane": {
-      "measurement": "OpenDRIVE lane section and original body corners",
       "sources": [
         "road.xodr",
         "participant-poses.jsonl"
-      ]
+      ],
+      "evidence": "OpenDRIVE lane section and original body corners",
+      "channels": [
+        "st.lane"
+      ],
+      "source_refs": []
     },
     "rel.occupies": {
-      "measurement": "both full bodies inside the same lane on every frame",
       "sources": [
         "road.xodr",
         "participant-poses.jsonl"
-      ]
+      ],
+      "evidence": "both full bodies inside the same lane on every frame",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": []
     },
     "rel.longitudinal_overlap": {
-      "measurement": "source-bound longitudinal body interval overlap",
       "sources": [
         "participant-poses.jsonl"
-      ]
+      ],
+      "evidence": "source-bound longitudinal body interval overlap",
+      "channels": [
+        "rel.longitudinal_overlap"
+      ],
+      "source_refs": []
     },
     "drv.overtaking": {
-      "measurement": "behind, overlap, clear-ahead episode order",
       "sources": [
         "participant-poses.jsonl",
         "video_frames.jsonl"
-      ]
+      ],
+      "evidence": "behind, overlap, clear-ahead episode order",
+      "channels": [
+        "drv.overtaking"
+      ],
+      "source_refs": []
     },
     "rel.bearing": {
-      "measurement": "lateral body order during overlap",
       "sources": [
         "participant-poses.jsonl"
-      ]
+      ],
+      "evidence": "lateral body order during overlap",
+      "channels": [
+        "rel.bearing"
+      ],
+      "source_refs": []
     },
     "ru.motor_vehicle": {
-      "measurement": "other actor blueprint and independent class review",
       "sources": [
         "pass-context.json"
-      ]
+      ],
+      "evidence": "other actor blueprint and independent class review",
+      "channels": [
+        "ru.motor_vehicle"
+      ],
+      "source_refs": []
     },
     "rel.surface_gap": {
-      "measurement": "minimum lateral full-body surface gap during overlap",
       "sources": [
         "participant-poses.jsonl"
-      ]
+      ],
+      "evidence": "minimum lateral full-body surface gap during overlap",
+      "channels": [
+        "rel.surface_gap"
+      ],
+      "source_refs": []
     }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both same-lane vehicles and complete pass corridor",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "initial motorcycle following gap and approach",
+        "interval": "approach through overlap"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "side-by-side body and same traffic lane",
+        "interval": "overlap interval"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "motorcycle and other vehicle relative order",
+        "interval": "all 600 frames"
+      }
+    ]
   }
 }

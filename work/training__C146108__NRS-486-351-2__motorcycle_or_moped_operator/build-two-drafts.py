@@ -38,7 +38,7 @@ def main():
             config = json.loads(item['content'])
             config['case_id'] = follow_id
             config['selected_case_id'] = follow_id
-            config['supported_case_ids'] = [follow_id]
+            config['supported_case_ids'] = [follow_id, prefix + '__controlled_2']
             config['case_suffix'] = 'controlled_1'
             config['case'] = {'case_id': follow_id}
             config['physical_target'] = {'behavior': 'same-lane following without overlap'}
@@ -56,8 +56,8 @@ def main():
                         'construction': str(path.relative_to(ROOT)),
                         'construction_sha256': sha(path),
                         'candidate_risk': {
-                            'status': 'physical',
-                            'reason': 'Original motorcycle path, full-body lane containment and camera visibility may fail'},
+                            'status': 'none',
+                            'reason': 'No independently justified alternate physical knob within the exact frozen one-way lane, actor pair and source-bound capture; original Native feasibility remains subject to local review'},
                         'candidates': [], 'measurement_procedure': {'entrypoint': procedure},
                         'delivery_readiness': 'incomplete'})
     manifest = {'format': 'worker-selected-cpu-draft-manifest-v1',
