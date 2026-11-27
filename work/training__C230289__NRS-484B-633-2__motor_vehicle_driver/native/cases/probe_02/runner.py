@@ -9,11 +9,12 @@ import math
 import os
 from pathlib import Path
 import queue
+import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = "training__C230289__NRS-484B-633-2__motor_vehicle_driver"
-VIEWS = ("overview", "approach", "reference", "driver")
+VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def require(ok, message):
@@ -28,7 +29,7 @@ def check(config):
     require(config["frozen_cell"] == {"layout": "road", "maneuver": "travel",
                                       "control": "speed_limit_sign"}, "frozen cell changed")
     require(config["status"] == "selected_cpu_prepared"
-            and config["physical_completion"] is False and config["legal_verdict"] is None,
+            and not config.get("physical_completion") and config["legal_verdict"] is None,
             "unproved outcome claimed")
     require(config["rate_hz"] == 20 and config["duration_s"] == 30 and config["frames"] == 600,
             "30-second capture missing")
@@ -104,7 +105,7 @@ def execute(config, output_dir, survey_path, host, port):
     sys.path.insert(1, str(repo / "runtime" / "python"))
     import carla
     from pipeline_capture import PipelineCapture
-    from worker_exchange.native_output import FrameMap
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import restore, snapshot
 
     output = Path(output_dir)
@@ -114,7 +115,8 @@ def execute(config, output_dir, survey_path, host, port):
     client.set_timeout(15)
     world = client.get_world()
     original = snapshot(client)
-    actors, sensors = [], []
+    actors, sensors, encoders, codes = [], [], {}, {}
+    completed = False
     images = queue.Queue()
     try:
         require(world.get_map().name == survey["map_name"], "survey map differs")
@@ -141,7 +143,13 @@ def execute(config, output_dir, survey_path, host, port):
                                        carla.Rotation(pitch=pitch, yaw=cyaw, roll=roll)), attach_to=vehicle)
             actors.append(sensor)
             sensors.append(sensor)
-            (output / camera["name"]).mkdir()
+            encoders[camera["name"]] = subprocess.Popen([
+                "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+                "-f", "rawvideo", "-pix_fmt", "bgra",
+                "-s", f"{camera['width']}x{camera['height']}", "-r", "20", "-i", "-",
+                "-frames:v", "600", "-c:v", "ffv1", "-level", "1",
+                str(output / (camera["name"] + ".mkv"))],
+                stdin=subprocess.PIPE, stderr=subprocess.PIPE)
             sensor.listen(lambda image, name=camera["name"]: images.put((name, image)))
         with PipelineCapture(client, vehicle, output, config["case_id"], required_observations=config["required_atoms"]) as capture, \
                 FrameMap(output / "video_frames.jsonl") as frame_map, \
@@ -164,7 +172,7 @@ def execute(config, output_dir, survey_path, host, port):
                     name, image = images.get(timeout=15)
                     if image.frame != native_frame or name in seen:
                         continue
-                    image.save_to_disk(str(output / name / f"{frame:06d}.png"))
+                    encoders[name].stdin.write(image.raw_data)
                     seen.add(name)
                 capture.capture(native_frame, frame / 20, extra={"video_frame": frame})
                 frame_map.append(native_frame, frame / 20,
@@ -179,12 +187,27 @@ def execute(config, output_dir, survey_path, host, port):
                                         "requested_speed_mph": survey["administrative_declaration"]["safe_maximum_mph"] + config["requested_offset_from_declared_maximum_mph"],
                                         "on_structure_verified": inside_polygon(observed_pose.location.x, observed_pose.location.y, survey["structure_polygon_xy_m"]),
                                         "structure_occupancy_source": survey["structure_source_id"]}) + "\n")
+        for name, process in encoders.items():
+            process.stdin.close()
+            error = process.stderr.read()
+            codes[name] = process.wait(timeout=180)
+            require(codes[name] == 0 and (output / (name + ".mkv")).is_file(),
+                    "Source camera encode failed: " + name + " " + error.decode()[-200:])
+        completed = True
     finally:
+        for process in encoders.values():
+            if process.poll() is None:
+                process.kill()
+                process.wait()
         for sensor in sensors:
             sensor.stop()
         for actor in reversed(actors):
             actor.destroy()
-        restore(client, original)
+        restored = restore(client, original)
+        if completed and len(codes) == 4:
+            seal_capture(output, frames=600, restoration=restored, errors=[],
+                         encoder_exit_codes=codes,
+                         context={"case_id": config["case_id"], "source_review": "pending"})
 
 
 if __name__ == "__main__":

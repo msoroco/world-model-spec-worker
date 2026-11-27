@@ -163,6 +163,10 @@ def finalize(attempt, output):
                 stream.write(json.dumps({"time_s": row["t_s"], "value": value}) + "\n")
         channel_evidence.append({"name": name, "unit": channel["unit"],
                                  "reference": relative})
+    for context in json.loads((attempt / "construction.json").read_text())[
+            "recording_description"]["context_inputs"]:
+        channel_evidence.append({"name": context["name"], "unit": context["unit"],
+                                 "reference": "site-survey.json"})
     report = {"format": "worker-analysis-report", "case_id": case_id,
               "measurements": {"alley_goods_dwell_measurement": {
                   "method": "measure_alley", "value": measured, "sources": sources}},
@@ -179,7 +183,7 @@ def finalize(attempt, output):
               "maneuver_completed": False,
               "termination_reason": "Saved original-source reduction; physical review pending",
               "physical_failure_flags": ["Original physical completion unconfirmed"],
-              "trace_reference": "alley-native.jsonl",
+              "trace_reference": "trace.jsonl",
               "video_references": [view + ".mkv" for view in VIEWS],
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": construction["recording_description"],

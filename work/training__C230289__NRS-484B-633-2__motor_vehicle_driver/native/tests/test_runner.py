@@ -11,7 +11,7 @@ class SourceGatedBridgeTest(unittest.TestCase):
         proof=runner.check(self.config)
         self.assertTrue(proof["selected"])
         self.assertEqual(proof["frame_count"],600)
-        self.assertEqual(proof["views"],["overview","approach","reference","driver"])
+        self.assertEqual(proof["views"],["overview","approach","reference_corner","driver_reference"])
     def test_missing_survey_rejected(self):
         with self.assertRaisesRegex(Exception,"original assignment bridge survey required"):
             runner.read_survey(ROOT/"config.json")

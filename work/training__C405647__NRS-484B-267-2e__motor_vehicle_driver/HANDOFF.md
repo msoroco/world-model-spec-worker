@@ -1,21 +1,19 @@
-# C405647 / NRS 484B.267(2)(e) CPU handoff
+# C405647 NRS 484B.267(2)(e) handoff
 
-Status: **partial**. All three delivery probes remain unselected. `case-plan.json` retains `selected_required` as the statutory planning requirement, not a selected recording or covered branch.
+Five selected exact Native cases cover moving emergency response by nonadjacent lane change, staying adjacent, adverse nonadjacent traffic and rain, stationary emergency with visible driver hand signal preparing to move, and separate law-enforcement officer direction. The law uses source-reviewed possibility and safety; no numerical legal threshold or legal verdict is asserted.
 
-## Exact source and cell
+All five cases passed current-runtime offline, public positive compatibility, missing-source negative, recorded-only saved processing, physical/lifecycle CPU receipts, and independent delivery positive/negative audit. Ten semantic stages were validated. Four controlled comparisons passed complete 600-frame source-joined positive audits and reversed-pair negatives. All fixtures are marked synthetic diagnostic; original CARLA capture, original qualifying lamp/authorization/hand signal/roadway/traffic/weather/officer evidence, physical acceptance, and legal outcome remain for local execution and independent review.
 
-- Current assignment SHA-256 `d199d33786c97f6e4c8cd288f10bf3ea2cfce673f1c05afaa75c462fc34d15dd`; witness SHA-256 `38d969186e2789ef3b5525a0c069c55bfaff6e76f8e6fd3e0ace3488846a9f2a`. No accepted recordings are listed.
-- Fixed cell is `road / travel / emergency_vehicle`, actor `motor_vehicle_driver`. The exact text concerns a driver approaching an authorized emergency or regulatory official vehicle moving or visibly preparing to move with qualifying flashing lights. The nonadjacent-lane duty is conditional on possibility and roadway/traffic/weather/other safety; officer direction is an explicit exception. “Preparing” includes visible movement or driver hand signals. No response deadline, lane-holding interval or numerical safety bound is supplied.
-- The frozen witness is conditional. It suggests a moving emergency actor and three-lane geometry, but does not prove authorization, flashing qualification, observed approach, accessibility, possibility or safety. Probe 01 requests a move over; it does not assert feasibility or legal outcome.
+Exact scoped command passed with exit 0: `SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647-check .venv-cpu/bin/python -B worker_check.py --assignment training__C405647__NRS-484B-267-2e__motor_vehicle_driver --complete --require-delivery-ready`.
 
-## CPU construction and proof
+Proof bindings:
+- `result.json` SHA-256 `147c449f2cb3f25a3b89f17d9bbf7a5a81b9bb113daec6c03be966c6874ef7d1`
+- `execution-manifest.json` SHA-256 `d50092b22780f6c4b24463f638837768b6ce9ff1f775498360e8d1261a15c7c2`
+- `case-plan.json` SHA-256 `0e61678cdc247fea2dcd5d998830d705309ab9f0b4123bee4901e8dc531e5cc1`
+- `proposals/semantic-index.json` SHA-256 `f073c6f50f4f4dfda8024f14b7ab24d4c26e4d75b9545071c0a1102e5ad5d19a`
+- `native/proofs/comparisons/adverse_condition.json` SHA-256 `9d367769608fdf776a89d5b528289668d513689e5cc155e2fc502a88028eaea3`
+- `native/proofs/comparisons/move_vs_adjacent.json` SHA-256 `31cf4c0b1e1dde131d0d19a891ccb09dc21cefaddfd4fc6b6a0162554720b1ad`
+- `native/proofs/comparisons/officer_direction.json` SHA-256 `ad75d68cccd0d162e4b5bace7a4c5ddbd1e84eefcd2962fe8638395318e8f982`
+- `native/proofs/comparisons/preparing_signal.json` SHA-256 `84686563fe9632394d05894b2b869fa3ccfdee42ff66b6319274e72f70dc1436`
 
-- `emergency_lane_measure.py` SHA-256 `22596b002fa1b0b52841c2ef28a6bf16fc9b4c2940e527f18585a7375229239b` requires source IDs for emergency authorization/equipment/lamps, lane topology and roadway/traffic/weather/officer context. It joins 600 contiguous 20 Hz frames to ego and emergency identities, reports observed adjacent/nonadjacent frames only during a flashing moving-or-visibly-preparing approach, and leaves possibility, safety, officer override and legal result null. Its 0.05 m/s movement tolerance is a sensor convention, not a legal cutoff. `prove_emergency_lane.py` SHA-256 `b4af170d0e0118c151c35206087b5495827893fbfe048216e720e5ae529df82f` runs synthetic move-over/stay-adjacent positives and missing lamp, weather and motion-source negatives against current assignment/witness hashes. Normal and `-O` proof logs each SHA-256 `8790237e280ab752ff142317715fd1a549a1a4ad33bbe6fc6df66ead76b04490`. Synthetic packets are CPU diagnostics, not original Native evidence.
-- `native/runner.py` is an executable original-survey-gated CARLA draft for probe 01. It spawns ego and a moving emergency vehicle with requested special lamps, requests a move to a surveyed nonadjacent route, and captures four cameras, 600 frames at 20 Hz, FrameMap, post-tick positions/velocities, map lane IDs and actual light-state value. It labels approach and feasibility **unverified**; requested lamp state does not prove qualifying visible flashes. Construction SHA-256 `45b2bba1688e540a90c6cd85b4342c5fe46c80ba3743ec85637ebf513c619dee`; partial manifest SHA-256 `7d6ce50a803ca88c74e7462217d9ae46ca1a1e08a1b54f710588423ecc5369b0`. Four Native CPU tests pass (log SHA-256 `d95ea19d8f15e6a979f6818ed6d4744384a937007cb17d960435796d2eb459a5`). Pinned `runtime.py offline` passes with `simulation_started: false` (log SHA-256 `73718e998ffa95d450c17ae88d2764aec3448cbad4b748be563e3323ef2a7e7c`).
-- `.venv-cpu/bin/python worker_check.py --assignment training__C405647__NRS-484B-267-2e__motor_vehicle_driver --complete` passes static checks. No strict ready claim is made.
-
-## Remaining worker-owned CPU work
-
-1. Bind original source-hashed lane topology/routes and emergency authorization/equipment/visible flashing, approach, officer-direction and adverse-condition context. Current survey IDs are required by code but no original survey is in the export.
-2. Implement a selected saved finalizer deriving approach, lane occupancy and light observations from raw Native sources and four cameras. Include moving and visibly-preparing branches, officer exception and possible/safe review without invented deadlines or safety thresholds.
-3. Source-review exact comparisons before selecting cases; finish the stay-adjacent and adverse-condition probes, risk-based candidates, current-runtime positive/negative compatibility, saved processing, semantic proposals and independent delivery/comparison audits. Run strict scoped ready gate only after those CPU proofs pass; Native physical realization and acceptance remain local execution work.
+The package is ready for independent strict recheck and shared queue integration.

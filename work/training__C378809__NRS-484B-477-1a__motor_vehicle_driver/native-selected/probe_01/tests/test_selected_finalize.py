@@ -76,7 +76,9 @@ class SavedReducerTest(unittest.TestCase):
                              for name in ("kin.position", "kin.speed", "st.alley", "drv.standing_or_parked",
                                           "kin.time", "kin.extent", "sig.door_open",
                                           "ru.commercial_motor_vehicle",
-                                          "st.driveway_or_alley_entrance", "rel.occupies")]}})
+                                          "st.driveway_or_alley_entrance", "rel.occupies")],
+                "context_inputs": [{"name": "map_name", "unit": "source record"},
+                                   {"name": "ordinance_status_source_id", "unit": "source record"}]}})
             report = module.finalize(root, root / "analysis-report.json")
             self.assertEqual(report["case_id"], case)
             self.assertEqual(len(list((root / "channels").glob("*.jsonl"))), 10)

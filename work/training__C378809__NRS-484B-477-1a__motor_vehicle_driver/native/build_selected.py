@@ -8,6 +8,7 @@ from selected_plan import CASES
 
 PACKAGE = Path(__file__).resolve().parent.parent
 HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[2]
 
 
 def sha(path):
@@ -26,6 +27,7 @@ def main():
                 "runtime_manifest_sha256": sha(Path("runtime/SOURCE-MANIFEST.json")),
                 "delivery_ready": False, "status": "selected_cpu_proofs_pending",
                 "cases": []}
+    proposal_cases = []
     for case_id in CASES:
         suffix = case_id.rsplit("__", 1)[-1]
         destination = PACKAGE / "native-selected" / suffix
@@ -65,7 +67,11 @@ def main():
                                           "kin.extent", "sig.door_open",
                                           "ru.commercial_motor_vehicle",
                                           "st.driveway_or_alley_entrance", "rel.occupies")],
-                "context_inputs": ["original alley survey", "local ordinance review"],
+                "context_inputs": [
+                    {"name": "map_name", "unit": "source record",
+                     "method": "site-survey.json and original map review"},
+                    {"name": "ordinance_status_source_id", "unit": "source record",
+                     "method": "independent jurisdiction and applicability lookup"}],
                 "limitations": ["Scripted goods motion is not original transfer evidence",
                                 "Expeditiousness and ordinance status remain independent judgment"]},
             "measurement_plan": {"method": "source_join_measurement",
@@ -94,8 +100,27 @@ def main():
             "construction_sha256": sha(destination / "construction.json"),
             "measurement_contract": str((destination / "measurement-contract.json").relative_to(PACKAGE)),
             "measurement_procedure": {"entrypoint": "selected_finalize.py"},
+            "fixture_recipe": str((PACKAGE / "native/diagnostic" /
+                                   suffix / "fixture-recipe.json").relative_to(REPO)),
             "candidate_risk": {"status": "none", "reason": "No alternate geometry selected before source review"},
             "candidates": []})
+        proposal_cases.append({
+            "case_id": case_id, "target_law_id": "NRS-484B-477-1a",
+            "target_type": "delivery",
+            "rationale": "Source-gated alley goods activity and measured post-goods dwell; no legal label",
+            "variable_assignments": {
+                "site_source": {"kind": "world_setup", "value": "source-reviewed fixed alley survey"},
+                "requested_goods_motion_frame": {"kind": "controller",
+                    "value": CASES[case_id]["goods_motion_frame"]},
+                "actual_goods_transfer": {"kind": "subject_behavior", "value": None},
+                "expeditiousness": {"kind": "subject_behavior", "value": None}},
+            "unresolved_judgment_calls": ["expeditious loading or unloading of goods",
+                                           "local ordinance applicability"],
+            "recording_description": construction["recording_description"]})
+    write(PACKAGE / "proposals/cases.json", {
+        "cell_id": "C378809", "actor": "motor_vehicle_driver",
+        "status": "draft", "sweep_specs": [], "sweeps_expanded": True,
+        "cases": proposal_cases})
     write(PACKAGE / "selected-draft-manifest.json", manifest)
     return {"cases": len(manifest["cases"]),
             "manifest_sha256": sha(PACKAGE / "selected-draft-manifest.json")}

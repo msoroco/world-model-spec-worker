@@ -10,8 +10,8 @@
       "construction": "cases/probe_01/construction.json",
       "construction_sha256": "151611dd7d63f5cbb78487678f9e949d75bd1bfcfbc5992c26c5be89a5a542e1",
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Original emergency actor flashing, lane movement and hand/officer signal visibility require Native readback and full camera audit."
+        "status": "none",
+        "reason": "No source-preserving alternate construction resolves the remaining original authorization, qualifying visible flashing, approach-lane or officer-direction evidence; these are explicitly reserved for original capture and independent review. The fixed lane and camera design has passed diagnostic CPU checks."
       },
       "candidates": [],
       "delivery_readiness": "cpu_construction_original_capture_pending",
@@ -35,12 +35,138 @@
       "compatibility": {
         "receipt": "native/proofs/probe_01/compatibility.json",
         "sha256": "a58494a0cc9b3e068f47ce098b3a14182195a384cd74e3c7a80d9e3894ecee96",
-        "log": "native/proofs/probe_01/compatibility-analysis.log",
+        "log": "native/proofs/probe_01/positive-analysis.log",
         "negative_log": "native/proofs/probe_01/negative-analysis.log"
       },
       "negative": {
         "log": "native/proofs/probe_01/negative-analysis.log",
         "log_sha256": "4029b8616004e0cba4a71369ae5b8f837a94856e711a7248676d38714c3d0795"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_01 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_01/saved.log",
+        "test_log_sha256": "a6a2b72d8020822670604ad4a30fe751b073fa3929664c59dd883c70974b2fa2",
+        "processing_receipt": "native/proofs/probe_01/processing.json",
+        "processing_receipt_sha256": "a6a2b72d8020822670604ad4a30fe751b073fa3929664c59dd883c70974b2fa2"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_01/physical/proof.json",
+        "sha256": "1f6d5a95986944ea97bccdc70431d6789bfe31b50654260346ede7bf154ea369"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b0e6efaee28d5cbcca90ad2c0f4236496d799f51e70208d09a8430f0998e389f",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_01 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_01/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_01 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_01/delivery/negative.log",
+        "negative_log_sha256": "765812e7f4d483ad9d87ddd45cbd33d50f88bb9c87c53775fc84d441930cb245"
+      },
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "emergency-review.json",
+            "lamp-pixel-review.json",
+            "signal-pixel-review.json"
+          ]
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl",
+            "source_context/lane_topology.txt"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "drv.lane_change_feasible": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt",
+            "source_context/traffic_conditions.txt",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.precipitation": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.wet_road": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt"
+          ]
+        },
+        "drv.queue_behind": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/traffic_conditions.txt"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "signal-pixel-review.json",
+            "source_context/officer_direction.txt"
+          ]
+        }
       }
     },
     {
@@ -49,8 +175,8 @@
       "construction": "cases/probe_02/construction.json",
       "construction_sha256": "c524d1cf05196df4f1f0cbc9c36de781c9ed0e5fb06ab830e15ac47557ea4ba5",
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Original emergency actor flashing, lane movement and hand/officer signal visibility require Native readback and full camera audit."
+        "status": "none",
+        "reason": "No source-preserving alternate construction resolves the remaining original authorization, qualifying visible flashing, approach-lane or officer-direction evidence; these are explicitly reserved for original capture and independent review. The fixed lane and camera design has passed diagnostic CPU checks."
       },
       "candidates": [],
       "delivery_readiness": "cpu_construction_original_capture_pending",
@@ -74,12 +200,138 @@
       "compatibility": {
         "receipt": "native/proofs/probe_02/compatibility.json",
         "sha256": "742e53fbbea343a9ba71478ee27114a2659b6929a4bc6f2d31ceae1f81aa56a3",
-        "log": "native/proofs/probe_02/compatibility-analysis.log",
+        "log": "native/proofs/probe_02/positive-analysis.log",
         "negative_log": "native/proofs/probe_02/negative-analysis.log"
       },
       "negative": {
         "log": "native/proofs/probe_02/negative-analysis.log",
         "log_sha256": "12fdd5389f4f330a0d94500c166fa3f76fc24ab33abd9b6d14de0bcdb9fa1f32"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_02/saved.log",
+        "test_log_sha256": "91a5d210d520e579d61c56746bb5498f4f254c6aaaef85ed8fbade2ebd74a480",
+        "processing_receipt": "native/proofs/probe_02/processing.json",
+        "processing_receipt_sha256": "91a5d210d520e579d61c56746bb5498f4f254c6aaaef85ed8fbade2ebd74a480"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_02/physical/proof.json",
+        "sha256": "18a2801ca00e18168d52bf88b2115b843a75ee887ce4f580ef9a8d7c815b6cdb"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b0e6efaee28d5cbcca90ad2c0f4236496d799f51e70208d09a8430f0998e389f",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_02/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_02 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_02/delivery/negative.log",
+        "negative_log_sha256": "765812e7f4d483ad9d87ddd45cbd33d50f88bb9c87c53775fc84d441930cb245"
+      },
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "emergency-review.json",
+            "lamp-pixel-review.json",
+            "signal-pixel-review.json"
+          ]
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl",
+            "source_context/lane_topology.txt"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "drv.lane_change_feasible": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt",
+            "source_context/traffic_conditions.txt",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.precipitation": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.wet_road": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt"
+          ]
+        },
+        "drv.queue_behind": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/traffic_conditions.txt"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "signal-pixel-review.json",
+            "source_context/officer_direction.txt"
+          ]
+        }
       }
     },
     {
@@ -88,8 +340,8 @@
       "construction": "cases/probe_03/construction.json",
       "construction_sha256": "ced8bf1ccca6b5ef7c2348fae7e7c0287f5c83b6e7023d0943b11e2111fc81ae",
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Original emergency actor flashing, lane movement and hand/officer signal visibility require Native readback and full camera audit."
+        "status": "none",
+        "reason": "No source-preserving alternate construction resolves the remaining original authorization, qualifying visible flashing, approach-lane or officer-direction evidence; these are explicitly reserved for original capture and independent review. The fixed lane and camera design has passed diagnostic CPU checks."
       },
       "candidates": [],
       "delivery_readiness": "cpu_construction_original_capture_pending",
@@ -113,12 +365,138 @@
       "compatibility": {
         "receipt": "native/proofs/probe_03/compatibility.json",
         "sha256": "763f4c68a281cba158d6e92f72e013ec720d4a1483baa3a054cf8b4cce5ca3c5",
-        "log": "native/proofs/probe_03/compatibility-analysis.log",
+        "log": "native/proofs/probe_03/positive-analysis.log",
         "negative_log": "native/proofs/probe_03/negative-analysis.log"
       },
       "negative": {
         "log": "native/proofs/probe_03/negative-analysis.log",
         "log_sha256": "1cf68cf70bd98b6cde7fbd102250447b82866400cf5467b42a989c2c2bb3097c"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_03 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_03/saved.log",
+        "test_log_sha256": "93ef585c8504d934d00f1546ece5e20da287cc16035270f880bf8525f2e98e07",
+        "processing_receipt": "native/proofs/probe_03/processing.json",
+        "processing_receipt_sha256": "93ef585c8504d934d00f1546ece5e20da287cc16035270f880bf8525f2e98e07"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_03/physical/proof.json",
+        "sha256": "76a39703624b027e501fb2682d41a698a3d4cdf65e8e357dd2b82bcb32428697"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_03",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b0e6efaee28d5cbcca90ad2c0f4236496d799f51e70208d09a8430f0998e389f",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_03 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_03/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_03 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_03/delivery/negative.log",
+        "negative_log_sha256": "765812e7f4d483ad9d87ddd45cbd33d50f88bb9c87c53775fc84d441930cb245"
+      },
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "emergency-review.json",
+            "lamp-pixel-review.json",
+            "signal-pixel-review.json"
+          ]
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl",
+            "source_context/lane_topology.txt"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "drv.lane_change_feasible": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt",
+            "source_context/traffic_conditions.txt",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.precipitation": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.wet_road": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt"
+          ]
+        },
+        "drv.queue_behind": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/traffic_conditions.txt"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "signal-pixel-review.json",
+            "source_context/officer_direction.txt"
+          ]
+        }
       }
     },
     {
@@ -127,8 +505,8 @@
       "construction": "cases/probe_04/construction.json",
       "construction_sha256": "34dd3a3eb6d0021b31e6161071e70822398e6def8ca3018739459fa09b5994a3",
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Original emergency actor flashing, lane movement and hand/officer signal visibility require Native readback and full camera audit."
+        "status": "none",
+        "reason": "No source-preserving alternate construction resolves the remaining original authorization, qualifying visible flashing, approach-lane or officer-direction evidence; these are explicitly reserved for original capture and independent review. The fixed lane and camera design has passed diagnostic CPU checks."
       },
       "candidates": [],
       "delivery_readiness": "cpu_construction_original_capture_pending",
@@ -152,12 +530,138 @@
       "compatibility": {
         "receipt": "native/proofs/probe_04/compatibility.json",
         "sha256": "2b523dbbad0926d129d791e2e1b206b8b6deef7a57896815cd4c5460d7219c2e",
-        "log": "native/proofs/probe_04/compatibility-analysis.log",
+        "log": "native/proofs/probe_04/positive-analysis.log",
         "negative_log": "native/proofs/probe_04/negative-analysis.log"
       },
       "negative": {
         "log": "native/proofs/probe_04/negative-analysis.log",
         "log_sha256": "3377d0662457e686ea4e6f80be539cd084ad4c06beb0bd02d0d255a1be3e3a9d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_04 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_04/saved.log",
+        "test_log_sha256": "c1bd4326cf011407b7f9d630b6e7d780ca57100178d03923fb912dc5c9da3c21",
+        "processing_receipt": "native/proofs/probe_04/processing.json",
+        "processing_receipt_sha256": "c1bd4326cf011407b7f9d630b6e7d780ca57100178d03923fb912dc5c9da3c21"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_04/physical/proof.json",
+        "sha256": "766df5ec2032b7c75f7fb1bcc7582ff2cda05c7d91d5af1d426d3f3cfd73ad8f"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_04",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b0e6efaee28d5cbcca90ad2c0f4236496d799f51e70208d09a8430f0998e389f",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_04 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_04/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_04 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_04/delivery/negative.log",
+        "negative_log_sha256": "765812e7f4d483ad9d87ddd45cbd33d50f88bb9c87c53775fc84d441930cb245"
+      },
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "emergency-review.json",
+            "lamp-pixel-review.json",
+            "signal-pixel-review.json"
+          ]
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl",
+            "source_context/lane_topology.txt"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "drv.lane_change_feasible": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt",
+            "source_context/traffic_conditions.txt",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.precipitation": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.wet_road": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt"
+          ]
+        },
+        "drv.queue_behind": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/traffic_conditions.txt"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "signal-pixel-review.json",
+            "source_context/officer_direction.txt"
+          ]
+        }
       }
     },
     {
@@ -166,8 +670,8 @@
       "construction": "cases/probe_05/construction.json",
       "construction_sha256": "9126e0df1ea72aecfb8f5e55e0396ba9b8d870a1f2e15354f6b9fc4cce3e350b",
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Original emergency actor flashing, lane movement and hand/officer signal visibility require Native readback and full camera audit."
+        "status": "none",
+        "reason": "No source-preserving alternate construction resolves the remaining original authorization, qualifying visible flashing, approach-lane or officer-direction evidence; these are explicitly reserved for original capture and independent review. The fixed lane and camera design has passed diagnostic CPU checks."
       },
       "candidates": [],
       "delivery_readiness": "cpu_construction_original_capture_pending",
@@ -191,12 +695,138 @@
       "compatibility": {
         "receipt": "native/proofs/probe_05/compatibility.json",
         "sha256": "b32362945951ec925b5d9f42c0e50cf9e2c5bc4475e9a3937a95336f90864a24",
-        "log": "native/proofs/probe_05/compatibility-analysis.log",
+        "log": "native/proofs/probe_05/positive-analysis.log",
         "negative_log": "native/proofs/probe_05/negative-analysis.log"
       },
       "negative": {
         "log": "native/proofs/probe_05/negative-analysis.log",
         "log_sha256": "bc79dbc88e94707bbaa3450223c82b08345a7e351800ad816ac52d165c52dd86"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_05 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_05/saved.log",
+        "test_log_sha256": "35ffa49a7795c14ad547f24ba2c355e9a7ce42381c85b1dfae7172c1e6032282",
+        "processing_receipt": "native/proofs/probe_05/processing.json",
+        "processing_receipt_sha256": "35ffa49a7795c14ad547f24ba2c355e9a7ce42381c85b1dfae7172c1e6032282"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_05/physical/proof.json",
+        "sha256": "f0e93fd2cad8816408070d286bc8fd13da89db74e74b151d3d1f0e854c16f474"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_05",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "b0e6efaee28d5cbcca90ad2c0f4236496d799f51e70208d09a8430f0998e389f",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_05 --selftest",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_05/delivery/positive.log",
+        "test_log_sha256": "96295d7b48f178853589aa155e4626f29af14ca56504196552e16f30fe540955",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B work/training__C405647__NRS-484B-267-2e__motor_vehicle_driver/delivery_audit.py --case training__C405647__NRS-484B-267-2e__motor_vehicle_driver__probe_05 --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "native/proofs/probe_05/delivery/negative.log",
+        "negative_log_sha256": "765812e7f4d483ad9d87ddd45cbd33d50f88bb9c87c53775fc84d441930cb245"
+      },
+      "acquisition": {
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "emergency-review.json",
+            "lamp-pixel-review.json",
+            "signal-pixel-review.json"
+          ]
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "st.lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl",
+            "source_context/lane_topology.txt"
+          ]
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "road.xodr",
+            "emergency-native.jsonl"
+          ]
+        },
+        "drv.lane_change_feasible": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt",
+            "source_context/traffic_conditions.txt",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.precipitation": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "env.wet_road": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/weather_conditions.txt"
+          ]
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/roadway_conditions.txt"
+          ]
+        },
+        "drv.queue_behind": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "emergency-native.jsonl",
+            "source_context/traffic_conditions.txt"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "Capture original Native actor, camera, frame and lane readback, then join independent source and pixel review without assigning a legal verdict.",
+          "evidence": [
+            "signal-pixel-review.json",
+            "source_context/officer_direction.txt"
+          ]
+        }
       }
     }
   ]
