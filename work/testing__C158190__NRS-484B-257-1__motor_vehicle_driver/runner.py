@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import importlib.util
 import json
 import os
 from pathlib import Path
 
+from carla_yield_operator import make_adapter, validate_scene
 from yield_view_measurement import ASSIGNMENT
 from yield_scene_construction import VARIANTS, construct, validate_site, verify_original_sources
 from native_capture import capture
@@ -35,20 +35,21 @@ def check(site_path=None, site_sha256=None):
             raise ValueError("reviewed original yield-site hash required")
         site = validate_site(site_path, case_id)
         verify_original_sources(site, site_path)
+        validate_scene(site)
     return {"case_id": case_id, "site_sha256": site_sha256}
 
 
-def load_operator(path, digest):
-    if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
-        raise ValueError("reviewed Native operator source hash differs")
-    spec = importlib.util.spec_from_file_location("reviewed_yield_operator", path)
-    if spec is None or spec.loader is None:
-        raise ValueError("reviewed Native operator cannot load")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    if not callable(getattr(module, "make_adapter", None)):
-        raise ValueError("reviewed Native operator factory missing")
-    return module
+def run_attempt(world, adapter, site, site_path, case_id, output_dir, site_hash):
+    """Seal output only after Native settings and owned actors are released."""
+    built = construct(adapter, site_path, case_id)
+    try:
+        capture(world, adapter, site, case_id, output_dir, site_hash)
+    finally:
+        try:
+            adapter.destroy(built["through_vehicle_actor_id"])
+        finally:
+            adapter.destroy(built["yield_sign_actor_id"])
+    return publish(output_dir, map_bytes=adapter.map_bytes(world), restored=True)
 
 
 def main():
@@ -63,26 +64,17 @@ def main():
         return
     site_name = os.environ.get("SCENARIO_YIELD_SITE_PACKET")
     site_hash = os.environ.get("SCENARIO_YIELD_SITE_SHA256")
-    operator_name = os.environ.get("SCENARIO_YIELD_OPERATOR_MODULE")
-    operator_hash = os.environ.get("SCENARIO_YIELD_OPERATOR_SHA256")
-    if not all((site_name, site_hash, operator_name, operator_hash, args.output_dir)):
-        raise ValueError("reviewed yield site, operator and Native output required")
+    if not all((site_name, site_hash, args.output_dir)):
+        raise ValueError("reviewed yield site and Native output required")
     site_path = Path(site_name).resolve()
     selected = check(site_path, site_hash)
-    operator = load_operator(Path(operator_name).resolve(), operator_hash)
     import carla
     client = carla.Client(args.host, args.port)
     client.set_timeout(30.0)
     world = client.get_world()
     site = validate_site(site_path, selected["case_id"])
-    adapter = operator.make_adapter(world, site, selected["case_id"])
-    built = construct(adapter, site_path, selected["case_id"])
-    try:
-        capture(world, adapter, site, selected["case_id"], args.output_dir, site_hash)
-        publish(args.output_dir, map_bytes=adapter.map_bytes(world), restored=True)
-    finally:
-        for actor in reversed((built["through_vehicle_actor_id"], built["yield_sign_actor_id"])):
-            adapter.destroy(actor)
+    adapter = make_adapter(world, site, selected["case_id"])
+    run_attempt(world, adapter, site, site_path, selected["case_id"], args.output_dir, site_hash)
 
 
 if __name__ == "__main__":

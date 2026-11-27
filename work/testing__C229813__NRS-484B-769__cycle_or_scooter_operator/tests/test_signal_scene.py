@@ -67,6 +67,7 @@ class SceneTest(unittest.TestCase):
             "right_turn_route": [[0, 0], [10, 0], [10, -10]],
             "rider_arm_rig": {"right_shoulder": "shoulder.R", "right_elbow": "elbow.R",
                               "right_wrist": "wrist.R", "independent_actuation": True,
+                              "mount_offset_m": [0, 0, 0.6],
                               "posture_rotations_deg": {name: {bone: [0, 0, 0] for bone in
                                   ("shoulder.R", "elbow.R", "wrist.R")} for name in
                                   ("horizontal_right_arm", "downward_right_arm", "bent_right_arm")}},

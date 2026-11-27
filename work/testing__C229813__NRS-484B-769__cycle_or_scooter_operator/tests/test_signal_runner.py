@@ -100,6 +100,7 @@ class RunnerTest(unittest.TestCase):
             "right_turn_route": [[0, 0], [9, 0], [9, -9]],
             "rider_arm_rig": {"right_shoulder": "s", "right_elbow": "e",
                               "right_wrist": "w", "independent_actuation": True,
+                              "mount_offset_m": [0, 0, 0.6],
                               "posture_rotations_deg": {name: {bone: [0, 0, 0] for bone in
                                   ("s", "e", "w")} for name in
                                   ("horizontal_right_arm", "downward_right_arm", "bent_right_arm")}},
@@ -119,13 +120,14 @@ class RunnerTest(unittest.TestCase):
         measured = measure(case_id=self.case_id,
                            context_path=self.output / "signal-context.json",
                            trace_path=self.output / "signal-readback.jsonl",
-                           receipt_path=self.output / "source-receipt.json")
+                           receipt_path=self.output / "signal-receipt.json")
         self.assertEqual(len(measured["roadway_frames"]), FRAMES)
         self.assertEqual(measured["signal_form_judgment"], "unresolved")
         report = analyze(self.output, self.output / "analysis-report.json")
         self.assertEqual(report["case_id"], self.case_id)
         self.assertTrue((self.output / "result.json").is_file())
         self.assertEqual(len(list((self.output / "channels").glob("*.jsonl"))), 4)
+        self.assertTrue((self.output / "channels/reviewed_signal_scene.json").is_file())
 
     def test_missing_actual_arm_readback_fails_and_cleans(self):
         adapter = Adapter(b"road")

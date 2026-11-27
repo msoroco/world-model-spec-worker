@@ -296,31 +296,36 @@
   "law_text": "An operator of a bicycle, an electric bicycle or an electric scooter upon a roadway shall give all signals by hand and arm in the manner required by NRS 484B.420 [DEF-NRS-484B-420], except that the operator may give a signal for a right turn by extending his or her right hand and arm horizontally and to the right side of the bicycle, electric bicycle or electric scooter.",
   "observations": [
     {
+      "mandatory": true,
       "method": "require covered kind and identity source",
-      "name": "operator_class_and_identity",
+      "name": "roadway_occupancy",
       "source": "source-hashed context JSON",
       "status": "implemented_in_signal_measurements.py"
     },
     {
+      "mandatory": true,
       "method": "polygon classify every frame",
-      "name": "highway_roadway_and_shoulder",
+      "name": "roadway_occupancy",
       "source": "source-hashed context JSON and trace contact points",
       "status": "implemented_in_signal_measurements.py"
     },
     {
+      "mandatory": true,
       "method": "verify clockwise turn from first to last heading",
-      "name": "right_turn_route",
+      "name": "right_turn_heading",
       "source": "source-hashed route headings",
       "status": "implemented_in_signal_measurements.py"
     },
     {
+      "mandatory": true,
       "method": "report lateral, forward and vertical projections without legal cutoff",
-      "name": "right_hand_arm_posture",
+      "name": "right_arm_pose",
       "source": "source-hashed 20 Hz trace shoulder/elbow/wrist joints",
       "status": "implemented_in_signal_measurements.py"
     },
     {
-      "method": "pending source-bound pixel audit",
+      "mandatory": false,
+      "method": "independent source-bound full-video pixel audit after original capture",
       "name": "actual_video_visibility",
       "source": "four-camera delivered media",
       "status": "implemented_in_signal_measurements.py"

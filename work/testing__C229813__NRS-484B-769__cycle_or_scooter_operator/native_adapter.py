@@ -75,8 +75,11 @@ class NativeAdapter:
         self.cycle = actor
         return actor
 
-    def spawn_rider(self, blueprint_id, cycle, operator_identity):
-        rig_offset = self.config.get("rider_mount_offset_m", [0, 0, 0.6])
+    def spawn_rider(self, blueprint_id, cycle, operator_identity, rig):
+        rig_offset = rig.get("mount_offset_m")
+        if not isinstance(rig_offset, list) or len(rig_offset) != 3 or not all(
+                isinstance(v, (int, float)) and math.isfinite(v) for v in rig_offset):
+            raise ValueError("reviewed rider mount offset required")
         bp = self.world.get_blueprint_library().find(blueprint_id)
         actor = self.world.try_spawn_actor(bp, self.carla.Transform(
             self.carla.Location(x=rig_offset[0], y=rig_offset[1], z=rig_offset[2])),
@@ -178,8 +181,10 @@ class NativeAdapter:
         error = (desired - yaw + 180) % 360 - 180
         speed = self.cycle.get_velocity().length()
         control = self.carla.VehicleControl()
-        control.throttle = max(0, min(0.5, 0.3 + (4 - speed) * 0.05))
-        control.steer = max(-0.45, min(0.45, error * 0.015))
+        controller = self.config["controller"]
+        control.throttle = max(0, min(controller["max_throttle"],
+                                      0.3 + (controller["target_speed_mps"] - speed) * 0.05))
+        control.steer = max(-0.45, min(0.45, error * controller["steer_gain"]))
         control.brake = 0.25 if self.route_index == len(self.route) - 1 and \
             math.hypot(target[0] - position.x, target[1] - position.y) < 1 else 0
         self.cycle.apply_control(control)

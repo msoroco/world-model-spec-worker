@@ -92,6 +92,9 @@ def load_reviewed_scene(packet_path, source_root, case_id):
     rig = scene.get("rider_arm_rig")
     require(isinstance(rig, dict) and
             all(rig.get(j) for j in ("right_shoulder", "right_elbow", "right_wrist")) and
+            isinstance(rig.get("mount_offset_m"), list) and
+            len(rig["mount_offset_m"]) == 3 and
+            all(isinstance(v, (int, float)) and math.isfinite(v) for v in rig["mount_offset_m"]) and
             rig.get("independent_actuation") is True and
             all(isinstance(rig.get("posture_rotations_deg", {}).get(posture), dict) and
                 all(isinstance(rig["posture_rotations_deg"][posture].get(rig[j]), list) and
@@ -145,7 +148,7 @@ def construct(adapter, scene, case_id):
         require(cycle is not None, "covered cycle spawn failed")
         owned.append(cycle)
         rider = adapter.spawn_rider(scene["rider_blueprint_id"], cycle,
-                                    scene["operator_identity"])
+                                    scene["operator_identity"], scene["rider_arm_rig"])
         require(rider is not None, "rider spawn failed")
         owned.append(rider)
         adapter.set_cycle_route(cycle, scene["right_turn_route"])

@@ -436,12 +436,48 @@
       "exit_code": 0,
       "log": "cpu-nov26d-sweep-static-gate.log",
       "sha256": "1c0fd9a18575268372169ce0cecb1a221c7b03a7962eb0b96d8578d696f90ba9"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158208-owner-nov26b/pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/seal_deferred_fallback_saved.py --compat-root .runtime-work/c158208-owner-nov26b/deferred-compat-v6 --saved-root .runtime-work/c158208-owner-nov26b/deferred-fallback-saved-v1",
+      "exit_code": 0,
+      "log": "cpu-nov26e-fallback-saved.log",
+      "sha256": "6bc2ec6788d58f404bf50772bcb9a84089c0d4c4a2eb2e50dc914ce30153f9ec"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C158208__NRS-484B-257-1__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov26e-static.log",
+      "sha256": "5d6a52e3ac3676f689ef42a0d023b341b13484b36161a633bb95587b2217a899"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C158208__NRS-484B-257-1__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 1,
+      "log": "cpu-nov26e-strict.log",
+      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158208-owner-nov26b/pipeline PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/prove_deferred_fallback_audits.py",
+      "exit_code": 0,
+      "log": "cpu-nov26e-fallback-audits.log",
+      "sha256": "a47f7ca340ee693ac6ea367bbbeeedea762ebfa37ef85498eb37831ef73ece05"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C158208__NRS-484B-257-1__motor_vehicle_driver/build_source_gated_queue_draft.py",
+      "exit_code": 0,
+      "log": "cpu-nov26e-queue-draft.log",
+      "sha256": "9c0f36f99706371bf9ab006af6d560c0acb5652f25f50ba574a63eddf8f60db4"
+    },
+    {
+      "command": "bash -n on all commands in gpu-queue-source-gated-draft.json, plus current worker_exchange CLI flag checks",
+      "exit_code": 0,
+      "log": "cpu-nov26e-queue-cli-check.log",
+      "sha256": "3611bdaf9706296f9c5c91ff2991cb63382694c952e31fef931424a4414ebaaa"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Eleven exact source-gated cases and eight comparisons now have 22 passing pinned offline and compatibility CPU proofs, 11 synthetic physical triads, 11 saved-only proofs, 11 independent delivery positives and missing-camera negatives, and an eight-pair comparison audit. The source-gated draft passes pinned static physical, candidate, delivery, compatibility and semantic components. Canonical selection remains gated by four source-grounded judgment sweeps: original reviewed C158208 site/OpenDRIVE and eight adjacent surveys are absent, so proposals/cases.json truthfully has sweeps_expanded=false. The pinned execution_manifest.validate rejects that draft. Two frozen full-test ego_speed ranges begin at 0.0 m/s, so a physically below-range speed cannot be supplied. No original physical or legal acceptance is claimed.",
+  "reason": "Eleven exact cases and fallbacks have source-gated CPU construction, compatibility and saved-only diagnostic proofs, but production selection still requires an original reviewed C158208 site and OpenDRIVE, eight original adjacent surveys, and source-grounded physical judgment sweeps. The frozen inputs contain metadata and review context but not those original source bytes. Synthetic diagnostics are not original-site or physical evidence; execution-manifest.json remains absent.",
   "selected_cpu_handoff": {
     "path": "selected-cpu-handoff.json",
     "sha256": "1d662fa928459a31c6af4213b2c7e9862134d5abc65e9b5c701264ce64906d6a",

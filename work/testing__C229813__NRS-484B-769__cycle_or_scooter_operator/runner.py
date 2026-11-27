@@ -101,13 +101,13 @@ def run(adapter, scene, config, output, packet_sha256):
             "".join(json.dumps(row, sort_keys=True) + "\n" for row in frame_rows),
             encoding="utf-8")
         _write_json(output / "signal-context.json", _context(scene, case_id))
-        _write_json(output / "source-receipt.json", {
+        _write_json(output / "signal-receipt.json", {
             "assignment_id": ASSIGNMENT, "case_id": case_id,
             "context_sha256": _sha(output / "signal-context.json"),
             "trace_sha256": _sha(output / "signal-readback.jsonl"),
             "frame_count": FRAMES, "fps": 20, "diagnostic_fixture": False,
             "reviewed_scene_packet_sha256": packet_sha256})
-        names = ("config.json", "signal-context.json", "source-receipt.json",
+        names = ("config.json", "signal-context.json", "signal-receipt.json",
                  "signal-readback.jsonl", "trace.jsonl", "video_frames.jsonl") + tuple(
                      name + ".mkv" for name in VIEWS)
         files = {}

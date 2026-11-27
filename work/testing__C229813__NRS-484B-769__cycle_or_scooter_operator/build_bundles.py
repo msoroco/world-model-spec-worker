@@ -50,7 +50,8 @@ def build():
                      "content": (ROOT / name).read_text(encoding="utf-8")}
                     for name in source_names]
     manifest = {"format": "worker-execution-manifest", "assignment_id": ASSIGNMENT,
-                "status": "partial", "cases": []}
+                "status": "partial", "cases": [],
+                "runtime_manifest_sha256": sha(ROOT.parents[1] / "runtime/SOURCE-MANIFEST.json")}
     for index, case in enumerate(PLAN["cases"]):
         case_id = case["case_id"]
         suffix = case_id[len(ASSIGNMENT) + 2:]
@@ -61,6 +62,8 @@ def build():
             "actor": "cycle_or_scooter_operator", "selected_case_id": case_id,
             "supported_case_ids": ids, "rate_hz": 20, "duration_s": 45,
             "frame_count": 900, "required_atoms": [], "source_packets": [],
+            "controller": {"target_speed_mps": 4.0, "max_throttle": 0.5,
+                           "steer_gain": 0.015},
             "source_gate": "reviewed original rider arm scene and source bytes required",
             "cameras": CAMERAS,
             "physical_completion": {"criterion": "travel_progress",
@@ -95,6 +98,21 @@ def build():
                            "source-gated right-turn route", "right-arm pose actuation with original joint readback",
                            "four synchronized original cameras"]}
         write_json(folder / "construction.json", construction)
+        fallback_folder = ROOT / "fallbacks" / suffix
+        fallback_config = dict(config)
+        fallback_config["controller"] = {"target_speed_mps": 3.0,
+                                         "max_throttle": 0.4, "steer_gain": 0.015}
+        write_json(fallback_folder / "config.json", fallback_config)
+        fallback_files = [dict(item) for item in files]
+        fallback_files = [({"path": "config.json",
+                           "source": str((fallback_folder / "config.json").relative_to(ROOT.parents[1])),
+                           "content": (fallback_folder / "config.json").read_text(encoding="utf-8")}
+                          if item["path"] == "config.json" else item) for item in fallback_files]
+        fallback = dict(construction)
+        fallback["files"] = fallback_files
+        fallback["mechanisms"] = list(construction["mechanisms"]) + [
+            "predeclared slower target speed for measured route tracking failure"]
+        write_json(fallback_folder / "construction.json", fallback)
         manifest["cases"].append({
             "case_id": case_id, "kind": "delivery",
             "construction": str((folder / "construction.json").relative_to(ROOT)),
@@ -102,7 +120,14 @@ def build():
             "measurement_procedure": {"entrypoint": "analysis.py"},
             "source_gate": "reviewed original roadway, covered rider and articulated right arm",
             "candidate_risk": {"status": "physical", "reason": case["physical_risk"]["reason"]},
-            "candidates": [], "acquisition": {
+            "candidates": [{"id": "fallback1",
+                "construction": str((fallback_folder / "construction.json").relative_to(ROOT)),
+                "construction_sha256": sha(fallback_folder / "construction.json"),
+                "changed_knobs": ["controller target speed 4.0 to 3.0 m/s",
+                                  "maximum throttle 0.5 to 0.4"],
+                "trigger": {"source": "sealed original cycle route trace",
+                            "metric": "maximum original cross-track distance from reviewed route in metres",
+                            "failure_condition": "primary has source-complete original trace with route deviation above 2.0 m"}}], "acquisition": {
                 channel["name"]: {"entrypoint": "analysis.py", "method": channel["method"],
                                   "evidence": "signal-readback.jsonl"}
                 for channel in CHANNELS},
@@ -116,6 +141,20 @@ def build():
                       "interval": "all 900 original frames"} for name in
                      ("overview", "approach", "reference_corner", "driver_reference")]}
     PLAN["source_observation_mapping"] = {}
+    observation_channels = {
+        "operator_class_and_identity": "roadway_occupancy",
+        "highway_roadway_and_shoulder": "roadway_occupancy",
+        "right_turn_route": "right_turn_heading",
+        "right_hand_arm_posture": "right_arm_pose",
+    }
+    for observation in PLAN["observations"]:
+        name = observation["name"]
+        if name == "actual_video_visibility":
+            observation["mandatory"] = False
+            observation["method"] = "independent source-bound full-video pixel audit after original capture"
+        elif name in observation_channels:
+            observation["name"] = observation_channels[name]
+            observation["mandatory"] = True
     PLAN["requirement_dispositions"] = [{
         "requirement": "NRS-484B-769", "source": "inputs/testing__C229813__NRS-484B-769__cycle_or_scooter_operator/assignment.json",
         "status": "selected_required", "case_ids": ids,

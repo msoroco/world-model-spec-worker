@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 ASSIGNMENT = ROOT.name
-COMMON = ("runner.py", "native_capture.py", "native_output_bridge.py",
+COMMON = ("runner.py", "carla_yield_operator.py", "native_capture.py", "native_output_bridge.py",
           "yield_scene_construction.py", "yield_view_measurement.py",
           "through_motion_measurement.py", "saved_finalizer.py", "analysis.py",
           "delivery_audit.py", "physical_completion.py", "case-plan.json")
