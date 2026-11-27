@@ -35,7 +35,7 @@ def write(path, obj, compact=False):
 
 def frame(index, case):
     time_s = index / 20
-    unit_x = (180.0 - 7.0 * time_s) if case.immediate else (400.0 + 2.0 * time_s)
+    unit_x = (180.0 - 7.0 * time_s) if case.immediate else (-400.0 - 2.0 * time_s)
     if case.direction == "same_direction":
         unit_x = -220.0 + 9.0 * time_s
     if case.state == "preparing":

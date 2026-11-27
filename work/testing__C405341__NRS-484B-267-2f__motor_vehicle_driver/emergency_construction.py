@@ -99,6 +99,13 @@ def execute(adapter, case, map_source, actor_source, authority, engineering=None
     adapter.configure_route(unit, route_id)
     adapter.configure_flashing_lights(unit, specification["lights"])
     adapter.configure_unit_movement(unit, specification["movement"])
+    if case.state == "preparing":
+        adapter.configure_visible_preparation(unit, {
+            "cue": "driver_hand_signal", "from_s": 10.0, "to_s": 20.0,
+            "reviewed_source": map_source["visible_preparation_source"]})
+    if case.state == "stopped":
+        adapter.configure_unit_stop(unit, {
+            "at_s": 20.0, "reviewed_location_source": map_source["stop_location_source"]})
     if case.officer_direction:
         adapter.configure_officer_direction(specification["officer_direction"])
     adapter.configure_ego_response(ego, specification["ego_control"])

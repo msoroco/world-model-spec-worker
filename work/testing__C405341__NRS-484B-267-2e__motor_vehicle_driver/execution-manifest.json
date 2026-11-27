@@ -1,0 +1,1193 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_nonadjacent_lane",
+      "kind": "delivery",
+      "construction": "construction-moving_nonadjacent_lane.json",
+      "construction_sha256": "ce154befe3a35709ecb6d979284c5f3692526904d4e7674a88488abffb6ff60a",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/moving_nonadjacent_lane-recipe.json",
+      "measurement_contract": "diagnostics/moving_nonadjacent_lane-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "original ego footprint does not reach reviewed nonadjacent lane before approach"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-moving_nonadjacent_lane-fallback1.json",
+          "construction_sha256": "ab9c7b68921cd18fc13ae47b73e8802f9a27bf4b67618b3715aa7c8abac1e8a9",
+          "trigger": {
+            "source": "sealed original Native motion, cue and driver-view pixel history",
+            "metric": "lane_change_start_s",
+            "failure_condition": "original ego footprint does not reach reviewed nonadjacent lane before approach"
+          },
+          "changed_knobs": [
+            "lane_change_start_s = 15.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_nonadjacent_lane --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "ab9c7b68921cd18fc13ae47b73e8802f9a27bf4b67618b3715aa7c8abac1e8a9",
+            "log": "cpu-offline-moving_nonadjacent_lane-fallback1.log",
+            "log_sha256": "83f51705aca7ffab206ed701c91cd0f5962128c9e7cf60718b844d456e0ba733"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_nonadjacent_lane --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "ce154befe3a35709ecb6d979284c5f3692526904d4e7674a88488abffb6ff60a",
+        "log": "cpu-offline-moving_nonadjacent_lane.log",
+        "log_sha256": "17a7da772ec0f84e75e0366d9c10333bffb4aa03b30b21a2524115ef6d2d8ea9"
+      },
+      "physical_preparation": {
+        "receipt": "physical-moving_nonadjacent_lane-receipt.json",
+        "sha256": "7ef644f673f0c23f99d21fdec4fecd39f331e91afcea9e691658a018d2d4729a"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane",
+      "kind": "delivery",
+      "construction": "construction-moving_adjacent_lane.json",
+      "construction_sha256": "a37a07031481a7a87534487c1c2361c50c84bd4ba9ed13a70c5638216956a4ce",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/moving_adjacent_lane-recipe.json",
+      "measurement_contract": "diagnostics/moving_adjacent_lane-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No candidate-specific physical risk after source-gated Native review"
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "a37a07031481a7a87534487c1c2361c50c84bd4ba9ed13a70c5638216956a4ce",
+        "log": "cpu-offline-moving_adjacent_lane.log",
+        "log_sha256": "aa98e98d626b0c567257c3ae5662da87e40ed61fec1a8110a9b1103d116e563f"
+      },
+      "physical_preparation": {
+        "receipt": "physical-moving_adjacent_lane-receipt.json",
+        "sha256": "cd5ffd26af9f8480b93aa76dda21530c5e10dd5a0cac3593223dee9173a08961"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__traffic_unsafe_adjacent",
+      "kind": "delivery",
+      "construction": "construction-traffic_unsafe_adjacent.json",
+      "construction_sha256": "2f3eaaefdaadc325af61c3bcd09b2f44218b8f98d1ec034317e5c79d5298d1fc",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/traffic_unsafe_adjacent-recipe.json",
+      "measurement_contract": "diagnostics/traffic_unsafe_adjacent-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "traffic occupancy and ego pass are not simultaneously visible"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-traffic_unsafe_adjacent-fallback1.json",
+          "construction_sha256": "7a2ab0c7efbb2761e3f7725681ec938a47140fe9715428bb797018686b3f8bc0",
+          "trigger": {
+            "source": "sealed original Native motion, cue and driver-view pixel history",
+            "metric": "lane_change_start_s",
+            "failure_condition": "traffic occupancy and ego pass are not simultaneously visible"
+          },
+          "changed_knobs": [
+            "lane_change_start_s = 15.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__traffic_unsafe_adjacent --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "7a2ab0c7efbb2761e3f7725681ec938a47140fe9715428bb797018686b3f8bc0",
+            "log": "cpu-offline-traffic_unsafe_adjacent-fallback1.log",
+            "log_sha256": "d00e16051de561069685571ed89fdbbaa07a2902f0c518b4878d7eadd2ed5ad2"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__traffic_unsafe_adjacent --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "2f3eaaefdaadc325af61c3bcd09b2f44218b8f98d1ec034317e5c79d5298d1fc",
+        "log": "cpu-offline-traffic_unsafe_adjacent.log",
+        "log_sha256": "1f4b12f11676c4ee0bb4f56911af192c5b30c13595fdc6628c042309dcbf4ef1"
+      },
+      "physical_preparation": {
+        "receipt": "physical-traffic_unsafe_adjacent-receipt.json",
+        "sha256": "1a7f0859cfaf6e384bfe5c5bd2ba472109d4101df9ee2c037a3c84405cc6c6cb"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__roadway_impossible_adjacent",
+      "kind": "delivery",
+      "construction": "construction-roadway_impossible_adjacent.json",
+      "construction_sha256": "a293d77c4ce6f24ec1329be0f7a7784ad9bb3a4c660ef3c765ca7f2f4a1ffa06",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/roadway_impossible_adjacent-recipe.json",
+      "measurement_contract": "diagnostics/roadway_impossible_adjacent-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No candidate-specific physical risk after source-gated Native review"
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__roadway_impossible_adjacent --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "a293d77c4ce6f24ec1329be0f7a7784ad9bb3a4c660ef3c765ca7f2f4a1ffa06",
+        "log": "cpu-offline-roadway_impossible_adjacent.log",
+        "log_sha256": "489f5a16b130b57f492069ed9a8bab46dd49c75e73dfb5765dd869ffe50d312a"
+      },
+      "physical_preparation": {
+        "receipt": "physical-roadway_impossible_adjacent-receipt.json",
+        "sha256": "d5a1864406d39479b77c75482e2dbd79d7db5c1d9b2493f9e6f59b927641b0c2"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__weather_unsafe_adjacent",
+      "kind": "delivery",
+      "construction": "construction-weather_unsafe_adjacent.json",
+      "construction_sha256": "fee3590848c36597dc45736e4a214be89620c472c1256aee62e8c5d32cd2be42",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/weather_unsafe_adjacent-recipe.json",
+      "measurement_contract": "diagnostics/weather_unsafe_adjacent-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "original weather effect and ego approach are not simultaneously visible"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-weather_unsafe_adjacent-fallback1.json",
+          "construction_sha256": "3aba32899b15b7f9d14b1c36e468bdd7aea56f5ea3ae9cb47529eb376c5a2180",
+          "trigger": {
+            "source": "sealed original Native motion, cue and driver-view pixel history",
+            "metric": "lane_change_start_s",
+            "failure_condition": "original weather effect and ego approach are not simultaneously visible"
+          },
+          "changed_knobs": [
+            "lane_change_start_s = 15.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__weather_unsafe_adjacent --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "3aba32899b15b7f9d14b1c36e468bdd7aea56f5ea3ae9cb47529eb376c5a2180",
+            "log": "cpu-offline-weather_unsafe_adjacent-fallback1.log",
+            "log_sha256": "43f2a097c74fd62eeff690bfc9264fd40e1591c326376d2a7d38a233ff5493ce"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__weather_unsafe_adjacent --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "fee3590848c36597dc45736e4a214be89620c472c1256aee62e8c5d32cd2be42",
+        "log": "cpu-offline-weather_unsafe_adjacent.log",
+        "log_sha256": "cc43e9ef27595abcafd26b11f5f91f2e8601ff71c0c52d66ff0c16ae7cce5f2b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-weather_unsafe_adjacent-receipt.json",
+        "sha256": "169e4dd33cced692da05d7b2e6741bcd69d43b18066bd2791872922409d04b75"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__officer_directs_adjacent",
+      "kind": "delivery",
+      "construction": "construction-officer_directs_adjacent.json",
+      "construction_sha256": "be86f75fb1a781631aeb285339dbf3a642d50df170f1ed652388728240f20abf",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/officer_directs_adjacent-recipe.json",
+      "measurement_contract": "diagnostics/officer_directs_adjacent-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No candidate-specific physical risk after source-gated Native review"
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__officer_directs_adjacent --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "be86f75fb1a781631aeb285339dbf3a642d50df170f1ed652388728240f20abf",
+        "log": "cpu-offline-officer_directs_adjacent.log",
+        "log_sha256": "1dc2457bcd141a0623bc875458d806016ec22be95620b20515435de1e163a18b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-officer_directs_adjacent-receipt.json",
+        "sha256": "453e8e0376f1ed0d2019937a1f35c6a9f19ef851490b673698e8ba8309ebde0f"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_movement_preparation",
+      "kind": "delivery",
+      "construction": "construction-visible_movement_preparation.json",
+      "construction_sha256": "c28a3934c6d0c6be9fd3369e1dd2e9f9a81ffa56581abbc319df3bc20a377ca1",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/visible_movement_preparation-recipe.json",
+      "measurement_contract": "diagnostics/visible_movement_preparation-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No candidate-specific physical risk after source-gated Native review"
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_movement_preparation --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "c28a3934c6d0c6be9fd3369e1dd2e9f9a81ffa56581abbc319df3bc20a377ca1",
+        "log": "cpu-offline-visible_movement_preparation.log",
+        "log_sha256": "17380364e4c310469b5147004902fce738ffedba85300b389148814835c5c18c"
+      },
+      "physical_preparation": {
+        "receipt": "physical-visible_movement_preparation-receipt.json",
+        "sha256": "21b004aa97c0a70bf82dd4bb438e84d63caed1e408da091acbc3c440ed4496d1"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_hand_signal_preparation",
+      "kind": "delivery",
+      "construction": "construction-visible_hand_signal_preparation.json",
+      "construction_sha256": "6aef7312d3942c62c413fd331dba33e314afc94a513e5d8ae53a1943731d95ca",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/visible_hand_signal_preparation-recipe.json",
+      "measurement_contract": "diagnostics/visible_hand_signal_preparation-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "driver hand signal is not visible in original driver-view frames"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-visible_hand_signal_preparation-fallback1.json",
+          "construction_sha256": "3360996252a6c1f48d70a2d32c72429c3f4c6326539355749c85a8cd2a27a9c7",
+          "trigger": {
+            "source": "sealed original Native motion, cue and driver-view pixel history",
+            "metric": "lane_change_start_s",
+            "failure_condition": "driver hand signal is not visible in original driver-view frames"
+          },
+          "changed_knobs": [
+            "lane_change_start_s = 15.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_hand_signal_preparation --candidate fallback1 --output $OUTPUT --python $CPU_PYTHON",
+            "exit_code": 0,
+            "construction_sha256": "3360996252a6c1f48d70a2d32c72429c3f4c6326539355749c85a8cd2a27a9c7",
+            "log": "cpu-offline-visible_hand_signal_preparation-fallback1.log",
+            "log_sha256": "d0ee37c0404e7e4edfef87a3eaa7cc4507b57ec27c8b238172376c5ab20bcc10"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_hand_signal_preparation --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "6aef7312d3942c62c413fd331dba33e314afc94a513e5d8ae53a1943731d95ca",
+        "log": "cpu-offline-visible_hand_signal_preparation.log",
+        "log_sha256": "6422da9ff958f0459c3c742abe8fd4f44b7fa70f5d5b1b677f04787f2665a435"
+      },
+      "physical_preparation": {
+        "receipt": "physical-visible_hand_signal_preparation-receipt.json",
+        "sha256": "fc5db0ac28330023ac94430d60658d75f791d612890af8a991aec4ce1b17e784"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__regulatory_official_nonadjacent",
+      "kind": "delivery",
+      "construction": "construction-regulatory_official_nonadjacent.json",
+      "construction_sha256": "833abb90315258026a2f7f6e9b439a1a1474268443b91fa519c3b5de3fc61f80",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/regulatory_official_nonadjacent-recipe.json",
+      "measurement_contract": "diagnostics/regulatory_official_nonadjacent-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No candidate-specific physical risk after source-gated Native review"
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__regulatory_official_nonadjacent --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "833abb90315258026a2f7f6e9b439a1a1474268443b91fa519c3b5de3fc61f80",
+        "log": "cpu-offline-regulatory_official_nonadjacent.log",
+        "log_sha256": "256bb274ca0809a311b80ab4f641051ee3f2515554b4a635ad82840734b12a9e"
+      },
+      "physical_preparation": {
+        "receipt": "physical-regulatory_official_nonadjacent-receipt.json",
+        "sha256": "86e7083892a6824dc2aa219afa76650b1b1672dcdcddc5ff9c225ae0a2e89d63"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__lights_inactive_adjacent",
+      "kind": "delivery",
+      "construction": "construction-lights_inactive_adjacent.json",
+      "construction_sha256": "8eabcc4e646a5f583a343cd2a5fbb375b6851001f59aa67c9b2a7062f1658ac0",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/lights_inactive_adjacent-recipe.json",
+      "measurement_contract": "diagnostics/lights_inactive_adjacent-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No candidate-specific physical risk after source-gated Native review"
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__lights_inactive_adjacent --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "8eabcc4e646a5f583a343cd2a5fbb375b6851001f59aa67c9b2a7062f1658ac0",
+        "log": "cpu-offline-lights_inactive_adjacent.log",
+        "log_sha256": "b6df01f2d3159ccf1323e86450f782a27b4ed19a400d663a9e3ec6c1243105af"
+      },
+      "physical_preparation": {
+        "receipt": "physical-lights_inactive_adjacent-receipt.json",
+        "sha256": "9aa7777bfb905f8d00e76ddc56bd01198e9e54fb63366a4e8b38d02f25705413"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__not_approaching_adjacent",
+      "kind": "delivery",
+      "construction": "construction-not_approaching_adjacent.json",
+      "construction_sha256": "646ec8c3af7a2c9b86d4c8d2a538bc94d99187050cabd8aa637a9cb9db35bcfa",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/diagnostics/not_approaching_adjacent-recipe.json",
+      "measurement_contract": "diagnostics/not_approaching_adjacent-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, flashing equipment and use, moving or visibly preparing target, lane graph, traffic/weather/officer conditions and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "visible_preparation_cue": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "lane_adjacency": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "nonadjacent_lane_access": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_lane_trajectory": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "traffic_path_occupation": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "roadway_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "weather_condition": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No candidate-specific physical risk after source-gated Native review"
+      },
+      "candidates": [],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__not_approaching_adjacent --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "646ec8c3af7a2c9b86d4c8d2a538bc94d99187050cabd8aa637a9cb9db35bcfa",
+        "log": "cpu-offline-not_approaching_adjacent.log",
+        "log_sha256": "a1a7046d226fc009354c5cd4cc0c3c8aa06b85e59770cd38e7df11dc2621d5b7"
+      },
+      "physical_preparation": {
+        "receipt": "physical-not_approaching_adjacent-receipt.json",
+        "sha256": "514955ef61bab9f44d6c19931c3ded0e8c14d3241f1aae68866a2efc96578b51"
+      }
+    }
+  ],
+  "comparisons": []
+}

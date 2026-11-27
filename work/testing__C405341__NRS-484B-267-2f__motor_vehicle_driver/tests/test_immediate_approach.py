@@ -1,10 +1,12 @@
 """Source gating and actual Native adapter calls without CARLA."""
 import sys
 import unittest
+import json
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from emergency_construction import CASES, execute, plan
+from analysis import measure_case
 
 
 def sources(case):
@@ -53,6 +55,8 @@ class ConstructionTest(unittest.TestCase):
                 self.assertEqual(names.count("spawn_vehicle"), 2)
                 self.assertEqual(names.count("configure_route"), 2)
                 self.assertIn("configure_unit_movement", names)
+                self.assertEqual("configure_visible_preparation" in names, case.state == "preparing")
+                self.assertEqual("configure_unit_stop" in names, case.state == "stopped")
                 self.assertIn("configure_ego_response", names)
                 self.assertEqual("configure_officer_direction" in names, case.officer_direction)
 
@@ -80,6 +84,32 @@ class ConstructionTest(unittest.TestCase):
         road["alternate_unit_route_direction"] = "opposing"
         self.assertEqual(execute(Adapter(), CASES[0], road, actors, authority,
                                  {"alternate_unit_route": True})["capture_frames"], 900)
+
+    def test_original_branch_histories_reject_missing_cues_and_false_routes(self):
+        root = Path(__file__).resolve().parents[1] / "diagnostics"
+        for suffix in ("no_immediate_approach", "preparing_visible_hand_signal", "stopped_referral"):
+            case = next(c for c in CASES if c.suffix == suffix)
+            folder = root / suffix
+            site = json.loads((folder / "emergency-site.json").read_text())
+            history = [json.loads(x) for x in (folder / "original-emergency-movement-history.jsonl").read_text().splitlines()]
+            measured = measure_case(case, site, history)
+            self.assertEqual(measured["subsection_1_referral"]["requested"], suffix == "preparing_visible_hand_signal")
+            if suffix == "no_immediate_approach":
+                self.assertLess(history[200]["emergency_xy"][0], history[0]["emergency_xy"][0])
+                history[200]["emergency_xy"][0] = history[0]["emergency_xy"][0]
+                with self.assertRaisesRegex(ValueError, "move away"):
+                    measure_case(case, site, history)
+            elif suffix == "preparing_visible_hand_signal":
+                self.assertTrue(measured["visible_hand_signal_original_frames"])
+                for row in history:
+                    row["visible_hand_signal"] = False
+                with self.assertRaisesRegex(ValueError, "visible preparation"):
+                    measure_case(case, site, history)
+            else:
+                self.assertEqual(max(measured["movement_original_frames"]), 500)
+                history[600]["emergency_xy"][0] += 1
+                with self.assertRaisesRegex(ValueError, "actual stop"):
+                    measure_case(case, site, history)
 
 
 if __name__ == "__main__":

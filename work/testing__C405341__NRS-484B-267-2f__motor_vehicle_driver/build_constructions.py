@@ -116,7 +116,7 @@ def build():
                               "connected and approaching unit route", "four camera frame joins"],
             "termination_rules": ["900 synchronized Native ticks", "restore and read back world"],
             "mechanisms": ["source-gated emergency/regulatory unit and paved road",
-                           "flashing light, approach motion and ego yield-response controllers",
+                           "flashing light, approach motion, explicit hand-signal and stop controllers, and ego response",
                            "sealed original histories and four-view capture"]}
         write(HERE / ("construction-" + case.suffix + ".json"), construction)
         if index == 0:

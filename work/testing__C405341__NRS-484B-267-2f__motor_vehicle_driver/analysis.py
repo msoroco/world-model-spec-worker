@@ -147,7 +147,7 @@ def measure_case(case, site, frames):
                        f["ego_xy"][1] - f["emergency_xy"][1]) for f in frames[400:600]]
         if not min(after[1:]) < after[0]:
             raise ValueError("prepared unit does not approach subject after cue")
-    if not case.immediate and not frames[200]["emergency_xy"][0] > frames[0]["emergency_xy"][0]:
+    if not case.immediate and not frames[200]["emergency_xy"][0] < frames[0]["emergency_xy"][0]:
         raise ValueError("negative unit route does not move away from subject")
     brakes = [f["original_frame"] for f in frames if f["ego_brake"] > 0]
     if case.yielding and not brakes:

@@ -36,11 +36,11 @@ def run(command):
 
 def one(case):
     name, case_id = case.suffix, AID + "__" + case.suffix
-    attempt = SCRATCH / ("compat-" + name + "-v4")
+    attempt = SCRATCH / ("compat-" + name + "-v6")
     selection = attempt / "candidate-selection.json"
     if selection.exists():
         selection.unlink()
-    output = SCRATCH / ("saved-" + name + "-v4")
+    output = SCRATCH / ("saved-" + name + "-v6")
     command = [sys.executable, str(ROOT / "runtime.py"), "process-saved",
                "--manifest", str(MANIFEST), "--case", case_id,
                "--attempt", str(attempt), "--output", str(output),
@@ -51,11 +51,11 @@ def one(case):
         raise ValueError("saved-only positive proof incomplete: " + name)
     log = HERE / ("cpu-saved-" + name + ".log")
     log.write_text(json.dumps(positive, sort_keys=True) + "\n", encoding="utf-8")
-    missing = SCRATCH / ("saved-missing-attempt-" + name + "-v4")
+    missing = SCRATCH / ("saved-missing-attempt-" + name + "-v6")
     if not missing.exists():
         shutil.copytree(attempt, missing, copy_function=os.link)
         (missing / HISTORY).unlink()
-    negative_output = SCRATCH / ("saved-missing-" + name + "-v4")
+    negative_output = SCRATCH / ("saved-missing-" + name + "-v6")
     negative_command = command.copy()
     negative_command[negative_command.index("--attempt") + 1] = str(missing)
     negative_command[negative_command.index("--output") + 1] = str(negative_output)

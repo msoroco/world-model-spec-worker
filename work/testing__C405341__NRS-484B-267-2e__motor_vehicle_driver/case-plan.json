@@ -24,9 +24,376 @@
   "topic_inventory": {
     "exact-text": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If possible, drive in a lane that is not adjacent to the lane in which the authorized emergency vehicle or official vehicle of a regulatory agency is moving, unless roadway, traffic, weather or other conditions make doing so unsafe or impossible. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_nonadjacent_lane",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-1"
+      ],
+      "construction_probe": "moving qualified unit; reviewed safe available nonadjacent lane; ego uses it",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route, traffic, weather or hand cue may not realize in original pixels and Native lane readback."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-2"
+      ],
+      "construction_probe": "same available nonadjacent lane; ego remains adjacent",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No distinct fallback risk beyond original source and execution checks."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__traffic_unsafe_adjacent",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-3"
+      ],
+      "construction_probe": "original traffic occupies feasible nonadjacent path; ego remains adjacent",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route, traffic, weather or hand cue may not realize in original pixels and Native lane readback."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__roadway_impossible_adjacent",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-4"
+      ],
+      "construction_probe": "no connected same-direction nonadjacent lane; ego remains adjacent",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No distinct fallback risk beyond original source and execution checks."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__weather_unsafe_adjacent",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-5"
+      ],
+      "construction_probe": "original adverse weather and measured grip/sight context; ego remains adjacent",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route, traffic, weather or hand cue may not realize in original pixels and Native lane readback."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__officer_directs_adjacent",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-6"
+      ],
+      "construction_probe": "source-backed law enforcement direction; ego remains adjacent",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No distinct fallback risk beyond original source and execution checks."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_movement_preparation",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-7"
+      ],
+      "construction_probe": "visible original unit movement indicating impending motion; ego uses available nonadjacent lane",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No distinct fallback risk beyond original source and execution checks."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_hand_signal_preparation",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-8"
+      ],
+      "construction_probe": "original driver hand signal indicating impending motion; ego uses available nonadjacent lane",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Route, traffic, weather or hand cue may not realize in original pixels and Native lane readback."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__regulatory_official_nonadjacent",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-9"
+      ],
+      "construction_probe": "qualified official regulatory agency vehicle; ego uses available nonadjacent lane",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No distinct fallback risk beyond original source and execution checks."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__lights_inactive_adjacent",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-10"
+      ],
+      "construction_probe": "qualified equipment present but flashing not used; ego remains adjacent",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No distinct fallback risk beyond original source and execution checks."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__not_approaching_adjacent",
+      "kind": "delivery",
+      "branch": "Moving emergency vehicle; conditional lane selection",
+      "target_law_id": "NRS-484B-267-2e",
+      "gap_ids": [
+        "gap-11"
+      ],
+      "construction_probe": "ego not approaching unit; ego remains adjacent",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No distinct fallback risk beyond original source and execution checks."
+      },
+      "new_capture_selected": true,
+      "construction_status": "source_gated_exact_bundle"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "available_lane_choice",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_nonadjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane"
+      ],
+      "fixed_conditions": [
+        "same C405341 paved road map and reviewed source packet except declared variation",
+        "same subject class, target route, four cameras, 20 Hz, 45 s",
+        "same qualifying authority and flashing light use except activation comparison"
+      ],
+      "deliberate_differences": [
+        "ego actual lane trajectory and lane-change controller"
+      ]
+    },
+    {
+      "comparison_id": "traffic_exception",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__traffic_unsafe_adjacent"
+      ],
+      "fixed_conditions": [
+        "same C405341 paved road map and reviewed source packet except declared variation",
+        "same subject class, target route, four cameras, 20 Hz, 45 s",
+        "same qualifying authority and flashing light use except activation comparison"
+      ],
+      "deliberate_differences": [
+        "source-backed traffic occupation and safe path availability"
+      ]
+    },
+    {
+      "comparison_id": "roadway_exception",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__roadway_impossible_adjacent"
+      ],
+      "fixed_conditions": [
+        "same C405341 paved road map and reviewed source packet except declared variation",
+        "same subject class, target route, four cameras, 20 Hz, 45 s",
+        "same qualifying authority and flashing light use except activation comparison"
+      ],
+      "deliberate_differences": [
+        "source-backed connected nonadjacent lane existence"
+      ]
+    },
+    {
+      "comparison_id": "weather_exception",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__weather_unsafe_adjacent"
+      ],
+      "fixed_conditions": [
+        "same C405341 paved road map and reviewed source packet except declared variation",
+        "same subject class, target route, four cameras, 20 Hz, 45 s",
+        "same qualifying authority and flashing light use except activation comparison"
+      ],
+      "deliberate_differences": [
+        "source-backed weather and road-surface effects"
+      ]
+    },
+    {
+      "comparison_id": "officer_exception",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__officer_directs_adjacent"
+      ],
+      "fixed_conditions": [
+        "same C405341 paved road map and reviewed source packet except declared variation",
+        "same subject class, target route, four cameras, 20 Hz, 45 s",
+        "same qualifying authority and flashing light use except activation comparison"
+      ],
+      "deliberate_differences": [
+        "original law-enforcement direction"
+      ]
+    },
+    {
+      "comparison_id": "preparing_cue_alternatives",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_nonadjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_movement_preparation",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_hand_signal_preparation"
+      ],
+      "fixed_conditions": [
+        "same C405341 paved road map and reviewed source packet except declared variation",
+        "same subject class, target route, four cameras, 20 Hz, 45 s",
+        "same qualifying authority and flashing light use except activation comparison"
+      ],
+      "deliberate_differences": [
+        "target motion state and visible preparation cue"
+      ]
+    },
+    {
+      "comparison_id": "target_class_alternative",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_nonadjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__regulatory_official_nonadjacent"
+      ],
+      "fixed_conditions": [
+        "same C405341 paved road map and reviewed source packet except declared variation",
+        "same subject class, target route, four cameras, 20 Hz, 45 s",
+        "same qualifying authority and flashing light use except activation comparison"
+      ],
+      "deliberate_differences": [
+        "authorized emergency versus official regulatory agency vehicle"
+      ]
+    },
+    {
+      "comparison_id": "flashing_activation",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__lights_inactive_adjacent"
+      ],
+      "fixed_conditions": [
+        "same C405341 paved road map and reviewed source packet except declared variation",
+        "same subject class, target route, four cameras, 20 Hz, 45 s",
+        "same qualifying authority and flashing light use except activation comparison"
+      ],
+      "deliberate_differences": [
+        "actual qualifying flash use"
+      ]
+    },
+    {
+      "comparison_id": "approach_activation",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__not_approaching_adjacent"
+      ],
+      "fixed_conditions": [
+        "same C405341 paved road map and reviewed source packet except declared variation",
+        "same subject class, target route, four cameras, 20 Hz, 45 s",
+        "same qualifying authority and flashing light use except activation comparison"
+      ],
+      "deliberate_differences": [
+        "actual ego approach relationship"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "sealed_native_original_frames",
+      "mandatory": true
+    },
+    {
+      "name": "unit_motion",
+      "mandatory": true
+    },
+    {
+      "name": "qualifying_flashing_lights",
+      "mandatory": true
+    },
+    {
+      "name": "visible_preparation_cue",
+      "mandatory": true
+    },
+    {
+      "name": "ego_approach",
+      "mandatory": true
+    },
+    {
+      "name": "lane_adjacency",
+      "mandatory": true
+    },
+    {
+      "name": "nonadjacent_lane_access",
+      "mandatory": true
+    },
+    {
+      "name": "ego_lane_trajectory",
+      "mandatory": true
+    },
+    {
+      "name": "traffic_path_occupation",
+      "mandatory": true
+    },
+    {
+      "name": "roadway_condition",
+      "mandatory": true
+    },
+    {
+      "name": "weather_condition",
+      "mandatory": true
+    },
+    {
+      "name": "officer_direction",
+      "mandatory": true
+    },
+    {
+      "name": "video_four_views",
+      "mandatory": true
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C405341__NRS-484B-267-2e__motor_vehicle_driver/assignment.json",
@@ -51,17 +418,85 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Native CARLA lane continuity, target and ego movement, traffic/weather realization and original pixels require later local review.",
+    "Statutory possibility and safety remain unresolved judgments; engineering feasibility is only evidence.",
+    "Exact source-gated constructions, finalizers, semantic proposals and CPU proofs remain work in progress."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Read all frozen accepted evidence (none), exact law text, definition cross-reference and witness 372; no original recording demonstrates any lane network, moving unit, lighting, driver cue, traffic, weather or officer direction.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "gap-1",
+        "requirement": "moving qualified unit; reviewed safe available nonadjacent lane; ego uses it",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-2",
+        "requirement": "same available nonadjacent lane; ego remains adjacent",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-3",
+        "requirement": "original traffic occupies feasible nonadjacent path; ego remains adjacent",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-4",
+        "requirement": "no connected same-direction nonadjacent lane; ego remains adjacent",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-5",
+        "requirement": "original adverse weather and measured grip/sight context; ego remains adjacent",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-6",
+        "requirement": "source-backed law enforcement direction; ego remains adjacent",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-7",
+        "requirement": "visible original unit movement indicating impending motion; ego uses available nonadjacent lane",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-8",
+        "requirement": "original driver hand signal indicating impending motion; ego uses available nonadjacent lane",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-9",
+        "requirement": "qualified official regulatory agency vehicle; ego uses available nonadjacent lane",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-10",
+        "requirement": "qualified equipment present but flashing not used; ego remains adjacent",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      },
+      {
+        "id": "gap-11",
+        "requirement": "ego not approaching unit; ego remains adjacent",
+        "source": "NRS 484B.267(2)(e) and (4); frozen witness 372",
+        "why_existing_insufficient": "No accepted recording in frozen evidence inventory."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "exact_cases_and_controlled_comparisons_selected",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -82,5 +517,56 @@
       ],
       "reason": "A paved road can contain the lane network needed to observe this conditional duty."
     }
-  ]
+  ],
+  "selected_branch": "Moving emergency vehicle; conditional lane selection",
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-267-2e",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_nonadjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__moving_adjacent_lane",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__traffic_unsafe_adjacent",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__roadway_impossible_adjacent",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__weather_unsafe_adjacent",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__officer_directs_adjacent",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_movement_preparation",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__visible_hand_signal_preparation",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__regulatory_official_nonadjacent",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__lights_inactive_adjacent",
+        "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__not_approaching_adjacent"
+      ],
+      "evidence_or_gap": "No accepted recordings; exact source-gated cases selected.",
+      "reason": "Record original target movement, flashing, lane adjacency and lane access plus each conditional context; leave statutory safety and possibility judgment unresolved."
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "ego approach and unit lane positions",
+        "interval": "all original 900 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "unit flashing lights and motion",
+        "interval": "all original 900 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "traffic, roadway, weather and officer conditions",
+        "interval": "all original 900 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-view lane and preparation cues",
+        "interval": "all original 900 frames"
+      }
+    ]
+  }
 }
