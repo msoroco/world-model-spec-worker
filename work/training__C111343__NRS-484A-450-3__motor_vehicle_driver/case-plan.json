@@ -3,7 +3,7 @@
   "actor": "motor_vehicle_driver",
   "cell_id": "C111343",
   "law_id": "NRS-484A-450-3",
-  "selected_branch": "conditional_stop_nearest_side_crosswalk",
+  "selected_branch": "conditional_stop_reference_hierarchy_crosswalk_stop_line_nearest_view",
   "scope_branches": [
     {
       "law_id": "NRS-484A-450-3",
@@ -29,17 +29,21 @@
       "requirement": "text-0",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "Selected source-shaped crosswalk cases and source-hashed current-runtime CPU proofs; original Native physical result and independent safety-stop judgment remain to be reviewed at delivery. No-crosswalk alternatives require separate source-bound cases.",
+      "evidence_or_gap": "Six selected source-shaped cases cover crosswalk, no-crosswalk marked stop line, and no-crosswalk/no-line viewpoint contrasts. Current-runtime CPU diagnostics and original-source delivery audit are required; safety-stop necessity, nearest unobstructed view, physical outcome, and legal judgment remain for original Native review.",
       "case_ids": [
         "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
-        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk"
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk",
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_stop_line",
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_stop_line",
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_viewpoint",
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_viewpoint"
       ]
     },
     {
       "requirement": "reviewed-scope-0",
       "source": "inputs/coverage/branch-sources.json",
       "status": "selected_required",
-      "evidence_or_gap": "Selected source-shaped crosswalk cases and source-hashed current-runtime CPU proofs; original Native physical result and independent safety-stop judgment remain to be reviewed at delivery. No-crosswalk alternatives require separate source-bound cases.",
+      "evidence_or_gap": "Selected crosswalk before/past cases preserve the frozen reviewed scope. Original Native physical result and independent safety-stop judgment remain for delivery review.",
       "case_ids": [
         "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
         "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_crosswalk"
@@ -80,6 +84,70 @@
         "reviewed-scope-0"
       ],
       "selected": true
+    },
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_stop_line",
+      "target_law_id": "NRS-484A-450-3",
+      "planning_status": "selected_cpu_prepared_original_unverified",
+      "target_type": "attempt",
+      "comparison_variable": "conditional_stop_position",
+      "comparison_unit": "category",
+      "requested_setting": "before_stop_line",
+      "recorded_value": null,
+      "case_description": "YIELD approach, no crosswalk, clearly marked stop line",
+      "fixed_context": "Same yield-sign intersection, actor, intersecting traffic, weather, 600-frame four-camera capture and selected reference; paired cases change requested front-bumper stop only.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "selected": true
+    },
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_stop_line",
+      "target_law_id": "NRS-484A-450-3",
+      "planning_status": "selected_cpu_prepared_original_unverified",
+      "target_type": "attempt",
+      "comparison_variable": "conditional_stop_position",
+      "comparison_unit": "category",
+      "requested_setting": "past_stop_line",
+      "recorded_value": null,
+      "case_description": "YIELD approach, no crosswalk, clearly marked stop line",
+      "fixed_context": "Same yield-sign intersection, actor, intersecting traffic, weather, 600-frame four-camera capture and selected reference; paired cases change requested front-bumper stop only.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "selected": true
+    },
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_viewpoint",
+      "target_law_id": "NRS-484A-450-3",
+      "planning_status": "selected_cpu_prepared_original_unverified",
+      "target_type": "attempt",
+      "comparison_variable": "conditional_stop_position",
+      "comparison_unit": "category",
+      "requested_setting": "before_viewpoint",
+      "recorded_value": null,
+      "case_description": "YIELD approach, no crosswalk or line, candidate nearest-view point with original sight rays",
+      "fixed_context": "Same yield-sign intersection, actor, intersecting traffic, weather, 600-frame four-camera capture and selected reference; paired cases change requested front-bumper stop only.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "selected": true
+    },
+    {
+      "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_viewpoint",
+      "target_law_id": "NRS-484A-450-3",
+      "planning_status": "selected_cpu_prepared_original_unverified",
+      "target_type": "attempt",
+      "comparison_variable": "conditional_stop_position",
+      "comparison_unit": "category",
+      "requested_setting": "past_viewpoint",
+      "recorded_value": null,
+      "case_description": "YIELD approach, no crosswalk or line, candidate nearest-view point with original sight rays",
+      "fixed_context": "Same yield-sign intersection, actor, intersecting traffic, weather, 600-frame four-camera capture and selected reference; paired cases change requested front-bumper stop only.",
+      "source_topic_ids": [
+        "text-0"
+      ],
+      "selected": true
     }
   ],
   "comparisons": [
@@ -104,6 +172,48 @@
       ],
       "status": "selected_cpu_pair_original_pending",
       "measurement_method": "Join original same-frame full ego body, near-side crosswalk map readback, first rest, other traffic, and four cameras; judge safety-stop premise separately."
+    },
+    {
+      "comparison_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__stop_line_comparison",
+      "case_ids": [
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_stop_line",
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_stop_line"
+      ],
+      "deliberate_differences": [
+        "conditional_stop_position"
+      ],
+      "fixed_conditions": [
+        "YIELD sign",
+        "selected reference hierarchy",
+        "other traffic",
+        "weather",
+        "actor",
+        "four cameras",
+        "600-frame clock"
+      ],
+      "status": "selected_cpu_pair_original_pending",
+      "measurement_method": "Join original full ego body, marked stop line map readback, first rest, other traffic, and four cameras; judge safety-stop premise separately."
+    },
+    {
+      "comparison_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__viewpoint_comparison",
+      "case_ids": [
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_viewpoint",
+        "training__C111343__NRS-484A-450-3__motor_vehicle_driver__past_viewpoint"
+      ],
+      "deliberate_differences": [
+        "conditional_stop_position"
+      ],
+      "fixed_conditions": [
+        "YIELD sign",
+        "selected reference hierarchy",
+        "other traffic",
+        "weather",
+        "actor",
+        "four cameras",
+        "600-frame clock"
+      ],
+      "status": "selected_cpu_pair_original_pending",
+      "measurement_method": "Join original full ego body, no-crosswalk/no-line map readback, first rest, original viewpoint sight rays, other traffic, and four cameras; nearest unobstructed view and safety-stop premise require independent judgment."
     }
   ],
   "observations": [
@@ -168,7 +278,7 @@
       ]
     },
     "st.stop_line": {
-      "evidence": "Crosswalk is present in selected cell; this no-crosswalk alternative is outside the selected pair. Original source for the alternative remains pending; no value inferred.",
+      "evidence": "Selected no-crosswalk same-cell branch uses original map readback and, for nearest-viewpoint, per-frame CARLA sight rays plus independent pixel review; legal nearest point remains unassessed.",
       "channels": [
         "conditional_stop_position"
       ],
@@ -177,7 +287,7 @@
       ]
     },
     "st.sight_distance": {
-      "evidence": "Crosswalk is present in selected cell; this no-crosswalk alternative is outside the selected pair. Original source for the alternative remains pending; no value inferred.",
+      "evidence": "Selected no-crosswalk same-cell branch uses original map readback and, for nearest-viewpoint, per-frame CARLA sight rays plus independent pixel review; legal nearest point remains unassessed.",
       "channels": [
         "conditional_stop_position"
       ],
@@ -186,7 +296,7 @@
       ]
     },
     "rel.visible": {
-      "evidence": "Crosswalk is present in selected cell; this no-crosswalk alternative is outside the selected pair. Original source for the alternative remains pending; no value inferred.",
+      "evidence": "Selected no-crosswalk same-cell branch uses original map readback and, for nearest-viewpoint, per-frame CARLA sight rays plus independent pixel review; legal nearest point remains unassessed.",
       "channels": [
         "conditional_stop_position"
       ],
@@ -256,10 +366,10 @@
     }
   ],
   "runtime_uncertainties": [
-    "Original CARLA acquisition and physical stop placement are unverified by CPU fixture.",
-    "Whether a stop is required for safety is an independent source-backed judgment; no time-to-conflict cutoff is supplied.",
-    "No-crosswalk stop-line and nearest-view alternatives are outside this selected crosswalk pair and remain for separate branch coverage.",
-    "Four-camera visibility and actual pixels require delivery audit on original capture."
+    "Original CARLA acquisition and physical stop placement are unverified by CPU fixtures.",
+    "Whether safety requires a stop is an independent source-backed judgment; no invented time-to-conflict cutoff.",
+    "The nearest-viewpoint construction records original cast rays but the legal nearest visible point requires independent source and pixel review.",
+    "Four-camera visibility, marker paint and actual pixels require delivery audit on original capture."
   ],
   "selection_targets": [
     "full-train"
@@ -275,9 +385,9 @@
     "rate_hz": 20,
     "cameras": [
       "overview",
-      "driver_reference",
+      "approach",
       "reference_corner",
-      "approach"
+      "driver_reference"
     ],
     "observed_native": false,
     "selected_delivery": true
@@ -295,17 +405,17 @@
     "coverage": [
       {
         "view": "overview",
-        "subject": "both vehicles, YIELD approach, nearest-side crosswalk",
+        "subject": "both vehicles, YIELD approach and selected stopping-reference hierarchy",
         "interval": "startup through clearance, all 600 frames"
       },
       {
         "view": "approach",
-        "subject": "governing YIELD sign, ego body and crosswalk",
+        "subject": "governing YIELD sign, ego body and crosswalk or marked stop line",
         "interval": "approach through stop and entry"
       },
       {
         "view": "reference_corner",
-        "subject": "near-side crosswalk and intersecting traffic",
+        "subject": "selected stopping reference and intersecting traffic",
         "interval": "first stop through entry"
       },
       {

@@ -6,11 +6,14 @@ import hashlib
 import json
 from pathlib import Path
 
-from yield_crosswalk_scene import request
+from yield_crosswalk_scene import request, reference_kind
 
 HERE = Path(__file__).resolve().parent
 AID = HERE.name
-SUFFIXES = ("before_crosswalk", "past_crosswalk")
+PAIRS = {AID + "__comparison": ("before_crosswalk", "past_crosswalk"),
+         AID + "__stop_line_comparison": ("before_stop_line", "past_stop_line"),
+         AID + "__viewpoint_comparison": ("before_viewpoint", "past_viewpoint")}
+SUFFIXES = PAIRS[AID + "__comparison"]
 GROUP = AID + "__comparison"
 
 
@@ -33,7 +36,7 @@ def verify_requests():
     a, b = [request(slug) for slug in SUFFIXES]
     changed = {key for key in set(a) | set(b) if a.get(key) != b.get(key)}
     if changed != {"case", "controller"}:
-        raise ValueError("Uncontrolled authored crosswalk comparison: " + str(changed))
+        raise ValueError("Uncontrolled authored reference comparison: " + str(changed))
     if (a["controller"]["policy"] != b["controller"]["policy"] or
             a["controller"]["requested_stop_front_x_m"] != -9 or
             b["controller"]["requested_stop_front_x_m"] != -4 or
@@ -65,9 +68,10 @@ def first_rest(rows_):
 def verify_contrast(first, second):
     a, b = first_rest(first), first_rest(second)
     if not a < -6 <= b <= -4:
-        raise ValueError("Before-versus-within-crosswalk first-rest contrast absent")
+        raise ValueError("Before-versus-past-reference first-rest contrast absent")
     return {"before_front_x_m": a, "past_front_x_m": b,
-            "near_side_crosswalk_x_m": -6, "safety_stop_required": "unassessed",
+            "selected_reference_near_x_m": -6, "reference_kind": reference_kind(SUFFIXES[0]),
+            "safety_stop_required": "unassessed",
             "legal_compliance": "unassessed"}
 
 
@@ -90,20 +94,25 @@ def audit(folders, output):
                 context.get("safety_stop_required") != "unassessed"):
             raise ValueError("Original yield source or unresolved safety context differs")
         histories.append(rows(folder / "yield_motion.jsonl"))
+        reference = ("near_crosswalk.json" if reference_kind(slug) == "crosswalk" else
+                     "marked_stop_line.json" if reference_kind(slug) == "stop_line" else
+                     "nearest_viewpoint.json")
+        if context.get("reference_kind") != reference_kind(slug):
+            raise ValueError("Original reference hierarchy differs")
         hashes.append({"result": sha(result_path), "motion": sha(folder / "yield_motion.jsonl"),
                        "map": sha(folder / "road.xodr"),
                        "sign": sha(folder / "yield_sign.json"),
-                       "crosswalk": sha(folder / "near_crosswalk.json"),
+                       "reference": sha(folder / reference),
                        "safety": sha(folder / "safety_context.json")})
-    if any(hashes[0][key] != hashes[1][key] for key in ("map", "sign", "crosswalk", "safety")):
+    if any(hashes[0][key] != hashes[1][key] for key in ("map", "sign", "reference", "safety")):
         raise ValueError("Fixed source geometry or context changed")
     verify_rows(*histories)
     values = verify_contrast(*histories)
-    report = {"format": "worker-yield-crosswalk-comparison-audit", "passed": True,
+    report = {"format": "worker-yield-reference-comparison-audit", "passed": True,
         "comparison_id": GROUP, "case_ids": [AID + "__" + slug for slug in SUFFIXES],
         "source_sha256": hashes, "measurement": values,
         "fixed_conditions": ["cell geometry", "actor", "governing yield sign",
-            "near-side crosswalk", "intersecting traffic", "weather", "four cameras", "600-frame clock"],
+            "selected stopping reference", "intersecting traffic", "weather", "four cameras", "600-frame clock"],
         "deliberate_differences": ["conditional_stop_position"],
         "physical_or_legal_acceptance_claimed_by_fixture": False}
     output = Path(output)
@@ -130,10 +139,12 @@ def selftest(negative):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--comparison", choices=(GROUP,), required=True)
+    parser.add_argument("--comparison", choices=tuple(PAIRS), required=True)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--negative", action="store_true")
     parser.add_argument("--attempt", action="append")
     parser.add_argument("--output")
     args = parser.parse_args()
+    GROUP = args.comparison
+    SUFFIXES = PAIRS[GROUP]
     selftest(args.negative) if args.self_test else audit(args.attempt or [], args.output)

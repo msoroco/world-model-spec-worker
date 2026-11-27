@@ -62,7 +62,7 @@ def request(case):
     kind = reference_kind(case)
     return {"format": "worker-authored-yield-crosswalk-request", "case": case,
             "road_opendrive": road_xml(kind), "reference_kind": kind,
-            "reference_near_x_m": -6, "reference_far_x_m": -4,
+            "reference_near_x_m": -6, "reference_far_x_m": -4 if kind == "crosswalk" else -5.8,
             "crosswalk_near_x_m": -6 if kind == "crosswalk" else None,
             "crosswalk_far_x_m": -4 if kind == "crosswalk" else None,
             "intersection_near_x_m": -3.5, "stop_line_present": kind == "stop_line",

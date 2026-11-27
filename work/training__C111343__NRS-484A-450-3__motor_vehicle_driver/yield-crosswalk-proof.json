@@ -19,15 +19,51 @@
       "planned_frames": 600,
       "authored_request_checked": true,
       "native_geometry_verified": false
+    },
+    "before_stop_line": {
+      "case": "before_stop_line",
+      "road_count": 2,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_geometry_verified": false
+    },
+    "past_stop_line": {
+      "case": "past_stop_line",
+      "road_count": 2,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_geometry_verified": false
+    },
+    "before_viewpoint": {
+      "case": "before_viewpoint",
+      "road_count": 2,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_geometry_verified": false
+    },
+    "past_viewpoint": {
+      "case": "past_viewpoint",
+      "road_count": 2,
+      "camera_count": 4,
+      "planned_frames": 600,
+      "authored_request_checked": true,
+      "native_geometry_verified": false
     }
   },
   "positive": {
     "before_crosswalk": {
-      "format": "worker-source-yield-crosswalk-measurement",
+      "format": "worker-source-yield-reference-measurement",
       "frame_count": 600,
       "rate_hz": 20,
       "first_stop_frame": 100,
       "first_stop_front_x_m": -9.0,
+      "reference_kind": "crosswalk",
+      "first_stop_before_reference": true,
+      "first_stop_in_reference": false,
+      "first_reference_entry_frame": 212,
       "first_stop_before_crosswalk": true,
       "first_stop_in_crosswalk": false,
       "stopped_frame_count": 100,
@@ -43,11 +79,15 @@
       ]
     },
     "past_crosswalk": {
-      "format": "worker-source-yield-crosswalk-measurement",
+      "format": "worker-source-yield-reference-measurement",
       "frame_count": 600,
       "rate_hz": 20,
       "first_stop_frame": 100,
       "first_stop_front_x_m": -4.0,
+      "reference_kind": "crosswalk",
+      "first_stop_before_reference": false,
+      "first_stop_in_reference": true,
+      "first_reference_entry_frame": 95,
       "first_stop_before_crosswalk": false,
       "first_stop_in_crosswalk": true,
       "stopped_frame_count": 100,
@@ -66,11 +106,11 @@
   "negative": [
     {
       "test": "missing_crosswalk_source",
-      "rejected": "Missing source hash: near_crosswalk"
+      "rejected": "Missing source hash: stop_reference"
     },
     {
-      "test": "absent_crosswalk_branch",
-      "rejected": "Governing yield sign and near-side crosswalk required"
+      "test": "crosswalk_presence_mismatch",
+      "rejected": "Crosswalk presence differs from selected reference"
     },
     {
       "test": "unsourced_safety_condition",
@@ -87,6 +127,10 @@
     {
       "test": "duplicate_native_frame",
       "rejected": "Native frame identity gap"
+    },
+    {
+      "test": "missing_viewpoint_rays",
+      "rejected": "Nearest viewpoint lacks source-bound sight rays"
     }
   ]
 }

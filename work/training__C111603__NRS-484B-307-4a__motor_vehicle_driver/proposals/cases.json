@@ -1,0 +1,1927 @@
+{
+  "cell_id": "C111603",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c111603-green-arrow-source-grid",
+      "target_law_id": "NRS-484B-307-4a",
+      "judgment_refs": [
+        {
+          "phrase": "green turn arrow alone facing the driver",
+          "note": "Raw Native Green cannot establish arrow-only pixels or that the head governs this approach."
+        },
+        {
+          "phrase": "pedestrians lawfully within the adjacent crosswalk",
+          "note": "Original occupancy and independent permission/source review; position alone is insufficient."
+        },
+        {
+          "phrase": "other traffic lawfully using the intersection",
+          "note": "Original other-vehicle trajectory and independent signal/priority review; position alone is insufficient."
+        },
+        {
+          "phrase": "yield the right-of-way",
+          "note": "Original temporal and causal review is needed; a moving-overlap proxy is not a verdict."
+        }
+      ],
+      "rationale": "Eight exact source configurations cover direction, illumination and both lawful-priority alternatives without legal thresholds.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "landmarks": [],
+      "axes": [
+        {
+          "variable": "probe_variant_code",
+          "observable": "probe_variant_code",
+          "unit": "configuration_index",
+          "min": 0,
+          "max": 7,
+          "spacing": 1,
+          "range_rationale": "Eight exact selected physical configurations; index is identity only.",
+          "spacing_rationale": "Unit step enumerates eight authored constructions, not statutory spacing.",
+          "feasibility_evidence": "Eight inline Native bundles and offline CPU checks.",
+          "measurement": {
+            "method": "original configuration identity and source review",
+            "time_window": "600 frames",
+            "statistic": "last"
+          }
+        }
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      },
+      "spec_version": "10081f999fde8805c0697e3568ad1a0ea2c48d5395a6957c43c7366bbbef35b0",
+      "planned_case_count": 8,
+      "selection_order": [
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__direction_indicated",
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__direction_contrary",
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__arrow_lit",
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__arrow_expired",
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__pedestrian_yield",
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__pedestrian_overlap",
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__traffic_yield",
+        "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__traffic_overlap"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "cell_id": "C111603",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral definition, no original capture.",
+      "variable_assignments": {
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": null,
+          "unit": "configuration_index"
+        },
+        "turn_route": {
+          "kind": "controller",
+          "value": "neutral",
+          "unit": "categorical"
+        },
+        "entry_signal_phase": {
+          "kind": "world_setup",
+          "value": "neutral",
+          "unit": "categorical"
+        },
+        "participant_pause_request": {
+          "kind": "controller",
+          "value": "neutral",
+          "unit": "categorical"
+        },
+        "observed_governance_and_lawfulness": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      }
+    },
+    {
+      "cell_id": "C111603",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__direction_indicated",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "judgment_sweep",
+      "rationale": "Indicated-direction turn while a green arrow alone is illuminated; original governance, lawfulness and yielding remain unverified.",
+      "paired_probe_id": "green_arrow_source_direction_indicated",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source exact pair; no invented legal threshold",
+        "target_value_or_branch": "direction_indicated"
+      },
+      "variable_assignments": {
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 0.0,
+          "unit": "configuration_index"
+        },
+        "turn_route": {
+          "kind": "controller",
+          "value": "indicated_turn",
+          "unit": "categorical"
+        },
+        "entry_signal_phase": {
+          "kind": "world_setup",
+          "value": "lit",
+          "unit": "categorical"
+        },
+        "participant_pause_request": {
+          "kind": "controller",
+          "value": "continue",
+          "unit": "categorical"
+        },
+        "observed_governance_and_lawfulness": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "green turn arrow alone facing the driver",
+        "pedestrians lawfully within the adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "deterministic_branch": {
+        "source_clause": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+        "judgment_context": [
+          {
+            "phrase": "green turn arrow alone facing the driver",
+            "status": "fixed_assumption",
+            "reason": "Raw Native Green cannot establish arrow-only pixels or that the head governs this approach.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "pedestrians lawfully within the adjacent crosswalk",
+            "status": "fixed_assumption",
+            "reason": "Original occupancy and independent permission/source review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "other traffic lawfully using the intersection",
+            "status": "fixed_assumption",
+            "reason": "Original other-vehicle trajectory and independent signal/priority review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "yield the right-of-way",
+            "status": "fixed_assumption",
+            "reason": "Original temporal and causal review is needed; a moving-overlap proxy is not a verdict.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c111603-green-arrow-source-grid",
+      "sweep_point": {
+        "probe_variant_code": 0.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      },
+      "sweep_spec_version": "10081f999fde8805c0697e3568ad1a0ea2c48d5395a6957c43c7366bbbef35b0"
+    },
+    {
+      "cell_id": "C111603",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__direction_contrary",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "judgment_sweep",
+      "rationale": "Contrary-direction turn during the same green-arrow-alone interval; original governance, lawfulness and yielding remain unverified.",
+      "paired_probe_id": "green_arrow_source_direction_contrary",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source exact pair; no invented legal threshold",
+        "target_value_or_branch": "direction_contrary"
+      },
+      "variable_assignments": {
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 1.0,
+          "unit": "configuration_index"
+        },
+        "turn_route": {
+          "kind": "controller",
+          "value": "contrary_turn",
+          "unit": "categorical"
+        },
+        "entry_signal_phase": {
+          "kind": "world_setup",
+          "value": "lit",
+          "unit": "categorical"
+        },
+        "participant_pause_request": {
+          "kind": "controller",
+          "value": "continue",
+          "unit": "categorical"
+        },
+        "observed_governance_and_lawfulness": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "green turn arrow alone facing the driver",
+        "pedestrians lawfully within the adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "deterministic_branch": {
+        "source_clause": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+        "judgment_context": [
+          {
+            "phrase": "green turn arrow alone facing the driver",
+            "status": "fixed_assumption",
+            "reason": "Raw Native Green cannot establish arrow-only pixels or that the head governs this approach.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "pedestrians lawfully within the adjacent crosswalk",
+            "status": "fixed_assumption",
+            "reason": "Original occupancy and independent permission/source review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "other traffic lawfully using the intersection",
+            "status": "fixed_assumption",
+            "reason": "Original other-vehicle trajectory and independent signal/priority review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "yield the right-of-way",
+            "status": "fixed_assumption",
+            "reason": "Original temporal and causal review is needed; a moving-overlap proxy is not a verdict.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c111603-green-arrow-source-grid",
+      "sweep_point": {
+        "probe_variant_code": 1.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      },
+      "sweep_spec_version": "10081f999fde8805c0697e3568ad1a0ea2c48d5395a6957c43c7366bbbef35b0"
+    },
+    {
+      "cell_id": "C111603",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__arrow_lit",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "judgment_sweep",
+      "rationale": "Enter and complete indicated turn while the green arrow alone remains illuminated; original governance, lawfulness and yielding remain unverified.",
+      "paired_probe_id": "green_arrow_source_arrow_lit",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source exact pair; no invented legal threshold",
+        "target_value_or_branch": "arrow_lit"
+      },
+      "variable_assignments": {
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 2.0,
+          "unit": "configuration_index"
+        },
+        "turn_route": {
+          "kind": "controller",
+          "value": "indicated_turn",
+          "unit": "categorical"
+        },
+        "entry_signal_phase": {
+          "kind": "world_setup",
+          "value": "lit",
+          "unit": "categorical"
+        },
+        "participant_pause_request": {
+          "kind": "controller",
+          "value": "continue",
+          "unit": "categorical"
+        },
+        "observed_governance_and_lawfulness": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "green turn arrow alone facing the driver",
+        "pedestrians lawfully within the adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "deterministic_branch": {
+        "source_clause": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+        "judgment_context": [
+          {
+            "phrase": "green turn arrow alone facing the driver",
+            "status": "fixed_assumption",
+            "reason": "Raw Native Green cannot establish arrow-only pixels or that the head governs this approach.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "pedestrians lawfully within the adjacent crosswalk",
+            "status": "fixed_assumption",
+            "reason": "Original occupancy and independent permission/source review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "other traffic lawfully using the intersection",
+            "status": "fixed_assumption",
+            "reason": "Original other-vehicle trajectory and independent signal/priority review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "yield the right-of-way",
+            "status": "fixed_assumption",
+            "reason": "Original temporal and causal review is needed; a moving-overlap proxy is not a verdict.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c111603-green-arrow-source-grid",
+      "sweep_point": {
+        "probe_variant_code": 2.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      },
+      "sweep_spec_version": "10081f999fde8805c0697e3568ad1a0ea2c48d5395a6957c43c7366bbbef35b0"
+    },
+    {
+      "cell_id": "C111603",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__arrow_expired",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "judgment_sweep",
+      "rationale": "Begin indicated turn after the measured green-arrow-alone interval ends; original governance, lawfulness and yielding remain unverified.",
+      "paired_probe_id": "green_arrow_source_arrow_expired",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source exact pair; no invented legal threshold",
+        "target_value_or_branch": "arrow_expired"
+      },
+      "variable_assignments": {
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 3.0,
+          "unit": "configuration_index"
+        },
+        "turn_route": {
+          "kind": "controller",
+          "value": "indicated_turn",
+          "unit": "categorical"
+        },
+        "entry_signal_phase": {
+          "kind": "world_setup",
+          "value": "expired",
+          "unit": "categorical"
+        },
+        "participant_pause_request": {
+          "kind": "controller",
+          "value": "continue",
+          "unit": "categorical"
+        },
+        "observed_governance_and_lawfulness": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "green turn arrow alone facing the driver",
+        "pedestrians lawfully within the adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "deterministic_branch": {
+        "source_clause": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+        "judgment_context": [
+          {
+            "phrase": "green turn arrow alone facing the driver",
+            "status": "fixed_assumption",
+            "reason": "Raw Native Green cannot establish arrow-only pixels or that the head governs this approach.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "pedestrians lawfully within the adjacent crosswalk",
+            "status": "fixed_assumption",
+            "reason": "Original occupancy and independent permission/source review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "other traffic lawfully using the intersection",
+            "status": "fixed_assumption",
+            "reason": "Original other-vehicle trajectory and independent signal/priority review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "yield the right-of-way",
+            "status": "fixed_assumption",
+            "reason": "Original temporal and causal review is needed; a moving-overlap proxy is not a verdict.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c111603-green-arrow-source-grid",
+      "sweep_point": {
+        "probe_variant_code": 3.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      },
+      "sweep_spec_version": "10081f999fde8805c0697e3568ad1a0ea2c48d5395a6957c43c7366bbbef35b0"
+    },
+    {
+      "cell_id": "C111603",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__pedestrian_yield",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "judgment_sweep",
+      "rationale": "Pause before the adjacent crosswalk while a pedestrian uses it, then turn; original governance, lawfulness and yielding remain unverified.",
+      "paired_probe_id": "green_arrow_source_pedestrian_yield",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source exact pair; no invented legal threshold",
+        "target_value_or_branch": "pedestrian_yield"
+      },
+      "variable_assignments": {
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 4.0,
+          "unit": "configuration_index"
+        },
+        "turn_route": {
+          "kind": "controller",
+          "value": "indicated_turn",
+          "unit": "categorical"
+        },
+        "entry_signal_phase": {
+          "kind": "world_setup",
+          "value": "lit",
+          "unit": "categorical"
+        },
+        "participant_pause_request": {
+          "kind": "controller",
+          "value": "pause",
+          "unit": "categorical"
+        },
+        "observed_governance_and_lawfulness": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "green turn arrow alone facing the driver",
+        "pedestrians lawfully within the adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "deterministic_branch": {
+        "source_clause": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+        "judgment_context": [
+          {
+            "phrase": "green turn arrow alone facing the driver",
+            "status": "fixed_assumption",
+            "reason": "Raw Native Green cannot establish arrow-only pixels or that the head governs this approach.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "pedestrians lawfully within the adjacent crosswalk",
+            "status": "fixed_assumption",
+            "reason": "Original occupancy and independent permission/source review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "other traffic lawfully using the intersection",
+            "status": "fixed_assumption",
+            "reason": "Original other-vehicle trajectory and independent signal/priority review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "yield the right-of-way",
+            "status": "fixed_assumption",
+            "reason": "Original temporal and causal review is needed; a moving-overlap proxy is not a verdict.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c111603-green-arrow-source-grid",
+      "sweep_point": {
+        "probe_variant_code": 4.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      },
+      "sweep_spec_version": "10081f999fde8805c0697e3568ad1a0ea2c48d5395a6957c43c7366bbbef35b0"
+    },
+    {
+      "cell_id": "C111603",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__pedestrian_overlap",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "judgment_sweep",
+      "rationale": "Continue turn during the same pedestrian crosswalk occupancy; original governance, lawfulness and yielding remain unverified.",
+      "paired_probe_id": "green_arrow_source_pedestrian_overlap",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source exact pair; no invented legal threshold",
+        "target_value_or_branch": "pedestrian_overlap"
+      },
+      "variable_assignments": {
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 5.0,
+          "unit": "configuration_index"
+        },
+        "turn_route": {
+          "kind": "controller",
+          "value": "indicated_turn",
+          "unit": "categorical"
+        },
+        "entry_signal_phase": {
+          "kind": "world_setup",
+          "value": "lit",
+          "unit": "categorical"
+        },
+        "participant_pause_request": {
+          "kind": "controller",
+          "value": "continue",
+          "unit": "categorical"
+        },
+        "observed_governance_and_lawfulness": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "green turn arrow alone facing the driver",
+        "pedestrians lawfully within the adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "deterministic_branch": {
+        "source_clause": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+        "judgment_context": [
+          {
+            "phrase": "green turn arrow alone facing the driver",
+            "status": "fixed_assumption",
+            "reason": "Raw Native Green cannot establish arrow-only pixels or that the head governs this approach.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "pedestrians lawfully within the adjacent crosswalk",
+            "status": "fixed_assumption",
+            "reason": "Original occupancy and independent permission/source review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "other traffic lawfully using the intersection",
+            "status": "fixed_assumption",
+            "reason": "Original other-vehicle trajectory and independent signal/priority review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "yield the right-of-way",
+            "status": "fixed_assumption",
+            "reason": "Original temporal and causal review is needed; a moving-overlap proxy is not a verdict.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c111603-green-arrow-source-grid",
+      "sweep_point": {
+        "probe_variant_code": 5.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      },
+      "sweep_spec_version": "10081f999fde8805c0697e3568ad1a0ea2c48d5395a6957c43c7366bbbef35b0"
+    },
+    {
+      "cell_id": "C111603",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__traffic_yield",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "judgment_sweep",
+      "rationale": "Pause before conflict while other traffic uses the intersection, then turn; original governance, lawfulness and yielding remain unverified.",
+      "paired_probe_id": "green_arrow_source_traffic_yield",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source exact pair; no invented legal threshold",
+        "target_value_or_branch": "traffic_yield"
+      },
+      "variable_assignments": {
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 6.0,
+          "unit": "configuration_index"
+        },
+        "turn_route": {
+          "kind": "controller",
+          "value": "indicated_turn",
+          "unit": "categorical"
+        },
+        "entry_signal_phase": {
+          "kind": "world_setup",
+          "value": "lit",
+          "unit": "categorical"
+        },
+        "participant_pause_request": {
+          "kind": "controller",
+          "value": "pause",
+          "unit": "categorical"
+        },
+        "observed_governance_and_lawfulness": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "green turn arrow alone facing the driver",
+        "pedestrians lawfully within the adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "deterministic_branch": {
+        "source_clause": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+        "judgment_context": [
+          {
+            "phrase": "green turn arrow alone facing the driver",
+            "status": "fixed_assumption",
+            "reason": "Raw Native Green cannot establish arrow-only pixels or that the head governs this approach.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "pedestrians lawfully within the adjacent crosswalk",
+            "status": "fixed_assumption",
+            "reason": "Original occupancy and independent permission/source review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "other traffic lawfully using the intersection",
+            "status": "fixed_assumption",
+            "reason": "Original other-vehicle trajectory and independent signal/priority review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "yield the right-of-way",
+            "status": "fixed_assumption",
+            "reason": "Original temporal and causal review is needed; a moving-overlap proxy is not a verdict.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c111603-green-arrow-source-grid",
+      "sweep_point": {
+        "probe_variant_code": 6.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      },
+      "sweep_spec_version": "10081f999fde8805c0697e3568ad1a0ea2c48d5395a6957c43c7366bbbef35b0"
+    },
+    {
+      "cell_id": "C111603",
+      "actor": "motor_vehicle_driver",
+      "status": "draft",
+      "case_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver__traffic_overlap",
+      "target_law_id": "NRS-484B-307-4a",
+      "target_type": "judgment_sweep",
+      "rationale": "Continue turn during the same other-traffic intersection occupancy; original governance, lawfulness and yielding remain unverified.",
+      "paired_probe_id": "green_arrow_source_traffic_overlap",
+      "deliberate_differences": [
+        "probe_variant_code"
+      ],
+      "probe": {
+        "primary_variable": "probe_variant_code",
+        "comparison_or_standard": "fixed-source exact pair; no invented legal threshold",
+        "target_value_or_branch": "traffic_overlap"
+      },
+      "variable_assignments": {
+        "probe_variant_code": {
+          "kind": "controller",
+          "value": 7.0,
+          "unit": "configuration_index"
+        },
+        "turn_route": {
+          "kind": "controller",
+          "value": "indicated_turn",
+          "unit": "categorical"
+        },
+        "entry_signal_phase": {
+          "kind": "world_setup",
+          "value": "lit",
+          "unit": "categorical"
+        },
+        "participant_pause_request": {
+          "kind": "controller",
+          "value": "continue",
+          "unit": "categorical"
+        },
+        "observed_governance_and_lawfulness": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "green turn arrow alone facing the driver",
+        "pedestrians lawfully within the adjacent crosswalk",
+        "other traffic lawfully using the intersection",
+        "yield the right-of-way"
+      ],
+      "deterministic_branch": {
+        "source_clause": "Where the signal is a green turn arrow alone: Vehicular traffic facing the signal may proceed only in the direction indicated by the arrow signal so long as the arrow is illuminated, but the traffic must yield the right-of-way to pedestrians lawfully within the adjacent crosswalk and to other traffic lawfully using the intersection.",
+        "judgment_context": [
+          {
+            "phrase": "green turn arrow alone facing the driver",
+            "status": "fixed_assumption",
+            "reason": "Raw Native Green cannot establish arrow-only pixels or that the head governs this approach.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "pedestrians lawfully within the adjacent crosswalk",
+            "status": "fixed_assumption",
+            "reason": "Original occupancy and independent permission/source review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "other traffic lawfully using the intersection",
+            "status": "fixed_assumption",
+            "reason": "Original other-vehicle trajectory and independent signal/priority review; position alone is insufficient.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          },
+          {
+            "phrase": "yield the right-of-way",
+            "status": "fixed_assumption",
+            "reason": "Original temporal and causal review is needed; a moving-overlap proxy is not a verdict.",
+            "world_setup_refs": [
+              "entry_signal_phase"
+            ]
+          }
+        ]
+      },
+      "sweep_id": "c111603-green-arrow-source-grid",
+      "sweep_point": {
+        "probe_variant_code": 7.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "signal_native_and_pixels",
+            "method": "Original signal actor ID, raw state and four-camera pixel reference",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "participant_native_and_video",
+            "method": "Original ego, pedestrian, other-traffic poses and camera frame map",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.traffic_signal",
+            "method": "Raw signal state and independent original arrow-only pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "dev.governs",
+            "method": "Original Native head identity, approach geometry and facing pixel review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "method": "Original ego route, body and heading during turn",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "kin.heading",
+            "method": "Original ego transform heading by Native frame",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "method": "Original ego body and surveyed intersection bounds",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "method": "Original pedestrian body, trajectory and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "st.crosswalk",
+            "method": "Original adjacent crosswalk survey and participant body",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.in_intersection",
+            "method": "Original other-traffic body and independent permission review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          },
+          {
+            "name": "drv.yields_to",
+            "method": "Original ego and participant motion timing; causation review pending",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "unit": "structured",
+            "reference_frame": "original Native frame joined to four-camera map",
+            "uncertainty": "Signal governance, participant lawfulness and yielding require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Generic Native Green state does not establish a green turn arrow alone",
+          "Requested motion and overlap do not establish legal right-of-way or yielding"
+        ]
+      },
+      "sweep_spec_version": "10081f999fde8805c0697e3568ad1a0ea2c48d5395a6957c43c7366bbbef35b0"
+    }
+  ]
+}

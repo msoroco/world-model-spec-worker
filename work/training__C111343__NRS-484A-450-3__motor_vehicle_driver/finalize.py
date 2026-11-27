@@ -27,18 +27,28 @@ def rows(root, name):
 
 def inspect_sources(root, context):
     paths = context.get("source_files", {})
-    if set(paths) != set(HASHES):
+    expected = set(HASHES) | ({"sight_rays"} if context.get("reference_kind") == "viewpoint" else set())
+    if set(paths) != expected:
         raise ValueError("Original yield source inventory incomplete")
     for key, name in paths.items():
         if sha(source(root, name)) != context.get(key + "_sha256"):
             raise ValueError("Original yield source hash differs: " + key)
     map_hash = context["native_map_sha256"]
-    for name in ("yield_sign.json", "near_crosswalk.json", "intersecting_traffic.json"):
+    for name in ("yield_sign.json", context.get("reference_source"), "intersecting_traffic.json"):
         if json.loads(source(root, name).read_text()).get("map_readback_sha256") != map_hash:
             raise ValueError("Original map/feature readback hash differs: " + name)
     safety = json.loads(source(root, "safety_context.json").read_text())
     if safety.get("safety_stop_required") != "unassessed" or safety.get("independent_judgment_required") is not True:
         raise ValueError("Conditional safety judgment was invented or omitted")
+    reference = json.loads(source(root, context["reference_source"]).read_text())
+    if (reference.get("reference_kind") != context.get("reference_kind") or
+            reference.get("crosswalk_present") is not (context["reference_kind"] == "crosswalk") or
+            reference.get("marked_stop_line_present") is not (context["reference_kind"] == "stop_line")):
+        raise ValueError("Original stopping-reference hierarchy differs")
+    if context["reference_kind"] == "viewpoint":
+        rays = rows(root, "viewpoint_sight_rays.jsonl")
+        if len(rays) != FRAMES or any(row.get("nearest_legal_viewpoint_unassessed") is not True for row in rays):
+            raise ValueError("Original nearest-viewpoint ray source incomplete")
 
 
 def inspect_original_join(root, context, motion, video, trace):
@@ -83,16 +93,17 @@ def inspect_original_join(root, context, motion, video, trace):
             raise ValueError("Original source camera full decode differs: " + name)
 
 
-def measure_crosswalk_position(observation):
+def measure_reference_position(observation):
     return {"first_stop_front_x_m": observation["first_stop_front_x_m"],
-            "first_stop_before_crosswalk": observation["first_stop_before_crosswalk"],
-            "first_stop_in_crosswalk": observation["first_stop_in_crosswalk"],
-            "crosswalk_entry_frame": observation["first_crosswalk_entry_frame"],
+            "reference_kind": observation["reference_kind"],
+            "first_stop_before_reference": observation["first_stop_before_reference"],
+            "first_stop_in_reference": observation["first_stop_in_reference"],
+            "reference_entry_frame": observation["first_reference_entry_frame"],
             "legal_compliance": "unassessed"}
 
 
 def measure_yield_governance(observation):
-    return {"governing_sign": "YIELD", "near_side_crosswalk": True,
+    return {"governing_sign": "YIELD", "reference_kind": observation["reference_kind"],
             "intersecting_vehicle_y_at_stop_m": observation["intersecting_vehicle_y_at_stop_m"],
             "safety_stop_required": "unassessed"}
 
@@ -131,7 +142,7 @@ def finalize(attempt, output):
             "x_m": row["ego_x_m"], "y_m": -1.75, "heading_deg": 0,
             "speed_mps": row["ego_speed_mps"]}}, allow_nan=False) + "\n" for row in motion))
     context_sources = {"governing_yield_sign": "yield_sign.json",
-        "near_side_crosswalk": "near_crosswalk.json",
+        "stopping_reference": context["reference_source"],
         "intersecting_traffic": "intersecting_traffic.json",
         "safety_context": "safety_context.json"}
     for channel, filename in context_sources.items():
@@ -139,14 +150,14 @@ def finalize(attempt, output):
             channel: json.loads(source(root, filename).read_text()),
             "source_sha256": sha(source(root, filename))}, allow_nan=False) + "\n")
     result = {"case_id": case, "measured_values": observation,
-        "target_checks": [{"target": "first stop before nearest-side crosswalk",
-                           "requested": config["requested_stop_before_crosswalk"],
-                           "measured": observation["first_stop_before_crosswalk"],
-                           "method": "source-body front extent and first recorded rest versus original crosswalk edge",
+        "target_checks": [{"target": "first stop before selected stopping reference",
+                           "requested": config["requested_stop_before_reference"],
+                           "measured": observation["first_stop_before_reference"],
+                           "method": "source-body front extent and first recorded rest versus original selected reference",
                            "tolerance": "0.1 m/s recorded-rest diagnostic only; no statutory safety cutoff",
-                           "matched": observation["first_stop_before_crosswalk"] == config["requested_stop_before_crosswalk"],
+                           "matched": observation["first_stop_before_reference"] == config["requested_stop_before_reference"],
                            "physical_cause_confirmed": False,
-                           "cause_evidence": ["yield_motion.jsonl", "ego_body.jsonl", "near_crosswalk.json"]}],
+                           "cause_evidence": ["yield_motion.jsonl", "ego_body.jsonl", context["reference_source"]]}],
         "setup_confirmed": False, "behavior_attempted": False,
         "maneuver_completed": False, "termination_reason": "600 saved frames measured; physical and legal review pending",
         "physical_failure_flags": ["original physical success not independently confirmed"],
@@ -168,9 +179,9 @@ def finalize(attempt, output):
     result = physical_result(root, result)
     write_result(root, result)
     measurement_sources = {
-        "crosswalk_stop_position": ("measure_crosswalk_position",
-            measure_crosswalk_position(observation),
-            ["near_crosswalk.json", "ego_body.jsonl", "yield_motion.jsonl", "video_frames.jsonl"]),
+        "stop_reference_position": ("measure_reference_position",
+            measure_reference_position(observation),
+            [context["reference_source"], "ego_body.jsonl", "yield_motion.jsonl", "video_frames.jsonl"]),
         "conditional_yield_context": ("measure_yield_governance",
             measure_yield_governance(observation),
             ["yield_sign.json", "intersecting_traffic.json", "safety_context.json", "yield_motion.jsonl"]),
@@ -181,7 +192,7 @@ def finalize(attempt, output):
     measured = {"format": "worker-yield-crosswalk-selected-measurement",
                 "case_id": case, "measurement": observation,
                 "measurements": measurements,
-                "source_sha256": {key: context[key + "_sha256"] for key in HASHES},
+                "source_sha256": {key: context[key + "_sha256"] for key in context["source_files"]},
                 "safety_stop_required": "unassessed", "legal_compliance": "unassessed",
                 "physical_acceptance_claimed": False}
     destination.write_text(json.dumps(measured, indent=2, allow_nan=False) + "\n")

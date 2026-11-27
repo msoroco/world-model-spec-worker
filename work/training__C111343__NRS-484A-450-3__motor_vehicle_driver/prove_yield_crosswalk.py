@@ -5,17 +5,21 @@ import json
 from pathlib import Path
 
 from measure_yield_crosswalk import CAMERAS, FRAMES, HASHES, measure
-from yield_crosswalk_scene import CASES, request, validate
+from yield_crosswalk_scene import CASES, reference_kind, request, validate
 
 
-def context():
+def context(case="before_crosswalk"):
+    kind = reference_kind(case)
     result = {"source_kind": "synthetic_yield_fixture",
-              "governing_yield_sign": True, "near_side_crosswalk": True,
+              "governing_yield_sign": True, "near_side_crosswalk": kind == "crosswalk",
               "safety_context_present": True, "safety_stop_required": "unassessed",
-              "crosswalk_near_x_m": -6, "crosswalk_far_x_m": -4,
+              "reference_kind": kind, "reference_near_x_m": -6,
+              "reference_far_x_m": -4 if kind == "crosswalk" else -5.8,
               "intersection_near_x_m": -3.5}
     for name in HASHES:
         result[name + "_sha256"] = hashlib.sha256(("synthetic-fixture:" + name).encode()).hexdigest()
+    if kind == "viewpoint":
+        result["sight_rays_sha256"] = hashlib.sha256(b"synthetic-fixture:sight_rays").hexdigest()
     return result
 
 
@@ -56,11 +60,11 @@ if __name__ == "__main__":
     assert before["legal_compliance"] == past["legal_compliance"] == "unassessed"
     negative = []
     source = context()
-    source.pop("near_crosswalk_sha256")
+    source.pop("stop_reference_sha256")
     negative.append(reject("missing_crosswalk_source", source, trace("before_crosswalk"), "source hash"))
     source = context()
     source["near_side_crosswalk"] = False
-    negative.append(reject("absent_crosswalk_branch", source, trace("before_crosswalk"), "crosswalk required"))
+    negative.append(reject("crosswalk_presence_mismatch", source, trace("before_crosswalk"), "Crosswalk presence"))
     source = context()
     source["safety_context_present"] = False
     negative.append(reject("unsourced_safety_condition", source, trace("before_crosswalk"), "context missing"))
@@ -71,6 +75,15 @@ if __name__ == "__main__":
     rows = trace("before_crosswalk")
     rows[200]["native_frame"] = rows[199]["native_frame"]
     negative.append(reject("duplicate_native_frame", context(), rows, "Native frame"))
+    for suffix in ("stop_line", "viewpoint"):
+        pair = {"before": measure(context("before_" + suffix), trace("before_" + suffix)),
+                "past": measure(context("past_" + suffix), trace("past_" + suffix))}
+        assert pair["before"]["first_stop_before_reference"] is True
+        assert pair["past"]["first_stop_before_reference"] is False
+        if suffix == "viewpoint":
+            source = context("before_viewpoint")
+            source.pop("sight_rays_sha256")
+            negative.append(reject("missing_viewpoint_rays", source, trace("before_viewpoint"), "sight rays"))
     proof = {"format": "worker-cpu-yield-crosswalk-proof", "passed": True,
              "diagnostic_only": True, "original_native_observed": False,
              "scenes": scenes, "positive": {"before_crosswalk": before, "past_crosswalk": past},

@@ -1,11 +1,15 @@
 {
   "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_crosswalk",
   "measured_values": {
-    "format": "worker-source-yield-crosswalk-measurement",
+    "format": "worker-source-yield-reference-measurement",
     "frame_count": 600,
     "rate_hz": 20,
     "first_stop_frame": 100,
     "first_stop_front_x_m": -9.0,
+    "reference_kind": "crosswalk",
+    "first_stop_before_reference": true,
+    "first_stop_in_reference": false,
+    "first_reference_entry_frame": 212,
     "first_stop_before_crosswalk": true,
     "first_stop_in_crosswalk": false,
     "stopped_frame_count": 100,
@@ -22,10 +26,10 @@
   },
   "target_checks": [
     {
-      "target": "first stop before nearest-side crosswalk",
+      "target": "first stop before selected stopping reference",
       "requested": true,
       "measured": true,
-      "method": "source-body front extent and first recorded rest versus original crosswalk edge",
+      "method": "source-body front extent and first recorded rest versus original selected reference",
       "tolerance": "0.1 m/s recorded-rest diagnostic only; no statutory safety cutoff",
       "matched": true,
       "physical_cause_confirmed": false,
@@ -66,7 +70,7 @@
         "name": "conditional_stop_position",
         "unit": "m,m/s",
         "sampling_rate_hz": 20,
-        "method": "first recorded rest front-bumper extent versus original near-side crosswalk edge",
+        "method": "first recorded rest front-bumper extent versus original selected stopping reference",
         "time_window": "all 600 frames through intersection entry",
         "reference_frame": "source-hashed original map crosswalk and vehicle body",
         "uncertainty": "0.1 m/s rest diagnostic; no legal safety threshold or compliance judgment"
@@ -79,7 +83,7 @@
         "method": "original Native source hash and per-frame identity join"
       },
       {
-        "name": "near_side_crosswalk",
+        "name": "stopping_reference",
         "unit": "structured",
         "method": "original Native source hash and per-frame identity join"
       },
@@ -116,9 +120,9 @@
       "reference": "channels/governing_yield_sign.json"
     },
     {
-      "name": "near_side_crosswalk",
+      "name": "stopping_reference",
       "unit": "structured",
-      "reference": "channels/near_side_crosswalk.json"
+      "reference": "channels/stopping_reference.json"
     },
     {
       "name": "intersecting_traffic",
@@ -166,8 +170,8 @@
         }
       ],
       "sources": {
-        "config.json": "38d0ce0e3601118becf5591533ee3e8921efc6a4d38ba368e02a325786933380",
-        "video_frames.jsonl": "74a28aa8d6a8b601a80cc13c5cea69f8855c69c32dbb33e8935ecb38b5ca857f",
+        "config.json": "9e56b37bfef2796d690e88fc2eda91074b8409d3efca053fc5113c2da4ccf014",
+        "video_frames.jsonl": "25148a07e80a9315ce94f0e5e0433f506bba3bdb6e5b193914c98677fd1b0018",
         "trace.jsonl": "47644fcd481384de4c6e764f357b255cfc5f1ba0da111bac543057ad5265fe71"
       },
       "details": {
@@ -194,17 +198,17 @@
         }
       ],
       "sources": {
-        "config.json": "38d0ce0e3601118becf5591533ee3e8921efc6a4d38ba368e02a325786933380",
-        "video_frames.jsonl": "74a28aa8d6a8b601a80cc13c5cea69f8855c69c32dbb33e8935ecb38b5ca857f",
+        "config.json": "9e56b37bfef2796d690e88fc2eda91074b8409d3efca053fc5113c2da4ccf014",
+        "video_frames.jsonl": "25148a07e80a9315ce94f0e5e0433f506bba3bdb6e5b193914c98677fd1b0018",
         "trace.jsonl": "47644fcd481384de4c6e764f357b255cfc5f1ba0da111bac543057ad5265fe71"
       },
       "details": {
         "checks": [
           {
-            "target": "first stop before nearest-side crosswalk",
+            "target": "first stop before selected stopping reference",
             "requested": true,
             "measured": true,
-            "method": "source-body front extent and first recorded rest versus original crosswalk edge",
+            "method": "source-body front extent and first recorded rest versus original selected reference",
             "tolerance": "0.1 m/s recorded-rest diagnostic only; no statutory safety cutoff",
             "matched": true,
             "physical_cause_confirmed": false,
@@ -232,8 +236,8 @@
         }
       ],
       "sources": {
-        "config.json": "38d0ce0e3601118becf5591533ee3e8921efc6a4d38ba368e02a325786933380",
-        "video_frames.jsonl": "74a28aa8d6a8b601a80cc13c5cea69f8855c69c32dbb33e8935ecb38b5ca857f",
+        "config.json": "9e56b37bfef2796d690e88fc2eda91074b8409d3efca053fc5113c2da4ccf014",
+        "video_frames.jsonl": "25148a07e80a9315ce94f0e5e0433f506bba3bdb6e5b193914c98677fd1b0018",
         "trace.jsonl": "47644fcd481384de4c6e764f357b255cfc5f1ba0da111bac543057ad5265fe71"
       },
       "details": {
@@ -261,8 +265,8 @@
         }
       ],
       "sources": {
-        "config.json": "38d0ce0e3601118becf5591533ee3e8921efc6a4d38ba368e02a325786933380",
-        "video_frames.jsonl": "74a28aa8d6a8b601a80cc13c5cea69f8855c69c32dbb33e8935ecb38b5ca857f",
+        "config.json": "9e56b37bfef2796d690e88fc2eda91074b8409d3efca053fc5113c2da4ccf014",
+        "video_frames.jsonl": "25148a07e80a9315ce94f0e5e0433f506bba3bdb6e5b193914c98677fd1b0018",
         "trace.jsonl": "47644fcd481384de4c6e764f357b255cfc5f1ba0da111bac543057ad5265fe71"
       },
       "physical_causation_claimed": false

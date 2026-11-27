@@ -21,8 +21,8 @@ def main():
     manifest = json.loads(manifest_path.read_text())
     for entry in manifest["cases"]:
         slug = entry["case_id"].rsplit("__", 1)[-1]
-        label = "before" if slug == "before_crosswalk" else "past"
-        source = REPO / ".runtime-work" / "c111343-yield" / ("compat-" + label + "-primary-v6")
+        label = slug
+        source = REPO / ".runtime-work" / "c111343-yield" / ("compat-" + label + "-primary-v9")
         source_receipt = source / "compatibility.json"
         if not source_receipt.is_file():
             raise ValueError("Current-runtime compatibility proof missing: " + slug)
@@ -42,14 +42,14 @@ def main():
                          "method": "original same-frame subject transform and body source",
                          "evidence": "channels/ego_pose.jsonl"},
             "conditional_stop_position": {"entrypoint": "finalize.py",
-                "method": "original front-bumper first rest versus map-readback crosswalk edge",
+                "method": "original front-bumper first rest versus selected map-readback stopping reference",
                 "evidence": "channels/conditional_stop_position.jsonl"}}
         physical = HERE / "physical-proof" / slug / "proof.json"
         if physical.is_file():
             entry["physical_preparation"] = {"receipt": str(physical.relative_to(HERE)),
                                              "sha256": sha(physical)}
         fallback = entry["candidates"][0]
-        fallback_source = REPO / ".runtime-work" / "c111343-yield" / ("compat-" + label + "-fallback1-v6")
+        fallback_source = REPO / ".runtime-work" / "c111343-yield" / ("compat-" + label + "-fallback1-v9")
         fallback_receipt = json.loads((fallback_source / "compatibility.json").read_text())
         for original, target in (("compatibility-analysis.log", "compatibility-" + slug + "-fallback1-analysis.log"),
                                  ("negative-analysis.log", "compatibility-" + slug + "-fallback1-negative.log")):

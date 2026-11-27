@@ -1,4 +1,4 @@
-"""Retain successful recorded-only fixture checks for two exact cases."""
+"""Retain successful recorded-only fixture checks for six exact cases."""
 import hashlib
 import json
 from pathlib import Path
@@ -19,7 +19,7 @@ def main():
     saved.mkdir(exist_ok=True)
     for entry in manifest["cases"]:
         slug = entry["case_id"].rsplit("__", 1)[-1]
-        base = REPO / ".runtime-work" / "c111343-yield" / ("saved-" + slug + "-v6")
+        base = REPO / ".runtime-work" / "c111343-yield" / ("saved-" + slug + "-v9")
         version = base / "derived/v0001"
         receipt = json.loads((version / "processing.json").read_text())
         if (receipt.get("passed") is not True or receipt.get("recorded_only") is not True or

@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+from yield_crosswalk_scene import CASES, reference_kind
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
@@ -42,16 +43,16 @@ def main():
             "timing": {"description": "Conditional need assessed on approach; stopping reference precedes intersection entry"},
             "judgment_calls_needed": [{"phrase": phrase, "note": note}]},
         "parameter_refs": [{"name": "conditional_stop_position", "kind": "controller",
-            "range_or_domain": ["before_crosswalk", "past_crosswalk"]}]}
+            "range_or_domain": list(CASES)}]}
     refs["template"] = write("template", template)
     judgment = {"template_id": TEMPLATE, "phrase": phrase, "note": note,
         "status": "draft", "observable_requirements": {
             "observables": [{"name": "conditional_stop_position", "unit": "m,m/s",
-                "description": "Source-body first rest relative to original near-side crosswalk edge across 600 frames."}],
+                "description": "Source-body first rest relative to the original selected crosswalk, marked line, or sight-view candidate across 600 frames."}],
             "context_inputs": [{"name": "safety_context", "unit": "structured",
                 "description": "Original intersecting traffic, approach and view evidence; independent judgment required."},
-                {"name": "near_side_crosswalk", "unit": "structured",
-                 "description": "Original crosswalk geometry and reference hierarchy."}],
+                {"name": "stopping_reference", "unit": "structured",
+                 "description": "Original crosswalk, marked-line or sight-view source and reference hierarchy."}],
             "sweep_dimensions": [{"name": "conditional_stop_position", "unit": "category",
                 "description": "Requested front-bumper stopping target; not a safety judgment."}],
             "landmarks": [],
@@ -60,12 +61,12 @@ def main():
             "limitations": ["No legal time-to-conflict threshold is asserted; physical and safety review remain independent."]}}
     refs["judgment_observables"] = [write("judgment_observables_1", judgment)]
     binding = {"cell_id": CELL, "actor": ACTOR, "status": "draft",
-        "established_contexts": [{"name": "yield_sign_near_side_crosswalk",
+        "established_contexts": [{"name": "yield_sign_stopping_reference",
             "source": "frozen yield-sign intersection cell and authored source-readback construction"}],
         "law_refs": [{"template_id": TEMPLATE, "binding_kind": "direct"}],
         "context_refs": [], "fixed_parameters": [],
         "variable_parameters": [{"name": "conditional_stop_position", "kind": "controller",
-            "range_or_domain": ["before_crosswalk", "past_crosswalk"], "used_by_laws": [LAW]}]}
+            "range_or_domain": list(CASES), "used_by_laws": [LAW]}]}
     refs["bindings"] = write("bindings", binding)
     record = json.loads((HERE / "selected/before_crosswalk/construction.json").read_text())["recording_description"]
     cases = [{"case_id": AID + "__baseline", "target_law_id": None,
@@ -73,13 +74,14 @@ def main():
         "recording_description": record, "unresolved_judgment_calls": [phrase],
         "variable_assignments": {"conditional_stop_position": {"kind": "controller",
             "unit": "category", "value": "before_crosswalk"}}}]
-    for slug in ("before_crosswalk", "past_crosswalk"):
+    for slug in CASES:
+        kind = reference_kind(slug)
         cases.append({"case_id": AID + "__" + slug, "target_law_id": LAW,
             "target_type": "boundary_probe",
             "probe": {"primary_variable": "conditional_stop_position",
-                "comparison_or_standard": "Measured first rest of full front bumper before versus within the present crosswalk, conditional on independent safety finding",
+                "comparison_or_standard": "Measured first rest of full front bumper before versus within the selected " + kind + " reference, conditional on independent safety finding",
                 "target_value_or_branch": slug},
-            "paired_probe_id": "C111343-yield-crosswalk-stop-position",
+            "paired_probe_id": "C111343-yield-" + kind + "-stop-position",
             "deliberate_differences": ["conditional_stop_position"],
             "rationale": "These are physical attempts; safety-stop necessity and legal outcome remain unresolved.",
             "recording_description": record,
@@ -88,7 +90,7 @@ def main():
                 "unit": "category", "value": slug}}})
     unresolved = {"sweep_id": "unresolved_safety_stop", "target_law_id": LAW,
         "judgment_refs": [{"phrase": phrase, "note": note}], "status": "incomplete",
-        "rationale": "The fixed crosswalk-position pair measures stopping geometry; no reviewed physical range or legal time-to-conflict cutoff defines a safety-necessity sweep.",
+        "rationale": "The three reference-specific position pairs measure stopping geometry; no reviewed physical range or legal time-to-conflict cutoff defines a safety-necessity sweep.",
         "missing_inputs": ["Original Native traffic and sight evidence for independent safety judgment",
                            "Source-backed physical range and spacing for any additional safety-context sweep"]}
     refs["cases"] = write("cases", {"actor": ACTOR, "cell_id": CELL,
@@ -97,7 +99,7 @@ def main():
     index = {"assignment_id": AID, "format": "worker-semantic-delivery", "stages": refs}
     path = OUT / "semantic-index.json"
     path.write_text(json.dumps(index, indent=2, allow_nan=False) + "\n")
-    return {"selected_cases": 2, "index_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    return {"selected_cases": len(CASES), "index_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
 
 
 if __name__ == "__main__":

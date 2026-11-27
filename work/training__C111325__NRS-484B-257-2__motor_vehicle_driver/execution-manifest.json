@@ -13,7 +13,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-stop_unobligated_inside-fallback1.json",
+          "construction_sha256": "92ee51b0824febfa8abd28edc9510a4a811117c76b20857afb234b69f00d13a5",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_unobligated_inside --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-stop_unobligated_inside",
+            "exit_code": 0,
+            "construction_sha256": "92ee51b0824febfa8abd28edc9510a4a811117c76b20857afb234b69f00d13a5",
+            "log": "offline-fallback1-stop_unobligated_inside.log",
+            "log_sha256": "aada2207d1ab85127ce3d9ee4ea5ae55e26cb42c5124c6c03361c0195a297b2d"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-stop_unobligated_inside.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-stop_unobligated_inside.json",
@@ -63,9 +84,47 @@
       "negative": {
         "log": "negative-stop_unobligated_inside.log"
       },
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_unobligated_inside --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stop_unobligated_inside-analysis.log",
+        "test_log_sha256": "5930b125fc6b51e9d40facac4cc2bb667bd54cba61dee08c3a315ed038ea0ccc",
+        "processing_receipt": "saved/stop_unobligated_inside-processing.json",
+        "processing_receipt_sha256": "5930b125fc6b51e9d40facac4cc2bb667bd54cba61dee08c3a315ed038ea0ccc"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/stop_unobligated_inside/proof.json",
+        "sha256": "62737fd73d4d7d8fba1e471e53d66ea48b1d16f6605e9c3d111fa8c1bdd03c7d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_unobligated_inside",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_unobligated_inside --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-stop_unobligated_inside-positive.log",
+        "test_log_sha256": "0d318119e9a7407164f7f1051f5afac35b97df084ccde82598c4d97b0274680b",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_unobligated_inside --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-stop_unobligated_inside-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_unobligated_inside --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -81,7 +140,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-stop_roll_through_inside-fallback1.json",
+          "construction_sha256": "e6664e8c5a63dbaeed54a8b4f69cfd060bcbde796fe99f32864563b8c75a3714",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_roll_through_inside --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-stop_roll_through_inside",
+            "exit_code": 0,
+            "construction_sha256": "e6664e8c5a63dbaeed54a8b4f69cfd060bcbde796fe99f32864563b8c75a3714",
+            "log": "offline-fallback1-stop_roll_through_inside.log",
+            "log_sha256": "d3d0550693edd91a8520fc010337050ceb5099380c82168c6e76838c3039695c"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-stop_roll_through_inside.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-stop_roll_through_inside.json",
@@ -123,11 +203,55 @@
         "log_sha256": "131f749034dfeed77784a2e8675d85032daa99acc43059a06dc17eab4cd87dfe",
         "construction_sha256": "8bee6193741057c4c80f3abcdaafc986ca9ee88b566c53aa572c94aa632e7384"
       },
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "compatibility": {
+        "receipt": "compatibility-stop_roll_through_inside.json",
+        "sha256": "b40b6b63dca2080c9960d2b7c1de02df595d75a8e5138d20fcbcb513cb13e88b",
+        "log": "compatibility-stop_roll_through_inside.log"
+      },
+      "negative": {
+        "log": "negative-stop_roll_through_inside.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_roll_through_inside --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stop_roll_through_inside-analysis.log",
+        "test_log_sha256": "514d9f1bd72ea237d87bb80584f4bcaa1b5bee303a7408009bd499d701f0a4f0",
+        "processing_receipt": "saved/stop_roll_through_inside-processing.json",
+        "processing_receipt_sha256": "514d9f1bd72ea237d87bb80584f4bcaa1b5bee303a7408009bd499d701f0a4f0"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/stop_roll_through_inside/proof.json",
+        "sha256": "4d5b50a99c49280b43b0bc584a9a2d149ea943397748fa58808c1789c07d8d7d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_roll_through_inside",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_roll_through_inside --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-stop_roll_through_inside-positive.log",
+        "test_log_sha256": "527d36ad82cab11d1068f61e003000234c08621fa26aaacb06c47edc4640e32b",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_roll_through_inside --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-stop_roll_through_inside-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_roll_through_inside --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -143,7 +267,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield_unobligated_approaching-fallback1.json",
+          "construction_sha256": "fa19512bc7e00962563502477ab704c1d4abf49e24f6ad011c6edb03b2236c84",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_unobligated_approaching --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-yield_unobligated_approaching",
+            "exit_code": 0,
+            "construction_sha256": "fa19512bc7e00962563502477ab704c1d4abf49e24f6ad011c6edb03b2236c84",
+            "log": "offline-fallback1-yield_unobligated_approaching.log",
+            "log_sha256": "1ad2b3881a902b1331c0618d828670d0243953f362ae91adf873de4c8054755d"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-yield_unobligated_approaching.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-yield_unobligated_approaching.json",
@@ -185,11 +330,55 @@
         "log_sha256": "3f7e70c497686e7249762ad2030c545d99057c6aabc8ab9634793c30ad53c136",
         "construction_sha256": "689a6c558acdc2c4716cce3ead0601835fdb277a8578a4f6588e1b38ca39872d"
       },
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "compatibility": {
+        "receipt": "compatibility-yield_unobligated_approaching.json",
+        "sha256": "d3b3589bb126cce9b21555a7735bf389c5a4b19f276b74f3714764674edd6b01",
+        "log": "compatibility-yield_unobligated_approaching.log"
+      },
+      "negative": {
+        "log": "negative-yield_unobligated_approaching.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_unobligated_approaching --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/yield_unobligated_approaching-analysis.log",
+        "test_log_sha256": "1d73ebd75afebd4cb5bac051d9afc758a135de01fc4bf56ba02dda10e3a36c28",
+        "processing_receipt": "saved/yield_unobligated_approaching-processing.json",
+        "processing_receipt_sha256": "1d73ebd75afebd4cb5bac051d9afc758a135de01fc4bf56ba02dda10e3a36c28"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/yield_unobligated_approaching/proof.json",
+        "sha256": "3e2a2e8679e9776e07f05146c59865afad2f6be18a47f71547160bb9abb99820"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_unobligated_approaching",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_unobligated_approaching --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-yield_unobligated_approaching-positive.log",
+        "test_log_sha256": "d0b5c18d8faf7852a6d7b75ab73e383f5d7726203a26db217f04d61ac2a29e24",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_unobligated_approaching --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-yield_unobligated_approaching-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_unobligated_approaching --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -205,7 +394,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-yield_no_yield_approaching-fallback1.json",
+          "construction_sha256": "d20c5ce9a097148e5e22dda2fc897b119b7a8b0f811c0e179cf0835b683ee9c6",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_no_yield_approaching --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-yield_no_yield_approaching",
+            "exit_code": 0,
+            "construction_sha256": "d20c5ce9a097148e5e22dda2fc897b119b7a8b0f811c0e179cf0835b683ee9c6",
+            "log": "offline-fallback1-yield_no_yield_approaching.log",
+            "log_sha256": "5cb7b93af4a169ce29475b3b6ae72e7a3eeece226eae9b644751c26ca074e716"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-yield_no_yield_approaching.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-yield_no_yield_approaching.json",
@@ -247,11 +457,55 @@
         "log_sha256": "bf84601add05af2d63c5d7229fc309dffa89015d99d247e79a4dcae579051076",
         "construction_sha256": "cb96fc3f6baa2835df31498f36ba22a7d621c745b95c92afda99b4c8d92d8b46"
       },
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "compatibility": {
+        "receipt": "compatibility-yield_no_yield_approaching.json",
+        "sha256": "9a940f1cbdd2e5b9eef896a59e707086990880c397711c403318a8ceb8931e02",
+        "log": "compatibility-yield_no_yield_approaching.log"
+      },
+      "negative": {
+        "log": "negative-yield_no_yield_approaching.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_no_yield_approaching --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/yield_no_yield_approaching-analysis.log",
+        "test_log_sha256": "2d0679212db3c435b8a22acc638363deec6c85d45dca405abf6e0633ab5c3612",
+        "processing_receipt": "saved/yield_no_yield_approaching-processing.json",
+        "processing_receipt_sha256": "2d0679212db3c435b8a22acc638363deec6c85d45dca405abf6e0633ab5c3612"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/yield_no_yield_approaching/proof.json",
+        "sha256": "141a15a7893c7ffc70ffb808c7675c0b6065758736667c13cb596fae53716522"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_no_yield_approaching",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_no_yield_approaching --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-yield_no_yield_approaching-positive.log",
+        "test_log_sha256": "bb20a895cbc7b509fb4ddc7fd5751702ac27f2809c103901b5cb4d436b587b5d",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_no_yield_approaching --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-yield_no_yield_approaching-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__yield_no_yield_approaching --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -267,7 +521,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-stop_crosswalk_reference-fallback1.json",
+          "construction_sha256": "acd1895da9fb24427f69e7c0164d1716b127b23c2e462a4eddee7de176104a7f",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_crosswalk_reference --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-stop_crosswalk_reference",
+            "exit_code": 0,
+            "construction_sha256": "acd1895da9fb24427f69e7c0164d1716b127b23c2e462a4eddee7de176104a7f",
+            "log": "offline-fallback1-stop_crosswalk_reference.log",
+            "log_sha256": "3acc93f7f45759c563ebc218ed1aa7bf7f8d2cd2d696a136ee9174a2c991bbd9"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-stop_crosswalk_reference.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-stop_crosswalk_reference.json",
@@ -309,11 +584,55 @@
         "log_sha256": "7f269230b7b626507f9324a982e55c0ad125404b005589edccdf4f799ee3fa33",
         "construction_sha256": "fd3d0adf74caab0c858cb43a0ff8580b762ec8864294be1d59ee647772a575f1"
       },
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "compatibility": {
+        "receipt": "compatibility-stop_crosswalk_reference.json",
+        "sha256": "ae3b248f783767c1f017edef7a0ee2fb5b201487c36dbf72c406b3323c2393c8",
+        "log": "compatibility-stop_crosswalk_reference.log"
+      },
+      "negative": {
+        "log": "negative-stop_crosswalk_reference.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_crosswalk_reference --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stop_crosswalk_reference-analysis.log",
+        "test_log_sha256": "1953618ff239d4cd16eb4ca52430f44cf602517c40cd5545a06d49144a26d74b",
+        "processing_receipt": "saved/stop_crosswalk_reference-processing.json",
+        "processing_receipt_sha256": "1953618ff239d4cd16eb4ca52430f44cf602517c40cd5545a06d49144a26d74b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/stop_crosswalk_reference/proof.json",
+        "sha256": "561677106147a7c66047cffb1fac1633da05e79d15366894a5d39084fd55f18b"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_crosswalk_reference",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_crosswalk_reference --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-stop_crosswalk_reference-positive.log",
+        "test_log_sha256": "183ea2d95bba431408b92d7b891a086b442b79df41c5bbc446b925e0fada656a",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_crosswalk_reference --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-stop_crosswalk_reference-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_crosswalk_reference --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -329,7 +648,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-stop_nearest_viewpoint-fallback1.json",
+          "construction_sha256": "e57833d738f6df626092b5646d2930e82ef151fd6666baf222a226b688d6ddb6",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_nearest_viewpoint --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-stop_nearest_viewpoint",
+            "exit_code": 0,
+            "construction_sha256": "e57833d738f6df626092b5646d2930e82ef151fd6666baf222a226b688d6ddb6",
+            "log": "offline-fallback1-stop_nearest_viewpoint.log",
+            "log_sha256": "1ade711885409a5e8be3134c7f52cbdb3a644c269e4c545c8f8bb6c40c84989b"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-stop_nearest_viewpoint.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-stop_nearest_viewpoint.json",
@@ -371,11 +711,55 @@
         "log_sha256": "895d6d6a90290d8375fac4082cde642b52311af4881b3ca58ab286bbd17d9668",
         "construction_sha256": "5a61b155b8364e4b99b86ca808e5ecf2c592785503a4d353967310ed16a31c32"
       },
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "compatibility": {
+        "receipt": "compatibility-stop_nearest_viewpoint.json",
+        "sha256": "b638dfa88364ecffc4b584cb7fb6bf530109da6bea6e994dd7ad432366243e94",
+        "log": "compatibility-stop_nearest_viewpoint.log"
+      },
+      "negative": {
+        "log": "negative-stop_nearest_viewpoint.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_nearest_viewpoint --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stop_nearest_viewpoint-analysis.log",
+        "test_log_sha256": "8d7d670d2d297c283ff95dd1219edfa01bd0f158648528554501767bc6f285e7",
+        "processing_receipt": "saved/stop_nearest_viewpoint-processing.json",
+        "processing_receipt_sha256": "8d7d670d2d297c283ff95dd1219edfa01bd0f158648528554501767bc6f285e7"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/stop_nearest_viewpoint/proof.json",
+        "sha256": "d89231d15814e3e0c40c3aa6bba93d52264113438b4bef64bbd0f0502125c648"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_nearest_viewpoint",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_nearest_viewpoint --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-stop_nearest_viewpoint-positive.log",
+        "test_log_sha256": "8e94ea53edd3d0d43b6470582879a4b14a03cc0a81b94f132ebef5ad5d0f981e",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_nearest_viewpoint --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-stop_nearest_viewpoint-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_nearest_viewpoint --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -391,7 +775,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-stop_inside_during_crossing-fallback1.json",
+          "construction_sha256": "1cffa0e4df97578d7af3aedb78811c6fbb4457bbcd1975bd4b649c4f296ba988",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_inside_during_crossing --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-stop_inside_during_crossing",
+            "exit_code": 0,
+            "construction_sha256": "1cffa0e4df97578d7af3aedb78811c6fbb4457bbcd1975bd4b649c4f296ba988",
+            "log": "offline-fallback1-stop_inside_during_crossing.log",
+            "log_sha256": "30a172a5f42e3030a562848d1c2eddb2549b089a8a6df609e65ef41dcb471e36"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-stop_inside_during_crossing.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-stop_inside_during_crossing.json",
@@ -433,11 +838,55 @@
         "log_sha256": "f4a710ae32ac8573b2bd5def591edca5e7d47ec5d868b83686f5801a11f15665",
         "construction_sha256": "652320480ef8cae29d787562ea478c4418968bb1adc474bdf8d8ba203b7e9e92"
       },
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "compatibility": {
+        "receipt": "compatibility-stop_inside_during_crossing.json",
+        "sha256": "083d62b2d61b5c72dab217378af230240f29e3da3102601a8c60e0d575d931ae",
+        "log": "compatibility-stop_inside_during_crossing.log"
+      },
+      "negative": {
+        "log": "negative-stop_inside_during_crossing.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_inside_during_crossing --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stop_inside_during_crossing-analysis.log",
+        "test_log_sha256": "18d81961b48a3450a03f421db6f492ed481721a2b7fc285974a0e0597b1d7969",
+        "processing_receipt": "saved/stop_inside_during_crossing-processing.json",
+        "processing_receipt_sha256": "18d81961b48a3450a03f421db6f492ed481721a2b7fc285974a0e0597b1d7969"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/stop_inside_during_crossing/proof.json",
+        "sha256": "2d0873a9b2905540d3ee56f4e20b8d281a4d1402dc8894a12c5eebffa32e2e36"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_inside_during_crossing",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_inside_during_crossing --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-stop_inside_during_crossing-positive.log",
+        "test_log_sha256": "9eacfb453c1cc6ef2973e5b8c773cebf42ba13b9e58c4ed7f35c1d0648795fd4",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_inside_during_crossing --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-stop_inside_during_crossing-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_inside_during_crossing --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -453,7 +902,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-stop_counterpart_signed-fallback1.json",
+          "construction_sha256": "094224c3370995d8000899788eeb46295ce5e043ec60bc88f30764fcfb93acc9",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_counterpart_signed --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-stop_counterpart_signed",
+            "exit_code": 0,
+            "construction_sha256": "094224c3370995d8000899788eeb46295ce5e043ec60bc88f30764fcfb93acc9",
+            "log": "offline-fallback1-stop_counterpart_signed.log",
+            "log_sha256": "b8c772fd70fb303c3bbb9b072addcb5f71d4cb96e7681f27727d21e1810a3d18"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-stop_counterpart_signed.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-stop_counterpart_signed.json",
@@ -495,11 +965,55 @@
         "log_sha256": "de5d6f700f74e2e009dead61ba54d352c0cfe9c9488323b795c0b99de7ac48e4",
         "construction_sha256": "af4783c5e107ddd4accbc726dc2979fb2e4c2a9b0622a56d8998aa5af9c6aae9"
       },
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "compatibility": {
+        "receipt": "compatibility-stop_counterpart_signed.json",
+        "sha256": "f97104f5611974cab3db82dc33e863a411457cdac08c69fdc851d0c657989c96",
+        "log": "compatibility-stop_counterpart_signed.log"
+      },
+      "negative": {
+        "log": "negative-stop_counterpart_signed.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_counterpart_signed --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stop_counterpart_signed-analysis.log",
+        "test_log_sha256": "320fbb0df09460d7cafcbb392f86c970f3394e01a9741c88161eac77f82854a9",
+        "processing_receipt": "saved/stop_counterpart_signed-processing.json",
+        "processing_receipt_sha256": "320fbb0df09460d7cafcbb392f86c970f3394e01a9741c88161eac77f82854a9"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/stop_counterpart_signed/proof.json",
+        "sha256": "790cb186b8e84cd6c6c8fd9accc106ee0f3a01be172126d7d3926570ec95c82b"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_counterpart_signed",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_counterpart_signed --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-stop_counterpart_signed-positive.log",
+        "test_log_sha256": "b23ee385edd2f371a49d0016395bc929648d8178689ae2ef9596a7b375f9bbdd",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_counterpart_signed --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-stop_counterpart_signed-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__stop_counterpart_signed --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -515,7 +1029,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-police_control-fallback1.json",
+          "construction_sha256": "32bd40a57d30b944de187f63c73601fd3f8b0b3f8b9517c8e6bc2639755fc5f4",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__police_control --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-police_control",
+            "exit_code": 0,
+            "construction_sha256": "32bd40a57d30b944de187f63c73601fd3f8b0b3f8b9517c8e6bc2639755fc5f4",
+            "log": "offline-fallback1-police_control.log",
+            "log_sha256": "b573db4e3029aaa797311a67185bdee72521f2ec0530067961cf0173af3d8fd3"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-police_control.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-police_control.json",
@@ -557,11 +1092,55 @@
         "log_sha256": "674a85f314680cb0cee6032b56c7ed659c778e09fc3f5f6e83de40bb220d1af0",
         "construction_sha256": "dfffb773637fee64cf68aaf342524d0dade956b7a2447b3d471d9e2d50941807"
       },
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "compatibility": {
+        "receipt": "compatibility-police_control.json",
+        "sha256": "ef320eec59dba34d2f9afaee169b96c81af6c7a144456ac15d99a7601afb252e",
+        "log": "compatibility-police_control.log"
+      },
+      "negative": {
+        "log": "negative-police_control.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__police_control --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/police_control-analysis.log",
+        "test_log_sha256": "7d5d4abefbf4075f32082cf790100c688dc4ebec1e04acf4ecbe257c085b676f",
+        "processing_receipt": "saved/police_control-processing.json",
+        "processing_receipt_sha256": "7d5d4abefbf4075f32082cf790100c688dc4ebec1e04acf4ecbe257c085b676f"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/police_control/proof.json",
+        "sha256": "15f0ec4ae38277147400a7d949458a20efb435d4557ee9957d569af8ceb0175a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__police_control",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__police_control --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-police_control-positive.log",
+        "test_log_sha256": "7e2ad0c86e4a52a1b9f437b03217984b6863e2c1a64a92ee15361017f00c9f43",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__police_control --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-police_control-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__police_control --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -577,7 +1156,28 @@
         "status": "physical",
         "reason": "Original local-road topology, sign rendering and exact camera visibility require first Native review"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-signal_control-fallback1.json",
+          "construction_sha256": "4da4f869e105dfd89f6e49b2bc9f984a0fade61ea4982897cd86ab7b28c89dea",
+          "trigger": {
+            "source": "original Native first-capture camera review",
+            "metric": "governing entrance sign and stopping reference actual-pixel visibility in reference_corner",
+            "failure_condition": "governing sign or stopping reference unreadable or occluded in required source view"
+          },
+          "changed_knobs": [
+            "reference_corner fixed-world camera position/pitch/yaw"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__signal_control --candidate fallback1 --output .runtime-work/nrs2572-offline-fallback1-signal_control",
+            "exit_code": 0,
+            "construction_sha256": "4da4f869e105dfd89f6e49b2bc9f984a0fade61ea4982897cd86ab7b28c89dea",
+            "log": "offline-fallback1-signal_control.log",
+            "log_sha256": "2e080082726ac319c976e193f7105b61c5f8513f7f8cc61bc49d270eaabb4e2e"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_contract": "measurement-signal_control.json",
       "fixture_recipe": "work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/selected-recipe-signal_control.json",
@@ -619,11 +1219,55 @@
         "log_sha256": "779ff04c33418e752ee9d06a690247805d81673b7f45e9ce5085d6c9f132d41a",
         "construction_sha256": "5e844383ca05ec27be0726e2a5bd495170a4c6c0762c063fe52a003f28ef9a54"
       },
-      "compatibility": {},
-      "negative": {},
-      "post_capture": {},
-      "physical_preparation": {},
-      "delivery_acceptance": {},
+      "compatibility": {
+        "receipt": "compatibility-signal_control.json",
+        "sha256": "e16389ed7b15ac42dc85b4eecdef4a8f2c8addb84323eda1618f3b85538858df",
+        "log": "compatibility-signal_control.log"
+      },
+      "negative": {
+        "log": "negative-signal_control.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__signal_control --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/signal_control-analysis.log",
+        "test_log_sha256": "6e19e8655a8b36dec3cff2994cd9cd1abcea17bc212e134709a4ccd942528055",
+        "processing_receipt": "saved/signal_control-processing.json",
+        "processing_receipt_sha256": "6e19e8655a8b36dec3cff2994cd9cd1abcea17bc212e134709a4ccd942528055"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/signal_control/proof.json",
+        "sha256": "bcd430e84c5ef14d13ce6325483f3af004dae5dde544efa681d28412a8658b13"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C111325__NRS-484B-257-2__motor_vehicle_driver__signal_control",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "f919fdbd8ad090f9de1ae8116f5711702efe969f2af85439be451f4073a06091",
+        "command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__signal_control --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-signal_control-positive.log",
+        "test_log_sha256": "cbafee41fc01787003b5a82df901999d4967c8d90ea214216b30c22c0a74dc62",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__signal_control --attempt $ATTEMPT --processing $PROCESSING --missing-source entrance_controls.json --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: entrance_controls.json",
+        "negative_log": "delivery-audit-signal_control-negative.log",
+        "negative_log_sha256": "68d4a0f9b4fd692e7ee1aa24d34d2d4ed14afe2635dc296ac91987cae1bca3ac",
+        "diagnostic_scope": "Synthetic CPU source audit only; production requires original Native capture and independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C111325__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --case training__C111325__NRS-484B-257-2__motor_vehicle_driver__signal_control --attempt $ATTEMPT --processing $PROCESSING"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",

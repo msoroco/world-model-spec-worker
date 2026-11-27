@@ -1,0 +1,241 @@
+{
+  "case_id": "training__C111343__NRS-484A-450-3__motor_vehicle_driver__before_stop_line",
+  "measured_values": {
+    "format": "worker-source-yield-reference-measurement",
+    "frame_count": 600,
+    "rate_hz": 20,
+    "first_stop_frame": 100,
+    "first_stop_front_x_m": -9.0,
+    "reference_kind": "stop_line",
+    "first_stop_before_reference": true,
+    "first_stop_in_reference": false,
+    "first_reference_entry_frame": 212,
+    "first_stop_before_crosswalk": true,
+    "first_stop_in_crosswalk": false,
+    "stopped_frame_count": 100,
+    "first_crosswalk_entry_frame": 212,
+    "first_intersection_entry_frame": 222,
+    "intersecting_vehicle_y_at_stop_m": -15.0,
+    "safety_stop_requirement": "unassessed",
+    "legal_compliance": "unassessed",
+    "limitations": [
+      "0.1 m/s is a recorded-rest diagnostic, not a statutory threshold.",
+      "Whether safety requires a stop remains a sourced independent judgment.",
+      "Original crosswalk, sign, traffic and body pixels require later review."
+    ]
+  },
+  "target_checks": [
+    {
+      "target": "first stop before selected stopping reference",
+      "requested": true,
+      "measured": true,
+      "method": "source-body front extent and first recorded rest versus original selected reference",
+      "tolerance": "0.1 m/s recorded-rest diagnostic only; no statutory safety cutoff",
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "yield_motion.jsonl",
+        "ego_body.jsonl",
+        "marked_stop_line.json"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "Saved evidence assessed; maneuver unverified; legal judgments remain separate",
+  "physical_failure_flags": [
+    "original physical success not independently confirmed"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "approach.mkv",
+    "driver_reference.mkv",
+    "overview.mkv",
+    "reference_corner.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "m,deg",
+        "sampling_rate_hz": 20,
+        "method": "original Native ego transform and full body extent joined to each frame",
+        "time_window": "all 600 frames, including first rest and crossing",
+        "reference_frame": "original CARLA XY and Native frame",
+        "uncertainty": "50 ms sampling; original pixels and body visibility need independent review"
+      },
+      {
+        "name": "conditional_stop_position",
+        "unit": "m,m/s",
+        "sampling_rate_hz": 20,
+        "method": "first recorded rest front-bumper extent versus original selected stopping reference",
+        "time_window": "all 600 frames through intersection entry",
+        "reference_frame": "source-hashed original map crosswalk and vehicle body",
+        "uncertainty": "0.1 m/s rest diagnostic; no legal safety threshold or compliance judgment"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "governing_yield_sign",
+        "unit": "structured",
+        "method": "original Native source hash and per-frame identity join"
+      },
+      {
+        "name": "stopping_reference",
+        "unit": "structured",
+        "method": "original Native source hash and per-frame identity join"
+      },
+      {
+        "name": "intersecting_traffic",
+        "unit": "structured",
+        "method": "original Native source hash and per-frame identity join"
+      },
+      {
+        "name": "safety_context",
+        "unit": "structured",
+        "method": "original Native source hash and per-frame identity join"
+      }
+    ],
+    "limitations": [
+      "Whether safety required a stop is an unresolved independent judgment.",
+      "Authored stop request and synthetic fixture do not prove physical stopping or legal compliance."
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "conditional_stop_position",
+      "unit": "m,m/s",
+      "reference": "channels/conditional_stop_position.jsonl"
+    },
+    {
+      "name": "ego_pose",
+      "unit": "m,deg",
+      "reference": "channels/ego_pose.jsonl"
+    },
+    {
+      "name": "governing_yield_sign",
+      "unit": "structured",
+      "reference": "channels/governing_yield_sign.json"
+    },
+    {
+      "name": "stopping_reference",
+      "unit": "structured",
+      "reference": "channels/stopping_reference.json"
+    },
+    {
+      "name": "intersecting_traffic",
+      "unit": "structured",
+      "reference": "channels/intersecting_traffic.json"
+    },
+    {
+      "name": "safety_context",
+      "unit": "structured",
+      "reference": "channels/safety_context.json"
+    }
+  ],
+  "realized_observables": {},
+  "provenance_kind": "synthetic_fixture",
+  "diagnostic_fixture": true,
+  "physical_acceptance_claimed": false,
+  "legal_verdict_claimed": false,
+  "physical_checks": {
+    "setup": {
+      "status": "unverified",
+      "method": "source-bound setup assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "4ebe7e8388b41d9392d52c007b5bed3d4166f43a32429a0ac79ace8b05b2c573",
+        "video_frames.jsonl": "25148a07e80a9315ce94f0e5e0433f506bba3bdb6e5b193914c98677fd1b0018"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 75.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "target": {
+      "status": "unverified",
+      "method": "source-bound target assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "4ebe7e8388b41d9392d52c007b5bed3d4166f43a32429a0ac79ace8b05b2c573",
+        "video_frames.jsonl": "25148a07e80a9315ce94f0e5e0433f506bba3bdb6e5b193914c98677fd1b0018"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 75.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "maneuver": {
+      "status": "unverified",
+      "method": "source-bound maneuver assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "4ebe7e8388b41d9392d52c007b5bed3d4166f43a32429a0ac79ace8b05b2c573",
+        "video_frames.jsonl": "25148a07e80a9315ce94f0e5e0433f506bba3bdb6e5b193914c98677fd1b0018"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 75.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "attempt": {
+      "status": "unverified",
+      "method": "observed finite original motion; separate from target success",
+      "intervals": [],
+      "sources": {
+        "config.json": "4ebe7e8388b41d9392d52c007b5bed3d4166f43a32429a0ac79ace8b05b2c573",
+        "video_frames.jsonl": "25148a07e80a9315ce94f0e5e0433f506bba3bdb6e5b193914c98677fd1b0018"
+      },
+      "physical_causation_claimed": false
+    }
+  },
+  "physical_observations": {},
+  "scope": "Source protocol provenance, not physical or legal acceptance"
+}

@@ -33,10 +33,12 @@ def check_result(result, case):
     if (metric.get("frame_count") != 600 or metric.get("safety_stop_requirement") != "unassessed"
             or metric.get("legal_compliance") != "unassessed"):
         raise ValueError("Original conditional-stop measurement or unresolved judgment missing")
-    expected = case.endswith("__before_crosswalk")
-    if metric.get("first_stop_before_crosswalk") is not expected:
+    slug = case.rsplit("__", 1)[-1]
+    expected = slug.startswith("before_")
+    kind = "crosswalk" if slug.endswith("crosswalk") else ("stop_line" if slug.endswith("stop_line") else "viewpoint")
+    if metric.get("reference_kind") != kind or metric.get("first_stop_before_reference") is not expected:
         raise ValueError("Measured first stop differs from exact case")
-    if expected is False and metric.get("first_stop_in_crosswalk") is not True:
+    if kind == "crosswalk" and expected is False and metric.get("first_stop_in_reference") is not True:
         raise ValueError("Past-crosswalk case lacks measured within-crosswalk stop")
     if (result.get("physical_checks", {}).get("maneuver", {}).get("status") != "met" or
             result.get("maneuver_completed") is not True):
@@ -49,12 +51,12 @@ def check_review(review, case):
             review.get("source_kind") != "original_native_review" or
             review.get("case_id") != case or not review.get("reviewer_id")):
         raise ValueError("Original pixel and safety review missing")
-    for key in ("yield_sign_governs_visible", "near_crosswalk_visible",
+    for key in ("yield_sign_governs_visible", "stopping_reference_visible",
                 "both_vehicle_bodies_visible", "first_stop_position_visible",
                 "intersecting_traffic_reviewed", "safety_stop_required_for_this_approach"):
         if type(review.get(key)) is not bool:
             raise ValueError("Original review finding missing: " + key)
-    if not all(review[key] for key in ("yield_sign_governs_visible", "near_crosswalk_visible",
+    if not all(review[key] for key in ("yield_sign_governs_visible", "stopping_reference_visible",
                                    "both_vehicle_bodies_visible", "first_stop_position_visible",
                                    "intersecting_traffic_reviewed", "safety_stop_required_for_this_approach")):
         raise ValueError("Original physical or conditional safety premise unconfirmed")
@@ -77,6 +79,11 @@ def audit(args):
     for key, name in context.get("source_files", {}).items():
         if sha(source(root, name)) != context.get(key + "_sha256"):
             raise ValueError("Original source hash differs: " + key)
+    kind = context.get("reference_kind")
+    if kind != metric["reference_kind"] or context.get("reference_source") != {
+            "crosswalk": "near_crosswalk.json", "stop_line": "marked_stop_line.json",
+            "viewpoint": "nearest_viewpoint.json"}.get(kind):
+        raise ValueError("Original selected stopping reference differs")
     frames = [json.loads(line) for line in source(root, "video_frames.jsonl").read_text().splitlines()]
     motion = [json.loads(line) for line in source(root, "yield_motion.jsonl").read_text().splitlines()]
     ego = [json.loads(line) for line in source(root, "ego_body.jsonl").read_text().splitlines()]
@@ -97,6 +104,9 @@ def audit(args):
     review_path = source(root, args.review)
     review = read(review_path)
     check_review(review, args.case)
+    if kind == "viewpoint" and ("sight_rays" not in context.get("source_files", {}) or
+            review.get("nearest_viewpoint_rays_reviewed") is not True):
+        raise ValueError("Original nearest-viewpoint rays lack independent review")
     for name, checksum in review["source_sha256"].items():
         if sha(source(root, name)) != checksum:
             raise ValueError("Original review source hash differs: " + name)
@@ -111,9 +121,9 @@ def audit(args):
     receipt = output.with_name("source-decode-" + args.case.rsplit("__", 1)[-1] + ".json")
     decode = media.audit(video, 600, mapping_sha256=sha(mapping), receipt=receipt)
     media.verify_receipt(video, receipt, 600, mapping_sha256=sha(mapping))
-    trace = read(source(root, args.trace))
-    scenes = trace.get("scenes", [])
-    if len(scenes) != 600 or any(scene.get("t") != round(frame["time_s"] * 1000)
+    scenes = [json.loads(line) for line in source(root, args.trace).read_text().splitlines()]
+    if len(scenes) != 600 or any(scene.get("frame") != frame["native_frame"] or
+                                 abs(scene.get("time_s", -100) - frame["time_s"]) > 1e-6
                                  for scene, frame in zip(scenes, frames)):
         raise ValueError("Core and original frame time join differs")
     report = {"format": "worker-delivery-audit", "passed": True,
@@ -131,9 +141,11 @@ def audit(args):
 
 
 def selftest(case, negative):
-    metric = {"frame_count": 600, "first_stop_front_x_m": -9 if case.endswith("__before_crosswalk") else -4,
-              "first_stop_before_crosswalk": case.endswith("__before_crosswalk"),
-              "first_stop_in_crosswalk": case.endswith("__past_crosswalk"),
+    slug = case.rsplit("__", 1)[-1]
+    kind = "crosswalk" if slug.endswith("crosswalk") else ("stop_line" if slug.endswith("stop_line") else "viewpoint")
+    metric = {"frame_count": 600, "first_stop_front_x_m": -9 if slug.startswith("before_") else -4,
+              "reference_kind": kind, "first_stop_before_reference": slug.startswith("before_"),
+              "first_stop_in_reference": slug == "past_crosswalk",
               "safety_stop_requirement": "unassessed", "legal_compliance": "unassessed"}
     sample = {"case_id": case, "provenance_kind": "native", "diagnostic_fixture": False,
               "measured_values": metric, "maneuver_completed": True,
@@ -146,9 +158,10 @@ def selftest(case, negative):
     review = {"format": "c111343-yield-crosswalk-original-review-v1",
         "source_kind": "original_native_review", "case_id": case,
         "reviewer_id": "cpu-schema-only", "yield_sign_governs_visible": True,
-        "near_crosswalk_visible": True, "both_vehicle_bodies_visible": True,
+        "stopping_reference_visible": True, "both_vehicle_bodies_visible": True,
         "first_stop_position_visible": True, "intersecting_traffic_reviewed": True,
         "safety_stop_required_for_this_approach": True,
+        "nearest_viewpoint_rays_reviewed": kind == "viewpoint",
         "safety_reason": "CPU schema probe only; not an original finding",
         "source_sha256": {"yield_context.json": "schema-only"}}
     check_review(review, case)

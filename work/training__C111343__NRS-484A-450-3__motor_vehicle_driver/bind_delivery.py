@@ -1,4 +1,4 @@
-"""Bind exact independent CPU audit predicates to both selected cases."""
+"""Bind exact independent CPU audit predicates to all selected cases."""
 import hashlib
 import json
 from pathlib import Path
@@ -35,7 +35,7 @@ def main():
             "negative_exit_code": 1, "negative_expected_error": "Exact original Native result missing",
             "negative_log": negative, "negative_log_sha256": sha(HERE / negative),
             "diagnostic_scope": "CPU predicate check only; original Native pixels, safety and physical result require independent review",
-            "production_command": f".venv-cpu/bin/python -B work/{AID}/{script} --case {case} --attempt $ATTEMPT --review original-review.json --video raw.mkv --trace trace.json --job $JOB_ID --recording-id $RECORDING_ID --output $AUDIT_OUTPUT"}
+            "production_command": f"PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -B work/{AID}/{script} --case {case} --attempt $ATTEMPT --review original-review.json --video raw.mkv --trace trace.jsonl --job $JOB_ID --recording-id $RECORDING_ID --output $AUDIT_OUTPUT"}
     path.write_text(json.dumps(manifest, indent=2, allow_nan=False) + "\n")
     print(json.dumps({"cases": len(manifest["cases"]), "manifest_sha256": sha(path)}, sort_keys=True))
 

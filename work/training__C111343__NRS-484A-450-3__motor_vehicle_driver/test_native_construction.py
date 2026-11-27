@@ -3,7 +3,7 @@
 import unittest
 
 from native_construction import checked_map, constructed_scene
-from yield_crosswalk_scene import request
+from yield_crosswalk_scene import CASES, request
 
 
 class Blueprint:
@@ -79,7 +79,7 @@ class Carla:
 
 class NativeConstructionTest(unittest.TestCase):
     def test_both_exact_cases_build_original_features_and_actors(self):
-        for case in ("before_crosswalk", "past_crosswalk"):
+        for case in CASES:
             with self.subTest(case=case):
                 client = Client()
                 with constructed_scene(client, Carla, request(case)) as scene:
@@ -88,7 +88,7 @@ class NativeConstructionTest(unittest.TestCase):
                     self.assertEqual(len(client.world.spawns), 6)
                     self.assertEqual([row[0] for row in client.world.spawns[:2]],
                                      ["vehicle.tesla.model3", "vehicle.tesla.model3"])
-                    self.assertEqual(checked_map(client.world), scene["map_opendrive"])
+                    self.assertEqual(checked_map(client.world, request(case)), scene["map_opendrive"])
                 self.assertTrue(all(actor.destroyed for actor in client.world.actors))
                 self.assertFalse(client.world.settings.synchronous_mode)
                 self.assertIsNone(client.world.settings.fixed_delta_seconds)
@@ -96,14 +96,14 @@ class NativeConstructionTest(unittest.TestCase):
     def test_missing_original_crosswalk_rejected(self):
         xml = request("before_crosswalk")["road_opendrive"].replace(
             'type="crosswalk"', 'type="unknown"')
-        with self.assertRaisesRegex(ValueError, "crosswalk differs"):
-            checked_map(World(xml))
+        with self.assertRaisesRegex(ValueError, "hierarchy differs"):
+            checked_map(World(xml), request("before_crosswalk"))
 
     def test_wrong_governing_sign_rejected(self):
         xml = request("before_crosswalk")["road_opendrive"].replace(
             'name="YIELD"', 'name="STOP"')
         with self.assertRaisesRegex(ValueError, "YIELD sign differs"):
-            checked_map(World(xml))
+            checked_map(World(xml), request("before_crosswalk"))
 
 
 if __name__ == "__main__":

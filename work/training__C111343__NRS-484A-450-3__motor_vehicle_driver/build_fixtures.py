@@ -42,8 +42,13 @@ def build(slug):
     map_hash = sha(root / "road.xodr")
     put(root / "yield_sign.json", {"id": "yield-111343", "map_readback_sha256": map_hash,
                                    "synthetic_diagnostic": True})
-    put(root / "near_crosswalk.json", {"id": "near-crosswalk-111343",
-        "near_x_m": -6, "far_x_m": -4, "map_readback_sha256": map_hash,
+    kind = scene["reference_kind"]
+    reference_file = {"crosswalk": "near_crosswalk.json", "stop_line": "marked_stop_line.json",
+                      "viewpoint": "nearest_viewpoint.json"}[kind]
+    put(root / reference_file, {"reference_kind": kind, "near_x_m": -6,
+        "far_x_m": scene["reference_far_x_m"],
+        "crosswalk_present": kind == "crosswalk", "marked_stop_line_present": kind == "stop_line",
+        "candidate_viewpoint_only": kind == "viewpoint", "map_readback_sha256": map_hash,
         "synthetic_diagnostic": True})
     put(root / "intersecting_traffic.json", {"actor_id": 2,
         "body_source": "intersecting_body.jsonl", "motion_source": "yield_motion.jsonl",
@@ -100,6 +105,13 @@ def build(slug):
                              ("capture/evidence.jsonl", evidence),
                              ("capture/native/frames.jsonl", native_frames)):
         lines(root / filename, values)
+    if kind == "viewpoint":
+        lines(root / "viewpoint_sight_rays.jsonl", [
+            {"native_frame": row["native_frame"], "time_s": row["time_s"],
+             "ego_eye_m": [row["ego_x_m"], -1.75, 1.25],
+             "traffic_target_m": [1.75, row["intersecting_vehicle_y_m"], 1],
+             "hit_labels": ["synthetic_fixture"], "nearest_legal_viewpoint_unassessed": True}
+            for row in motion])
     put(root / "acquisition-provenance.json", {"provenance_kind": "synthetic_fixture",
         "diagnostic_fixture": True, "native_executed": False})
     (root / "capture/recorder_info.txt").write_text(
@@ -109,15 +121,18 @@ def build(slug):
         "required_observations": [], "synthetic_diagnostic": True,
         "sources": {"road.xodr": map_hash, "trace.jsonl": sha(root / "trace.jsonl")}})
     sources = {"native_map": "road.xodr", "yield_sign": "yield_sign.json",
-        "near_crosswalk": "near_crosswalk.json", "ego_body": "ego_body.jsonl",
+        "stop_reference": reference_file, "ego_body": "ego_body.jsonl",
         "ego_motion": "yield_motion.jsonl", "intersecting_traffic": "intersecting_traffic.json",
         "safety_context": "safety_context.json", "camera_manifest": "video_frames.jsonl"}
-    assert set(sources) == set(HASHES)
+    if kind == "viewpoint":
+        sources["sight_rays"] = "viewpoint_sight_rays.jsonl"
+    assert set(HASHES) <= set(sources)
     put(root / "yield_context.json", {"case_id": AID + "__" + slug,
         "source_kind": "synthetic_yield_fixture", "source_files": sources,
         **{name + "_sha256": sha(root / path) for name, path in sources.items()},
-        "governing_yield_sign": True, "near_side_crosswalk": True,
-        "crosswalk_near_x_m": -6, "crosswalk_far_x_m": -4,
+        "governing_yield_sign": True, "near_side_crosswalk": kind == "crosswalk",
+        "reference_kind": kind, "reference_source": reference_file,
+        "reference_near_x_m": -6, "reference_far_x_m": scene["reference_far_x_m"],
         "intersection_near_x_m": -3.5, "safety_context_present": True,
         "safety_stop_required": "unassessed", "legal_compliance": "unassessed",
         "physical_acceptance_claimed": False})
