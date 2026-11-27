@@ -19,7 +19,7 @@ def build():
         prep = BASE + ' prepare-delivery' + identity
         execute = ('C229439_REVIEWED_PACKET="$C229439_REVIEWED_PACKET" '
                    'C229439_NATIVE_ADAPTER_MODULE="$C229439_NATIVE_ADAPTER_MODULE" '
-                   'SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c229439-native-delivery" '
+                   'SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/lvmc305-native-delivery" '
                    + BASE + ' execute-delivery' + identity +
                    ' --run "$RUN" --job "$JOB_ID" --python "$CARLA_PYTHON"'
                    ' --host "$CARLA_HOST" --port "$CARLA_PORT"')
@@ -54,9 +54,9 @@ def build():
                                         ' --report-dir "$ADDITIONAL_AUDIT_DIR"'
                                         ' > "$COMPARISON_AUDIT_DIR/' + cid + '.json"')})
     proposal = {'format': 'worker-gpu-queue-proposal', 'assignment_id': ASSIGNMENT,
-                'scope': 'five original Native service parking cases and four controlled comparisons',
+                'scope': 'eighteen original Native service parking cases and fourteen controlled comparisons',
                 'requirements': [
-                    'Supply original reviewed Council, posting, vehicle-status and geometry sources plus matching Native adapter.',
+                    'Supply independent reviewed commercial classification, overall length, unladen weight, adjacent-place, frontage, work order, sign and curb sources plus matching Native adapter.',
                     'Set ATTEMPT_DIR and ATTEMPT_NUMBER from the actual canonical local job; attest owner release only after actual release.',
                     'Set PROCESSED to a fresh directory and author physical-visibility-review.json from original pixels before source audit.',
                     'Use fallback1 only after the primary device-face visibility failure condition is measured.',

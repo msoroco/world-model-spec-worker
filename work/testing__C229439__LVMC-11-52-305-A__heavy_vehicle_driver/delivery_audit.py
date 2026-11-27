@@ -107,24 +107,29 @@ def audit(attempt, processing_path, case_id, *, synthetic_fixture=False):
             raise ValueError('original service parking and four-camera frame join differs')
     measured = measure_original(history, context['scene'], case,
                                 diagnostic_frames=9 if synthetic_fixture else None)
-    if (measured['all_footprints_overlap_governed_space'] is not case.inside_space or
-            measured['city_vehicle'] is not case.city_vehicle or
-            measured['council_designated'] is not case.designated or
-            measured['official_posting'] is not case.posted):
+    scene = context['scene']
+    if (measured['length_ft'] != case.length_ft or
+            measured['unladen_lb'] != case.unladen_lb or
+            measured['residential_frontage_ft'] != case.frontage_ft or
+            measured['adjacent_kind'] != case.adjacent_kind or
+            measured['posted_permission'] != case.posted_permission or
+            measured['loading'] != case.loading or
+            measured['work_active_all_parked_frames'] != (case.work_kind != 'none')):
         raise ValueError('original source conditions differ from exact case')
     if not synthetic_fixture:
         packet = attempt / 'reviewed-sources/service-parking-packet.json'
         _, scene, _ = load_reviewed(packet, case_id)
         if scene != context['scene'] or sha(packet) != context.get('reviewed_packet_sha256'):
-            raise ValueError('reviewed Council, posting or vehicle authority changed')
+            raise ValueError('reviewed vehicle, worksite, sign or frontage source changed')
     for camera in CAMERAS:
         full_decode(attempt / (camera + '.mkv'), count)
     raw = Path(saved.get('analysis_directory', '')) / 'raw.mkv'
     if not raw.is_file():
         raise ValueError('saved synchronized video missing')
     full_decode(raw, count)
-    needed = {'complete_vehicle', 'governed_space', 'official_device_face',
-              'vehicle_status_source', 'council_designation_source'}
+    needed = {'complete_vehicle', 'governed_curb', 'official_device_face',
+              'worksite_activity', 'commercial_classification_source',
+              'unladen_weight_source', 'adjacent_place_source'}
     if (review.get('video_sha256') != sha(raw) or
             review.get('frame_map_sha256') != sha(attempt / 'video_frames.jsonl') or
             not needed <= set(review.get('visible_and_reviewed', []))):
@@ -135,8 +140,12 @@ def audit(attempt, processing_path, case_id, *, synthetic_fixture=False):
             'frame_count': count,
             'camera_contract_sha256': hashlib.sha256(json.dumps(config['cameras'], sort_keys=True).encode()).hexdigest(),
             'duration_s': config['duration_s'], 'candidate_id': config['candidate_id'],
-            'city_location_kind': context['scene']['city_location_kind'],
-            'governed_space_rect_m': context['scene']['governed_space_rect_m'],
+            'street_public': scene['street_public'],
+            'city_jurisdiction': scene['city_jurisdiction'],
+            'governed_curb_rect_m': scene['governed_curb_rect_m'],
+            'case_conditions': {name: scene[name] for name in
+                ('work_kind','work_near','length_ft','unladen_lb','adjacent_kind',
+                 'frontage_ft','posted_permission','loading')},
             'measured': measured, 'source_sha256': {name: sha(attempt / name) for name in SOURCES},
             'video_sha256': sha(raw), 'saved_result_sha256': sha(result_path),
             'physical_completion_reviewed': True, 'legal_verdict_claimed': False}

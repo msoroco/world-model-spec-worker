@@ -1,22 +1,25 @@
-# testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver
+# LVMC 11.52.305(A) heavy vehicle service parking handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Assignment: `testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver`.
 
-Exact law: LVMC 11.52.305(A); with 11.52.305(B) — Except as otherwise provided in this Section or as permitted by posted sign, it is unlawful for a person to stand, park or store, upon any street adjacent to a residence district, public school or public park, a commercial vehicle, recreational vehicle, trailer, or any combination of vehicle and trailer having an overall length of twenty-four feet or more or an unladen weight in excess of eight thousand pounds. For purposes of the preceding sentence, a "residence district" means the territory contiguous to a street, not comprising a business district, in which the parcels abutting such street for a distance of three hundred feet or more are mainly occupied by dwellings or by dwellings and buildings in use for residence. The provisions of Subsection (A) do not apply to a commercial vehicle that is: (1) Parked in front of property from which or to which goods or passengers are being picked up or delivered, but only for that period of time during which goods or passengers are being expeditiously loaded or unloaded; or (2) Being used in conjunction with the performance of service, repair, construction or similar essential use within the immediate neighborhood.
-Assigned branch(es): Commercial vehicle used in conjunction with service or repair.
-Cell: C229439 (road, park, parking_restriction_device); actor: heavy_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Selected package
 
-## Next CPU actions
+- 18 source-gated cases and 14 controlled comparisons in `case-plan.json` and `execution-manifest.json`.
+- Primary and fallback construction bundles for every case. Fallback changes reviewed four-camera placement when the worksite, sign face, or parked heavy vehicle is occluded.
+- Exact service, repair, construction, similar essential use, no-work, near/far worksite, posted permission, expeditious loading, school/park, 23.9/24.0/24.1-foot, 7,999/8,000/8,001-pound, and 299/300/301-foot frontage probes.
+- Source packet requires independent commercial classification, overall length, unladen weight, City public-street status, public-school or park adjacency, residential frontage, sign authority, governed curb, work order/activity, vehicle/work relation, loading, and section-wide exception evidence. Engineering worksite distance is recorded but does not assert a legal immediate-neighborhood cutoff.
+- `proposals/semantic-index.json` binds exact-law source text to the 18 selected cases. No legal outcome is asserted by a CPU fixture.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+## CPU proof
 
-## Proven checks and dependency boundary
+- Pinned `.venv-cpu` preflight and 3 local construction/measurement tests passed.
+- 36 primary/fallback offline and positive/negative compatibility receipts passed.
+- 18 positive, incomplete, missing-source physical probes and ordered lifecycle receipts passed.
+- 18 saved-only processing proofs passed.
+- 18 positive/negative independent delivery audits and 14 controlled comparison audits with fixed-condition mutation rejection passed.
+- Exact scoped gate passed: `.venv-cpu/bin/python worker_check.py --assignment testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver --complete --require-delivery-ready`.
+- All 532 assignment files were scanned: none exceed 2 MiB, have trailing whitespace, or have a blank line at EOF.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+## GPU and local review handoff
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+`gpu-queue-proposal.json` contains 18 exact-case canonical prepare/execute/owner-release/saved-processing/source-audit commands, one fallback command per case, and 14 comparison audit commands. A matching reviewed Native source packet and adapter module are required at execution. Actual 900-frame CARLA capture, four original videos, independent pixel and physical completion review, final local integration audit, immutable review archive, and legal interpretation remain on the GPU/local side.

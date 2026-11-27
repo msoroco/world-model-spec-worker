@@ -1,5 +1,11 @@
 # Return report
 
+## 2026-11-27 15:08 UTC — C229439 service/repair package published
+
+- `testing__C229439__LVMC-11-52-305-A__heavy_vehicle_driver` passed its owner and independent lead exact scoped strict gates. Its 18 case commands and 14 comparison audit commands were integrated into the shared queue after 158 command syntax checks. The queue now has 239 assignments, 1,672 exact cases and 1,167 comparisons (4,715,816 bytes). Three results remain partial: C183357 is still under active proof, while C158190 and C178244 retain documented frozen branch/cell conflicts.
+- The 18 exact service/repair, size and frontage cases have 36 primary/fallback offline and compatibility candidate proofs, 18 physical/lifecycle and 18 saved-only CPU proofs, 18 positive/negative delivery audits and 14 positive/negative comparison audits. Original CARLA parking work, frontage, measurements and legal review remain for the local operator. No diagnostic fixture is claimed as physical acceptance.
+- A full read-only returned-file scan covered 83,692 files. It found one bytecode cache created by the lead queue import; that cache and its empty directory were removed immediately. The shared queue, 16 command catalogs and return report subsequently passed size, UTF-8, trailing-whitespace, blank-EOF and conflict-marker checks. No Git command was run by the lead.
+
 ## 2026-11-27 14:56 UTC — C230259 moving-beam package published
 
 - `testing__C230259__NRS-484D-215-1__motor_vehicle_driver` passed its owner and independent lead exact scoped strict gates. Its eight exact case commands and six comparison audit commands were integrated into the shared queue; the corresponding original commands were added to the 16 sharded dispatch catalogs and checked by bash syntax and exact dispatcher resolution. Queue totals are 238 assignments, 1,654 cases and 1,153 comparisons (4,634,396 bytes). Four assignment results remain partial, so batch-wide strict delivery is pending.

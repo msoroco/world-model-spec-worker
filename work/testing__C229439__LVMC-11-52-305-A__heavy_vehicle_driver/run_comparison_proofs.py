@@ -8,7 +8,7 @@ from comparison_audit import audit
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SCRATCH = REPO / '.runtime-work/c229439-comparison-v1'
+SCRATCH = REPO / '.runtime-work/lvmc305-comparison-v1'
 
 
 def sha(path):

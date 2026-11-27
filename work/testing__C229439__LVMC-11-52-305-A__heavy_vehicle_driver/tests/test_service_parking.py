@@ -23,10 +23,38 @@ class FakeAdapter:
 
 
 def fixture(case):
-    spec=ROOT/'diagnostics'/case.name/'diagnostic.json'
-    data=json.loads(spec.read_text())['files']
-    scene=json.loads(data['service-parking-context.json'])['scene']
-    rows=[json.loads(s) for s in data['original-service-parking.jsonl'].splitlines()]
+    import hashlib
+    scene={'cell_id':'C229439','actor':'heavy_vehicle_driver',
+           'vehicle_id':'synthetic-heavy-v1','driver_id':'synthetic-driver',
+           'worker_id':'synthetic-worker','heavy_vehicle_blueprint':'vehicle.carlamotors.carlacola',
+           'work_order_id':'synthetic-order','work_activity_description':'synthetic task',
+           'parking_device_text':'No heavy parking except posted permission',
+           'commercial_vehicle':True,'street_public':True,'city_jurisdiction':True,
+           'school_public':True,'business_district':False,'mainly_residential':True,
+           'governed_curb_rect_m':[0.,0.,3.,6.],
+           'vehicle_footprint_rect_m':[.2,.2,2.,4.],
+           'vehicle_center_xy':[1.,1.],
+           'worksite_xy':[4.,1.] if case.work_near else [200.,1.],
+           'parking_route_xy':[[-2.,-2.],[1.,1.]],'park_start_frame':2}
+    for name in ('work_kind','work_near','length_ft','unladen_lb','adjacent_kind',
+                 'frontage_ft','posted_permission','loading'):
+        scene[name]=getattr(case,name)
+    for field in SOURCE_FIELDS:
+        scene[field+'_source_sha256']=hashlib.sha256((case.name+field).encode()).hexdigest()
+    rows=[]
+    for index in range(9):
+        row={'original_frame':100+index,'time_s':index/20,
+             'speed_mps':1. if index<2 else 0.,
+             'work_active':case.work_kind!='none',
+             'vehicle_center_xy':scene['vehicle_center_xy'],
+             'worksite_xy':scene['worksite_xy'],
+             'vehicle_footprint_rect_m':scene['vehicle_footprint_rect_m']}
+        for key in ('vehicle_id','driver_id','worker_id','work_kind','length_ft',
+                    'unladen_lb','adjacent_kind','frontage_ft','posted_permission','loading'):
+            row[key]=scene[key]
+        for field in SOURCE_FIELDS:
+            row[field+'_source_sha256']=scene[field+'_source_sha256']
+        rows.append(row)
     return scene,rows
 
 

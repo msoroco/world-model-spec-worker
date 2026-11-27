@@ -30,8 +30,8 @@ def run():
     pipeline_root = Path(os.environ.get('SCENARIO_PIPELINE_OUTPUT_ROOT', '')).resolve()
     if not pipeline_root.is_relative_to(REPO / '.runtime-work'):
         raise ValueError('export SCENARIO_PIPELINE_OUTPUT_ROOT under .runtime-work')
-    source = REPO / '.runtime-work/c229439-saved-v1' / (suffix + '-attempt')
-    saved = REPO / '.runtime-work/c229439-saved-v1' / (suffix + '-output/v0001/processing.json')
+    source = REPO / '.runtime-work/lvmc305-saved-v1' / (suffix + '-attempt')
+    saved = REPO / '.runtime-work/lvmc305-saved-v1' / (suffix + '-output/v0001/processing.json')
     output = Path(args.output).resolve()
     if not output.is_relative_to(REPO / '.runtime-work'):
         raise ValueError('CPU audit scratch belongs under .runtime-work')
@@ -70,9 +70,10 @@ def run():
         'reviewer': 'synthetic CPU fixture', 'synthetic_fixture': True,
         'physical_completion': True, 'video_sha256': sha(raw_dir / 'raw.mkv'),
         'frame_map_sha256': sha(output / 'video_frames.jsonl'),
-        'visible_and_reviewed': ['complete_vehicle', 'governed_space',
-                                 'official_device_face', 'vehicle_status_source',
-                                 'council_designation_source']})
+        'visible_and_reviewed': ['complete_vehicle', 'governed_curb',
+                                 'official_device_face', 'worksite_activity',
+                                 'commercial_classification_source',
+                                 'unladen_weight_source', 'adjacent_place_source']})
     if args.negative:
         with (output / 'original-service-parking.jsonl').open('a') as stream:
             stream.write('{}\n')

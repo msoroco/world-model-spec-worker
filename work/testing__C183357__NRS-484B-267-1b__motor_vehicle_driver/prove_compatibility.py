@@ -60,7 +60,7 @@ def main():
     outcomes = []
     with ThreadPoolExecutor(max_workers=4) as pool:
         futures = [pool.submit(run_one, case, candidate)
-                   for case in CASES for candidate in (None,)]
+                   for case in CASES for candidate in (None, 'fallback1')]
         for future in as_completed(futures):
             name, output, code = future.result()
             print(name, 'passed' if code == 0 else 'failed', flush=True)

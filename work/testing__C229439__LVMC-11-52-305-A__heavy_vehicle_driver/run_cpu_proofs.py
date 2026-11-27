@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / 'execution-manifest.json'
-SCRATCH = REPO / '.runtime-work/c229439-proofs-v3'
+SCRATCH = REPO / '.runtime-work/lvmc305-proofs-v1'
 PYTHON = REPO / '.venv-cpu/bin/python'
 VALIDATOR = REPO / '.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck'
 
@@ -21,8 +21,11 @@ def sha(path):
 
 def run():
     SCRATCH.mkdir(parents=True, exist_ok=True)
+    (SCRATCH / 'mpl').mkdir(exist_ok=True)
+    (SCRATCH / 'pipeline-output').mkdir(exist_ok=True)
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', TMPDIR=str(SCRATCH),
-               SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH / 'pipeline-output'))
+               SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH / 'pipeline-output'),
+               MPLCONFIGDIR=str(SCRATCH / 'mpl'))
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest['cases']:
         suffix = entry['case_id'].rsplit('__', 1)[-1]
