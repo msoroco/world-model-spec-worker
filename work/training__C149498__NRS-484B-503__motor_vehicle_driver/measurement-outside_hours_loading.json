@@ -1,0 +1,46 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C149498__NRS-484B-503__motor_vehicle_driver__selected_bae4893e__outside_hours_loading",
+  "status": "selected_cpu_draft",
+  "negative": {
+    "remove": [
+      "loading_zone.json"
+    ],
+    "error_contains": "Missing required source: loading_zone.json"
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.503",
+      "kind": "measured",
+      "method": "measure_zone_timing",
+      "output_key": "zone_timing",
+      "value_type": "object",
+      "inputs": [
+        "loading_zone.json",
+        "loading_motion.jsonl",
+        "ego_body.jsonl",
+        "passenger_body.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "kind": "measured",
+      "method": "measure_passenger_context",
+      "output_key": "passenger_context",
+      "value_type": "object",
+      "inputs": [
+        "loading_zone.json",
+        "loading_motion.jsonl",
+        "ego_body.jsonl",
+        "passenger_body.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "legal_compliance": "unassessed"
+}

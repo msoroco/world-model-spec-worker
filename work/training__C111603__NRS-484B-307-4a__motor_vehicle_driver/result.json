@@ -1,12 +1,12 @@
 {
   "assignment_id": "training__C111603__NRS-484B-307-4a__motor_vehicle_driver",
   "input_sha256": "53d599188cd23f326e34c02edcd75522df12840c6771fdf55b996d26298a2d7c",
-  "status": "partial",
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Three planning probes remain unselected. A source-bound 600-frame CPU measurement now separates arrow illumination, ego entry, direction mismatch, and moving overlap with crosswalk pedestrian and other intersection traffic. Four generated positives and two missing/corrupt-source negatives pass. Original governing signal pixels, participant lawfulness, yielding causation, exact Native construction, selected offline/saved delivery and independent audits remain unfinished.",
-  "planned_case_count": 3,
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
+  "planned_case_count": 8,
   "candidate_count": 0,
-  "selected_delivery_case_count": 0,
+  "selected_delivery_case_count": 8,
   "reuse_count": 0,
   "source_law_review": "Exact NRS 484B.307(4)(a) retained: green turn arrow alone permits only indicated direction while illuminated, with separate yielding duties to pedestrians lawfully in the adjacent crosswalk and other traffic lawfully using the intersection. Position or timing alone cannot establish lawfulness, governance or yielding causation.",
   "applied_update": 16,
@@ -23,5 +23,76 @@
     "contract": "arrow-measurement-contract.json",
     "physical_acceptance_claimed": false,
     "legal_verdict_claimed": false
-  }
+  },
+  "current_compatibility_case_count": 8,
+  "native_executed": false,
+  "legal_verdict_claimed": false,
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C111603__NRS-484B-307-4a__motor_vehicle_driver/native/prove_controller.py",
+      "exit_code": 0,
+      "log": "cpu-controller.log",
+      "sha256": "d677fd301ea5beafb3f784d067b9c3dc5c538f9f94c6bbf1c531895fc00e200c"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C111603__NRS-484B-307-4a__motor_vehicle_driver/native/prove_capture_sources.py",
+      "exit_code": 0,
+      "log": "cpu-capture.log",
+      "sha256": "9de42ec79fbca4f7f24b98ea3dca08876b139ca28649aad3a42b7812fe5aacd6"
+    }
+  ],
+  "cpu_unknown_original_pixels": {
+    "log": "cpu-unknown-pixels.log",
+    "sha256": "90f72e9482ffa0d7a8fbbc445212d77346fb6f5cc56de51f64df9be48bd7ffee",
+    "unknown_frames": 600,
+    "confirmed_arrow_frames": 0,
+    "unlit_motion_misclassification": false,
+    "legal_verdict_claimed": false
+  },
+  "current_recorded_only_case_count": 8,
+  "physical_lifecycle_fixture_count": 8,
+  "first_gpu_delivery_command": "SCENARIO_CONTEXT_SURVEY=.runtime-work/original-surveys/training__C111603__NRS-484B-307-4a__motor_vehicle_driver/training__C111603__NRS-484B-307-4a__motor_vehicle_driver__direction_indicated/context-survey.json .venv-cpu/bin/python -B runtime.py execute-delivery --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\" --case training__C111603__NRS-484B-307-4a__motor_vehicle_driver__direction_indicated --job \"$JOB_ID\" --db \"$DB\" --run \"$RUN\" --assignment training__C111603__NRS-484B-307-4a__motor_vehicle_driver",
+  "remaining_gpu_checks": [
+    "Case-specific original governed-arrow survey and approach/head identity",
+    "Original Native arrow pixels and synchronized four-camera video",
+    "Original participant lawful status, actual yielding, and physical completion",
+    "Independent original-source comparison and delivery acceptance"
+  ],
+  "cpu_proofs": [
+    {
+      "path": "selected-preflight-manifest.json",
+      "sha256": "445e3e7d8f0ac8cc227dd9d581667efe88f62ea8504a416040bc18b284e5a3dc",
+      "passed": true
+    },
+    {
+      "path": "compatibility/index.json",
+      "sha256": "d3a09e61ea94af6d33870e2e594d8f8f2f2dd5788f0e2ff0a1ddd98d29d89829",
+      "passed": true
+    },
+    {
+      "path": "recorded-only/index.json",
+      "sha256": "e69b86e445677de198d08fddb678b78a8b49e20ea0d15fe8e350c9a7ce510eb2",
+      "passed": true
+    },
+    {
+      "path": "proposals/semantic-index.json",
+      "sha256": "ff2b8b4ee5b346fd501138ba3c6565e21365ec61578b1e51b9e4ce0c74cd0fb1",
+      "passed": true
+    },
+    {
+      "path": "delivery-audit/index.json",
+      "sha256": "90d6eacc8ec8407b04e1197b8eb161ecc8fbcf37cb8c901fb59271b1c228986a",
+      "passed": true
+    },
+    {
+      "path": "comparison-audit/index.json",
+      "sha256": "2e90e197b86ef53deb62fc23b138773aa1cd84a54da09c8b0ead63cdaecac66e",
+      "passed": true
+    },
+    {
+      "path": "execution-manifest.json",
+      "sha256": "40d3dadd981f152561820110a70bd6502e3de59665087090f0e45e2900d71f7e",
+      "passed": true
+    }
+  ]
 }

@@ -6,7 +6,9 @@ in an authored map does not establish regulatory authority or expeditiousness.
 
 import xml.etree.ElementTree as ET
 
-CASES = {"condition_a": True, "condition_b": False}
+CASES = {"condition_a": True, "condition_b": False,
+         "outside_hours_loading": True, "outside_hours_no_transfer": False,
+         "brief_stop_no_transfer": False, "extended_park_no_transfer": False}
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 RATE_HZ = 20
 FRAMES = 600
@@ -51,6 +53,9 @@ def road_xml():
 def request(slug):
     if slug not in CASES:
         raise ValueError("unknown exact loading case")
+    outside_hours = slug.startswith("outside_hours")
+    brief = slug == "brief_stop_no_transfer"
+    extended = slug == "extended_park_no_transfer"
     return {
         "format": "worker-authored-passenger-curb-request",
         "case": slug, "road_opendrive": road_xml(),
@@ -58,17 +63,20 @@ def request(slug):
                  "sign_id": "passenger-loading-sign-149498", "curb_start_x_m": -25,
                  "curb_end_x_m": -1, "time_zone": "America/Los_Angeles",
                  "hours_start": "08:00", "hours_end": "18:00",
-                 "civil_timestamp_start": "2026-11-23T10:00:00-08:00",
+                 "civil_timestamp_start": "2026-11-23T19:00:00-08:00" if outside_hours else "2026-11-23T10:00:00-08:00",
                  "legal_authority": "unverified_original_source"},
-        "ego": {"blueprint": "vehicle.tesla.model3", "start_xyz": [-45, -1.75, 0.5],
-                "heading_deg": 0, "target_halt_center_x_m": -12, "target_speed_mps": 3.0},
+        "ego": {"blueprint": "vehicle.tesla.model3", "start_xyz": [-35, -1.75, 0.5],
+                "heading_deg": 0, "target_halt_center_x_m": -12, "target_speed_mps": 5.0},
         "passenger": {"blueprint_filter": "walker.pedestrian.*",
                       "start_xyz": [-10, -5.5, 0.5],
                       "target_door_xyz": [-12, -3.2, 0.5],
                       "cross_doorway_requested": CASES[slug]},
         "controller": {"policy": "approach_halt_door_cycle_resume",
-                       "halt_request_frame": 100, "door_open_request_frame": 140,
-                       "door_close_request_frame": 420, "resume_request_frame": 480,
+                       "action_request": "brief_stop" if brief else ("extended_park" if extended else "standing_episode"),
+                       "halt_request_frame": 90,
+                       "door_open_request_frame": None if (brief or extended) else 140,
+                       "door_close_request_frame": None if (brief or extended) else 420,
+                       "resume_request_frame": 150 if brief else (590 if extended else 480),
                        "passenger_walk_request_frame": 170,
                        "transfer_engineering_target_frame": 260},
         "cameras": [
@@ -107,6 +115,21 @@ def validate(scene):
         raise ValueError("sign authority cannot be presumed")
     if scene["passenger"]["cross_doorway_requested"] is not CASES[scene["case"]]:
         raise ValueError("comparison passenger request differs")
+    expected_civil = "19:00:00" if scene["case"].startswith("outside_hours") else "10:00:00"
+    if expected_civil not in scene["zone"]["civil_timestamp_start"]:
+        raise ValueError("case signed-hours contrast differs")
+    action = scene["controller"].get("action_request")
+    resume = scene["controller"].get("resume_request_frame")
+    expected = ("brief_stop", 150) if scene["case"] == "brief_stop_no_transfer" else (
+        ("extended_park", 590) if scene["case"] == "extended_park_no_transfer" else
+        ("standing_episode", 480))
+    if (action, resume) != expected:
+        raise ValueError("case action and duration request differ")
+    door_frames = (scene["controller"].get("door_open_request_frame"),
+                   scene["controller"].get("door_close_request_frame"))
+    if door_frames != ((None, None) if scene["case"] in
+                       {"brief_stop_no_transfer", "extended_park_no_transfer"} else (140, 420)):
+        raise ValueError("case door policy differs")
     if tuple(sorted(c["name"] for c in scene["cameras"])) != tuple(sorted(CAMERAS)):
         raise ValueError("four-camera plan missing")
     if any(tuple(c["size"]) != ((1920, 1080) if c["name"] == "overview" else (1280, 720))

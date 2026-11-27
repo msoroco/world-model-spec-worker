@@ -1,0 +1,933 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C149498",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C149498__NRS-484B-503__motor_vehicle_driver__selected_bae4893e__condition_a",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "actual_passenger_loading",
+        "comparison_or_standard": "Source-measured passenger curb episode with no invented legal cutoff",
+        "target_value_or_branch": "condition_a"
+      },
+      "paired_probe_id": "C149498-passenger-curb-branches",
+      "deliberate_differences": [
+        "actual_passenger_loading"
+      ],
+      "rationale": "Authored sign, action and transfer requests need original Native and independent review.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "native_map",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "loading_zone",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "ego_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "passenger_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "camera_manifest",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          }
+        ],
+        "limitations": [
+          "No legal expeditiousness cutoff is declared.",
+          "Authored sign and controller requests do not prove lawful authority or physical transfer."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "zone regulatory authority",
+        "actual passenger loading or unloading",
+        "expeditiousness",
+        "legal effect of measured duration"
+      ],
+      "variable_assignments": {
+        "actual_passenger_loading": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "requested"
+        },
+        "signed_effective_hours": {
+          "kind": "civil_time",
+          "unit": "category",
+          "value": "inside"
+        },
+        "action_and_measured_duration": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "standing_episode"
+        }
+      }
+    },
+    {
+      "case_id": "training__C149498__NRS-484B-503__motor_vehicle_driver__selected_bae4893e__condition_b",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "actual_passenger_loading",
+        "comparison_or_standard": "Source-measured passenger curb episode with no invented legal cutoff",
+        "target_value_or_branch": "condition_b"
+      },
+      "paired_probe_id": "C149498-passenger-curb-branches",
+      "deliberate_differences": [
+        "actual_passenger_loading"
+      ],
+      "rationale": "Authored sign, action and transfer requests need original Native and independent review.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "native_map",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "loading_zone",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "ego_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "passenger_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "camera_manifest",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          }
+        ],
+        "limitations": [
+          "No legal expeditiousness cutoff is declared.",
+          "Authored sign and controller requests do not prove lawful authority or physical transfer."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "zone regulatory authority",
+        "actual passenger loading or unloading",
+        "expeditiousness",
+        "legal effect of measured duration"
+      ],
+      "variable_assignments": {
+        "actual_passenger_loading": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "not_requested"
+        },
+        "signed_effective_hours": {
+          "kind": "civil_time",
+          "unit": "category",
+          "value": "inside"
+        },
+        "action_and_measured_duration": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "standing_episode"
+        }
+      }
+    },
+    {
+      "case_id": "training__C149498__NRS-484B-503__motor_vehicle_driver__selected_bae4893e__outside_hours_loading",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signed_effective_hours",
+        "comparison_or_standard": "Source-measured passenger curb episode with no invented legal cutoff",
+        "target_value_or_branch": "outside_hours_loading"
+      },
+      "paired_probe_id": "C149498-passenger-curb-branches",
+      "deliberate_differences": [
+        "signed_effective_hours"
+      ],
+      "rationale": "Authored sign, action and transfer requests need original Native and independent review.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "native_map",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "loading_zone",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "ego_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "passenger_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "camera_manifest",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          }
+        ],
+        "limitations": [
+          "No legal expeditiousness cutoff is declared.",
+          "Authored sign and controller requests do not prove lawful authority or physical transfer."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "zone regulatory authority",
+        "actual passenger loading or unloading",
+        "expeditiousness",
+        "legal effect of measured duration"
+      ],
+      "variable_assignments": {
+        "actual_passenger_loading": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "requested"
+        },
+        "signed_effective_hours": {
+          "kind": "civil_time",
+          "unit": "category",
+          "value": "outside"
+        },
+        "action_and_measured_duration": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "standing_episode"
+        }
+      }
+    },
+    {
+      "case_id": "training__C149498__NRS-484B-503__motor_vehicle_driver__selected_bae4893e__outside_hours_no_transfer",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signed_effective_hours",
+        "comparison_or_standard": "Source-measured passenger curb episode with no invented legal cutoff",
+        "target_value_or_branch": "outside_hours_no_transfer"
+      },
+      "paired_probe_id": "C149498-passenger-curb-branches",
+      "deliberate_differences": [
+        "signed_effective_hours"
+      ],
+      "rationale": "Authored sign, action and transfer requests need original Native and independent review.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "native_map",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "loading_zone",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "ego_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "passenger_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "camera_manifest",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          }
+        ],
+        "limitations": [
+          "No legal expeditiousness cutoff is declared.",
+          "Authored sign and controller requests do not prove lawful authority or physical transfer."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "zone regulatory authority",
+        "actual passenger loading or unloading",
+        "expeditiousness",
+        "legal effect of measured duration"
+      ],
+      "variable_assignments": {
+        "actual_passenger_loading": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "not_requested"
+        },
+        "signed_effective_hours": {
+          "kind": "civil_time",
+          "unit": "category",
+          "value": "outside"
+        },
+        "action_and_measured_duration": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "standing_episode"
+        }
+      }
+    },
+    {
+      "case_id": "training__C149498__NRS-484B-503__motor_vehicle_driver__selected_bae4893e__brief_stop_no_transfer",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "action_and_measured_duration",
+        "comparison_or_standard": "Source-measured passenger curb episode with no invented legal cutoff",
+        "target_value_or_branch": "brief_stop_no_transfer"
+      },
+      "paired_probe_id": "C149498-passenger-curb-branches",
+      "deliberate_differences": [
+        "action_and_measured_duration"
+      ],
+      "rationale": "Authored sign, action and transfer requests need original Native and independent review.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "native_map",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "loading_zone",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "ego_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "passenger_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "camera_manifest",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          }
+        ],
+        "limitations": [
+          "No legal expeditiousness cutoff is declared.",
+          "Authored sign and controller requests do not prove lawful authority or physical transfer."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "zone regulatory authority",
+        "actual passenger loading or unloading",
+        "expeditiousness",
+        "legal effect of measured duration"
+      ],
+      "variable_assignments": {
+        "actual_passenger_loading": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "not_requested"
+        },
+        "signed_effective_hours": {
+          "kind": "civil_time",
+          "unit": "category",
+          "value": "inside"
+        },
+        "action_and_measured_duration": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "brief_stop"
+        }
+      }
+    },
+    {
+      "case_id": "training__C149498__NRS-484B-503__motor_vehicle_driver__selected_bae4893e__extended_park_no_transfer",
+      "target_law_id": "NRS-484B-503",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "action_and_measured_duration",
+        "comparison_or_standard": "Source-measured passenger curb episode with no invented legal cutoff",
+        "target_value_or_branch": "extended_park_no_transfer"
+      },
+      "paired_probe_id": "C149498-passenger-curb-branches",
+      "deliberate_differences": [
+        "action_and_measured_duration"
+      ],
+      "rationale": "Authored sign, action and transfer requests need original Native and independent review.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native source, body, sign or synchronized camera join; unobserved values remain unknown",
+            "time_window": "all 600 frames including approach, curb halt and departure",
+            "reference_frame": "original CARLA frame and civil sign time",
+            "uncertainty": "Actual door, occupant transfer and sign authority require independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "native_map",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "loading_zone",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "ego_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "passenger_body",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          },
+          {
+            "name": "camera_manifest",
+            "unit": "structured",
+            "method": "original Native source hash and frame identity"
+          }
+        ],
+        "limitations": [
+          "No legal expeditiousness cutoff is declared.",
+          "Authored sign and controller requests do not prove lawful authority or physical transfer."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "zone regulatory authority",
+        "actual passenger loading or unloading",
+        "expeditiousness",
+        "legal effect of measured duration"
+      ],
+      "variable_assignments": {
+        "actual_passenger_loading": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "not_requested"
+        },
+        "signed_effective_hours": {
+          "kind": "civil_time",
+          "unit": "category",
+          "value": "inside"
+        },
+        "action_and_measured_duration": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "extended_park"
+        }
+      }
+    }
+  ],
+  "sweep_specs": []
+}
